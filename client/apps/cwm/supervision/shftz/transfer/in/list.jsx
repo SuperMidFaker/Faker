@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
@@ -70,7 +70,9 @@ export default class SHFTZTransferInList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'transfer', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'transfer', ownerView,
+    };
     this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -156,7 +158,9 @@ export default class SHFTZTransferInList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="转入详情" row={record} />,
+    render: (o, record) => record.status < 2 ?
+      <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -244,8 +248,7 @@ export default class SHFTZTransferInList extends React.Component {
       >
         <OptGroup>
           <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-            )}
+          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
         </OptGroup>
       </Select>
     </span>);
@@ -256,7 +259,7 @@ export default class SHFTZTransferInList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

@@ -5,10 +5,9 @@ import { connect } from 'react-redux';
 import { Select } from 'antd';
 
 const Option = Select.Option;
-@connect(
-  state => ({
-    clients: state.shipment.formRequire.clients,
-  }))
+@connect(state => ({
+  clients: state.shipment.formRequire.clients,
+}))
 @injectIntl
 
 export default class CustomerSelect extends React.Component {
@@ -46,8 +45,7 @@ export default class CustomerSelect extends React.Component {
               value={String(pt.partner_id)} key={pt.partner_id}
             >
               {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-            </Option>)
-          )
+            </Option>))
         }
       </Select>
     );

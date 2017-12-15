@@ -12,10 +12,8 @@ import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 const Panel = Collapse.Panel;
 
 @injectIntl
-@connect(
-  () => ({
-  }), { }
-)
+@connect(() => ({
+}), { })
 export default class ASNPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -77,19 +75,19 @@ export default class ASNPane extends React.Component {
                   <InfoItem label="保税监管方式" field={(asnHead.bonded_intype || asnHead.bonded_intype === 0) && CWM_ASN_BONDED_REGTYPES.find(item => item.value === asnHead.bonded_intype).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="预期总数量" field={''} />
+                  <InfoItem label="预期总数量" field="" />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="预期总体积" field={''} />
+                  <InfoItem label="预期总体积" field="" />
                 </Col>
                 <Col span="8">
                   <InfoItem label="预计到货日期" addonBefore={<Icon type="calendar" />} field={asnHead.expect_receive_date && moment(asnHead.expect_receive_date).format('YYYY.MM.DD')} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="收货总数量" field={''} />
+                  <InfoItem label="收货总数量" field="" />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="收货总体积" field={''} />
+                  <InfoItem label="收货总体积" field="" />
                 </Col>
                 <Col span="8">
                   <InfoItem label="实际收货时间" addonBefore={<Icon type="clock-circle-o" />} field={asnHead.received_date && moment(asnHead.received_date).format('YYYY.MM.DD HH:mm')} />

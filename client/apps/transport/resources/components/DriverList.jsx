@@ -15,8 +15,10 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick,
-    handleEditDriverLogin, onEditDriver, onRemoveDriver } = props;
+  const {
+    dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick,
+    handleEditDriverLogin, onEditDriver, onRemoveDriver,
+  } = props;
 
   function phoneLogin(record) {
     if (record.login_disabled === 1 || record.login_disabled === null) {
@@ -69,7 +71,7 @@ function DriverList(props) {
             启用
           </a>
           <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => onRemoveDriver({ driverId: record.driver_id, driverLoginId: record.login_id })}>
+          <Popconfirm title="确定删除？" onConfirm={() => onRemoveDriver({ driverId: record.driver_id, driverLoginId: record.login_id })}>
             <a>删除</a>
           </Popconfirm>
         </span>
@@ -167,9 +169,9 @@ function DriverList(props) {
 
 DriverList.propTyps = {
   dataSource: PropTypes.array,
-  onAddDriverBtnClicked: PropTypes.func.isRequired,   // 点击新建司机按钮后执行的回调函数
-  onStopDriverBtnClick: PropTypes.func.isRequired,    // 点击停止车辆按钮的回调函数
-  onResumeDriverBtnClick: PropTypes.func.isRequired,  // 点击启用车辆按钮的回调函数
+  onAddDriverBtnClicked: PropTypes.func.isRequired, // 点击新建司机按钮后执行的回调函数
+  onStopDriverBtnClick: PropTypes.func.isRequired, // 点击停止车辆按钮的回调函数
+  onResumeDriverBtnClick: PropTypes.func.isRequired, // 点击启用车辆按钮的回调函数
   onSearch: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
 };

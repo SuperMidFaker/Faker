@@ -7,7 +7,7 @@ import { Button, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import WhseOwnersModal from '../modal/whseOwnersModal';
@@ -29,7 +29,9 @@ const confirm = Modal.confirm;
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition }
+  {
+    showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition,
+  }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -142,10 +144,10 @@ export default class OwnersPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
-        <span className="ant-divider" />
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
+        <RowAction onClick={this.handleOwnerControl} icon="tool" label="控制属性" row={record} />
+        {record.active === 0 ?
+          <RowAction onClick={() => this.changeOwnerStatus(record.id, true)} icon="play-circle" tooltip="启用" row={record} /> :
+          <RowAction onClick={() => this.changeOwnerStatus(record.id, false)} icon="pause-circle" tooltip="停用" row={record} />}
       </span>
     ),
   }]
@@ -168,13 +170,15 @@ export default class OwnersPane extends Component {
   }
   handleInitData = (record) => {
     this.setState({
-      seletedOwner: { id: record.owner_partner_id,
+      seletedOwner: {
+        id: record.owner_partner_id,
         partner_tenant_id: record.owner_tenant_id,
         name: record.owner_name,
         portion_enabled: record.portion_enabled,
         customs_code: record.customs_code,
       },
-      importPanelVisible: true });
+      importPanelVisible: true,
+    });
   }
   handleBackupData = (record) => {
     const { whseCode } = this.props;
@@ -195,7 +199,9 @@ export default class OwnersPane extends Component {
     });
   };
   render() {
-    const { warehouse, whseCode, whseName, whseTenantId, whseOwners } = this.props;
+    const {
+      warehouse, whseCode, whseName, whseTenantId, whseOwners,
+    } = this.props;
     return (
       <DataPane columns={this.columns} dataSource={whseOwners} rowKey="id">
         <DataPane.Toolbar>

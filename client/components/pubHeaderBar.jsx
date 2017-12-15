@@ -23,7 +23,9 @@ const formatMsg = format(messages);
     corpLogo: state.corpDomain.logo,
     corpName: state.corpDomain.name,
   }),
-  { logout, loadTranslation, changeUserLocale, goBackNav, showPreferenceDock, showActivitiesDock }
+  {
+    logout, loadTranslation, changeUserLocale, goBackNav, showPreferenceDock, showActivitiesDock,
+  }
 )
 export default class PubHeaderBar extends React.Component {
   static propTypes = {
@@ -65,7 +67,7 @@ export default class PubHeaderBar extends React.Component {
   render() {
     const { corpLogo, corpName, navTitle } = this.props;
 
-    let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
+    let brandNav = (<NavLink to="/" className="navbar-brand" />);
     if (navTitle.depth === 1) {
 
     } else if (navTitle.depth === 2) {
@@ -82,12 +84,11 @@ export default class PubHeaderBar extends React.Component {
           </a>
         </Tooltip>)];
       if (navTitle.jumpOut && this.props.navTitle.stack > 1) {
-        brandNav.push(
-          <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('close')} key="close" >
-            <a role="presentation" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
-              <MdIcon type="close" />
-            </a>
-          </Tooltip>);
+        brandNav.push(<Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('close')} key="close" >
+          <a role="presentation" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
+            <MdIcon type="close" />
+          </a>
+        </Tooltip>);
       }
     }
     return (

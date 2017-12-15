@@ -28,7 +28,8 @@ export default function connectFetch(conn = { deferred: false }) {
           state: store.getState(),
           dispatch: store.dispatch,
           location,
-          params }));
+          params,
+        }));
         Promise.all(promises);
       }
 

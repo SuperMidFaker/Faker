@@ -4,18 +4,18 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Table } from 'antd';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { loadStockTasks } from 'common/reducers/cwmShFtz';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
-    state => ({
-      defaultWhse: state.cwmContext.defaultWhse,
-      ftzTaskList: state.cwmShFtz.ftzTaskList,
-    }),
-    { loadStockTasks }
-  )
+  state => ({
+    defaultWhse: state.cwmContext.defaultWhse,
+    ftzTaskList: state.cwmShFtz.ftzTaskList,
+  }),
+  { loadStockTasks }
+)
 export default class TasksPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -55,7 +55,7 @@ export default class TasksPane extends React.Component {
     render: (o, record) => {
       if (record.progress === 100) {
         return (<span>
-          <RowUpdater onHit={this.handleDetail} label="对比详情" row={record} />
+          <RowAction onClick={this.handleDetail} label="对比详情" row={record} />
           {record.progress === -1 && <span className="ant-divider" />}
         </span>);
       }

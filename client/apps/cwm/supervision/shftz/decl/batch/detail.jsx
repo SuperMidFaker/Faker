@@ -319,7 +319,9 @@ export default class BatchDeclDetail extends Component {
     this.context.router.push(`/clearance/${ietype}/manifest/${this.props.batchDecl.delg_no}`);
   }
   render() {
-    const { batchDecl, batchApplies, regs, details, whse, submitting } = this.props;
+    const {
+      batchDecl, batchApplies, regs, details, whse, submitting,
+    } = this.props;
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
       gross_wt: acc.gross_wt + det.gross_wt,
@@ -433,8 +435,7 @@ export default class BatchDeclDetail extends Component {
                         </Row>
                       </DataPane.Toolbar>
                     </DataPane>
-                  </TabPane>)
-                )}
+                  </TabPane>))}
               </Tabs>
             </MagicCard>
           </Form>

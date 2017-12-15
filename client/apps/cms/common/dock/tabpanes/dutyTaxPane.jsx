@@ -123,7 +123,7 @@ export default class DutyTaxPane extends React.Component {
     title: '商品编码',
     dataIndex: 'hscode',
     key: 'hscode',
-/*
+    /*
   }, {
     title: '运费/率',
     dataIndex: 'ship_fee',

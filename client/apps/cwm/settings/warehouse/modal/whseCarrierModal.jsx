@@ -33,7 +33,9 @@ function fetchData({ dispatch }) {
     carrier: state.cwmWarehouse.carrierModal.carrier,
     partners: state.partner.partners,
   }),
-  { toggleCarrierModal, addCarrier, loadCarriers, updateCarrier }
+  {
+    toggleCarrierModal, addCarrier, loadCarriers, updateCarrier,
+  }
 )
 
 @Form.create()
@@ -54,7 +56,9 @@ export default class SuppliersModal extends Component {
     this.props.form.resetFields();
   }
   handleAdd = () => {
-    const { whseCode, loginId, whseOwners, carrier } = this.props;
+    const {
+      whseCode, loginId, whseOwners, carrier,
+    } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const ownerTenantId = whseOwners.find(owner => owner.owner_partner_id === values.owner_partner_id).owner_tenant_id;
@@ -86,7 +90,9 @@ export default class SuppliersModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, whseOwners, partners } = this.props;
+    const {
+      form: { getFieldDecorator }, visible, whseOwners, partners,
+    } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
@@ -96,10 +102,9 @@ export default class SuppliersModal extends Component {
           {visible && <FormItem label="名称:" required {...formItemLayout}>
             {getFieldDecorator('name', {
               rules: [{ required: true }],
-            })(
-              <Select mode="combobox" style={{ width: '100%' }} onSelect={this.handleSelect}>
-                {partners.map(partner => (<Option value={partner.name} key={partner.name}>{partner.name}</Option>))}
-              </Select>)}
+            })(<Select mode="combobox" style={{ width: '100%' }} onSelect={this.handleSelect}>
+              {partners.map(partner => (<Option value={partner.name} key={partner.name}>{partner.name}</Option>))}
+            </Select>)}
           </FormItem>}
           <FormItem label="代码:" {...formItemLayout}>
             {getFieldDecorator('code', {
@@ -112,24 +117,21 @@ export default class SuppliersModal extends Component {
           <FormItem label="关联货主:" {...formItemLayout}>
             {getFieldDecorator('owner_partner_id', {
               rules: [{ required: true }],
-            })(
-              <Select id="select"
-                showSearch
-                placeholder=""
-                optionFilterProp="children"
-                notFoundContent=""
-              >
-                {
+            })(<Select id="select"
+              showSearch
+              placeholder=""
+              optionFilterProp="children"
+              notFoundContent=""
+            >
+              {
                   whseOwners.map(pt => (
                     <Option searched={`${pt.owner_code}${pt.owner_name}`}
                       value={pt.owner_partner_id} key={pt.owner_partner_id}
                     >
                       {pt.owner_code ? `${pt.owner_code} | ${pt.owner_name}` : pt.owner_name}
-                    </Option>)
-                  )
+                    </Option>))
                 }
-              </Select>
-            )}
+            </Select>)}
           </FormItem>
         </Form>
       </Modal>

@@ -8,7 +8,7 @@ import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -153,16 +153,16 @@ export default class ReceivingInboundList extends React.Component {
     render: completedDate => completedDate && moment(completedDate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
-    width: 100,
+    width: 140,
     fixed: 'right',
     dataIndex: 'OPS_COL',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;
       } else if (record.status === 0 && record.receiving_lock === 2) {
-        return (<span><RowUpdater label="撤回" row={record} /></span>);
+        return <RowAction label="撤回" row={record} />;
       } else {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;
       }
     },
   }]
@@ -219,7 +219,9 @@ export default class ReceivingInboundList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, owners, filters, loading } = this.props;
+    const {
+      whses, defaultWhse, owners, filters, loading,
+    } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -259,7 +261,8 @@ export default class ReceivingInboundList extends React.Component {
         {
           owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
         }
-      </Select></span>);
+      </Select>
+    </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>

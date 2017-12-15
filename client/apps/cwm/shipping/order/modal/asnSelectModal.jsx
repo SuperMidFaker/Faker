@@ -16,7 +16,9 @@ const formatMsg = format(messages);
     visible: state.cwmShippingOrder.asnSelectModal.visible,
     whseCode: state.cwmContext.defaultWhse.code,
   }),
-  { getCrossAsns, hideAsnSelectModal, addTemporary, clearTemporary, getCrossAsnDetails }
+  {
+    getCrossAsns, hideAsnSelectModal, addTemporary, clearTemporary, getCrossAsnDetails,
+  }
 )
 export default class AsnSelectModal extends Component {
   static propTypes = {

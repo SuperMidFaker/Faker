@@ -1,1 +1,0 @@
-export OpenApi from './openapi';

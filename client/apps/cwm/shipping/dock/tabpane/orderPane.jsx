@@ -14,14 +14,12 @@ import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES, DELIVER_TYPES, COURIERS } from 'c
 const Panel = Collapse.Panel;
 
 @injectIntl
-@connect(
-  state => ({
-    loginId: state.account.loginId,
-    order: state.crmOrders.dock.order,
-    defaultWhse: state.cwmContext.defaultWhse,
-    carriers: state.cwmWarehouse.carriers,
-  }), { loadCarriers, updateSoHead }
-)
+@connect(state => ({
+  loginId: state.account.loginId,
+  order: state.crmOrders.dock.order,
+  defaultWhse: state.cwmContext.defaultWhse,
+  carriers: state.cwmWarehouse.carriers,
+}), { loadCarriers, updateSoHead })
 export default class SOPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

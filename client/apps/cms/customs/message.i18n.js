@@ -65,13 +65,21 @@ export default defineMessages({
     id: 'cms.customs.decl.decl.status',
     defaultMessage: '通关状态',
   },
+  declChannel: {
+    id: 'cms.customs.decl.channel',
+    defaultMessage: '申报通道',
+  },
   declType: {
-    id: 'cms.customs.decl.decl.declType',
+    id: 'cms.customs.decl.type',
     defaultMessage: '单证类型',
   },
   easipassList: {
-    id: 'cms.customs.decl.decl.easipassList',
+    id: 'cms.customs.decl.easipass.list',
     defaultMessage: 'EDI列表',
+  },
+  quickpassList: {
+    id: 'cms.customs.decl.quickpass.list',
+    defaultMessage: 'QP列表',
   },
   sendDecl: {
     id: 'cms.customs.decl.decl.sendModal.sendDecl',
@@ -139,7 +147,7 @@ export default defineMessages({
   },
   deleteConfirm: {
     id: 'cms.customs.decl.delete.confirm',
-    defaultMessage: '确认删除该报关单?',
+    defaultMessage: '确定删除该报关单?',
   },
   delete: {
     id: 'cms.customs.decl.delete',
@@ -164,6 +172,14 @@ export default defineMessages({
   markReleased: {
     id: 'cms.customs.decl.mark.released',
     defaultMessage: '放行确认',
+  },
+  viewDeclMsg: {
+    id: 'cms.customs.decl.view.decl',
+    defaultMessage: '查看申报报文',
+  },
+  viewResultMsg: {
+    id: 'cms.customs.decl.view.result',
+    defaultMessage: '查看回执报文',
   },
   preEntryId: {
     id: 'cms.customs.decl.form.pre.entry.id',
@@ -312,5 +328,9 @@ export default defineMessages({
   certNum: {
     id: 'cms.customs.decl.tabpanes.cert.num',
     defaultMessage: '单证编号',
+  },
+  viewDetail: {
+    id: 'cms.customs.decl.op.view.detail',
+    defaultMessage: '详情',
   },
 });

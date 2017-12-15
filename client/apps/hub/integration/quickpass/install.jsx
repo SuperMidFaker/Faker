@@ -43,7 +43,9 @@ export default class InstallQuickPass extends React.Component {
       if (!err) {
         const uuid = uuidWithoutDash();
         this.setState({ submitting: true });
-        this.props.installEasipassApp({ ...values, uuid, app_type: 'EASIPASS', tenant_id: tenantId }).then((result) => {
+        this.props.installEasipassApp({
+          ...values, uuid, app_type: 'EASIPASS', tenant_id: tenantId,
+        }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);
@@ -54,7 +56,7 @@ export default class InstallQuickPass extends React.Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
 
@@ -72,7 +74,7 @@ export default class InstallQuickPass extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" icon="save" loading={this.state.submitting}

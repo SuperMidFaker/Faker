@@ -16,7 +16,9 @@ export default class Description extends PureComponent {
     children: PropTypes.any,
   }
   render() {
-    const { prefixCls, className, term, children, column } = this.props;
+    const {
+      prefixCls, className, term, children, column,
+    } = this.props;
     const clsString = classNames(prefixCls, className);
     return (
       <Col className={clsString} {...responsive[column]}>

@@ -44,7 +44,9 @@ export default class InfoItem extends PureComponent {
     upperLimit: PropTypes.number,
   }
   renderLabel() {
-    const { prefixCls, label, labelCol, colon } = this.props;
+    const {
+      prefixCls, label, labelCol, colon,
+    } = this.props;
     const labelCls = `${prefixCls}-label ${getColCls(labelCol)}`;
 
     let labelChildren = label;
@@ -77,7 +79,9 @@ export default class InfoItem extends PureComponent {
     }
   }
   renderField() {
-    const { type, format, field, dataIndex, placeholder, editable, overlay, onEdit, options, upperLimit } = this.props;
+    const {
+      type, format, field, dataIndex, placeholder, editable, overlay, onEdit, options, upperLimit,
+    } = this.props;
     if (editable) {
       if (type === 'dropdown') {
         return (<span>{this.renderAddonBefore()}
@@ -114,7 +118,9 @@ export default class InfoItem extends PureComponent {
   }
 
   render() {
-    const { prefixCls, size = '', fieldCol, action } = this.props;
+    const {
+      prefixCls, size = '', fieldCol, action,
+    } = this.props;
     const sizeCls = ({
       large: 'lg',
       small: 'sm',

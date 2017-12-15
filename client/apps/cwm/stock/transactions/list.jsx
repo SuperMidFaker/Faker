@@ -108,7 +108,9 @@ export default class StockTransactionsList extends React.Component {
       JSON.stringify(listFilter)}&sorter=${JSON.stringify(sortFilter)}`);
   }
   render() {
-    const { defaultWhse, whses, loading, listFilter } = this.props;
+    const {
+      defaultWhse, whses, loading, listFilter,
+    } = this.props;
     const columns = this.columns;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

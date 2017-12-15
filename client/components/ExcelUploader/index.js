@@ -17,7 +17,9 @@ export default class ExcelUploader extends React.Component {
     this.setState({ importInfo: info });
   }
   render() {
-    const { endpoint, formData, children, onUploaded } = this.props;
+    const {
+      endpoint, formData, children, onUploaded,
+    } = this.props;
     const { importInfo } = this.state;
     return (
       <Upload accept=".xls,.xlsx" action={endpoint} showUploadList={false}

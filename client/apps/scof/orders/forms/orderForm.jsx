@@ -7,7 +7,7 @@ import { GOODSTYPES, WRAP_TYPE, SCOF_CONTAINER_TYPE, SCOF_ORDER_TRANSFER, SCOF_O
 import { setClientForm } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/crmCustomers';
-import Container from './container';
+// import Container from './container';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
 import CwmReceivingForm from './cwmReceivingForm';
@@ -41,7 +41,9 @@ SCOF_ORDER_TRANSMODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.valu
     flows: state.scofFlow.partnerFlows,
     graphLoading: state.scofFlow.graphLoading,
   }),
-  { setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadOperators, loadCwmBizParams }
+  {
+    setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadOperators, loadCwmBizParams,
+  }
 )
 export default class OrderForm extends Component {
   static propTypes = {
@@ -260,9 +262,9 @@ export default class OrderForm extends Component {
             style={{ width: '50%', marginLeft: 24 }}
           >
             {formRequires.clients.map(data => (
-              <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-            )}
-          </Select></span>}
+              <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+          </Select>
+        </span>}
           bodyStyle={{ padding: 16 }}
         >
           <Row gutter={16}>
@@ -270,11 +272,11 @@ export default class OrderForm extends Component {
               <FormItem label={(
                 <span>
                       订单类型&nbsp;
-                      <Popover content={cargoTransferHint} title="提示" trigger="hover">
-                        <Icon type="question-circle-o" />
-                      </Popover>
+                  <Popover content={cargoTransferHint} title="提示" trigger="hover">
+                    <Icon type="question-circle-o" />
+                  </Popover>
                 </span>
-                  )} {...formItemLayout} required="true"
+                  )} {...formItemLayout} required
               >
                 <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleKvChange('cust_shipmt_transfer', ev.target.value, 'transfer')}>
                   {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value} key={sot.value}>{sot.text}</RadioButton>)}
@@ -282,7 +284,7 @@ export default class OrderForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label="货物类型" {...formItemLayout} required="true">
+              <FormItem label="货物类型" {...formItemLayout} required>
                 <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleKvChange('cust_shipmt_goods_type', ev.target.value, 'goods')}>
                   <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
                   <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
@@ -332,7 +334,7 @@ export default class OrderForm extends Component {
             <Col sm={8}>
               { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
               <FormItem label="需要换单" {...formItemLayout}>
-                <Switch checkedChildren={'是'} unCheckedChildren={'否'} onChange={value => this.handleChange('ccb_need_exchange', value ? 1 : 0)} checked={formData.ccb_need_exchange} />
+                <Switch checkedChildren="是" unCheckedChildren="否" onChange={value => this.handleChange('ccb_need_exchange', value ? 1 : 0)} checked={formData.ccb_need_exchange} />
               </FormItem>
                 }
             </Col>
@@ -372,17 +374,17 @@ export default class OrderForm extends Component {
             { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') && formData.cust_shipmt_is_container === 'FCL' && (
             <Col sm={16}>
               <FormItem label="箱型箱号" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
-                <Popover
+                {/* <Popover
                   placement="rightBottom"
                   title="箱型箱号"
                   trigger="click"
                   content={<Container value={formData.containers} onChange={value => this.handleChange('containers', value)} />}
-                >
-                  <span>
-                    <a><Icon type="edit" style={{ marginRight: 10 }} /></a>
-                    {formData.containers.map(item => `${item.container_num} x ${item.container_type}`).join('; ')}
-                  </span>
-                </Popover>
+                > */}
+                <span>
+                  <a><Icon type="edit" style={{ marginRight: 10 }} /></a>
+                  {formData.containers.map(item => `${item.container_num} x ${item.container_type}`).join('; ')}
+                </span>
+                {/* </Popover> */}
               </FormItem>
             </Col>
                 )}
@@ -390,7 +392,7 @@ export default class OrderForm extends Component {
               }
           <Row gutter={16}>
             <Col sm={16} lg={8}>
-              <FormItem label="件数/包装" {...formItemLayout} required="true">
+              <FormItem label="件数/包装" {...formItemLayout} required>
                 <InputGroup compact>
                   <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={(ev) => {
                     const pieces = parseFloat(ev.target.value);
@@ -411,7 +413,7 @@ export default class OrderForm extends Component {
               </FormItem>
             </Col>
             <Col sm={16} lg={8}>
-              <FormItem label="总毛重" {...formItemLayout} required="true">
+              <FormItem label="总毛重" {...formItemLayout} required>
                 <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={(ev) => {
                   const weight = parseFloat(ev.target.value);
                   if (!isNaN(weight)) {
@@ -444,13 +446,30 @@ export default class OrderForm extends Component {
               </FormItem>
             </Col>
             <Col sm={8}>
-              <FormItem label="发票号" {...formItemLayout}>
-                <Input placeholder="可用逗号分隔填写多个" value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_invoice_no', e.target.value)} />
+              <FormItem label="扩展单号1" {...formItemLayout}>
+                <Input value={formData.ext_attr_1} onChange={e => this.handleChange('ext_attr_1', e.target.value)} />
               </FormItem>
             </Col>
             <Col sm={8}>
-              <FormItem label="合同号" {...formItemLayout}>
-                <Input value={formData.cust_contract_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
+              <FormItem label="扩展单号2" {...formItemLayout}>
+                <Input value={formData.ext_attr_2} onChange={e => this.handleChange('ext_attr_2', e.target.value)} />
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col sm={8}>
+              <FormItem label="扩展单号3" {...formItemLayout}>
+                <Input value={formData.ext_attr_3} onChange={e => this.handleChange('ext_attr_3', e.target.value)} />
+              </FormItem>
+            </Col>
+            <Col sm={8}>
+              <FormItem label="扩展单号4" {...formItemLayout}>
+                <Input value={formData.ext_attr_4} onChange={e => this.handleChange('ext_attr_4', e.target.value)} />
+              </FormItem>
+            </Col>
+            <Col sm={8}>
+              <FormItem label="扩展单号5" {...formItemLayout}>
+                <Input value={formData.ext_attr_5} onChange={e => this.handleChange('ext_attr_5', e.target.value)} />
               </FormItem>
             </Col>
           </Row>
@@ -460,7 +479,8 @@ export default class OrderForm extends Component {
             value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
           >
             {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
-          </Select></span>}
+          </Select>
+        </span>}
           loading={this.props.graphLoading}
           bodyStyle={{ padding: 16 }}
         >

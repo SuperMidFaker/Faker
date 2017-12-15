@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Modal, Button, Input, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SKUPopover from '../../../common/popover/skuPopover';
 import ReceivingModal from '../modal/receivingModal';
@@ -29,7 +29,9 @@ const Search = Input.Search;
     reload: state.cwmReceive.inboundReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound }
+  {
+    openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound,
+  }
 )
 @connectNav({
   depth: 3,
@@ -175,9 +177,9 @@ export default class ReceiveDetailsPane extends React.Component {
       if (this.props.inboundHead.rec_mode === 'scan' ||
         this.props.inboundHead.status === CWM_INBOUND_STATUS.COMPLETED.value ||
         record.received_qty >= record.expect_qty) {
-        return (<RowUpdater onHit={this.handleReceiveDetails} label="收货记录" row={record} />);
+        return (<RowAction onClick={this.handleReceiveDetails} icon="eye-o" label="收货记录" row={record} />);
       } else {
-        return (<RowUpdater onHit={this.handleManualReceive} label="收货确认" row={record} />);
+        return (<RowAction onClick={this.handleManualReceive} icon="check-circle-o" label="收货确认" row={record} />);
       }
     },
   }]
@@ -250,7 +252,7 @@ export default class ReceiveDetailsPane extends React.Component {
             {inboundHead.rec_mode === 'manual' &&
             <Button onClick={this.handleBatchProductReceive}>
             批量收货确认
-          </Button>
+            </Button>
           }
           </DataPane.BulkActions>
           <DataPane.Actions>

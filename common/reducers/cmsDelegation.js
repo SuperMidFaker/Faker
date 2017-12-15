@@ -99,10 +99,12 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_ACCEPT:
-      return { ...state,
+      return {
+        ...state,
         delegationlist: { ...state.delegationlist, loading: true },
         delegationsReload: false,
-        listFilter: JSON.parse(action.params.filter) };
+        listFilter: JSON.parse(action.params.filter),
+      };
     case actionTypes.LOAD_ACCEPT_SUCCEED: {
       return { ...state, delegationlist: { ...action.result.data, loading: false } };
     }
@@ -111,9 +113,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.RELOAD_DELG_LIST:
       return { ...state, delegationsReload: true };
     case actionTypes.LOAD_CIQ:
-      return { ...state,
+      return {
+        ...state,
         ciqlist: { ...state.ciqlist, loading: true },
-        listFilter: JSON.parse(action.params.filter) };
+        listFilter: JSON.parse(action.params.filter),
+      };
     case actionTypes.LOAD_CIQ_SUCCEED: {
       return { ...state, ciqlist: { ...action.result.data, loading: false } };
     }
@@ -122,7 +126,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELG:
       return { ...state, formData: initialState.formData, delgFiles: [] };
     case actionTypes.LOAD_DELG_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         formData: action.result.data.delegation,
         delgFiles: action.result.data.files,
         formRequire: action.result.data.formRequire,
@@ -134,10 +139,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.NEW_FORM:
       return { ...state, formData: { ...initialState.formData, create_time: new Date() } };
     case actionTypes.LOAD_REQUIRE_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         formRequire: action.result.data,
         formData: initialState.formData,
-        delgFiles: initialState.delgFiles };
+        delgFiles: initialState.delgFiles,
+      };
     case actionTypes.CREATE_DELGCCB:
     case actionTypes.EDIT_DELGCCB:
       return { ...state, submitting: true };
@@ -147,14 +154,16 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CREATE_DELGCCB_FAIL:
       return { ...state, submitting: false };
     case actionTypes.SHOW_DISPMODAL_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         assign: {
           ...state.assign,
           delgDisp: action.result.data.delegation,
           dispatch: action.result.data.dispatch,
           partners: action.result.data.partners,
           ciqSups: action.result.data.ciqSups,
-          delgDispShow: true },
+          delgDispShow: true,
+        },
       };
     case actionTypes.OPEN_EF_MODAL:
       return { ...state, visibleEfModal: true, efModal: action.data };
@@ -363,7 +372,9 @@ export function delgDispSave(delgDisp, dispatch, partner, ciqSup, loginId, login
       ],
       endpoint: 'v1/cms/delegation/dispsave',
       method: 'post',
-      data: { delgDisp, dispatch, partner, ciqSup, loginId, loginName },
+      data: {
+        delgDisp, dispatch, partner, ciqSup, loginId, loginName,
+      },
     },
   };
 }
@@ -393,7 +404,9 @@ export function acceptDelg(loginId, loginName, dispIds, delgNo) {
       ],
       method: 'post',
       endpoint: 'v1/cms/delegation/accept',
-      data: { loginId, loginName, dispIds, delgNo },
+      data: {
+        loginId, loginName, dispIds, delgNo,
+      },
     },
   };
 }

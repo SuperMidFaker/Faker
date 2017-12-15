@@ -39,7 +39,9 @@ export default class ReceiverPane extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleRegionChange = (value) => {
     const [code, province, city, district, street] = value;
-    const region = Object.assign({}, { region_code: code, province, city, district, street });
+    const region = Object.assign({}, {
+      region_code: code, province, city, district, street,
+    });
     this.props.onRegionChange({
       receiver_province: region.province,
       receiver_city: region.city,
@@ -70,7 +72,9 @@ export default class ReceiverPane extends Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, soHead, receivers, selectedOwner, region } = this.props;
+    const {
+      form: { getFieldDecorator }, soHead, receivers, selectedOwner, region,
+    } = this.props;
     const rcvs = receivers.filter(item => item.owner_partner_id === selectedOwner);
     const regionValues = [region.receiver_province, region.receiver_city, region.receiver_district, region.receiver_street];
     return (
@@ -82,16 +86,12 @@ export default class ReceiverPane extends Component {
                 {getFieldDecorator('receiver_name', {
                   rules: [{ message: 'Please select customer!' }],
                   initialValue: soHead && soHead.receiver_name,
-                })(
-                  <Select mode="combobox" placeholder="选择收货人" onSelect={this.handleSelect} style={{ width: '50%' }}>
-                    {rcvs.map(item => (<Option value={item.name}>{item.name}</Option>))}
-                  </Select>
-                )}
+                })(<Select mode="combobox" placeholder="选择收货人" onSelect={this.handleSelect} style={{ width: '50%' }}>
+                  {rcvs.map(item => (<Option value={item.name}>{item.name}</Option>))}
+                </Select>)}
                 {getFieldDecorator('receiver_code', {
                   initialValue: soHead && soHead.receiver_code,
-                })(
-                  <Input style={{ width: '50%' }} placeholder="代码" />
-                )}
+                })(<Input style={{ width: '50%' }} placeholder="代码" />)}
               </InputGroup>
             </FormItem>
           </Col>
@@ -99,9 +99,7 @@ export default class ReceiverPane extends Component {
             <FormItem label="联系人">
               {getFieldDecorator('receiver_contact', {
                 initialValue: soHead && soHead.receiver_contact,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={6} offset={2}>
@@ -109,14 +107,10 @@ export default class ReceiverPane extends Component {
               <InputGroup compact>
                 {getFieldDecorator('receiver_phone', {
                   initialValue: soHead && soHead.receiver_phone,
-                })(
-                  <Input style={{ width: '50%' }} prefix={<Icon type="phone" />} placeholder="电话" />
-                )}
+                })(<Input style={{ width: '50%' }} prefix={<Icon type="phone" />} placeholder="电话" />)}
                 {getFieldDecorator('receiver_number', {
                   initialValue: soHead && soHead.receiver_number,
-                })(
-                  <Input style={{ width: '50%' }} prefix={<Icon type="mobile" />} placeholder="手机" />
-                )}
+                })(<Input style={{ width: '50%' }} prefix={<Icon type="mobile" />} placeholder="手机" />)}
               </InputGroup>
             </FormItem>
           </Col>
@@ -131,18 +125,14 @@ export default class ReceiverPane extends Component {
             <FormItem label="详细地址">
               {getFieldDecorator('receiver_address', {
                 initialValue: soHead && soHead.receiver_address,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="邮政编码">
               {getFieldDecorator('receiver_post_code', {
                 initialValue: soHead && soHead.receiver_post_code,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>

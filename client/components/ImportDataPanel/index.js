@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Form, Icon, Select, Upload } from 'antd';
+import { Button, Icon, Select, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import UploadMask from '../UploadMask';
@@ -9,7 +9,6 @@ import messages from './message.i18n';
 
 const Option = Select.Option;
 const Dragger = Upload.Dragger;
-const FormItem = Form.Item;
 const formatMsg = format(messages);
 
 @injectIntl
@@ -48,19 +47,24 @@ export default class ImportDataPanel extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { endpoint, formData = {}, children, visible, title, onUploaded, adaptors } = this.props;
+    const {
+      endpoint, formData = {}, children, visible, title, onUploaded, adaptors,
+    } = this.props;
     const { importInfo, adaptor } = this.state;
     if (adaptor) {
       formData.adaptor = adaptor;
     }
     return (
       <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose}>
+        <div style={{ marginBottom: 10 }}>
+          {children}
+        </div>
         {adaptors &&
-        <FormItem label="导入适配器">
-          <Select allowClear value={adaptor} onChange={this.handleAdaptorChange} style={{ width: '100%' }}>
-            {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
-          </Select>
-        </FormItem>
+        <Select allowClear showSearch placeholder="导入适配器"
+          onChange={this.handleAdaptorChange} style={{ width: '100%', marginBottom: 10 }}
+        >
+          {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
+        </Select>
         }
         <div style={{ height: 300, marginBottom: 24 }}>
           <Dragger accept=".xls,.xlsx" action={endpoint} showUploadList={false}
@@ -73,7 +77,6 @@ export default class ImportDataPanel extends React.Component {
           </Dragger>
         </div>
         <Button icon="download" style={{ width: '100%' }} onClick={this.handleDownloadTemplate}>下载标准导入模板</Button>
-        {children}
         <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />
       </DockPanel>
     );

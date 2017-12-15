@@ -8,7 +8,7 @@ import { Button, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } fro
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
 import { loadOutbounds } from 'common/reducers/cwmOutbound';
@@ -181,11 +181,11 @@ export default class ShippingLoadList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
       } else if (record.status === 0 && record.receiving_mode === 2) {
-        return (<span><RowUpdater label="撤回" row={record} /></span>);
+        return (<span><RowAction label="撤回" row={record} /></span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
       }
     },
   }]
@@ -234,7 +234,9 @@ export default class ShippingLoadList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { defaultWhse, whses, owners, loading, filters } = this.props;
+    const {
+      defaultWhse, whses, owners, loading, filters,
+    } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadOutbounds(params),
       resolve: result => result.data,

@@ -47,7 +47,9 @@ export default class PickingModal extends Component {
     this.props.closePickingModal();
   }
   handleSubmit = () => {
-    const { outboundNo, allocQty, skuPackQty, loginId, pickMode, selectedRows, id } = this.props;
+    const {
+      outboundNo, allocQty, skuPackQty, loginId, pickMode, selectedRows, id,
+    } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const list = [];
@@ -81,7 +83,9 @@ export default class PickingModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, traceId, location, pickMode, username, submitting } = this.props;
+    const {
+      form: { getFieldDecorator }, traceId, location, pickMode, username, submitting,
+    } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },

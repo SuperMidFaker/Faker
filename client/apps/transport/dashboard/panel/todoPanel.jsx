@@ -20,7 +20,8 @@ const TabPane = Tabs.TabPane;
     todos: state.shipment.statistics.todos,
     loginId: state.account.loginId,
   }),
-  { countTotal })
+  { countTotal }
+)
 export default class TodoPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -82,12 +83,18 @@ export default class TodoPanel extends Component {
       trackingFilters.push({ name: 'sr_partner_id', value: this.state.srPartnerId });
       podFilters.push({ name: 'sr_partner_id', value: this.state.srPartnerId });
     }
-    this.props.countTotal({ tenantId, acceptFilters, trackingFilters, podFilters });
+    this.props.countTotal({
+      tenantId, acceptFilters, trackingFilters, podFilters,
+    });
   }
   render() {
     const { todos } = this.props;
-    const { viewStatus, tabKey, srTenantId, srPartnerId } = this.state;
-    const filter = { viewStatus, tabKey, srTenantId, srPartnerId };
+    const {
+      viewStatus, tabKey, srTenantId, srPartnerId,
+    } = this.state;
+    const filter = {
+      viewStatus, tabKey, srTenantId, srPartnerId,
+    };
     const extra = (
       <div>
         <CustomerSelect onChange={this.handleCustomerChange} style={{ marginRight: 8 }} />

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message } from 'antd';
+import { Spin, Button, Card, Col, Icon, Progress, Row, List, message } from 'antd';
 import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
@@ -24,7 +24,9 @@ import InfoItem from 'client/components/InfoItem';
     partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
     userMembers: state.account.userMembers,
   }),
-  { loadCustPanel, ensureManifestMeta, setOpetaor, loadOperators }
+  {
+    loadCustPanel, ensureManifestMeta, setOpetaor, loadOperators,
+  }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -51,7 +53,7 @@ export default class CustomsDeclPane extends React.Component {
     this.props.loadOperators(this.props.partnerId, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delgNo !== this.props.delgNo) {  // fixme 已经翻到当前tab页, 关闭panel再打开, receive在翻到tab页前就会产生
+    if (nextProps.delgNo !== this.props.delgNo) { // fixme 已经翻到当前tab页, 关闭panel再打开, receive在翻到tab页前就会产生
       nextProps.loadCustPanel({
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,
@@ -91,9 +93,7 @@ export default class CustomsDeclPane extends React.Component {
   }
   handleMenuClick = (loginId) => {
     const operator = this.props.userMembers.filter(dop => dop.login_id === Number(loginId))[0];
-    this.props.setOpetaor(
-      operator.login_id, operator.name, this.props.delgNo
-    );
+    this.props.setOpetaor(operator.login_id, operator.name, this.props.delgNo);
   }
   renderManifestAction() {
     const { customsPanel } = this.props;
@@ -111,7 +111,9 @@ export default class CustomsDeclPane extends React.Component {
     }
   }
   render() {
-    const { customsPanel, customsSpinning, tenantId, partnerId } = this.props;
+    const {
+      customsPanel, customsSpinning, tenantId, partnerId,
+    } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = customsPanel.decls;
     // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
@@ -119,11 +121,6 @@ export default class CustomsDeclPane extends React.Component {
     //  <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
     // );
     const manifestProgress = (<div style={{ width: 200 }}>制单进度 <Progress strokeWidth={5} percent={bill.bill_status} /></div>);
-    const columns = [{
-      title: '报关单',
-      dataIndex: 'customs_inspect',
-      render: (o, record) => <CustomsDeclSheetCard customsDecl={record} manifest={bill} />,
-    }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
     return (
       <div className="pane-content tab-pane table-list">
@@ -158,7 +155,15 @@ export default class CustomsDeclPane extends React.Component {
               </Col>
             </Row>
           </Card>
-          <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} locale={{ emptyText: '尚未生成报关建议书' }} />
+          <List
+            itemLayout="horizontal"
+            dataSource={tableDatas}
+            renderItem={item => (
+              <List.Item>
+                <CustomsDeclSheetCard customsDecl={item} manifest={bill} />
+              </List.Item>
+            )}
+          />
         </Spin>
       </div>
     );

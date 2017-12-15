@@ -14,7 +14,9 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
 function CreateActionForm(props) {
-  const { action, index, bizObjectOptions, msg, onChange, onDel } = props;
+  const {
+    action, index, bizObjectOptions, msg, onChange, onDel,
+  } = props;
   function handleChange(actionKey, value) {
     onChange(actionKey, value, index);
   }
@@ -43,7 +45,8 @@ function CreateActionForm(props) {
               <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
                 onChange={value => handleChange('delay', value)}
               />
-              {msg('timerMinutes')}</span>}
+              {msg('timerMinutes')}
+            </span>}
           </FormItem>
         </Col>
         <Col sm={24} lg={8}>
@@ -73,7 +76,9 @@ CreateActionForm.propTypes = {
 };
 
 function ExecuteActionForm(props) {
-  const { action, index, bizObjectOptions, msg, onChange, onDel } = props;
+  const {
+    action, index, bizObjectOptions, msg, onChange, onDel,
+  } = props;
   function handleChange(actionKey, value) {
     onChange(actionKey, value, index);
   }
@@ -103,7 +108,8 @@ function ExecuteActionForm(props) {
               <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
                 onChange={value => handleChange('delay', value)}
               />
-              {msg('timerMinutes')}</span>}
+              {msg('timerMinutes')}
+            </span>}
           </FormItem>
         </Col>
         <Col sm={24} lg={8}>
@@ -141,7 +147,9 @@ ExecuteActionForm.propTypes = {
 };
 
 function NotifyActionForm(props) {
-  const { action, index, msg, onChange, onDel, serviceTeamMembers } = props;
+  const {
+    action, index, msg, onChange, onDel, serviceTeamMembers,
+  } = props;
   function handleChange(actionKey, value) {
     onChange(actionKey, value, index);
   }
@@ -170,7 +178,8 @@ function NotifyActionForm(props) {
               <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
                 onChange={value => handleChange('delay', value)}
               />
-              {msg('timerMinutes')}</span>}
+              {msg('timerMinutes')}
+            </span>}
           </FormItem>
         </Col>
         <Col sm={24} lg={8}>
@@ -273,14 +282,15 @@ NotifyActionForm.propTypes = {
 };
 
 @injectIntl
-@connect(state => ({
-  visible: state.scofFlow.visibleTriggerModal,
-  nodeBizObject: state.scofFlow.triggerModal.node_biz_object,
-  trigger: state.scofFlow.triggerModal.key,
-  actions: state.scofFlow.triggerModal.actions,
-  serviceTeamMembers: state.crmCustomers.operators,
-  partnerId: state.scofFlow.currentFlow.partner_id,
-}),
+@connect(
+  state => ({
+    visible: state.scofFlow.visibleTriggerModal,
+    nodeBizObject: state.scofFlow.triggerModal.node_biz_object,
+    trigger: state.scofFlow.triggerModal.key,
+    actions: state.scofFlow.triggerModal.actions,
+    serviceTeamMembers: state.crmCustomers.operators,
+    partnerId: state.scofFlow.currentFlow.partner_id,
+  }),
   { closeAddTriggerModal }
 )
 export default class AddTriggerModal extends React.Component {
@@ -309,12 +319,14 @@ export default class AddTriggerModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.actions !== this.props.actions) {
-      this.setState({ actions: nextProps.actions.map(item => ({
-        ...item,
-        recv_login_ids_enabled: !!item.recv_login_ids,
-        recv_emails_enabled: !!item.recv_emails,
-        recv_tels_enabled: !!item.recv_tels,
-      })) });
+      this.setState({
+        actions: nextProps.actions.map(item => ({
+          ...item,
+          recv_login_ids_enabled: !!item.recv_login_ids,
+          recv_emails_enabled: !!item.recv_emails,
+          recv_tels_enabled: !!item.recv_tels,
+        })),
+      });
     }
     if (nextProps.kind && nextProps.kind !== this.props.kind) {
       const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[nextProps.kind];
@@ -325,9 +337,7 @@ export default class AddTriggerModal extends React.Component {
     }
   }
   handleActionAdd = () => {
-    this.setState(
-      { actions: [...this.state.actions, { id: uuidWithoutDash(), type: 'CREATE', instant: true }] }
-    );
+    this.setState({ actions: [...this.state.actions, { id: uuidWithoutDash(), type: 'CREATE', instant: true }] });
   }
   handleFormChange = (key, value, index) => {
     const actions = [...this.state.actions];

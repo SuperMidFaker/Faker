@@ -28,7 +28,8 @@ function fetchData({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     statistics: state.shipment.statistics,
   }),
-  { loadShipmentStatistics })
+  { loadShipmentStatistics }
+)
 export default class StatsPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -43,12 +44,16 @@ export default class StatsPanel extends Component {
     this.props.loadShipmentStatistics(null, this.props.tenantId, startDate, endDate, srPartnerId, srTenantId);
   }
   logsLocation = (type) => {
-    const { startDate, endDate, srPartnerId, srTenantId } = this.props.statistics;
+    const {
+      startDate, endDate, srPartnerId, srTenantId,
+    } = this.props.statistics;
     return `/transport/dashboard/operationLogs?type=${type}&startDate=${startDate}&endDate=${endDate}&srPartnerId=${srPartnerId}&srTenantId=${srTenantId}`;
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { startDate, endDate, total, atOrigin, overtime, intransit, exception, arrival } = this.props.statistics;
+    const {
+      startDate, endDate, total, atOrigin, overtime, intransit, exception, arrival,
+    } = this.props.statistics;
     const datePicker = (
       <div>
         <CustomerSelect onChange={this.handleCustomerChange} />
@@ -60,7 +65,8 @@ export default class StatsPanel extends Component {
     return (
       <Card title={<span>运输统计<Tooltip title="以计划提货时间为基准，一段时间内运单的总票数=未起运的数量+在途的数量+已送达的数量">
         <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
-      </Tooltip></span>} extra={datePicker} hoverable={false} bodyStyle={{ padding: 0 }}
+      </Tooltip>
+      </span>} extra={datePicker} hoverable={false} bodyStyle={{ padding: 0 }}
       >
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
@@ -109,7 +115,7 @@ export default class StatsPanel extends Component {
               <div className="data-num lg text-error"><Link to={this.logsLocation('overtime')}>{overtime}</Link></div>
               <div className="data-extra">
                 {total > 0 ? (overtime / total * 100).toFixed(2) : 0}%
-                  <div>超时率</div>
+                <div>超时率</div>
               </div>
             </div>
           </div>
@@ -123,7 +129,7 @@ export default class StatsPanel extends Component {
               <div className="data-num lg text-error"><Link to={this.logsLocation('exception')}>{exception}</Link></div>
               <div className="data-extra">
                 {total > 0 ? (exception / total * 100).toFixed(2) : 0}%
-                  <div>异常率</div>
+                <div>异常率</div>
               </div>
             </div>
           </div>

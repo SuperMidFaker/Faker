@@ -19,7 +19,9 @@ const formatMsg = format(messages);
     editBodyVisible: state.cmsManifest.editBodyVisible,
     billBodies: state.cmsManifest.billBodies,
   }),
-  { showEditBodyModal, editBillBody, loadBillBody, addNewBillBody }
+  {
+    showEditBodyModal, editBillBody, loadBillBody, addNewBillBody,
+  }
 )
 @Form.create()
 export default class EditBodyModal extends React.Component {
@@ -49,7 +51,9 @@ export default class EditBodyModal extends React.Component {
             }
           });
         } else {
-          this.props.addNewBillBody({ billSeqNo, body: values, loginId, tenantId }).then((result) => {
+          this.props.addNewBillBody({
+            billSeqNo, body: values, loginId, tenantId,
+          }).then((result) => {
             if (result.error) {
               message.error(result.error.message, 10);
             } else {
@@ -64,9 +68,11 @@ export default class EditBodyModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { editBodyVisible, form, editBody, billSeqNo } = this.props;
+    const {
+      editBodyVisible, form, editBody, billSeqNo,
+    } = this.props;
     return (
-      <Modal maskClosable={false} visible={editBodyVisible} width={800} style={{ top: 24 }}
+      <Modal title="商品信息" maskClosable={false} visible={editBodyVisible} width={1200}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <EditBodyForm form={form} editBody={editBody} billSeqNo={billSeqNo} />

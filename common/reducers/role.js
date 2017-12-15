@@ -37,16 +37,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ROLES_FAIL:
       return { ...state, loading: false, loaded: true };
     case actionTypes.LOAD_ROLES_SUCCEED:
-      return { ...state, loaded: true, loading: false, list: action.result.data };
+      return {
+        ...state, loaded: true, loading: false, list: action.result.data,
+      };
     case actionTypes.CLEAR_FORM:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_ROLE_SUCCEED:
       return { ...state, formData: action.result.data };
     case actionTypes.LOAD_MODULES_SUCCEED:
-      return { ...state,
-        modules: INTRINSIC_MODULE_FEATURES.filter(
-        imf => action.result.data.indexOf(imf.id) >= 0
-      ) };
+      return {
+        ...state,
+        modules: INTRINSIC_MODULE_FEATURES.filter(imf => action.result.data.indexOf(imf.id) >= 0),
+      };
     case actionTypes.EDIT_ROLE:
     case actionTypes.SUBMIT_ROLE:
       return { ...state, submitting: true };

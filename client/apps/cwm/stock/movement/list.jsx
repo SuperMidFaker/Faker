@@ -8,7 +8,7 @@ import { Button, Breadcrumb, Layout, Select, Icon, Tooltip, message } from 'antd
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
 import { openMovementModal, loadMovements, cancelMovement } from 'common/reducers/cwmMovement';
@@ -45,7 +45,9 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmMovement.movements.loading,
     filter: state.cwmMovement.movementFilter,
   }),
-  { openMovementModal, switchDefaultWhse, showDock, loadMovements, cancelMovement }
+  {
+    openMovementModal, switchDefaultWhse, showDock, loadMovements, cancelMovement,
+  }
 )
 @connectNav({
   depth: 2,
@@ -128,12 +130,12 @@ export default class MovementList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.isdone) {
-        return (<RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />);
+        return (<RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />);
       } else {
         return (<span>
-          <RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />
+          <RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={this.cancelMovement} label="取消移库" row={record} />
+          <RowAction onClick={this.cancelMovement} label="取消移库" row={record} />
         </span>);
       }
     },
@@ -191,7 +193,9 @@ export default class MovementList extends React.Component {
     });
   }
   render() {
-    const { defaultWhse, whses, owners, loading } = this.props;
+    const {
+      defaultWhse, whses, owners, loading,
+    } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadMovements(params),
       resolve: result => result.data,
@@ -230,7 +234,8 @@ export default class MovementList extends React.Component {
         {
             owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
           }
-      </Select></span>);
+      </Select>
+    </span>);
     const bulkActions = (<Button>批量移库</Button>);
 
     return (

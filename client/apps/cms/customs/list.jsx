@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Breadcrumb, DatePicker, Icon, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -11,48 +11,62 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsDeclare';
+import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
-import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
-import FillCustomsNoModal from '../common/customs/modals/fillCustomsNoModal';
-import DeclReleasedModal from '../common/customs/modals/declReleasedModal';
-import DeclStatusPopover from '../common/customs/declStatusPopover';
-import SendDeclMsgModal from '../common/customs/modals/sendDeclMsgModal';
-import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
-import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
-import BatchSendModal from '../common/customs/modals/batchSendModal';
-import DeclMsgPanel from './panel/declMsgPanel';
-import { Logixon, Fontello } from 'client/components/FontIcon';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import TrimSpan from 'client/components/trimSpan';
+import SearchBar from 'client/components/SearchBar';
+import RowAction from 'client/components/RowAction';
+import { Logixon, Fontello } from 'client/components/FontIcon';
+import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
+import BatchSendModal from './modals/batchSendModal';
+import FillCustomsNoModal from './modals/fillCustomsNoModal';
+import DeclReleasedModal from './modals/declReleasedModal';
+import SendDeclMsgModal from './modals/sendDeclMsgModal';
+import DeclMsgPanel from './panel/declMsgPanel';
+import DeclMsgModal from './modals/declMsgModal';
+import DeclStatusPopover from '../common/popover/declStatusPopover';
+import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
-const RangePicker = DatePicker.RangePicker;
-// todo merge common/customs/list.jsx
+const { Option } = Select;
+const { OptGroup } = Select;
+const { RangePicker } = DatePicker;
+
+function mergeFilters(curFilters, value) {
+  const newFilters = {};
+  Object.keys(curFilters).forEach((key) => {
+    if (key !== 'filterNo') {
+      newFilters[key] = curFilters[key];
+    }
+  });
+  if (value !== null && value !== undefined && value !== '') {
+    newFilters.filterNo = value;
+  }
+  return newFilters;
+}
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    loginName: state.account.username,
     customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
     clients: state.partner.partners,
     customs: state.cmsDeclare.listRequire.customs,
     // trades: state.cmsDeclare.trades,
   }),
-  { loadCustomsDecls,
+  {
+    loadCustomsDecls,
     loadTableParams,
     loadPartnersByTypes,
     openEfModal,
@@ -62,7 +76,9 @@ const RangePicker = DatePicker.RangePicker;
     showPreviewer,
     openDeclReleasedModal,
     showBatchSendModal,
-    showDeclMsgDock }
+    showDeclMsgDock,
+    toggleDeclMsgModal,
+  }
 )
 @connectNav({
   depth: 2,
@@ -71,12 +87,9 @@ const RangePicker = DatePicker.RangePicker;
 export default class CustomsList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    // ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
-    customslist: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
+
     showSendDeclModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -85,7 +98,6 @@ export default class CustomsList extends Component {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
     let filters = { status: 'all', filterDate: [] };
@@ -96,7 +108,10 @@ export default class CustomsList extends Component {
         filters = { ...filters, filterDate: listFilters.acptDate };
       }
     }
-    this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
+    this.props.loadPartnersByTypes(
+      this.props.tenantId,
+      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance
+    );
     this.props.loadTableParams();
     this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
@@ -105,6 +120,7 @@ export default class CustomsList extends Component {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
     width: 200,
+    fixed: 'left',
     render: (entryNO, record) => {
       switch (record.status) {
         case CMS_DECL_STATUS.proposed.value:
@@ -116,12 +132,15 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.sent.value:
           return (
             <span>
-              <span className="text-normal">
+              <span className="text-normal" style={{ marginRight: 4 }}>
                 {record.pre_entry_seq_no}
               </span>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                  label={<Icon type="edit" />} tooltip="回填海关编号"
+                <RowAction shape="circle"
+                  onClick={this.handleDeclNoFill}
+                  row={record}
+                  label={<Icon type="edit" />}
+                  tooltip="回填海关编号"
                 />
               </PrivilegeCover>
             </span>);
@@ -129,45 +148,14 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.released.value:
           return (<span className="text-emphasis">{entryNO}</span>);
         default:
-          break;
+          return <span />;
       }
-      /*
-      switch (record.status) {
-        case CMS_DECL_STATUS.proposed.value:
-        case CMS_DECL_STATUS.reviewed.value:
-          return (
-            <Tooltip title="点击编号在新窗口中打开" placement="right">
-              <a onClick={ev => this.handleDounbleClick(record, ev)}>
-                {record.pre_entry_seq_no}
-              </a>
-            </Tooltip>);
-        case CMS_DECL_STATUS.sent.value:
-          return (
-            <span>
-              <Tooltip title="点击编号在新窗口中打开" placement="left">
-                <a onClick={ev => this.handleDounbleClick(record, ev)}>
-                  {record.pre_entry_seq_no}
-                </a>
-              </Tooltip>
-              <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowUpdater onHit={this.handleDeclNoFill} row={record}
-                  label={<Icon type="edit" />} tooltip="回填海关编号"
-                />
-              </PrivilegeCover>
-            </span>);
-        case CMS_DECL_STATUS.entered.value:
-        case CMS_DECL_STATUS.released.value:
-          return (<Tooltip title="点击编号在新窗口中打开" mouseEnterDelay={3} placement="left"><a onClick={ev => this.handleDounbleClick(record, ev)}>{entryNO}</a></Tooltip>);
-        default:
-          break;
-      }
-      */
     },
   }, {
     title: <Tooltip title="申报项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
     width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
+    render: dc => (!Number.isNaN(Number(dc)) ? dc : null),
   }, {
     title: '类型',
     dataIndex: 'sheet_type',
@@ -189,7 +177,8 @@ export default class CustomsList extends Component {
       }
       let entryDecType = '';
       if (record.pre_entry_dec_type !== null) {
-        const decltype = CMS_DECL_TYPE.filter(ty => ty.value === (record.pre_entry_dec_type).toString())[0];
+        const decltype = CMS_DECL_TYPE.filter(ty =>
+          ty.value === (record.pre_entry_dec_type).toString())[0];
         entryDecType = decltype ? decltype.text : '';
         const content = (
           <div>
@@ -227,7 +216,8 @@ export default class CustomsList extends Component {
     dataIndex: 'status',
     width: 100,
     render: (ost, record) => {
-      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
+      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey =>
+        CMS_DECL_STATUS[stkey].value === ost)[0];
       if (declkey) {
         const decl = CMS_DECL_STATUS[declkey];
         if (record.status > CMS_DECL_STATUS.sent.value) {
@@ -237,9 +227,8 @@ export default class CustomsList extends Component {
         }
 
         return <Badge status={decl.badge} text={decl.text} />;
-      } else {
-        return null;
       }
+      return null;
     },
   }, {
     title: '海关查验',
@@ -252,12 +241,10 @@ export default class CustomsList extends Component {
           return <Tooltip title="报关单查验"><span><Fontello type="circle" color="red" /></span></Tooltip>;
         } else if (record.customs_inspect === 2) {
           return <Tooltip title="查验放行"><span><Fontello type="circle" color="green" /></span></Tooltip>;
-        } else {
-          return <Tooltip title="未查验"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
         }
-      } else {
-        return null;
+        return <Tooltip title="未查验"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
       }
+      return null;
     },
   }, {
     title: '收发货人',
@@ -321,41 +308,55 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 140,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
+            <RowAction onClick={this.handleDetail} icon="eye-o" label={this.msg('viewDetail')} row={record} />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onHit={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
+              <RowAction onClick={this.handleReview} icon="check-circle-o" tooltip={this.msg('review')}row={record} />
             </PrivilegeCover>
           </span>
         );
-      } else {
-        const spanElems = [];
-        if (record.status === CMS_DECL_STATUS.reviewed.value) {
-          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendDeclMsg')}</span>} row={record} />
-          </PrivilegeCover>);
-        }
-        if (record.status === CMS_DECL_STATUS.sent.value) {
-        }
-        if (record.status === CMS_DECL_STATUS.entered.value) {
-          spanElems.push(
-            <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
-              <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
-                label={<span><Icon type="flag" />放行确认</span>}
-              />
-            </PrivilegeCover>);
-        }
-        for (let i = 1; i < spanElems.length; i += 2) {
-          spanElems.splice(i, 0, <span className="ant-divider" key={`divid${i}`} />);
-        }
-        return <span>{spanElems}</span>;
       }
+      const spanElems = [];
+      if (record.status === CMS_DECL_STATUS.reviewed.value) {
+        spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
+          <RowAction onClick={this.handleShowSendDeclModal} icon="mail" tooltip={this.msg('sendDeclMsg')} row={record} />
+        </PrivilegeCover>);
+      }
+      if (record.status === CMS_DECL_STATUS.sent.value) {
+        spanElems.push(<RowAction overlay={<Menu onClick={this.showDeclMsgModal}><Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item></Menu>} row={record} />);
+      }
+      if (record.status === CMS_DECL_STATUS.entered.value) {
+        spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
+          <RowAction onClick={this.handleShowDeclReleasedModal}
+            row={record}
+            icon="flag"
+            tooltip={this.msg('markReleased')}
+          />
+        </PrivilegeCover>);
+      }
+      if (record.status >= CMS_DECL_STATUS.entered.value) {
+        spanElems.push(<RowAction overlay={<Menu>
+          {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
+          {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
+        </Menu>}
+          row={record}
+        />);
+      }
+      return (<span>
+        <RowAction onClick={this.handleDetail} icon="eye-o" label={this.msg('viewDetail')} row={record} />
+        {spanElems}
+      </span>);
     },
   }]
+  showDeclMsgModal = ({ key }) => {
+    const [fileName, fileType] = key.split('|');
+    this.props.toggleDeclMsgModal(true, fileName, fileType);
+  }
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCustomsDecls(params),
     resolve: result => result.data,
@@ -408,32 +409,20 @@ export default class CustomsList extends Component {
     });
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    const filters = mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, { ...filters });
   }
-  handleRowClick = (record, index, ev) => {
-    ev.preventDefault();
+  handleDetail = (record) => {
+    // ev.preventDefault();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
     this.context.router.push(link);
   }
-  handleDounbleClick = (record, ev) => {
+  handleOpenInWindow = (record, ev) => {
     ev.stopPropagation();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
     window.open(link);
-  }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
-    }
-    return newFilters;
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [], selectedRows: [] });
@@ -497,7 +486,7 @@ export default class CustomsList extends Component {
     });
   }
   handleBatchSend= (ids) => {
-    this.props.showBatchSendModal({ tenantId: this.props.tenantId, ids }); // todo ietype import export; load put in modal
+    this.props.showBatchSendModal({ tenantId: this.props.tenantId, ids });
     this.handleDeselectRows();
   }
   handleRecall = (row) => {
@@ -521,12 +510,17 @@ export default class CustomsList extends Component {
   }
   handleShowSendDeclModal = (record) => {
     this.props.showSendDeclModal({
-      defaultDecl: { channel: record.dec_channel, dectype: record.pre_entry_dec_type, appuuid: record.ep_app_uuid },
+      defaultDecl: {
+        channel: record.dec_channel,
+        dectype: record.pre_entry_dec_type,
+        appuuid: record.ep_app_uuid,
+      },
       visible: true,
       ietype: record.i_e_type === 0 ? 'import' : 'export',
       preEntrySeqNo: record.pre_entry_seq_no,
       delgNo: record.delg_no,
-      agentCustCo: record.agent_custco });
+      agentCustCo: record.agent_custco,
+    });
   }
   handleEpSendXmlView = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`);
@@ -566,7 +560,7 @@ export default class CustomsList extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
-    const status = this.props.listFilter.status;
+    const { status } = this.props.listFilter;
     let dateVal = [];
     if (listFilter.filterDate.length > 0 && listFilter.filterDate[0] !== '') {
       dateVal = [moment(listFilter.filterDate[0]), moment(listFilter.filterDate[1])];
@@ -582,7 +576,8 @@ export default class CustomsList extends Component {
           </PrivilegeCover>);
       } else if (status === 'reviewed') {
         const ietype = this.state.selectedRows[0].i_e_type;
-        const sameIeType = this.state.selectedRows.filter(sr => sr.i_e_type === ietype).length === this.state.selectedRows.length;
+        const sameIeType = this.state.selectedRows.filter(sr =>
+          sr.i_e_type === ietype).length === this.state.selectedRows.length;
         bulkActions = (
           <span>
             {sameIeType && <PrivilegeCover module="clearance" feature="customs" action="edit">
@@ -590,7 +585,7 @@ export default class CustomsList extends Component {
                 批量发送
               </Button>
             </PrivilegeCover>}
-            <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleBatchRecall(this.state.selectedRowKeys)}>
+            <Popconfirm title="是否退回所有选择项？" onConfirm={() => this.handleBatchRecall(this.state.selectedRowKeys)}>
               <Button>
                 批量退回
               </Button>
@@ -600,7 +595,7 @@ export default class CustomsList extends Component {
     }
     let clientPid = -1;
     if (listFilter.clientView.partnerIds.length > 0) {
-      clientPid = listFilter.clientView.partnerIds[0];
+      [clientPid] = listFilter.clientView.partnerIds;
     }
     const clients = [{
       name: '全部客户',
@@ -608,9 +603,13 @@ export default class CustomsList extends Component {
     }].concat(this.props.clients);
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
-        onChange={this.handleClientSelectChange} value={clientPid}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
+        value={clientPid}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         {clients.map(data => (<Option key={data.name} value={data.partner_id}>
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
@@ -628,7 +627,9 @@ export default class CustomsList extends Component {
         )}
       </Select>
       */}
-      <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+      <Select value={listFilter.viewStatus}
+        style={{ width: 160 }}
+        showSearch={false}
         onChange={this.handleViewChange}
       >
         <OptGroup label="常用视图">
@@ -639,7 +640,8 @@ export default class CustomsList extends Component {
       <RangePicker value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-      /></span>);
+      />
+    </span>);
     return (
       <Layout>
         <Layout>
@@ -661,8 +663,7 @@ export default class CustomsList extends Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
                 <RadioButton value="all">{this.msg('all')}</RadioButton>
                 {Object.keys(CMS_DECL_STATUS).map(declkey =>
-                  <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
-                )}
+                  <RadioButton key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>)}
               </RadioGroup>
               <span />
               <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
@@ -672,16 +673,29 @@ export default class CustomsList extends Component {
             <PageHeader.Actions>
               <PageHint />
               <ButtonToggle tooltip="报文收发记录"
-                iconOn="double-right" iconOff="double-left"
+                iconOn="double-right"
+                iconOff="double-left"
                 onClick={this.toggleRightSider}
               />
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
-              rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
-              onRowClick={this.handleRowClick}
+            <DataTable toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={this.dataSource}
+              rowKey="id"
+              loading={customslist.loading}
+              onRow={record => ({
+                onClick: () => {},
+                onDoubleClick: () => { this.handleDetail(record); },
+                onContextMenu: () => {},
+                onMouseEnter: () => {},
+                onMouseLeave: () => {},
+              })}
             />
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />
@@ -693,6 +707,7 @@ export default class CustomsList extends Component {
         <DelegationDockPanel />
         <OrderDockPanel />
         <ShipmentDockPanel />
+        <DeclMsgModal />
       </Layout>
     );
   }

@@ -40,8 +40,12 @@ export default class CancelChargeModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
-    const { billingId, loginId, tenantId, loginName } = this.props;
-    this.props.changeCancelCharge({ tenantId, loginId, loginName, billingId, cancelCharge: this.state.cancelCharge }).then(() => {
+    const {
+      billingId, loginId, tenantId, loginName,
+    } = this.props;
+    this.props.changeCancelCharge({
+      tenantId, loginId, loginName, billingId, cancelCharge: this.state.cancelCharge,
+    }).then(() => {
       this.props.toggle();
       this.props.handleOk();
     });

@@ -5,10 +5,8 @@ import appWrapped from 'client/common/appWrapped';
 import configureStore from 'common/webReduxStore';
 import { addLocaleData } from 'react-intl';
 import { polyfill } from 'client/common/i18n/helpers';
+
 const store = configureStore(window.__INITIAL_STATE__);
-if (__DEV__) {
-  window.Perf = require('react-addons-perf');
-}
 const App = appWrapped(require('./routes'));
 polyfill(() => {
   addLocaleData(require('react-intl/locale-data/en'));

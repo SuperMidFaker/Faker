@@ -33,34 +33,32 @@ function fetchData({ dispatch, params }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    normalDecl: state.cwmShFtz.normalDecl,
-    regs: state.cwmShFtz.declRelRegs,
-    details: state.cwmShFtz.declRelDetails,
-    units: state.cwmShFtz.params.units.map(un => ({
-      value: un.unit_code,
-      text: un.unit_name,
-    })),
-    currencies: state.cwmShFtz.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-    })),
-    tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
-    trxModes: state.cwmShFtz.params.trxModes.map(tx => ({
-      value: tx.trx_mode,
-      text: tx.trx_spec,
-    })),
-    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
-      value: ep.value,
-      text: ep.text,
-    })),
-    whse: state.cwmContext.defaultWhse,
-  })
-)
+@connect(state => ({
+  normalDecl: state.cwmShFtz.normalDecl,
+  regs: state.cwmShFtz.declRelRegs,
+  details: state.cwmShFtz.declRelDetails,
+  units: state.cwmShFtz.params.units.map(un => ({
+    value: un.unit_code,
+    text: un.unit_name,
+  })),
+  currencies: state.cwmShFtz.params.currencies.map(cr => ({
+    value: cr.curr_code,
+    text: cr.curr_name,
+  })),
+  tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+  })),
+  trxModes: state.cwmShFtz.params.trxModes.map(tx => ({
+    value: tx.trx_mode,
+    text: tx.trx_spec,
+  })),
+  exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+    value: ep.value,
+    text: ep.text,
+  })),
+  whse: state.cwmContext.defaultWhse,
+}))
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
@@ -221,7 +219,9 @@ export default class NormalDeclDetail extends Component {
     this.context.router.push(`${link}${decl.delg_no}`);
   }
   render() {
-    const { normalDecl, whse, details, regs, trxModes } = this.props;
+    const {
+      normalDecl, whse, details, regs, trxModes,
+    } = this.props;
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
       gross_wt: acc.gross_wt + det.gross_wt,

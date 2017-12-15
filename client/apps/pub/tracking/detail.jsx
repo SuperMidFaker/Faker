@@ -113,12 +113,12 @@ export default class TrackingDetail extends React.Component {
       const bdPoints = [];
       const viewPoints = [];
       // 百度地图API功能
-      const map = new BMap.Map('map');          // 创建地图实例
+      const map = new BMap.Map('map'); // 创建地图实例
       const myGeo = new BMap.Geocoder(); // 创建地址解析器实例
       // const point = new BMap.Point(120.073694,30.269552);  // 创建点坐标
       // map.centerAndZoom(point, 16);                 // 初始化地图，设置中心点坐标和地图级别
       map.enableScrollWheelZoom();
-      map.addControl(new BMap.NavigationControl());  // 添加默认缩放平移控件
+      map.addControl(new BMap.NavigationControl()); // 添加默认缩放平移控件
       const topLeftControl = new BMap.ScaleControl({ anchor: BMAP_ANCHOR_TOP_LEFT });// 左上角，添加比例
       map.addControl(topLeftControl);
       function addressToPoint(addr, cb, city) {
@@ -384,7 +384,8 @@ export default class TrackingDetail extends React.Component {
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js" />
         <script type="text/javascript" src="https://sapi.map.baidu.com/library/CurveLine/1.5/src/CurveLine.min.js" />
-      */}</div>
+      */}
+      </div>
     );
   }
 }

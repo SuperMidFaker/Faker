@@ -53,7 +53,9 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadVirtualTransferDetails, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn }
+  {
+    loadVirtualTransferDetails, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn,
+  }
 )
 @connectNav({
   depth: 3,

@@ -48,12 +48,11 @@ export default class ModuleEditor extends React.Component {
       id: ap.id,
       package: ap.package,
     };
-    this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        }
-      });
+    this.props.switchTenantApp(this.props.tenantId, checked, app, this.props.index).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
   }
   render() {
     const { intl } = this.props;

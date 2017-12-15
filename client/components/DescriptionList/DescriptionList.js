@@ -22,7 +22,9 @@ export default class DescriptionList extends PureComponent {
   }
 
   render() {
-    const { prefixCls, className, size, layout, col, title, gutter, children } = this.props;
+    const {
+      prefixCls, className, size, layout, col, title, gutter, children,
+    } = this.props;
     const sizeCls = ({
       large: 'lg',
       small: 'sm',

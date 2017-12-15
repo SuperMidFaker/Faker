@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from '
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
@@ -40,7 +40,9 @@ const RadioButton = Radio.Button;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { openNormalRelRegModal, loadReleaseRegDatas, switchDefaultWhse, showDock }
+  {
+    openNormalRelRegModal, loadReleaseRegDatas, switchDefaultWhse, showDock,
+  }
 )
 @connectNav({
   depth: 2,
@@ -70,7 +72,9 @@ export default class SHFTZNormalRelRegList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'normal', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'normal', ownerView,
+    };
     this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -179,19 +183,18 @@ export default class SHFTZNormalRelRegList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       switch (record.status) {
         case 0:
-          return <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />;
+          return <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />;
         case 1:
-          return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
+          return <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />;
         case 2:
           return (<span>
-            <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />
+            <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
+            <RowAction onClick={this.handleDetail} icon="share-alt" tooltip="委托清关" row={record} />
           </span>);
         case 3:
         case 4:
@@ -199,7 +202,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 6:
         case 7:
         case 8:
-          return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
+          return <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />;
         default:
           break;
       }
@@ -293,8 +296,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
-        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-          )}
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
       </Select>
     </span>);
     const bulkActions = (<span>
@@ -312,7 +314,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

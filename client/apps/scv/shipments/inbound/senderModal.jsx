@@ -79,8 +79,10 @@ export default class SendModal extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { brokers, transps, shipment, tenantName, tenantId,
-          loginId, loginName } = this.props;
+        const {
+          brokers, transps, shipment, tenantName, tenantId,
+          loginId, loginName,
+        } = this.props;
         const { region } = this.state;
         const form = this.props.form.getFieldsValue();
         const broker = brokers.filter(cus => cus.partner_id === form.brkPartnerId)[0];
@@ -90,7 +92,9 @@ export default class SendModal extends React.Component {
           region,
           broker,
           trs,
-          tenant: { name: tenantName, id: tenantId, loginId, loginName },
+          tenant: {
+            name: tenantName, id: tenantId, loginId, loginName,
+          },
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -105,7 +109,9 @@ export default class SendModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible, brokers, transps, form: { getFieldDecorator } } = this.props;
+    const {
+      visible, brokers, transps, form: { getFieldDecorator },
+    } = this.props;
     return (
       <Modal maskClosable={false} title={this.msg('sendShipment')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}

@@ -13,7 +13,7 @@ import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import InboundExpander from './expander';
 import SendModal from './senderModal';
 import CreateModal from './createModal';
@@ -41,7 +41,9 @@ function fetchData({ state, dispatch }) {
     inboundlist: state.scvInboundShipments.list,
     listFilter: state.scvInboundShipments.listFilter,
   }),
-  { loadInbounds, loadInboundPartners, openModal, openCreateModal }
+  {
+    loadInbounds, loadInboundPartners, openModal, openCreateModal,
+  }
 )
 @connectNav({
   depth: 2,
@@ -233,7 +235,7 @@ export default class InboundShipmentsList extends React.Component {
       if (record.status <= 3) {
         return (
           <span>
-            <RowUpdater onHit={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
+            <RowAction onClick={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
             <span className="ant-divider" />
           </span>
         );
@@ -288,14 +290,13 @@ export default class InboundShipmentsList extends React.Component {
     this.setState({ expandedKeys });
   }
   handleSendAtDest = (row) => {
-    this.props.loadInboundPartners(this.props.tenantId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.openModal(row);
-        }
-      });
+    this.props.loadInboundPartners(this.props.tenantId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.openModal(row);
+      }
+    });
   }
   handleShipmentLoad = () => {
     const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;

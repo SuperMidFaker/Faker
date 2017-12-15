@@ -69,8 +69,10 @@ export default class CreateShippingOrder extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, loginId, tenantName } = this.props;
+  handleSave = () => {
+    const {
+      temporaryDetails, defaultWhse, owners, loginId, tenantName,
+    } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -85,20 +87,18 @@ export default class CreateShippingOrder extends Component {
         data.whseCode = defaultWhse.code;
         data.loginId = loginId;
         data.tenantName = tenantName;
-        this.props.createSO(data).then(
-          (result) => {
-            if (!result.error) {
-              message.success('出货订单已创建成功');
-              this.context.router.push('/cwm/shipping/order');
-            } else {
-              message.error('操作失败');
-            }
+        this.props.createSO(data).then((result) => {
+          if (!result.error) {
+            message.success('出货订单已创建成功');
+            this.context.router.push('/cwm/shipping/order');
+          } else {
+            message.error('操作失败');
           }
-        );
+        });
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleUploadFiles = (fileList) => {
@@ -119,7 +119,9 @@ export default class CreateShippingOrder extends Component {
     this.setState({ carrier_name: value });
   }
   render() {
-    const { form, submitting, defaultWhse, temporaryDetails } = this.props;
+    const {
+      form, submitting, defaultWhse, temporaryDetails,
+    } = this.props;
     const { region } = this.state;
     const disable = !(this.state.detailEnable && temporaryDetails.length !== 0);
     return (
@@ -146,10 +148,10 @@ export default class CreateShippingOrder extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

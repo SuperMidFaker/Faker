@@ -56,35 +56,29 @@ export default class Clearance extends React.Component {
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
-      linkMenus.push(
-        {
-          single: true,
-          key: 'cms-delegation',
-          path: '/clearance/delegation',
-          icon: 'logixon icon-delegation',
-          text: formatMsg(intl, 'delegation'),
-        }
-      );
+      linkMenus.push({
+        single: true,
+        key: 'cms-delegation',
+        path: '/clearance/delegation',
+        icon: 'logixon icon-delegation',
+        text: formatMsg(intl, 'delegation'),
+      });
     }
     if (navOption === 'CC' || navOption === 'ALL') {
-      linkMenus.push(
-        {
-          single: true,
-          key: 'cms-customs',
-          path: '/clearance/cusdecl',
-          icon: 'logixon icon-customs',
-          text: formatMsg(intl, 'customsDecl'),
-        }
-      );
-      linkMenus.push(
-        {
-          single: true,
-          key: 'cms-ciq',
-          path: '/clearance/ciqdecl',
-          icon: 'logixon icon-ciq',
-          text: formatMsg(intl, 'ciqDecl'),
-        }
-      );
+      linkMenus.push({
+        single: true,
+        key: 'cms-customs',
+        path: '/clearance/cusdecl',
+        icon: 'logixon icon-customs',
+        text: formatMsg(intl, 'customsDecl'),
+      });
+      linkMenus.push({
+        single: true,
+        key: 'cms-ciq',
+        path: '/clearance/ciqdecl',
+        icon: 'logixon icon-ciq',
+        text: formatMsg(intl, 'ciqDecl'),
+      });
     }
     if (navOption === 'IE' || navOption === 'ALL') {
       linkMenus.push({
@@ -120,25 +114,13 @@ export default class Clearance extends React.Component {
         }],
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
       linkMenus.push({
-        single: false,
-        key: 'cms-classification',
+        single: true,
+        key: 'cms-tradeitem',
         icon: 'logixon icon-resource',
-        text: formatMsg(intl, 'classification'),
-        sublinks: [{
-          key: 'cms-classification-0',
-          path: '/clearance/classification/tradeitem',
-          text: formatMsg(intl, 'tradeItem'),
-        }, {
-          key: 'cms-classification-1',
-          path: '/clearance/classification/hscode',
-          text: formatMsg(intl, 'hscode'),
-        }, {
-          key: 'cms-classification-2',
-          path: '/clearance/classification/special',
-          text: formatMsg(intl, 'specialCategory'),
-        }],
+        path: '/clearance/tradeitem',
+        text: formatMsg(intl, 'tradeItem'),
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
@@ -208,7 +190,8 @@ export default class Clearance extends React.Component {
     if (nextProps.navOption !== this.props.navOption) {
       const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'cms-import' && lm.key !== 'cms-export' && lm.key !== 'cms-customs' && lm.key !== 'cms-ciq');
       if (nextProps.navOption === 'CC') {
-        linkMenus.splice(2, 0,
+        linkMenus.splice(
+          2, 0,
           {
             single: true,
             key: 'cms-customs',
@@ -225,7 +208,8 @@ export default class Clearance extends React.Component {
           }
         );
       } else if (nextProps.navOption === 'IE') {
-        linkMenus.splice(2, 0,
+        linkMenus.splice(
+          2, 0,
           {
             single: false,
             key: 'cms-import',
@@ -262,7 +246,8 @@ export default class Clearance extends React.Component {
           }
         );
       } else if (nextProps.navOption === 'ALL') {
-        linkMenus.splice(2, 0,
+        linkMenus.splice(
+          2, 0,
           {
             single: true,
             key: 'cms-customs',

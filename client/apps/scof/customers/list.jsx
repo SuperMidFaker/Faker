@@ -107,7 +107,7 @@ export default class CustomerList extends React.Component {
     }
     this.setState({ customers, currentPage: 1 });
   }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
   }
   render() {
     const { customer } = this.state;
@@ -144,9 +144,12 @@ export default class CustomerList extends React.Component {
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
             <CustomerModal onOk={this.handleTableLoad} />
@@ -161,14 +164,14 @@ export default class CustomerList extends React.Component {
               <Breadcrumb.Item>
                 {customer.name}
               </Breadcrumb.Item>
-              </Breadcrumb>}
+            </Breadcrumb>}
             <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />
             <div className="page-header-tools">
-              <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSaveBtnClick}>
+              <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSave}>
                 {this.msg('save')}
               </Button>
             </div>

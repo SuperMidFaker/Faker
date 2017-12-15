@@ -64,7 +64,9 @@ export default class BrokerModal extends React.Component {
   }
   handleOk = () => {
     const { broker, operation } = this.props;
-    const { name, customsCode, partnerUniqueCode, ciqCode } = this.state;
+    const {
+      name, customsCode, partnerUniqueCode, ciqCode,
+    } = this.state;
     if (name === '') {
       message.error('请填写企业名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -88,7 +90,9 @@ export default class BrokerModal extends React.Component {
     }
   }
   handleAddPartner = () => {
-    const { name, customsCode, partnerUniqueCode, ciqCode } = this.state;
+    const {
+      name, customsCode, partnerUniqueCode, ciqCode,
+    } = this.state;
     const { loginId, username, partners } = this.props;
     const broker = partners.find(partner => partner.name === name);
     this.props.addBroker(name, customsCode, partnerUniqueCode, loginId, username, broker.id, ciqCode).then((result1) => {
@@ -128,8 +132,12 @@ export default class BrokerModal extends React.Component {
     this.setState({ partnerUniqueCode: e.target.value });
   }
   render() {
-    const { visible, operation, partners, brokers } = this.props;
-    const { name, customsCode, ciqCode, partnerUniqueCode } = this.state;
+    const {
+      visible, operation, partners, brokers,
+    } = this.props;
+    const {
+      name, customsCode, ciqCode, partnerUniqueCode,
+    } = this.state;
     const filterPartners = partners.filter(partner => !brokers.find(broker => broker.comp_partner_id === partner.id));
     return (
       <Modal maskClosable={false} title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>

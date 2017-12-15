@@ -51,25 +51,25 @@ export default class AutoCompletionSelectItem extends React.Component {
       <FormItem label={labelName} labelCol={{ span: colSpan }} required={required}
         wrapperCol={{ span: 24 - colSpan }} help={getFieldError(field)}
       >
-        {getFieldDecorator(field, { onChange,
+        {getFieldDecorator(field, {
+ onChange,
           rules,
           initialValue: initialValue || '',
-          getValueFromEvent })(<Select
-            mode="combobox"
-            filterOption={this.getComboFilter}
-            placeholder={placeholder}
-            onSelect={this.handleComboSelect}
-            allowClear={allowClear}
-          >
-            {
-          optionData.map(
-              od =>
+          getValueFromEvent,
+})(<Select
+  mode="combobox"
+  filterOption={this.getComboFilter}
+  placeholder={placeholder}
+  onSelect={this.handleComboSelect}
+  allowClear={allowClear}
+>
+  {
+          optionData.map(od =>
                 (<Option datalink={od} value={od[optionValue]} key={od[optionKey]}>
                   {od[optionField]}
-                </Option>)
-              )
+                </Option>))
         }
-          </Select>)}
+</Select>)}
       </FormItem>);
   }
 }

@@ -67,11 +67,11 @@ export default class EditDelegation extends Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.push(`/clearance/${this.props.type}/`);
   }
 
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     this.handleSave({ isAccepted: false });
   }
   handleSaveAccept = () => {
@@ -107,10 +107,10 @@ export default class EditDelegation extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" onClick={this.handleSaveBtnClick} loading={submitting}>
+            <Button type="primary" onClick={this.handleSave} loading={submitting}>
               {this.msg('save')}
             </Button>
           </div>

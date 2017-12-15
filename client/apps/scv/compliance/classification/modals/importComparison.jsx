@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table, Button } from 'antd';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import { setCompareVisible, saveComparedItemDatas, loadTradeItems } from 'common/reducers/scvClassification';
@@ -26,7 +26,9 @@ const formatMsg = format(messages);
     visibleCompareModal: state.scvClassification.visibleCompareModal,
     compareduuid: state.scvClassification.compareduuid,
   }),
-  { setCompareVisible, saveComparedItemDatas, loadTradeItems, loadTempItems, comparedCancel, deleteTempData }
+  {
+    setCompareVisible, saveComparedItemDatas, loadTradeItems, loadTempItems, comparedCancel, deleteTempData,
+  }
 )
 export default class ImportComparisonModal extends React.Component {
   static propTypes = {
@@ -104,7 +106,9 @@ export default class ImportComparisonModal extends React.Component {
     this.props.setCompareVisible(false);
   }
   handleOk = () => {
-    const { tenantId, tenantName, loginId, loginName } = this.props;
+    const {
+      tenantId, tenantName, loginId, loginName,
+    } = this.props;
     const { uuid, feedbackChanges } = this.state;
     const changes = JSON.stringify(feedbackChanges);
     const baseInfo = {
@@ -283,7 +287,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
+              <RowAction onClick={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'newhscode') {
@@ -293,7 +297,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
+              <RowAction onClick={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'preGmodel') {
@@ -303,7 +307,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
+              <RowAction onClick={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'newGmodel') {
@@ -313,7 +317,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
+              <RowAction onClick={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
             </span>
           );
         } else {

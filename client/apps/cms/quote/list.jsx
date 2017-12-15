@@ -39,7 +39,9 @@ function fetchData({ state, dispatch }) {
     quotesList: state.cmsQuote.quotesList,
     listFilter: state.cmsQuote.listFilter,
   }),
-  { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote }
+  {
+    loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote,
+  }
 )
 @connectNav({
   depth: 2,
@@ -88,8 +90,10 @@ export default class QuoteList extends Component {
     this.context.router.push({ pathname: to, query });
   }
   handleQuoteTableLoad = (currentPage, filter) => {
-    const { tenantId, listFilter,
-      quotesList: { pageSize, current } } = this.props;
+    const {
+      tenantId, listFilter,
+      quotesList: { pageSize, current },
+    } = this.props;
     this.props.loadQuoteTable({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
@@ -281,7 +285,7 @@ export default class QuoteList extends Component {
                   <div>
                     <a onClick={() => this.handleQuoteEdit(record)}>{msg('reviseContinue')}</a>
                     <span className="ant-divider" />
-                    <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteDraft(record._id, record.quote_no)}>
+                    <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteDraft(record._id, record.quote_no)}>
                       <a>{msg('delete')}</a>
                     </Popconfirm>
                   </div>
@@ -361,7 +365,7 @@ export default class QuoteList extends Component {
                     <div>
                       <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
                       <span className="ant-divider" />
-                      <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteQuote(record.quote_no)}>
+                      <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteQuote(record.quote_no)}>
                         <a>{msg('delete')}</a>
                       </Popconfirm>
                       <span className="ant-divider" />

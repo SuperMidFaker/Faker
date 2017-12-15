@@ -16,7 +16,7 @@ import { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNomin
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import { TRADE_ITEM_STATUS } from 'common/constants';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import ImportComparisonModal from './modals/importComparison';
 import NominatedImportModal from './modals/nominatedImport';
 import ConflictList from './conflictList';
@@ -66,7 +66,9 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, loadConflictItems }
+  {
+    loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, loadConflictItems,
+  }
 )
 @connectNav({
   depth: 2,
@@ -355,7 +357,9 @@ export default class TradeItemList extends Component {
     this.handleConflictListLoad(1, filter);
   }
   handleSetItemStatus = (ids, status, tenantId, conflicted) => {
-    this.props.setItemStatus({ ids, status, tenantId, conflicted }).then((result) => {
+    this.props.setItemStatus({
+      ids, status, tenantId, conflicted,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -384,14 +388,15 @@ export default class TradeItemList extends Component {
       status: TRADE_ITEM_STATUS.unclassified,
       tenantId: this.props.tenantId,
       reason,
-      conflicted: false }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.warning('归类拒绝');
-          this.handleItemListLoad();
-        }
-      });
+      conflicted: false,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.warning('归类拒绝');
+        this.handleItemListLoad();
+      }
+    });
   }
   handleItemsPass = () => {
     this.handleSetItemStatus(this.state.selectedRowKeys, TRADE_ITEM_STATUS.classified, this.props.tenantId, false);
@@ -444,11 +449,12 @@ export default class TradeItemList extends Component {
           <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
-          <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Popconfirm title="只能删除所选项中归类来源是当前租户的数据，确认删除？" onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" icon="delete">
             批量删除
-          </Button>
-          </Popconfirm></span>);
+            </Button>
+          </Popconfirm>
+        </span>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
           <Dropdown.Button onClick={this.handleItemsPass} overlay={itemPassmenu}>
@@ -460,7 +466,7 @@ export default class TradeItemList extends Component {
           <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
-          <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Popconfirm title="只能删除所选项中归类来源是当前租户的数据，确认删除？" onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" icon="delete">
               批量删除
             </Button>
@@ -479,9 +485,9 @@ export default class TradeItemList extends Component {
           if (record.status === TRADE_ITEM_STATUS.pending) {
             return (
               <span>
-                <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <RowAction onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                 <span className="ant-divider" />
                 <Dropdown overlay={(
                   <Menu>
@@ -517,7 +523,7 @@ export default class TradeItemList extends Component {
         } else if (record.status === TRADE_ITEM_STATUS.pending) {
           return (
             <span>
-              <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+              <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
               <span className="ant-divider" />
               <Popover trigger="click" content={
                 <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={this.msg('reason')} >
@@ -525,7 +531,7 @@ export default class TradeItemList extends Component {
                 </FormItem>
               }
               >
-                <RowUpdater label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <RowAction label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
               </Popover>
             </span>
           );
@@ -608,10 +614,10 @@ export default class TradeItemList extends Component {
               <h3>物料库设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="slave">
-              <Panel header={'从库同步'} key="slave">
+              <Panel header="从库同步" key="slave">
                 <SlaveSyncPane />
               </Panel>
-              <Panel header={'授权共享'} key="share">
+              <Panel header="授权共享" key="share">
                 <MasterSharePane />
               </Panel>
             </Collapse>

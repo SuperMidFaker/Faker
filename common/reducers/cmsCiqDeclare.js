@@ -13,16 +13,32 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'SEARCH_COUNTRIES', 'SEARCH_COUNTRIES_SUCCEED', 'SEARCH_COUNTRIES_FAIL',
   'UPDATE_CIQ_HEAD', 'UPDATE_CIQ_HEAD_SUCCEED', 'UPDATE_CIQ_HEAD_FAIL',
   'SET_FIXED_COUNTRY', 'SET_FIXED_ORGANIZATIONS', 'SET_FIXED_WORLDPORTS',
+  'UPDATE_CIQ_HEAD_FIELD', 'UPDATE_CIQ_HEAD_FIELD_SUCCEED', 'UPDATE_CIQ_HEAD_FIELD_FAIL',
+  'CIQ_HEAD_CHANGE', 'TOGGLE_ATT_DOCU_MODAL', 'TOGGLE_DECL_MSG_MODAL',
+  'UPDATE_CIQ_GOOD', 'UPDATE_CIQ_GOOD_SUCCEED', 'UPDATE_CIQ_GOOD_FAIL',
+  'EXTEND_COUNTRY_CODE', 'EXTEND_COUNTRY_CODE_SUCCEED', 'EXTEND_COUNTRY_CODE_FAIL',
+  'SEARCH_CUSTOMS', 'SEARCH_CUSTOMS_SUCCEED', 'SEARCH_CUSTOMS_FAIL',
+  'TOGGLE_ENTQUALIFI_MODAL', 'TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL',
+  'SAVE_ENT_QUALIF', 'SAVE_ENT_QUALIF_SUCCEED', 'SAVE_ENT_QUALIF_FAIL',
+  'LOAD_ENT_QUALIF', 'LOAD_ENT_QUALIF_SUCCEED', 'LOAD_ENT_QUALIF_FAIL',
+  'DELETE_ENT_QUALIF', 'DELETE_ENT_QUALIF_SUCCEED', 'DELETE_ENT_QUALIF_FAIL',
+  'SAVE_REQUIRED_DOCUMENTS', 'SAVE_REQUIRED_DOCUMENTS_SUCCEED', 'SAVE_REQUIRED_DOCUMENTS_FAIL',
+  'SAVE_ATT_DOCUMENTS', 'SAVE_ATT_DOCUMENTS_SUCCEED', 'SAVE_ATT_DOCUMENTS_FAIL',
+  'LOAD_ATT_DOCUMENTS', 'LOAD_ATT_DOCUMENTS_SUCCEED', 'LOAD_ATT_DOCUMENTS_FAIL',
+  'TOGGLE_GOODS_LICENCE_MODAL',
+  'ADD_GOODS_LICENCE', 'ADD_GOODS_LICENCE_SUCCEED', 'ADD_GOODS_LICENCE_FAIL',
+  'GOODS_LICENCES_LOAD', 'GOODS_LICENCES_LOAD_SUCCEED', 'GOODS_LICENCES_LOAD_FAIL',
+  'DELETE_GOODS_LICENCES', 'DELETE_GOODS_LICENCES_SUCCEED', 'DELETE_GOODS_LICENCES_FAIL',
 ]);
 
 const initialState = {
-  ciqdeclList: {
+  ciqDeclList: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
     data: [],
   },
-  cjqListFilter: {
+  ciqListFilter: {
     ieType: 'all',
   },
   ciqParams: {
@@ -32,6 +48,7 @@ const initialState = {
     chinaPorts: [],
     currencies: [],
     units: [],
+    customs: [],
     fixedCountries: [],
     fixedOrganizations: [],
     fixedWorldPorts: [],
@@ -43,60 +60,173 @@ const initialState = {
   ciqDeclHead: {
     head: [],
     entries: [],
+    ciqs: [],
   },
   ciqDeclGoods: [],
+  ciqHeadChangeTimes: 0,
+  entQualifictaionModal: {
+    visible: false,
+  },
+  entQualifs: [],
+  requiredDocuModal: {
+    visible: false,
+  },
+  attDocuModal: {
+    visible: false,
+  },
+  declMsgModal: {
+    visible: false,
+    fileName: '',
+    fileType: '',
+  },
+  goodsLicenceModal: {
+    visible: false,
+    goodsData: {},
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_CIQ_DECLS:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: true } };
+      return { ...state, ciqDeclList: { ...state.ciqDeclList, loading: true } };
     case actionTypes.LOAD_CIQ_DECLS_SUCCEED:
-      return { ...state,
-        ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data },
-        cjqListFilter: JSON.parse(action.params.filter) };
+      return {
+        ...state,
+        ciqDeclList: { ...state.ciqDeclList, loading: false, ...action.result.data },
+        ciqListFilter: JSON.parse(action.params.filter),
+      };
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
+      return { ...state, ciqDeclList: { ...state.ciqDeclList, loading: false } };
     case actionTypes.LOAD_CIQ_PARAMS_SUCCEED:
-      return { ...state,
-        ciqParams: { ...state.ciqParams,
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
           units: [...action.result.data.units],
           currencies: [...action.result.data.currencies],
           chinaPorts: [...action.result.data.chinaPorts],
-          organizations: [...action.result.data.organizations, ...state.ciqParams.fixedOrganizations],
+          customs: [...action.result.data.customs],
+          organizations: [
+            ...action.result.data.organizations,
+            ...state.ciqParams.fixedOrganizations,
+          ],
           countries: [...action.result.data.countries, ...state.ciqParams.countries],
-          worldPorts: [...action.result.data.worldPorts, ...state.ciqParams.worldPorts] } };
+          worldPorts: [...action.result.data.worldPorts, ...state.ciqParams.worldPorts],
+        },
+      };
     case actionTypes.SHOW_GOODS_MODAL:
       return { ...state, goodsModal: { ...state.goodsModal, visible: true, data: action.record } };
     case actionTypes.HIDE_GOODS_MODAL:
       return { ...state, goodsModal: { ...state.goodsModal, visible: false, data: {} } };
     case actionTypes.LOAD_CIQ_DECL_HEAD_SUCCEED:
-      return { ...state,
-        ciqDeclHead: { head: action.result.data.head, entries: action.result.data.entries },
-        ciqParams: { ...state.ciqParams,
+      return {
+        ...state,
+        ciqDeclHead: {
+          head: action.result.data.head,
+          entries: action.result.data.entries,
+          ciqs: action.result.data.ciqs,
+        },
+        ciqParams: {
+          ...state.ciqParams,
           organizations: [...state.ciqParams.organizations, ...action.result.data.organizations],
           countries: [...state.ciqParams.countries, ...action.result.data.countries],
           worldPorts: [...state.ciqParams.worldPorts, ...action.result.data.worldports],
+          customs: [...state.ciqParams.customs, ...action.result.data.customs],
           fixedOrganizations: [...action.result.data.organizations],
           fixedCountries: [...action.result.data.countries],
           fixedWorldPorts: [...action.result.data.worldports],
-        } };
+        },
+      };
     case actionTypes.LOAD_CIQ_DECL_GOODS_SUCCEED:
       return { ...state, ciqDeclGoods: action.result.data };
     case actionTypes.SEARCH_ORGANIZATIONS_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, organizations: [...action.result.data, ...state.ciqParams.fixedOrganizations] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          organizations: [...action.result.data, ...state.ciqParams.fixedOrganizations],
+        },
+      };
     case actionTypes.SEARCH_WORLDPORTS_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, worldPorts: [...action.result.data, ...state.ciqParams.fixedWorldPorts] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          worldPorts: [...action.result.data, ...state.ciqParams.fixedWorldPorts],
+        },
+      };
     case actionTypes.SEARCH_CHINAPORTS_SUCCEED:
       return { ...state, ciqParams: { ...state.ciqParams, chinaPorts: [...action.result.data] } };
     case actionTypes.SEARCH_COUNTRIES_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, countries: [...action.result.data, ...state.ciqParams.fixedCountries] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          countries: [...action.result.data, ...state.ciqParams.fixedCountries],
+        },
+      };
+    case actionTypes.SEARCH_CUSTOMS_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, customs: [...action.result.data] } };
     case actionTypes.SET_FIXED_COUNTRY:
       return { ...state, ciqParams: { ...state.ciqParams, fixedCountries: [...action.records] } };
     case actionTypes.SET_FIXED_ORGANIZATIONS:
-      return { ...state, ciqParams: { ...state.ciqParams, fixedOrganizations: [...action.records] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          fixedOrganizations: [...action.records],
+        },
+      };
     case actionTypes.SET_FIXED_WORLDPORTS:
       return { ...state, ciqParams: { ...state.ciqParams, fixedWorldPorts: [...action.records] } };
+    case actionTypes.CIQ_HEAD_CHANGE:
+      return { ...state, ciqHeadChangeTimes: state.ciqHeadChangeTimes + 1 };
+    case actionTypes.UPDATE_CIQ_HEAD_SUCCEED:
+      return { ...state, ciqHeadChangeTimes: 0 };
+    case actionTypes.EXTEND_COUNTRY_CODE_SUCCEED:
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          countries: [...state.ciqParams.countries, action.result.data],
+        },
+      };
+    case actionTypes.TOGGLE_ENTQUALIFI_MODAL:
+      return {
+        ...state,
+        entQualifictaionModal: { ...state.entQualifictaionModal, visible: action.visible },
+      };
+    case actionTypes.LOAD_ENT_QUALIF_SUCCEED:
+      return { ...state, entQualifs: action.result.data };
+    case actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL:
+      return {
+        ...state,
+        requiredDocuModal: {
+          ...state.entQualifictaionModal,
+          visible: action.visible,
+        },
+      };
+    case actionTypes.TOGGLE_ATT_DOCU_MODAL:
+      return { ...state, attDocuModal: { ...state.attDocuModal, visible: action.visible } };
+    case actionTypes.TOGGLE_DECL_MSG_MODAL:
+      return {
+        ...state,
+        declMsgModal: {
+          ...state.declMsgModal,
+          visible: action.visible,
+          fileName: action.fileName,
+          fileType: action.fileType,
+        },
+      };
+    case actionTypes.TOGGLE_GOODS_LICENCE_MODAL:
+      return {
+        ...state,
+        goodsLicenceModal: {
+          ...state.goodsLicenceModal,
+          visible: action.visible,
+          goodsData: action.goodsData,
+        },
+      };
     default:
       return state;
   }
@@ -234,6 +364,21 @@ export function searchCountries(searchText) {
   };
 }
 
+export function searchCustoms(searchText) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_CUSTOMS,
+        actionTypes.SEARCH_CUSTOMS_SUCCEED,
+        actionTypes.SEARCH_CUSTOMS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/customs/search',
+      method: 'get',
+      params: { searchText },
+    },
+  };
+}
+
 export function updateCiqHead(preEntrySeqNo, data) {
   return {
     [CLIENT_API]: {
@@ -267,5 +412,229 @@ export function setFixedWorldPorts(records) {
   return {
     type: actionTypes.SET_FIXED_WORLDPORTS,
     records,
+  };
+}
+
+export function updateCiqHeadField(field, value, preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CIQ_HEAD_FIELD,
+        actionTypes.UPDATE_CIQ_HEAD_FIELD_SUCCEED,
+        actionTypes.UPDATE_CIQ_HEAD_FIELD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/head/field/update',
+      method: 'post',
+      data: { field, value, preEntrySeqNo },
+    },
+  };
+}
+
+export function ciqHeadChange() {
+  return {
+    type: actionTypes.CIQ_HEAD_CHANGE,
+  };
+}
+
+export function updateCiqGood(id, data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CIQ_GOOD,
+        actionTypes.UPDATE_CIQ_GOOD_SUCCEED,
+        actionTypes.UPDATE_CIQ_GOOD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/good/update',
+      method: 'post',
+      data: { id, data },
+    },
+  };
+}
+
+export function extendCountryParam(code) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXTEND_COUNTRY_CODE,
+        actionTypes.EXTEND_COUNTRY_CODE_SUCCEED,
+        actionTypes.EXTEND_COUNTRY_CODE_FAIL,
+      ],
+      endpoint: 'v1/cms/extend/country/param',
+      method: 'get',
+      params: { code },
+    },
+  };
+}
+
+export function toggleEntQualifiModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_ENTQUALIFI_MODAL,
+    visible,
+  };
+}
+
+export function saveEntQualif(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_ENT_QUALIF,
+        actionTypes.SAVE_ENT_QUALIF_SUCCEED,
+        actionTypes.SAVE_ENT_QUALIF_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/ent/qualif/save',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadEntQualif(customerPartnerId, ciqCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ENT_QUALIF,
+        actionTypes.LOAD_ENT_QUALIF_SUCCEED,
+        actionTypes.LOAD_ENT_QUALIF_FAIL,
+      ],
+      endpoint: 'v1/cms/ent/qualif/load',
+      method: 'get',
+      params: { customerPartnerId, ciqCode },
+    },
+  };
+}
+
+export function deleteEntQualif(ids) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_ENT_QUALIF,
+        actionTypes.DELETE_ENT_QUALIF_SUCCEED,
+        actionTypes.DELETE_ENT_QUALIF_FAIL,
+      ],
+      endpoint: 'v1/cms/ent/qualif/delete',
+      method: 'post',
+      data: { ids },
+    },
+  };
+}
+
+export function toggleReqDocuModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL,
+    visible,
+  };
+}
+
+export function saveRequiredDocuments(data, preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_REQUIRED_DOCUMENTS,
+        actionTypes.SAVE_REQUIRED_DOCUMENTS_SUCCEED,
+        actionTypes.SAVE_REQUIRED_DOCUMENTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/required/documents/save',
+      method: 'post',
+      data: { data: JSON.stringify(data), preEntrySeqNo },
+    },
+  };
+}
+
+export function toggleAttDocuModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_ATT_DOCU_MODAL,
+    visible,
+  };
+}
+
+export function saveAttDocuments(documents, preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_ATT_DOCUMENTS,
+        actionTypes.SAVE_ATT_DOCUMENTS_SUCCEED,
+        actionTypes.SAVE_ATT_DOCUMENTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/att/documents/save',
+      method: 'post',
+      data: { documents: JSON.stringify(documents), preEntrySeqNo },
+    },
+  };
+}
+
+export function loadAttDocuments(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ATT_DOCUMENTS,
+        actionTypes.LOAD_ATT_DOCUMENTS_SUCCEED,
+        actionTypes.LOAD_ATT_DOCUMENTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/att/documents/load',
+      method: 'get',
+      params: { preEntrySeqNo },
+    },
+  };
+}
+
+export function toggleDeclMsgModal(visible, fileName = '', fileType = '') {
+  return {
+    type: actionTypes.TOGGLE_DECL_MSG_MODAL,
+    visible,
+    fileName,
+    fileType,
+  };
+}
+
+export function toggleGoodsLicenceModal(visible, goodsData = {}) {
+  return {
+    type: actionTypes.TOGGLE_GOODS_LICENCE_MODAL,
+    visible,
+    goodsData,
+  };
+}
+
+export function addGoodsLicence(preEntrySeqNo, id, data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_GOODS_LICENCE,
+        actionTypes.ADD_GOODS_LICENCE_SUCCEED,
+        actionTypes.ADD_GOODS_LICENCE_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licence/add',
+      method: 'post',
+      data: { preEntrySeqNo, id, data },
+    },
+  };
+}
+
+export function deleteGoodsLicences(ids) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_GOODS_LICENCES,
+        actionTypes.DELETE_GOODS_LICENCES_SUCCEED,
+        actionTypes.DELETE_GOODS_LICENCES_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licences/delete',
+      method: 'post',
+      data: { ids },
+    },
+  };
+}
+
+export function loadGoodsLicences(goodsId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GOODS_LICENCES_LOAD,
+        actionTypes.GOODS_LICENCES_LOAD_SUCCEED,
+        actionTypes.GOODS_LICENCES_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licences/load',
+      method: 'get',
+      params: { goodsId },
+    },
   };
 }

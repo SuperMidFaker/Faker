@@ -28,9 +28,9 @@ export default class ReceiveInvitationList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     receiveInvitationsLoaded: PropTypes.bool.isRequired,
-    receiveInvitations: PropTypes.array.isRequired,    // 收到的邀请
-    rejectInvitation: PropTypes.func.isRequired,       // 拒绝邀请的action creator
-    acceptInvitation: PropTypes.func.isRequired,       // 接受邀请的action creator
+    receiveInvitations: PropTypes.array.isRequired, // 收到的邀请
+    rejectInvitation: PropTypes.func.isRequired, // 拒绝邀请的action creator
+    acceptInvitation: PropTypes.func.isRequired, // 接受邀请的action creator
     loadReceiveInvitations: PropTypes.func.isRequired,
   }
   componentWillReceiveProps(nextProps) {

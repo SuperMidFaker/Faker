@@ -6,7 +6,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { Logixon } from 'client/components/FontIcon';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES, TRANS_MODE_INDICATOR } from
   'common/constants';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import AddressColumn from '../../common/addressColumn';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import ShipmtLocationColumn from '../../common/shipmtLocationColumn';
@@ -99,9 +99,9 @@ export default function makeColumns(type, handlers, msg) {
             </PrivilegeCover>
           );
         } else if (record.sp_tenant_id === 0) {
-            // 已分配给车队
+          // 已分配给车队
           if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-              // 线下司机
+            // 线下司机
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <PickupDeliverPopover
@@ -263,7 +263,7 @@ export default function makeColumns(type, handlers, msg) {
       if (record.sp_name) {
         const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
         if (record.sp_tenant_id > 0) {
-            // todo pure css circle
+          // todo pure css circle
           return (
             <span>
               {spSpan}
@@ -292,8 +292,8 @@ export default function makeColumns(type, handlers, msg) {
         if (record.sp_tenant_id === -1) { // 线下客户手动更新
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <RowUpdater label={msg('updateVehicleDriver')}
-                onHit={handlers.onShowVehicleModal} row={record}
+              <RowAction label={msg('updateVehicleDriver')}
+                onClick={handlers.onShowVehicleModal} row={record}
               />
             </PrivilegeCover>
           );
@@ -392,8 +392,8 @@ export default function makeColumns(type, handlers, msg) {
               // 司机上传
               return (
                 <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <RowUpdater label={msg('notifyPOD')} row={record}
-                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: record }); }}
+                  <RowAction label={msg('notifyPOD')} row={record}
+                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: record }); }}
                   />
                 </PrivilegeCover>
               );
@@ -402,8 +402,8 @@ export default function makeColumns(type, handlers, msg) {
             // 承运商上传
             return (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowUpdater label={msg('notifyPOD')} row={record}
-                  onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: record }); }}
+                <RowAction label={msg('notifyPOD')} row={record}
+                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: record }); }}
                 />
               </PrivilegeCover>
             );
@@ -416,7 +416,7 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowUpdater label={msg('auditPod')} onHit={handlers.onShowAuditModal}
+                <RowAction label={msg('auditPod')} onClick={handlers.onShowAuditModal}
                   row={record}
                 />
               </PrivilegeCover>
@@ -433,8 +433,8 @@ export default function makeColumns(type, handlers, msg) {
               return (
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
                   <div>
-                    <RowUpdater label={msg('deliverConfirm')} row={record}
-                      onHit={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
+                    <RowAction label={msg('deliverConfirm')} row={record}
+                      onClick={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                     />
                   </div>
                 </PrivilegeCover>
@@ -499,24 +499,24 @@ export default function makeColumns(type, handlers, msg) {
       fixed: 'right',
       dataIndex: 'OPS_COL',
       render: (o, record) => {
-        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {   // 待接单
+        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) { // 待接单
           return (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowUpdater label={msg('notifyAccept')} row={record}
-                  onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptAccept, shipment: record }); }}
+                <RowAction label={msg('notifyAccept')} row={record}
+                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptAccept, shipment: record }); }}
                 />
               </PrivilegeCover>
             </div>
           );
-        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {  // 待调度
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) { // 待调度
           if (record.sp_tenant_id === -1) {
-              // 线下客户手动更新
+            // 线下客户手动更新
             return (
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
-                  <RowUpdater label={msg('updateVehicleDriver')} row={record}
-                    onHit={handlers.onShowVehicleModal}
+                  <RowAction label={msg('updateVehicleDriver')} row={record}
+                    onClick={handlers.onShowVehicleModal}
                   />
                 </PrivilegeCover>
               </div>
@@ -525,8 +525,8 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <RowUpdater label={msg('notifyDispatch')} row={record}
-                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: record }); }}
+                  <RowAction label={msg('notifyDispatch')} row={record}
+                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
@@ -536,17 +536,17 @@ export default function makeColumns(type, handlers, msg) {
           if (record.sp_tenant_id === -1) {
             return (<div />);
           } else if (record.sp_tenant_id === 0) {
-              // 已分配给车队
+            // 已分配给车队
             if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                // 线下司机
+              // 线下司机
               return (<div />);
             } else {
               // 催促司机提货
               return (
                 <div>
                   <PrivilegeCover module="transport" feature="tracking" action="create">
-                    <RowUpdater label={msg('notifyPickup')} row={record}
-                      onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: record }); }}
+                    <RowAction label={msg('notifyPickup')} row={record}
+                      onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: record }); }}
                     />
                   </PrivilegeCover>
                 </div>
@@ -557,8 +557,8 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <RowUpdater label={msg('notifyPickup')} row={record}
-                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: record }); }}
+                  <RowAction label={msg('notifyPickup')} row={record}
+                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
@@ -574,13 +574,13 @@ export default function makeColumns(type, handlers, msg) {
           } else {
             return (<div />);
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已送货
+        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) { // 已送货
           if (record.deliver_confirmed === 0 && handlers.tenantId === record.tenant_id) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <div>
-                  <RowUpdater label={msg('deliverConfirm')} row={record}
-                    onHit={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
+                  <RowAction label={msg('deliverConfirm')} row={record}
+                    onClick={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                   />
                 </div>
               </PrivilegeCover>

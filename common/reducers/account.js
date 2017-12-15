@@ -41,10 +41,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ACC_LOAD_SUCCEED:
       return { ...state, loaded: true, ...action.result.data };
     case actionTypes.PROFILE_UPDATE_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         profile: {
           ...state.profile, ...action.data.profile,
-        } };
+        },
+      };
     default:
       return state;
   }

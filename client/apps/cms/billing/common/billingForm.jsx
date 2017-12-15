@@ -41,9 +41,6 @@ export default class BillingForm extends React.Component {
     beginDate: firstDay,
     endDate: new Date(),
     name: '',
-    chooseModel: '',
-    partnerId: -1,
-    partnerName: '',
   }
   componentWillMount() {
     let roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
@@ -71,7 +68,9 @@ export default class BillingForm extends React.Component {
       const partner = this.props.partners.find(item => item.partner_id === fieldsValue.partnerId);
       const partnerName = partner.name;
       const partnerTenantId = partner.tid;
-      this.props.updateBilling({ ...fieldsValue, partnerName, partnerTenantId, beginDate, endDate });
+      this.props.updateBilling({
+        ...fieldsValue, partnerName, partnerTenantId, beginDate, endDate,
+      });
       this.context.router.push(`/clearance/billing/${this.props.type}/create`);
     }
   }
@@ -98,24 +97,21 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            {getFieldDecorator('partnerId')(
-              <Select id="select"
-                showSearch
-                placeholder=""
-                optionFilterProp="children"
-                notFoundContent=""
-              >
-                {
+            {getFieldDecorator('partnerId')(<Select id="select"
+              showSearch
+              placeholder=""
+              optionFilterProp="children"
+              notFoundContent=""
+            >
+              {
                   partners.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
                       {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                    </Option>)
-                  )
+                    </Option>))
                 }
-              </Select>
-            )}
+            </Select>)}
           </FormItem>
           <FormItem
             id="select"
@@ -123,12 +119,10 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            {getFieldDecorator('chooseModel')(
-              <Select id="select" >
-                <Option value="acptDate">{this.msg('acptDate')}</Option>
-                <Option value="cleanDate">{this.msg('cleanDate')}</Option>
-              </Select>
-            )}
+            {getFieldDecorator('chooseModel')(<Select id="select" >
+              <Option value="acptDate">{this.msg('acptDate')}</Option>
+              <Option value="cleanDate">{this.msg('cleanDate')}</Option>
+            </Select>)}
           </FormItem>
           <FormItem
             id="control-input"
@@ -146,9 +140,7 @@ export default class BillingForm extends React.Component {
           >
             {getFieldDecorator('name', {
               initialValue: name,
-            })(
-              <Input id="control-input" placeholder={this.msg('namePlaceholder')} />
-            )}
+            })(<Input id="control-input" placeholder={this.msg('namePlaceholder')} />)}
           </FormItem>
         </Form>
       </Modal>

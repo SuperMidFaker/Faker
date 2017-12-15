@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
-Tag, Dropdown, Menu, notification } from 'antd';
+  Tag, Dropdown, Menu, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -41,10 +41,12 @@ const TabPane = Tabs.TabPane;
     waybill: state.cwmOutbound.waybill,
     outboundProducts: state.cwmOutbound.outboundProducts,
   }),
-  { loadOutboundHead,
+  {
+    loadOutboundHead,
     updateOutboundMode,
     toggleShunfengExpressModal,
-    loadShunfengConfig }
+    loadShunfengConfig,
+  }
 )
 @connectNav({
   depth: 3,
@@ -87,10 +89,10 @@ export default class OutboundDetail extends Component {
       }
     });
   }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     this.handleSave({ accepted: false });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleAutoAllocate = () => {
@@ -193,9 +195,7 @@ export default class OutboundDetail extends Component {
   }
   render() {
     const { defaultWhse, outboundHead } = this.props;
-    const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
-      cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
-    )[0];
+    const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status)[0];
     let regTag;
     let regTypes = [];
     if (outboundHead.bonded === 1) {

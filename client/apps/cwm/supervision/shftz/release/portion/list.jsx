@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from '
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
@@ -69,7 +69,9 @@ export default class SHFTZReleaseList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'portion', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'portion', ownerView,
+    };
     this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -161,8 +163,9 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
-    : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
+    render: (o, record) => record.status < 1 ?
+      <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
@@ -246,8 +249,7 @@ export default class SHFTZReleaseList extends React.Component {
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
-        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-          )}
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
       </Select>
     </span>);
     const bulkActions = (<span>
@@ -261,7 +263,7 @@ export default class SHFTZReleaseList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

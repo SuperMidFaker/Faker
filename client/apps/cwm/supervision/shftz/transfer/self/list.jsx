@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, Icon, message, Button, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
 import ModuleMenu from '../../menu';
@@ -36,7 +36,9 @@ const OptGroup = Select.OptGroup;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { loadEntryRegDatas, switchDefaultWhse, showTransferInModal, deleteVirtualTransfer }
+  {
+    loadEntryRegDatas, switchDefaultWhse, showTransferInModal, deleteVirtualTransfer,
+  }
 )
 @connectNav({
   depth: 2,
@@ -66,7 +68,9 @@ export default class SHFTZTransferSelfList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'vtransfer', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'vtransfer', ownerView,
+    };
     this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -142,16 +146,17 @@ export default class SHFTZTransferSelfList extends React.Component {
     width: 100,
     fixed: 'right',
     render: (o, record) =>
-        (
-          <span>
-            <RowUpdater onHit={this.handleDetail} label="转移详情" row={record} />
-            {record.status === CWM_SHFTZ_APIREG_STATUS.pending && <span className="ant-divider" />}
-            {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
-              <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
-                <a><Icon type="delete" /></a>
-              </Popconfirm>}
-          </span>
-        ),
+      (
+        <span>
+          {record.status === CWM_SHFTZ_APIREG_STATUS.pending ?
+            <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+            <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
+            }
+          {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
+          <RowAction confirm="确认删除?" onConfirm={this.handleVTransDel} icon="delete" tooltip="删除" row={record} />
+            }
+        </span>
+      ),
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadEntryRegDatas(params),
@@ -189,7 +194,8 @@ export default class SHFTZTransferSelfList extends React.Component {
       }
     });
   }
-  handleVTransDel = (asnNo) => {
+  handleVTransDel = (row) => {
+    const asnNo = row.asn_no;
     this.props.deleteVirtualTransfer({ asnNo }).then((result) => {
       if (!result.error) {
         this.handleEntryListLoad();
@@ -245,8 +251,7 @@ export default class SHFTZTransferSelfList extends React.Component {
       >
         <OptGroup>
           <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-            )}
+          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
         </OptGroup>
       </Select>
     </span>);
@@ -257,7 +262,7 @@ export default class SHFTZTransferSelfList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

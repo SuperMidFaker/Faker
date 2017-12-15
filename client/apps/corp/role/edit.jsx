@@ -16,9 +16,10 @@ function fetchData({ dispatch, params }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(state => ({
-  formData: state.role.formData,
-}),
+@connect(
+  state => ({
+    formData: state.role.formData,
+  }),
   { edit }
 )
 @connectNav({

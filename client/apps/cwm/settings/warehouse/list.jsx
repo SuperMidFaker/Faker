@@ -34,7 +34,9 @@ const TabPane = Tabs.TabPane;
     zoneList: state.cwmWarehouse.zoneList,
     locationLoading: state.cwmWarehouse.locationLoading,
   }),
-  { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext, clearLocations }
+  {
+    showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext, clearLocations,
+  }
 )
 @Form.create()
 export default class WarehouseList extends Component {
@@ -81,20 +83,18 @@ export default class WarehouseList extends Component {
     this.setState({
       warehouse: record,
     });
-    this.props.loadZones(record.code).then(
-      (result) => {
-        if (!result.error && result.data.length !== 0) {
-          this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code);
-          this.setState({
-            zone: result.data[0],
-            zones: result.data,
-            selectKeys: [result.data[0].zone_code],
-          });
-        } else {
-          this.props.clearLocations();
-        }
+    this.props.loadZones(record.code).then((result) => {
+      if (!result.error && result.data.length !== 0) {
+        this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code);
+        this.setState({
+          zone: result.data[0],
+          zones: result.data,
+          selectKeys: [result.data[0].zone_code],
+        });
+      } else {
+        this.props.clearLocations();
       }
-    );
+    });
   }
   handleEditWarehouse = () => {
     this.props.showEditWhseModal(this.state.warehouse);
@@ -110,41 +110,33 @@ export default class WarehouseList extends Component {
       render: (o, record) => (<div className="menu-sider-item">{o} ({record.code}) <span className="pull-right">{record.bonded === 1 ? <Tag>保税仓</Tag> : <Tag>非保税仓</Tag>}</span></div>),
     }];
     const tabs = [];
-    tabs.push(
-      <TabPane tab="货主" key="owners">
-        <OwnersPane whseCode={warehouse.code} whseName={warehouse.name} whseTenantId={warehouse.wh_ent_tenant_id} warehouse={warehouse} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="供货商" key="suppliers">
-        <SuppliersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="收货人" key="receivers">
-        <ReceiversPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="承运人" key="carriers">
-        <CarriersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="库区/库位" key="location">
-        <ZoneLocationPane warehouse={warehouse} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="员工" key="staffs">
-        <StaffsPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-      </TabPane>);
+    tabs.push(<TabPane tab="货主" key="owners">
+      <OwnersPane whseCode={warehouse.code} whseName={warehouse.name} whseTenantId={warehouse.wh_ent_tenant_id} warehouse={warehouse} />
+    </TabPane>);
+    tabs.push(<TabPane tab="供货商" key="suppliers">
+      <SuppliersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+    </TabPane>);
+    tabs.push(<TabPane tab="收货人" key="receivers">
+      <ReceiversPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+    </TabPane>);
+    tabs.push(<TabPane tab="承运人" key="carriers">
+      <CarriersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+    </TabPane>);
+    tabs.push(<TabPane tab="库区/库位" key="location">
+      <ZoneLocationPane warehouse={warehouse} />
+    </TabPane>);
+    tabs.push(<TabPane tab="员工" key="staffs">
+      <StaffsPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+    </TabPane>);
     if (warehouse.bonded) {
-      tabs.push(
-        <TabPane tab="报关代理" key="brokers">
-          <BrokersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-        </TabPane>);
+      tabs.push(<TabPane tab="报关代理" key="brokers">
+        <BrokersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+      </TabPane>);
     }
     if (warehouse.bonded) {
-      tabs.push(
-        <TabPane tab="保税监管" key="supervision">
-          <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} />
-        </TabPane>);
+      tabs.push(<TabPane tab="保税监管" key="supervision">
+        <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} customsCode={warehouse.customs_code} />
+      </TabPane>);
     }
     return (
       <Layout>
@@ -173,9 +165,12 @@ export default class WarehouseList extends Component {
               <Search placeholder={this.msg('searchPlaceholder')} onChange={this.handleSearchWhse} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
                 rowClassName={record => record.code === warehouse.code ? 'table-row-selected' : ''} rowKey="id"
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
             <WarehouseModal />

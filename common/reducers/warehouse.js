@@ -26,9 +26,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.WH_LOAD:
       return { ...state, loading: true, needUpdate: false };
     case actionTypes.WH_LOAD_SUCCEED:
-      return { ...state, loaded: true, loading: false, whlist: action.result.data };
+      return {
+        ...state, loaded: true, loading: false, whlist: action.result.data,
+      };
     case actionTypes.WH_LOAD_FAIL:
-      return { ...state, loaded: true, loading: false, whlist: initialState.whlist };
+      return {
+        ...state, loaded: true, loading: false, whlist: initialState.whlist,
+      };
     case actionTypes.WH_SUBMIT_SUCCEED: {
       let whDataArray;
       if (state.whlist.totalCount === 0 || (((state.whlist.totalCount / state.whlist.pageSize) >> 0) + 1
@@ -37,17 +41,23 @@ export default function reducer(state = initialState, action) {
         whDataArray = [...state.whlist.data];
         whDataArray.push({ ...action.data.warehouse, key: action.result.data.id });
       }
-      return { ...state,
-        whlist: { ...state.whlist,
+      return {
+        ...state,
+        whlist: {
+          ...state.whlist,
           totalCount: state.whlist.totalCount + 1,
-          data: whDataArray || state.whlist.data },
+          data: whDataArray || state.whlist.data,
+        },
         formData: {},
-        editIndex: -1 };
+        editIndex: -1,
+      };
     }
     case actionTypes.WH_UPDATE_SUCCEED: {
       const whDataArray = [...state.whlist.data];
       whDataArray[state.editIndex] = action.data.warehouse;
-      return { ...state, whlist: { ...state.whlist, data: whDataArray }, formData: {}, editIndex: -1 };
+      return {
+        ...state, whlist: { ...state.whlist, data: whDataArray }, formData: {}, editIndex: -1,
+      };
     }
     case actionTypes.WH_DELETE_SUCCEED:
       return { ...state, needUpdate: true, whlist: { ...state.whlist, totalCount: state.whlist.totalCount - 1 } };

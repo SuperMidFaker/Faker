@@ -19,12 +19,12 @@ const formItemLayout = {
     visible: state.saasLineFileAdaptor.adaptorModal.visible,
     customers: state.partner.partners,
   }),
-  { showAdaptorModal, hideAdaptorModal, loadPartners, addAdaptor, loadAdaptors }
+  {
+    showAdaptorModal, hideAdaptorModal, loadPartners, addAdaptor, loadAdaptors,
+  }
 )
 
 export default class AdaptorModal extends Component {
-  static PropTypes = {
-  }
   state = {
     adaptorName: '',
     ownerPid: '',
@@ -35,7 +35,9 @@ export default class AdaptorModal extends Component {
     this.props.hideAdaptorModal();
   }
   handleAddAdaptor = () => {
-    const { adaptorName, model, ownerPid, ownerTid } = this.state;
+    const {
+      adaptorName, model, ownerPid, ownerTid,
+    } = this.state;
     this.props.addAdaptor({
       code: uuidWithoutDash(),
       name: adaptorName,
@@ -73,8 +75,11 @@ export default class AdaptorModal extends Component {
     const { visible, customers } = this.props;
     const { adaptorName, model } = this.state;
     return (
-      <Modal maskClosable={false} title="新增适配器" onOk={this.handleAddAdaptor}
-        onCancel={this.handleCancel} visible={visible}
+      <Modal maskClosable={false}
+        title="新增适配器"
+        onOk={this.handleAddAdaptor}
+        onCancel={this.handleCancel}
+        visible={visible}
       >
         <Form layout="horizontal">
           <FormItem label="企业名称" {...formItemLayout}>

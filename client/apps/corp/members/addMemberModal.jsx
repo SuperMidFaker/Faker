@@ -47,7 +47,9 @@ export default class AddMemberModal extends Component {
     if (this.state.added) {
       this.props.reload();
     }
-    this.setState({ allMembers: [], members: [], added: false, searchValue: '' });
+    this.setState({
+      allMembers: [], members: [], added: false, searchValue: '',
+    });
   }
   handleAddMember = (userId) => {
     this.props.saveDepartMember(this.props.deptId, userId).then((result) => {

@@ -14,13 +14,11 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    acceptanceList: state.shipment.statistics.todos.acceptanceList,
-  }), { loadDispatchTable, loadShipmtDetail, hideDock }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  acceptanceList: state.shipment.statistics.todos.acceptanceList,
+}), { loadDispatchTable, loadShipmtDetail, hideDock })
 export default class TodoAcceptPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

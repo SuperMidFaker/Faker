@@ -8,7 +8,7 @@ import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, me
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -52,7 +52,9 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     userMembers: state.account.userMembers,
   }),
-  { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease }
+  {
+    showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease,
+  }
 )
 @connectNav({
   depth: 2,
@@ -177,14 +179,16 @@ export default class ReceivingASNList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CWM_ASN_STATUS.PENDING.value) {
-        return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} />
-          <span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} /></span>);
+        return (<span>
+          <RowAction onClick={this.handleReleaseASN} icon="play-circle-o" label="释放" row={record} />
+          <RowAction onClick={this.handleEditASN} icon="edit" tooltip="修改" row={record} />
+        </span>);
       } else {
-        const inbndActions = (<span>
-          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />}
-          {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowUpdater onHit={this.handleInbound} label="差异处理" row={record} />}
-          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleInbound} label="入库详情" row={record} />}</span>);
-        return (<span>{inbndActions}</span>);
+        return (<span>
+          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowAction onClick={this.handleInbound} icon="form" label="入库操作" row={record} />}
+          {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowAction onClick={this.handleInbound} label="差异处理" row={record} />}
+          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowAction onClick={this.handleInbound} icon="eye-o" label="入库详情" row={record} />}
+        </span>);
       }
     },
   }]
@@ -225,17 +229,15 @@ export default class ReceivingASNList extends React.Component {
   handleReleaseASN = (row) => {
     const { loginId } = this.props;
     const whseCode = this.props.defaultWhse.code;
-    this.props.releaseAsn(row.asn_no, loginId, whseCode).then(
-      (result) => {
-        if (!result.error) {
-          notification.success({
-            message: '操作成功',
-            description: `${row.asn_no} 已释放`,
-          });
-          this.handleListReload();
-        }
+    this.props.releaseAsn(row.asn_no, loginId, whseCode).then((result) => {
+      if (!result.error) {
+        notification.success({
+          message: '操作成功',
+          description: `${row.asn_no} 已释放`,
+        });
+        this.handleListReload();
       }
-    );
+    });
   }
   handleBatchRelease = () => {
     const { selectedRowKeys } = this.state;
@@ -323,7 +325,9 @@ export default class ReceivingASNList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, owners, suppliers, filters, loading } = this.props;
+    const {
+      whses, defaultWhse, owners, suppliers, filters, loading,
+    } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -372,7 +376,8 @@ export default class ReceivingASNList extends React.Component {
         <Option value="all" key="all">全部供货商</Option>
         {suppliers.filter(supplier => filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true)
         .map(supplier => (<Option key={supplier.code} value={supplier.code}>{supplier.name}</Option>))}
-      </Select></span>);
+      </Select>
+    </span>);
     const bulkActions = filters.status === 'pending' && <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
     /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
       : <a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>;

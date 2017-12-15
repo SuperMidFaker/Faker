@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -34,7 +34,9 @@ const RadioButton = Radio.Button;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { openNormalDeclModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
+  {
+    openNormalDeclModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear,
+  }
 )
 @connectNav({
   depth: 2,
@@ -86,6 +88,18 @@ export default class NormalDeclList extends React.Component {
     title: '状态',
     dataIndex: 'status',
     width: 100,
+    render: (o) => {
+      switch (o) {
+        case 2:
+          return <Badge status="processing" text="委托制单" />;
+        case 3:
+          return <Badge status="processing" text="已申报" />;
+        case 4:
+          return <Badge status="success" text="已清关" />;
+        default:
+          break;
+      }
+    },
   }, {
     title: '货主',
     width: 180,
@@ -143,16 +157,13 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 160,
+    width: 100,
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
-        {record.manifested < 2 && <span className="ant-divider" />}
+        <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
         {record.manifested < 2 &&
-        <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
-          <a>取消委托</a>
-        </Popconfirm>}
+        <RowAction confirm="确认取消委托?" onConfirm={this.handleDelgCancel} icon="close-circle-o" tooltip="取消报关委托" row={record} />}
       </span>
     ),
   }]
@@ -251,8 +262,7 @@ export default class NormalDeclList extends React.Component {
       >
         <Option value="all">全部货主</Option>
         {owners.map(data => (
-          <Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-        )}
+          <Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
       </Select>
     </span>);
     return (
@@ -262,7 +272,7 @@ export default class NormalDeclList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

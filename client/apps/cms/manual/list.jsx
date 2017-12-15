@@ -11,7 +11,7 @@ import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import SearchBar from 'client/components/SearchBar';
 import ImportModal from './modal/importModal';
-// import RowUpdater from 'client/components/rowUpdater';
+// import RowAction from 'client/components/RowAction';
 import { showImportModal, loadManualLists } from 'common/reducers/cmsTradeManual';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import messages from './message.i18n';
@@ -181,7 +181,8 @@ export default class ManualList extends Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('搜索手/账册编号')}
         onInputSearch={this.handleSearch}
-      /></span>);
+      />
+    </span>);
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadManualLists(params),
       resolve: result => result.data,

@@ -92,7 +92,7 @@ export default class SCVManifestList extends Component {
     title: '制单日期',
     width: 90,
     render: (o, record) => (record.id ?
-    record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
+      record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: '进度',
     width: 180,

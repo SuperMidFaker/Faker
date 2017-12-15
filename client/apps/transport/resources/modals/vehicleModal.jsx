@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Modal } from 'antd';
 import { loadVehicleParams, loadDriverList, toggleVehicleModal, validateVehicle, addVehicle,
-editVehicle } from 'common/reducers/transportResources';
+  editVehicle } from 'common/reducers/transportResources';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 
 const FormItem = Form.Item;
@@ -24,7 +24,9 @@ const formItemLayout = {
     drivers: state.transportResources.drivers,
     vehicleValidate: state.transportResources.vehicleValidate,
   }),
-  { loadVehicleParams, loadDriverList, toggleVehicleModal, validateVehicle, addVehicle, editVehicle }
+  {
+    loadVehicleParams, loadDriverList, toggleVehicleModal, validateVehicle, addVehicle, editVehicle,
+  }
 )
 @withPrivilege({
   module: 'transport',
@@ -34,9 +36,9 @@ const formItemLayout = {
 @Form.create()
 export default class VehicleModal extends Component {
   static propTypes = {
-    form: PropTypes.object.isRequired,              // 对应于antd中的form对象
-    drivers: PropTypes.array,                       // 可选司机列表
-    vehicleValidate: PropTypes.bool,                // 表示车牌号是否可用
+    form: PropTypes.object.isRequired, // 对应于antd中的form对象
+    drivers: PropTypes.array, // 可选司机列表
+    vehicleValidate: PropTypes.bool, // 表示车牌号是否可用
     tenantId: PropTypes.number.isRequired,
     vehicleParams: PropTypes.shape({
       types: PropTypes.arrayOf(PropTypes.shape({
@@ -48,10 +50,10 @@ export default class VehicleModal extends Component {
         text: PropTypes.string.isRequired,
       })),
     }),
-    validateVehicle: PropTypes.func,            // 车牌号改变执行的回调函数
+    validateVehicle: PropTypes.func, // 车牌号改变执行的回调函数
     loadVehicleParams: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
-    operation: PropTypes.string.isRequired,         // mode='add' 表示新增车辆, mode='edit'表示编辑某个车辆信息
+    operation: PropTypes.string.isRequired, // mode='add' 表示新增车辆, mode='edit'表示编辑某个车辆信息
     vehicle: PropTypes.object.isRequired,
     loadDriverList: PropTypes.func.isRequired,
     toggleVehicleModal: PropTypes.func.isRequired,
@@ -99,11 +101,12 @@ export default class VehicleModal extends Component {
     }
   }
   render() {
-    const { visible, operation, form, drivers, vehicleParams, vehicleValidate, vehicle } = this.props;
+    const {
+      visible, operation, form, drivers, vehicleParams, vehicleValidate, vehicle,
+    } = this.props;
     const getFieldDecorator = form.getFieldDecorator;
     const driversOptions = drivers ? drivers.map(driver =>
-      <Option value={driver.driver_id} key={driver.driver_id}>{driver.name}</Option>
-    ) : '';
+      <Option value={driver.driver_id} key={driver.driver_id}>{driver.name}</Option>) : '';
     const numberValidate = operation === 'edit' || vehicleValidate;
     return (
       <Modal maskClosable={false} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
@@ -116,9 +119,7 @@ export default class VehicleModal extends Component {
           >
             {getFieldDecorator('plate_number', {
               initialValue: vehicle.plate_number,
-            })(
-              <Input required disabled={operation === 'edit'} onBlur={e => this.onVehicleNumberBlur(e)} />
-            )}
+            })(<Input required disabled={operation === 'edit'} onBlur={e => this.onVehicleNumberBlur(e)} />)}
           </FormItem>
           <FormItem label="挂车牌号" {...formItemLayout}>
             {getFieldDecorator('trailer_number', {

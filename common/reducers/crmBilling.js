@@ -298,7 +298,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILLINGS:
       return { ...state, loading: true };
     case actionTypes.LOAD_BILLINGS_SUCCEED:
-      return { ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees, loading: false };
+      return {
+        ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees, loading: false,
+      };
     case actionTypes.LOAD_BILLINGS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_FEES_BYBILLINGID: {
@@ -306,7 +308,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
-      return { ...state,
+      return {
+        ...state,
         billingFees: action.result.data,
         billing: {
           id: billing.id,
@@ -325,14 +328,17 @@ export default function reducer(state = initialState, action) {
           totalCharge: billing.total_charge,
           modifyTimes: billing.modify_times,
         },
-        loading: false };
+        loading: false,
+      };
     }
     default:
       return state;
   }
 }
 
-export function loadOrders({ tenantId, pageSize, current, searchValue, filters, startDate, endDate }) {
+export function loadOrders({
+  tenantId, pageSize, current, searchValue, filters, startDate, endDate,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -402,7 +408,9 @@ export function loadPartners(tenantId, roles, businessTypes) {
 }
 
 
-export function loadFeesByChooseModal({ beginDate, endDate, partnerId, tenantId }) {
+export function loadFeesByChooseModal({
+  beginDate, endDate, partnerId, tenantId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -412,7 +420,9 @@ export function loadFeesByChooseModal({ beginDate, endDate, partnerId, tenantId 
       ],
       endpoint: 'v1/crm/billing/feesByChooseModal',
       method: 'get',
-      params: { beginDate, endDate, partnerId, tenantId },
+      params: {
+        beginDate, endDate, partnerId, tenantId,
+      },
     },
   };
 }
@@ -509,7 +519,9 @@ export function loadFeesByBillingId({ billingId }) {
   };
 }
 
-export function loadBillings({ tenantId, pageSize, current, searchValue, filters }) {
+export function loadBillings({
+  tenantId, pageSize, current, searchValue, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -519,15 +531,19 @@ export function loadBillings({ tenantId, pageSize, current, searchValue, filters
       ],
       endpoint: 'v1/crm/billings',
       method: 'get',
-      params: { tenantId, pageSize, current, searchValue, filters: JSON.stringify(filters) },
+      params: {
+        tenantId, pageSize, current, searchValue, filters: JSON.stringify(filters),
+      },
     },
   };
 }
 
-export function createBilling({ tenantId, loginId, loginName, name, beginDate, endDate,
-    ccbCharge, trsCharge, adjustCharge, totalCharge,
-    customerTenantId, customerPartnerId, customerName, customerCode,
-    shipmtCount, fees }) {
+export function createBilling({
+  tenantId, loginId, loginName, name, beginDate, endDate,
+  ccbCharge, trsCharge, adjustCharge, totalCharge,
+  customerTenantId, customerPartnerId, customerName, customerCode,
+  shipmtCount, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -559,7 +575,9 @@ export function createBilling({ tenantId, loginId, loginName, name, beginDate, e
   };
 }
 
-export function sendBilling({ tenantId, loginId, loginName, billingId }) {
+export function sendBilling({
+  tenantId, loginId, loginName, billingId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -569,12 +587,16 @@ export function sendBilling({ tenantId, loginId, loginName, billingId }) {
       ],
       endpoint: 'v1/crm/billing/send',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId },
+      data: {
+        tenantId, loginId, loginName, billingId,
+      },
     },
   };
 }
 
-export function checkBilling({ tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees }) {
+export function checkBilling({
+  tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -584,12 +606,16 @@ export function checkBilling({ tenantId, loginId, loginName, billingId, ccbCharg
       ],
       endpoint: 'v1/crm/billing/check',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees },
+      data: {
+        tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees,
+      },
     },
   };
 }
 
-export function editBilling({ tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, shipmtCount, fees }) {
+export function editBilling({
+  tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, shipmtCount, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -599,12 +625,16 @@ export function editBilling({ tenantId, loginId, loginName, billingId, ccbCharge
       ],
       endpoint: 'v1/crm/billing/edit',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, shipmtCount, fees },
+      data: {
+        tenantId, loginId, loginName, billingId, ccbCharge, trsCharge, adjustCharge, totalCharge, shipmtCount, fees,
+      },
     },
   };
 }
 
-export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
+export function acceptBilling({
+  tenantId, loginId, loginName, billingId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -614,12 +644,16 @@ export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
       ],
       endpoint: 'v1/crm/billing/accept',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId },
+      data: {
+        tenantId, loginId, loginName, billingId,
+      },
     },
   };
 }
 
-export function removeBilling({ tenantId, loginId, loginName, billingId }) {
+export function removeBilling({
+  tenantId, loginId, loginName, billingId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -629,12 +663,16 @@ export function removeBilling({ tenantId, loginId, loginName, billingId }) {
       ],
       endpoint: 'v1/crm/billing/remove',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId },
+      data: {
+        tenantId, loginId, loginName, billingId,
+      },
     },
   };
 }
 
-export function changeCancelCharge({ tenantId, loginId, loginName, billingId, cancelCharge }) {
+export function changeCancelCharge({
+  tenantId, loginId, loginName, billingId, cancelCharge,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -644,12 +682,16 @@ export function changeCancelCharge({ tenantId, loginId, loginName, billingId, ca
       ],
       endpoint: 'v1/crm/billing/changeCancelCharge',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, cancelCharge },
+      data: {
+        tenantId, loginId, loginName, billingId, cancelCharge,
+      },
     },
   };
 }
 
-export function importAdvanceCharge({ tenantId, loginId, loginName, advances }) {
+export function importAdvanceCharge({
+  tenantId, loginId, loginName, advances,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -659,7 +701,9 @@ export function importAdvanceCharge({ tenantId, loginId, loginName, advances }) 
       ],
       endpoint: 'v1/transport/billing/importAdvanceCharge',
       method: 'post',
-      data: { tenantId, loginId, loginName, advances },
+      data: {
+        tenantId, loginId, loginName, advances,
+      },
     },
   };
 }
@@ -677,7 +721,12 @@ export function toggleAdvanceChargeModal(visible) {
 }
 
 export function updateBillingFees(tenantId, tenantName, orderNo, field, value) {
-  return { type: actionTypes.UPDATE_BILLINGFEES, data: { tenantId, tenantName, orderNo, field, value } };
+  return {
+    type: actionTypes.UPDATE_BILLINGFEES,
+    data: {
+      tenantId, tenantName, orderNo, field, value,
+    },
+  };
 }
 
 export function alterBillingFees(fee) {

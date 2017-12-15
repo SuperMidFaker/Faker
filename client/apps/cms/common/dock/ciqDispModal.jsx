@@ -25,11 +25,13 @@ const formItemLayout = {
     dispatch: state.cmsDelgInfoHub.previewer.delgDispatch,
     tabKey: state.cmsDelgInfoHub.tabKey,
   }),
-  { ciqDispSave, setDispStatus, showPreviewer, loadDeclCiqPanel }
+  {
+    ciqDispSave, setDispStatus, showPreviewer, loadDeclCiqPanel,
+  }
 )
 @Form.create()
 export default class CiqDispModal extends Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     ciqSups: PropTypes.array.isRequired,
     form: PropTypes.object.isRequired,
@@ -65,24 +67,22 @@ export default class CiqDispModal extends Component {
       <Modal maskClosable={false} visible={ciqDispShow} title="报检分配" onOk={this.handleSave} onCancel={this.handleCancel} >
         <Form layout="vertical">
           <FormItem label="报检供应商" {...formItemLayout} >
-            {getFieldDecorator('ciq_name',
-              )(<Select
-                showSearch
-                showArrow
-                optionFilterProp="searched"
-                placeholder={this.msg('ciqDispMessage')}
-                style={{ width: '80%' }}
-              >
-                {
+            {getFieldDecorator('ciq_name')(<Select
+              showSearch
+              showArrow
+              optionFilterProp="searched"
+              placeholder={this.msg('ciqDispMessage')}
+              style={{ width: '80%' }}
+            >
+              {
                 ciqSups.map(pt => (
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
                   >
                     {pt.name}
-                  </Option>)
-                )
+                  </Option>))
               }
-              </Select>)}
+            </Select>)}
           </FormItem>
         </Form>
       </Modal>

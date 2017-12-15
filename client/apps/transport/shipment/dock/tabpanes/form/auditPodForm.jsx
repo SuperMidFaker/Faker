@@ -21,7 +21,8 @@ const { TextArea } = Input;
     dispId: state.shipment.previewer.dispatch.id,
     podId: state.shipment.previewer.dispatch.pod_id,
   }),
-  { passAudit, returnAudit })
+  { passAudit, returnAudit }
+)
 @Form.create()
 export default class AuditPodForm extends React.Component {
   static propTypes = {
@@ -40,26 +41,26 @@ export default class AuditPodForm extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleAcceptPOD = () => {
-    const { dispId, parentDispId, podId, auditor, tenantId, loginId } = this.props;
-    this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.setState({ done: true });
-        }
-      });
+    const {
+      dispId, parentDispId, podId, auditor, tenantId, loginId,
+    } = this.props;
+    this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ done: true });
+      }
+    });
   }
   handleRejectPOD = () => {
     const { dispId } = this.props;
-    this.props.returnAudit(dispId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.setState({ done: true });
-        }
-      });
+    this.props.returnAudit(dispId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ done: true });
+      }
+    });
   }
   handlePreview = (file) => {
     this.setState({

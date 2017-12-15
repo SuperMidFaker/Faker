@@ -15,7 +15,9 @@ const formatMsg = format(messages);
     visible: state.crmCustomers.serviceTeamModal.visible,
     tenantUsers: state.crmCustomers.serviceTeamModal.tenantUsers,
   }),
-  { hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers }
+  {
+    hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers,
+  }
 )
 
 export default class ServiceTeamModal extends React.Component {
@@ -56,14 +58,12 @@ export default class ServiceTeamModal extends React.Component {
   handleAdd = () => {
     const partnerId = this.props.customer.id;
     const targetKeys = this.state.targetKeys;
-    this.props.addServiceTeamMembers(partnerId, targetKeys).then(
-      (result) => {
-        if (!result.error) {
-          this.props.hideServiceTeamModal();
-          this.props.loadServiceTeamMembers(partnerId);
-        }
+    this.props.addServiceTeamMembers(partnerId, targetKeys).then((result) => {
+      if (!result.error) {
+        this.props.hideServiceTeamModal();
+        this.props.loadServiceTeamMembers(partnerId);
       }
-    );
+    });
   }
   filterOption = (inputValue, option) => {
     const reg = new RegExp(inputValue);

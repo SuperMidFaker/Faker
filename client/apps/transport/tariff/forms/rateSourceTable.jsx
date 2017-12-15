@@ -17,11 +17,13 @@ const FormItem = Form.Item;
     loading: state.transportTariff.ratesSourceLoading,
     ratesSourceList: state.transportTariff.ratesSourceList,
   }),
-  { submitRateSource,
+  {
+    submitRateSource,
     loadRatesSources,
     updateRateSource,
     delRateSource,
-    loadRateEnds }
+    loadRateEnds,
+  }
 )
 @Form.create()
 export default class RateSourceTable extends React.Component {
@@ -95,7 +97,9 @@ export default class RateSourceTable extends React.Component {
   })
   handleEdit = (row, ev) => {
     ev.stopPropagation();
-    const { code, province, city, district, street, name } = row.source;
+    const {
+      code, province, city, district, street, name,
+    } = row.source;
     this.setState({
       rateId: row._id,
       regionCode: code,
@@ -125,16 +129,18 @@ export default class RateSourceTable extends React.Component {
       const rateId = this.state.rateId;
       if (rateId) {
         prom = this.props.updateRateSource(
-            this.state.rateId,
-            this.state.regionCode,
-            this.state.modalRegion,
-            this.state.name);
+          this.state.rateId,
+          this.state.regionCode,
+          this.state.modalRegion,
+          this.state.name
+        );
       } else {
         prom = this.props.submitRateSource(
-            this.props.tariffId,
-            this.state.regionCode,
-            this.state.modalRegion,
-            this.state.name);
+          this.props.tariffId,
+          this.state.regionCode,
+          this.state.modalRegion,
+          this.state.name
+        );
       }
       prom.then((result) => {
         if (result.error) {
@@ -200,7 +206,9 @@ export default class RateSourceTable extends React.Component {
     });
   }
   render() {
-    const { ratesSourceList, loading, visibleModal, type } = this.props;
+    const {
+      ratesSourceList, loading, visibleModal, type,
+    } = this.props;
     const { modalRegion, name } = this.state;
     this.dataSource.remotes = ratesSourceList;
     const rowSelection = {
@@ -220,7 +228,7 @@ export default class RateSourceTable extends React.Component {
         dataIndex: 'OPS_COL',
         render: (o, record) => (
           <span>
-            <RowClick text="编辑" onHit={this.handleEdit} row={record} />
+            <RowClick text="编辑" onClick={this.handleEdit} row={record} />
             <span className="ant-divider" />
             <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
           </span>
@@ -230,7 +238,10 @@ export default class RateSourceTable extends React.Component {
     return (
       <div>
         <DataTable size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} onRowClick={this.handleRowClick} rowKey={getRowKey}
+          dataSource={this.dataSource} rowKey={getRowKey}
+          onRow={record => ({
+            onClick: () => { this.handleRowClick(record); },
+          })}
         />
         <Modal maskClosable={false} visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
           closable={false}

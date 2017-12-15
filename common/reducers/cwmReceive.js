@@ -135,11 +135,15 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
       return { ...state, productNos: action.result.data.productNos, products: action.result.data.products };
     case actionTypes.LOAD_ASN_LISTS:
-      return { ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true }, dock: { ...state.dock, visible: false } };
+      return {
+        ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true }, dock: { ...state.dock, visible: false },
+      };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
       return { ...state, asnlist: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_INBOUNDS:
-      return { ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true }, dock: { ...state.dock, visible: false } };
+      return {
+        ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true }, dock: { ...state.dock, visible: false },
+      };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.MARK_RELOAD_INBOUND:
@@ -208,9 +212,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLEAR_PRODUCT_NOS:
       return { ...state, productNos: [] };
     case actionTypes.CANCEL_ASN_SUCCEED:
-      return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false } };
+      return {
+        ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false },
+      };
     case actionTypes.CLOSE_ASN_SUCCEED:
-      return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false } };
+      return {
+        ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false },
+      };
     case actionTypes.GET_SUPPLIERS_SUCCEED:
       return { ...state, suppliers: action.result.data };
     default:
@@ -351,7 +359,9 @@ export function loadAsn(asnNo) {
   };
 }
 
-export function loadAsnLists({ whseCode, pageSize, current, filters }) {
+export function loadAsnLists({
+  whseCode, pageSize, current, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -361,7 +371,9 @@ export function loadAsnLists({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/receive/asnLists/load',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: {
+        whseCode, pageSize, current, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -411,7 +423,9 @@ export function cancelAsn(asnNo) {
   };
 }
 
-export function loadInbounds({ whseCode, pageSize, current, filters }) {
+export function loadInbounds({
+  whseCode, pageSize, current, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -421,7 +435,9 @@ export function loadInbounds({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/receive/inbounds/load',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: {
+        whseCode, pageSize, current, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -585,7 +601,9 @@ export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId, rec
       ],
       endpoint: 'v1/cwm/inbound/product/receipt',
       method: 'post',
-      data: { dataSource, seqNo, asnNo, loginId, inboundNo, receivedDate },
+      data: {
+        dataSource, seqNo, asnNo, loginId, inboundNo, receivedDate,
+      },
     },
   };
 }
@@ -600,7 +618,9 @@ export function expressReceive(inboundNo, loginId, loginName, receivedDate) {
       ],
       endpoint: 'v1/cwm/inbound/receipt/express',
       method: 'post',
-      data: { loginId, inboundNo, loginName, receivedDate },
+      data: {
+        loginId, inboundNo, loginName, receivedDate,
+      },
     },
   };
 }
@@ -615,7 +635,9 @@ export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, lo
       ],
       endpoint: 'v1/cwm/inbound/product/receipt/batch',
       method: 'post',
-      data: { seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate, priority },
+      data: {
+        seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate, priority,
+      },
     },
   };
 }
@@ -645,7 +667,9 @@ export function batchPutaways(traceIds, location, allocater, allocateDt, loginNa
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/batch',
       method: 'post',
-      data: { traceIds, location, allocater, allocateDt, loginName, inboundNo },
+      data: {
+        traceIds, location, allocater, allocateDt, loginName, inboundNo,
+      },
     },
   };
 }
@@ -771,7 +795,9 @@ export function getCrossAsns(whseCode, bonded, regType, ownerPartnerId) {
       ],
       endpoint: 'v1/cwm/cross/asns',
       method: 'get',
-      params: { whseCode, bonded, regType, ownerPartnerId },
+      params: {
+        whseCode, bonded, regType, ownerPartnerId,
+      },
     },
   };
 }

@@ -74,7 +74,9 @@ export default class TariffRatesForm extends React.Component {
   }
   handleEndExport = () => {
     if (this.props.rateId) {
-      const { agreementRef, transModes, vehicleTypeParams, vehicleLengthParams, rateId } = this.props;
+      const {
+        agreementRef, transModes, vehicleTypeParams, vehicleLengthParams, rateId,
+      } = this.props;
       const varColumns = getEndTableVarColumns(agreementRef, transModes, vehicleTypeParams, vehicleLengthParams).map(vc => vc.title);
       window.open(`${API_ROOTS.mongo}v1/transport/tariff/export/ratends/${createFilename('rate-ends')}.xlsx?rateId=${rateId}&columns=${JSON.stringify(varColumns)}`);
     }
@@ -89,7 +91,9 @@ export default class TariffRatesForm extends React.Component {
   }
   render() {
     const { type, formData, form: { getFieldDecorator } } = this.props;
-    const { sourceModal, endModal, inUpload, uploadPercent, uploadStatus } = this.state;
+    const {
+      sourceModal, endModal, inUpload, uploadPercent, uploadStatus,
+    } = this.state;
     return (
       <div style={{ padding: 10 }}>
         <div>
@@ -102,7 +106,7 @@ export default class TariffRatesForm extends React.Component {
                       onClick={this.handleSourceAdd}
                     >
                     添加
-                  </Button>)}
+                    </Button>)}
                   <div className="toolbar-right">
                     <Tooltip title={
                       <div>
@@ -116,10 +120,10 @@ export default class TariffRatesForm extends React.Component {
                     <span>精确匹配: </span>
                     {getFieldDecorator('accurateMatch', {
                       valuePropName: 'checked',
-                      initialValue: formData.accurateMatch })(
-                        <Switch disabled={!(type === 'create' || type === 'edit')}
-                          checkedChildren={'是'} unCheckedChildren={'否'}
-                        />)}
+                      initialValue: formData.accurateMatch,
+})(<Switch disabled={!(type === 'create' || type === 'edit')}
+  checkedChildren="是" unCheckedChildren="否"
+/>)}
                   </div>
                 </div>
                 <RateSourceTable visibleModal={sourceModal} onChangeVisible={this.handleVisibleChange} type={type} />

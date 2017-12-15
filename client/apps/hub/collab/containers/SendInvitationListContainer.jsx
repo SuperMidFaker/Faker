@@ -26,8 +26,8 @@ export default class SendInvitation extends Component {
   static propTypes = {
     sendInvitationsLoaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    sendInvitations: PropTypes.array.isRequired,  // 发出的邀请
-    cancelInvite: PropTypes.func.isRequired,      // 取消邀请的action creator
+    sendInvitations: PropTypes.array.isRequired, // 发出的邀请
+    cancelInvite: PropTypes.func.isRequired, // 取消邀请的action creator
     loadSendInvitations: PropTypes.func.isRequired,
   }
   componentWillReceiveProps(nextProps) {

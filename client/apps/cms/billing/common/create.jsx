@@ -29,7 +29,9 @@ const { Header, Content } = Layout;
     billingFees: state.cmsBilling.billingFees,
     saving: state.cmsBilling.billingSaving,
   }),
-  { loadDispsByChooseModal, loadExpsByDisp, createBilling, updateBillingFees }
+  {
+    loadDispsByChooseModal, loadExpsByDisp, createBilling, updateBillingFees,
+  }
 )
 
 export default class CreateBilling extends React.Component {
@@ -54,7 +56,9 @@ export default class CreateBilling extends React.Component {
   }
   componentDidMount() {
     const { tenantId, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
+    const {
+      beginDate, endDate, chooseModel, partnerId, partnerTenantId,
+    } = this.props.billing;
     this.props.loadDispsByChooseModal({
       type,
       beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),
@@ -76,9 +80,13 @@ export default class CreateBilling extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleSave = () => {
-    const { loginId, tenantId, loginName, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerTenantId, name,
-    advanceCharge, servCharge, adjustCharge, totalCharge } = this.props.billing;
+    const {
+      loginId, tenantId, loginName, type,
+    } = this.props;
+    const {
+      beginDate, endDate, chooseModel, partnerTenantId, name,
+      advanceCharge, servCharge, adjustCharge, totalCharge,
+    } = this.props.billing;
     const fees = this.props.billingFees.data;
     if (fees.length === 0) {
       message.error('没有费用');

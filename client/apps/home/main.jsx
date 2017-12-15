@@ -71,20 +71,16 @@ export default class Home extends React.Component {
       </MenuItem>,
     ];
     if (this.state.corpMenuLink) {
-      tenantMenus.push(
-        <MenuItem key="hub">
-          <NavLink to="/hub">
-            <i className="icon-fontello-puzzle" /> {formatMsg(intl, 'openPlatform')}
-          </NavLink>
-        </MenuItem>
-      );
-      tenantMenus.push(
-        <MenuItem key="corp">
-          <NavLink to={`${this.state.corpMenuLink}`}>
-            <i className="zmdi zmdi-city-alt" /> {formatMsg(intl, 'corp')}
-          </NavLink>
-        </MenuItem>
-      );
+      tenantMenus.push(<MenuItem key="hub">
+        <NavLink to="/hub">
+          <i className="icon-fontello-puzzle" /> {formatMsg(intl, 'openPlatform')}
+        </NavLink>
+      </MenuItem>);
+      tenantMenus.push(<MenuItem key="corp">
+        <NavLink to={`${this.state.corpMenuLink}`}>
+          <i className="zmdi zmdi-city-alt" /> {formatMsg(intl, 'corp')}
+        </NavLink>
+      </MenuItem>);
     }
     return (
       <Layout className="welo-layout-wrapper">

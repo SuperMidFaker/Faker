@@ -32,7 +32,9 @@ const RadioButton = Radio.Button;
     loginId: state.account.loginId,
     locale: state.preference.locale,
   }),
-  { logout, loadTranslation, changeUserLocale, goBackNav, showPreferenceDock, showActivitiesDock }
+  {
+    logout, loadTranslation, changeUserLocale, goBackNav, showPreferenceDock, showActivitiesDock,
+  }
 )
 export default class HeaderNavBar extends React.Component {
   static propTypes = {
@@ -100,7 +102,9 @@ export default class HeaderNavBar extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   render() {
-    const { intl, avatar, name, locale, compact, navTitle } = this.props;
+    const {
+      intl, avatar, name, locale, compact, navTitle,
+    } = this.props;
     const userPopoverContent = (
       <div className="navbar-popover">
         <Menu>
@@ -137,7 +141,7 @@ export default class HeaderNavBar extends React.Component {
 
     let moduleName = navTitle.moduleName;
     let navMenu = null;
-    let brandNav = (<NavLink to="/" className={'navbar-brand'} />);
+    let brandNav = (<NavLink to="/" className="navbar-brand" />);
     if (navTitle.depth === 1) {
       moduleName = '';
     } else if (navTitle.depth === 2) {
@@ -157,12 +161,11 @@ export default class HeaderNavBar extends React.Component {
           </a>
         </Tooltip>)];
       if (navTitle.jumpOut && this.props.navTitle.stack > 1) {
-        brandNav.push(
-          <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('close')} key="close" >
-            <a role="presentation" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
-              <MdIcon type="close" />
-            </a>
-          </Tooltip>);
+        brandNav.push(<Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('close')} key="close" >
+          <a role="presentation" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
+            <MdIcon type="close" />
+          </a>
+        </Tooltip>);
       }
     }
     return (

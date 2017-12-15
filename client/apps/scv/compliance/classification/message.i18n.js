@@ -196,7 +196,7 @@ const messages = defineMessages({
   },
   deleteConfirm: {
     id: 'scv.compliance.tradeitem.delete.confirm',
-    defaultMessage: '确认删除?',
+    defaultMessage: '确定删除?',
   },
   newItem: {
     id: 'scv.compliance.tradeitem.new.item',

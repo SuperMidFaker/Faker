@@ -35,7 +35,9 @@ export default class ClaimForm extends React.Component {
   state = {
   }
   handleSubmit = () => {
-    const { dispId, shipmtNo, parentNo, tenantId } = this.props;
+    const {
+      dispId, shipmtNo, parentNo, tenantId,
+    } = this.props;
     const { damagedQty, shortageQty, remark } = this.props.form.getFieldsValue();
     if (!damagedQty && !shortageQty) {
       message.warn('请至少填写破损或短少总数量的其中一项');
@@ -46,13 +48,14 @@ export default class ClaimForm extends React.Component {
           damaged_qty: damagedQty,
           shortage_qty: shortageQty,
           remark,
-        }).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            this.handleClear();
-          }
-        });
+        }
+      ).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.handleClear();
+        }
+      });
     }
   }
   handleClear = () => {

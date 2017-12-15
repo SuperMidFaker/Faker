@@ -13,7 +13,7 @@ import {
   showLocModal, loadShipmtLastPoint, deliverConfirm,
   changeStatusFilter,
 } from 'common/reducers/trackingLandStatus';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import VehicleModal from './modals/vehicle-updater';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
@@ -30,7 +30,9 @@ import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constant
 
 const formatMsg = format(messages);
 
-function fetchData({ state, dispatch, params, cookie }) {
+function fetchData({
+  state, dispatch, params, cookie,
+}) {
   const newfilters = state.trackingLandStatus.filters.map((flt) => {
     if (flt.name === 'type') {
       return {
@@ -392,8 +394,8 @@ export default class TrackingStatusList extends React.Component {
     return (
       <PrivilegeCover module="transport" feature="tracking" action="edit">
         <span>
-          <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
-            onHit={this.handleShowTransitModal} row={record}
+          <RowAction label={locLabel} onHover={this.handleReportLocHover}
+            onClick={this.handleShowTransitModal} row={record}
             className={reported ? 'mdc-text-grey' : ''}
           />
         </span>

@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import { Alert, Input, Button, notification } from 'antd';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import AllocatingModal from '../modal/allocatingModal';
@@ -27,7 +27,9 @@ const Search = Input.Search;
     units: state.cwmSku.params.units,
     submitting: state.cwmOutbound.submitting,
   }),
-  { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc, loadSkuParams }
+  {
+    openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc, loadSkuParams,
+  }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -126,16 +128,14 @@ export default class OrderDetailsPane extends React.Component {
     render: (o, record) => {
       if (record.alloc_qty < record.order_qty) {
         return (<span>
-          <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} disabled={this.props.submitting} />
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.handleManualAlloc} label="手动分配" row={record} />
+          <RowAction onClick={this.handleSKUAutoAllocate} icon="rocket" label="自动分配" row={record} disabled={this.props.submitting} />
+          <RowAction onClick={this.handleManualAlloc} icon="tool" tooltip="手动分配" row={record} />
         </span>);
       } else {
         return (<span>
-          <RowUpdater onHit={this.handleAllocDetails} label="分配明细" row={record} />
-          {record.picked_qty < record.alloc_qty && <span className="ant-divider" />}
+          <RowAction onClick={this.handleAllocDetails} icon="eye-o" label="分配明细" row={record} />
           {record.picked_qty < record.alloc_qty &&
-            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} disabled={this.props.submitting} />}
+            <RowAction onClick={this.handleSKUCancelAllocate} icon="close-circle-o" tooltip="取消分配" row={record} disabled={this.props.submitting} />}
         </span>);
       }
     },
@@ -159,23 +159,25 @@ export default class OrderDetailsPane extends React.Component {
     });
   }
   handleBatchAutoAlloc = () => {
-    this.props.batchAutoAlloc(this.props.outboundNo, this.state.selectedRowKeys,
-      this.props.loginId, this.props.loginName).then((result) => {
-        if (!result.error) {
-          if (result.data.length > 0) {
-            const seqNos = result.data.join(',');
-            const args = {
-              message: `行号${seqNos}货品数量不足`,
-              duration: 0,
-            };
-            notification.open(args);
-          }
-        } else {
-          notification.error({
-            message: result.error.message,
-          });
+    this.props.batchAutoAlloc(
+      this.props.outboundNo, this.state.selectedRowKeys,
+      this.props.loginId, this.props.loginName
+    ).then((result) => {
+      if (!result.error) {
+        if (result.data.length > 0) {
+          const seqNos = result.data.join(',');
+          const args = {
+            message: `行号${seqNos}货品数量不足`,
+            duration: 0,
+          };
+          notification.open(args);
         }
-      });
+      } else {
+        notification.error({
+          message: result.error.message,
+        });
+      }
+    });
   }
   handleOutboundAutoAlloc = () => {
     this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName).then((result) => {
@@ -241,8 +243,10 @@ export default class OrderDetailsPane extends React.Component {
     const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
     const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
     wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
-    FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
-      `${outboundHead.cus_order_no || outboundHead.outbound_no}_nonallocates_${Date.now()}.xlsx`);
+    FileSaver.saveAs(
+      new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
+      `${outboundHead.cus_order_no || outboundHead.outbound_no}_nonallocates_${Date.now()}.xlsx`
+    );
   }
   handleSearch = (value) => {
     this.setState({ searchValue: value });

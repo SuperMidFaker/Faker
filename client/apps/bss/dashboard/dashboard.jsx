@@ -76,11 +76,11 @@ export default class BSSDashboard extends React.Component {
                 <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
                   <span>
                 周同比
-                <Trend flag="up" >12%</Trend>
+                    <Trend flag="up" >12%</Trend>
                   </span>
                   <span style={{ marginLeft: 16 }}>
                 日环比
-                <Trend flag="down" >11%</Trend>
+                    <Trend flag="down" >11%</Trend>
                   </span>
                 </div>
               </ChartCard>
@@ -126,11 +126,11 @@ export default class BSSDashboard extends React.Component {
                   <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
                     <span>
                   周同比
-                  <Trend flag="up" >12%</Trend>
+                      <Trend flag="up" >12%</Trend>
                     </span>
                     <span style={{ marginLeft: 16 }}>
                   日环比
-                  <Trend flag="down" >11%</Trend>
+                      <Trend flag="down" >11%</Trend>
                     </span>
                   </div>
             }

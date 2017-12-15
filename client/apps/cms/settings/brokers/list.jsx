@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Table, Button, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Layout, Popconfirm, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import SearchBar from 'client/components/SearchBar';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -12,10 +15,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
 import { formatMsg } from '../message.i18n';
 
-const { Header, Content } = Layout;
-const rowSelection = {
-  onSelect() {},
-};
+const { Content } = Layout;
 
 function fetchData({ dispatch }) {
   return dispatch(loadCmsBrokers());
@@ -26,7 +26,9 @@ function fetchData({ dispatch }) {
 @connect(state => ({
   tenantId: state.account.tenantId,
   brokers: state.cmsBrokers.brokers,
-}), { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker })
+}), {
+  toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker,
+})
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
@@ -45,22 +47,22 @@ export default class BrokerList extends Component {
   handleAddBtnClick = () => {
     this.props.toggleBrokerModal(true, 'add');
   }
-  handleStopBtnClick = (id, status) => {
-    this.props.changeBrokerStatus(id, status).then((result) => {
+  handleStopBtnClick = (row) => {
+    this.props.changeBrokerStatus(row.id, false).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
     });
   }
-  handleDeleteBtnClick = (id) => {
-    this.props.deleteBroker(id).then((result) => {
+  handleDeleteBtnClick = (row) => {
+    this.props.deleteBroker(row.id).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
     });
   }
-  handleResumeBtnClick = (id, status) => {
-    this.props.changeBrokerStatus(id, status).then((result) => {
+  handleResumeBtnClick = (row) => {
+    this.props.changeBrokerStatus(row.id, true).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
@@ -83,14 +85,14 @@ export default class BrokerList extends Component {
         <a onClick={() => this.handleStopBtnClick(itemInfo.id, false)}>停用</a>
       </span>
     </PrivilegeCover>
-    )
+  )
 
   renderDeleteAndResumeOperations = (itemInfo) => {
     const { id } = itemInfo;
     return (
       <span>
         <PrivilegeCover module="corp" feature="partners" action="delete">
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(id)}>
+          <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteBtnClick(id)}>
             <a>删除</a>
           </Popconfirm>
         </PrivilegeCover>
@@ -126,12 +128,12 @@ export default class BrokerList extends Component {
         title: '海关编码',
         dataIndex: 'customs_code',
         key: 'customs_code',
-        width: 200,
+        width: 150,
       }, {
         title: '检验检疫代码',
         dataIndex: 'ciq_code',
         key: 'ciq_code',
-        width: 200,
+        width: 150,
       }, {
         title: '是否供应商',
         dataIndex: 'comp_partner_id',
@@ -143,6 +145,11 @@ export default class BrokerList extends Component {
             return <span>否</span>;
           }
         },
+      }, {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        render: o => o === 1 ? <Tag color="green">已启用</Tag> : <Tag>已停用</Tag>,
       }, {
         title: '创建日期',
         dataIndex: 'created_date',
@@ -158,47 +165,44 @@ export default class BrokerList extends Component {
         width: 120,
       }, {
         title: '操作',
-        dataIndex: 'status',
-        key: 'status',
-        width: 100,
-        render: (_, record, index) => {
-          if (record.status === 1) {
-            return this.renderEditAndStopOperations(record, index);
-          } else {
-            return this.renderDeleteAndResumeOperations(record);
+        key: 'OP_COL',
+        width: 160,
+        fixed: 'right',
+        render: (_, record) => (<span>
+          <RowAction onClick={this.handleEditBtnClick} icon="edit" label={this.msg('modify')} row={record} />
+          {record.status === 1 ? <RowAction onClick={this.handleStopBtnClick} icon="pause-circle" tooltip={this.msg('stop')} row={record} /> :
+          <RowAction onClick={this.handleResumeBtnClick} icon="play-circle" tooltip={this.msg('resume')} row={record} />
           }
-        },
+          <RowAction confirm="确定要删除？" onConfirm={this.handleDeleteBtnClick} icon="delete" tooltip={this.msg('delete')} row={record} />
+        </span>
+        ),
       },
     ];
+    const toolbarActions = (<SearchBar placeholder="搜索" onInputSearch={this.handleSearch}
+      value={this.state.searchText}
+    />);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('settings')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('brokers')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('settings')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('brokers')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <PrivilegeCover module="clearance" feature="resources" action="create">
-              <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增</Button>
+              <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增代理</Button>
             </PrivilegeCover>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
-                value={this.state.searchText}
-              />
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
-            </div>
-            <BrokerModal onOk={this.handleReload} />
-          </div>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable toolbarActions={toolbarActions} dataSource={data} columns={columns} rowKey="id" />
+          <BrokerModal onOk={this.handleReload} />
         </Content>
       </QueueAnim>
     );

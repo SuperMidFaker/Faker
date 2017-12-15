@@ -182,8 +182,8 @@ exports.CWM_DOCU_TYPE = {
   receiveTaskList: 0, // 入库任务清单
   putawayTaskList: 1, // 上架任务清单
   pickingTaskList: 2, // 拣货任务清单
-  packingList: 3,     // 装箱单
-  loadingList: 4,     // 装车单
+  packingList: 3, // 装箱单
+  loadingList: 4, // 装车单
 };
 
 exports.CWM_RULES = {

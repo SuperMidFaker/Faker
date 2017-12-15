@@ -20,7 +20,9 @@ function fetchData({ state, dispatch }) {
   const startDate = `${moment(state.cmsDashboard.taxStats.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
   const endDate = `${moment(state.cmsDashboard.taxStats.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
   const clientView = JSON.stringify({ tenantIds: [], partnerIds: [] });
-  return dispatch(loadCmsTaxStats({ tenantId: state.account.tenantId, startDate, endDate, clientView }));
+  return dispatch(loadCmsTaxStats({
+    tenantId: state.account.tenantId, startDate, endDate, clientView,
+  }));
 }
 
 @connectFetch()(fetchData)
@@ -41,7 +43,9 @@ export default class TaxStatsCard extends Component {
   }
   onDateChange = (value, dateString) => {
     const clientView = this.props.taxStats.clientView;
-    this.props.loadCmsTaxStats({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView });
+    this.props.loadCmsTaxStats({
+      tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView,
+    });
   }
   handleClientSelectChange = (value) => {
     const { startDate, endDate } = this.props.taxStats;
@@ -54,11 +58,15 @@ export default class TaxStatsCard extends Component {
         clientView.tenantIds.push(client.tid);
       }
     }
-    this.props.loadCmsTaxStats({ tenantId: this.props.tenantId, startDate, endDate, clientView: JSON.stringify(clientView) });
+    this.props.loadCmsTaxStats({
+      tenantId: this.props.tenantId, startDate, endDate, clientView: JSON.stringify(clientView),
+    });
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { startDate, endDate, totalPaid, dutyTax, vatTax, comsuTax, totalWithdrawn } = this.props.taxStats;
+    const {
+      startDate, endDate, totalPaid, dutyTax, vatTax, comsuTax, totalWithdrawn,
+    } = this.props.taxStats;
     const clients = [{
       name: '全部客户',
       partner_id: -1,
@@ -71,8 +79,8 @@ export default class TaxStatsCard extends Component {
         >
           {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
             search={`${data.partner_code}${data.name}`}
-          >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-          )}
+          >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+          </Option>))}
         </Select>
         <RangePicker style={{ marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}

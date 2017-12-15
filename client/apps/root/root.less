@@ -1,6 +1,5 @@
 @import "~antd/lib/style/index.less";
 @import "~antd/lib/style/components.less";
-@import '~@welogix/react-data-grid/dist/react-data-grid.css';
 @import "../../variable.less";
 body {
   background-color: #F0F0F0;
@@ -125,6 +124,7 @@ img {
 .ant-form-hide-required-mark {
   .ant-form-item-required {
     font-weight: 600;
+    text-decoration-line: underline;
   }
 }
 .ant-form-item > label {
@@ -179,6 +179,12 @@ img {
 .ant-modal-title {
   .toolbar-right {
     margin-top: -3px;
+  }
+}
+.ant-modal-body {
+  .ant-table-middle .ant-table-thead > tr > th,
+  .ant-table-middle .ant-table-tbody > tr > td {
+    padding: 6px 8px;
   }
 }
 .ant-pagination-next {
@@ -764,6 +770,11 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     }
   }
 }
+.menu-badge{
+  position: absolute;
+  right: 16px;
+  top: 10px;
+}
 .toolbar {
   position: relative;
   padding: 8px 16px;
@@ -1005,6 +1016,14 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   .ant-col-8,
   .ant-col-12, {
     height: 48px;
+  }
+  .ant-form-item-label,
+  .ant-form-item-control {
+    line-height: 32px;
+  }
+  .ant-select:only-child,
+  .ant-input-group-wrapper {
+    top: 0;
   }
   .ant-form-item {
     margin-bottom: 16px;

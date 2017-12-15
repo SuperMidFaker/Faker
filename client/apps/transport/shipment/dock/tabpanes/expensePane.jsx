@@ -17,22 +17,20 @@ const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec =>
 const typeKeys = TMS_EXPENSE_TYPES.map(ec => ec.key);
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    shipmt: state.shipment.previewer.shipmt,
-    previewer: state.shipment.previewer,
-    charges: state.shipment.charges,
-    pAdvanceCharges: state.shipment.pAdvanceCharges,
-    advanceCharges: state.shipment.advanceCharges,
-    pSpecialCharges: state.shipment.pSpecialCharges,
-    specialCharges: state.shipment.specialCharges,
-  }), {
-    showAdvanceModal,
-    showSpecialChargeModal,
-    loadShipmtCharges,
-  }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  shipmt: state.shipment.previewer.shipmt,
+  previewer: state.shipment.previewer,
+  charges: state.shipment.charges,
+  pAdvanceCharges: state.shipment.pAdvanceCharges,
+  advanceCharges: state.shipment.advanceCharges,
+  pSpecialCharges: state.shipment.pSpecialCharges,
+  specialCharges: state.shipment.specialCharges,
+}), {
+  showAdvanceModal,
+  showSpecialChargeModal,
+  loadShipmtCharges,
+})
 export default class ExpensePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -282,7 +280,9 @@ export default class ExpensePanel extends React.Component {
   }
 
   render() {
-    const { intl, shipmt, previewer: { dispatch }, charges, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges } = this.props;
+    const {
+      intl, shipmt, previewer: { dispatch }, charges, pAdvanceCharges, advanceCharges, pSpecialCharges, specialCharges,
+    } = this.props;
     const { checkedExpCates, checkedExpTypes } = this.state;
 
     let revenueds = [];
@@ -338,14 +338,16 @@ export default class ExpensePanel extends React.Component {
       return (
         <CheckableTag key={ec.key} checked={checked} {...tagProps}
           onChange={chked => this.handleCateTagChange(ec.key, chked)}
-        >{ec.text}</CheckableTag>);
-    }).concat(
-      TMS_EXPENSE_TYPES.map(et => (
-        <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
-          onChange={chked => this.handleTypeTagChange(et.key, chked)}
-        >{et.text}</CheckableTag>))
-    );
-    const paramDataSource = [{ key: 0, distance: shipmt.distance, total_weight: shipmt.total_weight, total_volume: shipmt.total_volume }];
+        >{ec.text}
+        </CheckableTag>);
+    }).concat(TMS_EXPENSE_TYPES.map(et => (
+      <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
+        onChange={chked => this.handleTypeTagChange(et.key, chked)}
+      >{et.text}
+      </CheckableTag>)));
+    const paramDataSource = [{
+      key: 0, distance: shipmt.distance, total_weight: shipmt.total_weight, total_volume: shipmt.total_volume,
+    }];
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16 }} hoverable={false}>
@@ -354,19 +356,22 @@ export default class ExpensePanel extends React.Component {
               <h5>收入</h5>
               <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                 intl.formatNumber(revenue.toFixed(2), { style: 'currency', currency: 'cny' })
-              }</div>
+              }
+              </div>
             </Col>
             <Col span="8">
               <h5>成本</h5>
               <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                 intl.formatNumber(expense.toFixed(2), { style: 'currency', currency: 'cny' })
-              }</div>
+              }
+              </div>
             </Col>
             <Col span="8">
               <h5>盈亏</h5>
               <div style={{ color: profitColor, fontSize: '18px' }}>{
                 intl.formatNumber(profit.toFixed(2), { style: 'currency', currency: 'cny' })
-              }</div>
+              }
+              </div>
             </Col>
           </Row>
         </Card>

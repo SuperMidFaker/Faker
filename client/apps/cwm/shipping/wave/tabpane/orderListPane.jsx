@@ -16,7 +16,9 @@ const Search = Input.Search;
     waveOrders: state.cwmShippingOrder.waveOrders,
     reload: state.cwmShippingOrder.waveReload,
   }),
-  { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails }
+  {
+    loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails,
+  }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {

@@ -14,7 +14,7 @@ import SearchBar from 'client/components/SearchBar';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import Templates from './template/templates';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -86,7 +86,7 @@ export default class ManifestList extends Component {
     title: '制单日期',
     width: 90,
     render: (o, record) => (record.id ?
-    record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
+      record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: <Tooltip title="表体记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -151,12 +151,12 @@ export default class ManifestList extends Component {
     render: (o, record) => {
       if (record.bill_status < 100) {
         return (
-          <RowUpdater onHit={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑</span>} row={record} />
+          <RowAction onClick={this.handleDelegationMake} label={<span><Icon type="edit" /> 编辑</span>} row={record} />
         );
       } else if (record.bill_status === 100) {
         return (
           <span>
-            <RowUpdater onHit={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
+            <RowAction onClick={this.handleDelegationView} label={<span><Icon type="eye-o" /> 查看</span>} row={record} />
             { record.revertable && <span className="ant-divider" />}
             { record.revertable && (<Popconfirm title="确定操作?" placement="topRight" onConfirm={() => this.handleManifestRedo(record)}>
               <Tooltip title="删除已生成的报关建议书，重新修改" placement="bottomLeft">
@@ -328,8 +328,8 @@ export default class ManifestList extends Component {
                     <Option value="all">全部客户</Option>
                     {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
                       search={`${data.partner_code}${data.name}`}
-                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                    )}
+                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+                    </Option>))}
                   </Select>
                   <span />
                   <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}

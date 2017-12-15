@@ -75,7 +75,9 @@ export default class HeadRulesPane extends React.Component {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
   render() {
-    const { form, formData, formRequire, ietype, intl, ruleRequired, template } = this.props;
+    const {
+      form, formData, formRequire, ietype, intl, ruleRequired, template,
+    } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,

@@ -162,9 +162,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DELG_MANIFEST:
       return { ...state, delgBillList: { ...state.delgBillList, loading: true } };
     case actionTypes.LOAD_DELG_MANIFEST_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         delgBillList: { ...state.delgBillList, loading: false, ...action.result.data },
-        listFilter: JSON.parse(action.params.filter) };
+        listFilter: JSON.parse(action.params.filter),
+      };
     case actionTypes.LOAD_MANIFESTTP_SUCCEED:
       return { ...state, formRequire: action.result.data };
     case actionTypes.LOAD_MANIFEST:
@@ -190,7 +192,9 @@ export default function reducer(state = initialState, action) {
       };
     }
     case actionTypes.RESET_BILL_SUCCEED:
-      return { ...state, billHead: action.result.data.head, billBodies: [], billMeta: { ...state.billMeta, entries: [] } };
+      return {
+        ...state, billHead: action.result.data.head, billBodies: [], billMeta: { ...state.billMeta, entries: [] },
+      };
     case actionTypes.RESET_BILLHEAD_SUCCEED:
       return { ...state, billHead: action.result.data.head };
     case actionTypes.LOAD_MANIFEST_BODY_SUCCEED:
@@ -202,12 +206,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMS_DECL_FAILED:
       return { ...state, customsDeclLoading: false };
     case actionTypes.LOAD_CUSTOMS_DECL_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         entryHead: action.result.data.head,
         entryBodies: action.result.data.hbodies,
         billDetails: action.result.data.billDetails,
         billMeta: { ...state.billMeta, ...action.result.data.meta },
-        customsDeclLoading: false };
+        customsDeclLoading: false,
+      };
     case actionTypes.LOAD_PARAMS_SUCCEED: {
       const retParams = action.result.data;
       const retPorts = retParams.ports;
@@ -274,10 +280,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SAVE_BILL_RULES_SUCCEED:
       return { ...state, billRule: action.payload.rules };
     case actionTypes.LOCK_MANIFEST_SUCCEED:
-      return { ...state,
-        billHead: { ...state.billHead,
+      return {
+        ...state,
+        billHead: {
+          ...state.billHead,
           locking_login_id: action.data.loginId,
-          locking_name: action.data.loginName } };
+          locking_name: action.data.loginName,
+        },
+      };
     case actionTypes.BILL_HEAD_CHANGE:
       return { ...state, billHeadFieldsChangeTimes: state.billHeadFieldsChangeTimes + 1 };
     case actionTypes.FILL_ENTRYNO_SUCCEED:
@@ -309,11 +319,13 @@ export default function reducer(state = initialState, action) {
       } else if (retData.i_e_type === 1) {
         retData.ietype = 'export';
       }
-      return { ...state,
+      return {
+        ...state,
         template: { ...state.template, ...retData },
         formData: action.result.data.formData,
         templateUsers: action.result.data.users,
-        templateValLoading: false };
+        templateValLoading: false,
+      };
     }
     case actionTypes.LOAD_FORM_VALS_FAIL:
       return { ...state, templateValLoading: false };
@@ -326,24 +338,30 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_TEMP_INFO_SUCCEED:
       return { ...state, template: { ...state.template, ...action.data.change } };
     case actionTypes.SHOW_DECL_ELEMENTS_MODAL:
-      return { ...state,
-        declElementsModal: { ...state.declElementsModal,
+      return {
+        ...state,
+        declElementsModal: {
+          ...state.declElementsModal,
           visible: true,
           element: action.element,
           id: action.id,
           gModel: action.gModel,
           disabled: action.disabled,
-          name: action.name } };
+          name: action.name,
+        },
+      };
     case actionTypes.HIDE_DECL_ELEMENTS_MODAL:
       return { ...state, declElementsModal: { ...state.declElementsModal, visible: false } };
     case actionTypes.SHOW_MANIFEST_RULES_CLONE_MODAL:
-      return { ...state,
+      return {
+        ...state,
         manifestRulesCloneModal: {
           ...state.manifestRulesCloneModal,
           visible: true,
           templateId: action.templateId,
           ietype: action.ietype,
-        } };
+        },
+      };
     case actionTypes.HIDE_MANIFEST_RULES_CLONE_MODAL:
       return { ...state, manifestRulesCloneModal: { ...state.manifestRulesCloneModal, visible: false } };
     default:
@@ -611,7 +629,9 @@ export function loadSearchedParam({ paramType, search }) {
   };
 }
 
-export function addNewBillBody({ body, billSeqNo, loginId, tenantId }) {
+export function addNewBillBody({
+  body, billSeqNo, loginId, tenantId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -621,7 +641,9 @@ export function addNewBillBody({ body, billSeqNo, loginId, tenantId }) {
       ],
       endpoint: 'v1/cms/manifest/billbody/add',
       method: 'post',
-      data: { newBody: body, billSeqNo, loginId, tenantId },
+      data: {
+        newBody: body, billSeqNo, loginId, tenantId,
+      },
     },
   };
 }
@@ -671,7 +693,9 @@ export function updateBillBody(id, model) {
   };
 }
 
-export function saveBillHead({ head, ietype, loginId, tenantId }) {
+export function saveBillHead({
+  head, ietype, loginId, tenantId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -681,7 +705,9 @@ export function saveBillHead({ head, ietype, loginId, tenantId }) {
       ],
       endpoint: 'v1/cms/manifest/billhead',
       method: 'post',
-      data: { head, ietype, loginId, tenantId },
+      data: {
+        head, ietype, loginId, tenantId,
+      },
     },
   };
 }
@@ -722,7 +748,9 @@ export function closeRuleModel() {
   };
 }
 
-export function submitBillMegeSplit({ billSeqNo, mergeOpt, splitOpt, sortOpt }) {
+export function submitBillMegeSplit({
+  billSeqNo, mergeOpt, splitOpt, sortOpt,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -732,7 +760,9 @@ export function submitBillMegeSplit({ billSeqNo, mergeOpt, splitOpt, sortOpt }) 
       ],
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
-      data: { billSeqNo, mergeOpt, splitOpt, sortOpt },
+      data: {
+        billSeqNo, mergeOpt, splitOpt, sortOpt,
+      },
     },
   };
 }
@@ -902,7 +932,9 @@ export function lockManifest(locker) {
   };
 }
 
-export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
+export function fillEntryId({
+  entryNo, entryHeadId, billSeqNo, delgNo,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -912,7 +944,9 @@ export function fillEntryId({ entryNo, entryHeadId, billSeqNo, delgNo }) {
       ],
       endpoint: 'v1/cms/fill/declno',
       method: 'post',
-      data: { entryNo, entryHeadId, billSeqNo, delgNo },
+      data: {
+        entryNo, entryHeadId, billSeqNo, delgNo,
+      },
     },
   };
 }
@@ -1081,10 +1115,14 @@ export function validateTempName(params) {
   };
 }
 
-export function showSendDeclsModal({ visible = true, preEntrySeqNo = '', delgNo = '', agentCustCo }) {
+export function showSendDeclsModal({
+  visible = true, preEntrySeqNo = '', delgNo = '', agentCustCo,
+}) {
   return {
     type: actionTypes.SHOW_SEND_DECLS_MODAL,
-    data: { visible, preEntrySeqNo, delgNo, agentCustCo },
+    data: {
+      visible, preEntrySeqNo, delgNo, agentCustCo,
+    },
   };
 }
 

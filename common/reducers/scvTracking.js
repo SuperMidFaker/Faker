@@ -47,7 +47,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRACKINGS:
       return { ...state, loading: true, loaded: false };
     case actionTypes.LOAD_TRACKINGS_SUCCEED:
-      return { ...state, trackings: action.result.data, loaded: true, loading: false };
+      return {
+        ...state, trackings: action.result.data, loaded: true, loading: false,
+      };
     case actionTypes.LOAD_TRACKINGS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_TRACKING_ITEMS_SUCCEED:
@@ -59,12 +61,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRORDER_FAIL:
       return { ...state, orderLoading: false };
     case actionTypes.LOAD_TRORDER_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         orderList: {
           ...action.result.data,
           pageSize: action.result.data.pageSize > 40 ? state.orderList.pageSize : action.result.data.pageSize,
         },
-        orderLoading: false };
+        orderLoading: false,
+      };
     default:
       return state;
   }
@@ -252,7 +256,9 @@ export function upsertTrackingOrderCustom(id, field, value, source) {
       ],
       endpoint: 'v1/scv/tracking/order/custom/upsert',
       method: 'post',
-      data: { id, field, value, source },
+      data: {
+        id, field, value, source,
+      },
     },
   };
 }

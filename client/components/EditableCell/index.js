@@ -75,7 +75,9 @@ export default class EditableCell extends React.Component {
     this.setState({ value: region, region: [province, city, district, street] });
   }
   renderControl() {
-    const { type, placeholder, options, addonBefore, addonAfter } = this.props;
+    const {
+      type, placeholder, options, addonBefore, addonAfter,
+    } = this.props;
     const { value, region } = this.state;
     switch (type) {
       case 'textarea':
@@ -140,7 +142,9 @@ export default class EditableCell extends React.Component {
     }
   }
   renderText() {
-    const { type, options, placeholder, addonBefore, addonAfter } = this.props;
+    const {
+      type, options, placeholder, addonBefore, addonAfter,
+    } = this.props;
     const { value } = this.state;
     if (type === 'select' && options) {
       const option = options.filter(opt => opt.key === value)[0];
@@ -152,7 +156,8 @@ export default class EditableCell extends React.Component {
           province: value[0],
           city: value[1],
           district: value[2],
-        }, 'province', 'city', 'district')}{addonAfter}</span> :
+        }, 'province', 'city', 'district')}{addonAfter}
+        </span> :
         <span style={{ display: 'inline-block' }}>{addonBefore}<span className="editable-cell-placeholder">{placeholder}</span>{addonAfter}</span>;
     } else if (type === 'date') {
       return (value) ?

@@ -114,9 +114,7 @@ export default class ReceiveInbound extends Component {
         <Menu.Item key="exportAllTag">导出全部标签</Menu.Item>
       </Menu>
     );
-    const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(
-      cis => CWM_INBOUND_STATUS[cis].value === inboundHead.status
-    )[0];
+    const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(cis => CWM_INBOUND_STATUS[cis].value === inboundHead.status)[0];
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
     const scanLabel = inboundHead.rec_mode === 'scan' ? ' 扫码模式' : '';
@@ -125,8 +123,8 @@ export default class ReceiveInbound extends Component {
     const primReg = entryRegs[0];
     if (entryRegs.length === 1) {
       const regStatus = inboundHead.bonded_intype === 'transfer' ?
-      CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0] :
-      CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0];
+        CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0] :
+        CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0];
       regLink = (<Button icon="link" onClick={() => this.handleRegPage(primReg.pre_entry_seq_no)}>
         {primReg.cus_decl_no || primReg.pre_entry_seq_no}<Badge status={regStatus.badge} text={regStatus.text} />
       </Button>);
@@ -135,7 +133,8 @@ export default class ReceiveInbound extends Component {
         {entryRegs.map((er) => {
           const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === er.status)[0];
           return (<Menu.Item key={er.pre_entry_seq_no}>{er.cus_decl_no || er.pre_entry_seq_no}
-            <Badge status={regStatus.badge} text={regStatus.text} /></Menu.Item>);
+            <Badge status={regStatus.badge} text={regStatus.text} />
+          </Menu.Item>);
         })}
       </Menu>);
       regLink = (<Dropdown overlay={regMenu}>

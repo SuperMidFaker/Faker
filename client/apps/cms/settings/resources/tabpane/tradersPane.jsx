@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Button, Layout, Popconfirm } from 'antd';
+import { intlShape, injectIntl } from 'react-intl';
+import { Table, Button, Layout } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import RowAction from 'client/components/RowAction';
 import { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers } from 'common/reducers/cmsResources';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import TraderModal from '../modal/traderModal';
 import TraderUserModal from '../modal/traderUserModal';
+import { formatMsg } from '../../message.i18n';
 
 const { Content } = Layout;
 
@@ -16,14 +19,18 @@ function fetchData({ dispatch, state }) {
 }
 
 @connectFetch()(fetchData)
+@injectIntl
 @connect(state => ({
   loaded: state.cmsResources.loaded,
   businessUnits: state.cmsResources.businessUnits,
   tenantId: state.account.tenantId,
   customer: state.cmsResources.customer,
-}), { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers })
+}), {
+  loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers,
+})
 export default class TraderList extends Component {
   static propTyps = {
+    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loaded: PropTypes.bool.isRequired,
     customer: PropTypes.object.isRequired,
@@ -40,6 +47,7 @@ export default class TraderList extends Component {
       this.props.loadBusinessUnits({ tenantId: nextProps.tenantId, customerPartnerId: nextProps.customer.id });
     }
   }
+  msg = formatMsg(this.props.intl)
   handleEditBtnClick = (businessUnit) => {
     this.props.toggleBusinessUnitModal(true, 'edit', businessUnit);
   }
@@ -49,6 +57,9 @@ export default class TraderList extends Component {
   handleRuleBtnClick = (record) => {
     this.props.toggleUnitRuleSetModal(true, record.id);
     this.props.loadBusinessUnitUsers(record.id);
+  }
+  handleDeleteBtnClick = (row) => {
+    this.props.deleteBusinessUnit(row.id);
   }
   render() {
     const { businessUnits } = this.props;
@@ -65,7 +76,6 @@ export default class TraderList extends Component {
       title: '企业名称',
       dataIndex: 'comp_name',
       key: 'comp_name',
-      width: 300,
     }, {
       title: '统一社会信用代码',
       dataIndex: 'comp_code',
@@ -81,7 +91,7 @@ export default class TraderList extends Component {
       dataIndex: 'ciq_code',
       key: 'ciq_code',
       width: 120,
-  /*
+      /*
     }, {
       title: '注册海关',
       dataIndex: 'reg_customs',
@@ -111,25 +121,21 @@ export default class TraderList extends Component {
       width: 120,
     }, {
       title: '操作',
-      width: 120,
-      key: 'id',
+      width: 160,
+      key: 'OP_COL',
       render: (_, record) => (
         <span>
           <PrivilegeCover module="corp" feature="partners" action="edit">
-            <a onClick={() => this.handleEditBtnClick(record)}>修改</a>
+            <RowAction onClick={this.handleEditBtnClick} icon="edit" label={this.msg('modify')} row={record} />
           </PrivilegeCover>
-          <span className="ant-divider" />
-          <PrivilegeCover module="corp" feature="partners" action="delete">
-            <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.deleteBusinessUnit(record.id)}>
-              <a>删除</a>
-            </Popconfirm>
-          </PrivilegeCover>
-          <span className="ant-divider" />
           <PrivilegeCover module="corp" feature="partners" action="edit">
-            <a onClick={() => this.handleRuleBtnClick(record)}>授权</a>
+            <RowAction onClick={this.handleRuleBtnClick} icon="key" tooltip={this.msg('auth')} row={record} />
+          </PrivilegeCover>
+          <PrivilegeCover module="corp" feature="partners" action="delete">
+            <RowAction confirm="确定删除？" onConfirm={this.handleDeleteBtnClick} icon="delete" tooltip={this.msg('delete')} row={record} />
           </PrivilegeCover>
         </span>
-        ),
+      ),
     }];
     return (
       <Content>

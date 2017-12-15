@@ -40,7 +40,7 @@ export default class ConfigAmberRoadCTM extends React.Component {
     router: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl);
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     this.props.form.validateFields((err, values) => {
       const arctm = {
         user: values.username,
@@ -55,7 +55,7 @@ export default class ConfigAmberRoadCTM extends React.Component {
       });
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
 
@@ -84,10 +84,10 @@ export default class ConfigAmberRoadCTM extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools" >
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('saveApp')}
             </Button>
           </div>

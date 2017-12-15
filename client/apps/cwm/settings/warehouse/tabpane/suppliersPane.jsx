@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Icon, Tag } from 'antd';
+import { Button, Tag } from 'antd';
 import { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus } from 'common/reducers/cwmWarehouse';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SuppliersModal from '../modal/whseSuppliersModal';
 import { formatMsg } from '../message.i18n';
@@ -18,7 +18,9 @@ import { formatMsg } from '../message.i18n';
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus }
+  {
+    toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus,
+  }
 )
 export default class SuppliersPane extends Component {
   static propTypes = {
@@ -87,12 +89,11 @@ export default class SuppliersPane extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
-        <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditSupplier(record)} label={<Icon type="edit" />} row={record} />
-        <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleDeleteSupplier(record.id)} label={<Icon type="delete" />} row={record} />
+        <RowAction onClick={() => this.handleEditSupplier(record)} icon="edit" label="修改" row={record} />
+        {record.active === 0 ?
+          <RowAction onClick={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} icon="play-circle" tooltip="启用" row={record} /> :
+          <RowAction onClick={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} icon="pause-circle" tooltip="停用" row={record} />}
+        <RowAction danger confirm="确定删除?" onConfirm={() => this.handleDeleteSupplier(record.id)} icon="delete" row={record} />
       </span>
     ),
   }]

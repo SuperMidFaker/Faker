@@ -43,10 +43,15 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
+        const {
+          whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode,
+        } = values;
         const { tenantName } = this.props;
-        const { isBonded, province, city, district, street, regionCode } = this.state;
-        this.props.addWarehouse({ whseMode,
+        const {
+          isBonded, province, city, district, street, regionCode,
+        } = this.state;
+        this.props.addWarehouse({
+          whseMode,
           whseCode,
           whseName,
           whseAddress,
@@ -87,7 +92,9 @@ export default class WareHouseModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
-    const { isBonded, province, city, district, street } = this.state;
+    const {
+      isBonded, province, city, district, street,
+    } = this.state;
     const regionValues = [province, city, district, street];
     return (
       <Modal maskClosable={false} title="添加仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>

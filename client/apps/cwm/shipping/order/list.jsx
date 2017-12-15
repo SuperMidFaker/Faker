@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -58,7 +58,9 @@ function fetchData({ state, dispatch }) {
     userMembers: state.account.userMembers,
     adaptors: state.saasLineFileAdaptor.adaptors,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, exportNormalExitBySo, loadAdaptors }
+  {
+    loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, exportNormalExitBySo, loadAdaptors,
+  }
 )
 @connectNav({
   depth: 2,
@@ -74,7 +76,6 @@ export default class ShippingOrderList extends React.Component {
   state = {
     selectedRowKeys: [],
     selectedRows: [],
-    searchInput: '',
     createWaveEnable: true,
     importPanelVisible: false,
   }
@@ -185,19 +186,23 @@ export default class ShippingOrderList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CWM_SO_STATUS.PENDING.value) {
-        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} />
-          <span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /></span>);
+        return (<span>
+          <RowAction icon="play-circle-o" label="释放" row={record} onClick={this.handleReleaseSO} />
+          <RowAction onClick={this.handleEditSO} tooltip="修改" icon="edit" row={record} />
+        </span>);
       } else {
         const outbndActions = (<span>
           {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
-            && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
-          {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />}</span>);
+            && <RowAction onClick={this.handleOutbound} icon="form" label="出库操作" row={record} />}
+          {record.status === CWM_SO_STATUS.COMPLETED.value &&
+            <RowAction onClick={this.handleOutbound} icon="eye-o" label="出库详情" row={record} />}
+        </span>);
         if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
           return (<span>
             {outbndActions}
-            <span className="ant-divider" />
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleSupervision} label="海关备案" row={record} />
-              : <RowUpdater onHit={this.handleSupervision} label="备案详情" row={record} />}
+            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ?
+              <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="海关备案" row={record} />
+              : <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="备案详情" row={record} />}
           </span>);
         } else {
           return (<span>{outbndActions}</span>);
@@ -356,8 +361,10 @@ export default class ShippingOrderList extends React.Component {
         if (selectedRows.length > 2) {
           xlsxno = `${xlsxno}等`;
         }
-        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
-          `${xlsxno}_出区凭单.xlsx`);
+        FileSaver.saveAs(
+          new window.Blob([Buffer.from(resp.data)], { type: 'application/octet-stream' }),
+          `${xlsxno}_出区凭单.xlsx`
+        );
       } else {
         notification.error({
           message: '导出失败',
@@ -367,7 +374,9 @@ export default class ShippingOrderList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, owners, receivers, carriers, filters, loading } = this.props;
+    const {
+      whses, defaultWhse, owners, receivers, carriers, filters, loading,
+    } = this.props;
     let columns = this.columns;
     if (filters.status === 'inWave') {
       columns = [...columns];

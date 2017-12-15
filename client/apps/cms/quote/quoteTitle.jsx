@@ -21,11 +21,9 @@ function getTitle(quoteData, tenantId) {
   return title;
 }
 
-@connect(
-  state => ({
-    title: getTitle(state.cmsQuote.quoteData, state.account.tenantId),
-  }),
-)
+@connect(state => ({
+  title: getTitle(state.cmsQuote.quoteData, state.account.tenantId),
+}), )
 export default class QuoteFormHeader extends Component {
   static propTypes = {
     title: PropTypes.shape({

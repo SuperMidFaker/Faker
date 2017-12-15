@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
+import RowAction from 'client/components/RowAction';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { loadCiqDeclGoods, showGoodsModal } from 'common/reducers/cmsCiqDeclare';
@@ -34,17 +35,17 @@ function calculateTotal(bodies) {
 }
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    currencies: state.cmsCiqDeclare.ciqParams.currencies,
-    ports: state.cmsCiqDeclare.ciqParams.ports,
-    countries: state.cmsCiqDeclare.ciqParams.countries,
-    units: state.cmsCiqDeclare.ciqParams.units,
-    loginId: state.account.loginId,
-    ciqDeclGoods: state.cmsCiqDeclare.ciqDeclGoods,
-  }), { showDeclElementsModal, getElementByHscode, loadCiqDeclGoods, showGoodsModal }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  currencies: state.cmsCiqDeclare.ciqParams.currencies,
+  ports: state.cmsCiqDeclare.ciqParams.ports,
+  countries: state.cmsCiqDeclare.ciqParams.countries,
+  units: state.cmsCiqDeclare.ciqParams.units,
+  loginId: state.account.loginId,
+  ciqDeclGoods: state.cmsCiqDeclare.ciqDeclGoods,
+}), {
+  showDeclElementsModal, getElementByHscode, loadCiqDeclGoods, showGoodsModal,
+})
 export default class CiqDeclGoodsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -72,9 +73,6 @@ export default class CiqDeclGoodsPane extends React.Component {
     };
   }
   componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ scrollY: window.innerHeight - 320 });
-    }
     this.props.loadCiqDeclGoods(this.context.router.params.declNo).then((result) => {
       if (!result.error) {
         const calresult = calculateTotal(result.data);
@@ -107,7 +105,7 @@ export default class CiqDeclGoodsPane extends React.Component {
     }, {
       title: this.msg('货物名称'),
       dataIndex: 'g_name',
-      width: 150,
+      width: 200,
     }, {
       title: <div className="cell-align-right">{this.msg('数量')}</div>,
       dataIndex: 'g_qty',
@@ -172,6 +170,15 @@ export default class CiqDeclGoodsPane extends React.Component {
       title: this.msg('货物属性'),
       dataIndex: 'goods_attr',
       width: 120,
+    }, {
+      dataIndex: 'OP_COL',
+      width: 60,
+      fixed: 'right',
+      render: (o, record, index) => (
+        <span>
+          <RowAction onClick={this.handleRowClick} icon="edit" row={record} index={index} />
+        </span>
+      ),
     }];
     return columns;
   }
@@ -184,7 +191,7 @@ export default class CiqDeclGoodsPane extends React.Component {
       },
     });
   }
-  handleOnRowClick = (record) => {
+  handleRowClick = (record) => {
     this.props.showGoodsModal(record);
   }
   render() {
@@ -192,24 +199,25 @@ export default class CiqDeclGoodsPane extends React.Component {
     const { totQty, totWet, totStdQty } = this.state;
     const columns = this.getColumns();
     return (
-      <div className="pane">
-        <DataPane fullscreen={this.props.fullscreen}
-          columns={columns} bordered scrollOffset={312} onRowClick={this.handleOnRowClick}
-          dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
-        >
-          <DataPane.Toolbar>
-            <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
-            <DataPane.Actions>
-              <Summary>
-                <Summary.Item label="总数量" addonAfter="KG">{totQty && totQty.toFixed(2)}</Summary.Item>
-                <Summary.Item label="总重量" addonAfter="KG">{totWet && totWet.toFixed(3)}</Summary.Item>
-                <Summary.Item label="总HS标准量" addonAfter="元">{totStdQty && totStdQty.toFixed(2)}</Summary.Item>
-              </Summary>
-            </DataPane.Actions>
-          </DataPane.Toolbar>
-        </DataPane>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} bordered scrollOffset={312}
+        dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
+        onRow={record => ({
+          onDoubleClick: () => { this.handleRowClick(record); },
+        })}
+      >
+        <DataPane.Toolbar>
+          <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
+          <DataPane.Actions>
+            <Summary>
+              <Summary.Item label="总数量" addonAfter="KG">{totQty && totQty.toFixed(2)}</Summary.Item>
+              <Summary.Item label="总重量" addonAfter="KG">{totWet && totWet.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总HS标准量" addonAfter="元">{totStdQty && totStdQty.toFixed(2)}</Summary.Item>
+            </Summary>
+          </DataPane.Actions>
+        </DataPane.Toolbar>
         <GoodsModal ioType={ioType} />
-      </div>
+      </DataPane>
     );
   }
 }

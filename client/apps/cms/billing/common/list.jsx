@@ -32,7 +32,9 @@ const { Header, Content } = Layout;
     loginName: state.account.username,
     billings: state.cmsBilling.billings,
   }),
-  { loadBillings, updateBilling, sendBilling, billingInvoiced }
+  {
+    loadBillings, updateBilling, sendBilling, billingInvoiced,
+  }
 )
 export default class BillingList extends React.Component {
   static propTypes = {

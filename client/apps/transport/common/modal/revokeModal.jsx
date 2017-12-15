@@ -42,23 +42,21 @@ export default class RevokeModal extends React.Component {
   }
   handleOk = () => {
     if (this.props.modalType === 'revoke') {
-      this.props.revokeShipment(this.props.shipmtNo, this.props.shipmtDispId, this.state.reason).then(
-        (result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            this.props.reload();
-          }
-        });
+      this.props.revokeShipment(this.props.shipmtNo, this.props.shipmtDispId, this.state.reason).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.props.reload();
+        }
+      });
     } else {
-      this.props.rejectShipment(this.props.shipmtNo, this.props.shipmtDispId, this.state.reason).then(
-        (result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            this.props.reload();
-          }
-        });
+      this.props.rejectShipment(this.props.shipmtNo, this.props.shipmtDispId, this.state.reason).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.props.reload();
+        }
+      });
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)

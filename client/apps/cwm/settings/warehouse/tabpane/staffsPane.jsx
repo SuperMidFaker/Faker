@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Icon, Tag } from 'antd';
+import { Button, Tag } from 'antd';
 import { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff } from 'common/reducers/cwmWarehouse';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import StaffModal from '../modal/staffModal';
 import DataPane from 'client/components/DataPane';
 import { formatMsg } from '../message.i18n';
@@ -14,7 +14,9 @@ import { formatMsg } from '../message.i18n';
   state => ({
     staffs: state.cwmWarehouse.staffs,
   }),
-  { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff }
+  {
+    showStaffModal, loadStaffs, changeStaffStatus, deleteStaff,
+  }
 )
 export default class StaffsPane extends Component {
   static propTypes = {
@@ -59,10 +61,10 @@ export default class StaffsPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeStaffStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeStaffStatus(record.id, false)} label="停用" row={record} />}
-        <span className="ant-divider" />
-        <RowUpdater onHit={this.handleDeleteStaff} label={<Icon type="delete" />} row={record} />
+        {record.active === 0 ?
+          <RowAction onClick={() => this.changeStaffStatus(record.id, true)} icon="play-circle" tooltip="启用" row={record} /> :
+          <RowAction onClick={() => this.changeStaffStatus(record.id, false)} icon="pause-circle" tooltip="停用" row={record} />}
+        <RowAction danger confirm="确定删除?" onConfirm={this.handleDeleteStaff} icon="delete" row={record} />
       </span>
     ),
   }]

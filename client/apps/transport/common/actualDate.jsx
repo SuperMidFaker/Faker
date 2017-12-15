@@ -11,7 +11,9 @@ export default class ActualDate extends React.Component {
   }
 
   render() {
-    const { actDate, estDate, textBefore, textAfter } = this.props;
+    const {
+      actDate, estDate, textBefore, textAfter,
+    } = this.props;
     if (actDate) {
       const act = new Date(actDate);
       act.setHours(0, 0, 0, 0);

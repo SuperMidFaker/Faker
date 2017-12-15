@@ -54,16 +54,14 @@ export default class ReceivingASNDetail extends Component {
     fullscreen: true,
   }
   componentWillMount() {
-    this.props.loadAsn(this.props.params.asnNo).then(
-      (result) => {
-        if (!result.error) {
-          this.setState({
-            asnHead: result.data.asnHead,
-            asnBody: result.data.asnBody,
-          });
-        }
+    this.props.loadAsn(this.props.params.asnNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          asnHead: result.data.asnHead,
+          asnBody: result.data.asnBody,
+        });
       }
-    );
+    });
   }
   componentWillUnmount() {
     this.props.clearTemporary();
@@ -72,8 +70,10 @@ export default class ReceivingASNDetail extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers } = this.props;
+  handleSave = () => {
+    const {
+      temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers,
+    } = this.props;
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const data = values;
@@ -87,26 +87,19 @@ export default class ReceivingASNDetail extends Component {
         data.loginId = loginId;
         data.tenantName = tenantName;
         data.supplierCode = supplier && supplier.code;
-        this.props.updateASN(data).then(
-          (result) => {
-            if (!result.error) {
-              message.success('收货通知已保存成功');
-              this.context.router.push('/cwm/receiving/asn');
-            } else {
-              message.error('操作失败');
-            }
+        this.props.updateASN(data).then((result) => {
+          if (!result.error) {
+            message.success('收货通知已保存成功');
+            this.context.router.push('/cwm/receiving/asn');
+          } else {
+            message.error('操作失败');
           }
-        );
+        });
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
-  }
-  handleUploadFiles = (fileList) => {
-    this.setState({
-      attachments: fileList,
-    });
   }
 
   render() {
@@ -136,10 +129,10 @@ export default class ReceivingASNDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            {this.state.editable && <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            {this.state.editable && <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>}
-            {this.state.editable && <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            {this.state.editable && <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('save')}
             </Button>}
           </PageHeader.Actions>

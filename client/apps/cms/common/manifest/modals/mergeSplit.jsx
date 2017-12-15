@@ -17,7 +17,9 @@ const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 
 function MSCheckbox(props) {
-  const { state, fieldOpt, field, text, onChange } = props;
+  const {
+    state, fieldOpt, field, text, onChange,
+  } = props;
   function handleChange(ev) {
     onChange(fieldOpt, field, ev.target.checked);
   }
@@ -197,7 +199,8 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   handleMergeCheck = (checkeds) => {
-    const opt = { ...this.state.mergeOpt,
+    const opt = {
+      ...this.state.mergeOpt,
       byHsCode: false,
       byGName: false,
       byCurr: false,
@@ -256,7 +259,9 @@ export default class MergeSplitModal extends React.Component {
     if (splitOpt.byHsCode) {
       splitOpt.hsCategory = this.props.form.getFieldValue('specialSort');
     }
-    this.props.submitBillMegeSplit({ billSeqNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
+    this.props.submitBillMegeSplit({
+      billSeqNo, splitOpt, mergeOpt, sortOpt,
+    }).then((result) => {
       if (result.error) {
         if (result.error.message.key === 'ftz-detail-splited') {
           const ids = result.error.message.details;
@@ -289,7 +294,9 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   render() {
-    const { alertMsg, alertTitle, mergeOpt, splitOpt, splitCategories, mergeCategories } = this.state;
+    const {
+      alertMsg, alertTitle, mergeOpt, splitOpt, splitCategories, mergeCategories,
+    } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     let mergeConditions = this.mergeConditions;
     if (this.props.isCustomRegisted) {
@@ -382,8 +389,7 @@ export default class MergeSplitModal extends React.Component {
                       })(<Select mode="multiple" placeholder={this.msg('specialHscodeSort')} disabled={splitCategories.length === 0}>
                         {
                           splitCategories.map(ct =>
-                            <Option value={ct.id} key={ct.id}>{ct.name}</Option>
-                          )
+                            <Option value={ct.id} key={ct.id}>{ct.name}</Option>)
                         }
                       </Select>)}
                     </div> : null}

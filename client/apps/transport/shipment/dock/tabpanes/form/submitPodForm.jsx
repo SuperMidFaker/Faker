@@ -23,7 +23,8 @@ const { TextArea } = Input;
     dispId: state.shipment.previewer.dispatch.id,
     podId: state.shipment.previewer.dispatch.pod_id || -1,
   }),
-  { saveSubmitPod, loadPod })
+  { saveSubmitPod, loadPod }
+)
 @Form.create()
 export default class SubmitPodForm extends React.Component {
   static propTypes = {
@@ -85,18 +86,21 @@ export default class SubmitPodForm extends React.Component {
     this.setState({ photoList: fileList });
   }
   handleSubmit = () => {
-    const { shipmtNo, submitter, dispId, parentDispId, loginId, tenantId, tenantName } = this.props;
+    const {
+      shipmtNo, submitter, dispId, parentDispId, loginId, tenantId, tenantName,
+    } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
-    this.props.saveSubmitPod('enterprise', shipmtNo, dispId, parentDispId, submitter,
-                             signStatus, remark, photos, loginId, tenantId, tenantName).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('提交成功');
-        }
-      });
+    this.props.saveSubmitPod(
+      'enterprise', shipmtNo, dispId, parentDispId, submitter,
+      signStatus, remark, photos, loginId, tenantId, tenantName
+    ).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('提交成功');
+      }
+    });
   }
   render() {
     const { rejected, form: { getFieldDecorator } } = this.props;

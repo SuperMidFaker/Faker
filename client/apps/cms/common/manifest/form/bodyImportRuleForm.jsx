@@ -53,8 +53,7 @@ export default class ImportRuleForm extends React.Component {
   handleSearch = (value) => {
     const searchValue = value.toLowerCase();
     const filtered = this.formulaParams.filter(item =>
-      item.value.toLowerCase().indexOf(searchValue) !== -1
-    );
+      item.value.toLowerCase().indexOf(searchValue) !== -1);
     const suggestions = filtered.map(suggestion =>
       (<Nav value={suggestion.value} data={suggestion}>
         <span>{suggestion.text} - {suggestion.value} </span>
@@ -68,59 +67,54 @@ export default class ImportRuleForm extends React.Component {
       <div className="form-layout-compact">
         <Row>
           <Col sm={24} lg={12}>
-            <FormItem label={'商品名称'} {...formItemLayout} >
-              {getFieldDecorator('rule_g_name', { initialValue: formData.rule_g_name })(
-                <RadioGroup>
-                  <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                  <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                </RadioGroup>)}
+            <FormItem label="商品名称" {...formItemLayout} >
+              {getFieldDecorator('rule_g_name', { initialValue: formData.rule_g_name })(<RadioGroup>
+                <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
+                <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
+              </RadioGroup>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={12}>
-            <FormItem label={'币制'} {...formItemLayout} >
-              {getFieldDecorator('rule_currency', { initialValue: formData.rule_currency })(
-                <RadioGroup>
-                  <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                  <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                </RadioGroup>)}
+            <FormItem label="币制" {...formItemLayout} >
+              {getFieldDecorator('rule_currency', { initialValue: formData.rule_currency })(<RadioGroup>
+                <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
+                <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
+              </RadioGroup>)}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col sm={24} lg={12}>
-            <FormItem label={'原产国'} {...formItemLayout} >
-              {getFieldDecorator('rule_orig_country', { initialValue: formData.rule_orig_country })(
-                <RadioGroup>
-                  <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                  <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                </RadioGroup>)}
+            <FormItem label="原产国" {...formItemLayout} >
+              {getFieldDecorator('rule_orig_country', { initialValue: formData.rule_orig_country })(<RadioGroup>
+                <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
+                <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
+              </RadioGroup>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={12}>
-            <FormItem label={'净重'} {...formItemLayout} >
-              {getFieldDecorator('rule_net_wt', { initialValue: formData.rule_net_wt })(
-                <RadioGroup>
-                  <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
-                  <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
-                </RadioGroup>)}
+            <FormItem label="净重" {...formItemLayout} >
+              {getFieldDecorator('rule_net_wt', { initialValue: formData.rule_net_wt })(<RadioGroup>
+                <RadioButton value={SOURCE_CHOOSE.import.key}>{SOURCE_CHOOSE.import.value}</RadioButton>
+                <RadioButton value={SOURCE_CHOOSE.item.key}>{SOURCE_CHOOSE.item.value}</RadioButton>
+              </RadioGroup>)}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col>
-            <FormItem label={'申报单位'} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
-              {getFieldDecorator('rule_gunit_num', { initialValue: formData.rule_gunit_num })(
-                <RadioGroup>
-                  <Radio value="g_unit_1">申报单位一</Radio>
-                  <Radio value="g_unit_2">申报单位二</Radio>
-                  <Radio value="g_unit_3">申报单位三</Radio>
-                </RadioGroup>)}
+            <FormItem label="申报单位" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
+              {getFieldDecorator('rule_gunit_num', { initialValue: formData.rule_gunit_num })(<RadioGroup>
+                <Radio value="g_unit_1">申报单位一</Radio>
+                <Radio value="g_unit_2">申报单位二</Radio>
+                <Radio value="g_unit_3">申报单位三</Radio>
+              </RadioGroup>)}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col>
-            <FormItem label={'规格型号'} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
+            <FormItem label="规格型号" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
               {getFieldDecorator('rule_element', {
                 initialValue: Mention.toContentState(formData.rule_element),
               })(<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch}

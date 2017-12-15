@@ -66,7 +66,9 @@ export default class MainForm extends Component {
     return value;
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType } = this.props;
+    const {
+      form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType,
+    } = this.props;
     // const DECL_TYPE = ieType === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     const transMode = getFieldValue('trans_mode');
     let customerName = {
@@ -120,14 +122,12 @@ export default class MainForm extends Component {
                 {getFieldDecorator('decl_way_code', {
                   rules: [{ required: true, message: '报关类型必选' }],
                   initialValue: fieldInits.decl_way_code,
-                })(
-                  <RadioGroup>
-                    <RadioButton value={DECL_TYPE[0].key}>{DECL_TYPE[0].value}</RadioButton>
-                    <RadioButton value={DECL_TYPE[1].key}>{DECL_TYPE[1].value}</RadioButton>
-                    <RadioButton value={DECL_TYPE[2].key}>{DECL_TYPE[2].value}</RadioButton>
-                    <RadioButton value={DECL_TYPE[3].key}>{DECL_TYPE[3].value}</RadioButton>
-                  </RadioGroup>
-                  )}
+                })(<RadioGroup>
+                  <RadioButton value={DECL_TYPE[0].key}>{DECL_TYPE[0].value}</RadioButton>
+                  <RadioButton value={DECL_TYPE[1].key}>{DECL_TYPE[1].value}</RadioButton>
+                  <RadioButton value={DECL_TYPE[2].key}>{DECL_TYPE[2].value}</RadioButton>
+                  <RadioButton value={DECL_TYPE[3].key}>{DECL_TYPE[3].value}</RadioButton>
+                </RadioGroup>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
@@ -137,8 +137,7 @@ export default class MainForm extends Component {
                 })(<Select showSearch>
                   {
                     this.props.customs.map(dw =>
-                      <Option value={dw.value} key={dw.value}>{dw.text}</Option>
-                    )
+                      <Option value={dw.value} key={dw.value}>{dw.text}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -151,17 +150,15 @@ export default class MainForm extends Component {
                   }],
                   getValueFromEvent: this.handleClientChange,
                   initialValue: fieldInits.customer_name,
-                })(
-                  <Select mode="combobox" showArrow={false} optionFilterProp="search"
-                    placeholder="输入客户代码或名称"
-                  >
-                    {
+                })(<Select mode="combobox" showArrow={false} optionFilterProp="search"
+                  placeholder="输入客户代码或名称"
+                >
+                  {
                       clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
                         search={`${data.partner_code}${data.name}`}
-                      >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                      )}
-                  </Select>
-                  )}
+                      >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+                      </Option>))}
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
@@ -187,15 +184,12 @@ export default class MainForm extends Component {
                 {getFieldDecorator('trans_mode', {
                   initialValue: fieldInits.trans_mode,
                   rules: [{ required: true, message: '运输方式必选' }],
-                })(
-                  <Select>
-                    {
+                })(<Select>
+                  {
                       TRANS_MODE.map(tr =>
-                        <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                      )
+                        <Option value={tr.value} key={tr.value}>{tr.text}</Option>)
                     }
-                  </Select>
-                  )}
+                </Select>)}
               </FormItem>
             </Col>
 
@@ -235,8 +229,7 @@ export default class MainForm extends Component {
                 })(<Select>
                   {
                     GOODSTYPES.map(gt =>
-                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>
-                    )
+                      <Option value={gt.value} key={gt.value}>{gt.text}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -252,8 +245,7 @@ export default class MainForm extends Component {
                   })(<Select style={{ width: '50%' }} placeholder="选择包装方式">
                     {
                     WRAP_TYPE.map(wt =>
-                      <Option value={wt.value} key={wt.value}>{wt.text}</Option>
-                      )
+                      <Option value={wt.value} key={wt.value}>{wt.text}</Option>)
                   }
                   </Select>)}
                 </InputGroup>

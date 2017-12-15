@@ -82,7 +82,9 @@ class WarningModal extends React.Component {
   }
 
   render() {
-    const { width, title, content, iconClassType, okCancel, cancelText, okText } = this.props;
+    const {
+      width, title, content, iconClassType, okCancel, cancelText, okText,
+    } = this.props;
     return (
       <Modal maskClosable={false}
         prefixCls="ant-modal"

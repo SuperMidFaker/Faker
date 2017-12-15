@@ -107,9 +107,12 @@ export default class ResourcesList extends Component {
               <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="code"
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
           </div>

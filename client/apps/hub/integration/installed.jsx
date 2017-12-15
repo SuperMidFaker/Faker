@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Icon, Layout } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import PageHeader from 'client/components/PageHeader';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import NavLink from 'client/components/NavLink';
-import Table from 'client/components/remoteAntTable';
+import RowAction from 'client/components/RowAction';
 import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/openIntegration';
 import { formatMsg } from './message.i18n';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadInstalledApps({
@@ -38,15 +38,17 @@ export default class InstalledAppsList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('integrationName'),
     dataIndex: 'name',
-    width: 200,
+    width: 400,
   }, {
     title: this.msg('integrationAppType'),
     dataIndex: 'app_type',
-    width: 200,
     render: (app) => {
       if (app === 'EASIPASS') {
         return 'EASIPASS EDI';
@@ -59,45 +61,29 @@ export default class InstalledAppsList extends React.Component {
       }
     },
   }, {
-    title: this.msg('incomingStatus'),
-    dataIndex: 'incoming_status',
-    width: 200,
-    render: () => '正常',
-  }, {
-    title: this.msg('outgoingStatus'),
-    dataIndex: 'outgoing_status',
-    width: 200,
-    render: () => '正常',
-  }, {
     title: this.msg('opColumn'),
-    width: 120,
+    dataIndex: 'OP_COL',
+    width: 160,
     render: (txt, row) => {
-      if (!row.enabled) {
-        return (<span>
-          <a onClick={() => this.handleAppEnable(row)}>启用</a>
-          <span className="ant-divider" />
-          <a onClick={() => this.handleAppDelete(row)}><Icon type="delete" /></a>
-        </span>);
-      } else {
-        let configLink = null;
-        if (row.app_type === 'EASIPASS') {
-          configLink = <NavLink to={`/hub/integration/easipass/config/${row.uuid}`}>配置</NavLink>;
-        } else if (row.app_type === 'ARCTM') {
-          configLink = <NavLink to={`/hub/integration/arctm/config/${row.uuid}`}>配置</NavLink>;
-        } else if (row.app_type === 'SHFTZ') {
-          configLink = <NavLink to={`/hub/integration/shftz/config/${row.uuid}`}>配置</NavLink>;
-        } else if (row.app_type === 'SHUNFENG') {
-          configLink = <NavLink to={`/hub/integration/shunfeng/config/${row.uuid}`}>配置</NavLink>;
-        }
-        return (<span>
-          {configLink}
-          <span className="ant-divider" />
-          <a onClick={() => this.handleAppDisable(row)}>停用</a>
-        </span>);
+      let appType = null;
+      if (row.app_type === 'EASIPASS') {
+        appType = 'easipass';
+      } else if (row.app_type === 'ARCTM') {
+        appType = 'arctm';
+      } else if (row.app_type === 'SHFTZ') {
+        appType = 'shftz';
+      } else if (row.app_type === 'SHUNFENG') {
+        appType = 'shunfeng';
       }
+      return (<span>
+        <RowAction onClick={() => this.handleAppConfig(row, appType)} icon="setting" label="配置" />
+        {row.enabled ? <RowAction onClick={this.handleAppDisable} icon="pause-circle" tooltip="停用" row={row} /> :
+        <RowAction onClick={this.handleAppEnable} icon="play-circle" tooltip="启用" row={row} />}
+        <RowAction confirm="确定删除？" onConfirm={this.handleAppDelete} icon="delete" />
+      </span>);
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadInstalledApps(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -162,27 +148,26 @@ export default class InstalledAppsList extends React.Component {
       }
     });
   }
+  handleAppConfig = (row, appType) => {
+    const link = `/hub/integration/${appType}/config/${row.uuid}`;
+    this.context.router.push(link);
+  }
   render() {
     const { loading, applist } = this.props;
     this.dataSource.remotes = applist;
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Icon type="appstore-o" /> {this.msg('integration')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools" />
-        </Header>
-        <Content className="main-content">
-          <QueueAnim type="right">
-            <div className="page-body" key="body">
-              <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" />
-              </div>
-            </div>
-          </QueueAnim>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Icon type="appstore-o" /> {this.msg('integration')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+        </PageHeader>
+        <Content className="page-content">
+          <DataTable columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" />
         </Content>
       </div>
     );

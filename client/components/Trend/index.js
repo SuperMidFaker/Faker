@@ -3,7 +3,9 @@ import { Icon } from 'antd';
 import classNames from 'classnames';
 import './index.less';
 
-const Trend = ({ flag, children, className, ...rest }) => {
+const Trend = ({
+  flag, children, className, ...rest
+}) => {
   const classString = classNames('welo-trend', {
   }, className);
   return (

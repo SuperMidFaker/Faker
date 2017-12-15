@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Button } from 'antd';
 import { CONTAINER_PACKAGE_TYPE } from 'common/constants';
@@ -9,7 +9,9 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 function IntervalSelect(props) {
-  const { index, ctn, readonly, onChange, onRemove } = props;
+  const {
+    index, ctn, readonly, onChange, onRemove,
+  } = props;
   function handleRemove() {
     onRemove(index);
   }
@@ -22,8 +24,7 @@ function IntervalSelect(props) {
         <Select disabled={readonly} value={ctn} onChange={handleChange}>
           {
             CONTAINER_PACKAGE_TYPE.map(cpt =>
-              <Option key={cpt.key} value={cpt.id}>{cpt.value}</Option>
-            )
+              <Option key={cpt.key} value={cpt.id}>{cpt.value}</Option>)
           }
         </Select>
       </Col>
@@ -45,11 +46,9 @@ IntervalSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-@connect(
-  state => ({
-    intervals: state.transportTariff.agreement.intervals,
-  })
-)
+@connect(state => ({
+  intervals: state.transportTariff.agreement.intervals,
+}))
 export default class PricingLTL extends React.Component {
   static propTypes = {
     readonly: PropTypes.bool,
@@ -89,13 +88,12 @@ export default class PricingLTL extends React.Component {
     const { intervals } = this.state;
     const { formItemLayout, readonly } = this.props;
     for (let i = 0; i < intervals.length; i++) {
-      items.push(
-        <IntervalSelect index={i} ctn={intervals[i]}
-          readonly={readonly}
-          onRemove={this.handleLimitRemove}
-          onChange={this.handleLimitChange}
-          key={`vehicle-length-type-${i}`}
-        />);
+      items.push(<IntervalSelect index={i} ctn={intervals[i]}
+        readonly={readonly}
+        onRemove={this.handleLimitRemove}
+        onChange={this.handleLimitChange}
+        key={`vehicle-length-type-${i}`}
+      />);
     }
     return (
       <Col sm={12}>

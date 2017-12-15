@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
@@ -69,7 +69,9 @@ export default class SHFTZEntryList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'bonded', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'bonded', ownerView,
+    };
     this.handleEntryListLoad(null, null, filter);
   }
   componentWillReceiveProps(nextprops) {
@@ -175,7 +177,9 @@ export default class SHFTZEntryList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
+    render: (o, record) => record.status === 0 ?
+      <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -272,9 +276,9 @@ export default class SHFTZEntryList extends React.Component {
         {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
           search={`${data.partner_code}${data.name}`}
         >{data.name}
-        </Option>)
-          )}
-      </Select></span>);
+        </Option>))}
+      </Select>
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -282,7 +286,7 @@ export default class SHFTZEntryList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

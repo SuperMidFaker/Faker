@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openBatchDeclModal, loadBatchApplyList, batchDelgCancel } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -34,7 +34,9 @@ const RadioButton = Radio.Button;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList, batchDelgCancel }
+  {
+    openBatchDeclModal, switchDefaultWhse, loadBatchApplyList, batchDelgCancel,
+  }
 )
 @connectNav({
   depth: 2,
@@ -192,15 +194,13 @@ export default class BatchDeclList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 160,
+    width: 100,
     fixed: 'right',
     render: (o, record) => (<span>
-      <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
-      {record.status === 'manifest' && <span className="ant-divider" />}
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
       {record.status === 'manifest' &&
-      <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
-        <a>取消委托</a>
-      </Popconfirm>}</span>),
+      <RowAction confirm="确认取消委托?" onConfirm={this.handleDelgCancel} icon="close-circle-o" tooltip="取消报关委托" row={record} />}
+    </span>),
   }]
 
   dataSource = new DataTable.DataSource({
@@ -304,8 +304,7 @@ export default class BatchDeclList extends React.Component {
         {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
           search={`${data.partner_code}${data.name}`}
         >{data.name}
-        </Option>)
-          )}
+        </Option>))}
       </Select>
     </span>);
     return (
@@ -315,7 +314,7 @@ export default class BatchDeclList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

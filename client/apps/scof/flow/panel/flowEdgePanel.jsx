@@ -22,7 +22,9 @@ export default class FlowEdgePanel extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { model, source, target, onAdd, onDel, onUpdate } = this.props;
+    const {
+      model, source, target, onAdd, onDel, onUpdate,
+    } = this.props;
     return (
       <Form layout="vertical" className="form-layout-compact">
         <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
@@ -48,7 +50,8 @@ export default class FlowEdgePanel extends Component {
                   <Option value="all">所有</Option>
                   <Option value="any">任一</Option>
                 </Select>
-                条件</span>}
+                条件
+              </span>}
               >
                 <ConditionTable conditions={model.conditions} bizObjects={NODE_BIZ_OBJECTS[source.kind]}
                   onAdd={onAdd} onUpdate={onUpdate} onDel={onDel}

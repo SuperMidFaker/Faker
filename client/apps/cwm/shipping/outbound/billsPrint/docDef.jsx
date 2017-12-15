@@ -28,40 +28,57 @@ function pdfBody(data) {
   }
   let pdfcontent = [];
   const imgE = false;
-  const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
+  const titleBody = [{
+    image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false],
+  }];
   if (expressInfo.added_services && expressInfo.added_services.indexOf('COD') >= 0) {
-    titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({
+      image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false],
+    });
   } else {
     titleBody.push({ text: '', border: [false, true, false, false] });
   }
   if (imgE) {
-    titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({
+      image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false],
+    });
   } else {
     titleBody.push({ text: '', border: [false, true, false, false] });
   }
-  titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
+  titleBody.push({
+    image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false],
+  });
   const receiverAddr = `${expressInfo.receiver_contact} ${expressInfo.receiver_phone}\n${Location.renderConsignLocation(expressInfo, 'receiver', '')}${expressInfo.receiver_address}`;
   const senderAddr = `${expressInfo.sender_contact} ${expressInfo.sender_phone}\n${Location.renderConsignLocation(expressInfo, 'sender', '')}${expressInfo.sender_address}`;
   pdfcontent = [
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['25%', '35%', '15%', '25%'],
         body: [titleBody],
       },
     },
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
-            { text: expressInfo.express_type, fontSize: 12, alignment: 'center' }],
-          ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
-          [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
+          [{
+            rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false],
+          },
+          { text: expressInfo.express_type, fontSize: 12, alignment: 'center' }],
+          ['', {
+            rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true],
+          }],
+          [{
+            text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true],
+          }, ''],
         ],
       },
     },
     // 代收货款\n卡号：0123456789\n¥3000元
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['2%', '98%'],
         body: [
@@ -79,7 +96,8 @@ function pdfBody(data) {
       },
     },
   ];
-  const detailTab = { style: 'table',
+  const detailTab = {
+    style: 'table',
     table: {
       widths: ['25%', '25%', '25%', '25%'],
       body: [
@@ -103,53 +121,55 @@ function pdfBody(data) {
     },
   };
   pdfcontent.push(detailTab);
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['2%', '58%', '20%', '20%'],
-        body: [
-          [{ rowSpan: 2, text: '托寄物' }, { rowSpan: 2, colSpan: 2, text: expressInfo.product_name, alignment: 'center', fontSize: 12 }, '',
-          { text: '', fontSize: 10, alignment: 'center', border: [true, true, true, false] }],
-          ['', '', '', { text: '自寄 自取', alignment: 'center', border: [true, false, true, false] }],
-          [{ rowSpan: 2, text: '备注' }, { text: '', rowSpan: 2 }, { rowSpan: 2, text: '收件员：\n寄件日期：\n派件员：' },
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['2%', '58%', '20%', '20%'],
+      body: [
+        [{ rowSpan: 2, text: '托寄物' }, {
+          rowSpan: 2, colSpan: 2, text: expressInfo.product_name, alignment: 'center', fontSize: 12,
+        }, '',
+        {
+          text: '', fontSize: 10, alignment: 'center', border: [true, true, true, false],
+        }],
+        ['', '', '', { text: '自寄 自取', alignment: 'center', border: [true, false, true, false] }],
+        [{ rowSpan: 2, text: '备注' }, { text: '', rowSpan: 2 }, { rowSpan: 2, text: '收件员：\n寄件日期：\n派件员：' },
           { text: '签名', border: [true, true, true, false] }],
-          ['', '', '', { text: '月     日', alignment: 'right', border: [true, false, true, true] }],
-        ],
-      },
-    }
-  );
-  pdfcontent.push(
-    { table: {
+        ['', '', '', { text: '月     日', alignment: 'right', border: [true, false, true, true] }],
+      ],
+    },
+  });
+  pdfcontent.push({
+    table: {
       widths: ['30%', '70%'],
       body: [
         [{ image: data.sf3, width: 70, alignment: 'center' },
-        { image: barcode1, width: 150, alignment: 'center' }],
+          { image: barcode1, width: 150, alignment: 'center' }],
       ],
     },
-    }
-  );
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['2%', '98%'],
-        body: [
-          [{
-            text: '收件人',
-            border: [true, false, true, false],
-          }, {
-            text: receiverAddr,
-            fontSize: 12,
-            border: [true, false, true, false],
-          }],
-          ['寄件人', { text: senderAddr, fontSize: 12 }],
-        ],
-      },
-      layout: {
-        paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
-      },
-    }
-  );
-  const detailTab2 = { style: 'table',
+  });
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['2%', '98%'],
+      body: [
+        [{
+          text: '收件人',
+          border: [true, false, true, false],
+        }, {
+          text: receiverAddr,
+          fontSize: 12,
+          border: [true, false, true, false],
+        }],
+        ['寄件人', { text: senderAddr, fontSize: 12 }],
+      ],
+    },
+    layout: {
+      paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
+    },
+  });
+  const detailTab2 = {
+    style: 'table',
     table: {
       widths: ['25%', '25%', '25%', '25%'],
       body: [
@@ -173,16 +193,15 @@ function pdfBody(data) {
     },
   };
   pdfcontent.push(detailTab2);
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['100%'],
-        body: [
-          [{ text: '客户自定义内容\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域', alignment: 'center' }],
-        ],
-      },
-    }
-  );
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['100%'],
+      body: [
+        [{ text: '客户自定义内容\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域', alignment: 'center' }],
+      ],
+    },
+  });
   return pdfcontent;
 }
 
@@ -221,47 +240,68 @@ function TrigeminyList(data) {
   }
   let pdfcontent = [];
   const imgE = false;
-  const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
+  const titleBody = [{
+    image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false],
+  }];
   if (expressInfo.added_services && expressInfo.added_services.indexOf('COD') >= 0) {
-    titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({
+      image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false],
+    });
   } else {
     titleBody.push({ text: '', border: [false, true, false, false] });
   }
   if (imgE) {
-    titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({
+      image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false],
+    });
   } else {
     titleBody.push({ text: '', border: [false, true, false, false] });
   }
-  titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
+  titleBody.push({
+    image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false],
+  });
   const receiverAddr = `${expressInfo.receiver_contact} ${expressInfo.receiver_phone}\n${Location.renderConsignLocation(expressInfo, 'receiver', '')}${expressInfo.receiver_address}`;
   const senderAddr = `${expressInfo.sender_contact} ${expressInfo.sender_phone}\n${Location.renderConsignLocation(expressInfo, 'sender', '')}${expressInfo.sender_address}`;
   pdfcontent = [
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['25%', '35%', '15%', '25%'],
         body: [titleBody],
         heights: [42],
       },
     },
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ rowSpan: 2, image: barcode0, width: 200, margin: [0, 5], alignment: 'center', border: [true, true, true, false] },
-            { text: expressInfo.express_type, fontSize: 12, margin: [0, 5], alignment: 'center' }],
-          ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
-          [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
+          [{
+            rowSpan: 2, image: barcode0, width: 200, margin: [0, 5], alignment: 'center', border: [true, true, true, false],
+          },
+          {
+            text: expressInfo.express_type, fontSize: 12, margin: [0, 5], alignment: 'center',
+          }],
+          ['', {
+            rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true],
+          }],
+          [{
+            text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true],
+          }, ''],
         ],
         heights: [20, 20, 13],
       },
     },
     // 代收货款\n卡号：0123456789\n¥3000元
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['3%', '75.5%', '21.5%'],
         body: [
           // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
-          [{ text: '目的地', fontSize: 9, border: [true, false] }, { colSpan: 2, text: expressInfo.destcode, fontSize: 18, border: [true, false, true] }, ''],
+          [{ text: '目的地', fontSize: 9, border: [true, false] }, {
+            colSpan: 2, text: expressInfo.destcode, fontSize: 18, border: [true, false, true],
+          }, ''],
           [{ text: '收件人', fontSize: 9 }, { colSpan: 2, text: receiverAddr, fontSize: 12 }, ''],
           [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }, { text: '定时派送\n自寄自取', fontSize: 12, alignment: 'center' }],
         ],
@@ -272,14 +312,17 @@ function TrigeminyList(data) {
       },
     },
   ];
-  const detailTab = { style: 'table',
+  const detailTab = {
+    style: 'table',
     table: {
       widths: ['26%', '26%', '26%', '22%'],
       body: [
         [{ text: `付款方式：${expressInfo.pay_method}`, fontSize: 7, border: [true, false, false, false] },
           { text: '计费重量：', fontSize: 7, border: [false, false, false, false] },
           { text: '运费：', fontSize: 7, border: [false, false, false, false] },
-          { rowSpan: 4, text: '签名', fontSize: 7, border: [true, false, true] }],
+          {
+            rowSpan: 4, text: '签名', fontSize: 7, border: [true, false, true],
+          }],
         [{ text: `月结账号：${expressInfo.custid}`, fontSize: 7, border: [true, false, false, false] },
           { text: '费用合计：', fontSize: 7, border: [false, false, false, false] },
           { text: '', fontSize: 7, border: [false, false, false, false] },
@@ -297,65 +340,20 @@ function TrigeminyList(data) {
     },
   };
   pdfcontent.push(detailTab);
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['3%', '55%', '20%', '22%'],
-        body: [
-          [{ text: '托寄物', fontSize: 9 }, { text: expressInfo.product_name, alignment: 'center', fontSize: 12 },
-            { text: '收件员：\n寄件日期：\n派件员：' },
-            { text: '\n\n月     日', alignment: 'right', border: [true, false, true, true] }],
-        ],
-        heights: [35],
-      },
-    }
-  );
-  pdfcontent.push(
-    { table: {
-      widths: ['30%', '70%'],
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['3%', '55%', '20%', '22%'],
       body: [
-        [{ image: data.sf3, width: 70, alignment: 'center' },
-            { image: barcode1, width: 150, alignment: 'center' }],
+        [{ text: '托寄物', fontSize: 9 }, { text: expressInfo.product_name, alignment: 'center', fontSize: 12 },
+          { text: '收件员：\n寄件日期：\n派件员：' },
+          { text: '\n\n月     日', alignment: 'right', border: [true, false, true, true] }],
       ],
-      heights: [60],
+      heights: [35],
     },
-    }
-  );
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['3%', '97%'],
-        body: [
-          [{
-            text: '收件人', fontSize: 9, border: [true, false, true, false],
-          }, {
-            text: receiverAddr,
-            fontSize: 12,
-            border: [true, false, true, false],
-          }],
-          [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
-        ],
-        heights: [40, 40],
-      },
-      layout: {
-        paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
-      },
-    }
-  );
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['100%'],
-        body: [
-          [{ text: '订单号：', fontSize: 9, alignment: 'left', border: [true, false, true, false] }],
-          [{ text: '内物数量：', fontSize: 9, alignment: 'left', border: [true, false, true, false] }],
-        ],
-        heights: [39, 39],
-      },
-    }
-  );
-  pdfcontent.push(
-    { table: {
+  });
+  pdfcontent.push({
+    table: {
       widths: ['30%', '70%'],
       body: [
         [{ image: data.sf3, width: 70, alignment: 'center' },
@@ -363,41 +361,83 @@ function TrigeminyList(data) {
       ],
       heights: [60],
     },
-    }
-  );
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['3%', '97%'],
-        body: [
-          [{
-            text: '收件人', fontSize: 9, border: [true, false, true, false],
-          }, {
-            text: receiverAddr,
-            fontSize: 12,
-            border: [true, false, true, false],
-          }],
-          [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
-        ],
-        heights: [40, 40],
-      },
-      layout: {
-        paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
-      },
-    }
-  );
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['50%', '50%'],
-        body: [
-          [{ text: [{ text: '订单号:\n\n\n', fontSize: 9 }, { text: '计费重量:', fontSize: 9 }], border: [true, false, false, true] },
-              { text: [{ text: '内物数量:\n\n\n', fontSize: 9 }, { text: '费用合计:', fontSize: 9 }], border: [false, false, true, true] }],
-        ],
-        heights: [80],
-      },
-    }
-  );
+  });
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['3%', '97%'],
+      body: [
+        [{
+          text: '收件人', fontSize: 9, border: [true, false, true, false],
+        }, {
+          text: receiverAddr,
+          fontSize: 12,
+          border: [true, false, true, false],
+        }],
+        [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
+      ],
+      heights: [40, 40],
+    },
+    layout: {
+      paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
+    },
+  });
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['100%'],
+      body: [
+        [{
+          text: '订单号：', fontSize: 9, alignment: 'left', border: [true, false, true, false],
+        }],
+        [{
+          text: '内物数量：', fontSize: 9, alignment: 'left', border: [true, false, true, false],
+        }],
+      ],
+      heights: [39, 39],
+    },
+  });
+  pdfcontent.push({
+    table: {
+      widths: ['30%', '70%'],
+      body: [
+        [{ image: data.sf3, width: 70, alignment: 'center' },
+          { image: barcode1, width: 150, alignment: 'center' }],
+      ],
+      heights: [60],
+    },
+  });
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['3%', '97%'],
+      body: [
+        [{
+          text: '收件人', fontSize: 9, border: [true, false, true, false],
+        }, {
+          text: receiverAddr,
+          fontSize: 12,
+          border: [true, false, true, false],
+        }],
+        [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
+      ],
+      heights: [40, 40],
+    },
+    layout: {
+      paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
+    },
+  });
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['50%', '50%'],
+      body: [
+        [{ text: [{ text: '订单号:\n\n\n', fontSize: 9 }, { text: '计费重量:', fontSize: 9 }], border: [true, false, false, true] },
+          { text: [{ text: '内物数量:\n\n\n', fontSize: 9 }, { text: '费用合计:', fontSize: 9 }], border: [false, false, true, true] }],
+      ],
+      heights: [80],
+    },
+  });
   return pdfcontent;
 }
 
@@ -426,34 +466,49 @@ function podPdfBody(data) {
   let pdfcontent = [];
   const imgCod = true; // 判断是否需要显示COD E 的字段
 
-  const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
+  const titleBody = [{
+    image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false],
+  }];
   if (imgCod) {
-    titleBody.push({ image: data.pod, width: 70, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({
+      image: data.pod, width: 70, alignment: 'center', border: [false, true, false, false],
+    });
   } else {
     titleBody.push({ text: '', border: [false, true, false, false] });
   }
-  titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
+  titleBody.push({
+    image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false],
+  });
   const receiverAddr = `${expressInfo.receiver_contact} ${expressInfo.receiver_phone}\n${Location.renderConsignLocation(expressInfo, 'receiver', '')}${expressInfo.receiver_address}`;
   const senderAddr = `${expressInfo.sender_contact} ${expressInfo.sender_phone}\n${Location.renderConsignLocation(expressInfo, 'sender', '')}${expressInfo.sender_address}`;
   pdfcontent = [
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['25%', '50%', '25%'],
         body: [titleBody],
       },
     },
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
-            { text: '签单返还', fontSize: 12, alignment: 'center' }],
-          ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
-          [{ text: '', fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
+          [{
+            rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false],
+          },
+          { text: '签单返还', fontSize: 12, alignment: 'center' }],
+          ['', {
+            rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true],
+          }],
+          [{
+            text: '', fontSize: 9, alignment: 'center', border: [true, false, true, true],
+          }, ''],
         ],
       },
     },
-    { style: 'table',
+    {
+      style: 'table',
       table: {
         widths: ['2%', '98%'],
         body: [
@@ -471,7 +526,8 @@ function podPdfBody(data) {
       },
     },
   ];
-  const detailTab = { style: 'table',
+  const detailTab = {
+    style: 'table',
     table: {
       widths: ['25%', '25%', '25%', '25%'],
       body: [
@@ -495,53 +551,55 @@ function podPdfBody(data) {
     },
   };
   pdfcontent.push(detailTab);
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['2%', '58%', '20%', '20%'],
-        body: [
-          [{ rowSpan: 2, text: '托寄物' }, { rowSpan: 2, colSpan: 2, text: expressInfo.product_name, alignment: 'center', fontSize: 12 }, '',
-          { text: '', fontSize: 10, alignment: 'center', border: [true, true, true, false] }],
-          ['', '', '', { text: '自寄 自取', alignment: 'center', border: [true, false, true, false] }],
-          [{ rowSpan: 2, text: '备注' }, { text: '', rowSpan: 2 }, { rowSpan: 2, text: '收件员：\n寄件日期：\n派件员：' },
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['2%', '58%', '20%', '20%'],
+      body: [
+        [{ rowSpan: 2, text: '托寄物' }, {
+          rowSpan: 2, colSpan: 2, text: expressInfo.product_name, alignment: 'center', fontSize: 12,
+        }, '',
+        {
+          text: '', fontSize: 10, alignment: 'center', border: [true, true, true, false],
+        }],
+        ['', '', '', { text: '自寄 自取', alignment: 'center', border: [true, false, true, false] }],
+        [{ rowSpan: 2, text: '备注' }, { text: '', rowSpan: 2 }, { rowSpan: 2, text: '收件员：\n寄件日期：\n派件员：' },
           { text: '签名', border: [true, true, true, false] }],
-          ['', '', '', { text: '月     日', alignment: 'right', border: [true, false, true, true] }],
-        ],
-      },
-    }
-  );
-  pdfcontent.push(
-    { table: {
+        ['', '', '', { text: '月     日', alignment: 'right', border: [true, false, true, true] }],
+      ],
+    },
+  });
+  pdfcontent.push({
+    table: {
       widths: ['30%', '70%'],
       body: [
         [{ image: data.sf3, width: 70, alignment: 'center' },
-        { image: barcode1, width: 150, alignment: 'center' }],
+          { image: barcode1, width: 150, alignment: 'center' }],
       ],
     },
-    }
-  );
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['2%', '98%'],
-        body: [
-          [{
-            text: '收件人',
-            border: [true, false, true, false],
-          }, {
-            text: senderAddr,
-            fontSize: 12,
-            border: [true, false, true, false],
-          }],
-          ['寄件人', { text: receiverAddr, fontSize: 12 }],
-        ],
-      },
-      layout: {
-        paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
-      },
-    }
-  );
-  const detailTab2 = { style: 'table',
+  });
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['2%', '98%'],
+      body: [
+        [{
+          text: '收件人',
+          border: [true, false, true, false],
+        }, {
+          text: senderAddr,
+          fontSize: 12,
+          border: [true, false, true, false],
+        }],
+        ['寄件人', { text: receiverAddr, fontSize: 12 }],
+      ],
+    },
+    layout: {
+      paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
+    },
+  });
+  const detailTab2 = {
+    style: 'table',
     table: {
       widths: ['25%', '25%', '25%', '25%'],
       body: [
@@ -565,16 +623,15 @@ function podPdfBody(data) {
     },
   };
   pdfcontent.push(detailTab2);
-  pdfcontent.push(
-    { style: 'table',
-      table: {
-        widths: ['100%'],
-        body: [
-          [{ text: '客户自定义内容\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域', alignment: 'center' }],
-        ],
-      },
-    }
-  );
+  pdfcontent.push({
+    style: 'table',
+    table: {
+      widths: ['100%'],
+      body: [
+        [{ text: '客户自定义内容\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域', alignment: 'center' }],
+      ],
+    },
+  });
   return pdfcontent;
 }
 

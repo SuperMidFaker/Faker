@@ -28,7 +28,9 @@ function fetchData({ dispatch, state }) {
     tenantId: state.account.tenantId,
     transportModes: state.transportSettings.transportModes,
   }),
-  { loadTransportModes, removeTransportMode, addTransportMode, updateTransportMode }
+  {
+    loadTransportModes, removeTransportMode, addTransportMode, updateTransportMode,
+  }
 )
 @connectNav({
   depth: 2,
@@ -151,14 +153,16 @@ export default class TransportModes extends Component {
               return (<a onClick={() => {
                 this.setState({ editId: row.id });
               }}
-              ><Icon type="plus" /></a>);
+              ><Icon type="plus" />
+              </a>);
             } else {
               return (
                 <span>
                   <a onClick={() => {
                     this.setState({ editId: row.id });
                   }}
-                  ><Icon type="edit" /></a>
+                  ><Icon type="edit" />
+                  </a>
                   <span className="ant-divider" />
                   <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
                     <a role="presentation"><Icon type="delete" /></a>

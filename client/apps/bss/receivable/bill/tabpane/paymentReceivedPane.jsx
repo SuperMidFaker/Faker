@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Icon } from 'antd';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -78,11 +78,11 @@ export default class PaymentReceivedPane extends Component {
       fixed: 'right',
       render: (o, record) => (
         <span>
-          <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />} row={record} />
+          <RowAction onClick={this.handleEdit} label={<Icon type="edit" />} row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
+          <RowAction onClick={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
         </span>
-        ),
+      ),
     }];
     return (
       <DataPane fullscreen={this.props.fullscreen}

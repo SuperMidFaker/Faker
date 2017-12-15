@@ -9,23 +9,23 @@ import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
-    state => ({
-      units: state.cwmShFtz.params.units.map(un => ({
-        value: un.unit_code,
-        text: un.unit_name,
-      })),
-      currencies: state.cwmShFtz.params.currencies.map(cr => ({
-        value: cr.curr_code,
-        text: cr.curr_name,
-      })),
-      tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
-        value: tc.cntry_co,
-        text: tc.cntry_name_cn,
-      })),
-      cusStockSnapshot: state.cwmShFtz.cusStockSnapshot,
-    }),
-    { loadCusStockSnapshot }
-  )
+  state => ({
+    units: state.cwmShFtz.params.units.map(un => ({
+      value: un.unit_code,
+      text: un.unit_name,
+    })),
+    currencies: state.cwmShFtz.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+    })),
+    tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
+    cusStockSnapshot: state.cwmShFtz.cusStockSnapshot,
+  }),
+  { loadCusStockSnapshot }
+)
 export default class FTZStockPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

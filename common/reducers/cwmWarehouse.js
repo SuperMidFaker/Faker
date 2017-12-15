@@ -56,6 +56,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
   'AUTHORIZE_BROKER', 'AUTHORIZE_BROKER_SUCCEED', 'AUTHORIZE_BROKER_FAIL',
   'LOAD_BRKP', 'LOAD_BRKP_SUCCEED', 'LOAD_BRKP_FAIL',
+  'LOAD_CUSTOMERS', 'LOAD_CUSTOMERS_SUCCEED', 'LOAD_CUSTOMERS_FAIL',
 ]);
 
 const initialState = {
@@ -110,6 +111,7 @@ const initialState = {
     broker: {},
   },
   brokerPartners: [],
+  customs: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -174,6 +176,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, CCBs: action.result.data };
     case actionTypes.LOAD_BRKP_SUCCEED:
       return { ...state, brokerPartners: action.result.data };
+    case actionTypes.LOAD_CUSTOMERS_SUCCEED:
+      return { ...state, customs: action.result.data };
     default:
       return state;
   }
@@ -289,7 +293,9 @@ export function addLocation(whseCode, zoneCode, location, type, status, loginId)
       ],
       endpoint: 'v1/cwm/warehouse/location/add',
       method: 'get',
-      params: { whseCode, zoneCode, location, type, status, loginId },
+      params: {
+        whseCode, zoneCode, location, type, status, loginId,
+      },
     },
   };
 }
@@ -334,7 +340,9 @@ export function updateLocation(type, status, location, id, loginId) {
       ],
       endpoint: 'v1/cwm/warehouse/location/update',
       method: 'get',
-      params: { type, status, location, id, loginId },
+      params: {
+        type, status, location, id, loginId,
+      },
     },
   };
 }
@@ -364,7 +372,9 @@ export function updateZone(whseCode, zoneCode, id, zoneName) {
       ],
       endpoint: 'v1/cwm/warehouse/zone/update',
       method: 'get',
-      params: { whseCode, zoneCode, id, zoneName },
+      params: {
+        whseCode, zoneCode, id, zoneName,
+      },
     },
   };
 }
@@ -701,7 +711,9 @@ export function addSupplier(data, whseCode, loginId, ownerTenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/supplier/add',
       method: 'post',
-      data: { data, whseCode, loginId, ownerTenantId },
+      data: {
+        data, whseCode, loginId, ownerTenantId,
+      },
     },
   };
 }
@@ -783,7 +795,9 @@ export function addCarrier(data, whseCode, loginId, ownerTenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/carrier/add',
       method: 'post',
-      data: { data, whseCode, loginId, ownerTenantId },
+      data: {
+        data, whseCode, loginId, ownerTenantId,
+      },
     },
   };
 }
@@ -865,7 +879,9 @@ export function addBroker(data, whseCode, loginId, partnerTenantId, partnerCode)
       ],
       endpoint: 'v1/cwm/warehouse/broker/add',
       method: 'post',
-      data: { data, whseCode, loginId, partnerTenantId, partnerCode },
+      data: {
+        data, whseCode, loginId, partnerTenantId, partnerCode,
+      },
     },
   };
 }
@@ -941,6 +957,20 @@ export function authorizeBroker(value, whseCode, partnerId) {
       endpoint: 'v1/cwm/authorize/broker',
       method: 'post',
       data: { value, whseCode, partnerId },
+    },
+  };
+}
+
+export function loadCustoms() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CUSTOMERS,
+        actionTypes.LOAD_CUSTOMERS_SUCCEED,
+        actionTypes.LOAD_CUSTOMERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/customs/get',
+      method: 'get',
     },
   };
 }

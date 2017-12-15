@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_REPOS', 'LOAD_REPOS_SUCCEED', 'LOAD_REPOS_FAIL',
+  'LOAD_REPO', 'LOAD_REPO_SUCCEED', 'LOAD_REPO_FAIL',
   'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
   'CREATE_REPO', 'CREATE_REPO_SUCCEED', 'CREATE_REPO_FAIL',
   'DELETE_REPO', 'DELETE_REPO_SUCCEED', 'DELETE_REPO_FAIL',
@@ -28,13 +29,36 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
   'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
+  'SHOW_LINKSLAVE',
+  'LOAD_LINKEDSLAVES', 'LOAD_LINKEDSLAVES_SUCCEED', 'LOAD_LINKEDSLAVES_FAIL',
+  'LOAD_OWNSLAVES', 'LOAD_OWNSLAVES_SUCCEED', 'LOAD_OWNSLAVES_FAIL',
+  'LINK_MASTERSLAVE', 'LINK_MASTERSLAVE_SUCCEED', 'LINK_MASTERSLAVE_FAIL',
+  'UNLINK_MASTERSLAVE', 'UNLINK_MASTERSLAVE_SUCCEED', 'UNLINK_MASTERSLAVE_FAIL',
+  'SAVE_REPOITM', 'SAVE_REPOITM_SUCCEED', 'SAVE_REPOITM_FAIL',
+  'SAVE_REPOFKITM', 'SAVE_REPOFKITM_SUCCEED', 'SAVE_REPOFKITM_FAIL',
+  'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'REPLICA_MASTERSLAVE', 'REPLICA_MASTERSLAVE_SUCCEED', 'REPLICA_MASTERSLAVE_FAIL',
+  'LOAD_WSSTAT', 'LOAD_WSSTAT_SUCCEED', 'LOAD_WSSTAT_FAIL',
+  'LOAD_WSTASKLIST', 'LOAD_WSTASKLIST_SUCCEED', 'LOAD_WSTASKLIST_FAIL',
+  'LOAD_WSTASK', 'LOAD_WSTASK_SUCCEED', 'LOAD_WSTASK_FAIL',
+  'DEL_WSTASK', 'DEL_WSTASK_SUCCEED', 'DEL_WSTASK_FAIL',
+  'LOAD_TEITEMS', 'LOAD_TEITEMS_SUCCEED', 'LOAD_TEITEMS_FAIL',
+  'LOAD_TCITEMS', 'LOAD_TCITEMS_SUCCEED', 'LOAD_TCITEMS_FAIL',
+  'LOAD_WSLITEMS', 'LOAD_WSLITEMS_SUCCEED', 'LOAD_WSLITEMS_FAIL',
+  'LOAD_WSITEM', 'LOAD_WSITEM_SUCCEED', 'LOAD_WSITEM_FAIL',
+  'SAVE_WSITEM', 'SAVE_WSITEM_SUCCEED', 'SAVE_WSITEM_FAIL',
+  'DEL_WSLITEMS', 'DEL_WSLITEMS_SUCCEED', 'DEL_WSLITEMS_FAIL',
+  'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
+  'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
+  'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
 ]);
 
 const initialState = {
+  submitting: false,
   reposLoading: false,
   tradeItemsLoading: false,
   listFilter: {
-    status: 'pending',
+    status: 'master',
     sortField: '',
     sortOrder: '',
   },
@@ -53,6 +77,7 @@ const initialState = {
   },
   visibleAddModal: false,
   repos: [],
+  reposLoaded: false,
   tradeCodes: [],
   tabKey: 'copCodes',
   repoId: null,
@@ -67,7 +92,39 @@ const initialState = {
   bodyHscode: {},
   hstabKey: 'declunit',
   repo: {},
+  repoLoading: false,
   visibleCompareModal: false,
+  linkSlaveModal: {
+    visible: false,
+    masterRepo: {},
+    slaves: [],
+  },
+  workspaceStat: {
+    task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {},
+  },
+  wsStatReload: false,
+  workspaceLoading: false,
+  workspaceTaskList: [],
+  workspaceTask: { id: '' },
+  taskEmergeList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  taskConflictList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  workspaceItemList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  workspaceItem: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -75,9 +132,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_REPOS:
       return { ...state, reposLoading: true };
     case actionTypes.LOAD_REPOS_SUCCEED:
-      return { ...state, repos: action.result.data, reposLoading: false };
+      return {
+        ...state, repos: action.result.data, reposLoading: false, reposLoaded: true,
+      };
     case actionTypes.LOAD_REPOS_FAIL:
       return { ...state, reposLoading: false };
+    case actionTypes.LOAD_REPO:
+      return { ...state, repoLoading: true };
+    case actionTypes.LOAD_REPO_SUCCEED:
+      return { ...state, repo: action.result.data, repoLoading: false };
+    case actionTypes.LOAD_REPO_FAIL:
+      return { ...state, repoLoading: false };
     case actionTypes.OPEN_ADD_MODEL:
       return { ...state, visibleAddModal: true };
     case actionTypes.CLOSE_ADD_MODEL:
@@ -91,7 +156,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRADE_ITEMS:
       return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
-      return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
+      return {
+        ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false,
+      };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
     case actionTypes.LOAD_PARAMS_SUCCEED:
@@ -110,6 +177,65 @@ export default function reducer(state = initialState, action) {
       return { ...state, repoUsers: action.result.data };
     case actionTypes.LOAD_TEMP_ITEMS_SUCCEED:
       return { ...state, tempItems: action.result.data };
+    case actionTypes.SHOW_LINKSLAVE:
+      return { ...state, linkSlaveModal: { ...state.linkSlaveModal, ...action.data } };
+    case actionTypes.LOAD_OWNSLAVES_SUCCEED:
+      return { ...state, linkSlaveModal: { ...state.linkSlaveModal, slaves: action.result.data } };
+    case actionTypes.SWITCH_REPOMD_SUCCEED:
+      return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
+    case actionTypes.LOAD_WSSTAT_SUCCEED:
+      return { ...state, workspaceStat: action.result.data, wsStatReload: false };
+    case actionTypes.LOAD_WSTASKLIST:
+    case actionTypes.LOAD_WSTASK:
+    case actionTypes.LOAD_WSLITEMS:
+    case actionTypes.DEL_WSTASK:
+      return { ...state, workspaceLoading: true };
+    case actionTypes.LOAD_WSLITEMS_FAIL:
+    case actionTypes.LOAD_WSTASK_FAIL:
+    case actionTypes.LOAD_WSTASKLIST_FAIL:
+    case actionTypes.DEL_WSTASK_FAIL:
+      return { ...state, workspaceLoading: false };
+    case actionTypes.LOAD_WSTASKLIST_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceTaskList: action.result.data };
+    case actionTypes.LOAD_WSTASK_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceTask: action.result.data };
+    case actionTypes.LOAD_WSLITEMS_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceItemList: action.result.data };
+    case actionTypes.LOAD_WSITEM_SUCCEED:
+      return { ...state, workspaceItem: action.result.data };
+    case actionTypes.DEL_WSTASK_SUCCEED: {
+      const workspaceStat = { ...state.workspaceStat };
+      workspaceStat.task.count -= 1;
+      return { ...state, workspaceLoading: false, workspaceStat };
+    }
+    case actionTypes.SAVE_WSITEM:
+    case actionTypes.REPLICA_MASTERSLAVE:
+    case actionTypes.SAVE_REPOITM:
+    case actionTypes.SAVE_REPOFKITM:
+    case actionTypes.DEL_WSLITEMS:
+    case actionTypes.SUBMIT_AUDIT:
+    case actionTypes.AUDIT_ITEMS:
+      return { ...state, submitting: true };
+    case actionTypes.SAVE_WSITEM_SUCCEED:
+    case actionTypes.SAVE_WSITEM_FAIL:
+    case actionTypes.REPLICA_MASTERSLAVE_SUCCEED:
+    case actionTypes.REPLICA_MASTERSLAVE_FAIL:
+    case actionTypes.SAVE_REPOITM_SUCCEED:
+    case actionTypes.SAVE_REPOITM_FAIL:
+    case actionTypes.SAVE_REPOFKITM_SUCCEED:
+    case actionTypes.SAVE_REPOFKITM_FAIL:
+    case actionTypes.DEL_WSLITEMS_FAIL:
+    case actionTypes.SUBMIT_AUDIT_FAIL:
+    case actionTypes.AUDIT_ITEMS_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.LOAD_TEITEMS_SUCCEED:
+      return { ...state, taskEmergeList: action.result.data };
+    case actionTypes.LOAD_TCITEMS_SUCCEED:
+      return { ...state, taskConflictList: action.result.data };
+    case actionTypes.DEL_WSLITEMS_SUCCEED:
+    case actionTypes.SUBMIT_AUDIT_SUCCEED:
+    case actionTypes.AUDIT_ITEMS_SUCCEED:
+      return { ...state, submitting: false, wsStatReload: true };
     default:
       return state;
   }
@@ -204,7 +330,7 @@ export function createTradeItem(datas) {
   };
 }
 
-export function loadRepos(params) {
+export function loadRepos() {
   return {
     [CLIENT_API]: {
       types: [
@@ -214,7 +340,21 @@ export function loadRepos(params) {
       ],
       endpoint: 'v1/cms/tradeitem/repos/load',
       method: 'get',
-      params,
+    },
+  };
+}
+
+export function loadRepo(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_REPO,
+        actionTypes.LOAD_REPO_SUCCEED,
+        actionTypes.LOAD_REPO_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/load',
+      method: 'get',
+      params: { repoId },
     },
   };
 }
@@ -379,7 +519,7 @@ export function loadRepoUsers(repoId) {
   };
 }
 
-export function addRepoUser(tenantId, repoId, partnerTenantId, name) {
+export function addRepoUser(tenantId, repoId, partnerTenantId, name, permission) {
   return {
     [CLIENT_API]: {
       types: [
@@ -389,7 +529,9 @@ export function addRepoUser(tenantId, repoId, partnerTenantId, name) {
       ],
       endpoint: 'v1/cms/tradeitem/repoUser/add',
       method: 'post',
-      data: { tenantId, repoId, partnerTenantId, name },
+      data: {
+        tenantId, repoId, partnerTenantId, name, permission,
+      },
     },
   };
 }
@@ -495,6 +637,327 @@ export function itemNewSrcSave(data) {
       endpoint: 'v1/cms/tradeitem/newSrc/save',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function showLinkSlaveModal({ visible, masterRepo, slaves }) {
+  return {
+    type: actionTypes.SHOW_LINKSLAVE,
+    data: { visible, masterRepo, slaves },
+  };
+}
+
+export function getLinkedSlaves(masterRepo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_LINKEDSLAVES,
+        actionTypes.LOAD_LINKEDSLAVES_SUCCEED,
+        actionTypes.LOAD_LINKEDSLAVES_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/linked/slaves',
+      method: 'get',
+      params: { masterRepo },
+    },
+  };
+}
+
+export function getUnlinkSlavesByOwner(ownerTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_OWNSLAVES,
+        actionTypes.LOAD_OWNSLAVES_SUCCEED,
+        actionTypes.LOAD_OWNSLAVES_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/unlinked/slaves',
+      method: 'get',
+      params: { ownerTenantId },
+    },
+  };
+}
+
+export function linkMasterSlaves(masterRepo, slaveRepos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LINK_MASTERSLAVE,
+        actionTypes.LINK_MASTERSLAVE_SUCCEED,
+        actionTypes.LINK_MASTERSLAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/link/slave',
+      method: 'post',
+      data: { masterRepo, slaveRepos },
+    },
+  };
+}
+
+export function unlinkMasterSlave(slaveRepo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UNLINK_MASTERSLAVE,
+        actionTypes.UNLINK_MASTERSLAVE_SUCCEED,
+        actionTypes.UNLINK_MASTERSLAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/unlink/slave',
+      method: 'post',
+      data: { slaveRepo },
+    },
+  };
+}
+
+export function replicaMasterSlave(replicaInfo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REPLICA_MASTERSLAVE,
+        actionTypes.REPLICA_MASTERSLAVE_SUCCEED,
+        actionTypes.REPLICA_MASTERSLAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/masterslave/replica',
+      method: 'post',
+      data: replicaInfo,
+    },
+  };
+}
+
+export function saveRepoItem(item) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_REPOITM,
+        actionTypes.SAVE_REPOITM_SUCCEED,
+        actionTypes.SAVE_REPOITM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/itemsave',
+      method: 'post',
+      data: item,
+    },
+  };
+}
+
+export function saveRepoForkItem(item) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_REPOFKITM,
+        actionTypes.SAVE_REPOFKITM_SUCCEED,
+        actionTypes.SAVE_REPOFKITM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/fork/itemsave',
+      method: 'post',
+      data: item,
+    },
+  };
+}
+
+export function switchRepoMode(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SWITCH_REPOMD,
+        actionTypes.SWITCH_REPOMD_SUCCEED,
+        actionTypes.SWITCH_REPOMD_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/switch/repomode',
+      method: 'post',
+      data: { repoId },
+    },
+  };
+}
+
+export function loadWorkspaceStat() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSSTAT,
+        actionTypes.LOAD_WSSTAT_SUCCEED,
+        actionTypes.LOAD_WSSTAT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/stat',
+      method: 'get',
+    },
+  };
+}
+
+export function loadWorkspaceTasks(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSTASKLIST,
+        actionTypes.LOAD_WSTASKLIST_SUCCEED,
+        actionTypes.LOAD_WSTASKLIST_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/tasks',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadWorkspaceTask(taskId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSTASK,
+        actionTypes.LOAD_WSTASK_SUCCEED,
+        actionTypes.LOAD_WSTASK_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/task',
+      method: 'get',
+      params: { taskId },
+    },
+  };
+}
+
+export function delWorkspaceTask(taskId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_WSTASK,
+        actionTypes.DEL_WSTASK_SUCCEED,
+        actionTypes.DEL_WSTASK_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/deltask',
+      method: 'post',
+      data: { taskId },
+    },
+  };
+}
+
+export function loadTaskConflictItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TCITEMS,
+        actionTypes.LOAD_TCITEMS_SUCCEED,
+        actionTypes.LOAD_TCITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/items',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadTaskEmergeItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TEITEMS,
+        actionTypes.LOAD_TEITEMS_SUCCEED,
+        actionTypes.LOAD_TEITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/items',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadWorkspaceItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSLITEMS,
+        actionTypes.LOAD_WSLITEMS_SUCCEED,
+        actionTypes.LOAD_WSLITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/items',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadWorkspaceItem(itemId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSITEM,
+        actionTypes.LOAD_WSITEM_SUCCEED,
+        actionTypes.LOAD_WSITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/item',
+      method: 'get',
+      params: { itemId },
+    },
+  };
+}
+
+export function saveWorkspaceItem(item) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_WSITEM,
+        actionTypes.SAVE_WSITEM_SUCCEED,
+        actionTypes.SAVE_WSITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/itemsave',
+      method: 'post',
+      data: { item },
+    },
+  };
+}
+
+export function delWorkspaceItem(itemIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_WSLITEMS,
+        actionTypes.DEL_WSLITEMS_SUCCEED,
+        actionTypes.DEL_WSLITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/delitem',
+      method: 'post',
+      data: { itemIds },
+    },
+  };
+}
+
+export function resolveWorkspaceItem(itemIds, action) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RESOLV_WSLITEMS,
+        actionTypes.RESOLV_WSLITEMS_SUCCEED,
+        actionTypes.RESOLV_WSLITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/conflict/resolve',
+      method: 'post',
+      data: { itemIds, action },
+    },
+  };
+}
+
+export function submitAudit(auditAction) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SUBMIT_AUDIT,
+        actionTypes.SUBMIT_AUDIT_SUCCEED,
+        actionTypes.SUBMIT_AUDIT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/submit/audit',
+      method: 'post',
+      data: { auditAction },
+    },
+  };
+}
+
+export function auditItems(itemIds, auditMethod) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.AUDIT_ITEMS,
+        actionTypes.AUDIT_ITEMS_SUCCEED,
+        actionTypes.AUDIT_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/audit',
+      method: 'post',
+      data: { itemIds, auditMethod },
     },
   };
 }

@@ -43,7 +43,9 @@ export default class TransitForm extends React.Component {
   handleLocationSelect = (value) => { this.setState({ target_location: value }); this.props.onChange({ key: 'target_location', value }); }
   handleMovementNoChange = (value) => { this.setState({ movement_no: value }); this.props.onChange({ key: 'movement_no', value }); }
   render() {
-    const { batched, detail, form: { getFieldDecorator }, ownerMovements } = this.props;
+    const {
+      batched, detail, form: { getFieldDecorator }, ownerMovements,
+    } = this.props;
     return (
       <div>
         <Row gutter={16} className="form-row">

@@ -38,7 +38,9 @@ export default class CreateSpecialCharge extends React.Component {
     type: PropTypes.number.isRequired,
   }
   handleOk = () => {
-    const { form, dispId, shipmtNo, loginName, loginId, tenantId } = this.props;
+    const {
+      form, dispId, shipmtNo, loginName, loginId, tenantId,
+    } = this.props;
     // console.log(dispId, shipmtNo, loginName, loginId, tenantId);
     const fieldsValue = form.getFieldsValue();
     if (fieldsValue && fieldsValue.charge) {
@@ -69,7 +71,9 @@ export default class CreateSpecialCharge extends React.Component {
     }
   }
   handleCancel = () => {
-    this.props.showSpecialChargeModal({ visible: false, type: -1, dispId: -1, shipmtNo: '', spTenantId: -2 });
+    this.props.showSpecialChargeModal({
+      visible: false, type: -1, dispId: -1, shipmtNo: '', spTenantId: -2,
+    });
   }
   render() {
     const { form: { getFieldDecorator }, spTenantId, type } = this.props;
@@ -101,9 +105,7 @@ export default class CreateSpecialCharge extends React.Component {
           <FormItem label="备注" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
             {getFieldDecorator('remark', {
               initialValue: '',
-            })(
-              <Input.TextArea id="control-textarea" rows="5" placeholder="请输入备注信息" />
-            )}
+            })(<Input.TextArea id="control-textarea" rows="5" placeholder="请输入备注信息" />)}
           </FormItem>
         </Form>
       </Modal>

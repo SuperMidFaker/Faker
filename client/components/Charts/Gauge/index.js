@@ -132,7 +132,7 @@ class Gauge extends PureComponent {
         margin: [10, 10, 30, 10],
       },
     });
-        /* eslint no-shadow: 0 */
+    /* eslint no-shadow: 0 */
     function draw(data) {
       const val = data[0].value;
       const lineWidth = 12;

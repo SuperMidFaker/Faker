@@ -9,7 +9,9 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 function ModalInput(props) {
-  const { type = 'text', value, disabled, onChange, field, placeholder = '' } = props;
+  const {
+    type = 'text', value, disabled, onChange, field, placeholder = '',
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(field, ev.target.value);
@@ -36,7 +38,8 @@ const FormItem = Form.Item;
     dispId: state.trackingLandStatus.vehicleModal.dispId,
     shipmtNo: state.trackingLandStatus.vehicleModal.shipmtNo,
   }),
-  { closeVehicleModal, saveVehicle })
+  { closeVehicleModal, saveVehicle }
+)
 export default class VehicleUpdater extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -71,24 +74,27 @@ export default class VehicleUpdater extends React.Component {
   }
   handleOk = () => {
     const { shipmtNo, dispId, onOK } = this.props;
-    const { vehiclePlate, plateDisabled, driverName, driverDisabled, remark } = this.state;
+    const {
+      vehiclePlate, plateDisabled, driverName, driverDisabled, remark,
+    } = this.state;
     const plate = plateDisabled ? this.msg('unknownPlate') : vehiclePlate;
     const driver = driverDisabled ? this.msg('unknownDriver') : driverName;
-    this.props.saveVehicle(shipmtNo, dispId, plate, driver, remark).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.closeVehicleModal();
-          onOK();
-        }
-      });
+    this.props.saveVehicle(shipmtNo, dispId, plate, driver, remark).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.closeVehicleModal();
+        onOK();
+      }
+    });
   }
   handleCancel = () => {
     this.props.closeVehicleModal();
   }
   render() {
-    const { vehiclePlate, plateDisabled, driverName, driverDisabled, remark } = this.state;
+    const {
+      vehiclePlate, plateDisabled, driverName, driverDisabled, remark,
+    } = this.state;
     const colSpan = 4;
     return (
       <Modal maskClosable={false} title={this.msg('vehicleModalTitle')} onCancel={this.handleCancel}

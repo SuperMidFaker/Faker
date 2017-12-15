@@ -19,7 +19,7 @@ import SearchBar from 'client/components/SearchBar';
 import TrimSpan from 'client/components/trimSpan';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
 import AdvUploadModal from './modals/advUploadModal';
@@ -47,9 +47,7 @@ function fetchData({ state, dispatch }) {
     pageSize: state.cmsExpense.expslist.pageSize,
     currentPage: state.cmsExpense.expslist.current,
   })));
-  promises.push(dispatch(loadPartnersForFilter(
-    state.account.tenantId
-  )));
+  promises.push(dispatch(loadPartnersForFilter(state.account.tenantId)));
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
@@ -63,7 +61,9 @@ function fetchData({ state, dispatch }) {
     saved: state.cmsExpense.saved,
     partners: state.cmsExpense.partners,
   }),
-  { loadCurrencies, loadExpense, showPreviewer, loadAdvanceParties, showAdvModelModal, loadQuoteModel }
+  {
+    loadCurrencies, loadExpense, showPreviewer, loadAdvanceParties, showAdvModelModal, loadQuoteModel,
+  }
 )
 @connectNav({
   depth: 2,
@@ -171,7 +171,7 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowUpdater onHit={this.handleAddAdvanceIncome} field="cush_bill"
+                <RowAction onClick={this.handleAddAdvanceIncome} field="cush_bill"
                   row={{ delg_no: row.delg_no }} label={labelElem}
                 />);
             }
@@ -237,7 +237,7 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowUpdater onHit={this.handleAddAdvancePayment} field="cush_cost"
+                <RowAction onClick={this.handleAddAdvancePayment} field="cush_cost"
                   row={{ delg_no: row.delg_no }} label={labelElem}
                 />);
             }
@@ -321,7 +321,7 @@ export default class ExpenseList extends Component {
         if (o) {
           return <span>{moment(o).format('MM.DD HH:mm')}</span>;
         } else {
-          return <span>{'--:--'}</span>;
+          return <span>--:--</span>;
         }
       },
     }, {
@@ -329,7 +329,7 @@ export default class ExpenseList extends Component {
       dataIndex: 'OPS_COL',
       width: 120,
       fixed: 'right',
-      render: record => <RowUpdater onHit={this.handleInbound} label="费用明细" row={record} />,
+      render: record => <RowAction onClick={this.handleInbound} label="费用明细" row={record} />,
     },
   ];
   dataSource = new DataTable.DataSource({
@@ -365,10 +365,12 @@ export default class ExpenseList extends Component {
           }
         });
       }
-      const filter = { ...this.props.listFilter,
+      const filter = {
+        ...this.props.listFilter,
         enFilter,
         sortField: sorter.field,
-        sortOrder: sorter.order };
+        sortOrder: sorter.order,
+      };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -442,10 +444,12 @@ export default class ExpenseList extends Component {
       endDay: dates[1].toDate(),
     };
     const { sortedInfo } = this.state;
-    const filter = { ...this.props.listFilter,
+    const filter = {
+      ...this.props.listFilter,
       sortField: sortedInfo.field,
       sortOrder: sortedInfo.order,
-      acptDate };
+      acptDate,
+    };
     this.handleExpListLoad(1, filter);
   }
   handleCleanDateChange = (dates) => {
@@ -455,10 +459,12 @@ export default class ExpenseList extends Component {
       endDay: dates[1].toDate(),
     };
     const { sortedInfo } = this.state;
-    const filter = { ...this.props.listFilter,
+    const filter = {
+      ...this.props.listFilter,
       sortField: sortedInfo.field,
       sortOrder: sortedInfo.order,
-      cleanDate };
+      cleanDate,
+    };
     this.handleExpListLoad(1, filter);
   }
   handleViewChange = (value) => {

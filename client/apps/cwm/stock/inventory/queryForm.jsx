@@ -52,8 +52,11 @@ export default class QueryForm extends React.Component {
         const formData = this.props.form.getFieldsValue();
         this.props.onSearch(Object.assign(
           formData,
-          { start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
-            end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined }));
+          {
+            start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
+            end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
+          }
+        ));
       }
     });
   }
@@ -74,11 +77,9 @@ export default class QueryForm extends React.Component {
             <FormItem {...formItemLayout} label="货主">
               {getFieldDecorator('owner', {
                 initialValue: filter.owner,
-              })(
-                <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange} allowClear >
-                  {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
-                </Select>
-          )}
+              })(<Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange} allowClear >
+                {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col span={6}>
@@ -92,14 +93,12 @@ export default class QueryForm extends React.Component {
             <FormItem>
               {getFieldDecorator('search_type', {
                 initialValue: filter.search_type,
-              })(
-                <RadioGroup onChange={this.handleSearchTypeChange}>
-                  <RadioButton value={CWM_STOCK_SEARCH_TYPE[1].value} onClick={this.checkProduct}>{CWM_STOCK_SEARCH_TYPE[1].text}</RadioButton>
-                  <RadioButton value={CWM_STOCK_SEARCH_TYPE[3].value} onClick={this.checkProductLocation}>{CWM_STOCK_SEARCH_TYPE[3].text}</RadioButton>
-                  <RadioButton value={CWM_STOCK_SEARCH_TYPE[0].value} onClick={this.checkOwners}>{CWM_STOCK_SEARCH_TYPE[0].text}</RadioButton>
-                  <RadioButton value={CWM_STOCK_SEARCH_TYPE[2].value} onClick={this.checkLocation}>{CWM_STOCK_SEARCH_TYPE[2].text}</RadioButton>
-                </RadioGroup>
-          )}
+              })(<RadioGroup onChange={this.handleSearchTypeChange}>
+                <RadioButton value={CWM_STOCK_SEARCH_TYPE[1].value} onClick={this.checkProduct}>{CWM_STOCK_SEARCH_TYPE[1].text}</RadioButton>
+                <RadioButton value={CWM_STOCK_SEARCH_TYPE[3].value} onClick={this.checkProductLocation}>{CWM_STOCK_SEARCH_TYPE[3].text}</RadioButton>
+                <RadioButton value={CWM_STOCK_SEARCH_TYPE[0].value} onClick={this.checkOwners}>{CWM_STOCK_SEARCH_TYPE[0].text}</RadioButton>
+                <RadioButton value={CWM_STOCK_SEARCH_TYPE[2].value} onClick={this.checkLocation}>{CWM_STOCK_SEARCH_TYPE[2].text}</RadioButton>
+              </RadioGroup>)}
             </FormItem>
           </Col>
           <Col span={3}>

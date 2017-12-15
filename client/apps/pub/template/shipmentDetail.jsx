@@ -128,7 +128,10 @@ export default class ShipmentDetail extends React.Component {
     const vehicleType = vehicleParams.types.find(item => item.value === shipmt.vehicle_type);
     const vehicleLength = vehicleParams.lengths.find(item => item.value === shipmt.vehicle_length);
     return (
-      <div className="panel-body" style={{ backgroundColor: '#fff', width: 800, height: 1080, padding: 50 }}>
+      <div className="panel-body" style={{
+ backgroundColor: '#fff', width: 800, height: 1080, padding: 50,
+}}
+      >
         <Row >
           <div style={{ float: 'right', fontSize: 16 }}>
             {dateStr}

@@ -5,6 +5,7 @@ import { Button, Tooltip } from 'antd';
 export default class ButtonToggle extends React.Component {
   static defaultProps = {
     toggle: false,
+    size: 'default',
   };
 
   static propTypes = {

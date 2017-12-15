@@ -12,12 +12,14 @@ function getIntlMessages() {
       readFileSync(filename, 'utf8'),
     ])
     .map(([loc, file]) => [loc, JSON.parse(file)])
-    .reduce((collection, [loc, messages]) => Object.assign({},
-      collection, { [loc]: messages }), {});
+    .reduce((collection, [loc, messages]) => Object.assign(
+      {},
+      collection, { [loc]: messages }
+    ), {});
   const messages = translations[locale];
   return messages ? Result.ok(this, messages) : Result.notFound(this);
 }
 
 export default [
-   ['get', '/public/v1/intl/messages', getIntlMessages],
+  ['get', '/public/v1/intl/messages', getIntlMessages],
 ];

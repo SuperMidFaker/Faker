@@ -54,7 +54,9 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus }
+  {
+    loadEntryDetails, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus,
+  }
 )
 @connectNav({
   depth: 3,
@@ -96,12 +98,12 @@ export default class SHFTZTransferInDetail extends Component {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
-              `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
+            `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
           if (remainFtzMsg) {
             remainFtzMsg = `东方支付入库单剩余以下未配: ${remainFtzMsg}`;
           }
           let remainPrdtMsg = result.data.remainProducts.map(rps =>
-              `${rps.product_no}-${rps.hscode}-${rps.name} 数量: ${rps.expect_qty}`).join('\n');
+            `${rps.product_no}-${rps.hscode}-${rps.name} 数量: ${rps.expect_qty}`).join('\n');
           if (remainPrdtMsg) {
             remainPrdtMsg = `订单剩余以下未配: ${remainPrdtMsg}`;
           }
@@ -238,7 +240,9 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   render() {
-    const { transfInReg, entryRegs, whse, submitting } = this.props;
+    const {
+      transfInReg, entryRegs, whse, submitting,
+    } = this.props;
     if (entryRegs.length !== 1) {
       return null;
     }
@@ -267,7 +271,7 @@ export default class SHFTZTransferInDetail extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
               上海自贸区监管
-            </Breadcrumb.Item>
+              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {whse.name}
               </Breadcrumb.Item>

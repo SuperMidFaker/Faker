@@ -23,12 +23,10 @@ function getFieldInits(aspect, formData) {
   return init;
 }
 @injectIntl
-@connect(
-  state => ({
-    clients: state.cmsDelegation.formRequire.clients,
-    fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
-  }),
-)
+@connect(state => ({
+  clients: state.cmsDelegation.formRequire.clients,
+  fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
+}), )
 export default class SiderForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

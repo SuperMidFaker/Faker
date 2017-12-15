@@ -17,7 +17,8 @@ const FormItem = Form.Item;
     smsId: state.auth.smsId,
     userId: state.auth.userId,
   }),
-  { requestSms, verifySms })
+  { requestSms, verifySms }
+)
 export default class Forgot extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

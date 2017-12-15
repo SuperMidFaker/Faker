@@ -11,11 +11,9 @@ const Panel = Collapse.Panel;
 const Option = Select.Option;
 
 @injectIntl
-@connect(
-  state => ({
-    bizManifest: state.scofFlow.cmsParams.bizManifest,
-  })
-)
+@connect(state => ({
+  bizManifest: state.scofFlow.cmsParams.bizManifest,
+}))
 export default class CMSDeclManifestPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

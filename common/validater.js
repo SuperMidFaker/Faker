@@ -7,10 +7,9 @@ import messages from './message.i18n';
 function isMobile(phone, defaultPhone) {
   if (phone === defaultPhone) {
     return true;
-  } else {
-    const phoneRe = new RegExp('^((13[0-9])|(14[0-9])|(17[0-9])|(15[^4,\\D])|(18[0-3,5-9]))\\d{8}$');
-    return phoneRe.test(phone);
   }
+  const phoneRe = new RegExp('^((13[0-9])|(14[0-9])|(17[0-9])|(15[^4,\\D])|(18[0-3,5-9]))\\d{8}$');
+  return phoneRe.test(phone);
 }
 function getSmsCode(len) {
   let str = '';
@@ -35,16 +34,14 @@ export function isPositiveInteger(val) {
     return undefined;
   }
   const num = +val; // Number(val)
-  if (isNaN(num)) {
+  if (Number.isNaN(num)) {
     return false;
-  } else {
-    const numint = parseInt(num, 10);
-    if (numint !== num || numint < 0) {
-      return false;
-    } else {
-      return true;
-    }
   }
+  const numint = parseInt(num, 10);
+  if (numint !== num || numint < 0) {
+    return false;
+  }
+  return true;
 }
 export {
   validatePhone,

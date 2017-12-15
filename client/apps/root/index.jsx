@@ -5,6 +5,7 @@ import { IntlProvider } from 'react-intl';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import { LocaleProvider } from 'antd';
+import zhCN from 'antd/lib/locale-provider/zh_CN';
 import enUS from 'antd/lib/locale-provider/en_US';
 import { loadCorpByDomain } from 'common/reducers/corp-domain';
 import { loadTranslation } from 'common/reducers/preference';
@@ -18,7 +19,7 @@ const MomentLocaleMap = {
 };
 
 const AntdLocaleMap = {
-  zh: null,
+  zh: zhCN,
   en: enUS,
 };
 
@@ -41,13 +42,11 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-@connect(
-  state => ({
-    locale: state.preference.locale,
-    messages: state.preference.messages,
-    isAuthed: state.auth.isAuthed,
-  }),
-)
+@connect(state => ({
+  locale: state.preference.locale,
+  messages: state.preference.messages,
+  isAuthed: state.auth.isAuthed,
+}), )
 export default class Root extends React.Component {
   static defaultProps = {
     locale: 'zh',

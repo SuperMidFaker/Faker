@@ -38,7 +38,9 @@ export default class InstallSHFTZ extends React.Component {
       if (!err) {
         const uuid = uuidWithoutDash();
         this.setState({ submitting: true });
-        this.props.installShftzApp({ ...values, uuid, tenant_id: tenantId, login_id: loginId }).then((result) => {
+        this.props.installShftzApp({
+          ...values, uuid, tenant_id: tenantId, login_id: loginId,
+        }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);
@@ -49,7 +51,7 @@ export default class InstallSHFTZ extends React.Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
 
@@ -67,7 +69,7 @@ export default class InstallSHFTZ extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" icon="save" loading={this.state.submitting}

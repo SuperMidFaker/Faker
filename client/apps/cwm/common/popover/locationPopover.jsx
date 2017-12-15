@@ -90,8 +90,7 @@ export default class LocationPopover extends Component {
               onClick={this.handleMenuClick}
             >
               {locations.map(option =>
-                <Menu.Item key={option.location} >{option.location}</Menu.Item>
-              )}
+                <Menu.Item key={option.location} >{option.location}</Menu.Item>)}
             </Menu>
           </TabPane>
           <TabPane tab="推荐库位" key="2">
@@ -101,8 +100,7 @@ export default class LocationPopover extends Component {
               onClick={this.handleMenuClick}
             >
               {adviceLocations.map(option =>
-                <Menu.Item key={option.location} >{option.location}</Menu.Item>
-              )}
+                <Menu.Item key={option.location} >{option.location}</Menu.Item>)}
             </Menu>
           </TabPane>
         </Tabs>

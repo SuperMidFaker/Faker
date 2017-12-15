@@ -46,7 +46,10 @@ function fetchData({ state, dispatch, cookie }) {
     formRequireJudgeParams: state.shipment.formRequireJudgeParams, // @Form.create... 这一层使用
     formRequire: state.shipment.formRequire,
   }),
-  { loadTable, savePending, saveAndAccept, saveDraft, onFormFieldsChange, setConsignFields })
+  {
+    loadTable, savePending, saveAndAccept, saveDraft, onFormFieldsChange, setConsignFields,
+  }
+)
 @connectNav({
   depth: 3,
   moduleName: 'transport',
@@ -78,7 +81,7 @@ export default class ShipmentCreate extends React.Component {
     router: PropTypes.object.isRequired,
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleSavePending = (ev) => {
@@ -227,7 +230,7 @@ export default class ShipmentCreate extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" loading={submitting} onClick={this.handleSavePending}>

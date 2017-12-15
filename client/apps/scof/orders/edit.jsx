@@ -95,15 +95,15 @@ export default class EditOrder extends Component {
       if (result.error) {
         notification.error({
           message: '错误信息',
-          description: result.error.message },
-        );
+          description: result.error.message,
+        }, );
       } else {
         message.success('保存成功');
         this.context.router.push('/scof/orders');
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   render() {
@@ -121,7 +121,7 @@ export default class EditOrder extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>

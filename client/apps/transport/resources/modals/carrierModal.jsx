@@ -18,7 +18,9 @@ const formItemLayout = {
   visible: state.transportResources.carrierModal.visible,
   carrier: state.transportResources.carrierModal.carrier,
   operation: state.transportResources.carrierModal.operation,
-}), { addPartner, editPartner, toggleCarrierModal, checkPartner })
+}), {
+  addPartner, editPartner, toggleCarrierModal, checkPartner,
+})
 
 export default class CarrierModal extends React.Component {
   static propTypes = {
@@ -65,7 +67,9 @@ export default class CarrierModal extends React.Component {
   }
   handleOk = () => {
     const { tenantId, carrier, operation } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, role, business } = this.state;
+    const {
+      partnerName, partnerCode, partnerUniqueCode, role, business,
+    } = this.state;
     if (partnerName === '') {
       message.error('请填写承运商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -101,8 +105,12 @@ export default class CarrierModal extends React.Component {
   }
   handleAddPartner = () => {
     const { tenantId } = this.props;
-    const { partnerName, partnerCode, partnerUniqueCode, role, business, businessType } = this.state;
-    this.props.addPartner({ tenantId, partnerInfo: { partnerName, partnerCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
+    const {
+      partnerName, partnerCode, partnerUniqueCode, role, business, businessType,
+    } = this.state;
+    this.props.addPartner({
+      tenantId, partnerInfo: { partnerName, partnerCode, partnerUniqueCode }, role, business, businessType,
+    }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {

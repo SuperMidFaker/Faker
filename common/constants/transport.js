@@ -43,8 +43,8 @@ export const SHIPMENT_EFFECTIVES = {
 };
 
 export const SHIPMENT_SOURCE = {
-  consigned: 1,       // 委托
-  subcontracted: 2,   // 分包
+  consigned: 1, // 委托
+  subcontracted: 2, // 分包
 };
 
 export const SHIPMENT_TRACK_STATUS = {
@@ -58,12 +58,24 @@ export const SHIPMENT_TRACK_STATUS = {
 };
 
 export const TMS_SHIPMENT_STATUS_DESC = [
-  { status: 2, text: '接单', badge: 'default', date: 'acpt_time' },
-  { status: 3, text: '调度', badge: 'warning', date: 'disp_time' },
-  { status: 4, text: '提货', badge: 'processing', date: 'pickup_act_date' },
-  { status: 5, text: '送货', badge: 'success', date: 'deliver_act_date' },
-  { status: 6, text: '回单上传', badge: 'success', date: 'pod_recv_date' },
-  { status: 7, text: '回单接受', badge: 'success', date: 'pod_acpt_date' },
+  {
+    status: 2, text: '接单', badge: 'default', date: 'acpt_time',
+  },
+  {
+    status: 3, text: '调度', badge: 'warning', date: 'disp_time',
+  },
+  {
+    status: 4, text: '提货', badge: 'processing', date: 'pickup_act_date',
+  },
+  {
+    status: 5, text: '送货', badge: 'success', date: 'deliver_act_date',
+  },
+  {
+    status: 6, text: '回单上传', badge: 'success', date: 'pod_recv_date',
+  },
+  {
+    status: 7, text: '回单接受', badge: 'success', date: 'pod_acpt_date',
+  },
 ];
 
 export const SHIPMENT_VEHICLE_CONNECT = {
@@ -134,11 +146,21 @@ export const PRESET_TRANSMODES = {
 };
 
 export const TRANS_MODE_INDICATOR = [
-  { value: 'EXP', text: '快递快运', icon: 'courier-o', desc: '' },
-  { value: 'LTL', text: '公路零担', icon: 'packing-o', desc: '' },
-  { value: 'FTL', text: '公路整车', icon: 'truck-o', desc: '' },
-  { value: 'CTN', text: '集卡拖车', icon: 'sku-o', desc: '' },
-  { value: 'AIR', text: '空运', icon: 'departure', desc: '' },
+  {
+    value: 'EXP', text: '快递快运', icon: 'courier-o', desc: '',
+  },
+  {
+    value: 'LTL', text: '公路零担', icon: 'packing-o', desc: '',
+  },
+  {
+    value: 'FTL', text: '公路整车', icon: 'truck-o', desc: '',
+  },
+  {
+    value: 'CTN', text: '集卡拖车', icon: 'sku-o', desc: '',
+  },
+  {
+    value: 'AIR', text: '空运', icon: 'departure', desc: '',
+  },
 ];
 
 export const SHIPMENT_BILLING_STATUS = {

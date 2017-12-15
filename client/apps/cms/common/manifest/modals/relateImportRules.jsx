@@ -64,7 +64,7 @@ export default class RelateImportRuleModal extends React.Component {
   render() {
     const { form, visibleRuleModal, fieldInits } = this.props;
     return (
-      <Modal maskClosable={false} title={'特殊字段规则设置确认'} width={650} visible={visibleRuleModal} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} title="特殊字段规则设置确认" width={650} visible={visibleRuleModal} onOk={this.handleOk} onCancel={this.handleCancel}>
         <ImportRuleForm form={form} formData={fieldInits} />
       </Modal>
     );

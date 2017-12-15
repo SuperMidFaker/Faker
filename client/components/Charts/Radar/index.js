@@ -50,11 +50,13 @@ class Radar extends PureComponent {
   }
 
   renderChart(data) {
-    const { height = 0,
+    const {
+      height = 0,
       hasLegend = true,
       fit = true,
       tickCount = 4,
-      margin = [24, 30, 16, 30] } = this.props;
+      margin = [24, 30, 16, 30],
+    } = this.props;
 
     const colors = [
       '#1890FF', '#FACC14', '#2FC25B', '#8543E0', '#F04864', '#13C2C2', '#fa8c16', '#a0d911',

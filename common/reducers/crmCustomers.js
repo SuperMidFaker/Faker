@@ -55,7 +55,9 @@ export default function reducer(state = initialState, action) {
         const children = subCustomers.length > 0 ? subCustomers : null;
         return { ...customer, subCustomers, children };
       });
-      return { ...state, customers, loaded: true, loading: false };
+      return {
+        ...state, customers, loaded: true, loading: false,
+      };
     }
     case actionTypes.LOAD_CUSTOMERS_FAIL: {
       return { ...state, loading: false };
@@ -70,38 +72,47 @@ export default function reducer(state = initialState, action) {
       return { ...state, loaded: false };
     }
     case actionTypes.SHOW_CUSTOMER_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         customerModal: {
           visible: true,
           ...action.data,
-        } };
+        },
+      };
     }
     case actionTypes.HIDE_CUSTOMER_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         customerModal: {
           ...initialState.customerModal,
           visible: false,
-        } };
+        },
+      };
     }
     case actionTypes.LOAD_SUB_CUSTOMERS_SUCCEED: {
       return { ...state, subCustomers: action.result.data };
     }
     case actionTypes.SHOW_SUB_CUSTOMER_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         subCustomerModal: {
           visible: true,
           ...action.data,
-        } };
+        },
+      };
     }
     case actionTypes.HIDE_SUB_CUSTOMER_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         subCustomerModal: {
           ...initialState.subCustomerModal,
           visible: false,
-        } };
+        },
+      };
     }
     case actionTypes.HIDE_SERVICETEAM_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         serviceTeamModal: {
           ...state.serviceTeamModal,
           visible: false,
@@ -109,14 +120,17 @@ export default function reducer(state = initialState, action) {
       };
     }
     case actionTypes.SHOW_SERVICETEAM_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         serviceTeamModal: {
           ...state.serviceTeamModal,
           visible: true,
-        } };
+        },
+      };
     }
     case actionTypes.LOAD_TENANT_USERS_SUCCEED: {
-      return { ...state,
+      return {
+        ...state,
         serviceTeamModal: {
           ...state.serviceTeamModal,
           tenantUsers: action.result.data.users,
@@ -134,7 +148,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadCustomers(tenantId) {
+export function loadCustomers() {
   return {
     [CLIENT_API]: {
       types: [
@@ -144,7 +158,7 @@ export function loadCustomers(tenantId) {
       ],
       endpoint: 'v1/cooperation/partners',
       method: 'get',
-      params: { tenantId, role: 'CUS' },
+      params: { role: 'CUS' },
     },
   };
 }

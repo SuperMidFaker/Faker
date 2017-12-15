@@ -14,13 +14,13 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    podList: state.shipment.statistics.todos.podList,
-  }), { loadPodTable, loadShipmtDetail, deliverConfirm, hideDock }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  podList: state.shipment.statistics.todos.podList,
+}), {
+  loadPodTable, loadShipmtDetail, deliverConfirm, hideDock,
+})
 export default class TodoPODPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

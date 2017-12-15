@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { isFormDataLoaded, loadForm, assignForm, clearForm, edit, submit, loadRoles } from
-'common/reducers/personnel';
+  'common/reducers/personnel';
 import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reducer';
 import { validatePhone } from 'common/validater';
 import { PRESET_TENANT_ROLE } from 'common/constants';
@@ -22,7 +22,9 @@ const { Header, Content } = Layout;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-function fetchData({ state, dispatch, cookie, params }) {
+function fetchData({
+  state, dispatch, cookie, params,
+}) {
   const pid = parseInt(params.id, 10);
   dispatch(loadRoles(state.account.tenantId));
   if (pid) {
@@ -52,7 +54,8 @@ function goBack(router) {
     parentTenantId: state.account.parentTenantId,
     roles: state.personnel.roles, // .filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name),
   }),
-  { edit, submit, checkLoginName })
+  { edit, submit, checkLoginName }
+)
 @withPrivilege({
   module: 'corp',
   feature: 'personnel',
@@ -106,13 +109,9 @@ export default class CorpEdit extends React.Component {
           role: this.state.role || this.props.formData.role,
         };
         if (this.props.formData.key) {
-          this.props.edit(form, this.props.code, this.props.tenantId).then(
-            result => this.onSubmitReturn(result.error)
-          );
+          this.props.edit(form, this.props.code, this.props.tenantId).then(result => this.onSubmitReturn(result.error));
         } else {
-          this.props.submit(form, this.props.code, this.props.tenantId, this.props.parentTenantId).then(
-            result => this.onSubmitReturn(result.error)
-          );
+          this.props.submit(form, this.props.code, this.props.tenantId, this.props.parentTenantId).then(result => this.onSubmitReturn(result.error));
         }
       } else {
         this.forceUpdate();
@@ -134,7 +133,9 @@ export default class CorpEdit extends React.Component {
   }
   render() {
     const {
-      formData: { name, username, password, phone, email, position },
+      formData: {
+        name, username, password, phone, email, position,
+      },
       submitting, intl, form: { getFieldDecorator }, code, roles,
     } = this.props;
     const isCreating = this.props.formData.key === null;
@@ -177,7 +178,8 @@ export default class CorpEdit extends React.Component {
                     validator: (rule, value, callback) => isLoginNameExist(
                       value, code, this.props.formData.login_id,
                       this.props.tenantId, callback, message, this.props.checkLoginName,
-                      (msgs, descriptor) => format(msgs)(intl, descriptor)),
+                      (msgs, descriptor) => format(msgs)(intl, descriptor)
+),
                   }],
                   initialValue: username && username.split('@')[0],
                 })(<Input type="text" addonAfter={`@${code}`} />)}
@@ -186,7 +188,8 @@ export default class CorpEdit extends React.Component {
                 isCreating && this.renderTextInput(
                   msg('password'), msg('passwordPlaceholder'), 'password', true,
                   [{ required: true, min: 6, message: msg('passwordMessage') }],
-                  { initialValue: password }, 'password')
+                  { initialValue: password }, 'password'
+)
               }
               {this.renderTextInput(
                 msg('phone'), msg('phonePlaceholder'), 'phone', false,
@@ -213,9 +216,7 @@ export default class CorpEdit extends React.Component {
                     rules: [{ required: true, message: ' ', type: 'number' }],
                   })(<Select onSelect={this.handleRoleSelect}>
                     {
-                  roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(
-                    role => <Option value={role.id} key={role.id}>{role.name}</Option>
-                  )
+                  roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(role => <Option value={role.id} key={role.id}>{role.name}</Option>)
                 }
                   </Select>)}
                 </FormItem>}

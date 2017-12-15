@@ -56,14 +56,16 @@ function fetchData({ dispatch }) {
     })),
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadProductCargo,
+  {
+    loadProductCargo,
     switchDefaultWhse,
     updateCargoRule,
     syncProdSKUS,
     fileCargos,
     confirmCargos,
     loadWhse,
-    editGname }
+    editGname,
+  }
 )
 @connectNav({
   depth: 2,
@@ -265,7 +267,9 @@ export default class SHFTZCargoList extends React.Component {
     this.handleCargoLoad(1, filter);
   }
   render() {
-    const { cargolist, listFilter, loading, whses, whse, loginId, submitting } = this.props;
+    const {
+      cargolist, listFilter, loading, whses, whse, loginId, submitting,
+    } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
     const filterOwners = owners.filter(item => item.portion_enabled);
@@ -301,7 +305,7 @@ export default class SHFTZCargoList extends React.Component {
               <Breadcrumb.Item>
                 <NavLink to="/cwm/supervision/shftz">
                   <Icon type="left" /> 上海自贸区监管
-                  </NavLink>
+                </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('ftzCargoReg')}
@@ -313,9 +317,12 @@ export default class SHFTZCargoList extends React.Component {
               <SearchBar placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''} rowKey="id"
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
           </div>
@@ -325,7 +332,7 @@ export default class SHFTZCargoList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange} disabled>
                     {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                   </Select>
                 </Breadcrumb.Item>
@@ -336,17 +343,18 @@ export default class SHFTZCargoList extends React.Component {
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>
-                <RadioButton value="completed">备案料号规则库</RadioButton>
+              </RadioGroup>
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+                <RadioButton value="completed">备案料号库</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
               {listFilter.status === 'pending' &&
               <Button icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
               同步SKU
-            </Button>
+              </Button>
             }
               {listFilter.status === 'pending' &&
               <Button type="primary" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>

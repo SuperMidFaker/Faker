@@ -3,33 +3,31 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../form/message.i18n';
+import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 const formatMsg = format(messages);
 import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
-@connect(
-  state => ({
-    units: state.cmsManifest.params.units.map(un => ({
-      value: un.unit_code,
-      text: un.unit_name,
-    })),
-    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
-    currencies: state.cmsManifest.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-    })),
-    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
-      value: ep.value,
-      text: ep.text,
-    })),
-  })
-)
+@connect(state => ({
+  units: state.cmsManifest.params.units.map(un => ({
+    value: un.unit_code,
+    text: un.unit_name,
+  })),
+  countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+  })),
+  currencies: state.cmsManifest.params.currencies.map(cr => ({
+    value: cr.curr_code,
+    text: cr.curr_name,
+  })),
+  exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+    value: ep.value,
+    text: ep.text,
+  })),
+}))
 export default class CiqDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

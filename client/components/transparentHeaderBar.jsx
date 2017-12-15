@@ -64,8 +64,8 @@ export default class TransparentHeaderBar extends React.Component {
   render() {
     const { title, corpName, corpLogo } = this.props;
     const brandNav = (
-      <NavLink to="/" className={'navbar-brand'} />
-      );
+      <NavLink to="/" className="navbar-brand" />
+    );
     return (
       <nav className="navbar navbar-transparent navbar-fixed-top layout-header">
         <div className="navbar-header">

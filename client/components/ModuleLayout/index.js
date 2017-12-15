@@ -13,11 +13,9 @@ import './index.less';
 const formatMsg = format(messages);
 
 @injectIntl
-@connect(
-  state => ({
-    enabledmods: state.account.modules.map(mod => mod.id),
-  })
-)
+@connect(state => ({
+  enabledmods: state.account.modules.map(mod => mod.id),
+}))
 export default class ModuleLayout extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

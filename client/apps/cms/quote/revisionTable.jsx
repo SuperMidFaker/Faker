@@ -12,11 +12,13 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 
 @injectIntl
-@connect(state => ({
-  quoteNo: state.cmsQuote.quoteData.quote_no,
-  revisions: state.cmsQuote.quoteRevisions,
-}),
-  { loadQuoteRevisions, restoreQuote })
+@connect(
+  state => ({
+    quoteNo: state.cmsQuote.quoteData.quote_no,
+    revisions: state.cmsQuote.quoteRevisions,
+  }),
+  { loadQuoteRevisions, restoreQuote }
+)
 export default class RevisionTable extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

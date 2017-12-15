@@ -30,7 +30,9 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     synclist: state.scvClassification.synclist,
   }),
-  { updateAudit, renewSharees, openAddSlaveModal, loadSyncList }
+  {
+    updateAudit, renewSharees, openAddSlaveModal, loadSyncList,
+  }
 )
 @connectNav({
   depth: 2,

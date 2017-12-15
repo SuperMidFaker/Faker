@@ -6,7 +6,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
 import DataTable from 'client/components/DataTable';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -42,7 +42,9 @@ function fetchData({ state, dispatch }) {
     wave: state.cwmShippingOrder.wave,
     loading: state.cwmShippingOrder.wave.loading,
   }),
-  { loadWaves, switchDefaultWhse, releaseWave, cancelWave }
+  {
+    loadWaves, switchDefaultWhse, releaseWave, cancelWave,
+  }
 )
 @connectNav({
   depth: 2,
@@ -109,21 +111,18 @@ export default class WaveList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span>
-          <RowUpdater label="释放" row={record} onHit={this.handleReleaseWave} />
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.handleEditWave} label="修改" row={record} />
-          <span className="ant-divider" />
-          <RowUpdater label="取消" row={record} onHit={this.cancelWave} />
+          <RowAction onClick={this.handleReleaseWave} icon="play-circle-o" label="释放" row={record} />
+          <RowAction onClick={this.handleEditWave} icon="edit" label="修改" row={record} />
+          <RowAction label="取消" row={record} onClick={this.cancelWave} />
         </span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span>
-            <RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={this.handleEntryReg} label="出区备案" row={record} />
+            <RowAction onClick={this.handleAllocate} label="出库操作" row={record} />
+            <RowAction onClick={this.handleEntryReg} label="出区备案" row={record} />
           </span>);
         } else {
-          return (<RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} />);
+          return (<RowAction onClick={this.handleAllocate} icon="form" label="出库操作" row={record} />);
         }
       }
     },
@@ -180,7 +179,9 @@ export default class WaveList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, filters, loading, owners } = this.props;
+    const {
+      whses, defaultWhse, filters, loading, owners,
+    } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadWaves(params),
       resolve: result => result.data,

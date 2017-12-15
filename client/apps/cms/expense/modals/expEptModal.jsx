@@ -16,11 +16,9 @@ const endDay = new Date();
 const firstDay = new Date();
 firstDay.setDate(1);
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-  }),
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+}), )
 @Form.create()
 export default class BillingForm extends React.Component {
   static propTypes = {
@@ -70,12 +68,10 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            {getFieldDecorator('chooseModel')(
-              <Select id="select" >
-                <Option value="acptDate">{this.msg('acptDate')}</Option>
-                <Option value="cleanDate">{this.msg('cleanDate')}</Option>
-              </Select>
-            )}
+            {getFieldDecorator('chooseModel')(<Select id="select" >
+              <Option value="acptDate">{this.msg('acptDate')}</Option>
+              <Option value="cleanDate">{this.msg('cleanDate')}</Option>
+            </Select>)}
           </FormItem>
           <FormItem
             id="control-input"

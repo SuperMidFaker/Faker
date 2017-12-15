@@ -38,9 +38,7 @@ function FormInput(props) {
       hasFeedback={hasFeedback} required={required}
     >
       {
-        getFieldDecorator(field, { rules, ...fieldProps })(
-          <Input type="text" addonAfter={addonAfter} placeholder={placeholder} />
-        )
+        getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" addonAfter={addonAfter} placeholder={placeholder} />)
       }
     </FormItem>
   );
@@ -107,16 +105,14 @@ export default class MyProfile extends React.Component {
           avatar: this.state.avatar,
           role: this.props.role,
         };
-        this.props.updateProfile(profile, this.props.code, this.props.tenantId).then(
-          (result) => {
-            if (result.error) {
-              message.error(getFormatMsg(result.error.message, this.msg), 10);
-            } else {
-              message.success('个人信息更新成功');
-              // this.context.router.goBack();
-            }
+        this.props.updateProfile(profile, this.props.code, this.props.tenantId).then((result) => {
+          if (result.error) {
+            message.error(getFormatMsg(result.error.message, this.msg), 10);
+          } else {
+            message.success('个人信息更新成功');
+            // this.context.router.goBack();
           }
-        );
+        });
       } else {
         this.forceUpdate();
       }
@@ -178,7 +174,8 @@ export default class MyProfile extends React.Component {
               validator: (rule, value, callback) => validatePhone(
                     value, callback,
                     (msgs, descriptor) => format(msgs)(intl, descriptor)
-                  ) }]}
+                  ),
+}]}
             fieldProps={{ initialValue: profile.phone }}
             getFieldDecorator={getFieldDecorator}
           />

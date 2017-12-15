@@ -34,14 +34,14 @@ export default class DriverList extends Component {
         <a onClick={() => this.props.onStopBtnClick(itemInfo.id)}>停用</a>
       </span>
     </PrivilegeCover>
-    )
+  )
 
   renderDeleteAndResumeOperations = (itemInfo) => {
     const { id } = itemInfo;
     return (
       <span>
         <PrivilegeCover module="corp" feature="partners" action="delete">
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(id)}>
+          <Popconfirm title="确定删除？" onConfirm={() => this.props.onDeleteBtnClick(id)}>
             <a>删除</a>
           </Popconfirm>
         </PrivilegeCover>

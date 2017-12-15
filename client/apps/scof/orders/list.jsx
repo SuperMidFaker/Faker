@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
+import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -50,18 +51,18 @@ function fetchData({ state, dispatch }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    username: state.account.username,
-    tenantName: state.account.tenantName,
-    loading: state.crmOrders.loading,
-    orders: state.crmOrders.orders,
-    filters: state.crmOrders.orderFilters,
-    partners: state.partner.partners,
-  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadOrderDetail }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  username: state.account.username,
+  tenantName: state.account.tenantName,
+  loading: state.crmOrders.loading,
+  orders: state.crmOrders.orders,
+  filters: state.crmOrders.orderFilters,
+  partners: state.partner.partners,
+}), {
+  loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadOrderDetail,
+})
 @connectNav({
   depth: 2,
   moduleName: 'scof',
@@ -87,6 +88,7 @@ export default class OrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    starting: false,
   }
   componentWillMount() {
     this.props.hideDock();
@@ -114,7 +116,9 @@ export default class OrderList extends React.Component {
   }
   handleRemove = (shipmtOrderNo) => {
     const { tenantId, loginId, username } = this.props;
-    this.props.removeOrder({ tenantId, loginId, username, shipmtOrderNo }).then((result) => {
+    this.props.removeOrder({
+      tenantId, loginId, username, shipmtOrderNo,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -123,8 +127,10 @@ export default class OrderList extends React.Component {
       }
     });
   }
-  handleStart = (shipmtOrderNo) => {
+  handleStart = (row) => {
+    this.setState({ starting: true });
     const { loginId, username } = this.props;
+    const shipmtOrderNo = row.shipmt_order_no;
     this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -132,6 +138,7 @@ export default class OrderList extends React.Component {
         message.info('订单流程已启动');
         this.handleTableLoad();
       }
+      this.setState({ starting: false });
     });
   }
   handleTableLoad = () => {
@@ -233,7 +240,7 @@ export default class OrderList extends React.Component {
       width: 100,
     }, {
       title: '操作',
-      width: 80,
+      width: 120,
       fixed: 'right',
       className: 'editable-row-operations',
       render: (o, record) => {
@@ -241,12 +248,9 @@ export default class OrderList extends React.Component {
           return (
             <div>
               {record.flow_node_num > 0 &&
-              <a onClick={() => this.handleStart(record.shipmt_order_no)}><Icon type="play-circle" /></a>
+                <RowAction onClick={this.handleStart} label={this.msg('startOrder')} icon="caret-right" row={record} />
               }
-              {record.flow_node_num > 0 &&
-              <span className="ant-divider" />
-              }
-              <Dropdown overlay={(
+              <RowAction overlay={(
                 <Menu onClick={this.handleMenuClick}>
                   <Menu.Item key="edit">
                     <Link to={`/scof/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}><Icon type="edit" />修改</Link>
@@ -257,9 +261,7 @@ export default class OrderList extends React.Component {
                     </Popconfirm>
                   </Menu.Item>
                 </Menu>)}
-              >
-                <a><Icon type="down" /></a>
-              </Dropdown>
+              />
             </div>
           );
         } else {
@@ -332,8 +334,7 @@ export default class OrderList extends React.Component {
                 dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
                 <Option value="all">全部客户</Option>
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                )}
+                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>
               <span />
               <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />

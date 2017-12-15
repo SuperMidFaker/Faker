@@ -55,17 +55,19 @@ export default class ChangeShipmentModal extends React.Component {
       if (errors) {
         message.error(this.msg('formError'));
       } else {
-        const { formData, tenantId, loginId, type } = this.props;
+        const {
+          formData, tenantId, loginId, type,
+        } = this.props;
         const form = { ...formData, ...this.props.form.getFieldsValue() };
         this.props.saveEdit(form, tenantId, loginId, type)
-        .then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.success(this.msg('changeShipmentSuccess'));
-            this.handleCancel();
-          }
-        });
+          .then((result) => {
+            if (result.error) {
+              message.error(result.error.message, 10);
+            } else {
+              message.success(this.msg('changeShipmentSuccess'));
+              this.handleCancel();
+            }
+          });
       }
     });
   }

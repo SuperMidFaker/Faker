@@ -7,7 +7,7 @@ import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, message } from '
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
@@ -40,7 +40,9 @@ const RadioButton = Radio.Button;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { openNewTransfOutModal, loadReleaseRegDatas, switchDefaultWhse, showDock }
+  {
+    openNewTransfOutModal, loadReleaseRegDatas, switchDefaultWhse, showDock,
+  }
 )
 @connectNav({
   depth: 2,
@@ -70,7 +72,9 @@ export default class SHFTZTransferOutList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'transfer', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'transfer', ownerView,
+    };
     this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -154,7 +158,9 @@ export default class SHFTZTransferOutList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="转出详情" row={record} />,
+    render: (o, record) => record.status === 0 ?
+      <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
@@ -237,8 +243,7 @@ export default class SHFTZTransferOutList extends React.Component {
       >
         <Option value="all">全部货主</Option>
         {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}
-        </Option>)
-          )}
+        </Option>))}
       </Select>
     </span>);
     return (
@@ -249,7 +254,7 @@ export default class SHFTZTransferOutList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

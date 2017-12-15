@@ -99,7 +99,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_BILLINGFEES: {
       const billingFees = state.billingFees.data.map((item) => {
         if (item.disp_id[0] === action.data.Id) {
-          const fee = { ...item,
+          const fee = {
+            ...item,
             [action.data.field]: action.data.value,
             last_updated_tenant_id: action.data.tenantId,
             last_updated_date: new Date(),
@@ -116,7 +117,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, billings: action.result.data, billingFees: initialState.billingFees };
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
-      return { ...state,
+      return {
+        ...state,
         billingFees: action.result.data,
         billing: {
           id: billing._id,
@@ -135,7 +137,8 @@ export default function reducer(state = initialState, action) {
           modifyTimes: billing.modify_times,
           modifyTime: billing.modify_time,
           modifyTenantId: billing.modify_tenant_id,
-        } };
+        },
+      };
     }
     case actionTypes.CREATE_BILLING:
     case actionTypes.ACCEPT_BILLING:
@@ -183,7 +186,9 @@ export function updateBilling(billing) {
   return { type: actionTypes.UPDATE_BILLING, billing };
 }
 
-export function loadDispsByChooseModal({ type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId }) {
+export function loadDispsByChooseModal({
+  type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -193,7 +198,9 @@ export function loadDispsByChooseModal({ type, beginDate, endDate, chooseModel, 
       ],
       endpoint: 'v1/cms/billing/dispsByChooseModal',
       method: 'get',
-      params: { type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId },
+      params: {
+        type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId,
+      },
     },
   };
 }
@@ -214,8 +221,10 @@ export function loadExpsByDisp(dispIds, tenantId) {
   };
 }
 
-export function createBilling({ tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, advanceCharge,
-    servCharge, adjustCharge, totalCharge, toTenantId, fees }) {
+export function createBilling({
+  tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, advanceCharge,
+  servCharge, adjustCharge, totalCharge, toTenantId, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -225,7 +234,8 @@ export function createBilling({ tenantId, loginId, loginName, name, chooseModel,
       ],
       endpoint: 'v1/cms/billing/createBilling',
       method: 'post',
-      data: { tenantId,
+      data: {
+        tenantId,
         loginId,
         loginName,
         name,
@@ -237,17 +247,25 @@ export function createBilling({ tenantId, loginId, loginName, name, chooseModel,
         adjustCharge,
         totalCharge,
         toTenantId,
-        fees },
+        fees,
+      },
       origin: 'mongo',
     },
   };
 }
 
 export function updateBillingFees(tenantId, Id, field, value) {
-  return { type: actionTypes.UPDATE_BILLINGFEES, data: { tenantId, Id, field, value } };
+  return {
+    type: actionTypes.UPDATE_BILLINGFEES,
+    data: {
+      tenantId, Id, field, value,
+    },
+  };
 }
 
-export function loadBillings({ type, tenantId, pageSize, currentPage }) {
+export function loadBillings({
+  type, tenantId, pageSize, currentPage,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -257,7 +275,9 @@ export function loadBillings({ type, tenantId, pageSize, currentPage }) {
       ],
       endpoint: 'v1/cms/load/billings',
       method: 'get',
-      params: { type, tenantId, pageSize, currentPage },
+      params: {
+        type, tenantId, pageSize, currentPage,
+      },
       origin: 'mongo',
     },
   };
@@ -295,7 +315,9 @@ export function loadFeesByBillingId({ billingId, pageSize, currentPage }) {
   };
 }
 
-export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, fees }) {
+export function checkBilling({
+  tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -305,13 +327,17 @@ export function checkBilling({ tenantId, loginId, loginName, billingId, adjustCh
       ],
       endpoint: 'v1/cms/billing/check',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, fees },
+      data: {
+        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, modifyTimes, fees,
+      },
       origin: 'mongo',
     },
   };
 }
 
-export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
+export function acceptBilling({
+  tenantId, loginId, loginName, billingId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -321,13 +347,17 @@ export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
       ],
       endpoint: 'v1/cms/billing/accept',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId },
+      data: {
+        tenantId, loginId, loginName, billingId,
+      },
       origin: 'mongo',
     },
   };
 }
 
-export function editBilling({ tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, fees }) {
+export function editBilling({
+  tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -337,7 +367,9 @@ export function editBilling({ tenantId, loginId, loginName, billingId, adjustCha
       ],
       endpoint: 'v1/cms/billing/edit',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, fees },
+      data: {
+        tenantId, loginId, loginName, billingId, adjustCharge, totalCharge, fees,
+      },
       origin: 'mongo',
     },
   };
@@ -375,7 +407,9 @@ export function billingInvoiced({ tenantId, billingId }) {
   };
 }
 
-export function loadDispsBeforeTime({ type, beginDate, chooseModel, partnerId, partnerTenantId, tenantId }) {
+export function loadDispsBeforeTime({
+  type, beginDate, chooseModel, partnerId, partnerTenantId, tenantId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -385,7 +419,9 @@ export function loadDispsBeforeTime({ type, beginDate, chooseModel, partnerId, p
       ],
       endpoint: 'v1/cms/billing/dispsBeforeTime',
       method: 'get',
-      params: { type, beginDate, chooseModel, partnerId, partnerTenantId, tenantId },
+      params: {
+        type, beginDate, chooseModel, partnerId, partnerTenantId, tenantId,
+      },
     },
   };
 }

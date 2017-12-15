@@ -17,7 +17,7 @@ export default class CustomsDeclSheetCard extends React.Component {
   }
   handleView = () => {
     const clearType = this.props.manifest.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${clearType}/cusdecl/${this.props.manifest.bill_seq_no}/${this.props.customsDecl.pre_entry_seq_no}`;
+    const link = `/clearance/cusdecl/${clearType}/${this.props.manifest.bill_seq_no}/${this.props.customsDecl.pre_entry_seq_no}`;
     this.context.router.push(`${link}`);
   }
 
@@ -37,7 +37,7 @@ export default class CustomsDeclSheetCard extends React.Component {
       inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
     }
     return (
-      <Card title={<a onClick={() => this.handleView()}>{declNo}</a>} extra={declStatus} bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
+      <Card title={<a onClick={() => this.handleView()}>{declNo}</a>} extra={declStatus} bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable>
         <Row gutter={16} className="info-group-underline">
           <Col span="12">
             <InfoItem label="收发货人" field={customsDecl.trade_name} />

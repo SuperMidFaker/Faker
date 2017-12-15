@@ -14,7 +14,7 @@ export const columnDef = handle => [{
       <div className="mdc-text-grey dashboard-table-font-small">{record.ref_external_no}</div>
       <div className="mdc-text-grey dashboard-table-font-small"><TrimSpan text={record.customer_name} maxLen={99} /></div>
     </div>
-    ),
+  ),
 }, {
   dataIndex: 'departurePlace',
   width: 150,

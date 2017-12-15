@@ -42,12 +42,12 @@ function fetchData({ dispatch, params }) {
 @Form.create()
 export default class NodeFormConainer extends Component {
   static propTypes = {
-    nodes: PropTypes.array.isRequired,        // 节点数组
-    nodeType: PropTypes.number.isRequired,    // 当前正在操作的节点类型,根据这个值向后台插入具体的node type
-    addNode: PropTypes.func.isRequired,       // 增加node的action creator
-    editNode: PropTypes.func.isRequired,      // 更新node的action creator
-    changeRegion: PropTypes.func.isRequired,  // region级联选项改变时发生的action creator
-    region: PropTypes.object.isRequired,      // 代表级联选项的值
+    nodes: PropTypes.array.isRequired, // 节点数组
+    nodeType: PropTypes.number.isRequired, // 当前正在操作的节点类型,根据这个值向后台插入具体的node type
+    addNode: PropTypes.func.isRequired, // 增加node的action creator
+    editNode: PropTypes.func.isRequired, // 更新node的action creator
+    changeRegion: PropTypes.func.isRequired, // region级联选项改变时发生的action creator
+    region: PropTypes.object.isRequired, // 代表级联选项的值
     tenantId: PropTypes.number.isRequired,
     nodeUsers: PropTypes.array.isRequired,
     addNodeUser: PropTypes.func.isRequired,
@@ -61,7 +61,9 @@ export default class NodeFormConainer extends Component {
   }
   handleAddNode = (e) => {
     e.preventDefault();
-    const { form, nodeType, tenantId, region } = this.props;
+    const {
+      form, nodeType, tenantId, region,
+    } = this.props;
     const nodeInfoInForm = form.getFieldsValue();
     const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId });
     this.props.addNode(nodeInfo).then(() => {
@@ -85,7 +87,9 @@ export default class NodeFormConainer extends Component {
   }
   handleRegionChange = (value) => {
     const [code, province, city, district, street] = value;
-    const region = Object.assign({}, { region_code: code, province, city, district, street });
+    const region = Object.assign({}, {
+      region_code: code, province, city, district, street,
+    });
     this.props.changeRegion(region);
   }
   render() {
@@ -93,7 +97,9 @@ export default class NodeFormConainer extends Component {
     if (params.node_id) {
       const editNodeId = parseInt(params.node_id, 10);
       const editNodeInfo = nodes.find(node => node.node_id === editNodeId);
-      const { province, city, district, street } = editNodeInfo;
+      const {
+        province, city, district, street,
+      } = editNodeInfo;
       const region = [province, city, district, street];
       return (
         <ContentWrapper>

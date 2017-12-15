@@ -12,7 +12,9 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnSelect(props) {
-  const { record, field, options, onChange, index } = props;
+  const {
+    record, field, options, onChange, index,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, index, field, value);
@@ -86,14 +88,18 @@ export default class SendDeclsModal extends React.Component {
     this.props.showSendDeclsModal({ visible: false });
   }
   handleOk = () => {
-    const { delgNo, subdomain, loginId, loginName } = this.props;
+    const {
+      delgNo, subdomain, loginId, loginName,
+    } = this.props;
     const values = this.state.bodies.map(val => ({
       delg_no: delgNo,
       pre_entry_seq_no: val.pre_entry_seq_no,
       easipass: val.easipass,
       declType: val.declType,
     }));
-    this.props.sendMutiDecl({ values, subdomain, loginId, username: loginName }).then((result) => {
+    this.props.sendMutiDecl({
+      values, subdomain, loginId, username: loginName,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

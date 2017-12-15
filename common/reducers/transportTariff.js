@@ -93,14 +93,16 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TARIFFS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_TARIFFS_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         loading: false,
         loaded: true,
         tarifflist: action.result.data,
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.LOAD_NEW_FORM:
-      return { ...state,
+      return {
+        ...state,
         createTariffModal: { ...state.createTariffModal, visible: false },
         agreement: { ...initialState.agreement, ...action.data },
         ratesRefAgreement: initialState.agreement,
@@ -134,20 +136,27 @@ export default function reducer(state = initialState, action) {
         taxrate: res.taxrate || initialState.agreement.taxrate,
         accurateMatch: tariff.accurateMatch,
       };
-      const partners = res.partnerId ? [{ partner_code: '',
+      const partners = res.partnerId ? [{
+        partner_code: '',
         partner_id: res.partnerId,
         name: res.partnerName,
-        tid: 0 }] : [];
-      return { ...state,
+        tid: 0,
+      }] : [];
+      return {
+        ...state,
         agreement,
         partners,
         ratesRefAgreement: agreement,
         tariffId: action.result.data.tariff._id,
-        ratesSourceList: { ...state.ratesSourceList,
-          ...action.result.data.ratesSourceList },
+        ratesSourceList: {
+          ...state.ratesSourceList,
+          ...action.result.data.ratesSourceList,
+        },
         rateId: action.result.data.ratesSourceList.data.length > 0 ? action.result.data.ratesSourceList.data[0]._id : '',
-        ratesEndList: { ...state.ratesEndList,
-          ...action.result.data.ratesEndList },
+        ratesEndList: {
+          ...state.ratesEndList,
+          ...action.result.data.ratesEndList,
+        },
         fees: action.result.data.tariff.fees,
       };
     }
@@ -163,20 +172,24 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_AGREEMENT_FAIL:
       return { ...state, tariffSaving: false };
     case actionTypes.SUBMIT_AGREEMENT_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         tariffId: action.result.data.tariffId,
         fees: action.result.data.fees,
         ratesRefAgreement: action.data,
         tariffSaving: false,
-        agreement: { ...state.agreement, quoteNo: action.result.data.quoteNo } };
+        agreement: { ...state.agreement, quoteNo: action.result.data.quoteNo },
+      };
     case actionTypes.LOAD_RATESRC:
       return { ...state, ratesSourceLoading: true };
     case actionTypes.LOAD_RATESRC_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         ratesSourceLoading: false,
         ratesSourceList: action.result.data,
         rateId: '',
-        ratesEndList: initialState.ratesEndList };
+        ratesEndList: initialState.ratesEndList,
+      };
     case actionTypes.LOAD_RATESRC_FAIL:
       return { ...state, ratesSourceLoading: false };
     case actionTypes.SUBMIT_RATESRC_SUCCEED:
@@ -186,10 +199,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_RATENDS:
       return { ...state, ratesEndLoading: true };
     case actionTypes.LOAD_RATENDS_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         ratesEndLoading: false,
         rateId: action.params.rateId,
-        ratesEndList: action.result.data };
+        ratesEndList: action.result.data,
+      };
     case actionTypes.LOAD_RATENDS_FAIL:
       return { ...state, ratesEndLoading: false };
     case actionTypes.CREATE_FEE_SUCCEED:
@@ -224,7 +239,9 @@ export function loadTable(params) {
   };
 }
 
-export function loadTariff({ quoteNo, version, tenantId, status }) {
+export function loadTariff({
+  quoteNo, version, tenantId, status,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -234,7 +251,9 @@ export function loadTariff({ quoteNo, version, tenantId, status }) {
       ],
       endpoint: 'v1/transport/tariff',
       method: 'get',
-      params: { quoteNo, version, tenantId, status },
+      params: {
+        quoteNo, version, tenantId, status,
+      },
       origin: 'mongo',
     },
   };
@@ -351,7 +370,9 @@ export function submitRateSource(tariffId, code, region, name) {
       ],
       endpoint: 'v1/transport/tariff/ratesource',
       method: 'post',
-      data: { tariffId, code, region, name },
+      data: {
+        tariffId, code, region, name,
+      },
       origin: 'mongo',
     },
   };
@@ -383,7 +404,9 @@ export function updateRateSource(rateId, code, region, name) {
       ],
       endpoint: 'v1/transport/tariff/update/ratesource',
       method: 'post',
-      data: { rateId, code, region, name },
+      data: {
+        rateId, code, region, name,
+      },
       origin: 'mongo',
     },
   };
@@ -405,7 +428,9 @@ export function delRateSource(rateId) {
   };
 }
 
-export function loadRateEnds({ rateId, pageSize, current, searchValue }) {
+export function loadRateEnds({
+  rateId, pageSize, current, searchValue,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -415,7 +440,9 @@ export function loadRateEnds({ rateId, pageSize, current, searchValue }) {
       ],
       endpoint: 'v1/transport/tariff/ratends',
       method: 'get',
-      params: { rateId, pageSize, current, searchValue },
+      params: {
+        rateId, pageSize, current, searchValue,
+      },
       origin: 'mongo',
     },
   };
@@ -586,7 +613,9 @@ export function createTariffByNextVersion({ quoteNo, version, tenantId }) {
   };
 }
 
-export function restoreTariff({ draftId, archivedId, loginName, publishCommit }) {
+export function restoreTariff({
+  draftId, archivedId, loginName, publishCommit,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -596,7 +625,9 @@ export function restoreTariff({ draftId, archivedId, loginName, publishCommit })
       ],
       endpoint: 'v1/transport/tariff/restore',
       method: 'post',
-      data: { draftId, archivedId, loginName, publishCommit },
+      data: {
+        draftId, archivedId, loginName, publishCommit,
+      },
       origin: 'mongo',
     },
   };

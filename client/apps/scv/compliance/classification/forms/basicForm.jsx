@@ -97,7 +97,9 @@ export default class BasicForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator }, action, fieldInits, currencies, units, tradeCountries, hscodes, brokers } = this.props;
+    const {
+      form: { getFieldDecorator }, action, fieldInits, currencies, units, tradeCountries, hscodes, brokers,
+    } = this.props;
     const currencyOptions = currencies.map(curr => ({
       value: curr.curr_code,
       text: `${curr.curr_code} | ${curr.curr_name}`,
@@ -114,20 +116,17 @@ export default class BasicForm extends Component {
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('broker')}>
-                {getFieldDecorator('broker', {
-                  initialValue: fieldInits.broker }
-                  )(<Select
-                    disabled={action === 'edit'}
-                    showSearch
-                    placeholder="选择报关行"
-                    optionFilterProp="children"
+                {getFieldDecorator('broker', { initialValue: fieldInits.broker })(<Select
+                  disabled={action === 'edit'}
+                  showSearch
+                  placeholder="选择报关行"
+                  optionFilterProp="children"
 
-                    style={{ width: '100%' }}
-                  >
-                    {brokers.map(data => (
-                      <Option key={data.broker_tenant_id} value={data.broker_tenant_id} search={data.broker_name}>{data.broker_name}</Option>)
-                    )}
-                  </Select>)
+                  style={{ width: '100%' }}
+                >
+                  {brokers.map(data => (
+                    <Option key={data.broker_tenant_id} value={data.broker_tenant_id} search={data.broker_name}>{data.broker_name}</Option>))}
+                </Select>)
                 }
               </FormItem>
             </Col>
@@ -146,10 +145,10 @@ export default class BasicForm extends Component {
                 })(<Select mode="combobox" optionFilterProp="search" onChange={this.handleSearch} >
                   { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
                     search={data.hscode}
-                  >{data.hscode}</Option>))
+                  >{data.hscode}
+                  </Option>))
                     }
-                </Select>
-                )}
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={24}>
@@ -204,8 +203,7 @@ export default class BasicForm extends Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -217,8 +215,7 @@ export default class BasicForm extends Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -230,8 +227,7 @@ export default class BasicForm extends Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -243,8 +239,7 @@ export default class BasicForm extends Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -256,8 +251,7 @@ export default class BasicForm extends Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -280,16 +274,13 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('currency')}>
                 {getFieldDecorator('currency', {
                   initialValue: fieldInits.currency,
-                })(
-                  <Select showSearch showArrow optionFilterProp="search">
-                    {
+                })(<Select showSearch showArrow optionFilterProp="search">
+                  {
                       currencyOptions.map(data => (
                         <Option key={data.value} search={`${data.search}`} >
                           {`${data.text}`}
-                        </Option>)
-                      )}
-                  </Select>
-                  )}
+                        </Option>))}
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
@@ -306,8 +297,7 @@ export default class BasicForm extends Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -316,16 +306,13 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('origCountry')}>
                 {getFieldDecorator('origin_country', {
                   initialValue: fieldInits.origin_country,
-                })(
-                  <Select showSearch showArrow optionFilterProp="search">
-                    {
+                })(<Select showSearch showArrow optionFilterProp="search">
+                  {
                       tradeCountriesOpts.map(data => (
                         <Option key={data.value} search={`${data.search}`} >
                           {`${data.text}`}
-                        </Option>)
-                      )}
-                  </Select>
-                  )}
+                        </Option>))}
+                </Select>)}
               </FormItem>
             </Col>
           </Row>

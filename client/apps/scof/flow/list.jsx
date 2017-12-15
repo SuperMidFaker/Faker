@@ -35,7 +35,9 @@ function fetchData({ state, dispatch }) {
     flowList: state.scofFlow.flowList,
     listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { openCreateFlowModal, loadFlowList, loadFlowTrackingFields, openFlow, reloadFlowList, editFlow }
+  {
+    openCreateFlowModal, loadFlowList, loadFlowTrackingFields, openFlow, reloadFlowList, editFlow,
+  }
 )
 @connectNav({
   depth: 2,
@@ -129,7 +131,9 @@ export default class FlowList extends React.Component {
     });
   }
   render() {
-    const { thisFlow, flowList, loading, listCollapsed } = this.props;
+    const {
+      thisFlow, flowList, loading, listCollapsed,
+    } = this.props;
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
@@ -152,10 +156,13 @@ export default class FlowList extends React.Component {
               <Search onSearch={this.handleSearch} />
             </div>
             <div className="list-body">
-              <Table showHeader={false} size="middle" dataSource={flowList.data} columns={this.columns} onRowClick={this.handleRowClick}
+              <Table showHeader={false} size="middle" dataSource={flowList.data} columns={this.columns}
                 rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
                 rowKey="id" onChange={this.handleTableChange}
                 pagination={{ current: flowList.current, pageSize: flowList.pageSize, total: flowList.totalCount }}
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
           </div>

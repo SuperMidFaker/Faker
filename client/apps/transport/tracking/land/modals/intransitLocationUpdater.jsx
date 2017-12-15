@@ -69,14 +69,15 @@ export default class LocationUpdater extends React.Component {
             location_time,
             address,
             from: TRACKING_POINT_FROM_TYPE.manual,
-          }).then((result) => {
-            if (result.error) {
-              message.error(result.error.message, 10);
-            } else {
-              this.props.closeLocModal();
-              this.props.onOK();
-            }
-          });
+          }
+        ).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            this.props.closeLocModal();
+            this.props.onOK();
+          }
+        });
       }
     });
   }

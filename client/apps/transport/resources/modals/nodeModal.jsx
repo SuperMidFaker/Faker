@@ -23,7 +23,7 @@ import NodeForm from '../components/NodeForm';
 export default class NodeModal extends Component {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
-    form: PropTypes.object.isRequired,              // 对应于antd中的form对象
+    form: PropTypes.object.isRequired, // 对应于antd中的form对象
     addNode: PropTypes.func.isRequired,
     toggleNodeModal: PropTypes.func.isRequired,
     nodeType: PropTypes.number.isRequired,
@@ -48,7 +48,9 @@ export default class NodeModal extends Component {
       message.warn('关联方必填');
     } else {
       const refPartner = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id);
-      const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type: nodeType, tenant_id: tenantId, ref_partner_name: refPartner ? refPartner.name : '' });
+      const nodeInfo = Object.assign({}, nodeInfoInForm, {
+        ...region, type: nodeType, tenant_id: tenantId, ref_partner_name: refPartner ? refPartner.name : '',
+      });
       this.props.addNode(nodeInfo).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -64,7 +66,9 @@ export default class NodeModal extends Component {
   }
   handleRegionChange = (value) => {
     const [code, province, city, district, street] = value;
-    const region = Object.assign({}, { region_code: code, province, city, district, street });
+    const region = Object.assign({}, {
+      region_code: code, province, city, district, street,
+    });
     this.setState({ region });
   }
   render() {

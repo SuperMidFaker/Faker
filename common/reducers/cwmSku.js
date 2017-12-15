@@ -66,10 +66,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SET_OWNER:
       return { ...state, owner: action.data };
     case actionTypes.LOAD_OWNERSKUS:
-      return { ...state,
+      return {
+        ...state,
         listFilter: JSON.parse(action.params.filter),
         sortFilter: JSON.parse(action.params.sorter),
-        loading: true };
+        loading: true,
+      };
     case actionTypes.LOAD_OWNERSKUS_SUCCEED:
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_OWNERSKUS_FAIL:

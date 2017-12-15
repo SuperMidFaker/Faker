@@ -17,12 +17,10 @@ const MenuItem = Menu.Item;
 const MenuItemGroup = Menu.ItemGroup;
 
 @injectIntl
-@connect(
-  state => ({
-    level: state.account.tenantLevel,
-    privileges: state.account.privileges,
-  })
-)
+@connect(state => ({
+  level: state.account.tenantLevel,
+  privileges: state.account.privileges,
+}))
 export default class CorpPack extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -44,45 +42,36 @@ export default class CorpPack extends React.Component {
     const dataMenu = [];
     const { intl, privileges } = this.props;
     if (hasPermission(privileges, { module: 'corp', feature: 'info' })) {
-      corpMenu.push(
-        <MenuItem key="corpsetting-1">
-          <NavLink to="/corp/info">
-            <MdIcon mode="fontello" type="building" />{formatMsg(intl, 'corpInfo')}
-          </NavLink>
-        </MenuItem>
-      );
+      corpMenu.push(<MenuItem key="corpsetting-1">
+        <NavLink to="/corp/info">
+          <MdIcon mode="fontello" type="building" />{formatMsg(intl, 'corpInfo')}
+        </NavLink>
+      </MenuItem>);
     }
     if (hasPermission(privileges, { module: 'corp', feature: 'personnel' })) {
-      corpMenu.push(
-        <MenuItem key="corpsetting-2">
-          <NavLink to="/corp/members">
-            <Ikons type="users" />{formatMsg(intl, 'personnelUser')}
-          </NavLink>
-        </MenuItem>
-      );
+      corpMenu.push(<MenuItem key="corpsetting-2">
+        <NavLink to="/corp/members">
+          <Ikons type="users" />{formatMsg(intl, 'personnelUser')}
+        </NavLink>
+      </MenuItem>);
     }
     if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
-      corpMenu.push(
-        <MenuItem key="corpsetting-4">
-          <NavLink to="/corp/role">
-            <MdIcon type="shield-check" />{formatMsg(intl, 'roleTitle')}
-          </NavLink>
-        </MenuItem>
-      );
+      corpMenu.push(<MenuItem key="corpsetting-4">
+        <NavLink to="/corp/role">
+          <MdIcon type="shield-check" />{formatMsg(intl, 'roleTitle')}
+        </NavLink>
+      </MenuItem>);
     }
-    dataMenu.push(
-      <Menu.Item key="logs">
-        <NavLink to="/corp/logs">
-          <Icon type="exception" />操作日志
-        </NavLink>
-      </Menu.Item>
-    );
-    dataMenu.push(
-      <Menu.Item key="export" disabled>
-        <NavLink to="/corp/export">
-          <Icon type="cloud-download-o" />导出申请
-        </NavLink>
-      </Menu.Item>);
+    dataMenu.push(<Menu.Item key="logs">
+      <NavLink to="/corp/logs">
+        <Icon type="exception" />操作日志
+      </NavLink>
+    </Menu.Item>);
+    dataMenu.push(<Menu.Item key="export" disabled>
+      <NavLink to="/corp/export">
+        <Icon type="cloud-download-o" />导出申请
+      </NavLink>
+    </Menu.Item>);
     return (
       <Layout className="welo-layout-wrapper">
         <Header>

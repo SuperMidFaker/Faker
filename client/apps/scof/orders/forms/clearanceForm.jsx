@@ -7,8 +7,8 @@ import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { Ikons } from 'client/components/FontIcon';
-import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -43,8 +43,7 @@ export default class ClearanceForm extends Component {
     setClientForm: PropTypes.func.isRequired,
   }
   componentDidMount() {
-    const { formData } = this.props;
-    const node = formData.node;
+    const { formData: { node } } = this.props;
     if (!node.uuid && node.node_uuid) {
       this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
         if (!result.error) {
@@ -94,7 +93,9 @@ export default class ClearanceForm extends Component {
     this.handleSetClientForm(related);
   }
   render() {
-    const { formData, formRequires, serviceTeam, cmsQuotes } = this.props;
+    const {
+      formData, formRequires, serviceTeam, cmsQuotes,
+    } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -158,16 +159,29 @@ export default class ClearanceForm extends Component {
         </Row>
         <Row>
           <Col sm={24} lg={8}>
+            <FormItem label="发票号" {...formItemLayout}>
+              <Input placeholder="可用逗号分隔填写多个" value={node.cust_invoice_no} onChange={ev => this.handleChange('cust_invoice_no', ev.target.value)} />
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="合同号" {...formItemLayout}>
+              <Input value={node.cust_contract_no} onChange={ev => this.handleChange('cust_contract_no', ev.target.value)} />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={24} lg={8}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
-                <Select style={{ width: '50%' }} placeholder="选择包装方式"
-                  onChange={value => this.handleChange('wrap_type', value)} value={node.wrap_type}
+                <Select style={{ width: '50%' }}
+                  placeholder="选择包装方式"
+                  onChange={value => this.handleChange('wrap_type', value)}
+                  value={node.wrap_type}
                 >
                   {
                     WRAP_TYPE.map(wt =>
-                      <Option value={wt.value} key={wt.value}>{wt.text}</Option>
-                      )
+                      <Option value={wt.value} key={wt.value}>{wt.text}</Option>)
                   }
                 </Select>
               </InputGroup>
@@ -175,7 +189,9 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={node.gross_wt} addonAfter="千克" type="number"
+              <Input value={node.gross_wt}
+                addonAfter="千克"
+                type="number"
                 onChange={ev => this.handleChange('gross_wt', ev.target.value)}
               />
             </FormItem>
@@ -192,8 +208,7 @@ export default class ClearanceForm extends Component {
               <Select allowClear showSearch value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
                 {
                   formRequires.customsBrokers.map(cb =>
-                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
-                  )
+                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>)
                 }
               </Select>
             </FormItem>
@@ -203,8 +218,7 @@ export default class ClearanceForm extends Component {
               <Select allowClear showSearch value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
                 {
                   formRequires.ciqBrokers.map(cb =>
-                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
-                  )
+                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>)
                 }
               </Select>
             </FormItem>

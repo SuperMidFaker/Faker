@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Icon, Layout, Tooltip, Popconfirm, notification } from 'antd';
+import { Breadcrumb, Button, Icon, Layout, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
+import RowAction from 'client/components/RowAction';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import AdaptorModal from './modal/adaptorModal';
@@ -30,7 +31,9 @@ const { Content } = Layout;
     adaptors: state.saasLineFileAdaptor.adaptors,
     customers: state.partner.partners,
   }),
-  { showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor }
+  {
+    showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor,
+  }
 )
 
 export default class ApiAuthList extends React.Component {
@@ -59,8 +62,8 @@ export default class ApiAuthList extends React.Component {
     this.props.showAdaptorDetailModal();
     this.props.loadAdaptor(edit.code);
   }
-  handleDel = (code) => {
-    this.props.delAdaptor(code).then((result) => {
+  handleDel = (record) => {
+    this.props.delAdaptor(record.code).then((result) => {
       if (result.error) {
         notification.error({ description: result.error.message });
       } else {
@@ -91,27 +94,24 @@ export default class ApiAuthList extends React.Component {
     },
   }, {
     title: this.msg('操作'),
-    width: 150,
+    width: 140,
     render: (_, record) => {
       let editDiv = null;
       if (record.active) {
         editDiv = (<PrivilegeCover module="clearance" feature="resources" action="edit">
-          <Button icon="edit" onClick={() => this.handleEditBtnClick(record)} />
+          <RowAction onClick={this.handleEditBtnClick} icon="edit" label="修改" row={record} />
         </PrivilegeCover>);
       } else {
         editDiv = (<ExcelUploader endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
           formData={{ data: JSON.stringify({ code: record.code }) }} onUploaded={this.handleUploaded}
         >
-          <Tooltip title="上传只有两行示例内容的Excel文件"><Button icon="cloud-upload-o" /></Tooltip>
+          <RowAction icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
         </ExcelUploader>);
       }
       return (<span>
         {editDiv}
-        <span className="ant-divider" />
         <PrivilegeCover module="clearance" feature="resources" action="delete">
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDel(record.code)}>
-            <Button type="danger" icon="delete" />
-          </Popconfirm>
+          <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={record} />
         </PrivilegeCover>
       </span>
       );

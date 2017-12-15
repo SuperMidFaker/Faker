@@ -23,7 +23,9 @@ const rowSelection = {
 };
 
 export default function NodeList(props) {
-  const { onDeleteBtnClick, dataSource, nodeType, onRadioButtonChange, onAddNoteBtnClick } = props;
+  const {
+    onDeleteBtnClick, dataSource, nodeType, onRadioButtonChange, onAddNoteBtnClick,
+  } = props;
   const columns = [
     {
       title: '名称',
@@ -97,12 +99,12 @@ export default function NodeList(props) {
           </PrivilegeCover>
           <span className="ant-divider" />
           <PrivilegeCover module="transport" feature="resources" action="delete">
-            <Popconfirm title="确定要删除吗？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
+            <Popconfirm title="确定删除？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
               <a>删除</a>
             </Popconfirm>
           </PrivilegeCover>
         </span>
-        ),
+      ),
     },
   ];
   const toolbarActions = (<span>
@@ -161,10 +163,10 @@ export default function NodeList(props) {
 
 NodeList.propsTypes = {
   dataSource: PropTypes.array.isRequired,
-  nodeType: PropTypes.number.isRequired,          // 当前选中的node类型
-  onDeleteBtnClick: PropTypes.func.isRequired,    // 删除按钮点击时触发的回调函数
+  nodeType: PropTypes.number.isRequired, // 当前选中的node类型
+  onDeleteBtnClick: PropTypes.func.isRequired, // 删除按钮点击时触发的回调函数
   onRadioButtonChange: PropTypes.func.isRequired, // radio button改变时触发的回调函数
-  onAddNoteBtnClick: PropTypes.func.isRequired,   // 新建按钮点击后执行的回调函数
+  onAddNoteBtnClick: PropTypes.func.isRequired, // 新建按钮点击后执行的回调函数
   onSearch: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
   partners: PropTypes.array.isRequired,

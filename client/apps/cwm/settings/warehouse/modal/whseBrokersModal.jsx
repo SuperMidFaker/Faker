@@ -64,7 +64,9 @@ export default class SuppliersModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, brokers, listBrokers } = this.props;
+    const {
+      form: { getFieldDecorator }, visible, brokers, listBrokers,
+    } = this.props;
     const filterBrokers = brokers.filter(broker => !listBrokers.find(lb => lb.partner_id === broker.id));
     const formItemLayout = {
       labelCol: { span: 6 },

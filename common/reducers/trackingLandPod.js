@@ -46,14 +46,16 @@ export const { LOAD_PODSHIPMT, SAVE_POD_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_PODSHIPMT:
-      return { ...state,
+      return {
+        ...state,
         loading: true,
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.LOAD_PODSHIPMT_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_PODSHIPMT_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         loading: false,
         loaded: true,
         shipmentlist: action.result.data,
@@ -61,7 +63,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_POD_SUCCEED:
       return { ...state, pod: action.result.data };
     case actionTypes.SHOW_AUDIT_MODAL_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         auditModal: {
           ...state.auditModal,
           visible: true,
@@ -161,7 +164,9 @@ export function passAudit(podId, dispId, parentDispId, auditor, tenantId, loginI
       ],
       endpoint: 'v1/transport/tracking/pod/audit',
       method: 'post',
-      data: { podId, dispId, parentDispId, auditor, tenantId, loginId },
+      data: {
+        podId, dispId, parentDispId, auditor, tenantId, loginId,
+      },
     },
   };
 }
@@ -188,9 +193,11 @@ export function changePodFilter(field, value) {
   };
 }
 
-export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
+export function saveSubmitPod(
+  userType, shipmtNo, dispId, parentDispId,
   submitter, signStatus, signRemark, photos,
-  loginId, tenantId, tenantName) {
+  loginId, tenantId, tenantName
+) {
   return {
     [CLIENT_API]: {
       types: [
@@ -200,7 +207,9 @@ export function saveSubmitPod(userType, shipmtNo, dispId, parentDispId,
       ],
       endpoint: 'v1/transport/tracking/pod',
       method: 'post',
-      data: { userType, shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos, loginId, tenantId, tenantName },
+      data: {
+        userType, shipmtNo, dispId, parentDispId, submitter, signStatus, signRemark, photos, loginId, tenantId, tenantName,
+      },
     },
   };
 }

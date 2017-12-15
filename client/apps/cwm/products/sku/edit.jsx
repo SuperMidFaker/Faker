@@ -48,7 +48,7 @@ export default class EditProductSku extends Component {
   }
 
   msg = formatMsg(this.props.intl)
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const formData = {
@@ -62,7 +62,7 @@ export default class EditProductSku extends Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
 
@@ -85,10 +85,10 @@ export default class EditProductSku extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

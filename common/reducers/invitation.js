@@ -17,10 +17,10 @@ const initialState = {
   toInvitesLoaded: true,
   sendInvitationsLoaded: true,
   receiveInvitationsLoaded: true,
-  invitationType: '0',    // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
-  toInvites: [],          // 待邀请的列表数组
-  sendInvitations: [],    // 发出的邀请列表数组
-  receiveInvitations: [],  // 收到的邀请
+  invitationType: '0', // 表示当前被选中的邀请类型, '0'-'待邀请', '1'-'收到的邀请', '2'-'发出的邀请'
+  toInvites: [], // 待邀请的列表数组
+  sendInvitations: [], // 发出的邀请列表数组
+  receiveInvitations: [], // 收到的邀请
   inviteModal: {
     visible: false,
     inviteeInfo: {},
@@ -160,7 +160,9 @@ export function acceptInvitation(id, partnerId, reversePartnerships, customsCode
       method: 'post',
       id,
       status: 1,
-      data: { id, partnerId, reversePartnerships, customsCode },
+      data: {
+        id, partnerId, reversePartnerships, customsCode,
+      },
     },
   };
 }

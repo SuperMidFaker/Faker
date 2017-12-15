@@ -23,7 +23,9 @@ const delay = TRANSPORT_EXCEPTIONS.find(item => item.key === 'SHIPMENT_EXCEPTION
     exceptions: state.trackingLandException.exceptions,
     dispatch: state.shipment.previewer.dispatch,
   }),
-  { showDealExcpModal, loadExceptions, dealException, changeDeliverPrmDate }
+  {
+    showDealExcpModal, loadExceptions, dealException, changeDeliverPrmDate,
+  }
 )
 @Form.create()
 export default class ResolveExceptionModal extends React.Component {
@@ -49,13 +51,16 @@ export default class ResolveExceptionModal extends React.Component {
     }
   }
   handleOk = () => {
-    const { shipmtNo, form, loginName, loginId, tenantId, tenantName, dealExcpModal: { exception }, dispatch } = this.props;
+    const {
+      shipmtNo, form, loginName, loginId, tenantId, tenantName, dealExcpModal: { exception }, dispatch,
+    } = this.props;
     const fieldsValue = form.getFieldsValue();
     const solution = fieldsValue.solution;
     const excpId = exception.id;
     form.validateFields((errors) => {
       if (!errors) {
-        const data = { dispId: dispatch.id,
+        const data = {
+          dispId: dispatch.id,
           shipmtNo,
           loginName,
           loginId,
@@ -63,7 +68,9 @@ export default class ResolveExceptionModal extends React.Component {
           tenantName,
           deliverPrmDate: moment(fieldsValue.deliver_prm_date).format('YYYY-MM-DD HH:mm:ss'),
         };
-        const promises = [this.props.dealException({ shipmtNo, excpId, solution, solver: loginName })];
+        const promises = [this.props.dealException({
+          shipmtNo, excpId, solution, solver: loginName,
+        })];
         if (exception.type === delay.code) {
           promises.push(this.props.changeDeliverPrmDate(data));
         }
@@ -111,18 +118,14 @@ export default class ResolveExceptionModal extends React.Component {
             {getFieldDecorator('solution', {
               initialValue: '',
               rules: [{ type: 'string', message: '请填写异常原因或解决方案' }],
-            })(
-              <Input.TextArea id="control-textarea" autosize placeholder="请说明异常原因或解决方案" />
-            )}
+            })(<Input.TextArea id="control-textarea" autosize placeholder="请说明异常原因或解决方案" />)}
           </FormItem>
           {exception.type === delay.code && (
             <FormItem label="承诺送货时间">
               {getFieldDecorator('deliver_prm_date', {
                 initialValue: dispatch.deliver_prm_date ? moment(dispatch.deliver_prm_date) : '',
                 rules: [{ type: 'object', required: true, message: '请填写承诺送货日期' }],
-              })(
-                <DatePicker allowClear={false} style={{ width: '100%' }} />
-              )}
+              })(<DatePicker allowClear={false} style={{ width: '100%' }} />)}
             </FormItem>)}
         </Form>
         {exception.resolved === 1 ? (<div style={{ marginTop: 15 }}>上次处理时间：<span>{moment(exception.solve_date).format('YYYY-MM-DD HH:mm')}</span> 处理人: <span>{exception.solver}</span></div>) : (<span />)}

@@ -1,6 +1,10 @@
 import React from 'react';
 import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import warning from 'warning';
+import { loadAccount } from 'common/reducers/account';
+import { loadWhseContext } from 'common/reducers/cwmContext';
+import { isLoaded } from 'client/common/redux-actions';
+import { DEFAULT_MODULES } from 'common/constants/module';
 import Root from './root';
 import * as Home from './home';
 import SSO from './sso/pack-sso';
@@ -18,7 +22,7 @@ import * as CorpRole from './corp/role';
 import * as CorpLogs from './corp/logs';
 import PackDataHub from './hub/packDataHub';
 import * as Collab from './hub/collab';
-import * as HubOpenAPI from './hub/api';
+import * as HubDev from './hub/dev';
 import * as HubAdapter from './hub/adapter';
 import * as OpenIntegration from './hub/integration';
 import * as IntegraionArCTM from './hub/integration/arctm';
@@ -46,18 +50,18 @@ import * as CMSDelegation from './cms/delegation';
 import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
-import * as CMSImportCustoms from './cms/import/customs';
 import * as CMSExportManifest from './cms/export/manifest';
-import * as CMSExportCustoms from './cms/export/customs';
 import * as CMSManual from './cms/manual';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
-import * as CMSTradeItem from './cms/classification/tradeitem';
-import * as CMSClassificationHsCode from './cms/classification/hscode';
-import * as CMSClassificationSpecial from './cms/classification/special';
+import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
+import * as CMSTradeItemRepo from './cms/tradeitem/repo';
+import * as CMSTradeItemRepoItem from './cms/tradeitem/repo/item';
+import * as CMSTradeItemTask from './cms/tradeitem/task';
+import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -85,26 +89,13 @@ import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbon
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
-import * as SCVOrders from './scv/orders';
-import * as SCVTracking from './scv/tracking';
-import * as SCVInboundShipments from './scv/shipments/inbound';
 import * as SCVCustomsDecl from './scv/clearance/customsdecl';
 import * as SCVDeclManifest from './scv/clearance/manifest';
-import * as SCVInventoryStock from './scv/inventory/stock';
-import * as SCVInventoryTransaction from './scv/inventory/transaction';
-import * as SCVReceivingNotice from './scv/inventory/receiving';
-import * as SCVShippingOrder from './scv/inventory/shipping';
-import * as SCVInventorySku from './scv/inventory/sku';
 import * as SCVClassification from './scv/compliance/classification';
-import * as SCVPaymentsTax from './scv/payments/tax';
-import * as SCVPaymentsBilling from './scv/payments/billing';
-import * as SCVAnalyticsKpi from './scv/analytics/kpi';
-import * as SCVAnalyticsCost from './scv/analytics/cost';
-import * as SCVResource from './scv/resources';
-import * as SCVSettings from './scv/settings';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
+import * as SCOFTracking from './scof/tracking';
 import * as SCOFCustomers from './scof/customers';
 import * as SCOFVendors from './scof/vendors';
 import * as SCOFFlow from './scof/flow';
@@ -118,10 +109,6 @@ import * as BSSPaymentReceived from './bss/receivable/payment';
 import * as BSSPayableBill from './bss/payable/bill';
 import * as BSSPayableInvoice from './bss/payable/invoice';
 import * as BSSPaymentMade from './bss/payable/payment';
-import { loadAccount } from 'common/reducers/account';
-import { loadWhseContext } from 'common/reducers/cwmContext';
-import { isLoaded } from 'client/common/redux-actions';
-import { DEFAULT_MODULES } from 'common/constants/module';
 
 export default(store) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -129,11 +116,12 @@ export default(store) => {
       // const query = nextState.location.query;
       const currState = store.getState();
       const accountSubdomain = currState.account.subdomain;
-      const isAuthed = currState.auth.isAuthed;
-      const subdomain = currState.corpDomain.subdomain;
+      const { auth: { isAuthed }, corpDomain: { subdomain } } = currState;
       if (!isAuthed || (accountSubdomain && !__DEV__ && accountSubdomain !== subdomain)) {
-        warning(!(accountSubdomain && accountSubdomain !== subdomain),
-          'subdomain is not equal to account subdomain, maybe there are tenants with same unique code');
+        warning(
+          !(accountSubdomain && accountSubdomain !== subdomain),
+          'subdomain is not equal to account subdomain, maybe there are tenants with same unique code'
+        );
         const query = { next: nextState.location.pathname };
         replace({ pathname: '/login', query });
       }
@@ -179,9 +167,9 @@ export default(store) => {
         </Route>
         <Route path="hub" component={PackDataHub}>
           <IndexRedirect to="/hub/integration/installed" />
-          <Route path="api">
-            <Route path="auth" component={HubOpenAPI.Auth} />
-            <Route path="webhook" component={HubOpenAPI.Webhook} />
+          <Route path="dev">
+            <IndexRoute component={HubDev.List} />
+            {/* <Route path=":appId" component={HubDev.Profile} /> */}
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">
@@ -310,6 +298,7 @@ export default(store) => {
             </Route>
             <Route path="cusdecl">
               <IndexRoute component={CMSCusDecl.List} />
+              <Route path=":ietype/:billseqno/:preEntrySeqNo" component={CMSCusDecl.Edit} />
             </Route>
             <Route path="ciqdecl">
               <IndexRoute component={CMSCiqDecl.List} />
@@ -324,10 +313,6 @@ export default(store) => {
                 <Route path="rules/edit/:id" component={CMSImportManifest.RuleEdit} />
                 <Route path="rules/view/:id" component={CMSImportManifest.RuleView} />
               </Route>
-              <Route path="cusdecl">
-                <IndexRoute component={CMSImportCustoms.DeclList} />
-                <Route path=":billseqno/:preEntrySeqNo" component={CMSImportCustoms.DeclView} />
-              </Route>
             </Route>
             <Route path="export">
               <IndexRedirect to="/clearance/export/manifest" />
@@ -337,10 +322,6 @@ export default(store) => {
                 <Route path="view/:billno" component={CMSExportManifest.View} />
                 <Route path="rules/edit/:id" component={CMSExportManifest.RuleEdit} />
                 <Route path="rules/view/:id" component={CMSExportManifest.RuleView} />
-              </Route>
-              <Route path="cusdecl">
-                <IndexRoute component={CMSExportCustoms.DeclList} />
-                <Route path=":billseqno/:preEntrySeqNo" component={CMSExportCustoms.DeclView} />
               </Route>
             </Route>
             <Route path="manual">
@@ -382,56 +363,41 @@ export default(store) => {
                 <Route path="templates/packinglist/:id" component={CMSSettings.PackingListTemplate} />
               </Route>
             </Route>
-            <Route path="classification">
-              <Route path="tradeitem">
-                <IndexRoute component={CMSTradeItem.List} />
-                <Route path="create" component={CMSTradeItem.Create} />
-                <Route path="edit/:id" component={CMSTradeItem.Edit} />
-                <Route path="newSrc/:id" component={CMSTradeItem.NewSrc} />
+            <Route path="tradeitem">
+              <IndexRedirect to="/clearance/tradeitem/repo" />
+              <Route path="repo">
+                <IndexRoute component={CMSTradeItemRepo.List} />
+                <Route path=":repoId" component={CMSTradeItemRepo.Content} />
+                <Route path="item">
+                  <Route path="add" component={CMSTradeItemRepoItem.Add} />
+                  <Route path="edit/:id" component={CMSTradeItemRepoItem.Edit} />
+                  <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
+                </Route>
               </Route>
-              <Route path="hscode" component={CMSClassificationHsCode.List} />
-              <Route path="special" component={CMSClassificationSpecial.Categories} />
+              <Route path="task">
+                <IndexRoute component={CMSTradeItemTask.List} />
+                <Route path=":id" component={CMSTradeItemTask.Detail} />
+              </Route>
+              <Route path="workspace">
+                <Route path="emerges" component={CMSTradeItemWorkspace.Emerge} />
+                <Route path="conflicts" component={CMSTradeItemWorkspace.Conflict} />
+                <Route path="invalids" component={CMSTradeItemWorkspace.Invalid} />
+                <Route path="pendings" component={CMSTradeItemWorkspace.Pending} />
+                <Route path="item/:id" component={CMSTradeItemWorkspace.ItemPage} />
+              </Route>
+              <Route path="hscode">
+                <IndexRoute component={CMSTradeItemHSCode.List} />
+                <Route path="special" component={CMSTradeItemHSCode.Special} />
+                <Route path="changes" component={CMSTradeItemHSCode.Changes} />
+              </Route>
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
-            <Route path="orders" component={SCVOrders.List} />
-            <Route path="tracking">
-              <Route path="customize">
-                <IndexRoute component={SCVTracking.Customize} />
-              </Route>
-              <Route path=":trackingId" component={SCVTracking.Instance} />
-            </Route>
-            <Route path="shipments">
-              <Route path="inbound">
-                <IndexRoute component={SCVInboundShipments.List} />
-              </Route>
-            </Route>
             <Route path="clearance">
               <Route path="manifest" component={SCVDeclManifest.List} />
               <Route path="decl" component={SCVCustomsDecl.List} />
-            </Route>
-            <Route path="inventory">
-              <Route path="stock" component={SCVInventoryStock.List} />
-              <Route path="transaction" component={SCVInventoryTransaction.List} />
-              <Route path="receiving">
-                <IndexRoute component={SCVReceivingNotice.List} />
-                <Route path="create" component={SCVReceivingNotice.Create} />
-              </Route>
-              <Route path="shipping">
-                <IndexRoute component={SCVShippingOrder.List} />
-                <Route path="create" component={SCVShippingOrder.Create} />
-              </Route>
-              <Route path="sku">
-                <IndexRoute component={SCVInventorySku.List} />
-                <Route path="create" component={SCVInventorySku.Create} />
-                <Route path=":sku" component={SCVInventorySku.Edit} />
-              </Route>
-            </Route>
-            <Route path="payments">
-              <Route path="tax" component={SCVPaymentsTax.List} />
-              <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
             <Route path="compliance">
               <Route path="classification">
@@ -441,19 +407,6 @@ export default(store) => {
                 <Route path="master" component={SCVClassification.Master} />
                 <Route path="slave" component={SCVClassification.Slave} />
               </Route>
-            </Route>
-            <Route path="analytics">
-              <Route path="kpi" component={SCVAnalyticsKpi.List} />
-              <Route path="cost" component={SCVAnalyticsCost.List} />
-            </Route>
-            <Route path="resources">
-              <IndexRoute component={SCVResource.Warehouses} />
-              <Route path="warehouse" component={SCVResource.Warehouses} />
-              <Route path="serviceprovider" component={SCVResource.ServiceProviders} />
-            </Route>
-            <Route path="settings">
-              <IndexRedirect to="/scv/settings/openapi" />
-              <Route path="openapi" component={SCVSettings.OpenApi} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
@@ -549,7 +502,6 @@ export default(store) => {
             </Route>
             <Route path="settings">
               <Route path="warehouse" component={CWMSettings.Warehouse} />
-              <Route path="rules" component={CWMSettings.Rules} />
               <Route path="templates" component={CWMSettings.Templates} />
             </Route>
           </Route>
@@ -561,6 +513,12 @@ export default(store) => {
               <Route path="create" component={SCOFOrders.Create} />
               <Route path="view" component={SCOFOrders.View} />
               <Route path="edit" component={SCOFOrders.Edit} />
+            </Route>
+            <Route path="tracking">
+              <Route path="customize">
+                <IndexRoute component={SCOFTracking.Customize} />
+              </Route>
+              <Route path=":trackingId" component={SCOFTracking.Instance} />
             </Route>
             <Route path="customers" component={SCOFCustomers.List} />
             <Route path="vendors" component={SCOFVendors.List} />

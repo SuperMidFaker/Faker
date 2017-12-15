@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import { connect } from 'react-redux';
 import { Form, Modal, Input, message } from 'antd';
 import DataTable from 'client/components/DataTable';
@@ -20,7 +20,9 @@ const FormItem = Form.Item;
     vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
     vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
   }),
-  { submitRateEnd, updateRateEnd, delRateEnd, loadRateEnds }
+  {
+    submitRateEnd, updateRateEnd, delRateEnd, loadRateEnds,
+  }
 )
 @Form.create()
 export default class RateEndTable extends React.Component {
@@ -107,8 +109,8 @@ export default class RateEndTable extends React.Component {
     });
   }
   handleGradientChange = (idx, value) => {
-    const state = update(this.state, { editEnd: {
-      gradients: { [idx]: { $set: Number(value) } } },
+    const state = update(this.state, {
+      editEnd: { gradients: { [idx]: { $set: Number(value) } } },
     });
     this.setState(state);
   }
@@ -191,7 +193,9 @@ export default class RateEndTable extends React.Component {
     this.props.form.resetFields();
   }
   handleEdit = (row) => {
-    const { code, province, city, district, street } = row.end;
+    const {
+      code, province, city, district, street,
+    } = row.end;
     this.setState({
       editEnd: {
         id: row._id,
@@ -222,8 +226,10 @@ export default class RateEndTable extends React.Component {
     });
   }
   render() {
-    const { ratesEndList, loading, visibleModal, form: { getFieldDecorator },
-      agreementRef, transModes, vehicleTypeParams, vehicleLengthParams, type } = this.props;
+    const {
+      ratesEndList, loading, visibleModal, form: { getFieldDecorator },
+      agreementRef, transModes, vehicleTypeParams, vehicleLengthParams, type,
+    } = this.props;
     const { editEnd, editRegion } = this.state;
     this.dataSource.remotes = ratesEndList;
     const rowSelection = {
@@ -262,7 +268,7 @@ export default class RateEndTable extends React.Component {
         dataIndex: 'OPS_COL',
         render: (o, record) => (
           <span>
-            <RowClick text="编辑" onHit={this.handleEdit} row={record} />
+            <RowClick text="编辑" onClick={this.handleEdit} row={record} />
             <span className="ant-divider" />
             <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
           </span>),
@@ -294,10 +300,12 @@ export default class RateEndTable extends React.Component {
               <FormItem label="公里数" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                 {getFieldDecorator('km', {
                   initialValue: editEnd.km,
-                  rules: [{ required: true,
+                  rules: [{
+ required: true,
                     type: 'number',
                     message: '公里数必填',
-                    transform: v => Number(v) }],
+                    transform: v => Number(v),
+}],
                 })(<Input />)}
               </FormItem>
             }
@@ -306,10 +314,12 @@ export default class RateEndTable extends React.Component {
               <FormItem label="起步价" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                 {getFieldDecorator('flare', {
                   initialValue: editEnd.flare,
-                  rules: [{ required: true,
+                  rules: [{
+ required: true,
                     type: 'number',
                     message: '起步价必填',
-                    transform: v => Number(v) }],
+                    transform: v => Number(v),
+}],
                 })(<Input />)}
               </FormItem>
             }
@@ -319,10 +329,12 @@ export default class RateEndTable extends React.Component {
                   {getFieldDecorator(`gradient${idx}`, {
                     initialValue: editEnd.gradients[vc.index] || '',
                     onChange: ev => this.handleGradientChange(idx, ev.target.value),
-                    rules: [{ required: true,
+                    rules: [{
+ required: true,
                       message: '梯度费率必填',
                       type: 'number',
-                      transform: v => Number(v) }],
+                      transform: v => Number(v),
+}],
                   })(<Input />)}
                 </FormItem>
               ))

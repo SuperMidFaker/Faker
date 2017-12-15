@@ -40,7 +40,8 @@ const Customs = {
   6: '旧机电产品禁止进口',
   7: '自动进口许可证',
   8: '禁止出口商品',
-  9: '禁止进口商品' };
+  9: '禁止进口商品',
+};
 
 const Inspections = {
   M: '进口商品检验',
@@ -49,7 +50,8 @@ const Inspections = {
   Q: '出境动植物、动植物产品检疫',
   R: '进口食品卫生监督检验',
   S: '出口食品卫生监督检验',
-  L: '民用商品入境验证' };
+  L: '民用商品入境验证',
+};
 
 export function buildTipItems(str, b) {
   if (!str || str === '-') {

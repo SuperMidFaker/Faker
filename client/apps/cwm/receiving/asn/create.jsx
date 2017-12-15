@@ -60,8 +60,10 @@ export default class CreateReceivingASN extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers } = this.props;
+  handleSave = () => {
+    const {
+      temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers,
+    } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -79,26 +81,19 @@ export default class CreateReceivingASN extends Component {
         data.loginId = loginId;
         data.tenantName = tenantName;
         data.supplier_code = supplier && supplier.code;
-        this.props.addASN(data).then(
-          (result) => {
-            if (!result.error) {
-              message.success('收货通知已创建成功');
-              this.context.router.push('/cwm/receiving/asn');
-            } else {
-              message.error('操作失败');
-            }
+        this.props.addASN(data).then((result) => {
+          if (!result.error) {
+            message.success('收货通知已创建成功');
+            this.context.router.push('/cwm/receiving/asn');
+          } else {
+            message.error('操作失败');
           }
-        );
+        });
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
-  }
-  handleUploadFiles = (fileList) => {
-    this.setState({
-      attachments: fileList,
-    });
   }
   handleOwnerChange = (bool, partnerId) => {
     this.setState({
@@ -107,7 +102,9 @@ export default class CreateReceivingASN extends Component {
     });
   }
   render() {
-    const { form, submitting, defaultWhse, temporaryDetails } = this.props;
+    const {
+      form, submitting, defaultWhse, temporaryDetails,
+    } = this.props;
     const disable = !(this.state.detailEnable && temporaryDetails.length !== 0);
     return (
       <div>
@@ -133,10 +130,10 @@ export default class CreateReceivingASN extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

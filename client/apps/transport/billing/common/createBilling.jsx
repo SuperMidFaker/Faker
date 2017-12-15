@@ -30,7 +30,9 @@ const { Header, Content } = Layout;
     billingFees: state.transportBilling.billingFees,
     saving: state.transportBilling.billingSaving,
   }),
-  { loadFeesByChooseModal, createBilling, updateBillingFees, loadShipmtDetail }
+  {
+    loadFeesByChooseModal, createBilling, updateBillingFees, loadShipmtDetail,
+  }
 )
 export default class CreateBilling extends React.Component {
   static propTypes = {
@@ -56,7 +58,9 @@ export default class CreateBilling extends React.Component {
 
   componentDidMount() {
     const { tenantId, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.context.location.query;
+    const {
+      beginDate, endDate, chooseModel, partnerId, partnerTenantId,
+    } = this.context.location.query;
     this.props.loadFeesByChooseModal({
       type,
       beginDate,
@@ -72,10 +76,16 @@ export default class CreateBilling extends React.Component {
     this.setState({ beforeFeesModalVisible: !this.state.beforeFeesModalVisible });
   }
   handleSave = () => {
-    const { loginId, tenantId, loginName, type } = this.props;
-    const { freightCharge,
-    advanceCharge, excpCharge, adjustCharge, totalCharge } = this.props.billing;
-    const { beginDate, endDate, chooseModel, partnerTenantId, name } = this.context.location.query;
+    const {
+      loginId, tenantId, loginName, type,
+    } = this.props;
+    const {
+      freightCharge,
+      advanceCharge, excpCharge, adjustCharge, totalCharge,
+    } = this.props.billing;
+    const {
+      beginDate, endDate, chooseModel, partnerTenantId, name,
+    } = this.context.location.query;
     const fees = this.props.billingFees.data;
     if (fees.length === 0) {
       message.error('没有运单');
@@ -142,7 +152,9 @@ export default class CreateBilling extends React.Component {
   }
   render() {
     const { type, saving } = this.props;
-    const { beginDate, endDate, chooseModel, partnerName } = this.context.location.query;
+    const {
+      beginDate, endDate, chooseModel, partnerName,
+    } = this.context.location.query;
     const handleLableStyle = {
       marginRight: 30,
       lineHeight: 2,

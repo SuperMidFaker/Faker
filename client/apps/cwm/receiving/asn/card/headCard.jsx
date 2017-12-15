@@ -76,7 +76,9 @@ export default class HeadCard extends Component {
     this.props.getSuppliers(this.props.defaultWhse.code, value);
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse } = this.props;
+    const {
+      form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse,
+    } = this.props;
     return (
       <Card bodyStyle={{ paddingBottom: 8 }} hoverable={false}>
         <Row gutter={24}>
@@ -85,18 +87,17 @@ export default class HeadCard extends Component {
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
                 initialValue: asnHead && asnHead.owner_partner_id,
-              })(
-                <Select placeholder="选择货主" onSelect={this.handleSelect}>
-                  {
+              })(<Select placeholder="选择货主" onSelect={this.handleSelect}>
+                {
                     owners.map(owner => <Option value={owner.id} key={owner.id}>{owner.name}</Option>)
                   }
-                </Select>
-                  )}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
             <FormItem label="预期到货日期" >
-              {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+              {getFieldDecorator('expect_receive_date', {
+ rules: [{ type: 'object', required: true, message: 'Please select time!' }],
                 initialValue: (asnHead && asnHead.expect_receive_date) ? moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
@@ -125,23 +126,19 @@ export default class HeadCard extends Component {
             <FormItem label="ASN类型">
               {getFieldDecorator('asn_type', {
                 initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
-              })(
-                <Select placeholder="ASN类型">
-                  {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
-                </Select>
-                  )}
+              })(<Select placeholder="ASN类型">
+                {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
                 initialValue: asnHead ? asnHead.bonded : 0,
-              })(
-                <RadioGroup onChange={this.handleBondedChange}>
-                  <RadioButton value={0}>非保税</RadioButton>
-                  { defaultWhse.bonded === 1 && <RadioButton value={1}>保税</RadioButton> }
-                </RadioGroup>
-                  )}
+              })(<RadioGroup onChange={this.handleBondedChange}>
+                <RadioButton value={0}>非保税</RadioButton>
+                { defaultWhse.bonded === 1 && <RadioButton value={1}>保税</RadioButton> }
+              </RadioGroup>)}
             </FormItem>
           </Col>
           {
@@ -150,11 +147,9 @@ export default class HeadCard extends Component {
                 {getFieldDecorator('reg_type', {
                   rules: [{ required: true, message: 'Please select reg_type!' }],
                   initialValue: asnHead && asnHead.bonded_intype,
-                })(
-                  <RadioGroup>
-                    {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
-                  </RadioGroup>
-                )}
+                })(<RadioGroup>
+                  {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                </RadioGroup>)}
               </FormItem>
             </Col>
           }
