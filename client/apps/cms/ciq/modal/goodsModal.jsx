@@ -8,7 +8,7 @@ import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
-const Option = Select.Option;
+const { Option } = Select;
 
 @connect(
   state => ({
@@ -19,7 +19,12 @@ const Option = Select.Option;
     fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries,
   }),
   {
-    hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam,
+    hideGoodsModal,
+    updateCiqGood,
+    loadCiqDeclGoods,
+    searchCountries,
+    setFixedCountry,
+    extendCountryParam,
   }
 )
 @Form.create()
@@ -89,9 +94,13 @@ export default class GoodsModal extends Component {
       },
     };
     return (
-      <Modal title="商品信息" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1200">
+      <Modal title="商品信息" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={1200}>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} style={{ marginBottom: 0 }} hoverable={false}>
+          <Card
+            bodyStyle={{ padding: 16, paddingBottom: 0 }}
+            style={{ marginBottom: 0 }}
+            hoverable={false}
+          >
             <Row>
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="HS编码" required >
@@ -179,7 +188,7 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('g_unit', {
                       initialValue: data.g_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit => <Option key={unit.unit_code} value={unit.unit_code}>{unit.unit_name}</Option>)}
+                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -193,7 +202,7 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('wt_meas_unit', {
                       initialValue: data.wt_meas_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit => <Option key={unit.unit_code} value={unit.unit_code}>{unit.unit_name}</Option>)}
+                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -207,7 +216,7 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('std_unit', {
                       initialValue: data.std_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit => <Option key={unit.unit_code} value={unit.unit_code}>{unit.unit_name}</Option>)}
+                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -239,13 +248,20 @@ export default class GoodsModal extends Component {
                 </FormItem>
               </Col>
               {ioType === 'in' &&
-                <FormRemoteSearchSelect outercol={6} label="原产国" col={8} field="orig_country"
-                  getFieldDecorator={form.getFieldDecorator} formData={data}
+                <FormRemoteSearchSelect
+                  outercol={6}
+                  label="原产国"
+                  col={8}
+                  field="orig_country"
+                  getFieldDecorator={form.getFieldDecorator}
+                  formData={data}
                   options={countries.map(coun => ({
                     value: coun.country_code,
                     text: `${coun.country_code} | ${coun.country_cn_name}`,
                     search: `${coun.country_code}${coun.country_cn_name}`,
-                  }))} onSearch={this.handleSearchCountries} onSelect={this.handleCountrySelect}
+                  }))}
+                  onSearch={this.handleSearchCountries}
+                  onSelect={this.handleCountrySelect}
                 />}
               {ioType === 'in' && <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="原产地区" >

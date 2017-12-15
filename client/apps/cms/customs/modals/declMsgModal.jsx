@@ -27,16 +27,16 @@ export default class DeclMsgModal extends Component {
         url = `${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${nextProps.fileName}`;
       }
       superAgent
-      .get(url)
-      .withCredentials()
-      .type('text/xml')
-      .end((err, req) => {
-        if (!err) {
-          me.setState({
-            text: req.text,
-          });
-        }
-      });
+        .get(url)
+        .withCredentials()
+        .type('text/xml')
+        .end((err, req) => {
+          if (!err) {
+            me.setState({
+              text: req.text,
+            });
+          }
+        });
     }
   }
   handleCancel = () => {
@@ -45,7 +45,7 @@ export default class DeclMsgModal extends Component {
   render() {
     const { visible, fileType } = this.props;
     return (
-      <Modal width="800" title={fileType === 'sent' ? '发送报文' : '回执报文'} visible={visible} onCancel={this.handleCancel}>
+      <Modal width={800} title={fileType === 'sent' ? '发送报文' : '回执报文'} visible={visible} onCancel={this.handleCancel}>
         <pre>{this.state.text}</pre>
       </Modal>
     );
