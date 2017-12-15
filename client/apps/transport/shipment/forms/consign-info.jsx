@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input, Select } from 'antd';
 import * as Location from 'client/util/location';
-import InputItem from './input-item';
 import { setConsignFields, loadTariffByQuoteNo } from 'common/reducers/shipment';
 import { toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { format } from 'client/common/i18n/helpers';
+import InputItem from './input-item';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 function getRenderFields(type) {
   return type === 'consignee' ? {
@@ -55,33 +55,30 @@ function getFieldDefaults(state, type) {
   (state, props) => ({
     fieldDefaults: getFieldDefaults(state, props.type),
     consignLocations: props.type === 'consignee' ?
-      state.shipment.formRequire.consigneeLocations.filter(cl => cl.ref_partner_id === state.shipment.formData.customer_partner_id || cl.ref_partner_id === -1) :
-      state.shipment.formRequire.consignerLocations.filter(cl => cl.ref_partner_id === state.shipment.formData.customer_partner_id || cl.ref_partner_id === -1),
+      state.shipment.formRequire.consigneeLocations.filter(cl =>
+        cl.ref_partner_id === state.shipment.formData.customer_partner_id
+        || cl.ref_partner_id === -1) :
+      state.shipment.formRequire.consignerLocations.filter(cl =>
+        cl.ref_partner_id === state.shipment.formData.customer_partner_id
+        || cl.ref_partner_id === -1),
     customerPartnerId: state.shipment.formData.customer_partner_id,
     customerName: state.shipment.formData.customer_name,
     quoteNo: state.shipment.formData.quote_no,
   }),
   { setConsignFields, loadTariffByQuoteNo, toggleAddLocationModal }
 )
-export default class ConsignInfo extends React.Component {
+export default class ConsignInfo extends React.PureComponent {
   static propTypes = {
     intl: intlShape.isRequired,
-    consignLocations: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['consignee', 'consigner']),
     outerColSpan: PropTypes.number.isRequired,
     labelColSpan: PropTypes.number.isRequired,
     setConsignFields: PropTypes.func.isRequired,
-    formhoc: PropTypes.object.isRequired,
-    fieldDefaults: PropTypes.object.isRequired,
-    vertical: PropTypes.bool,
     customerPartnerId: PropTypes.number.isRequired,
     customerName: PropTypes.string.isRequired,
     loadTariffByQuoteNo: PropTypes.func.isRequired,
     quoteNo: PropTypes.string.isRequired,
     toggleAddLocationModal: PropTypes.func.isRequired,
-  }
-  constructor(...args) {
-    super(...args);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAutoInputChange = (val) => {
@@ -206,7 +203,8 @@ export default class ConsignInfo extends React.Component {
     const {
       name, byname, addr, contact, mobile, email,
     } = this.renderFields;
-    const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname] : Location.renderConsignLocation(fieldDefaults, type);
+    const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname]
+      : Location.renderConsignLocation(fieldDefaults, type);
     let content = '';
     if (vertical) {
       content = (
@@ -224,8 +222,12 @@ export default class ConsignInfo extends React.Component {
               showSearch
               notFoundContent={<a onClick={() => this.handleShowAddLocationModal(this.props.type === 'consigner' ? 0 : 1)}>+ 添加地址</a>}
             >
-              {consignLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                .map(dw => <Option value={dw.node_id} key={dw.node_id} name={dw.name}>{this.renderConsign(dw)}</Option>)
+              {consignLocations.filter(cl => cl.ref_partner_id === customerPartnerId
+                  || cl.ref_partner_id === -1)
+                  .map(dw =>
+                    (<Option value={dw.node_id} key={dw.node_id} name={dw.name}>
+                      {this.renderConsign(dw)}
+                    </Option>))
             }
               <Option value={-1} key={-1}>+ 添加地址</Option>
             </Select>
@@ -274,8 +276,11 @@ export default class ConsignInfo extends React.Component {
                 showSearch
                 notFoundContent={<a onClick={() => this.handleShowAddLocationModal(this.props.type === 'consigner' ? 0 : 1)}>+ 添加地址</a>}
               >
-                {consignLocations.filter(cl => cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
-                  .map(dw => <Option value={dw.node_id} key={dw.node_id} name={dw.name}>{this.renderConsign(dw)}</Option>)
+                {consignLocations.filter(cl => cl.ref_partner_id === customerPartnerId
+                    || cl.ref_partner_id === -1)
+                    .map(dw => (<Option value={dw.node_id} key={dw.node_id} name={dw.name}>
+                      {this.renderConsign(dw)}
+                    </Option>))
               }
                 <Option value={-1} key={-1}>+ 添加地址</Option>
               </Select>
