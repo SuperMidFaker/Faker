@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Col, DatePicker, Form, Row, Input, Select, Modal } from 'antd';
-import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam } from 'common/reducers/cmsCiqDeclare';
+import { Card, Col, DatePicker, Form, Row, Input, Select, Modal, Button } from 'antd';
+import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam, toggleGoodsLicenceModal } from 'common/reducers/cmsCiqDeclare';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
+import GoodsLicenceModal from './goodsLecenceModal';
+import { CIQ_PACK_TYPE } from 'common/constants';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -18,9 +20,7 @@ const Option = Select.Option;
     units: state.cmsCiqDeclare.ciqParams.units,
     fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries,
   }),
-  {
-    hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam,
-  }
+  { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam, toggleGoodsLicenceModal }
 )
 @Form.create()
 export default class GoodsModal extends Component {
@@ -63,6 +63,10 @@ export default class GoodsModal extends Component {
       fixedCountries.push(country);
     }
     this.props.setFixedCountry(fixedCountries);
+  }
+  showGoodsLicenceModal = () => {
+    const { hscode, g_name, ciq_code, g_no, id, pre_entry_seq_no } = this.props.data;
+    this.props.toggleGoodsLicenceModal(true, { hscode, g_name, ciq_code, g_no, id, pre_entry_seq_no });
   }
   render() {
     const {
@@ -220,7 +224,11 @@ export default class GoodsModal extends Component {
                     })(<Input style={{ width: '40%' }} />)}
                     {getFieldDecorator('std_pack_type', {
                       initialValue: data.std_pack_type,
-                    })(<Input style={{ width: '60%' }} />)}
+                    })(
+                      <Select showSearch optionFilterProp="children" style={{ width: '60%' }}>
+                        {CIQ_PACK_TYPE.map(type => <Option key={type.value} value={type.value}>{type.text}</Option>)}
+                      </Select>
+                    )}
                   </InputGroup>
                 </FormItem>
               </Col>
@@ -309,10 +317,17 @@ export default class GoodsModal extends Component {
                     initialValue: data.prod_qgp,
                   })(<Input addonAfter="天" />)}
                 </FormItem>
+                </Col>}
+              {<Col span="10">
+                <Button style={{ marginLeft: 16 }} onClick={this.showGoodsLicenceModal}>产品资质</Button>
+                <Button style={{ marginLeft: 8 }}>危险货物信息</Button>
+                <Button style={{ marginLeft: 8 }}>备用信息</Button>
+                <Button style={{ marginLeft: 8 }}>籍货关联信息</Button>
               </Col>}
             </Row>
           </Card>
         </Form>
+        <GoodsLicenceModal />
       </Modal>
     );
   }

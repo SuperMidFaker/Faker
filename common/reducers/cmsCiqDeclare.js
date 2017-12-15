@@ -25,6 +25,10 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'SAVE_REQUIRED_DOCUMENTS', 'SAVE_REQUIRED_DOCUMENTS_SUCCEED', 'SAVE_REQUIRED_DOCUMENTS_FAIL',
   'SAVE_ATT_DOCUMENTS', 'SAVE_ATT_DOCUMENTS_SUCCEED', 'SAVE_ATT_DOCUMENTS_FAIL',
   'LOAD_ATT_DOCUMENTS', 'LOAD_ATT_DOCUMENTS_SUCCEED', 'LOAD_ATT_DOCUMENTS_FAIL',
+  'TOGGLE_GOODS_LICENCE_MODAL',
+  'ADD_GOODS_LICENCE', 'ADD_GOODS_LICENCE_SUCCEED', 'ADD_GOODS_LICENCE_FAIL',
+  'GOODS_LICENCES_LOAD', 'GOODS_LICENCES_LOAD_SUCCEED', 'GOODS_LICENCES_LOAD_FAIL',
+  'DELETE_GOODS_LICENCES', 'DELETE_GOODS_LICENCES_SUCCEED', 'DELETE_GOODS_LICENCES_FAIL',
 ]);
 
 const initialState = {
@@ -74,6 +78,10 @@ const initialState = {
     visible: false,
     fileName: '',
     fileType: '',
+  },
+  goodsLicenceModal: {
+    visible: false,
+    goodsData: {},
   },
 };
 
@@ -156,6 +164,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, attDocuModal: { ...state.attDocuModal, visible: action.visible } };
     case actionTypes.TOGGLE_DECL_MSG_MODAL:
       return { ...state, declMsgModal: { ...state.declMsgModal, visible: action.visible, fileName: action.fileName, fileType: action.fileType } };
+    case actionTypes.TOGGLE_GOODS_LICENCE_MODAL:
+      return { ...state, goodsLicenceModal: { ...state.goodsLicenceModal, visible: action.visible, goodsData: action.goodsData } };
     default:
       return state;
   }
@@ -512,5 +522,58 @@ export function toggleDeclMsgModal(visible, fileName = '', fileType = '') {
     visible,
     fileName,
     fileType,
+  };
+}
+
+export function toggleGoodsLicenceModal(visible, goodsData = {}) {
+  return {
+    type: actionTypes.TOGGLE_GOODS_LICENCE_MODAL,
+    visible,
+    goodsData,
+  };
+}
+
+export function addGoodsLicence(preEntrySeqNo, id, gNo, data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_GOODS_LICENCE,
+        actionTypes.ADD_GOODS_LICENCE_SUCCEED,
+        actionTypes.ADD_GOODS_LICENCE_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licence/add',
+      method: 'post',
+      data: { preEntrySeqNo, id, gNo, data },
+    },
+  };
+}
+
+export function deleteGoodsLicences(ids) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_GOODS_LICENCES,
+        actionTypes.DELETE_GOODS_LICENCES_SUCCEED,
+        actionTypes.DELETE_GOODS_LICENCES_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licences/delete',
+      method: 'post',
+      data: { ids },
+    },
+  };
+}
+
+export function loadGoodsLicences(goodsId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GOODS_LICENCES_LOAD,
+        actionTypes.GOODS_LICENCES_LOAD_SUCCEED,
+        actionTypes.GOODS_LICENCES_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licences/load',
+      method: 'get',
+      params: { goodsId },
+    },
   };
 }
