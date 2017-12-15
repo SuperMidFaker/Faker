@@ -44,14 +44,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, hscodeCategories };
     }
     case actionTypes.REMOVE_HSCODE_CATEGORY_SUCCEED:
-      return { ...state, hscodeCategories: state.hscodeCategories.filter(item => item.id !== action.data.id) };
+      return {
+        ...state,
+        hscodeCategories:
+        state.hscodeCategories.filter(item => item.id !== action.data.id),
+      };
     case actionTypes.UPDATE_HSCODE_CATEGORY_SUCCEED: {
       const hscodeCategories = state.hscodeCategories.map((item) => {
         if (item.id === action.data.id) {
           return { ...item, ...action.data };
-        } else {
-          return item;
         }
+        return item;
       });
       return { ...state, hscodeCategories };
     }

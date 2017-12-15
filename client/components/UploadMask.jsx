@@ -5,7 +5,9 @@ import { Alert, Progress, Modal } from 'antd';
 export default class UploadMask extends React.Component {
   static propTypes = {
     onUploaded: PropTypes.func,
-    uploadInfo: PropTypes.shape({ file: PropTypes.PropTypes.shape({ status: PropTypes.number.isRequired }) }),
+    uploadInfo: PropTypes.shape({
+      file: PropTypes.PropTypes.shape({ status: PropTypes.string.isRequired }),
+    }),
   }
   constructor(...args) {
     super(...args);
@@ -27,13 +29,13 @@ export default class UploadMask extends React.Component {
   handleUpload = (info) => {
     if (this.uploadChangeCount === 0) {
       this.startTimestamp = Date.now();
-      this.uploadChangeCount++;
+      this.uploadChangeCount += 1;
       this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
     } else if (info.event) {
-      this.uploadChangeCount++;
+      this.uploadChangeCount += 1;
       this.setState({ uploadPercent: info.event.percent * 0.8 });
     } else if (info.file.status === 'done') {
-      const response = info.file.response;
+      const { response } = info.file;
       this.uploadChangeCount = 0;
       if (response.status !== 200) {
         this.setState({ uploadStatus: 'exception', errorMsg: response.msg, closable: true });
@@ -61,9 +63,18 @@ export default class UploadMask extends React.Component {
       return null;
     }
     return (
-      <Modal maskClosable={false} closable={closable} footer={[]} visible={inUpload} onCancel={this.handleCancel}>
+      <Modal
+        maskClosable={false}
+        closable={closable}
+        footer={[]}
+        visible={inUpload}
+        onCancel={this.handleCancel}
+      >
         {errorMsg && <Alert message={errorMsg} showIcon type="error" /> }
-        <Progress type="circle" percent={uploadPercent} status={uploadStatus}
+        <Progress
+          type="circle"
+          percent={uploadPercent}
+          status={uploadStatus}
           style={{ display: 'block', margin: '0 auto', width: '40%' }}
         />
       </Modal>

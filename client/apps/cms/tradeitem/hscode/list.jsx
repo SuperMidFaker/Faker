@@ -5,19 +5,19 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon, Input } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import { createFilename } from 'client/util/dataTransform';
+import { format } from 'client/common/i18n/helpers';
 import { hscodeColumns } from './hscodeColumns';
 import ModuleMenu from '../menu';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Sider, Content } = Layout;
-const Search = Input.Search;
+const { Search } = Input;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -47,7 +47,11 @@ export default class HSCodeList extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loadHscodes: PropTypes.func.isRequired,
-    hscodes: PropTypes.object.isRequired,
+    hscodes: PropTypes.shape({
+      pageSize: PropTypes.number.isRequired,
+      current: PropTypes.number.isRequired,
+      searchText: PropTypes.string,
+    }).isRequired,
   }
   state = {
     collapsed: true,
@@ -132,12 +136,14 @@ export default class HSCodeList extends Component {
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="importData">
-          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/import/gunit`}
+          <ExcelUploader
+            endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/import/gunit`}
             formData={{
               data: JSON.stringify({
                 tenant_id: this.props.tenantId,
               }),
-            }} onUploaded={this.handleUploaded}
+            }}
+            onUploaded={this.handleUploaded}
           >
             <Icon type="file-excel" /> {this.msg('importHsunit')}
           </ExcelUploader>
@@ -145,7 +151,7 @@ export default class HSCodeList extends Component {
         <Menu.Item key="model"><Icon type="download" /> 下载模板(申报单位)</Menu.Item>
       </Menu>
     );
-    const toolbarActions = (<Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 400 }} />);
+    const toolbarActions = (<Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 400 }} enterButton />);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
