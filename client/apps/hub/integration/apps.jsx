@@ -48,7 +48,7 @@ export default class IntegrationAppsList extends React.Component {
       },
       {
         title: '顺丰速运',
-        link: '/hub/integration/shunfeng/install',
+        link: '/hub/integration/sfexpress/install',
         description: '通过与顺丰快递公司合作，获取快递单号以打印快递单',
       },
     ];

@@ -11,7 +11,12 @@ export default class MainForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired,
+    config: PropTypes.shape({
+      url: PropTypes.string,
+      checkword: PropTypes.string,
+      accesscode: PropTypes.string,
+      custid: PropTypes.string,
+    }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   render() {
@@ -20,7 +25,7 @@ export default class MainForm extends Component {
     return (
       <Row gutter={16}>
         <Col sm={24} lg={24}>
-          <FormItem label={this.msg('shunfengUrl')}>
+          <FormItem label={this.msg('sfexpressUrl')}>
             {getFieldDecorator('url', {
               initialValue: config.url,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
@@ -28,7 +33,7 @@ export default class MainForm extends Component {
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('shunfengCheckword')}>
+          <FormItem label={this.msg('sfexpressCheckword')}>
             {getFieldDecorator('checkword', {
               initialValue: config.checkword,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
@@ -36,7 +41,7 @@ export default class MainForm extends Component {
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('shunfengAccesscode')}>
+          <FormItem label={this.msg('sfexpressAccesscode')}>
             {getFieldDecorator('accesscode', {
               initialValue: config.accesscode,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
@@ -44,7 +49,7 @@ export default class MainForm extends Component {
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('shunfengCustid')}>
+          <FormItem label={this.msg('sfexpressCustid')}>
             {getFieldDecorator('custid', {
               initialValue: config.custid,
               rules: [{ required: true, message: this.msg('parameterRequired') }],

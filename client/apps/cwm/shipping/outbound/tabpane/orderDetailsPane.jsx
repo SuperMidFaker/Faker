@@ -1,20 +1,20 @@
 import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import { Alert, Input, Button, notification } from 'antd';
+import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { loadSkuParams } from 'common/reducers/cwmSku';
+import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
-import AllocatingModal from '../modal/allocatingModal';
-import { loadSkuParams } from 'common/reducers/cwmSku';
-import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import { string2Bytes } from 'client/util/dataTransform';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import AllocatingModal from '../modal/allocatingModal';
 
-const Search = Input.Search;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -28,12 +28,16 @@ const Search = Input.Search;
     submitting: state.cwmOutbound.submitting,
   }),
   {
-    openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc, loadSkuParams,
+    openAllocatingModal,
+    loadOutboundProductDetails,
+    batchAutoAlloc,
+    cancelProductsAlloc,
+    loadSkuParams,
   }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
     outboundProducts: PropType.arrayOf(PropType.shape({ seq_no: PropType.string.isRequired })),
   }
   state = {
@@ -94,13 +98,19 @@ export default class OrderDetailsPane extends React.Component {
       } else if (record.alloc_qty < record.order_qty) {
         return (<span className="text-warning">{o}</span>);
       }
+      return <span />;
     },
   }, {
     title: '计量单位',
     dataIndex: 'unit',
     width: 100,
     className: 'cell-align-center',
-    render: o => this.props.units.length > 0 && o ? this.props.units.find(unit => unit.code === o).name : '',
+    render: (o) => {
+      if (o && this.props.units.length > 0) {
+        return this.props.units.find(unit => unit.code === o).name;
+      }
+      return <span />;
+    },
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
@@ -129,34 +139,39 @@ export default class OrderDetailsPane extends React.Component {
       if (record.alloc_qty < record.order_qty) {
         return (<span>
           <RowAction onClick={this.handleSKUAutoAllocate} icon="rocket" label="自动分配" row={record} disabled={this.props.submitting} />
-          <RowAction onClick={this.handleManualAlloc} icon="tool" tooltip="手动分配" row={record} />
-        </span>);
-      } else {
-        return (<span>
-          <RowAction onClick={this.handleAllocDetails} icon="eye-o" label="分配明细" row={record} />
-          {record.picked_qty < record.alloc_qty &&
-            <RowAction onClick={this.handleSKUCancelAllocate} icon="close-circle-o" tooltip="取消分配" row={record} disabled={this.props.submitting} />}
+          <RowAction onClick={this.handleManualAlloc} icon="select" tooltip="手动分配" row={record} />
         </span>);
       }
+      return (<span>
+        <RowAction onClick={this.handleAllocDetails} icon="eye-o" label="分配明细" row={record} />
+        {record.picked_qty < record.alloc_qty &&
+        <RowAction onClick={this.handleSKUCancelAllocate} icon="close-circle-o" tooltip="取消分配" row={record} disabled={this.props.submitting} />}
+      </span>);
     },
   }]
   handleSKUAutoAllocate = (row) => {
-    this.props.batchAutoAlloc(row.outbound_no, [row.seq_no], this.props.loginId, this.props.loginName).then((result) => {
-      if (!result.error) {
-        if (result.data.length > 0) {
-          const seqNos = result.data.join(',');
-          const args = {
-            message: `行号${seqNos}货品数量不足`,
-            duration: 0,
-          };
-          notification.open(args);
+    this.props.batchAutoAlloc(
+      row.outbound_no,
+      [row.seq_no],
+      this.props.loginId,
+      this.props.loginName
+    )
+      .then((result) => {
+        if (!result.error) {
+          if (result.data.length > 0) {
+            const seqNos = result.data.join(',');
+            const args = {
+              message: `行号${seqNos}货品数量不足`,
+              duration: 0,
+            };
+            notification.open(args);
+          }
+        } else {
+          notification.error({
+            message: result.error.message,
+          });
         }
-      } else {
-        notification.error({
-          message: result.error.message,
-        });
-      }
-    });
+      });
   }
   handleBatchAutoAlloc = () => {
     this.props.batchAutoAlloc(
@@ -180,22 +195,23 @@ export default class OrderDetailsPane extends React.Component {
     });
   }
   handleOutboundAutoAlloc = () => {
-    this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName).then((result) => {
-      if (!result.error) {
-        if (result.data.length > 0) {
-          const seqNos = result.data.join(',');
-          const args = {
-            message: `行号${seqNos}货品数量不足`,
-            duration: 0,
-          };
-          notification.open(args);
+    this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName)
+      .then((result) => {
+        if (!result.error) {
+          if (result.data.length > 0) {
+            const seqNos = result.data.join(',');
+            const args = {
+              message: `行号${seqNos}货品数量不足`,
+              duration: 0,
+            };
+            notification.open(args);
+          }
+        } else {
+          notification.error({
+            message: result.error.message,
+          });
         }
-      } else {
-        notification.error({
-          message: result.error.message,
-        });
-      }
-    });
+      });
   }
   handleManualAlloc = (row) => {
     this.setState({ detailEditable: true });
@@ -206,22 +222,28 @@ export default class OrderDetailsPane extends React.Component {
     this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
   }
   handleSKUCancelAllocate = (row) => {
-    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId).then((result) => {
-      if (result.error) {
-        notification.error({
-          message: result.error.message,
-        });
-      }
-    });
+    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId)
+      .then((result) => {
+        if (result.error) {
+          notification.error({
+            message: result.error.message,
+          });
+        }
+      });
   }
   handleAllocBatchCancel = () => {
-    this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId).then((result) => {
-      if (result.error) {
-        notification.error({
-          message: result.error.message,
-        });
-      }
-    });
+    this.props.cancelProductsAlloc(
+      this.props.outboundNo,
+      this.state.selectedRowKeys,
+      this.props.loginId
+    )
+      .then((result) => {
+        if (result.error) {
+          notification.error({
+            message: result.error.message,
+          });
+        }
+      });
   }
   handleExportUnAllocs = () => {
     const { outboundHead, outboundProducts, units } = this.props;
@@ -261,9 +283,8 @@ export default class OrderDetailsPane extends React.Component {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
         return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
       }
+      return true;
     }).sort((pa, pb) => {
       if (pa.alloc_qty === 0 && pb.alloc_qty === 0) {
         return 0;
@@ -273,7 +294,8 @@ export default class OrderDetailsPane extends React.Component {
       return -(diffa - diffb); // 分配差异越大放前面
     });
     let alertMsg;
-    if (outboundHead.total_alloc_qty > 0 && outboundHead.total_alloc_qty !== outboundHead.total_qty) {
+    if (outboundHead.total_alloc_qty > 0 &&
+      outboundHead.total_alloc_qty !== outboundHead.total_qty) {
       const seqNos = outboundProducts.filter(op => op.alloc_qty < op.order_qty).map(op => op.seq_no).join(',');
       alertMsg = `未完成配货行号: ${seqNos}`;
     }
@@ -283,7 +305,8 @@ export default class OrderDetailsPane extends React.Component {
       onChange: (selectedRowKeys, selectedRows) => {
         let status = null;
         const unallocated = selectedRows.find(item => item.alloc_qty < item.order_qty);
-        const allocated = selectedRows.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
+        const allocated = selectedRows.find(item =>
+          item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
         if (unallocated && !allocated) {
           status = 'alloc';
         } else if (!unallocated && allocated) {
@@ -301,7 +324,8 @@ export default class OrderDetailsPane extends React.Component {
           const selectedRowKeys = dataSource.map(item => item[rowKey]);
           let status = null;
           const unallocated = dataSource.find(item => item.alloc_qty < item.order_qty);
-          const allocated = dataSource.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
+          const allocated = dataSource.find(item =>
+            item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
           if (unallocated && !allocated) {
             status = 'alloc';
           } else if (!unallocated && allocated) {
@@ -316,11 +340,13 @@ export default class OrderDetailsPane extends React.Component {
         key: 'opposite-data',
         text: '反选全部项',
         onSelect: () => {
-          const fDataSource = dataSource.filter(item => !this.state.selectedRowKeys.find(item1 => item1 === item.id));
+          const fDataSource = dataSource.filter(item =>
+            !this.state.selectedRowKeys.find(item1 => item1 === item.id));
           const selectedRowKeys = fDataSource.map(item => item.id);
           let status = null;
           const unallocated = fDataSource.find(item => item.alloc_qty < item.order_qty);
-          const allocated = fDataSource.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
+          const allocated = fDataSource.find(item =>
+            item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
           if (unallocated && !allocated) {
             status = 'alloc';
           } else if (!unallocated && allocated) {
@@ -334,13 +360,21 @@ export default class OrderDetailsPane extends React.Component {
       }],
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={dataSource} rowKey={rowKey} loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={dataSource}
+        rowKey={rowKey}
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             {ButtonStatus === 'alloc' && (<Button loading={submitting} onClick={this.handleBatchAutoAlloc}>
               <MdIcon type="check-all" />批量自动分配
             </Button>)}
@@ -349,7 +383,8 @@ export default class OrderDetailsPane extends React.Component {
             </Button>)}
           </DataPane.BulkActions>
           <DataPane.Actions>
-            {outboundHead.total_alloc_qty > 0 && outboundHead.total_alloc_qty < outboundHead.total_qty &&
+            {outboundHead.total_alloc_qty > 0 &&
+              outboundHead.total_alloc_qty < outboundHead.total_qty &&
               <Button type="primary" onClick={this.handleExportUnAllocs}>导出未配货项</Button>
             }
             { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
@@ -357,7 +392,10 @@ export default class OrderDetailsPane extends React.Component {
           </DataPane.Actions>
           {alertMsg && <Alert message={alertMsg} type="warning" showIcon />}
         </DataPane.Toolbar>
-        <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />
+        <AllocatingModal
+          shippingMode={this.state.shippingMode}
+          editable={this.state.detailEditable}
+        />
       </DataPane>
     );
   }

@@ -37,7 +37,7 @@ export default class InstallQuickPass extends React.Component {
     send_dir: 'send',
     recv_dir: 'recv',
   }
-  handleInstallBtnClick = () => {
+  handleInstall = () => {
     const { tenantId } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -77,9 +77,7 @@ export default class InstallQuickPass extends React.Component {
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" loading={this.state.submitting}
-              onClick={this.handleInstallBtnClick}
-            >
+            <Button type="primary" icon="save" loading={this.state.submitting} onClick={this.handleInstall}>
               {this.msg('installApp')}
             </Button>
           </div>
