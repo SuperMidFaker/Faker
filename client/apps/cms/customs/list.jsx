@@ -663,7 +663,8 @@ export default class CustomsList extends Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
                 <RadioButton value="all">{this.msg('all')}</RadioButton>
                 {Object.keys(CMS_DECL_STATUS).map(declkey =>
-                  <RadioButton key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>)}
+                  (<RadioButton key={declkey} value={declkey}>
+                    {CMS_DECL_STATUS[declkey].text}</RadioButton>))}
               </RadioGroup>
               <span />
               <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
