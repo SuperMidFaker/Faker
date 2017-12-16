@@ -32,7 +32,7 @@ export default class InstallSHFTZ extends React.Component {
   }
   state = { submitting: false }
   msg = formatMsg(this.props.intl)
-  handleInstallBtnClick = () => {
+  handleInstall = () => {
     const { tenantId, loginId } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -72,9 +72,7 @@ export default class InstallSHFTZ extends React.Component {
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" loading={this.state.submitting}
-              onClick={this.handleInstallBtnClick}
-            >
+            <Button type="primary" icon="save" loading={this.state.submitting} onClick={this.handleInstall}>
               {this.msg('installApp')}
             </Button>
           </div>

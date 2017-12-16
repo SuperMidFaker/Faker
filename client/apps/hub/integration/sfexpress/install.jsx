@@ -1,31 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { message, Button, Card, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
+import { message, Button, Breadcrumb, Form, Input, Card, Icon, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import InfoItem from 'client/components/InfoItem';
-import { loadShunfengApp, updateShunfengApp } from 'common/reducers/openIntegration';
+import { uuidWithoutDash } from 'client/common/uuid';
+import { installSFExpressApp } from 'common/reducers/openIntegration';
 import MainForm from './forms/mainForm';
 import { formatMsg } from '../message.i18n';
 
+const FormItem = Form.Item;
 const { Header, Content } = Layout;
 
-function fetchData({ dispatch, params }) {
-  return dispatch(loadShunfengApp(params.uuid));
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    shunfeng: state.openIntegration.shunfeng,
+    customsCode: state.account.customsCode,
   }),
-  { updateShunfengApp }
+  { installSFExpressApp }
 )
 @Form.create()
-export default class ConfigEasipassEDI extends React.Component {
+export default class InstallSFExpress extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -35,13 +30,22 @@ export default class ConfigEasipassEDI extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = { submitting: false }
-  msg = formatMsg(this.props.intl);
-  handleSave = () => {
-    const { shunfeng } = this.props;
+  msg = formatMsg(this.props.intl)
+  defaultEasipassConfig = {
+    url: 'http://bsp-ois.sit.sf-express.com:9080/bsp-ois/sfexpressService',
+    checkword: 'j8DzkIFgmlomPt0aLuwU',
+    accesscode: 'BSPdevelop',
+    custid: '9999999999',
+  }
+  handleInstall = () => {
+    const { tenantId } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        const uuid = uuidWithoutDash();
         this.setState({ submitting: true });
-        this.props.updateShunfengApp({ ...values, uuid: shunfeng.uuid }).then((result) => {
+        this.props.installSFExpressApp({
+          ...values, uuid, app_type: 'SFEXPRESS', tenant_id: tenantId,
+        }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);
@@ -57,39 +61,38 @@ export default class ConfigEasipassEDI extends React.Component {
   }
 
   render() {
-    const { form, shunfeng } = this.props;
+    const { form } = this.props;
     return (
       <div>
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="appstore-o" /> {this.msg('integration')}
+              <Icon type="shop" /> {this.msg('appsStore')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('appShunfeng')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {shunfeng.name}
+              {this.msg('appSFExpress')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" loading={this.state.submitting} onClick={this.handleSave}>
-              {this.msg('saveApp')}
+            <Button type="primary" icon="save" loading={this.state.submitting} onClick={this.handleInstall}>
+              {this.msg('installApp')}
             </Button>
           </div>
         </Header>
         <Content className="main-content layout-fixed-width">
           <Form layout="vertical">
             <Card>
-              <InfoItem label={this.msg('integrationName')} field={shunfeng.name} />
+              <FormItem label={this.msg('integrationName')}>
+                {form.getFieldDecorator('name', {
+                  rules: [{ required: true, message: this.msg('integrationNameRequired') }],
+                })(<Input />)}
+              </FormItem>
             </Card>
             <Card title={this.msg('config')}>
-              <Row gutter={16}>
-                <MainForm form={form} config={shunfeng} />
-              </Row>
+              <MainForm form={form} config={this.defaultEasipassConfig} />
             </Card>
           </Form>
         </Content>

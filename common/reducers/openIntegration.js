@@ -15,9 +15,9 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
   'INSTALL_SHFTZ', 'INSTALL_SHFTZ_SUCCEED', 'INSTALL_SHFTZ_FAIL',
   'UPDATE_SHFTZ', 'UPDATE_SHFTZ_SUCCEED', 'UPDATE_SHFTZ_FAIL',
   'LOAD_WHSESUPV', 'LOAD_WHSESUPV_SUCCEED', 'LOAD_WHSESUPV_FAIL',
-  'INSTALL_SHUNFENG', 'INSTALL_SHUNFENG_SUCCEED', 'INSTALL_SHUNFENG_FAIL',
-  'LOAD_SHUNFENG', 'LOAD_SHUNFENG_SUCCEED', 'LOAD_SHUNFENG_FAIL',
-  'UPDATE_SHUNFENG', 'UPDATE_SHUNFENG_SUCCEED', 'UPDATE_SHUNFENG_FAIL',
+  'INSTALL_SFEXPRESS', 'INSTALL_SFEXPRESS_SUCCEED', 'INSTALL_SFEXPRESS_FAIL',
+  'LOAD_SFEXPRESS', 'LOAD_SFEXPRESS_SUCCEED', 'LOAD_SFEXPRESS_FAIL',
+  'UPDATE_SFEXPRESS', 'UPDATE_SFEXPRESS_SUCCEED', 'UPDATE_SFEXPRESS_FAIL',
 ]);
 
 const initialState = {
@@ -37,7 +37,7 @@ const initialState = {
   quickpassApp: {},
   arctm: {},
   shftzApp: {},
-  shunfeng: {},
+  sfexpress: {},
   whseSupervisonApps: [],
 };
 
@@ -60,8 +60,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, arctm: action.result.data };
     case actionTypes.LOAD_SHFTZ_SUCCEED:
       return { ...state, shftzApp: action.result.data };
-    case actionTypes.LOAD_SHUNFENG_SUCCEED:
-      return { ...state, shunfeng: action.result.data };
+    case actionTypes.LOAD_SFEXPRESS_SUCCEED:
+      return { ...state, sfexpress: action.result.data };
     case actionTypes.LOAD_WHSESUPV_SUCCEED:
       return { ...state, whseSupervisonApps: action.result.data };
     default:
@@ -264,45 +264,45 @@ export function loadWhseSupervisionApps(tenantId) {
   };
 }
 
-export function installShunfengApp(easipass) {
+export function installSFExpressApp(easipass) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.INSTALL_SHUNFENG,
-        actionTypes.INSTALL_SHUNFENG_SUCCEED,
-        actionTypes.INSTALL_SHUNFENG_FAIL,
+        actionTypes.INSTALL_SFEXPRESS,
+        actionTypes.INSTALL_SFEXPRESS_SUCCEED,
+        actionTypes.INSTALL_SFEXPRESS_FAIL,
       ],
-      endpoint: 'v1/platform/integration/install/shunfeng',
+      endpoint: 'v1/platform/integration/install/sfexpress',
       method: 'post',
       data: easipass,
     },
   };
 }
 
-export function loadShunfengApp(appuuid) {
+export function loadSFExpressApp(appuuid) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_SHUNFENG,
-        actionTypes.LOAD_SHUNFENG_SUCCEED,
-        actionTypes.LOAD_SHUNFENG_FAIL,
+        actionTypes.LOAD_SFEXPRESS,
+        actionTypes.LOAD_SFEXPRESS_SUCCEED,
+        actionTypes.LOAD_SFEXPRESS_FAIL,
       ],
-      endpoint: 'v1/platform/integration/shunfeng',
+      endpoint: 'v1/platform/integration/sfexpress',
       method: 'get',
       params: { uuid: appuuid },
     },
   };
 }
 
-export function updateShunfengApp(easipass) {
+export function updateSFExpressApp(easipass) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_SHUNFENG,
-        actionTypes.UPDATE_SHUNFENG_SUCCEED,
-        actionTypes.UPDATE_SHUNFENG_FAIL,
+        actionTypes.UPDATE_SFEXPRESS,
+        actionTypes.UPDATE_SFEXPRESS_SUCCEED,
+        actionTypes.UPDATE_SFEXPRESS_FAIL,
       ],
-      endpoint: 'v1/platform/integration/update/shunfeng',
+      endpoint: 'v1/platform/integration/update/sfexpress',
       method: 'post',
       data: easipass,
     },

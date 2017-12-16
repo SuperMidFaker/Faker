@@ -40,7 +40,7 @@ export default class InstallAmberRoadCTM extends React.Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  handleInstallBtnClick = () => {
+  handleInstall = () => {
     this.props.form.validateFields((err, values) => {
       const partner = this.props.partners.filter(pt => pt.id === values.customer_partner_id)[0];
       const arctm = {
@@ -89,7 +89,7 @@ export default class InstallAmberRoadCTM extends React.Component {
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleInstallBtnClick}>
+            <Button type="primary" icon="save" onClick={this.handleInstall}>
               {this.msg('installApp')}
             </Button>
           </div>

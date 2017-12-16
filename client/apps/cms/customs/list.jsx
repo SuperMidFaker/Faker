@@ -136,7 +136,8 @@ export default class CustomsList extends Component {
                 {record.pre_entry_seq_no}
               </span>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowAction shape="circle"
+                <RowAction
+                  shape="circle"
                   onClick={this.handleDeclNoFill}
                   row={record}
                   label={<Icon type="edit" />}
@@ -328,11 +329,17 @@ export default class CustomsList extends Component {
         </PrivilegeCover>);
       }
       if (record.status === CMS_DECL_STATUS.sent.value) {
-        spanElems.push(<RowAction overlay={<Menu onClick={this.showDeclMsgModal}><Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item></Menu>} row={record} />);
+        spanElems.push(<RowAction
+          overlay={<Menu onClick={this.showDeclMsgModal}>
+            <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>
+          </Menu>}
+          row={record}
+        />);
       }
       if (record.status === CMS_DECL_STATUS.entered.value) {
         spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
-          <RowAction onClick={this.handleShowDeclReleasedModal}
+          <RowAction
+            onClick={this.handleShowDeclReleasedModal}
             row={record}
             icon="flag"
             tooltip={this.msg('markReleased')}
@@ -340,10 +347,11 @@ export default class CustomsList extends Component {
         </PrivilegeCover>);
       }
       if (record.status >= CMS_DECL_STATUS.entered.value) {
-        spanElems.push(<RowAction overlay={<Menu>
-          {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
-          {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
-        </Menu>}
+        spanElems.push(<RowAction
+          overlay={<Menu>
+            {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
+            {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
+          </Menu>}
           row={record}
         />);
       }
@@ -603,7 +611,8 @@ export default class CustomsList extends Component {
     }].concat(this.props.clients);
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-      <Select showSearch
+      <Select
+        showSearch
         optionFilterProp="children"
         style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
@@ -627,7 +636,8 @@ export default class CustomsList extends Component {
         )}
       </Select>
       */}
-      <Select value={listFilter.viewStatus}
+      <Select
+        value={listFilter.viewStatus}
         style={{ width: 160 }}
         showSearch={false}
         onChange={this.handleViewChange}
@@ -637,7 +647,8 @@ export default class CustomsList extends Component {
           <Option value="my">我负责的委托</Option>
         </OptGroup>
       </Select>
-      <RangePicker value={dateVal}
+      <RangePicker
+        value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       />
@@ -672,7 +683,8 @@ export default class CustomsList extends Component {
             </PageHeader.Nav>
             <PageHeader.Actions>
               <PageHint />
-              <ButtonToggle tooltip="报文收发记录"
+              <ButtonToggle
+                tooltip="报文收发记录"
                 iconOn="double-right"
                 iconOff="double-left"
                 onClick={this.toggleRightSider}
@@ -680,7 +692,8 @@ export default class CustomsList extends Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable toolbarActions={toolbarActions}
+            <DataTable
+              toolbarActions={toolbarActions}
               bulkActions={bulkActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}

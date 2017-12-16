@@ -26,9 +26,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
   'ORDER_EXPRESS', 'ORDER_EXPRESS_SUCCEED', 'ORDER_EXPRESS_FAIL',
   'ORDER_ZD_EXPRESS', 'ORDER_ZD_EXPRESS_SUCCEED', 'ORDER_ZD_EXPRESS_FAIL',
-  'SHUNFENG_EXPRESS_MODAL',
-  'LOAD_SHUNFENG_EXPRESS', 'LOAD_SHUNFENG_EXPRESS_SUCCEED', 'LOAD_SHUNFENG_EXPRESS_FAIL',
-  'LOAD_SHUNFENG_CONFIG', 'LOAD_SHUNFENG_CONFIG_SUCCEED', 'LOAD_SHUNFENG_CONFIG_FAIL',
+  'SFEXPRESS_MODAL',
+  'LOAD_SFEXPRESS', 'LOAD_SFEXPRESS_SUCCEED', 'LOAD_SFEXPRESS_FAIL',
+  'LOAD_SFEXPRESS_CONFIG', 'LOAD_SFEXPRESS_CONFIG_SUCCEED', 'LOAD_SFEXPRESS_CONFIG_FAIL',
   'LOAD_TRACEID_OUTBOUND', 'LOAD_TRACEID_OUTBOUND_SUCCEED', 'LOAD_TRACEID_OUTBOUND_FAIL',
   'EXPORT_NEBSO', 'EXPORT_NEBSO_SUCCEED', 'EXPORT_NEBSO_FAIL',
 ]);
@@ -88,7 +88,7 @@ const initialState = {
   inventoryDataLoading: false,
   allocatedDataLoading: false,
   waybill: {},
-  shunfengExpressModal: {
+  SFExpressModal: {
     visible: false,
     config: {},
   },
@@ -97,7 +97,10 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.OPEN_ALLOCATING_MODAL:
-      return { ...state, allocatingModal: { ...state.allocatingModal, visible: true, ...action.data } };
+      return {
+        ...state,
+        allocatingModal: { ...state.allocatingModal, visible: true, ...action.data },
+      };
     case actionTypes.CLOSE_ALLOCATING_MODAL:
       return { ...state, allocatingModal: { ...state.allocatingModal, visible: false } };
     case actionTypes.OPEN_PICKING_MODAL:
@@ -124,7 +127,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_SHIPPING_MODAL:
       return { ...state, shippingModal: { visible: false } };
     case actionTypes.LOAD_OUTBOUNDS:
-      return { ...state, outboundFilters: JSON.parse(action.params.filters), outbound: { ...state.outbound, loading: true } };
+      return {
+        ...state,
+        outboundFilters: JSON.parse(action.params.filters),
+        outbound: { ...state.outbound, loading: true },
+      };
     case actionTypes.LOAD_OUTBOUNDS_SUCCEED:
       return { ...state, outbound: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_OUTBOUND_HEAD_SUCCEED:
@@ -166,7 +173,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ALLOCATED_DETAILS_SUCCEED:
       return { ...state, allocatedData: action.result.data, allocatedDataLoading: false };
     case actionTypes.UPDATE_OUTBMODE_SUCCEED:
-      return { ...state, outboundFormHead: { ...state.outboundFormHead, shipping_mode: action.data.shippingMode } };
+      return {
+        ...state,
+        outboundFormHead: {
+          ...state.outboundFormHead,
+          shipping_mode: action.data.shippingMode,
+        },
+      };
     case actionTypes.LOAD_PACK_DETAILS_SUCCEED:
       return { ...state, packDetails: action.result.data };
     case actionTypes.LOAD_SHIP_DETAILS_SUCCEED:
@@ -177,8 +190,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, outbound: { ...state.outbound, loaded: false } };
     case actionTypes.READ_LOGO_SUCCEED:
       return { ...state, waybill: { ...state.waybill, ...action.result.data } };
-    case actionTypes.SHUNFENG_EXPRESS_MODAL:
-      return { ...state, shunfengExpressModal: { ...state.shunfengExpressModal, ...action.data } };
+    case actionTypes.SFEXPRESS_MODAL:
+      return { ...state, SFExpressModal: { ...state.SFExpressModal, ...action.data } };
     default:
       return state;
   }
@@ -535,16 +548,16 @@ export function orderExpress(data) {
         actionTypes.ORDER_EXPRESS_SUCCEED,
         actionTypes.ORDER_EXPRESS_FAIL,
       ],
-      endpoint: 'v1/cwm/outbounds/shunfeng/order',
+      endpoint: 'v1/cwm/outbounds/sfexpress/order',
       method: 'post',
       data,
     },
   };
 }
 
-export function toggleShunfengExpressModal(visible, config = {}) {
+export function toggleSFExpressModal(visible, config = {}) {
   return {
-    type: actionTypes.SHUNFENG_EXPRESS_MODAL,
+    type: actionTypes.SFEXPRESS_MODAL,
     data: { visible, config },
   };
 }
@@ -553,11 +566,11 @@ export function loadExpressInfo(orderNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_SHUNFENG_EXPRESS,
-        actionTypes.LOAD_SHUNFENG_EXPRESS_SUCCEED,
-        actionTypes.LOAD_SHUNFENG_EXPRESS_FAIL,
+        actionTypes.LOAD_SFEXPRESS,
+        actionTypes.LOAD_SFEXPRESS_SUCCEED,
+        actionTypes.LOAD_SFEXPRESS_FAIL,
       ],
-      endpoint: 'v1/cwm/outbounds/shunfeng/express',
+      endpoint: 'v1/cwm/outbounds/sfexpress',
       method: 'get',
       params: { orderNo },
     },
@@ -572,22 +585,22 @@ export function addZD(data) {
         actionTypes.ORDER_ZD_EXPRESS_SUCCEED,
         actionTypes.ORDER_ZD_EXPRESS_FAIL,
       ],
-      endpoint: 'v1/cwm/outbounds/shunfeng/order/zd',
+      endpoint: 'v1/cwm/outbounds/sfexpress/order/zd',
       method: 'post',
       data,
     },
   };
 }
 
-export function loadShunfengConfig() {
+export function loadSFExpressConfig() {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_SHUNFENG_CONFIG,
-        actionTypes.LOAD_SHUNFENG_CONFIG_SUCCEED,
-        actionTypes.LOAD_SHUNFENG_CONFIG_FAIL,
+        actionTypes.LOAD_SFEXPRESS_CONFIG,
+        actionTypes.LOAD_SFEXPRESS_CONFIG_SUCCEED,
+        actionTypes.LOAD_SFEXPRESS_CONFIG_FAIL,
       ],
-      endpoint: 'v1/cwm/outbounds/shunfeng/config',
+      endpoint: 'v1/cwm/outbounds/sfexpress/config',
       method: 'get',
     },
   };

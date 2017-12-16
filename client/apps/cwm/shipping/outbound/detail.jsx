@@ -6,29 +6,29 @@ import { Badge, Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, T
   Tag, Dropdown, Menu, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import { Logixon } from 'client/components/FontIcon';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR } from 'common/constants';
+import { loadOutboundHead, updateOutboundMode, toggleSFExpressModal, loadSFExpressConfig } from 'common/reducers/cwmOutbound';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
-import { loadOutboundHead, updateOutboundMode, toggleShunfengExpressModal, loadShunfengConfig } from 'common/reducers/cwmOutbound';
 import PrintPickList from './billsPrint/printPIckList';
 import PrintShippingList from './billsPrint/printShippingList';
 import PrintShippingConfirm from './billsPrint/printShippingConfirm';
-import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR } from 'common/constants';
 import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
-import ShunfengExpressModal from './modal/shunfengExpressModal';
+import SFExpressModal from './modal/SFExpressModal';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Step = Steps.Step;
-const TabPane = Tabs.TabPane;
+const { Step } = Steps;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -44,8 +44,8 @@ const TabPane = Tabs.TabPane;
   {
     loadOutboundHead,
     updateOutboundMode,
-    toggleShunfengExpressModal,
-    loadShunfengConfig,
+    toggleSFExpressModal,
+    loadSFExpressConfig,
   }
 )
 @connectNav({
@@ -57,19 +57,14 @@ export default class OutboundDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     updateOutboundMode: PropTypes.func.isRequired,
-    toggleShunfengExpressModal: PropTypes.func.isRequired,
+    toggleSFExpressModal: PropTypes.func.isRequired,
     outboundProducts: PropTypes.arrayOf(PropTypes.shape({ seq_no: PropTypes.string.isRequired })),
-    loadShunfengConfig: PropTypes.func.isRequired,
+    loadSFExpressConfig: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    allocated: true,
-    pushedTask: false,
-    printedPickingList: false,
-    picking: false,
-    picked: false,
     tabKey: 'orderDetails',
     fullscreen: true,
   }
@@ -82,54 +77,8 @@ export default class OutboundDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-
-      }
-    });
-  }
-  handleSave = () => {
-    this.handleSave({ accepted: false });
-  }
-  handleCancel = () => {
-    this.context.router.goBack();
-  }
-  handleAutoAllocate = () => {
-    this.setState({
-      allocated: true,
-      currentStep: 1,
-    });
-  }
-  handleUndoAllocate = () => {
-    this.setState({
-      allocated: false,
-      currentStep: 0,
-      printedPickingList: false,
-    });
-  }
   handleShippingModeChange = (ev) => {
     this.props.updateOutboundMode(this.props.params.outboundNo, ev.target.value);
-  }
-  handlePushTask = () => {
-    this.setState({
-      pushedTask: true,
-      currentStep: 2,
-      picking: true,
-    });
-  }
-  handleWithdrawTask = () => {
-    this.setState({
-      pushedTask: false,
-      currentStep: 1,
-      picking: false,
-    });
-  }
-  handleConfirmPicked = () => {
-    this.setState({
-      picked: true,
-      currentStep: 2,
-    });
   }
   handleTabChange = (tabKey) => {
     this.setState({
@@ -145,11 +94,11 @@ export default class OutboundDetail extends Component {
     this.setState({ fullscreen });
   }
   showExpressModal = () => {
-    this.props.loadShunfengConfig().then((result) => {
+    this.props.loadSFExpressConfig().then((result) => {
       if (result.error) {
         const key = `open${Date.now()}`;
         const btnClick = () => {
-          this.context.router.push('/hub/integration/shunfeng/install');
+          this.context.router.push('/hub/integration/sfexpress/install');
           notification.close(key);
         };
         const btn = (
@@ -166,7 +115,7 @@ export default class OutboundDetail extends Component {
         });
       } else {
         const { defaultWhse, outboundHead, outboundProducts } = this.props;
-        this.props.toggleShunfengExpressModal(true, {
+        this.props.toggleSFExpressModal(true, {
           ...result.data,
           order_no: outboundHead.outbound_no,
           sender_phone: defaultWhse.whse_tel,
@@ -195,11 +144,13 @@ export default class OutboundDetail extends Component {
   }
   render() {
     const { defaultWhse, outboundHead } = this.props;
-    const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status)[0];
+    const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(cis =>
+      CWM_OUTBOUND_STATUS[cis].value === outboundHead.status)[0];
     let regTag;
     let regTypes = [];
     if (outboundHead.bonded === 1) {
-      regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype && sbr.tagcolor)[0];
+      [regTag] = CWM_SO_BONDED_REGTYPES.filter(sbr =>
+        sbr.value === outboundHead.bonded_outtype && sbr.tagcolor);
       if (regTag) {
         regTypes = [{
           tooltip: '关联监管备案',
@@ -249,17 +200,18 @@ export default class OutboundDetail extends Component {
           <PageHeader.Nav>
             {regTypes.map((reg) => {
               const regStatus = reg.type === 'transfer' ?
-                CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR.filter(status => status.value === reg.status)[0] :
-                CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === reg.status)[0];
+                CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR.filter(status =>
+                  status.value === reg.status)[0] :
+                CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status =>
+                  status.value === reg.status)[0];
               if (regStatus) {
                 return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
                   <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 8 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>
                 </Tooltip>);
-              } else {
-                return null;
               }
+                return null;
             })
             }
           </PageHeader.Nav>
@@ -272,9 +224,17 @@ export default class OutboundDetail extends Component {
                 <Logixon type="sf-express" />
               </Button>
             </Tooltip>
-            <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} disabled={outboundStep === 5}>
-              <Tooltip title="扫码出库操作模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
-              <Tooltip title="手动出库操作模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
+            <RadioGroup
+              value={outboundHead.shipping_mode}
+              onChange={this.handleShippingModeChange}
+              disabled={outboundStep === 5}
+            >
+              <Tooltip title="扫码出库操作模式" placement="bottom">
+                <RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton>
+              </Tooltip>
+              <Tooltip title="手动出库操作模式" placement="bottom">
+                <RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton>
+              </Tooltip>
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
@@ -305,12 +265,16 @@ export default class OutboundDetail extends Component {
                 <InfoItem label="发货总数" field={outboundHead.total_shipped_qty} upperLimit={outboundHead.total_picked_qty} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
+                <InfoItem
+                  label="创建时间"
+                  addonBefore={<Icon type="clock-circle-o" />}
                   field={outboundHead.created_date && moment(outboundHead.created_date).format('YYYY.MM.DD')}
                 />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="出库时间" addonBefore={<Icon type="clock-circle-o" />}
+                <InfoItem
+                  label="出库时间"
+                  addonBefore={<Icon type="clock-circle-o" />}
                   field={outboundHead.completed_date && moment(outboundHead.completed_date).format('MM.DD HH:mm')}
                 />
               </Col>
@@ -326,23 +290,39 @@ export default class OutboundDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard
+            bodyStyle={{ padding: 0 }}
+            hoverable={false}
+            onSizeChange={this.toggleFullscreen}
+          >
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="订单明细" key="orderDetails">
-                <OrderDetailsPane outboundNo={this.props.params.outboundNo} fullscreen={this.state.fullscreen} />
+                <OrderDetailsPane
+                  outboundNo={this.props.params.outboundNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
               <TabPane tab="拣货明细" key="pickingDetails">
-                <PickingDetailsPane outboundNo={this.props.params.outboundNo} fullscreen={this.state.fullscreen} />
+                <PickingDetailsPane
+                  outboundNo={this.props.params.outboundNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
               <TabPane tab="装箱明细" key="packingDetails">
-                <PackingDetailsPane outboundNo={this.props.params.outboundNo} fullscreen={this.state.fullscreen} />
+                <PackingDetailsPane
+                  outboundNo={this.props.params.outboundNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
               <TabPane tab="发货明细" key="shippingDetails">
-                <ShippingDetailsPane outboundNo={this.props.params.outboundNo} fullscreen={this.state.fullscreen} />
+                <ShippingDetailsPane
+                  outboundNo={this.props.params.outboundNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
             </Tabs>
           </MagicCard>
-          <ShunfengExpressModal />
+          <SFExpressModal />
         </Content>
       </div>
     );

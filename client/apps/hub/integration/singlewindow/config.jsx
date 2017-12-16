@@ -1,51 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { message, Button, Breadcrumb, Form, Input, Card, Icon, Layout } from 'antd';
+import { message, Button, Card, Breadcrumb, Form, Icon, Layout, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { uuidWithoutDash } from 'client/common/uuid';
-import { installEasipassApp } from 'common/reducers/openIntegration';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import InfoItem from 'client/components/InfoItem';
+import { loadEasipassApp, updateEasipassApp } from 'common/reducers/openIntegration';
 import MainForm from './forms/mainForm';
 import { formatMsg } from '../message.i18n';
 
-const FormItem = Form.Item;
 const { Header, Content } = Layout;
 
+function fetchData({ dispatch, params }) {
+  return dispatch(loadEasipassApp(params.uuid));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    customsCode: state.account.customsCode,
+    quickpass: state.openIntegration.quickpassApp,
   }),
-  { installEasipassApp }
+  { updateEasipassApp }
 )
 @Form.create()
-export default class InstallEasipassEDI extends React.Component {
+export default class ConfigSingleWindow extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = { submitting: false }
-  msg = formatMsg(this.props.intl)
-  defaultEasipassConfig = {
-    send_trade_code: this.props.customsCode,
-    receive_trade_code: this.props.customsCode,
-    send_dir: 'send',
-    recv_dir: 'recv',
-  }
-  handleInstall = () => {
-    const { tenantId } = this.props;
+  msg = formatMsg(this.props.intl);
+  handleSave = () => {
+    const { quickpass } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const uuid = uuidWithoutDash();
         this.setState({ submitting: true });
-        this.props.installEasipassApp({
-          ...values, uuid, app_type: 'EASIPASS', tenant_id: tenantId,
-        }).then((result) => {
+        this.props.updateEasipassApp({ ...values, uuid: quickpass.uuid }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);
@@ -61,38 +56,39 @@ export default class InstallEasipassEDI extends React.Component {
   }
 
   render() {
-    const { form } = this.props;
+    const { form, quickpass } = this.props;
     return (
       <div>
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="shop" /> {this.msg('appsStore')}
+              <Icon type="appstore-o" /> {this.msg('integration')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('appEasipassEDI')}
+              {this.msg('appQuickPass')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {quickpass.name}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" loading={this.state.submitting} onClick={this.handleInstall}>
-              {this.msg('installApp')}
+            <Button type="primary" icon="save" loading={this.state.submitting} onClick={this.handleSave}>
+              {this.msg('saveApp')}
             </Button>
           </div>
         </Header>
         <Content className="main-content layout-fixed-width">
           <Form layout="vertical">
             <Card>
-              <FormItem label={this.msg('integrationName')}>
-                {form.getFieldDecorator('name', {
-                  rules: [{ required: true, message: this.msg('integrationNameRequired') }],
-                })(<Input />)}
-              </FormItem>
+              <InfoItem label={this.msg('integrationName')} field={quickpass.name} />
             </Card>
             <Card title={this.msg('interfaceConfig')}>
-              <MainForm form={form} easipass={this.defaultEasipassConfig} />
+              <Row gutter={16}>
+                <MainForm form={form} quickpass={quickpass} />
+              </Row>
             </Card>
           </Form>
         </Content>

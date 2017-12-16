@@ -38,8 +38,8 @@ const messages = defineMessages({
     id: 'hub.integration.app.shftz',
     defaultMessage: '上海自贸区监管',
   },
-  appShunfeng: {
-    id: 'hub.integration.app.shunfeng',
+  appSFExpress: {
+    id: 'hub.integration.app.sfexpress',
     defaultMessage: '顺丰快递',
   },
   interfaceConfig: {
@@ -154,20 +154,20 @@ const messages = defineMessages({
     id: 'hub.integration.config',
     defaultMessage: '配置',
   },
-  shunfengUrl: {
-    id: 'hub.integration.shunfeng.url',
+  sfexpressUrl: {
+    id: 'hub.integration.sfexpress.url',
     defaultMessage: 'HTTP服务url',
   },
-  shunfengCheckword: {
-    id: 'hub.integration.shunfeng.checkword',
+  sfexpressCheckword: {
+    id: 'hub.integration.sfexpress.checkword',
     defaultMessage: '密钥',
   },
-  shunfengAccesscode: {
-    id: 'hub.integration.shunfeng.accesscode',
+  sfexpressAccesscode: {
+    id: 'hub.integration.sfexpress.accesscode',
     defaultMessage: '接入编码',
   },
-  shunfengCustid: {
-    id: 'hub.integration.shunfeng.custid',
+  sfexpressCustid: {
+    id: 'hub.integration.sfexpress.custid',
     defaultMessage: '月结卡号',
   },
 });
