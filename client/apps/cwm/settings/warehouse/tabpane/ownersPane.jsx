@@ -73,9 +73,8 @@ export default class OwnersPane extends Component {
     render: (o) => {
       if (o) {
         return <Tag color="green">正常</Tag>;
-      } else {
-        return <Tag color="red">停用</Tag>;
       }
+      return <Tag color="red">停用</Tag>;
     },
   }, {
     title: '启用分拨',
@@ -84,45 +83,44 @@ export default class OwnersPane extends Component {
     render: (o) => {
       if (o) {
         return <Tag color="blue">已启用</Tag>;
-      } else {
-        return <Tag>未启用</Tag>;
       }
+      return <Tag>未启用</Tag>;
     },
   }, {
     title: '默认收货模式',
     dataIndex: 'receiving_mode',
     width: 120,
-    className: 'cell-align-center',
-    render: o => o ? `${WHSE_OPERATION_MODES[o].text}收货` : '',
+    align: 'center',
+    render: o => (o ? `${WHSE_OPERATION_MODES[o].text}收货` : ''),
   }, {
     title: '默认发货模式',
     dataIndex: 'shipping_mode',
     width: 120,
-    className: 'cell-align-center',
-    render: o => o ? `${WHSE_OPERATION_MODES[o].text}发货` : '',
+    align: 'center',
+    render: o => (o ? `${WHSE_OPERATION_MODES[o].text}发货` : ''),
   }, {
     title: '库存初始化',
     dataIndex: 'init',
     width: 100,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o, record) => <Button icon="upload" onClick={() => this.handleInitData(record)} />,
   }, {
     title: '数据备份',
     dataIndex: 'backup',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o, record) => <Button icon="cloud-download-o" onClick={() => this.handleBackupData(record)} />,
   }, {
     title: '数据清空',
     dataIndex: 'clear',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o, record) => <Button type="danger" icon="delete" onClick={() => this.handleEmptyData(record)} />,
   }, {
     title: '数据恢复',
     dataIndex: 'restore',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: () => (
       <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/stock/restore`}>
         <Button icon="cloud-upload-o" />
@@ -205,8 +203,11 @@ export default class OwnersPane extends Component {
     return (
       <DataPane columns={this.columns} dataSource={whseOwners} rowKey="id">
         <DataPane.Toolbar>
-          <Button disabled={warehouse.whse_mode === 'PRI'} type="primary"
-            icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}
+          <Button
+            disabled={warehouse.whse_mode === 'PRI'}
+            type="primary"
+            icon="plus-circle"
+            onClick={() => this.props.showWhseOwnersModal()}
           >
             添加货主
           </Button>

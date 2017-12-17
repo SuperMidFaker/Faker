@@ -134,7 +134,7 @@ export default class MovementDetailsPane extends React.Component {
     title: '库存移动数量',
     width: 180,
     dataIndex: 'move_qty',
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '来源追踪ID',
     dataIndex: 'from_trace_id',
@@ -156,9 +156,8 @@ export default class MovementDetailsPane extends React.Component {
     render: (o, row) => {
       if (this.props.movementHead.isdone) {
         return o;
-      } else {
-        return <Input defaultValue={o} onBlur={e => this.handleUpdateToLocation(row.id, e.target.value)} />;
       }
+      return <Input defaultValue={o} onBlur={e => this.handleUpdateToLocation(row.id, e.target.value)} />;
     },
   }, {
     title: '操作',
@@ -174,9 +173,14 @@ export default class MovementDetailsPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={movementDetails} rowKey="to_trace_id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={movementDetails}
+        rowKey="to_trace_id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />

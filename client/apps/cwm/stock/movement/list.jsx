@@ -90,28 +90,26 @@ export default class MovementList extends React.Component {
     render: o => o && CWM_MOVEMENT_TYPE[o - 1].text,
   }, {
     title: '状态',
-    className: 'cell-align-center',
+    align: 'center',
     width: 200,
     render: (o, record) => {
       if (record.isdone === 1) {
         return <Fontello type="circle" color="green" />;
-      } else {
-        return <Fontello type="circle" color="gray" />;
       }
+      return <Fontello type="circle" color="gray" />;
     },
   }, {
     title: '操作模式',
     dataIndex: 'moving_mode',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="扫码移动"><Icon type="scan" /></Tooltip>);
       } else if (o === 'manual') {
         return (<Tooltip title="人工移动"><Icon type="solution" /></Tooltip>);
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     title: '创建时间',
@@ -131,13 +129,12 @@ export default class MovementList extends React.Component {
     render: (o, record) => {
       if (record.isdone) {
         return (<RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />);
-      } else {
-        return (<span>
-          <RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />
-          <span className="ant-divider" />
-          <RowAction onClick={this.cancelMovement} label="取消移库" row={record} />
-        </span>);
       }
+      return (<span>
+        <RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />
+        <span className="ant-divider" />
+        <RowAction onClick={this.cancelMovement} label="取消移库" row={record} />
+      </span>);
     },
   }]
   handleCreateMovement = () => {
@@ -227,8 +224,14 @@ export default class MovementList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
-        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        onChange={this.handleOwnerChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {
@@ -262,8 +265,15 @@ export default class MovementList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys}
-            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            columns={this.columns}
+            dataSource={dataSource}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
           />
         </Content>
         <MovementModal />

@@ -69,7 +69,7 @@ export default class PickingDetailsPane extends React.Component {
     title: '行号',
     dataIndex: 'seq_no',
     width: 50,
-    className: 'cell-align-center',
+    align: 'center',
   }, {
     title: '商品货号',
     dataIndex: 'product_sku',
@@ -92,13 +92,13 @@ export default class PickingDetailsPane extends React.Component {
     title: '分配数量',
     dataIndex: 'alloc_qty',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '拣货数量',
     dataIndex: 'picked_qty',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
     render: (o, record) => {
       if (record.picked_qty === record.alloc_qty) {
         return (<span className="text-success">{o}</span>);
@@ -115,14 +115,14 @@ export default class PickingDetailsPane extends React.Component {
     title: '货物属性',
     dataIndex: 'bonded',
     width: 80,
-    className: 'cell-align-center',
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+    align: 'center',
+    render: bonded => (bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>),
   }, {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
-    className: 'cell-align-center',
-    render: portion => portion ? <Tag color="green">可分拨</Tag> : <Tag>否</Tag>,
+    align: 'center',
+    render: portion => (portion ? <Tag color="green">可分拨</Tag> : <Tag>否</Tag>),
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
@@ -299,9 +299,8 @@ export default class PickingDetailsPane extends React.Component {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
         return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
       }
+      return true;
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -358,9 +357,14 @@ export default class PickingDetailsPane extends React.Component {
       }],
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={dataSource}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />

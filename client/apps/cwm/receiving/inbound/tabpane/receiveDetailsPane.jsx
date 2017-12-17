@@ -105,7 +105,7 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'asn_seq_no',
     width: 50,
     fixed: 'left',
-    className: 'cell-align-center',
+    align: 'center',
   }, {
     title: '货品',
     dataIndex: 'product_sku',
@@ -120,12 +120,12 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '预期数量',
     width: 100,
     dataIndex: 'expect_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
     dataIndex: 'received_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (o, record) => {
       if (record.received_qty === record.expect_qty) {
         return (<span className="text-success">{o}</span>);
@@ -145,7 +145,7 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '包装情况',
     dataIndex: 'damage_level',
     width: 120,
-    className: 'cell-align-center',
+    align: 'center',
     render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
     title: '客户单号',
@@ -163,7 +163,7 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '收货人员',
     width: 150,
     dataIndex: 'received_by',
-    render: o => o ? o.join(',') : '',
+    render: o => (o ? o.join(',') : ''),
   }, {
     title: '收货时间',
     width: 100,
@@ -178,9 +178,8 @@ export default class ReceiveDetailsPane extends React.Component {
         this.props.inboundHead.status === CWM_INBOUND_STATUS.COMPLETED.value ||
         record.received_qty >= record.expect_qty) {
         return (<RowAction onClick={this.handleReceiveDetails} icon="eye-o" label="收货记录" row={record} />);
-      } else {
-        return (<RowAction onClick={this.handleManualReceive} icon="check-circle-o" label="收货确认" row={record} />);
       }
+      return (<RowAction onClick={this.handleManualReceive} icon="check-circle-o" label="收货确认" row={record} />);
     },
   }]
   handleSearch = (value) => {
@@ -205,9 +204,8 @@ export default class ReceiveDetailsPane extends React.Component {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
         return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
       }
+      return true;
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -242,9 +240,14 @@ export default class ReceiveDetailsPane extends React.Component {
       }),
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={dataSource}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
@@ -261,7 +264,8 @@ export default class ReceiveDetailsPane extends React.Component {
             }
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Tooltip title="导入收货确认" placement="bottom">
-              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/details/import`}
+              <ExcelUploader
+                endpoint={`${API_ROOTS.default}v1/cwm/receiving/details/import`}
                 formData={{
                   data: JSON.stringify({
                     loginId: this.props.loginId,
@@ -269,7 +273,8 @@ export default class ReceiveDetailsPane extends React.Component {
                     inboundNo: this.props.inboundNo,
                     whseCode: this.props.defaultWhse.code,
                   }),
-                }} onUploaded={this.handleUploadPutaway}
+                }}
+                onUploaded={this.handleUploadPutaway}
               >
                 <Button icon="upload">导入</Button>
               </ExcelUploader>

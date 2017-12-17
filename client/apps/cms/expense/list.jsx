@@ -153,7 +153,7 @@ export default class ExpenseList extends Component {
           dataIndex: 'serv_bill',
           key: 'serv_bill',
           width: 80,
-          className: 'cell-align-right',
+          align: 'right',
           render: (o) => {
             if (!isNaN(o)) {
               return o.toFixed(2);
@@ -164,15 +164,18 @@ export default class ExpenseList extends Component {
           dataIndex: 'cush_bill',
           key: 'cush_bill',
           width: 80,
-          className: 'cell-align-right',
+          align: 'right',
           render: (o, row) => {
             if (!isNaN(o)) {
               const labelElem = (
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowAction onClick={this.handleAddAdvanceIncome} field="cush_bill"
-                  row={{ delg_no: row.delg_no }} label={labelElem}
+                <RowAction
+                  onClick={this.handleAddAdvanceIncome}
+                  field="cush_bill"
+                  row={{ delg_no: row.delg_no }}
+                  label={labelElem}
                 />);
             }
           },
@@ -181,7 +184,7 @@ export default class ExpenseList extends Component {
           dataIndex: 'all_bill',
           key: 'all_bill',
           width: 80,
-          className: 'cell-align-right',
+          align: 'right',
           render: (o) => {
             if (!isNaN(o)) {
               return (<b>{o.toFixed(2)}</b>);
@@ -219,7 +222,7 @@ export default class ExpenseList extends Component {
           dataIndex: 'serv_cost',
           key: 'serv_cost',
           width: 80,
-          className: 'cell-align-right',
+          align: 'right',
           render: (o) => {
             if (!isNaN(o)) {
               return o.toFixed(2);
@@ -230,15 +233,18 @@ export default class ExpenseList extends Component {
           dataIndex: 'cush_cost',
           key: 'cush_cost',
           width: 80,
-          className: 'cell-align-right',
+          align: 'right',
           render: (o, row) => {
             if (!isNaN(o)) {
               const labelElem = (
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowAction onClick={this.handleAddAdvancePayment} field="cush_cost"
-                  row={{ delg_no: row.delg_no }} label={labelElem}
+                <RowAction
+                  onClick={this.handleAddAdvancePayment}
+                  field="cush_cost"
+                  row={{ delg_no: row.delg_no }}
+                  label={labelElem}
                 />);
             }
           },
@@ -246,7 +252,7 @@ export default class ExpenseList extends Component {
           title: this.msg('allCost'),
           dataIndex: 'all_cost',
           width: 80,
-          className: 'cell-align-right',
+          align: 'right',
           render: (o) => {
             if (!isNaN(o)) {
               return (<b>{o.toFixed(2)}</b>);
@@ -273,7 +279,7 @@ export default class ExpenseList extends Component {
       title: this.msg('profit'),
       width: 80,
       dataIndex: 'profit',
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record) => {
         const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
         const cost = isNaN(record.all_cost) ? 0 : record.all_cost;
@@ -281,9 +287,8 @@ export default class ExpenseList extends Component {
           return (<span className="mdc-text-red">{-(cost - bill).toFixed(2)}</span>);
         } else if (bill > cost) {
           return (<span className="mdc-text-green">{(bill - cost).toFixed(2)}</span>);
-        } else {
-          return (<span className="mdc-text-grey">0.00</span>);
         }
+        return (<span className="mdc-text-grey">0.00</span>);
       },
     }, {
       title: this.msg('invoiceNo'),
@@ -320,9 +325,8 @@ export default class ExpenseList extends Component {
       render: (o) => {
         if (o) {
           return <span>{moment(o).format('MM.DD HH:mm')}</span>;
-        } else {
-          return <span>--:--</span>;
         }
+        return <span>--:--</span>;
       },
     }, {
       title: this.msg('opCol'),
@@ -525,9 +529,17 @@ export default class ExpenseList extends Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <DataTable toolbarActions={toolbarActions} scrollOffset={360}
-            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={this.dataSource} rowKey="delg_no" loading={expslist.loading} bordered
+          <DataTable
+            toolbarActions={toolbarActions}
+            scrollOffset={360}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={this.dataSource}
+            rowKey="delg_no"
+            loading={expslist.loading}
+            bordered
           />
         </Content>
         <DelegationDockPanel />

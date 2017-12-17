@@ -97,7 +97,7 @@ export default class DetailsPane extends Component {
       title: '行号',
       dataIndex: 'seq_no',
       width: 50,
-      className: 'cell-align-center',
+      align: 'center',
       fixed: 'left',
       render: (col, row) => row.index + 1,
     }, {
@@ -113,11 +113,11 @@ export default class DetailsPane extends Component {
       title: '订单数量',
       width: 100,
       dataIndex: 'order_qty',
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '计量单位',
       dataIndex: 'unit',
-      className: 'cell-align-center',
+      align: 'center',
       render: o => ((o && units.length > 0) ? units.find(unit => unit.code === o).name : ''),
     }, {
       title: '采购订单号',
@@ -135,11 +135,11 @@ export default class DetailsPane extends Component {
       title: '金额',
       dataIndex: 'amount',
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '币制',
       dataIndex: 'currency',
-      className: 'cell-align-center',
+      align: 'center',
       render: (o) => {
         const currency = currencies.find(curr => Number(curr.code) === Number(o));
         if (currency) {
@@ -159,7 +159,8 @@ export default class DetailsPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
+      <DataPane
+        fullscreen={this.props.fullscreen}
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -169,7 +170,8 @@ export default class DetailsPane extends Component {
       >
         <DataPane.Toolbar>
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
-          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
+          <ExcelUploader
+            endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
             formData={{
               data: JSON.stringify({
                 loginId: this.props.loginId,

@@ -73,7 +73,7 @@ export default class OrderDetailsPane extends React.Component {
     title: '行号',
     dataIndex: 'seq_no',
     width: 50,
-    className: 'cell-align-center',
+    align: 'center',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -85,13 +85,13 @@ export default class OrderDetailsPane extends React.Component {
     title: '订货数量',
     dataIndex: 'order_qty',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '分配数量',
     dataIndex: 'alloc_qty',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
     render: (o, record) => {
       if (record.alloc_qty === record.order_qty) {
         return (<span className="text-success">{o}</span>);
@@ -104,7 +104,7 @@ export default class OrderDetailsPane extends React.Component {
     title: '计量单位',
     dataIndex: 'unit',
     width: 100,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o) => {
       if (o && this.props.units.length > 0) {
         return this.props.units.find(unit => unit.code === o).name;

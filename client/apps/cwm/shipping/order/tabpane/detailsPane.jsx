@@ -112,7 +112,7 @@ export default class DetailsPane extends Component {
       dataIndex: 'so_seq_no',
       width: 50,
       fixed: 'left',
-      className: 'cell-align-center',
+      align: 'center',
       render: (col, row, index) => col || pagination.pageSize * (pagination.current - 1) + index + 1,
     }, {
       title: '商品货号',
@@ -127,11 +127,11 @@ export default class DetailsPane extends Component {
       title: '订单数量',
       width: 100,
       dataIndex: 'order_qty',
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '计量单位',
       dataIndex: 'unit',
-      className: 'cell-align-center',
+      align: 'center',
       render: (o) => {
         const unit = units.find(item => item.code === o);
         if (unit) return unit.name;
@@ -162,12 +162,12 @@ export default class DetailsPane extends Component {
       title: '单价',
       dataIndex: 'unit_price',
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '总价',
       dataIndex: 'amount',
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '币制',
       dataIndex: 'currency',
@@ -190,7 +190,8 @@ export default class DetailsPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
+      <DataPane
+        fullscreen={this.props.fullscreen}
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}

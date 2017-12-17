@@ -11,16 +11,16 @@ exports.commonTraceColumns = (intl) => {
     title: msg('bonded'),
     width: 80,
     dataIndex: 'bonded',
-    className: 'cell-align-center',
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+    align: 'center',
+    render: bonded => (bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>),
     filters: [{ text: '保税', value: 1 }, { text: '非保', value: 0 }], // todo true "true"
     filterMultiple: false,
   }, {
     title: msg('portion'),
     width: 80,
     dataIndex: 'portion',
-    className: 'cell-align-center',
-    render: portion => portion ? <Tag color="green">可分拨</Tag> : '/',
+    align: 'center',
+    render: portion => (portion ? <Tag color="green">可分拨</Tag> : '/'),
     filters: [{ text: '可分拨', value: 1 }, { text: '非分拨', value: 0 }],
     filterMultiple: false,
   }, {
@@ -108,12 +108,12 @@ exports.commonTraceColumns = (intl) => {
   }, {
     title: msg('grossWeight'),
     dataIndex: 'gross_weight',
-    className: 'cell-align-right',
+    align: 'right',
     width: 120,
   }, {
     title: msg('cbm'),
     dataIndex: 'cbm',
-    className: 'cell-align-right',
+    align: 'right',
     width: 120,
   }];
 };
@@ -122,19 +122,18 @@ exports.transactionColumns = (/* intl */) => [{
   title: '事务类型',
   width: 80,
   dataIndex: 'type',
-  className: 'cell-align-center',
+  align: 'center',
   render: type => type && <span className="text-emphasis">{CWM_TRANSACTIONS_TYPE[type].text}</span>,
 }, {
   title: '变动数量',
   width: 100,
   dataIndex: 'transaction_qty',
-  className: 'cell-align-right',
+  align: 'right',
   render: (text) => {
     if (text > 0) {
       return <span className="text-success">+{text}</span>;
-    } else {
-      return <span className="text-warning">{text}</span>;
     }
+    return <span className="text-warning">{text}</span>;
   },
 }, {
   title: '原因',

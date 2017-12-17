@@ -63,7 +63,7 @@ export default class InvoiceListPane extends Component {
       title: '税率',
       width: 100,
       dataIndex: 'tax_rate',
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '税金',
       dataIndex: 'tax_amount',
@@ -83,17 +83,17 @@ export default class InvoiceListPane extends Component {
       title: '申请日期',
       dataIndex: 'applied_date',
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '开票人',
       dataIndex: 'invoiced_by',
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '开票日期',
       dataIndex: 'invoiced_date',
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '操作',
       width: 80,
@@ -107,9 +107,14 @@ export default class InvoiceListPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        rowKey="index"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Button type="primary" icon="plus-circle-o" onClick={this.handleTemplateDownload}>添加发票</Button>

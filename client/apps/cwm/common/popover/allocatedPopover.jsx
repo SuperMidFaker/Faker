@@ -33,12 +33,12 @@ export default class allocatedPopover extends Component {
     title: '分配数量',
     width: 80,
     dataIndex: 'alloc_qty',
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '拣货数量',
     width: 80,
     dataIndex: 'picked_qty',
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '采购订单号',
     width: 120,

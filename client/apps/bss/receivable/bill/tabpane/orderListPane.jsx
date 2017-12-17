@@ -55,12 +55,12 @@ export default class OrderListPane extends Component {
       title: '应收金额',
       dataIndex: 'rec_amount',
       width: 150,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '调整金额',
       dataIndex: 'adjust_amount',
       width: 150,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '备注',
       dataIndex: 'remark',
@@ -93,9 +93,14 @@ export default class OrderListPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        rowKey="index"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Button icon="download" onClick={this.handleTemplateDownload}>导出</Button>

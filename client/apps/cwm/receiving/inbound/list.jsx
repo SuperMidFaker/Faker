@@ -90,7 +90,7 @@ export default class ReceivingInboundList extends React.Component {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
     width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
+    render: dc => (!isNaN(dc) ? dc : null),
   }, {
     title: '货主',
     dataIndex: 'owner_name',
@@ -131,7 +131,7 @@ export default class ReceivingInboundList extends React.Component {
     title: '入库方式',
     dataIndex: 'rec_mode',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="手持扫码"><Icon type="scan" /></Tooltip>);
@@ -161,9 +161,8 @@ export default class ReceivingInboundList extends React.Component {
         return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;
       } else if (record.status === 0 && record.receiving_lock === 2) {
         return <RowAction label="撤回" row={record} />;
-      } else {
-        return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;
       }
+      return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;
     },
   }]
   handleInboundsReload = () => {
@@ -254,8 +253,14 @@ export default class ReceivingInboundList extends React.Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('inboundPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
       <span />
-      <Select showSearch optionFilterProp="children" value={filters.ownerCode}
-        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.ownerCode}
+        onChange={this.handleOwnerChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {
@@ -291,9 +296,15 @@ export default class ReceivingInboundList extends React.Component {
           </PageHeader.Nav>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={dataSource}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
           />
         </Content>
         <ReceivingDockPanel />

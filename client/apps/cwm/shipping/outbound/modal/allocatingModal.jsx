@@ -191,37 +191,34 @@ export default class AllocatingModal extends Component {
     title: '可用数量',
     dataIndex: 'avail_qty',
     width: 125,
-    className: 'cell-align-right',
+    align: 'right',
     render: (text) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
-      } else {
-        return <span className="text-success">{text}</span>;
       }
+      return <span className="text-success">{text}</span>;
     },
   }, {
     title: '分配数量',
     dataIndex: 'alloc_qty',
     width: 125,
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
-      } else {
-        return <AllocatedPopover traceId={record.trace_id} text={text} />;
       }
+      return <AllocatedPopover traceId={record.trace_id} text={text} />;
     },
   }, {
     title: '冻结数量',
     dataIndex: 'frozen_qty',
     width: 125,
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
-      } else {
-        return <UnfreezePopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
       }
+      return <UnfreezePopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
     },
   }, {
     title: '入库日期',
@@ -236,19 +233,19 @@ export default class AllocatingModal extends Component {
     title: '货物属性',
     dataIndex: 'bonded',
     width: 80,
-    className: 'cell-align-center',
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+    align: 'center',
+    render: bonded => (bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>),
   }, {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
-    className: 'cell-align-center',
-    render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
+    align: 'center',
+    render: portion => (portion ? <Tag color="green">可分拨</Tag> : '否'),
   }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_filed_id',
     width: 120,
-    render: o => o ? <span className="text-info">{o}</span> : <span className="text-error">无备案信息</span>,
+    render: o => (o ? <span className="text-info">{o}</span> : <span className="text-error">无备案信息</span>),
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
@@ -344,13 +341,13 @@ export default class AllocatingModal extends Component {
     title: '货物属性',
     dataIndex: 'bonded',
     width: 80,
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+    render: bonded => (bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>),
   }, {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
-    className: 'cell-align-center',
-    render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
+    align: 'center',
+    render: portion => (portion ? <Tag color="green">可分拨</Tag> : '否'),
   }, {
     title: '进区凭单号',
     dataIndex: 'ftz_ent_no',
@@ -607,8 +604,13 @@ export default class AllocatingModal extends Component {
     const inventoryQueryForm = (
       <Form layout="inline">
         <FormItem>
-          <Input.Search addonBefore={searchOptions} onChange={this.handleSearchContentChange} placeholder="查询条件"
-            value={this.state.searchContent} style={{ width: 380 }} onSearch={() => this.handleSearchDetails('searchContent', this.state.searchContent)}
+          <Input.Search
+            addonBefore={searchOptions}
+            onChange={this.handleSearchContentChange}
+            placeholder="查询条件"
+            value={this.state.searchContent}
+            style={{ width: 380 }}
+            onSearch={() => this.handleSearchDetails('searchContent', this.state.searchContent)}
           />
         </FormItem>
         <FormItem label="库位">
@@ -641,8 +643,14 @@ export default class AllocatingModal extends Component {
       </div>
     </div>);
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        visible={this.props.visible} footer={null}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        visible={this.props.visible}
+        footer={null}
       >
         <Card bodyStyle={{ paddingBottom: 16 }} hoverable={false}>
           <Row className="info-group-inline">
@@ -658,7 +666,8 @@ export default class AllocatingModal extends Component {
               <InfoItem label="订货总数" field={<QuantityInput packQty={outboundProduct.order_pack_qty} pcsQty={outboundProduct.order_qty} />} />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem label="已分配总数"
+              <InfoItem
+                label="已分配总数"
                 field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} expectQty={outboundProduct.order_qty} />}
               />
             </Col>
@@ -669,17 +678,25 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={filterInventoryColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))}
+            <Table
+              size="middle"
+              columns={filterInventoryColumns}
+              dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))}
               scroll={{ x: filterInventoryColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-              loading={this.props.inventoryDataLoading} rowKey="trace_id"
+              loading={this.props.inventoryDataLoading}
+              rowKey="trace_id"
             />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={filterAllocatedColumns} dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))}
+            <Table
+              size="middle"
+              columns={filterAllocatedColumns}
+              dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))}
               scroll={{ x: filterAllocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-              loading={this.props.allocatedDataLoading} rowKey="id"
+              loading={this.props.allocatedDataLoading}
+              rowKey="id"
             />
           </div>
         </Card>

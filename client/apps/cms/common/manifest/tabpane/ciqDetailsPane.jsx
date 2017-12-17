@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
+
 const formatMsg = format(messages);
 import { buildTipItems } from 'client/common/customs';
 
@@ -40,7 +41,7 @@ export default class CiqDetailsPane extends React.Component {
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
       fixed: 'left',
-      className: 'cell-align-center',
+      align: 'center',
       width: 45,
     }, {
       title: this.msg('copGNo'),
@@ -72,12 +73,12 @@ export default class CiqDetailsPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('quantity')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'g_qty',
     }, {
       title: this.msg('unit'),
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'g_unit',
       render: (o) => {
         const unit = this.props.units.filter(cur => cur.value === o)[0];
@@ -87,12 +88,12 @@ export default class CiqDetailsPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'dec_price',
     }, {
       title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'trade_total',
     }, {
       title: this.msg('currency'),
@@ -106,17 +107,17 @@ export default class CiqDetailsPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'gross_wt',
     }, {
       title: <div className="cell-align-right">{this.msg('netwt')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'wet_wt',
     }, {
       title: <div className="cell-align-right">{this.msg('qty1')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'qty_1',
     }, {
       title: this.msg('unit1'),
@@ -130,7 +131,7 @@ export default class CiqDetailsPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('qty2')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       dataIndex: 'qty_2',
     }, {
       title: this.msg('unit2'),
@@ -170,9 +171,13 @@ export default class CiqDetailsPane extends React.Component {
       },
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={filterProducts} rowKey="id"
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={filterProducts}
+        rowKey="id"
       />
     );
   }

@@ -117,60 +117,57 @@ export default class StockInventoryList extends React.Component {
     title: this.msg('availQty'),
     width: 100,
     dataIndex: 'avail_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text) => {
       if (text === 0) {
         return <span className="text-normal">{text}</span>;
-      } else {
-        return <span className="text-success">{text}</span>;
       }
+      return <span className="text-success">{text}</span>;
     },
   }, {
     title: this.msg('allocQty'),
     width: 100,
     dataIndex: 'alloc_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text) => {
       if (text === 0) {
         return <span className="text-normal">{text}</span>;
-      } else {
-        return <span className="text-warning">{text}</span>;
       }
+      return <span className="text-warning">{text}</span>;
     },
   }, {
     title: this.msg('frozenQty'),
     width: 100,
     dataIndex: 'frozen_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text) => {
       if (text === 0) {
         return <span className="text-normal">{text}</span>;
-      } else {
-        return <span className="text-error">{text}</span>;
       }
+      return <span className="text-error">{text}</span>;
     },
   }, {
     title: this.msg('bondedQty'),
     width: 100,
     dataIndex: 'bonded_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('nonbondedQty'),
     width: 100,
     dataIndex: 'nonbonded_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('grossWeight'),
     dataIndex: 'gross_weight',
-    className: 'cell-align-right',
+    align: 'right',
     width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('cbm'),
     dataIndex: 'cbm',
-    className: 'cell-align-right',
+    align: 'right',
     width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
   }]
@@ -322,8 +319,16 @@ export default class StockInventoryList extends React.Component {
           <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} handleDeselectRows={this.handleDeselectRows}
-            total={totCol} columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable
+            selectedRowKeys={this.state.selectedRowKeys}
+            scrollOffset={390}
+            handleDeselectRows={this.handleDeselectRows}
+            total={totCol}
+            columns={this.columns}
+            dataSource={dataSource}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
           />
         </Content>
       </Layout>
