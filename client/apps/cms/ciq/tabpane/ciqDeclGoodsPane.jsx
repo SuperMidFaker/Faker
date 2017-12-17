@@ -199,9 +199,14 @@ export default class CiqDeclGoodsPane extends React.Component {
     const { totQty, totWet, totStdQty } = this.state;
     const columns = this.getColumns();
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={ciqDeclGoods}
+        rowKey="id"
+        loading={this.state.loading}
         onRow={record => ({
           onDoubleClick: () => { this.handleRowClick(record); },
         })}

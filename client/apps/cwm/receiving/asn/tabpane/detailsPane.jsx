@@ -159,7 +159,8 @@ export default class DetailsPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
+      <DataPane
+        fullscreen={this.props.fullscreen}
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -169,7 +170,8 @@ export default class DetailsPane extends Component {
       >
         <DataPane.Toolbar>
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
-          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
+          <ExcelUploader
+            endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
             formData={{
               data: JSON.stringify({
                 loginId: this.props.loginId,

@@ -41,9 +41,8 @@ function ColumnInput(props) {
     return (<Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />);
   } else if (decimal) {
     return <span>{record[field] ? parseFloat(record[field]).toFixed(decimal) : ''}</span>;
-  } else {
-    return <span>{record[field] || ''}</span>;
   }
+  return <span>{record[field] || ''}</span>;
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
@@ -73,11 +72,10 @@ function ColumnSelect(props) {
         }
       </Select>
     );
-  } else {
-    const foundOpts = options.filter(opt => opt.value === record[field]);
-    const label = foundOpts.length === 1 ? `${foundOpts[0].value}|${foundOpts[0].text}` : '';
-    return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
   }
+  const foundOpts = options.filter(opt => opt.value === record[field]);
+  const label = foundOpts.length === 1 ? `${foundOpts[0].value}|${foundOpts[0].text}` : '';
+  return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
 }
 
 ColumnSelect.proptypes = {
@@ -110,9 +108,8 @@ function ColumnSearchSelect(props) {
     return (<Tooltip title="错误的商品编码">
       <Tag color="red">{record[field] || ''}</Tag>
     </Tooltip>);
-  } else {
-    return <span>{record[field] || ''}</span>;
   }
+  return <span>{record[field] || ''}</span>;
 }
 
 ColumnSearchSelect.proptypes = {
@@ -327,170 +324,266 @@ export default class ManifestBodyPane extends React.Component {
             <a onClick={() => this.handleEditBody(record)}>{o}</a>
           </Tag>
           </Tooltip>);
-        } else {
-          return (
-            <a onClick={() => this.handleEditBody(record)}>{o}</a>
-          );
         }
+        return (
+          <a onClick={() => this.handleEditBody(record)}>{o}</a>
+        );
       },
     }, {
       title: this.msg('emGNo'),
       width: 100,
       render: (o, record, index) =>
-        (<ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="em_g_no"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('codeT'),
       width: 110,
       render: (o, record, index) =>
-        (<ColumnSearchSelect field="codes" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={hscodeData} edit={editBody}
+        (<ColumnSearchSelect
+          field="codes"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={hscodeData}
+          edit={editBody}
         />),
     }, {
       title: this.msg('gName'),
       width: 200,
       render: (o, record, index) =>
-        (<ColumnInput field="g_name" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="g_name"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('enName'),
       width: 200,
       render: (o, record, index) =>
-        (<ColumnInput field="en_name" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="en_name"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('gModel'),
       width: 400,
       onCellClick: record => record.cop_g_no && this.handleShowDeclElementModal(record),
       render: (o, record, index) =>
-        (<ColumnInput type="textarea" autosize field="g_model" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          type="textarea"
+          autosize
+          field="g_model"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('quantity')}</div>,
       width: 80,
       align: 'right',
       render: (o, record, index) =>
-        (<ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="g_qty"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('unit'),
       width: 80,
       align: 'center',
       render: (o, record, index) =>
-        (<ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
+        (<ColumnSelect
+          field="g_unit"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={units}
+          edit={editBody}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
       width: 100,
       align: 'right',
       render: (o, record, index) =>
-        (<ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={3}
+        (<ColumnInput
+          field="dec_price"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
+          decimal={3}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
       width: 100,
       align: 'right',
       render: (o, record, index) =>
-        (<ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="trade_total"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('currency'),
       width: 100,
       align: 'center',
       render: (o, record, index) =>
-        (<ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={currencies} edit={editBody}
+        (<ColumnSelect
+          field="trade_curr"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={currencies}
+          edit={editBody}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
       width: 80,
       align: 'right',
       render: (o, record, index) =>
-        (<ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="gross_wt"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('netwt')}</div>,
       width: 80,
       align: 'right',
       render: (o, record, index) =>
-        (<ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="wet_wt"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('qty1')}</div>,
       width: 80,
       align: 'right',
       render: (o, record, index) =>
-        (<ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="qty_1"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('unit1'),
       width: 80,
       align: 'center',
       render: (o, record, index) =>
-        (<ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
+        (<ColumnSelect
+          field="unit_1"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={units}
+          edit={editBody}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('qty2')}</div>,
       width: 80,
       align: 'right',
       render: (o, record, index) =>
-        (<ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={3}
+        (<ColumnInput
+          field="qty_2"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
+          decimal={3}
         />),
     }, {
       title: this.msg('unit2'),
       width: 80,
       align: 'center',
       render: (o, record, index) =>
-        (<ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
+        (<ColumnSelect
+          field="unit_2"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={units}
+          edit={editBody}
         />),
     }, {
       title: this.msg('exemptionWay'),
       width: 100,
       render: (o, record, index) =>
-        (<ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={exemptions} edit={editBody}
+        (<ColumnSelect
+          field="duty_mode"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={exemptions}
+          edit={editBody}
         />),
     }, {
       title: this.msg('ecountry'),
       width: 120,
       render: (o, record, index) =>
-        (<ColumnSelect field="dest_country" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={countries} edit={editBody}
+        (<ColumnSelect
+          field="dest_country"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={countries}
+          edit={editBody}
         />),
     }, {
       title: this.msg('icountry'),
       width: 120,
       render: (o, record, index) =>
-        (<ColumnSelect field="orig_country" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={countries} edit={editBody}
+        (<ColumnSelect
+          field="orig_country"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={countries}
+          edit={editBody}
         />),
     }, {
       title: this.msg('qtyPcs'),
       width: 100,
       render: (o, record, index) =>
-        (<ColumnInput field="qty_pcs" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="qty_pcs"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('unitPcs'),
       width: 100,
       render: (o, record, index) =>
-        (<ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} options={units} edit={editBody}
+        (<ColumnSelect
+          field="unit_pcs"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          options={units}
+          edit={editBody}
         />),
       /*    }, {
       title: this.msg('element'),
@@ -502,21 +595,30 @@ export default class ManifestBodyPane extends React.Component {
       title: this.msg('versionNo'),
       width: 80,
       render: (o, record, index) =>
-        (<ColumnInput field="version_no" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody}
+        (<ColumnInput
+          field="version_no"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
         />),
     }, {
       title: this.msg('processingFees'),
       width: 80,
       render: (o, record, index) =>
-        (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
-          onChange={this.handleEditChange} edit={editBody} decimal={3}
+        (<ColumnInput
+          field="processing_fees"
+          inEdit={index === editIndex}
+          record={record}
+          onChange={this.handleEditChange}
+          edit={editBody}
+          decimal={3}
         />),
     }, {
       title: this.msg('freightFee'),
       dataIndex: 'freight',
       width: 100,
-      render: freight => freight > 0 ? freight : null,
+      render: freight => (freight > 0 ? freight : null),
     }, {
       dataIndex: 'OPS_COL',
       width: 100,
@@ -526,7 +628,7 @@ export default class ManifestBodyPane extends React.Component {
           <RowAction onClick={this.handleEditBody} icon="edit" row={record} index={index} disabled={this.props.readonly} />
           <RowAction confirm="确认删除?" onConfirm={() => this.handleDel(record, index)} icon="delete" disabled={this.props.readonly} />
         </span>
-          ),
+      ),
     }];
     return columns;
   }
@@ -899,33 +1001,32 @@ export default class ManifestBodyPane extends React.Component {
           <Icon type="export" /> 导出 <Icon type="down" />
         </Button>
       </Dropdown>);
-    } else {
-      return (<span>
-        <Button icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
-        <Button icon="upload" onClick={this.handleUnrelatedImport} style={{ marginLeft: 8 }}>{this.msg('unrelatedImport')}</Button>
-        <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
-          <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
-        </Dropdown.Button>
-        { this.props.billHead.manual_no &&
+    }
+    return (<span>
+      <Button icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
+      <Button icon="upload" onClick={this.handleUnrelatedImport} style={{ marginLeft: 8 }}>{this.msg('unrelatedImport')}</Button>
+      <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
+        <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
+      </Dropdown.Button>
+      { this.props.billHead.manual_no &&
         <Button icon="book" onClick={this.handleManualBodyImport} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
-        <Button icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
-        <Dropdown overlay={dataToolsMenu}>
-          <Button style={{ marginLeft: 8 }}>
-            <Icon type="tool" /> <Icon type="down" />
-          </Button>
-        </Dropdown>
-        <Dropdown overlay={exportMenu}>
-          <Button style={{ marginLeft: 8 }}>
-            <Icon type="export" /> 导出 <Icon type="down" />
-          </Button>
-        </Dropdown>
-        {/*
+      <Button icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
+      <Dropdown overlay={dataToolsMenu}>
+        <Button style={{ marginLeft: 8 }}>
+          <Icon type="tool" /> <Icon type="down" />
+        </Button>
+      </Dropdown>
+      <Dropdown overlay={exportMenu}>
+        <Button style={{ marginLeft: 8 }}>
+          <Icon type="export" /> 导出 <Icon type="down" />
+        </Button>
+      </Dropdown>
+      {/*
           <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
           <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
         </Popconfirm>
         */}
-      </span>);
-    }
+    </span>);
   }
 
   render() {
@@ -943,9 +1044,15 @@ export default class ManifestBodyPane extends React.Component {
     const columns = this.getColumns();
 
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} bordered scrollOffset={312}
-        dataSource={this.state.bodies} rowKey="id" loading={this.state.tableMask}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        rowSelection={rowSelection}
+        bordered
+        scrollOffset={312}
+        dataSource={this.state.bodies}
+        rowKey="id"
+        loading={this.state.tableMask}
         onRow={record => ({
           onDoubleClick: () => { this.handleEditBody(record); },
         })}
@@ -974,7 +1081,9 @@ export default class ManifestBodyPane extends React.Component {
         <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
         <ImportDeclaredBodyModal reload={() => this.handleReload(true)} />
-        <ImportDataPanel adaptors={this.props.adaptors} title={importPanel.title}
+        <ImportDataPanel
+          adaptors={this.props.adaptors}
+          title={importPanel.title}
           visible={importPanelVisible}
           endpoint={importPanel.endpoint}
           formData={{ bill_seq_no: this.props.billHead.bill_seq_no }}

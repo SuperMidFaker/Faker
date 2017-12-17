@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../common/message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
+
 const formatMsg = format(messages);
 import { buildTipItems } from 'client/common/customs';
 
@@ -169,9 +170,13 @@ export default class CiqDetailsPane extends React.Component {
       },
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={filterProducts} rowKey="id"
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={filterProducts}
+        rowKey="id"
       />
     );
   }

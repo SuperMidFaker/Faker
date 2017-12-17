@@ -12,7 +12,7 @@ exports.commonTraceColumns = (intl) => {
     width: 80,
     dataIndex: 'bonded',
     align: 'center',
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+    render: bonded => (bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>),
     filters: [{ text: '保税', value: 1 }, { text: '非保', value: 0 }], // todo true "true"
     filterMultiple: false,
   }, {
@@ -20,7 +20,7 @@ exports.commonTraceColumns = (intl) => {
     width: 80,
     dataIndex: 'portion',
     align: 'center',
-    render: portion => portion ? <Tag color="green">可分拨</Tag> : '/',
+    render: portion => (portion ? <Tag color="green">可分拨</Tag> : '/'),
     filters: [{ text: '可分拨', value: 1 }, { text: '非分拨', value: 0 }],
     filterMultiple: false,
   }, {
@@ -132,9 +132,8 @@ exports.transactionColumns = (/* intl */) => [{
   render: (text) => {
     if (text > 0) {
       return <span className="text-success">+{text}</span>;
-    } else {
-      return <span className="text-warning">{text}</span>;
     }
+    return <span className="text-warning">{text}</span>;
   },
 }, {
   title: '原因',

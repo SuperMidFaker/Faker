@@ -253,7 +253,7 @@ export default class DutyTaxPane extends React.Component {
       }
     });
   }
-  renderValFixed = o => o ? currencyFormatter.format(o, { code: 'CNY' }) : ''
+  renderValFixed = o => (o ? currencyFormatter.format(o, { code: 'CNY' }) : '')
   render() {
     const gridStyle = { width: `${1 / 5 * 100}%`, textAlign: 'center' };
     const tax = this.state.sumval[0] || {};
@@ -291,13 +291,21 @@ export default class DutyTaxPane extends React.Component {
             </div>
           </Card.Grid>
         </Card>
-        <Card title="缴税明细" bodyStyle={{ padding: 0 }} hoverable={false}
+        <Card
+          title="缴税明细"
+          bodyStyle={{ padding: 0 }}
+          hoverable={false}
           extra={<Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
             <Button icon="calculator" loading={this.state.recalLoading}>估算</Button>
           </Popconfirm>}
         >
-          <Table size="middle" columns={this.columns} pagination={false} dataSource={this.props.taxTots}
-            rowKey="pre_entry_seq_no" expandedRowRender={this.handleExpandDetail}
+          <Table
+            size="middle"
+            columns={this.columns}
+            pagination={false}
+            dataSource={this.props.taxTots}
+            rowKey="pre_entry_seq_no"
+            expandedRowRender={this.handleExpandDetail}
           />
         </Card>
       </div>

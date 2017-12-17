@@ -85,9 +85,14 @@ export default class PaymentReceivedPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        rowKey="index"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Button icon="plus-circle-o" onClick={this.handleTemplateDownload}>记录收款</Button>

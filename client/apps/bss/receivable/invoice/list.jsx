@@ -125,9 +125,8 @@ export default class ReceivableInvoiceList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      } else {
-        return (<span><RowAction onClick={this.handleDetail} label="开票确认" row={record} /> </span>);
       }
+      return (<span><RowAction onClick={this.handleDetail} label="开票确认" row={record} /> </span>);
     },
   }]
   handleStatusChange = (ev) => {
@@ -209,8 +208,13 @@ export default class ReceivableInvoiceList extends React.Component {
     */
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
-      <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        placeholder="结算对象"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       />
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
@@ -252,9 +256,15 @@ export default class ReceivableInvoiceList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={mockData}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
             total={totCol}
           />
         </Content>

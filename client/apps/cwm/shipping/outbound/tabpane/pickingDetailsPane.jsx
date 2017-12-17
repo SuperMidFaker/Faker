@@ -116,13 +116,13 @@ export default class PickingDetailsPane extends React.Component {
     dataIndex: 'bonded',
     width: 80,
     align: 'center',
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+    render: bonded => (bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>),
   }, {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
     align: 'center',
-    render: portion => portion ? <Tag color="green">可分拨</Tag> : <Tag>否</Tag>,
+    render: portion => (portion ? <Tag color="green">可分拨</Tag> : <Tag>否</Tag>),
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
@@ -299,9 +299,8 @@ export default class PickingDetailsPane extends React.Component {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
         return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
       }
+      return true;
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -358,9 +357,14 @@ export default class PickingDetailsPane extends React.Component {
       }],
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={dataSource}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />

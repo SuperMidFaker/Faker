@@ -106,9 +106,8 @@ export default class PayableInvoiceList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      } else {
-        return (<span><RowAction onClick={this.handleDetail} label="申请付款" row={record} /> </span>);
       }
+      return (<span><RowAction onClick={this.handleDetail} label="申请付款" row={record} /> </span>);
     },
   }]
   handleStatusChange = (ev) => {
@@ -225,9 +224,15 @@ export default class PayableInvoiceList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={mockData}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
             total={totCol}
           />
         </Content>

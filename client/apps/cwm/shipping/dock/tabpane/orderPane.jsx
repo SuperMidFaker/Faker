@@ -153,7 +153,9 @@ export default class SOPane extends React.Component {
             <Panel header="承运人" key="carrier">
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
-                  <InfoItem label="配送方式" field={soHead.delivery_type && DELIVER_TYPES.find(item => item.value === soHead.delivery_type).name}
+                  <InfoItem
+                    label="配送方式"
+                    field={soHead.delivery_type && DELIVER_TYPES.find(item => item.value === soHead.delivery_type).name}
                     editable
                     type="dropdown"
                     overlay={<Menu onClick={this.handleDeliveryTypeUpdate}>
@@ -162,7 +164,9 @@ export default class SOPane extends React.Component {
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="承运人" field={soHead.carrier_name}
+                  <InfoItem
+                    label="承运人"
+                    field={soHead.carrier_name}
                     editable
                     type="dropdown"
                     overlay={<Menu onClick={this.handleCarrierUpdate}>

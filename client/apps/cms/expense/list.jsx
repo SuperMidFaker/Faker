@@ -171,8 +171,11 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowAction onClick={this.handleAddAdvanceIncome} field="cush_bill"
-                  row={{ delg_no: row.delg_no }} label={labelElem}
+                <RowAction
+                  onClick={this.handleAddAdvanceIncome}
+                  field="cush_bill"
+                  row={{ delg_no: row.delg_no }}
+                  label={labelElem}
                 />);
             }
           },
@@ -237,8 +240,11 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowAction onClick={this.handleAddAdvancePayment} field="cush_cost"
-                  row={{ delg_no: row.delg_no }} label={labelElem}
+                <RowAction
+                  onClick={this.handleAddAdvancePayment}
+                  field="cush_cost"
+                  row={{ delg_no: row.delg_no }}
+                  label={labelElem}
                 />);
             }
           },
@@ -281,9 +287,8 @@ export default class ExpenseList extends Component {
           return (<span className="mdc-text-red">{-(cost - bill).toFixed(2)}</span>);
         } else if (bill > cost) {
           return (<span className="mdc-text-green">{(bill - cost).toFixed(2)}</span>);
-        } else {
-          return (<span className="mdc-text-grey">0.00</span>);
         }
+        return (<span className="mdc-text-grey">0.00</span>);
       },
     }, {
       title: this.msg('invoiceNo'),
@@ -320,9 +325,8 @@ export default class ExpenseList extends Component {
       render: (o) => {
         if (o) {
           return <span>{moment(o).format('MM.DD HH:mm')}</span>;
-        } else {
-          return <span>--:--</span>;
         }
+        return <span>--:--</span>;
       },
     }, {
       title: this.msg('opCol'),
@@ -525,9 +529,17 @@ export default class ExpenseList extends Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <DataTable toolbarActions={toolbarActions} scrollOffset={360}
-            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={this.dataSource} rowKey="delg_no" loading={expslist.loading} bordered
+          <DataTable
+            toolbarActions={toolbarActions}
+            scrollOffset={360}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={this.dataSource}
+            rowKey="delg_no"
+            loading={expslist.loading}
+            bordered
           />
         </Content>
         <DelegationDockPanel />

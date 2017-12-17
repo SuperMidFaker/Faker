@@ -41,8 +41,10 @@ export default class ItemDocuPane extends React.Component {
   }]
   render() {
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowKey="id"
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowKey="id"
       />
     );
   }

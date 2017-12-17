@@ -199,9 +199,13 @@ export default class ManifestDetailsPane extends React.Component {
       },
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={billDetails} rowKey="id"
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={billDetails}
+        rowKey="id"
       >
         <DataPane.Toolbar>
           <DataPane.Actions>

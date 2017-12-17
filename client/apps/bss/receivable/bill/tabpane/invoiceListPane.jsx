@@ -107,9 +107,14 @@ export default class InvoiceListPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        rowKey="index"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Button type="primary" icon="plus-circle-o" onClick={this.handleTemplateDownload}>添加发票</Button>

@@ -40,9 +40,8 @@ export default class TraceIdPopover extends Component {
     render: (text) => {
       if (text > 0) {
         return <span className="text-success">+{text}</span>;
-      } else {
-        return <span className="text-warning">{text}</span>;
       }
+      return <span className="text-warning">{text}</span>;
     },
   }, {
     title: '事务时间',

@@ -87,13 +87,13 @@ export default class OutboundList extends React.Component {
     title: 'SO/波次编号',
     dataIndex: 'so_no',
     width: 180,
-    render: (soNo, record) => soNo ? <a onClick={() => this.handlePreview(soNo, record.outbound_no)}>{soNo}</a> :
-    <span>{record.wave_no}</span>,
+    render: (soNo, record) => (soNo ? <a onClick={() => this.handlePreview(soNo, record.outbound_no)}>{soNo}</a> :
+    <span>{record.wave_no}</span>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
     width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
+    render: dc => (!isNaN(dc) ? dc : null),
   }, {
     title: '货主',
     width: 200,
@@ -106,9 +106,8 @@ export default class OutboundList extends React.Component {
         return <Fontello type="circle" color="blue" />;
       } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
         return <Fontello type="circle" color="green" />;
-      } else {
-        return <Fontello type="circle" color="gray" />;
       }
+      return <Fontello type="circle" color="gray" />;
     },
   }, {
     title: '拣货',
@@ -118,9 +117,8 @@ export default class OutboundList extends React.Component {
         return <Fontello type="circle" color="blue" />;
       } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_PICKED.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
         return <Fontello type="circle" color="green" />;
-      } else {
-        return <Fontello type="circle" color="gray" />;
       }
+      return <Fontello type="circle" color="gray" />;
     },
   }, {
     title: '复核装箱',
@@ -146,9 +144,8 @@ export default class OutboundList extends React.Component {
         return <Fontello type="circle" color="blue" />;
       } else if (record.status === CWM_OUTBOUND_STATUS.COMPLETED.value) {
         return <Fontello type="circle" color="green" />;
-      } else {
-        return <Fontello type="circle" color="gray" />;
       }
+      return <Fontello type="circle" color="gray" />;
     },
   }, {
     title: '操作模式',
@@ -160,9 +157,8 @@ export default class OutboundList extends React.Component {
         return (<Tooltip title="扫码发货"><Icon type="scan" /></Tooltip>);
       } else if (o === 'manual') {
         return (<Tooltip title="人工发货"><Icon type="solution" /></Tooltip>);
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     title: '创建时间',
@@ -184,9 +180,8 @@ export default class OutboundList extends React.Component {
         return <RowAction onClick={this.handleOutboundDetail} icon="form" label="出库操作" row={record} />;
       } else if (record.status === 0 && record.shipping_mode === 2) {
         return <RowAction label="撤回" row={record} />;
-      } else {
-        return <RowAction onClick={this.handleOutboundDetail} icon="form" label="出库操作" row={record} />;
       }
+      return <RowAction onClick={this.handleOutboundDetail} icon="form" label="出库操作" row={record} />;
     },
   }]
   handlePreview = (soNo, outboundNo) => {
@@ -269,8 +264,15 @@ export default class OutboundList extends React.Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('outboundPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={filters.ownerCode}
-        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={filters.ownerCode}
+        onChange={this.handleOwnerChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
@@ -305,8 +307,16 @@ export default class OutboundList extends React.Component {
           </PageHeader.Nav>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1300 }} loading={loading}
-            toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+          <DataTable
+            columns={this.columns}
+            dataSource={dataSource}
+            rowSelection={rowSelection}
+            rowKey="id"
+            scroll={{ x: 1300 }}
+            loading={loading}
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
           />
         </Content>
         <ShippingDockPanel />

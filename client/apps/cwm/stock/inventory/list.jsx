@@ -121,9 +121,8 @@ export default class StockInventoryList extends React.Component {
     render: (text) => {
       if (text === 0) {
         return <span className="text-normal">{text}</span>;
-      } else {
-        return <span className="text-success">{text}</span>;
       }
+      return <span className="text-success">{text}</span>;
     },
   }, {
     title: this.msg('allocQty'),
@@ -133,9 +132,8 @@ export default class StockInventoryList extends React.Component {
     render: (text) => {
       if (text === 0) {
         return <span className="text-normal">{text}</span>;
-      } else {
-        return <span className="text-warning">{text}</span>;
       }
+      return <span className="text-warning">{text}</span>;
     },
   }, {
     title: this.msg('frozenQty'),
@@ -145,9 +143,8 @@ export default class StockInventoryList extends React.Component {
     render: (text) => {
       if (text === 0) {
         return <span className="text-normal">{text}</span>;
-      } else {
-        return <span className="text-error">{text}</span>;
       }
+      return <span className="text-error">{text}</span>;
     },
   }, {
     title: this.msg('bondedQty'),
@@ -322,8 +319,16 @@ export default class StockInventoryList extends React.Component {
           <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} handleDeselectRows={this.handleDeselectRows}
-            total={totCol} columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable
+            selectedRowKeys={this.state.selectedRowKeys}
+            scrollOffset={390}
+            handleDeselectRows={this.handleDeselectRows}
+            total={totCol}
+            columns={this.columns}
+            dataSource={dataSource}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
           />
         </Content>
       </Layout>

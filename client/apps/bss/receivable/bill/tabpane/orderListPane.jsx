@@ -93,9 +93,14 @@ export default class OrderListPane extends Component {
       ),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        rowKey="index"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Button icon="download" onClick={this.handleTemplateDownload}>导出</Button>
