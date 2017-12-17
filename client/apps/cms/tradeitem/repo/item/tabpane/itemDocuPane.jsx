@@ -33,7 +33,7 @@ export default class ItemDocuPane extends React.Component {
     dataIndex: 'asn_seq_no',
     width: 50,
     fixed: 'left',
-    className: 'cell-align-center',
+    align: 'center',
   }, {
     title: '货品',
     dataIndex: 'product_sku',

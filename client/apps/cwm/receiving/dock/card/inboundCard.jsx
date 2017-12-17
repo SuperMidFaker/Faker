@@ -72,13 +72,13 @@ export default class InboundCard extends Component {
     title: '预期数量',
     dataIndex: 'expect_qty',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
     dataIndex: 'received_qty',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
     render: (o, record) => {
       if (record.received_qty === record.expect_qty) {
         return (<span className="text-success">{o}</span>);
@@ -118,7 +118,7 @@ export default class InboundCard extends Component {
     title: '收货数量',
     dataIndex: 'inbound_qty',
     width: 180,
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '上架库位',
     dataIndex: 'putaway_location',

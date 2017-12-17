@@ -234,7 +234,7 @@ export default class CustomsList extends Component {
   }, {
     title: '海关查验',
     dataIndex: 'customs_inspect',
-    className: 'cell-align-center',
+    align: 'center',
     width: 80,
     render: (o, record) => {
       if (record.status > CMS_DECL_STATUS.sent.value) {

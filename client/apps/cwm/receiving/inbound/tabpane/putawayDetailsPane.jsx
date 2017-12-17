@@ -75,7 +75,7 @@ export default class PutawayDetailsPane extends React.Component {
     title: '收货数量',
     width: 100,
     dataIndex: 'inbound_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货库位',

@@ -100,7 +100,7 @@ export default class ShippingLoadList extends React.Component {
     dataIndex: 'owner_name',
   }, {
     title: '分配',
-    className: 'cell-align-center',
+    align: 'center',
     render: (o, record) => {
       if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
         return <Fontello type="circle" color="blue" />;
@@ -112,7 +112,7 @@ export default class ShippingLoadList extends React.Component {
     },
   }, {
     title: '拣货',
-    className: 'cell-align-center',
+    align: 'center',
     render: (o, record) => {
       if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value) {
         return <Fontello type="circle" color="blue" />;
@@ -125,7 +125,7 @@ export default class ShippingLoadList extends React.Component {
   }, {
     title: '复核装箱',
     dataIndex: 'chk_pck_status',
-    className: 'cell-align-center',
+    align: 'center',
     render: (o) => {
       switch (o) {
         case 0:
@@ -140,7 +140,7 @@ export default class ShippingLoadList extends React.Component {
     },
   }, {
     title: '发运',
-    className: 'cell-align-center',
+    align: 'center',
     render: (o, record) => {
       if (record.status === CWM_OUTBOUND_STATUS.SHIPPING.value) {
         return <Fontello type="circle" color="blue" />;
@@ -154,7 +154,7 @@ export default class ShippingLoadList extends React.Component {
     title: '操作模式',
     dataIndex: 'shipping_mode',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="扫码发货"><Icon type="scan" /></Tooltip>);

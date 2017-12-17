@@ -131,7 +131,7 @@ export default class ReceivingInboundList extends React.Component {
     title: '入库方式',
     dataIndex: 'rec_mode',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="手持扫码"><Icon type="scan" /></Tooltip>);

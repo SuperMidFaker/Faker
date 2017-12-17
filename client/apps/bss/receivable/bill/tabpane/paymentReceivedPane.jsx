@@ -64,7 +64,7 @@ export default class PaymentReceivedPane extends Component {
       title: '支付方式',
       width: 100,
       dataIndex: 'pay_mode',
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '收款日期',
       dataIndex: 'payment_date',

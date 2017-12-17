@@ -140,7 +140,7 @@ export default class StockTransitionList extends React.Component {
     title: this.msg('availQty'),
     width: 100,
     dataIndex: 'avail_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
@@ -152,7 +152,7 @@ export default class StockTransitionList extends React.Component {
     title: this.msg('allocQty'),
     width: 100,
     dataIndex: 'alloc_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
@@ -164,7 +164,7 @@ export default class StockTransitionList extends React.Component {
     title: this.msg('frozenQty'),
     width: 100,
     dataIndex: 'frozen_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;

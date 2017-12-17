@@ -134,7 +134,7 @@ export default class MovementDetailsPane extends React.Component {
     title: '库存移动数量',
     width: 180,
     dataIndex: 'move_qty',
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '来源追踪ID',
     dataIndex: 'from_trace_id',

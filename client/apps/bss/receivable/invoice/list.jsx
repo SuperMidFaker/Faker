@@ -82,7 +82,7 @@ export default class ReceivableInvoiceList extends React.Component {
     title: '税率',
     width: 100,
     dataIndex: 'tax_rate',
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '税金',
     dataIndex: 'tax_amount',
@@ -106,12 +106,12 @@ export default class ReceivableInvoiceList extends React.Component {
     title: '申请日期',
     dataIndex: 'applied_date',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '开票人',
     dataIndex: 'invoiced_by',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '开票日期',
     dataIndex: 'invoiced_date',

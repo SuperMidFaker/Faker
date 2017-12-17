@@ -97,7 +97,7 @@ export default class DetailsPane extends Component {
       title: '行号',
       dataIndex: 'seq_no',
       width: 50,
-      className: 'cell-align-center',
+      align: 'center',
       fixed: 'left',
       render: (col, row) => row.index + 1,
     }, {
@@ -113,11 +113,11 @@ export default class DetailsPane extends Component {
       title: '订单数量',
       width: 100,
       dataIndex: 'order_qty',
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '计量单位',
       dataIndex: 'unit',
-      className: 'cell-align-center',
+      align: 'center',
       render: o => ((o && units.length > 0) ? units.find(unit => unit.code === o).name : ''),
     }, {
       title: '采购订单号',
@@ -135,11 +135,11 @@ export default class DetailsPane extends Component {
       title: '金额',
       dataIndex: 'amount',
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '币制',
       dataIndex: 'currency',
-      className: 'cell-align-center',
+      align: 'center',
       render: (o) => {
         const currency = currencies.find(curr => Number(curr.code) === Number(o));
         if (currency) {

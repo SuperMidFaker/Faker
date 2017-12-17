@@ -269,7 +269,7 @@ export default class CusDeclBodyPane extends React.Component {
       dataIndex: 'g_no',
       fixed: 'left',
       width: 45,
-      className: 'cell-align-center',
+      align: 'center',
       /*    }, {
       title: this.msg('copGNo'),
       fixed: 'left',
@@ -301,7 +301,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('quantity')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="g_qty" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -309,7 +309,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: this.msg('unit'),
       width: 80,
-      className: 'cell-align-center',
+      align: 'center',
       render: (o, record, index) =>
         (<ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
@@ -317,7 +317,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="dec_price" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -325,7 +325,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
       width: 100,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="trade_total" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -333,7 +333,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: this.msg('currency'),
       width: 100,
-      className: 'cell-align-center',
+      align: 'center',
       render: (o, record, index) =>
         (<ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           options={currencies} edit={editBody}
@@ -341,7 +341,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="gross_wt" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -349,7 +349,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('netwt')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="wet_wt" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -357,7 +357,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('qty1')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="qty_1" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -365,7 +365,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: this.msg('unit1'),
       width: 80,
-      className: 'cell-align-center',
+      align: 'center',
       render: (o, record, index) =>
         (<ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
@@ -373,7 +373,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: <div className="cell-align-right">{this.msg('qty2')}</div>,
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="qty_2" inEdit={index === editIndex} record={record}
           edit={editBody}
@@ -381,7 +381,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: this.msg('unit2'),
       width: 80,
-      className: 'cell-align-center',
+      align: 'center',
       render: (o, record, index) =>
         (<ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
@@ -450,7 +450,7 @@ export default class CusDeclBodyPane extends React.Component {
     }, {
       title: this.msg('processingFees'),
       width: 80,
-      className: 'cell-align-right',
+      align: 'right',
       render: (o, record, index) =>
         (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           edit={editBody} decimal={3}

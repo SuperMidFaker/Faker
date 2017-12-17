@@ -72,7 +72,7 @@ const initialState = {
   tempItems: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   visibleAddModal: false,
@@ -109,19 +109,19 @@ const initialState = {
   taskEmergeList: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   taskConflictList: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   workspaceItemList: {
     totalCount: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 20,
     data: [],
   },
   workspaceItem: {},
@@ -182,7 +182,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_OWNSLAVES_SUCCEED:
       return { ...state, linkSlaveModal: { ...state.linkSlaveModal, slaves: action.result.data } };
     case actionTypes.SWITCH_REPOMD_SUCCEED:
-      return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
+      return { ...state, repos: state.repos.map(rep => (rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep)) };
     case actionTypes.LOAD_WSSTAT_SUCCEED:
       return { ...state, workspaceStat: action.result.data, wsStatReload: false };
     case actionTypes.LOAD_WSTASKLIST:

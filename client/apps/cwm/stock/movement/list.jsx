@@ -90,7 +90,7 @@ export default class MovementList extends React.Component {
     render: o => o && CWM_MOVEMENT_TYPE[o - 1].text,
   }, {
     title: '状态',
-    className: 'cell-align-center',
+    align: 'center',
     width: 200,
     render: (o, record) => {
       if (record.isdone === 1) {
@@ -103,7 +103,7 @@ export default class MovementList extends React.Component {
     title: '操作模式',
     dataIndex: 'moving_mode',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="扫码移动"><Icon type="scan" /></Tooltip>);

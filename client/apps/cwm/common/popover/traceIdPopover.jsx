@@ -30,13 +30,13 @@ export default class TraceIdPopover extends Component {
     title: '事务',
     width: 80,
     dataIndex: 'type',
-    className: 'cell-align-center',
+    align: 'center',
     render: type => <span className="text-emphasis">{CWM_TRANSACTIONS_TYPE[type].text}</span>,
   }, {
     title: '变动数量',
     width: 100,
     dataIndex: 'transaction_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (text) => {
       if (text > 0) {
         return <span className="text-success">+{text}</span>;

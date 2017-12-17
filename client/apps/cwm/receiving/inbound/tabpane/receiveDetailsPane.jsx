@@ -105,7 +105,7 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'asn_seq_no',
     width: 50,
     fixed: 'left',
-    className: 'cell-align-center',
+    align: 'center',
   }, {
     title: '货品',
     dataIndex: 'product_sku',
@@ -120,12 +120,12 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '预期数量',
     width: 100,
     dataIndex: 'expect_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
     dataIndex: 'received_qty',
-    className: 'cell-align-right',
+    align: 'right',
     render: (o, record) => {
       if (record.received_qty === record.expect_qty) {
         return (<span className="text-success">{o}</span>);
@@ -145,7 +145,7 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '包装情况',
     dataIndex: 'damage_level',
     width: 120,
-    className: 'cell-align-center',
+    align: 'center',
     render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
     title: '客户单号',

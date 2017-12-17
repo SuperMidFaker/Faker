@@ -97,7 +97,7 @@ export default class PayableInvoiceList extends React.Component {
     title: '登记日期',
     dataIndex: 'recorded_date',
     width: 100,
-    className: 'cell-align-right',
+    align: 'right',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

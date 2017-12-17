@@ -55,12 +55,12 @@ export default class OrderListPane extends Component {
       title: '应收金额',
       dataIndex: 'rec_amount',
       width: 150,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '调整金额',
       dataIndex: 'adjust_amount',
       width: 150,
-      className: 'cell-align-right',
+      align: 'right',
     }, {
       title: '备注',
       dataIndex: 'remark',

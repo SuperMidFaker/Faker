@@ -191,7 +191,7 @@ export default class AllocatingModal extends Component {
     title: '可用数量',
     dataIndex: 'avail_qty',
     width: 125,
-    className: 'cell-align-right',
+    align: 'right',
     render: (text) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
@@ -203,7 +203,7 @@ export default class AllocatingModal extends Component {
     title: '分配数量',
     dataIndex: 'alloc_qty',
     width: 125,
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
@@ -215,7 +215,7 @@ export default class AllocatingModal extends Component {
     title: '冻结数量',
     dataIndex: 'frozen_qty',
     width: 125,
-    className: 'cell-align-right',
+    align: 'right',
     render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
@@ -236,13 +236,13 @@ export default class AllocatingModal extends Component {
     title: '货物属性',
     dataIndex: 'bonded',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
   }, {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
   }, {
     title: '入库明细ID',
@@ -349,7 +349,7 @@ export default class AllocatingModal extends Component {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
-    className: 'cell-align-center',
+    align: 'center',
     render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
   }, {
     title: '进区凭单号',

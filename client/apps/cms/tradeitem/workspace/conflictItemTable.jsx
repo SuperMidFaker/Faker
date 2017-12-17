@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Select, notification } from 'antd';
+import { Button, Icon, Select, notification } from 'antd';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import { delWorkspaceItem, resolveWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
-import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+
 import { formatMsg } from '../message.i18n';
 
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -29,7 +30,8 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
+    repos: state.cmsTradeitem.repos.filter(rep =>
+      rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
   }),
   { delWorkspaceItem, resolveWorkspaceItem }
 )
@@ -38,7 +40,11 @@ export default class ConflictItemTable extends React.Component {
     intl: intlShape.isRequired,
     withRepo: PropTypes.bool,
     loadConflictItems: PropTypes.func.isRequired,
-    listFilter: PropTypes.shape({ taskId: PropTypes.number, repoId: PropTypes.number, name: PropTypes.string }),
+    listFilter: PropTypes.shape({
+      taskId: PropTypes.number,
+      repoId: PropTypes.number,
+      name: PropTypes.string,
+    }),
     noBorder: PropTypes.bool,
   }
   static contextTypes = {
@@ -54,7 +60,9 @@ export default class ConflictItemTable extends React.Component {
       nextProps.listFilter.name !== this.props.listFilter.name ||
       nextProps.listFilter.taskId !== this.props.listFilter.taskId)
     ) {
-      this.setState({ conflictFilter: Object.assign(this.state.conflictFilter, nextProps.listFilter) });
+      this.setState({
+        conflictFilter: Object.assign(this.state.conflictFilter, nextProps.listFilter),
+      });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -88,18 +96,20 @@ export default class ConflictItemTable extends React.Component {
     withRepoItem: true,
     withRepo: this.props.withRepo,
   }).concat([{
-    title: '解决状态',
+    title: '冲突解决',
     dataIndex: 'status',
-    width: 100,
+    width: 80,
     fixed: 'right',
+    align: 'center',
     render: (resolved) => {
       if (resolved === 2) {
-        return '标准项';
+        return <Icon type="pushpin-o" />;
       } else if (resolved === 3) {
-        return '非标准项';
+        return '忽略';
       } else if (resolved === 4) {
-        return '新来源';
+        return <Icon type="fork" />;
       }
+      return <span />;
     },
   }, {
     title: '操作',
@@ -110,8 +120,8 @@ export default class ConflictItemTable extends React.Component {
       const spanElms = [];
       if (record.classified && record.status === 1) {
         spanElms.push(
-          <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="star-o" row={record} tooltip="设为标准" />,
-          <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="标记为新来源" />
+          <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="pushpin-o" row={record} tooltip="替换" />,
+          <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="保留为分支" />
         );
       }
       return (<span>
@@ -185,17 +195,36 @@ export default class ConflictItemTable extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      {withRepo && <Select showSearch placeholder="所属物料库" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
+      {withRepo && <Select
+        showSearch
+        placeholder="所属物料库"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+        onChange={this.handleRepoSelect}
       >
         {repos.map(rep => <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>}
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
     </span>);
+    const bulkActions = (<span>
+      <Button icon="pushpin-o" onClick={this.handleBatchRelease}>批量替换</Button>
+      <Button icon="fork" onClick={this.handleBatchRelease}>批量保留为分支</Button>
+    </span>);
     return (
-      <DataTable selectedRowKeys={conflictSelRowKeys} handleDeselectRows={this.handleRowDeselect} loading={loading}
-        columns={this.conflictColumns} dataSource={this.conflictDataSource} rowSelection={conflictSelRows} rowKey="id"
-        locale={{ emptyText: '当前没有冲突的料件归类' }} toolbarActions={toolbarActions} noBorder={noBorder}
+      <DataTable
+        selectedRowKeys={conflictSelRowKeys}
+        handleDeselectRows={this.handleRowDeselect}
+        loading={loading}
+        columns={this.conflictColumns}
+        dataSource={this.conflictDataSource}
+        rowSelection={conflictSelRows}
+        rowKey="id"
+        locale={{ emptyText: '当前没有冲突的料件归类' }}
+        toolbarActions={toolbarActions}
+        bulkActions={bulkActions}
+        noBorder={noBorder}
       />
     );
   }
