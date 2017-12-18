@@ -14,7 +14,7 @@ const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
-const Option = Select.Option;
+const { Option } = Select;
 
 function MSCheckbox(props) {
   const {
@@ -165,7 +165,8 @@ export default class MergeSplitModal extends React.Component {
         mergeOptArr,
       });
     }
-    if (nextProps.hscodeCategories !== this.props.hscodeCategories && nextProps.hscodeCategories.length > 0) {
+    if (nextProps.hscodeCategories !== this.props.hscodeCategories &&
+       nextProps.hscodeCategories.length > 0) {
       const splitCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'split');
       const mergeCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'merge');
       this.setState({ splitCategories, mergeCategories });
@@ -298,12 +299,17 @@ export default class MergeSplitModal extends React.Component {
       alertMsg, alertTitle, mergeOpt, splitOpt, splitCategories, mergeCategories,
     } = this.state;
     const { form: { getFieldDecorator } } = this.props;
-    let mergeConditions = this.mergeConditions;
+    let { mergeConditions } = this;
     if (this.props.isCustomRegisted) {
       mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
     }
     return (
-      <Modal maskClosable={false} title="生成报关建议书" width={800} onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal
+        maskClosable={false}
+        title="生成报关建议书"
+        width={800}
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
         visible={this.props.visible}
       >
         <Form className="form-layout-compact">
@@ -318,31 +324,46 @@ export default class MergeSplitModal extends React.Component {
                     </Radio>
                   </Col>
                   <Col offset="2" span="19">
-                    <CheckboxGroup options={mergeConditions} disabled={!mergeOpt.checked}
-                      onChange={this.handleMergeCheck} value={this.state.mergeOptArr}
+                    <CheckboxGroup
+                      options={mergeConditions}
+                      disabled={!mergeOpt.checked}
+                      onChange={this.handleMergeCheck}
+                      value={this.state.mergeOptArr}
                     />
                   </Col>
                 </FormItem>
                 {mergeOpt.checked && !mergeOpt.byCopGNo ? <Col offset="5">
                   <FormItem>
-                    <MSCheckbox fieldOpt="mergeOpt" field="bySplHscode"
+                    <MSCheckbox
+                      fieldOpt="mergeOpt"
+                      field="bySplHscode"
                       text={this.msg('mergeSpecialHscode')}
-                      onChange={this.handleCheckChange} state={this.state}
+                      onChange={this.handleCheckChange}
+                      state={this.state}
                     />
                     { mergeOpt.bySplHscode ?
                       <div>
                         {getFieldDecorator('mergeHsSort', {
                           rules: [{ type: 'array' }],
                           initialValue: mergeOpt.splHsSorts,
-                        })(<Select mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '80%' }} disabled={mergeCategories.length === 0}>
-                          { mergeCategories.map(ct => <Option value={ct.id} key={ct.id}>{ct.name}</Option>) }
+                        })(<Select
+                          mode="multiple"
+                          placeholder={this.msg('specialHscodeSort')}
+                          style={{ width: '80%' }}
+                          disabled={mergeCategories.length === 0}
+                        >
+                          { mergeCategories.map(ct =>
+                            <Option value={ct.id} key={ct.id}>{ct.name}</Option>) }
                         </Select>)}
                       </div> : null}
                   </FormItem>
                   <FormItem>
-                    <MSCheckbox fieldOpt="mergeOpt" field="bySplCopNo"
+                    <MSCheckbox
+                      fieldOpt="mergeOpt"
+                      field="bySplCopNo"
                       text={this.msg('mergeSpecialNo')}
-                      onChange={this.handleCheckChange} state={this.state}
+                      onChange={this.handleCheckChange}
+                      state={this.state}
                     />
                     { mergeOpt.bySplCopNo ?
                       <div>
@@ -350,7 +371,8 @@ export default class MergeSplitModal extends React.Component {
                           rules: [{ type: 'array' }],
                           initialValue: mergeOpt.splNoSorts,
                         })(<Select mode="multiple" style={{ width: '80%' }}>
-                          { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
+                          { SPECIAL_COPNO_TERM.map(data =>
+                             (<Option value={data.value} key={data.value}>{data.text}</Option>))}
                         </Select>)}
                       </div> : null}
                   </FormItem>
@@ -367,19 +389,15 @@ export default class MergeSplitModal extends React.Component {
                 </FormItem>
               </Card>
             </Col>
-            <Col span="12">
+            <Col span="14">
               <Card title={this.msg('splitPrinciple')}>
                 <FormItem>
-                  <Select onChange={this.handleSplitSelectChange} value={this.state.splitOpt.perCount}>
-                    {
-                    CMS_SPLIT_COUNT.map(sc => <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
-                  }
-                  </Select>
-                </FormItem>
-                <FormItem>
-                  <MSCheckbox fieldOpt="splitOpt" field="byHsCode"
+                  <MSCheckbox
+                    fieldOpt="splitOpt"
+                    field="byHsCode"
                     text={this.msg('specialHscodeDeclare')}
-                    onChange={this.handleCheckChange} state={this.state}
+                    onChange={this.handleCheckChange}
+                    state={this.state}
                   />
                   { splitOpt.byHsCode ?
                     <div>
@@ -394,32 +412,81 @@ export default class MergeSplitModal extends React.Component {
                       </Select>)}
                     </div> : null}
                 </FormItem>
-                <FormItem>
-                  <MSCheckbox fieldOpt="splitOpt" field="tradeCurr"
-                    text={this.msg('currencySplit')}
-                    onChange={this.handleCheckChange} state={this.state}
-                  />
-                </FormItem>
+
+                <Row>
+                  <Col span={12}>
+                    <FormItem>
+                      <MSCheckbox
+                        fieldOpt="splitOpt"
+                        field="byCiqDecl"
+                        text={this.msg('byCiqDeclSplit')}
+                        onChange={this.handleCheckChange}
+                        state={this.state}
+                      />
+                    </FormItem>
+                    <FormItem>
+                      <MSCheckbox
+                        fieldOpt="splitOpt"
+                        field="byApplCert"
+                        text={this.msg('byApplCertSplit')}
+                        onChange={this.handleCheckChange}
+                        state={this.state}
+                      />
+                    </FormItem>
+                  </Col>
+                  <Col span={12}>
+                    <FormItem>
+                      <Select
+                        onChange={this.handleSplitSelectChange}
+                        value={this.state.splitOpt.perCount}
+                      >
+                        {
+                    CMS_SPLIT_COUNT.map(sc =>
+                      <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
+                  }
+                      </Select>
+                    </FormItem>
+                    <FormItem>
+                      <MSCheckbox
+                        fieldOpt="splitOpt"
+                        field="tradeCurr"
+                        text={this.msg('currencySplit')}
+                        onChange={this.handleCheckChange}
+                        state={this.state}
+                      />
+                    </FormItem>
+                  </Col>
+
+                </Row>
               </Card>
             </Col>
-            <Col span="12">
+            <Col span="10">
               <Card title={this.msg('sortPrinciple')}>
                 <FormItem>
-                  <MSCheckbox fieldOpt="sortOpt" field="customControl"
+                  <MSCheckbox
+                    fieldOpt="sortOpt"
+                    field="customControl"
                     text={this.msg('customOnTop')}
-                    onChange={this.handleCheckChange} state={this.state}
+                    onChange={this.handleCheckChange}
+                    state={this.state}
                   />
                 </FormItem>
                 <FormItem>
-                  <MSCheckbox fieldOpt="sortOpt" field="decTotal"
+                  <MSCheckbox
+                    fieldOpt="sortOpt"
+                    field="decTotal"
                     text={this.msg('priceDescSort')}
-                    onChange={this.handleCheckChange} state={this.state}
+                    onChange={this.handleCheckChange}
+                    state={this.state}
                   />
                 </FormItem>
                 <FormItem>
-                  <MSCheckbox fieldOpt="sortOpt" field="hsCodeAsc"
+                  <MSCheckbox
+                    fieldOpt="sortOpt"
+                    field="hsCodeAsc"
                     text={this.msg('hsCodeAscSort')}
-                    onChange={this.handleCheckChange} state={this.state}
+                    onChange={this.handleCheckChange}
+                    state={this.state}
                   />
                 </FormItem>
               </Card>
