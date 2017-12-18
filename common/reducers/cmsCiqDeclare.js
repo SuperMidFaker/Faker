@@ -31,6 +31,8 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'DELETE_GOODS_LICENCES', 'DELETE_GOODS_LICENCES_SUCCEED', 'DELETE_GOODS_LICENCES_FAIL',
   'UPDATE_STANDBY_INFO', 'UPDATE_STANDBY_INFO_SUCCEED', 'UPDATE_STANDBY_INFO_FAIL',
   'LOAD_STANDBY_INFO', 'LOAD_STANDBY_INFO_SUCCEED', 'LOAD_STANDBY_INFO_FAIL',
+  'UPDATE_GOODS_LICENCE_INFO', 'UPDATE_GOODS_LICENCE_INFO_SUCCEED', 'UPDATE_GOODS_LICENCE_INFO_FAIL',
+  'LOAD_GOODS_LICENCE_INFO', 'LOAD_GOODS_LICENCE_INFO_SUCCEED', 'LOAD_GOODS_LICENCE_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -665,6 +667,36 @@ export function loadStandbyInfo(goodsId) {
         actionTypes.LOAD_STANDBY_INFO_FAIL,
       ],
       endpoint: 'v1/cms/ciq/standby/info/load',
+      method: 'get',
+      params: { goodsId },
+    },
+  };
+}
+
+export function updateGoodsLicenceInfo(info, goodsId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_GOODS_LICENCE_INFO,
+        actionTypes.UPDATE_GOODS_LICENCE_INFO_SUCCEED,
+        actionTypes.UPDATE_GOODS_LICENCE_INFO_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licence/info/update',
+      method: 'post',
+      data: { info: JSON.stringify(info), goodsId },
+    },
+  };
+}
+
+export function loadGoodsLicenceInfo(goodsId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_GOODS_LICENCE_INFO,
+        actionTypes.LOAD_GOODS_LICENCE_INFO_SUCCEED,
+        actionTypes.LOAD_GOODS_LICENCE_INFO_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/licence/info/load',
       method: 'get',
       params: { goodsId },
     },
