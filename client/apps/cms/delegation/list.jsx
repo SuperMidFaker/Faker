@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Layout, Input, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -16,7 +16,6 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import OperatorPopover from 'client/common/operatorsPopover';
-import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
 import { Logixon, MdIcon, Fontello } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
@@ -37,6 +36,7 @@ const RadioButton = Radio.Button;
 const { Option } = Select;
 const { OptGroup } = Select;
 const { RangePicker } = DatePicker;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -100,6 +100,7 @@ export default class DelegationList extends Component {
   state = {
     selectedRowKeys: [],
     rightSiderCollapsed: true,
+    filterName: null,
   }
   componentDidMount() {
     const filters = this.initializeFilters();
@@ -111,7 +112,10 @@ export default class DelegationList extends Component {
       [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
       PARTNER_BUSINESSE_TYPES.clearance
     );
-    this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
+    const { listFilter } = this.props;
+    this.handleDelgListLoad(this.props.delegationlist.current, {
+      ...listFilter, ...filters, filterNo: '', clientView: listFilter.clientView,
+    });
     this.props.loadFormRequire();
   }
   componentWillReceiveProps(nextProps) {
@@ -126,7 +130,7 @@ export default class DelegationList extends Component {
     }
   }
   initializeFilters = () => {
-    let filters = { status: 'all', viewStatus: 'all', clientView: { tenantIds: [], partnerIds: [] } };
+    let filters = {};
     if (window.localStorage) {
       filters = JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}');
     }
@@ -188,7 +192,6 @@ export default class DelegationList extends Component {
     title: this.msg('declareCustoms'),
     width: 120,
     dataIndex: 'decl_port',
-
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';
@@ -439,6 +442,9 @@ export default class DelegationList extends Component {
     const filter = { ...this.props.listFilter, clientView };
     this.handleDelgListLoad(1, filter);
   }
+  handleSearchChange = (ev) => {
+    this.setState({ filterName: ev.target.value });
+  }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
     this.handleDelgListLoad(1, filters);
@@ -461,6 +467,7 @@ export default class DelegationList extends Component {
   }
   render() {
     const { delegationlist, listFilter, tenantId } = this.props;
+    const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadDelegationList(params),
       resolve: result => result.data,
@@ -508,10 +515,13 @@ export default class DelegationList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <SearchBar
+      <Search
+        style={{ width: 250 }}
         placeholder={this.msg('searchPlaceholder')}
-        onInputSearch={this.handleSearch}
-        value={listFilter.filterNo}
+        onSearch={this.handleSearch}
+        onChange={this.handleSearchChange}
+        value={filterName}
+        enterButton
       />
       <Select
         showSearch

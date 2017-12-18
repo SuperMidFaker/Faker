@@ -102,7 +102,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMS_DECLS_FAIL:
       return { ...state, customslist: { ...state.customslist, loading: false } };
     case actionTypes.LOAD_CUSTOMSTP_SUCCEED:
-      return { ...state, listRequire: { ...state.listRequire, customs: action.result.data.customs } };
+      return { ...state, listRequire: { ...state.listRequire, ...action.result.data } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
@@ -122,7 +122,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_BATCH_SEND_MODAL:
       return { ...state, batchSendModal: { ...state.batchSendModal, visible: true } };
     case actionTypes.SHOW_BATCH_SEND_MODAL_SUCCEED:
-      return { ...state, batchSendModal: { ...state.batchSendModal, data: action.result.data.custG, easilist: action.result.data.easilist } };
+      return {
+        ...state,
+        batchSendModal: {
+          ...state.batchSendModal,
+          data: action.result.data.custG,
+          easilist: action.result.data.easilist,
+        },
+      };
     case actionTypes.CLOSE_BATCH_SEND_MODAL:
       return { ...state, batchSendModal: { ...state.batchSendModal, visible: false } };
     case actionTypes.LOAD_SEND_RECORDS_SUCCEED:
