@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Icon, Select, notification } from 'antd';
+import { Button, Select, notification } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
@@ -96,37 +96,20 @@ export default class ConflictItemTable extends React.Component {
     withRepoItem: true,
     withRepo: this.props.withRepo,
   }).concat([{
-    title: '冲突解决',
-    dataIndex: 'status',
-    width: 80,
-    fixed: 'right',
-    align: 'center',
-    render: (resolved) => {
-      if (resolved === 2) {
-        return <Icon type="pushpin-o" />;
-      } else if (resolved === 3) {
-        return '忽略';
-      } else if (resolved === 4) {
-        return <Icon type="fork" />;
-      }
-      return <span />;
-    },
-  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 210,
+    width: 140,
     fixed: 'right',
     render: (_, record) => {
-      const spanElms = [];
-      if (record.classified && record.status === 1) {
-        spanElms.push(
-          <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="pushpin-o" row={record} tooltip="替换" />,
-          <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="保留为分支" />
-        );
-      }
+      const standard = record.classified && record.status === 2;
+      const staged = record.classified && record.status === 4;
       return (<span>
-        <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
-        {spanElms}
+        {/*
+        <RowAction onClick={this.handleItemEdit} icon="edit"
+        label={this.msg('modify')} row={record} />
+        */}
+        <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="pushpin-o" row={record} tooltip="设为标准值" disabled={standard} />
+        <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="保留为分支" disabled={staged} />
         <RowAction confirm={this.msg('deleteConfirm')} onConfirm={this.handleItemDel} icon="delete" row={record} />
       </span>);
     },
@@ -209,7 +192,7 @@ export default class ConflictItemTable extends React.Component {
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
     </span>);
     const bulkActions = (<span>
-      <Button icon="pushpin-o" onClick={this.handleBatchRelease}>批量替换</Button>
+      <Button icon="pushpin-o" onClick={this.handleBatchRelease}>批量设为标准值</Button>
       <Button icon="fork" onClick={this.handleBatchRelease}>批量保留为分支</Button>
     </span>);
     return (
