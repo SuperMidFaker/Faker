@@ -5,10 +5,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Col } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
-import NavLink from '../NavLink';
 import { DEFAULT_MODULES } from 'common/constants';
 import messages from 'client/common/root.i18n';
-import './index.less';
+import NavLink from '../NavLink';
+import './style.less';
 
 const formatMsg = format(messages);
 
@@ -41,15 +41,6 @@ export default class ModuleLayout extends React.Component {
                     </div>
                     <span className="module-text">
                       {formatMsg(this.props.intl, emod.text)}
-                      {
-                        emod.status === 'beta' && <sup className={emod.status}>公测版</sup>
-                      }
-                      {
-                        emod.status === 'alpha' && <sup className={emod.status}>内测版</sup>
-                      }
-                      {
-                        emod.status === 'dev' && <sup className={emod.status}>开发中</sup>
-                      }
                     </span>
                   </div>
                 </NavLink>

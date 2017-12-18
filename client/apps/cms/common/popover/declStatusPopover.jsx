@@ -47,6 +47,9 @@ export default class DeclStatusPopover extends React.Component {
               } else if (res.channel === 'edi') {
                 channelText = '亿通EDI回执';
                 dateFormat = 'YYYY-MM-DD HH:mm';
+              } else if (res.channel === 'manual') {
+                channelText = '手动确认';
+                dateFormat = 'YYYY-MM-DD HH:mm';
               }
               return (
                 <TimelineItem key={res.process_note} color={res.channel_status === 1 ? 'green' : 'blue'} style={{ width: 200 }}>
@@ -60,7 +63,10 @@ export default class DeclStatusPopover extends React.Component {
       </Spin>
     );
     return (
-      <Popover placement="topRight" content={overlay} title={<span>通关状态 {entryId}</span>}
+      <Popover
+        placement="right"
+        content={overlay}
+        title={<span>通关状态 {entryId}</span>}
         onVisibleChange={this.handleViewResult}
       >
         {children}
