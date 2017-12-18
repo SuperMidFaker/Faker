@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Popover, Button, Form, Input, Row, Col } from 'antd';
+import { Popover, Button, Form, Input, Row, Col, Icon } from 'antd';
 import { updateStandbyInfo, loadStandbyInfo } from 'common/reducers/cmsCiqDeclare';
 
 const FormItem = Form.Item;
@@ -73,7 +73,11 @@ export default class StandByInfo extends Component {
         visible={this.state.visible}
         onVisibleChange={this.handleVisibleChange}
       >
-        <Button style={{ marginLeft: 8 }}>备用信息</Button>
+        <Button
+          type="primary"
+          size="small"
+          ghost
+        ><Icon type="ellipsis" /></Button>
       </Popover>
     );
   }
