@@ -6,26 +6,46 @@ export default function makeColumns({
   msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit,
 }) {
   const columns = [{
-    dataIndex: 'classified',
-    width: 40,
+    title: msg('状态'),
+    dataIndex: 'status',
+    width: 45,
     fixed: 'left',
-    render: (classified, item) => {
-      if (classified) {
-        return <Icon type="check-circle-o" style={{ fontSize: 16, color: '#52c41a' }} />;
+    render: (status, item) => {
+      if (status === 0) {
+        if (item.classified) {
+          return <Icon type="check-circle-o" style={{ fontSize: 16, color: '#52c41a' }} />;
+        }
+        let content;
+        if (!(item.hscode && item.g_name && item.g_model)) {
+          content = '申报商品编码或品名或规范要素未完整';
+        } else {
+          content = '填写规格型号与规范申报要素项数不一致';
+        }
+        return <Popover content={content} placement="right"><Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} /></Popover>;
+      } else if (status === 1) {
+        return <Icon type="exclamation-circle-o" style={{ fontSize: 16, color: '#f5222d' }} />;
+      } else if (status === 2) {
+        return <Icon type="pushpin" style={{ fontSize: 16, color: '#52c41a' }} />;
+      } else if (status === 3) {
+        return '忽略';
+      } else if (status === 4) {
+        return <Icon type="fork" style={{ fontSize: 16, color: '#52c41a' }} />;
+      } else if (status === -1) {
+        if (item.classified) {
+          return <Icon type="link" style={{ fontSize: 16, color: '#52c41a' }} />;
+        }
+        return <Icon type="disconnect" style={{ fontSize: 16, color: '#f5222d' }} />;
       }
-      let content;
-      if (!(item.hscode && item.g_name && item.g_model)) {
-        content = '申报商品编码或品名或规范要素未完整';
-      } else {
-        content = '填写规格型号与规范申报要素项数不一致';
-      }
-      return <Popover content={content} placement="right"><Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} /></Popover>;
+      return <span />;
     },
+  }, {
+    title: msg('repoOwner'),
+    dataIndex: 'repo_owner_name',
+    width: 200,
   }, {
     title: msg('copProductNo'),
     dataIndex: 'cop_product_no',
     width: 150,
-    fixed: 'left',
     render: (o, record) => {
       const pn = o === record.src_product_no ? o :
       <Popover content={record.src_product_no}>{o}</Popover>;
@@ -188,10 +208,6 @@ export default function makeColumns({
     dataIndex: 'remark',
     width: 180,
   }]).concat(withRepo ? [{
-    title: msg('repoOwner'),
-    dataIndex: 'repo_owner_name',
-    width: 200,
-  }, {
     title: msg('repoCreator'),
     dataIndex: 'contribute_tenant_name',
     width: 200,
