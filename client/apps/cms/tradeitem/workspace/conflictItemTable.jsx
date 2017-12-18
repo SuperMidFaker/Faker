@@ -9,7 +9,6 @@ import SearchBar from 'client/components/SearchBar';
 import { delWorkspaceItem, resolveWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
-
 import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
@@ -52,6 +51,7 @@ export default class ConflictItemTable extends React.Component {
   }
   state = {
     conflictSelRowKeys: [],
+    allSel: false,
     conflictFilter: Object.assign({ status: 'conflict' }, this.props.listFilter),
   }
   componentWillReceiveProps(nextProps) {
@@ -63,6 +63,14 @@ export default class ConflictItemTable extends React.Component {
       this.setState({
         conflictFilter: Object.assign(this.state.conflictFilter, nextProps.listFilter),
       });
+    }
+    if (nextProps.conflictList !== this.props.conflictList) {
+      if (this.state.allSel) {
+        this.setState({
+          conflictSelRowKeys:
+          nextProps.conflictList.data.filter(cl => cl.classified).map(cl => cl.id),
+        });
+      }
     }
   }
   msg = formatMsg(this.props.intl)
@@ -144,6 +152,36 @@ export default class ConflictItemTable extends React.Component {
       }
     });
   }
+  handleBatchMakeStandard = () => {
+    const itemIds = this.state.allSel ? null : this.state.conflictSelRowKeys;
+    this.props.resolveWorkspaceItem(itemIds, 'standard').then((result) => {
+      if (!result.error) {
+        this.props.loadConflictItems({
+          pageSize: this.props.conflictList.pageSize,
+          current: this.props.conflictList.current,
+          filter: JSON.stringify(this.state.conflictFilter),
+        });
+      } else {
+        notification.error({ title: 'Error', description: result.error.message });
+      }
+    });
+    this.handleRowDeselect();
+  }
+  handleBatchMakeStage = () => {
+    const itemIds = this.state.allSel ? null : this.state.conflictSelRowKeys;
+    this.props.resolveWorkspaceItem(itemIds, 'stage').then((result) => {
+      if (!result.error) {
+        this.props.loadConflictItems({
+          pageSize: this.props.conflictList.pageSize,
+          current: this.props.conflictList.current,
+          filter: JSON.stringify(this.state.conflictFilter),
+        });
+      } else {
+        notification.error({ title: 'Error', description: result.error.message });
+      }
+    });
+    this.handleRowDeselect();
+  }
   handleRepoSelect = (repoId) => {
     const filter = { ...this.state.conflictFilter, repoId };
     this.props.loadConflictItems({
@@ -163,7 +201,7 @@ export default class ConflictItemTable extends React.Component {
     this.setState({ conflictFilter: filter });
   }
   handleRowDeselect= () => {
-    this.setState({ conflictSelRowKeys: [] });
+    this.setState({ conflictSelRowKeys: [], allSel: false });
   }
   render() {
     const {
@@ -174,8 +212,29 @@ export default class ConflictItemTable extends React.Component {
     const conflictSelRows = {
       selectedRowKeys: conflictSelRowKeys,
       onChange: (selectedRowKeys) => {
-        this.setState({ conflictSelRowKeys: selectedRowKeys });
+        let { allSel } = this.state;
+        if (selectedRowKeys.length === 0) {
+          allSel = false;
+        }
+        this.setState({ conflictSelRowKeys: selectedRowKeys, allSel });
       },
+      getCheckboxProps: record => ({
+        disabled: !record.classified,
+      }),
+      hideDefaultSelections: true,
+      selections: [{
+        key: 'selall',
+        text: '全选',
+        onSelect: (selRowKeys) => {
+          this.setState({ conflictSelRowKeys: selRowKeys, allSel: true });
+        },
+      }, {
+        key: 'unselall',
+        text: '取消全选',
+        onSelect: () => {
+          this.setState({ conflictSelRowKeys: [], allSel: false });
+        },
+      }],
     };
     const toolbarActions = (<span>
       {withRepo && <Select
@@ -187,13 +246,14 @@ export default class ConflictItemTable extends React.Component {
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}
       >
-        {repos.map(rep => <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}
+        {repos.map(rep => (<Option value={String(rep.id)} key={rep.owner_name}>
+          {rep.owner_name}</Option>))}
       </Select>}
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
     </span>);
     const bulkActions = (<span>
-      <Button icon="pushpin-o" onClick={this.handleBatchRelease}>批量设为标准值</Button>
-      <Button icon="fork" onClick={this.handleBatchRelease}>批量保留为分支</Button>
+      <Button icon="pushpin-o" onClick={this.handleBatchMakeStandard}>批量设为标准值</Button>
+      <Button icon="fork" onClick={this.handleBatchMakeStage}>批量保留为分支</Button>
     </span>);
     return (
       <DataTable
