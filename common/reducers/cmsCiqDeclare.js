@@ -25,7 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'SAVE_REQUIRED_DOCUMENTS', 'SAVE_REQUIRED_DOCUMENTS_SUCCEED', 'SAVE_REQUIRED_DOCUMENTS_FAIL',
   'SAVE_ATT_DOCUMENTS', 'SAVE_ATT_DOCUMENTS_SUCCEED', 'SAVE_ATT_DOCUMENTS_FAIL',
   'LOAD_ATT_DOCUMENTS', 'LOAD_ATT_DOCUMENTS_SUCCEED', 'LOAD_ATT_DOCUMENTS_FAIL',
-  'TOGGLE_GOODS_LICENCE_MODAL',
+  'TOGGLE_GOODS_LICENCE_MODAL', 'TOGGLE_GOODS_CONT_MODAL',
   'ADD_GOODS_LICENCE', 'ADD_GOODS_LICENCE_SUCCEED', 'ADD_GOODS_LICENCE_FAIL',
   'GOODS_LICENCES_LOAD', 'GOODS_LICENCES_LOAD_SUCCEED', 'GOODS_LICENCES_LOAD_FAIL',
   'DELETE_GOODS_LICENCES', 'DELETE_GOODS_LICENCES_SUCCEED', 'DELETE_GOODS_LICENCES_FAIL',
@@ -33,6 +33,9 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'LOAD_STANDBY_INFO', 'LOAD_STANDBY_INFO_SUCCEED', 'LOAD_STANDBY_INFO_FAIL',
   'UPDATE_GOODS_LICENCE_INFO', 'UPDATE_GOODS_LICENCE_INFO_SUCCEED', 'UPDATE_GOODS_LICENCE_INFO_FAIL',
   'LOAD_GOODS_LICENCE_INFO', 'LOAD_GOODS_LICENCE_INFO_SUCCEED', 'LOAD_GOODS_LICENCE_INFO_FAIL',
+  'ADD_GOODS_CONT', 'ADD_GOODS_CONT_SUCCEED', 'ADD_GOODS_CONT_FAIL',
+  'GOODS_CONT_LOAD', 'GOODS_CONT_LOAD_SUCCEED', 'GOODS_CONT_LOAD_FAIL',
+  'DELETE_GOODS_CONT', 'DELETE_GOODS_CONT_SUCCEED', 'DELETE_GOODS_CONT_FAIL',
 ]);
 
 const initialState = {
@@ -84,6 +87,10 @@ const initialState = {
     fileType: '',
   },
   goodsLicenceModal: {
+    visible: false,
+    goodsData: {},
+  },
+  goodsContModal: {
     visible: false,
     goodsData: {},
   },
@@ -227,6 +234,15 @@ export default function reducer(state = initialState, action) {
         ...state,
         goodsLicenceModal: {
           ...state.goodsLicenceModal,
+          visible: action.visible,
+          goodsData: action.goodsData,
+        },
+      };
+    case actionTypes.TOGGLE_GOODS_CONT_MODAL:
+      return {
+        ...state,
+        goodsContModal: {
+          ...state.goodsContModal,
           visible: action.visible,
           goodsData: action.goodsData,
         },
@@ -699,6 +715,59 @@ export function loadGoodsLicenceInfo(goodsId) {
       endpoint: 'v1/cms/ciq/goods/licence/info/load',
       method: 'get',
       params: { goodsId },
+    },
+  };
+}
+
+export function toggleGoodsContModal(visible, goodsData = {}) {
+  return {
+    type: actionTypes.TOGGLE_GOODS_CONT_MODAL,
+    visible,
+    goodsData,
+  };
+}
+
+export function addGoodsCont(preEntrySeqNo, id, data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_GOODS_CONT,
+        actionTypes.ADD_GOODS_CONT_SUCCEED,
+        actionTypes.ADD_GOODS_CONT_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/cont/add',
+      method: 'post',
+      data: { preEntrySeqNo, id, data },
+    },
+  };
+}
+
+export function loadGoodsCont(goodsId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GOODS_CONT_LOAD,
+        actionTypes.GOODS_CONT_LOAD_SUCCEED,
+        actionTypes.GOODS_CONT_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/cont/load',
+      method: 'get',
+      params: { goodsId },
+    },
+  };
+}
+
+export function deleteGoodsCont(ids) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_GOODS_CONT,
+        actionTypes.DELETE_GOODS_CONT_SUCCEED,
+        actionTypes.DELETE_GOODS_CONT_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/goods/cont/delete',
+      method: 'post',
+      data: { ids },
     },
   };
 }
