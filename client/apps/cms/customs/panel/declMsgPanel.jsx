@@ -142,7 +142,7 @@ export default class DeclMsgPanel extends React.Component {
     const { sendText } = this.state;
     this.props.loadSendRecords({
       preEntrySeqNo: sendText,
-      current: sendRecords.current,
+      current: 1,
       pageSize: sendRecords.pageSize,
     });
   }
@@ -151,7 +151,7 @@ export default class DeclMsgPanel extends React.Component {
     const { recvText } = this.state;
     this.props.loadReturnRecords({
       preEntrySeqNo: recvText,
-      current: returnRecords.current,
+      current: 1,
       pageSize: returnRecords.pageSize,
     });
   }
