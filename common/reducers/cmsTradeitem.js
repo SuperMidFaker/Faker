@@ -25,10 +25,6 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_TEMP_ITEMS', 'LOAD_TEMP_ITEMS_SUCCEED', 'LOAD_TEMP_ITEMS_FAIL',
   'COMPARED_CANCEL', 'COMPARED_CANCEL_SUCCEED', 'COMPARED_CANCEL_FAIL',
   'DELETE_TEMP_DATA', 'DELETE_TEMP_DATA_SUCCEED', 'DELETE_TEMP_DATA_FAIL',
-  'UPGRADE_MODE', 'UPGRADE_MODE_SUCCEED', 'UPGRADE_MODE_FAIL',
-  'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
-  'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
-  'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
   'SHOW_LINKSLAVE',
   'LOAD_LINKEDSLAVES', 'LOAD_LINKEDSLAVES_SUCCEED', 'LOAD_LINKEDSLAVES_FAIL',
   'LOAD_OWNSLAVES', 'LOAD_OWNSLAVES_SUCCEED', 'LOAD_OWNSLAVES_FAIL',
@@ -157,7 +153,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
       return {
-        ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false,
+        ...state,
+        tradeItemlist: action.result.data,
+        listFilter: JSON.parse(action.params.filter),
+        tradeItemsLoading: false,
       };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
@@ -182,7 +181,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_OWNSLAVES_SUCCEED:
       return { ...state, linkSlaveModal: { ...state.linkSlaveModal, slaves: action.result.data } };
     case actionTypes.SWITCH_REPOMD_SUCCEED:
-      return { ...state, repos: state.repos.map(rep => (rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep)) };
+      return {
+        ...state,
+        repos: state.repos.map(rep =>
+          (rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep)),
+      };
     case actionTypes.LOAD_WSSTAT_SUCCEED:
       return { ...state, workspaceStat: action.result.data, wsStatReload: false };
     case actionTypes.LOAD_WSTASKLIST:
@@ -577,66 +580,6 @@ export function deleteTempData(id) {
       endpoint: 'v1/cms/tradeitem/compared/del',
       method: 'post',
       data: { id },
-    },
-  };
-}
-
-export function upgradeMode(datas) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPGRADE_MODE,
-        actionTypes.UPGRADE_MODE_SUCCEED,
-        actionTypes.UPGRADE_MODE_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/upgrade/repo',
-      method: 'post',
-      data: datas,
-    },
-  };
-}
-
-export function setDatasShare(datas) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.SET_DATA_SHARED,
-        actionTypes.SET_DATA_SHARED_SUCCEED,
-        actionTypes.SET_DATA_SHARED_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/set/data/shared',
-      method: 'post',
-      data: datas,
-    },
-  };
-}
-
-export function copyToStage(datas) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.COPY_ITEM_STAGE,
-        actionTypes.COPY_ITEM_STAGE_SUCCEED,
-        actionTypes.COPY_ITEM_STAGE_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/item/stage/copy',
-      method: 'post',
-      data: datas,
-    },
-  };
-}
-
-export function itemNewSrcSave(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ITEM_NEWSRC_SAVE,
-        actionTypes.ITEM_NEWSRC_SAVE_SUCCEED,
-        actionTypes.ITEM_NEWSRC_SAVE_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/newSrc/save',
-      method: 'post',
-      data,
     },
   };
 }
