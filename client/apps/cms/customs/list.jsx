@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Icon, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Breadcrumb, DatePicker, Icon, Input, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -18,7 +18,6 @@ import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
 import { Logixon, Fontello } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
@@ -40,19 +39,7 @@ const RadioButton = Radio.Button;
 const { Option } = Select;
 const { OptGroup } = Select;
 const { RangePicker } = DatePicker;
-
-function mergeFilters(curFilters, value) {
-  const newFilters = {};
-  Object.keys(curFilters).forEach((key) => {
-    if (key !== 'filterNo') {
-      newFilters[key] = curFilters[key];
-    }
-  });
-  if (value !== null && value !== undefined && value !== '') {
-    newFilters.filterNo = value;
-  }
-  return newFilters;
-}
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -63,6 +50,7 @@ function mergeFilters(curFilters, value) {
     listFilter: state.cmsDeclare.listFilter,
     clients: state.partner.partners,
     customs: state.cmsDeclare.listRequire.customs,
+    tradeModes: state.cmsDeclare.listRequire.tradeModes,
     // trades: state.cmsDeclare.trades,
   }),
   {
@@ -98,9 +86,10 @@ export default class CustomsList extends Component {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
+    filterName: null,
   }
   componentDidMount() {
-    let filters = { status: 'all', filterDate: [] };
+    let filters = null;
     if (window.location.search.indexOf('inspect') > 0) {
       filters = { status: 'inspect' };
       if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
@@ -113,7 +102,7 @@ export default class CustomsList extends Component {
       [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance
     );
     this.props.loadTableParams();
-    this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
+    this.handleTableLoad(this.props.customslist.current, filters);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -267,6 +256,14 @@ export default class CustomsList extends Component {
     title: '监管方式',
     dataIndex: 'trade_mode',
     width: 100,
+    render: (o) => {
+      const tradeMd = this.props.tradeModes.filter(tm => tm.value === o)[0];
+      let trade = '';
+      if (tradeMd) {
+        trade = tradeMd.text;
+      }
+      return <TrimSpan text={trade} maxLen={14} />;
+    },
   }, {
     title: '提运单号',
     dataIndex: 'bl_wb_no',
@@ -416,9 +413,12 @@ export default class CustomsList extends Component {
       delgNo: row.delg_no,
     });
   }
+  handleSearchChange = (ev) => {
+    this.setState({ filterName: ev.target.value });
+  }
   handleSearch = (searchVal) => {
-    const filters = mergeFilters(this.props.listFilter, searchVal);
-    this.handleTableLoad(1, { ...filters });
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
+    this.handleTableLoad(1, filters);
   }
   handleDetail = (record) => {
     // ev.preventDefault();
@@ -560,6 +560,7 @@ export default class CustomsList extends Component {
   }
   render() {
     const { customslist, listFilter } = this.props;
+    const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
     this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -610,7 +611,14 @@ export default class CustomsList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+      <Search
+        style={{ width: 300 }}
+        placeholder={this.msg('searchPlaceholder')}
+        onSearch={this.handleSearch}
+        onChange={this.handleSearchChange}
+        value={filterName}
+        enterButton
+      />
       <Select
         showSearch
         optionFilterProp="children"

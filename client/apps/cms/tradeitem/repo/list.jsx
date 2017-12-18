@@ -10,15 +10,15 @@ import { loadCustomers } from 'common/reducers/crmCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import ModuleMenu from '../menu';
 import AddRepoModal from './modal/addRepoModal';
 import RepoUsersCard from './modal/repoUserCard';
 import LinkSlaveModal from './modal/linkSlaveModal';
-import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
-const Search = Input.Search;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -28,7 +28,13 @@ const Search = Input.Search;
     reposLoading: state.cmsTradeitem.reposLoading,
   }),
   {
-    loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave, setRepo, loadCustomers,
+    loadRepos,
+    openAddModal,
+    switchRepoMode,
+    showLinkSlaveModal,
+    unlinkMasterSlave,
+    setRepo,
+    loadCustomers,
   }
 )
 @connectNav({
@@ -43,14 +49,8 @@ export default class RepoList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    repos: [],
     filter: { name: '' },
     authAction: { repo: {}, doing: false },
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.repos !== this.props.repos) {
-      this.setState({ repos: nextProps.repos });
-    }
   }
   msg = formatMsg(this.props.intl);
   repoColumns = [{
@@ -70,6 +70,7 @@ export default class RepoList extends React.Component {
       } else if (o === 'single') {
         return (<Tag color="cyan">单库</Tag>);
       }
+      return null;
     },
   }, {
     title: this.msg('repoCreator'),
@@ -82,9 +83,8 @@ export default class RepoList extends React.Component {
     render: (perm, record) => {
       if (perm === CMS_TRADE_REPO_PERMISSION.edit) {
         return record.creator_tenant_id === this.props.tenantId ? (<Tag color="green">完全控制</Tag>) : (<Tag color="blue">可读写</Tag>);
-      } else { // CMS_TRADE_REPO_PERMISSION.view OR slave repo(null)
-        return (<Tag>只读</Tag>);
-      }
+      } // CMS_TRADE_REPO_PERMISSION.view OR slave repo(null)
+      return (<Tag>只读</Tag>);
     },
   }, {
     title: this.msg('料件数量'),
@@ -189,7 +189,8 @@ export default class RepoList extends React.Component {
   render() {
     const { reposLoading } = this.props;
     const { authAction, filter } = this.state;
-    const repos = this.props.repos.filter(rep => !filter.name || new RegExp(filter.name).test(rep.owner_name));
+    const repos = this.props.repos.filter(rep =>
+      !filter.name || new RegExp(filter.name).test(rep.owner_name));
     const toolbarActions = (<span>
       <Search style={{ width: 200 }} placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} />
     </span>);
@@ -223,12 +224,20 @@ export default class RepoList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable toolbarActions={toolbarActions} dataSource={repos} columns={this.repoColumns}
-              rowKey="id" loading={reposLoading}
+            <DataTable
+              toolbarActions={toolbarActions}
+              dataSource={repos}
+              columns={this.repoColumns}
+              rowKey="id"
+              loading={reposLoading}
             />
           </Content>
           <AddRepoModal />
-          <Modal title="授权使用单位" visible={authAction.doing} maskClosable={false} footer={[]}
+          <Modal
+            title="授权使用单位"
+            visible={authAction.doing}
+            maskClosable={false}
+            footer={[]}
             onCancel={this.handleAuthAcOk}
           >
             <RepoUsersCard repo={authAction.repo} />

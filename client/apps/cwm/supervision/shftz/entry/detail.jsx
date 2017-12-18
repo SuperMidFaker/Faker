@@ -237,16 +237,15 @@ export default class SHFTZEntryDetail extends Component {
             net_wt: erd.net_wt,
             gross_wt: erd.gross_wt,
             amount: erd.amount,
-            currency: erd.currency,
             country: erd.country,
-            amount_usd: erd.amount_usd,
+            currency: erd.currency,
             tag: `*${er.pre_ftz_ent_no}_${erd.ent_g_no}`,
           });
         }
       });
       const csvData = mergedRegDetails.map(mrd => ({
         备件号: mrd.ftz_cargo_no,
-        HS: mrd.hscode,
+        HS编码: mrd.hscode,
         中文品名: mrd.g_name,
         规格型号: mrd.model,
         单位: mrd.unit,
@@ -255,9 +254,8 @@ export default class SHFTZEntryDetail extends Component {
         净重: mrd.net_wt,
         毛重: mrd.gross_wt,
         金额: mrd.amount,
-        币值: mrd.currency,
         原产国: mrd.country,
-        美元货值: mrd.amount_usd,
+        币值: mrd.currency,
         库位: null,
         标签: mrd.tag,
       }));
@@ -426,7 +424,7 @@ export default class SHFTZEntryDetail extends Component {
     title: '分拨',
     dataIndex: 'cargo_type',
     width: 80,
-    render: cargo => cargo === '14' ? <Tag color="green">可分拨</Tag> : <Tag>非分拨</Tag>,
+    render: cargo => (cargo === '14' ? <Tag color="green">可分拨</Tag> : <Tag>非分拨</Tag>),
   }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
@@ -594,10 +592,14 @@ export default class SHFTZEntryDetail extends Component {
             {this.state.nonCargono &&
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
             { entryRegs.length === 1 && primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
-            <Popover placement="bottom" title="拆分数量" content={<span>
-              <InputNumber min={2} max={entryRegs[0].details.length} value={splitNum} onChange={this.handleSplitNumber} />
-              <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
-            </span>} trigger="click"
+            <Popover
+              placement="bottom"
+              title="拆分数量"
+              content={<span>
+                <InputNumber min={2} max={entryRegs[0].details.length} value={splitNum} onChange={this.handleSplitNumber} />
+                <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
+              </span>}
+              trigger="click"
             >
               <Button disabled={entryRegs[0].details.length === 1}>拆分进区凭单</Button>
             </Popover>}
@@ -614,12 +616,16 @@ export default class SHFTZEntryDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={3}>
                 <Description term="进区凭单号">
-                  <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
+                  <EditableCell
+                    value={reg.ftz_ent_no}
+                    editable={entryEditable}
                     onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'ftz_ent_no', value)}
                   />
                 </Description>
                 <Description term="报关单号">
-                  <EditableCell value={primaryEntryReg.cus_decl_no} editable={entryEditable}
+                  <EditableCell
+                    value={primaryEntryReg.cus_decl_no}
+                    editable={entryEditable}
                     onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'cus_decl_no', value)}
                   />
                 </Description>
@@ -637,9 +643,15 @@ export default class SHFTZEntryDetail extends Component {
               </div>
             </Card>
             <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
-              <DataPane header="备案明细" fullscreen={this.state.fullscreen}
-                columns={this.columns} rowSelection={rowSelection} indentSize={0}
-                dataSource={filingDetails} rowKey="id" loading={this.state.loading}
+              <DataPane
+                header="备案明细"
+                fullscreen={this.state.fullscreen}
+                columns={this.columns}
+                rowSelection={rowSelection}
+                indentSize={0}
+                dataSource={filingDetails}
+                rowKey="id"
+                loading={this.state.loading}
               >
                 <DataPane.Toolbar>
                   <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
