@@ -453,6 +453,14 @@ export default defineMessages({
     id: 'cms.manifest.modal.split.currency',
     defaultMessage: '不同币制独立报关',
   },
+  byCiqDeclSplit: {
+    id: 'cms.manifest.modal.split.ciq.decl',
+    defaultMessage: '报检独立报关',
+  },
+  byApplCertSplit: {
+    id: 'cms.manifest.modal.split.appl.cert',
+    defaultMessage: '报检出证独立报关',
+  },
   customOnTop: {
     id: 'cms.manifest.modal.sort.custom.ontop',
     defaultMessage: '海关监管、检验检疫、能效置顶',

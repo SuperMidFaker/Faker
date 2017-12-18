@@ -204,7 +204,7 @@ const messages = defineMessages({
   },
   inspQuarantine: {
     id: 'cms.tradeitem.col.inspection.quarantine',
-    defaultMessage: '商检检验检疫',
+    defaultMessage: '检验检疫',
   },
   unitPrice: {
     id: 'cms.tradeitem.col.unit.price',

@@ -6,7 +6,7 @@ import { addTracking, updateTracking, toggleTrackingModal } from 'common/reducer
 import { SCV_TRACKING_FIELD_MODELES } from 'common/constants';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -25,7 +25,6 @@ export default class TrackingModal extends React.Component {
     addTracking: PropTypes.func.isRequired,
     updateTracking: PropTypes.func.isRequired,
     toggleTrackingModal: PropTypes.func.isRequired,
-    form: PropTypes.object.isRequired,
     onOk: PropTypes.func,
     trackingFields: PropTypes.array.isRequired,
     trackingItems: PropTypes.array.isRequired,
@@ -66,7 +65,8 @@ export default class TrackingModal extends React.Component {
     } else if (!name) {
       message.warning('请填写追踪名称');
     } else {
-      const trackingItems = this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0)
+      const trackingItems = this.props.trackingFields.filter(item =>
+        targetKeys.indexOf(item.field) >= 0)
         .map((item, index) => ({
           title: item.title, field: item.field, datatype: item.type, position: index, source: 1,
         }));
@@ -122,7 +122,9 @@ export default class TrackingModal extends React.Component {
         style={{ width: 90 }}
         onChange={value => this.setState({
           leftSelectedKey: value,
-          dataSource: this.props.trackingFields.filter(item => value === '_all' ? true : value === item.module).concat(this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0)),
+          dataSource: this.props.trackingFields.filter(item =>
+            (value === '_all' ? true : value === item.module)).concat(this.props.trackingFields.filter(item =>
+              targetKeys.indexOf(item.field) >= 0)),
         })}
       >
         {modules.map(item => (
@@ -131,7 +133,14 @@ export default class TrackingModal extends React.Component {
       </Select>
     );
     return (
-      <Modal maskClosable={false} title={this.state.title} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={690}>
+      <Modal
+        maskClosable={false}
+        title={this.state.title}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+        width={695}
+      >
         <FormItem label="跟踪表名称:" required>
           <Input value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
         </FormItem>
@@ -146,7 +155,9 @@ export default class TrackingModal extends React.Component {
             filterOption={this.filterOption}
             render={item => (<span>
               <div style={{ width: '45%', display: 'inline-block' }}>{item.title}</div>
-              <div style={{ width: '45%', display: 'inline-block' }} className="mdc-text-grey">{SCV_TRACKING_FIELD_MODELES.find(m => m.key === item.module).text}</div>
+              <div style={{ width: '45%', display: 'inline-block' }} className="mdc-text-grey">
+                {SCV_TRACKING_FIELD_MODELES.find(m => m.key === item.module).text}
+              </div>
             </span>)}
             rowKey={item => item.field}
             showSearch

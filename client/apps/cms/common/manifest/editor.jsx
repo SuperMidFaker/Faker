@@ -9,6 +9,9 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead } from 'common/reducers/cmsManifest';
 import { loadDocuDatas } from 'common/reducers/cmsInvoice';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { CMS_DECL_STATUS } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -17,24 +20,20 @@ import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
 import DocuPane from './tabpane/doctsPane';
-import MergeSplitModal from './modals/mergeSplit';
+import MergeSplitModal from './modals/mergeSplitModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
-import { CMS_DECL_STATUS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import DeclTreePopover from '../popover/declTreePopover';
-
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
-const confirm = Modal.confirm;
+const { TabPane } = Tabs;
+const { Option } = Select;
+const { OptGroup } = Select;
+const { confirm } = Modal;
 
 @injectIntl
 @connect(
@@ -91,7 +90,7 @@ export default class ManifestEditor extends React.Component {
     templateValLoading: PropTypes.bool.isRequired,
     manifestSpinning: PropTypes.bool.isRequired,
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
-    editBillBody: PropTypes.func.isRequired,
+
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -100,7 +99,6 @@ export default class ManifestEditor extends React.Component {
     readonly: false,
   }
   state = {
-    visible: false,
     collapsed: true,
     generating: false,
     locked: false,
@@ -139,7 +137,10 @@ export default class ManifestEditor extends React.Component {
   generateEntry = () => {
     const { billHead } = this.props;
     this.setState({ generating: true });
-    this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
+    this.props.validateBillDatas({
+      billSeqNo: this.props.billHead.bill_seq_no,
+      delgNo: billHead.delg_no,
+    }).then((result) => {
       if (result.error) {
         this.setState({ generating: false });
         if (result.error.message.key === 'body-error') {
@@ -223,11 +224,10 @@ export default class ManifestEditor extends React.Component {
             if (result.error) {
               message.error(result.error.message, 10);
               return reject();
-            } else {
-              message.info('清单已重置');
-              self.props.form.resetFields();
-              return resolve();
             }
+            message.info('清单已重置');
+            self.props.form.resetFields();
+            return resolve();
           });
         }).catch(() => message.error('重置失败'));
       },
@@ -255,7 +255,7 @@ export default class ManifestEditor extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          const formData = result.data.formData;
+          const { formData } = result.data;
           for (const key in formData) {
             if (!formData[key]) {
               delete formData[key];
@@ -263,7 +263,6 @@ export default class ManifestEditor extends React.Component {
           }
           const headData = { ...this.props.billHead, ...formData };
           this.setState({ headData });
-          this.setState({ currentRule: value });
           const rules = {
             template_id: formData.template_id,
             rule_g_name: formData.rule_g_name,
@@ -342,7 +341,11 @@ export default class ManifestEditor extends React.Component {
   }
   handleSendDecls = () => {
     const head = this.props.billHead;
-    this.props.showSendDeclsModal({ visible: true, delgNo: head.delg_no, agentCustCo: head.agent_custco });
+    this.props.showSendDeclsModal({
+      visible: true,
+      delgNo: head.delg_no,
+      agentCustCo: head.agent_custco,
+    });
   }
   handleManifestRedo = () => {
     const head = this.props.billHead;
@@ -397,7 +400,8 @@ export default class ManifestEditor extends React.Component {
   }
   render() {
     const {
-      billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates,
+      billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId,
+      form, billHead, billBodies, billMeta, templates,
     } = this.props;
     const { locked, lockedByOthers } = this.state;
     let sendable = billMeta.entries.length > 0;
@@ -424,11 +428,24 @@ export default class ManifestEditor extends React.Component {
     const tabs = [];
     tabs.push(<TabPane tab="清单表头" key="header">
       <Spin spinning={this.props.templateValLoading}>
-        <ManifestHeadPane ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
+        <ManifestHeadPane
+          ietype={ietype}
+          readonly={!editable}
+          form={form}
+          formData={this.state.headData}
+          onSave={this.handleBillSave}
+        />
       </Spin>
     </TabPane>);
     tabs.push(<TabPane tab="申报商品明细" key="body">
-      <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
+      <ManifestBodyPane
+        ietype={ietype}
+        readonly={!editable}
+        headForm={form}
+        data={billBodies}
+        billSeqNo={billHead.bill_seq_no}
+        fullscreen={this.state.fullscreen}
+      />
     </TabPane>);
     if (filterProducts.length > 0) {
       tabs.push(<TabPane tab="法检商品" key="legalInspection">
@@ -458,11 +475,14 @@ export default class ManifestEditor extends React.Component {
             <PageHeader.Actions>
               {locked &&
               <Tooltip title={`清单已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">
-                <Switch className="switch-lock" checked={locked}
+                <Switch
+                  className="switch-lock"
+                  checked={locked}
                   checkedChildren={<Icon type="lock" />}
                   unCheckedChildren={<Icon type="unlock" />}
                   disabled={lockedByOthers}
-                  onChange={this.handleLock} style={{ marginTop: 4 }}
+                  onChange={this.handleLock}
+                  style={{ marginTop: 4 }}
                 />
               </Tooltip>}
               {editable && getFieldDecorator('model', modelProps)(<Select
@@ -475,15 +495,21 @@ export default class ManifestEditor extends React.Component {
                 allowClear
               >
                 <OptGroup label="可用制单规则">
-                  {templates.map(data => (<Option key={data.id} value={data.id}
+                  {templates.map(data => (<Option
+                    key={data.id}
+                    value={data.id}
                     search={`${data.id}${data.template_name}`}
                   ><Icon type="book" /> {data.template_name}
                   </Option>))}
                 </OptGroup>
               </Select>)
             }
-              {billMeta.entries.length > 0 && <DeclTreePopover entries={billMeta.entries}
-                ciqs={billMeta.ciqs} billSeqNo={billMeta.bill_seq_no} ietype={ietype} selectedKeys={['0-0']}
+              {billMeta.entries.length > 0 && <DeclTreePopover
+                entries={billMeta.entries}
+                ciqs={billMeta.ciqs}
+                billSeqNo={billMeta.bill_seq_no}
+                ietype={ietype}
+                selectedKeys={['0-0']}
               />}
               {billMeta.docts &&
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
@@ -495,8 +521,12 @@ export default class ManifestEditor extends React.Component {
                   <Button type="danger" icon="delete" />
                 </Popconfirm>}
               {editable &&
-              (<Button type="primary" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
-                loading={this.state.generating} onClick={this.handleGenerateEntry}
+              (<Button
+                type="primary"
+                icon="addfile"
+                disabled={billHeadFieldsChangeTimes > 0}
+                loading={this.state.generating}
+                onClick={this.handleGenerateEntry}
               >{this.msg('generateCDP')}
               </Button>) }
               {editable &&
@@ -505,7 +535,12 @@ export default class ManifestEditor extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} loading={this.props.manifestSpinning} onSizeChange={this.toggleFullscreen}>
+            <MagicCard
+              bodyStyle={{ padding: 0 }}
+              hoverable={false}
+              loading={this.props.manifestSpinning}
+              onSizeChange={this.toggleFullscreen}
+            >
               <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
                 {tabs}
               </Tabs>
