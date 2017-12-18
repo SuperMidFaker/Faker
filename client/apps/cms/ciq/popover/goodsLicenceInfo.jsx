@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Popover, Button, Form, Input, Row, Col, Checkbox, Select } from 'antd';
+import { Popover, Button, Form, Input, Row, Col, Checkbox, Select, Icon } from 'antd';
 import { updateGoodsLicenceInfo, loadGoodsLicenceInfo } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_DANG_PACK_TYPE } from 'common/constants';
 
@@ -110,7 +110,12 @@ export default class GoodsLicenceInfo extends Component {
         visible={this.state.visible}
         onVisibleChange={this.handleVisibleChange}
       >
-        <Button style={{ marginLeft: 8 }} onClick={this.show}>危险货物信息</Button>
+        <Button
+          type="primary"
+          size="small"
+          ghost
+          onClick={this.show}
+        ><Icon type="ellipsis" /></Button>
       </Popover>
     );
   }

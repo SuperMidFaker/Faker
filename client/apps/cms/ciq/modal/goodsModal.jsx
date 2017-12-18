@@ -375,7 +375,6 @@ export default class GoodsModal extends Component {
                   })(<Input addonAfter="天" />)}
                 </FormItem>
                 </Col>}
-<<<<<<< HEAD
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="产品资质" >
                   <Input addonAfter={
@@ -390,26 +389,12 @@ export default class GoodsModal extends Component {
               </Col>
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="危险货物信息" >
-                  <Input addonAfter={
-                    <Button
-                      type="primary"
-                      size="small"
-                      ghost
-                      onClick={this.showGoodsLicenceModal}
-                    ><Icon type="ellipsis" /></Button>}
-                  />
+                  <Input addonAfter={<GoodsLicenceInfo goodsId={data.id} />} />
                 </FormItem>
               </Col>
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="备用信息" >
-                  <Input addonAfter={
-                    <Button
-                      type="primary"
-                      size="small"
-                      ghost
-                      onClick={this.showGoodsLicenceModal}
-                    ><Icon type="ellipsis" /></Button>}
-                  />
+                  <Input addonAfter={<StandbyInfo goodsId={data.id} />} />
                 </FormItem>
               </Col>
               <Col span="6">
@@ -419,22 +404,11 @@ export default class GoodsModal extends Component {
                       type="primary"
                       size="small"
                       ghost
-                      onClick={this.showGoodsLicenceModal}
+                      onClick={this.showGoodsContModal}
                     ><Icon type="ellipsis" /></Button>}
                   />
                 </FormItem>
               </Col>
-=======
-              {<Col span="10">
-                <Button
-                  style={{ marginLeft: 16 }}
-                  onClick={this.showGoodsLicenceModal}
-                >产品资质</Button>
-                <GoodsLicenceInfo goodsId={data.id} />
-                <StandbyInfo goodsId={data.id} />
-                <Button style={{ marginLeft: 8 }} onClick={this.showGoodsContModal}>籍货关联信息</Button>
-              </Col>}
->>>>>>> standbyInfo
             </Row>
           </Card>
         </Form>
