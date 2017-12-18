@@ -8,6 +8,7 @@ import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFi
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import GoodsLicenceModal from './goodsLecenceModal';
 import StandbyInfo from '../popover/standbyInfo';
+import GoodsLicenceInfo from '../popover/goodsLicenceInfo';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -408,7 +409,7 @@ export default class GoodsModal extends Component {
                   style={{ marginLeft: 16 }}
                   onClick={this.showGoodsLicenceModal}
                 >产品资质</Button>
-                <Button style={{ marginLeft: 8 }}>危险货物信息</Button>
+                <GoodsLicenceInfo goodsId={data.id} />
                 <StandbyInfo goodsId={data.id} />
                 <Button style={{ marginLeft: 8 }}>籍货关联信息</Button>
               </Col>}

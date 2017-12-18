@@ -709,3 +709,9 @@ export const CIQ_LICENCE_TYPE = [
   { value: '800', text: '准入肉类名单' },
   { value: '900', text: '进口肉类名录' },
 ];
+
+export const CIQ_DANG_PACK_TYPE = [
+  { value: '1', text: '一类' },
+  { value: '2', text: '二类' },
+  { value: '3', text: '三类' },
+];
