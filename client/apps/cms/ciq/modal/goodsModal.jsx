@@ -4,9 +4,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Col, DatePicker, Form, Row, Icon, Input, Select, Modal, Button } from 'antd';
 import { CIQ_PACK_TYPE } from 'common/constants';
-import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam, toggleGoodsLicenceModal } from 'common/reducers/cmsCiqDeclare';
+import { hideGoodsModal,
+  updateCiqGood,
+  loadCiqDeclGoods,
+  searchCountries,
+  setFixedCountry,
+  extendCountryParam,
+  toggleGoodsLicenceModal,
+  toggleGoodsContModal,
+} from 'common/reducers/cmsCiqDeclare';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import GoodsLicenceModal from './goodsLecenceModal';
+import StandbyInfo from '../popover/standbyInfo';
+import GoodsLicenceInfo from '../popover/goodsLicenceInfo';
+import GoodsContModal from './goodsContModal';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -28,6 +39,7 @@ const { Option } = Select;
     setFixedCountry,
     extendCountryParam,
     toggleGoodsLicenceModal,
+    toggleGoodsContModal,
   }
 )
 @Form.create()
@@ -75,6 +87,17 @@ export default class GoodsModal extends Component {
   showGoodsLicenceModal = () => {
     const { data } = this.props;
     this.props.toggleGoodsLicenceModal(true, {
+      hscode: data.hscode,
+      gName: data.g_name,
+      ciqCode: data.ciq_code,
+      gNo: data.g_no,
+      id: data.id,
+      preEntrySeqNo: data.pre_entry_seq_no,
+    });
+  }
+  showGoodsContModal = () => {
+    const { data } = this.props;
+    this.props.toggleGoodsContModal(true, {
       hscode: data.hscode,
       gName: data.g_name,
       ciqCode: data.ciq_code,
@@ -366,26 +389,12 @@ export default class GoodsModal extends Component {
               </Col>
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="危险货物信息" >
-                  <Input addonAfter={
-                    <Button
-                      type="primary"
-                      size="small"
-                      ghost
-                      onClick={this.showGoodsLicenceModal}
-                    ><Icon type="ellipsis" /></Button>}
-                  />
+                  <Input addonAfter={<GoodsLicenceInfo goodsId={data.id} />} />
                 </FormItem>
               </Col>
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="备用信息" >
-                  <Input addonAfter={
-                    <Button
-                      type="primary"
-                      size="small"
-                      ghost
-                      onClick={this.showGoodsLicenceModal}
-                    ><Icon type="ellipsis" /></Button>}
-                  />
+                  <Input addonAfter={<StandbyInfo goodsId={data.id} />} />
                 </FormItem>
               </Col>
               <Col span="6">
@@ -395,7 +404,7 @@ export default class GoodsModal extends Component {
                       type="primary"
                       size="small"
                       ghost
-                      onClick={this.showGoodsLicenceModal}
+                      onClick={this.showGoodsContModal}
                     ><Icon type="ellipsis" /></Button>}
                   />
                 </FormItem>
@@ -404,6 +413,7 @@ export default class GoodsModal extends Component {
           </Card>
         </Form>
         <GoodsLicenceModal />
+        <GoodsContModal />
       </Modal>
     );
   }

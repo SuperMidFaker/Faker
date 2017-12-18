@@ -709,3 +709,84 @@ export const CIQ_LICENCE_TYPE = [
   { value: '800', text: '准入肉类名单' },
   { value: '900', text: '进口肉类名录' },
 ];
+
+export const CIQ_DANG_PACK_TYPE = [
+  { value: '1', text: '一类' },
+  { value: '2', text: '二类' },
+  { value: '3', text: '三类' },
+];
+
+export const CIQ_TRANS_MEANS_TYPE = [
+  { value: '20', text: '集装箱' },
+  { value: '29', text: '船舱' },
+  { value: '31', text: '车皮' },
+];
+
+export const CIQ_CNTNR_MODE_CODE = [
+  { value: '111', text: '海运40尺普通' },
+  { value: '112', text: '海运45尺普通' },
+  { value: '121', text: '海运40尺冷藏' },
+  { value: '122', text: '海运45尺冷藏' },
+  { value: '131', text: '海运40尺罐式' },
+  { value: '132', text: '海运45尺罐式' },
+  { value: '201', text: '空运IKE(1.5X1.5X1.6)' },
+  { value: '202', text: '空运DPE(1.15X1.5X1.6)' },
+  { value: '203', text: '空运BJF(3.3X1.5X1.6)' },
+  { value: '211', text: '海运20尺普通' },
+  { value: '212', text: '海运25尺普通' },
+  { value: '221', text: '海运20尺冷藏' },
+  { value: '222', text: '海运25尺冷藏' },
+  { value: '231', text: '海运20尺罐式' },
+  { value: '232', text: '海运25尺罐式' },
+  { value: '311', text: '列车40尺普通' },
+  { value: '312', text: '列车40尺冷藏' },
+  { value: '321', text: '列车20尺普通' },
+  { value: '322', text: '列车20尺冷藏' },
+  { value: '331', text: '列车10尺' },
+];
+
+export const CIQ_QTY_MEAS_UNIT = [
+  { value: '000', text: '<无单位>' },
+  { value: '001', text: '台' },
+  { value: '002', text: '座' },
+  { value: '003', text: '辆' },
+  { value: '004', text: '艘' },
+  { value: '005', text: '架' },
+  { value: '006', text: '套' },
+  { value: '007', text: '个' },
+  { value: '008', text: '只' },
+  { value: '009', text: '头' },
+  { value: '010', text: '张' },
+  { value: '011', text: '件' },
+  { value: '012', text: '支' },
+  { value: '013', text: '枝' },
+  { value: '014', text: '根' },
+  { value: '015', text: '条' },
+  { value: '016', text: '把' },
+  { value: '017', text: '块' },
+  { value: '018', text: '卷' },
+  { value: '019', text: '副ß' },
+];
+
+export const CIQ_WT_UNIT_CODE = [
+  { value: '035', text: '千克' },
+  { value: '036', text: '克' },
+  { value: '047', text: '公担' },
+  { value: '070', text: '吨' },
+  { value: '071', text: '长吨' },
+  { value: '072', text: '短吨' },
+  { value: '073', text: '司马担' },
+  { value: '074', text: '司马斤' },
+  { value: '075', text: '斤' },
+  { value: '076', text: '磅' },
+  { value: '077', text: '担' },
+  { value: '078', text: '英担' },
+  { value: '079', text: '短担' },
+  { value: '080', text: '两' },
+  { value: '081', text: '市担' },
+  { value: '083', text: '盎司' },
+  { value: '084', text: '克拉' },
+  { value: '150', text: '净吨' },
+  { value: '545', text: '百吨' },
+  { value: '546', text: '总吨' },
+];
