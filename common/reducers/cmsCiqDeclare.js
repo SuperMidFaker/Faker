@@ -29,6 +29,8 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'ADD_GOODS_LICENCE', 'ADD_GOODS_LICENCE_SUCCEED', 'ADD_GOODS_LICENCE_FAIL',
   'GOODS_LICENCES_LOAD', 'GOODS_LICENCES_LOAD_SUCCEED', 'GOODS_LICENCES_LOAD_FAIL',
   'DELETE_GOODS_LICENCES', 'DELETE_GOODS_LICENCES_SUCCEED', 'DELETE_GOODS_LICENCES_FAIL',
+  'UPDATE_STANDBY_INFO', 'UPDATE_STANDBY_INFO_SUCCEED', 'UPDATE_STANDBY_INFO_FAIL',
+  'LOAD_STANDBY_INFO', 'LOAD_STANDBY_INFO_SUCCEED', 'LOAD_STANDBY_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -633,6 +635,36 @@ export function loadGoodsLicences(goodsId) {
         actionTypes.GOODS_LICENCES_LOAD_FAIL,
       ],
       endpoint: 'v1/cms/ciq/goods/licences/load',
+      method: 'get',
+      params: { goodsId },
+    },
+  };
+}
+
+export function updateStandbyInfo(info, goodsId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_STANDBY_INFO,
+        actionTypes.UPDATE_STANDBY_INFO_SUCCEED,
+        actionTypes.UPDATE_STANDBY_INFO_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/standby/info/update',
+      method: 'post',
+      data: { info: JSON.stringify(info), goodsId },
+    },
+  };
+}
+
+export function loadStandbyInfo(goodsId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_STANDBY_INFO,
+        actionTypes.LOAD_STANDBY_INFO_SUCCEED,
+        actionTypes.LOAD_STANDBY_INFO_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/standby/info/load',
       method: 'get',
       params: { goodsId },
     },
