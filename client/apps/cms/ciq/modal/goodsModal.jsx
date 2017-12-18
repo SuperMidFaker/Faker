@@ -7,6 +7,7 @@ import { CIQ_PACK_TYPE } from 'common/constants';
 import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam, toggleGoodsLicenceModal } from 'common/reducers/cmsCiqDeclare';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import GoodsLicenceModal from './goodsLecenceModal';
+import StandbyInfo from '../popover/standbyInfo';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -352,6 +353,7 @@ export default class GoodsModal extends Component {
                   })(<Input addonAfter="天" />)}
                 </FormItem>
                 </Col>}
+<<<<<<< HEAD
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="产品资质" >
                   <Input addonAfter={
@@ -400,6 +402,17 @@ export default class GoodsModal extends Component {
                   />
                 </FormItem>
               </Col>
+=======
+              {<Col span="10">
+                <Button
+                  style={{ marginLeft: 16 }}
+                  onClick={this.showGoodsLicenceModal}
+                >产品资质</Button>
+                <Button style={{ marginLeft: 8 }}>危险货物信息</Button>
+                <StandbyInfo goodsId={data.id} />
+                <Button style={{ marginLeft: 8 }}>籍货关联信息</Button>
+              </Col>}
+>>>>>>> standbyInfo
             </Row>
           </Card>
         </Form>
