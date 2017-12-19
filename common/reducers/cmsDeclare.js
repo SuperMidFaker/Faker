@@ -103,13 +103,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMS_DECLS_FAIL:
       return { ...state, customslist: { ...state.customslist, loading: false } };
     case actionTypes.LOAD_CUSTOMSTP_SUCCEED:
-      return {
-        ...state,
-        listRequire: {
-          ...state.listRequire,
-          customs: action.result.data.customs,
-        },
-      };
+      return { ...state, listRequire: { ...state.listRequire, ...action.result.data } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
