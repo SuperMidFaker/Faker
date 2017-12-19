@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
+  'CHECK_DECL_MSG', 'CHECK_DECL_MSG_SUCCEED', 'CHECK_DECL_MSG_FAIL',
 ]);
 
 const initialState = {
@@ -102,7 +103,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMS_DECLS_FAIL:
       return { ...state, customslist: { ...state.customslist, loading: false } };
     case actionTypes.LOAD_CUSTOMSTP_SUCCEED:
-      return { ...state, listRequire: { ...state.listRequire, ...action.result.data } };
+      return {
+        ...state,
+        listRequire: {
+          ...state.listRequire,
+          customs: action.result.data.customs,
+        },
+      };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
@@ -460,5 +467,20 @@ export function showDeclMsgModal() {
 export function hideDeclMsgModal() {
   return {
     type: actionTypes.HIDE_DECL_MSG_MODAL,
+  };
+}
+
+export function checkDeclMsg(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHECK_DECL_MSG,
+        actionTypes.CHECK_DECL_MSG_SUCCEED,
+        actionTypes.CHECK_DECL_MSG_FAIL,
+      ],
+      endpoint: 'v1/cms/check/decl/msg',
+      method: 'get',
+      params: { preEntrySeqNo },
+    },
   };
 }
