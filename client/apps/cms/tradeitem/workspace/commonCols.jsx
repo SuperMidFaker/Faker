@@ -48,7 +48,7 @@ export default function makeColumns({
         return (<Popover content="已保留为分支" placement="right">
           <Icon type="fork" style={{ fontSize: 16, color: '#52c41a' }} />
         </Popover>);
-      } else if (status === -1) {
+      } else if (status === -1 || status === -2) {
         if (item.classified) {
           return <Icon type="link" style={{ fontSize: 16, color: '#52c41a' }} />;
         }

@@ -1,3 +1,4 @@
+/* eslint import/no-extraneous-dependencies: 0 */
 const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
@@ -29,7 +30,7 @@ const wpConfig = {
   output: {
     path: config.get('output_path'), // Path of output file
     publicPath: config.get('webpack_public_path'),
-    filename: '[name].js',  // Name of output file
+    filename: '[name].js', // Name of output file
   },
   plugins: [
     new HappyPack({
@@ -58,7 +59,7 @@ const wpConfig = {
         // all tests are prefixed with './' so this must be part of the regExp
         // the default regExp includes everything; /^$/ could be used to include nothing
         regExp: /^\.\/(en|zh-cn)/,
-          // point to the locale data folder relative to moment/src/lib/locale
+        // point to the locale data folder relative to moment/src/lib/locale
         request: '../../locale',
       });
     }),
@@ -76,7 +77,7 @@ const wpConfig = {
       test: /\.(js|jsx)$/, // All .js and .jsx files
       loader: 'happypack/loader', // babel loads jsx and es6-7
       include: [path.resolve(__dirname, '..', 'client'), path.resolve(__dirname, '..', 'common')],
-      exclude: [nodeModulesPath],  // exclude node_modules so that they are not all compiled
+      exclude: [nodeModulesPath], // exclude node_modules so that they are not all compiled
     },
     { test: /\.json$/, loader: 'json-loader' },
     { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },

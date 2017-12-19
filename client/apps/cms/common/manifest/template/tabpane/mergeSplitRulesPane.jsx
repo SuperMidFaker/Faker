@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Card, Col, Form, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
@@ -13,24 +10,12 @@ const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadHsCodeCategories(state.account.tenantId));
-}
-
-@connectFetch()(fetchData)
 @injectIntl
-@connect(state => ({
-  isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
-  hscodeCategories: state.cmsHsCode.hscodeCategories,
-}))
-
 export default class MergeSplitRulesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    isCustomRegisted: PropTypes.bool.isRequired,
-    hscodeCategories: PropTypes.array.isRequired,
-    form: PropTypes.object.isRequired,
-    formData: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    formData: PropTypes.shape({ merge_checked: PropTypes.bool }).isRequired,
   }
   state = {
     mergeSplit: this.props.formData.set_merge_split,

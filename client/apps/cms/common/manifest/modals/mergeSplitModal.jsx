@@ -18,17 +18,15 @@ const { Option } = Select;
 
 function MSCheckbox(props) {
   const {
-    state, fieldOpt, field, text, onChange,
+    state, fieldOpt, field, text, onChange, disabled,
   } = props;
   function handleChange(ev) {
     onChange(fieldOpt, field, ev.target.checked);
   }
   return (
-    <div>
-      <Checkbox onChange={handleChange} checked={state[fieldOpt][field]}>
-        {text}
-      </Checkbox>
-    </div>
+    <Checkbox onChange={handleChange} checked={state[fieldOpt][field]} disabled={disabled}>
+      {text}
+    </Checkbox>
   );
 }
 
@@ -36,7 +34,8 @@ MSCheckbox.propTypes = {
   fieldOpt: PropTypes.string.isRequired,
   field: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
-  state: PropTypes.object.isRequired,
+  disabled: PropTypes.bool,
+  state: PropTypes.shape({ mergeOpt: PropTypes.shape({ checked: PropTypes.bool }) }).isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
@@ -49,7 +48,7 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     visible: state.cmsManifest.visibleMSModal,
-    isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
+    manualDecl: !!state.cmsManifest.billHead.manual_no,
     billSeqNo: state.cmsManifest.billHead.bill_seq_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
     billRule: state.cmsManifest.billRule,
@@ -61,9 +60,9 @@ export default class MergeSplitModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    isCustomRegisted: PropTypes.bool.isRequired,
+    manualDecl: PropTypes.bool.isRequired,
     billSeqNo: PropTypes.string,
-    hscodeCategories: PropTypes.array.isRequired,
+    hscodeCategories: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf(['split', 'merge']) })).isRequired,
   }
   state = {
     mergeOpt: {
@@ -154,6 +153,8 @@ export default class MergeSplitModal extends React.Component {
         splitOpt: {
           byHsCode: rule.split_hscode,
           tradeCurr: rule.split_curr,
+          byCiqDecl: rule.split_ciqdecl,
+          byApplCert: rule.split_applcert,
           hsCategory: specialHsSortArr,
           perCount: rule.split_percount ? rule.split_percount.toString() : '20',
         },
@@ -238,6 +239,14 @@ export default class MergeSplitModal extends React.Component {
   handleCheckChange = (fieldOpt, field, value) => {
     const opt = { ...this.state[fieldOpt] };
     opt[field] = value;
+    if (field === 'byCiqDecl') {
+      if (value === true) {
+        opt.perCount = CMS_SPLIT_COUNT[0].value;
+      }
+      if (value === false) {
+        opt.byApplCert = false;
+      }
+    }
     this.setState({
       [fieldOpt]: opt,
     });
@@ -248,7 +257,7 @@ export default class MergeSplitModal extends React.Component {
     if (mergeOpt.checked) {
       if (!(mergeOpt.byHsCode || mergeOpt.byGName || mergeOpt.byCurr ||
         mergeOpt.byCountry || mergeOpt.byCopGNo || mergeOpt.byEmGNo)) {
-        return message.error('请选择归并项');
+        message.error('请选择归并项');
       }
     }
     if (mergeOpt.bySplHscode) {
@@ -300,7 +309,7 @@ export default class MergeSplitModal extends React.Component {
     } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     let { mergeConditions } = this;
-    if (this.props.isCustomRegisted) {
+    if (this.props.manualDecl) {
       mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
     }
     return (
@@ -431,6 +440,7 @@ export default class MergeSplitModal extends React.Component {
                         text={this.msg('byApplCertSplit')}
                         onChange={this.handleCheckChange}
                         state={this.state}
+                        disabled={!splitOpt.byCiqDecl}
                       />
                     </FormItem>
                   </Col>

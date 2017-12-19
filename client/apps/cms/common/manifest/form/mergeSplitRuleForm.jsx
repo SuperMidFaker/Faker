@@ -8,12 +8,13 @@ import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
-const Option = Select.Option;
-const Panel = Collapse.Panel;
+const { Option } = Select;
+const { Panel } = Collapse;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
@@ -22,17 +23,15 @@ function fetchData({ state, dispatch }) {
 @connectFetch()(fetchData)
 @injectIntl
 @connect(state => ({
-  isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
   hscodeCategories: state.cmsHsCode.hscodeCategories,
 }))
 
 export default class MergeSplitForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    isCustomRegisted: PropTypes.bool.isRequired,
-    hscodeCategories: PropTypes.array.isRequired,
-    form: PropTypes.object.isRequired,
-    formData: PropTypes.object.isRequired,
+    hscodeCategories: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf(['split', 'merge']) })).isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    formData: PropTypes.shape({ merge_checked: PropTypes.bool }).isRequired,
   }
   state = {
     mergeOpt: {
@@ -43,7 +42,8 @@ export default class MergeSplitForm extends React.Component {
     mergeCategories: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.hscodeCategories !== this.props.hscodeCategories && nextProps.hscodeCategories.length > 0) {
+    if (nextProps.hscodeCategories !== this.props.hscodeCategories
+      && nextProps.hscodeCategories.length > 0) {
       const splitCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'split');
       const mergeCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'merge');
       this.setState({ splitCategories, mergeCategories });
@@ -86,9 +86,17 @@ export default class MergeSplitForm extends React.Component {
     });
     return !this.state.mergeOpt.checked;
   }
+  handleSplitCiqdeclCheck = (ev) => {
+    if (ev.target.checked) {
+      this.props.form.setFieldsValue({ split_percount: CMS_SPLIT_COUNT[0].value });
+    } else {
+      this.props.form.setFieldsValue({ split_applcert: false });
+    }
+  }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, formData } = this.props;
     const { splitCategories, mergeCategories, mergeOpt } = this.state;
+    const ciqdeclSplit = getFieldValue('split_ciqdecl');
     return (
       <Row style={{ marginBottom: 24 }}>
         <Collapse bordered={false} defaultActiveKey={['merge', 'split', 'sort']}>
@@ -100,7 +108,9 @@ export default class MergeSplitForm extends React.Component {
                 </Radio>)}
               </Col>
               <Col offset="2" span="19">
-                {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr })(<CheckboxGroup options={this.mergeConditions} disabled={!mergeOpt.checked}
+                {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr })(<CheckboxGroup
+                  options={this.mergeConditions}
+                  disabled={!mergeOpt.checked}
                   onChange={this.handleMergeCheck}
                 />)}
               </Col>
@@ -130,7 +140,8 @@ export default class MergeSplitForm extends React.Component {
                     rules: [{ type: 'array' }],
                     initialValue: formData.splNoMergeArr,
                   })(<Select mode="multiple">
-                    { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
+                    { SPECIAL_COPNO_TERM.map(data => (
+                      <Option value={data.value} key={data.value}>{data.text}</Option>))}
                   </Select>)}
                 </div>
                   }
@@ -151,7 +162,8 @@ export default class MergeSplitForm extends React.Component {
             <FormItem>
               {getFieldDecorator('split_percount', { initialValue: formData.split_percount })(<Select >
                 {
-                      CMS_SPLIT_COUNT.map(sc => <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
+                  CMS_SPLIT_COUNT.map(sc =>
+                    <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
                     }
               </Select>)}
             </FormItem>
@@ -170,9 +182,27 @@ export default class MergeSplitForm extends React.Component {
                 </div>
               }
             </FormItem>
-            <FormItem>
-              {getFieldDecorator('split_curr', { initialValue: formData.split_curr })(<Checkbox defaultChecked={formData.split_curr}>{this.msg('currencySplit')}</Checkbox>)}
-            </FormItem>
+            <Col span={8}>
+              <FormItem>
+                {getFieldDecorator('split_ciqdecl', {
+                  initialValue: formData.split_ciqdecl,
+                  onChange: this.handleSplitCiqdeclCheck,
+                })(<Checkbox defaultChecked={formData.split_ciqdecl}>{this.msg('byCiqDeclSplit')}</Checkbox>)}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem>
+                {getFieldDecorator(
+                  'split_applcert',
+                  { initialValue: formData.split_applcert, valuePropName: 'checked' }
+                )(<Checkbox disabled={!ciqdeclSplit}>{this.msg('byApplCertSplit')}</Checkbox>)}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem>
+                {getFieldDecorator('split_curr', { initialValue: formData.split_curr })(<Checkbox defaultChecked={formData.split_curr}>{this.msg('currencySplit')}</Checkbox>)}
+              </FormItem>
+            </Col>
           </Panel>
           <Panel key="sort" header={this.msg('sortPrinciple')} >
             <Row>

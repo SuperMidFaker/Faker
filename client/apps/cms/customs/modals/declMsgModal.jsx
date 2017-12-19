@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 import superAgent from 'superagent';
 import { Modal } from 'antd';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 
+require('codemirror/lib/codemirror.css');
+require('codemirror/mode/xml/xml.js');
 
 @connect(
   state => ({
@@ -46,7 +49,16 @@ export default class DeclMsgModal extends Component {
     const { visible, fileType } = this.props;
     return (
       <Modal width={800} title={fileType === 'sent' ? '发送报文' : '回执报文'} visible={visible} onCancel={this.handleCancel}>
-        <pre>{this.state.text}</pre>
+        <CodeMirror
+          value={this.state.text}
+          options={{
+          mode: 'xml',
+        }}
+          scroll={{
+          y: 500,
+        }}
+          onChange={() => {}}
+        />
       </Modal>
     );
   }

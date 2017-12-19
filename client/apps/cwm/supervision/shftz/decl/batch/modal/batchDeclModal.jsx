@@ -6,15 +6,15 @@ import moment from 'moment';
 import { Button, Card, Table, Form, Modal, Radio, Row, Col, Select, Tag, Input, message, Checkbox } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../../message.i18n';
 import { loadBrokers } from 'common/reducers/cwmWarehouse';
 import { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
 import { getSuppliers } from 'common/reducers/cwmReceive';
+import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Search = Input.Search;
-const Option = Select.Option;
+const { Search } = Input;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -57,7 +57,14 @@ const RadioButton = Radio.Button;
     brokers: state.cwmWarehouse.brokers,
   }),
   {
-    loadBrokers, loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers,
+    loadBrokers,
+    loadManifestTemplates,
+    closeBatchDeclModal,
+    loadParams,
+    loadBatchOutRegs,
+    loadBatchRegDetails,
+    beginBatchDecl,
+    getSuppliers,
   }
 )
 @Form.create()
@@ -72,8 +79,6 @@ export default class BatchDeclModal extends Component {
     relNo: '',
     portionRegs: [],
     regDetails: [],
-    supplier: '',
-    currency: '',
     template: undefined,
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     ftzRelNo: '',
@@ -222,8 +227,10 @@ export default class BatchDeclModal extends Component {
     this.props.loadBatchRegDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relNo = row.ftz_rel_no;
-        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
-        const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
+        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo)
+          .concat(result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
+        const portionRegs = this.state.portionRegs.map(pr =>
+          (pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr));
         this.setState({ regDetails, portionRegs });
       }
     });
@@ -234,8 +241,10 @@ export default class BatchDeclModal extends Component {
     const relNos = portionSelRows.map(item => item.ftz_rel_no);
     this.props.loadBatchRegDetails(preEntrySeqNos).then((result) => {
       if (!result.error) {
-        const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
-        const portionRegs = this.state.portionRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
+        const regDetails = this.state.regDetails
+          .filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
+        const portionRegs = this.state.portionRegs.map(pr =>
+          (relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr));
         this.setState({
           regDetails, portionRegs, portionRowSelKeys: [], portionSelRows: [],
         });
@@ -243,8 +252,10 @@ export default class BatchDeclModal extends Component {
     });
   }
   handleDelDetail = (detail) => {
-    const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_detail_id !== detail.ftz_rel_detail_id);
-    const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
+    const regDetails = this.state.regDetails.filter(reg =>
+      reg.ftz_rel_detail_id !== detail.ftz_rel_detail_id);
+    const portionRegs = this.state.portionRegs.map(pr =>
+      (pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr));
     this.setState({ regDetails, portionRegs });
     message.info(`出库明细ID${detail.ftz_rel_detail_id}已删除`);
   }
@@ -254,7 +265,8 @@ export default class BatchDeclModal extends Component {
     const newRegDetails = [];
     for (let i = 0; i < regDetails.length; i++) {
       const detail = regDetails[i];
-      if (!selectedRows.find(seldetail => seldetail.ftz_rel_detail_id === detail.ftz_rel_detail_id)) {
+      if (!selectedRows.find(seldetail =>
+        seldetail.ftz_rel_detail_id === detail.ftz_rel_detail_id)) {
         newRegDetails.push(detail);
       } else {
         portionRegs.find(pr => pr.ftz_rel_no === detail.ftz_rel_no).added = false;
@@ -301,12 +313,30 @@ export default class BatchDeclModal extends Component {
     });
     const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
     if (owner) {
+      const ietype = this.props.form.getFieldValue('ietype');
+      this.handleBillTemplateLoad(ietype, owner);
+      this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
+    }
+  }
+  handleIeTypeChange = (ev) => {
+    if (this.state.ownerCusCode) {
+      const owner = this.props.owners.find(ow => ow.customs_code === this.state.ownerCusCode);
+      this.handleBillTemplateLoad(ev.target.value, owner);
+    }
+  }
+  handleBillTemplateLoad = (ietype, owner) => {
+    let ieval = -1;
+    if (ietype === 'import') {
+      ieval = 0;
+    } else if (ietype === 'export') {
+      ieval = 1;
+    }
+    if (ieval >= 0) {
       this.props.loadManifestTemplates({
         owner_partner_id: owner.id,
-        ietype: 0,
+        ietype: ieval,
       });
     }
-    this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
   }
   handleTemplateChange = (template) => {
     this.setState({ template });
@@ -347,7 +377,8 @@ export default class BatchDeclModal extends Component {
       rel_no: relNo,
       count: relCountObj[relNo],
     }));
-    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode).map(own => ({
+    const owner = this.props.owners.filter(own =>
+      own.customs_code === this.state.ownerCusCode).map(own => ({
       partner_id: own.id,
       tenant_id: own.partner_tenant_id,
       customs_code: own.customs_code,
@@ -364,7 +395,9 @@ export default class BatchDeclModal extends Component {
         return;
       }
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id } : { name: tenantName };
+      const broker = fbroker ?
+        { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id }
+        : { name: tenantName };
       this.props.beginBatchDecl({
         template,
         detailIds,
@@ -403,7 +436,8 @@ export default class BatchDeclModal extends Component {
   }
   render() {
     const {
-      form: { getFieldDecorator }, owners, brokers, customsCode, tenantName, submitting, billTemplates, exemptions, tradeCountries,
+      form: { getFieldDecorator }, owners, brokers, customsCode, tenantName,
+      submitting, billTemplates, exemptions, tradeCountries,
     } = this.props;
     const {
       relNo, ownerCusCode, template, regDetails, dutyMode, destCountry,
@@ -412,9 +446,8 @@ export default class BatchDeclModal extends Component {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
         return reg.test(item.ftz_rel_no);
-      } else {
-        return true;
       }
+      return true;
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -457,8 +490,14 @@ export default class BatchDeclModal extends Component {
       </FormItem>
     );
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        footer={null} visible={this.props.visible}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+        visible={this.props.visible}
       >
         <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact">
@@ -466,18 +505,27 @@ export default class BatchDeclModal extends Component {
               <Col span={4}>
                 <FormItem label="货主">
                   {getFieldDecorator('owner', {
- initialValue: ownerCusCode,
+                    initialValue: ownerCusCode,
                     rules: [{ required: true, message: '收货单位必选' }],
-                  })(<Select placeholder="请选择收货单位" onChange={this.handleOwnerChange} showSearch optionFilterProp="children" >
-                    {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                  })(<Select placeholder="请选择收货单位" onChange={this.handleOwnerChange} showSearch >
+                    {owners.map(owner => (
+                      <Option value={owner.customs_code} key={owner.customs_code}>
+                        {owner.name}</Option>))}
                   </Select>)}
                 </FormItem>
               </Col>
               <Col span={4}>
                 <FormItem label="报关代理">
-                  {getFieldDecorator('broker', { rules: [{ required: true, message: '报关代理必选' }] })(<Select placeholder="请选择报关代理" >
-                    {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(<Option value={customsCode} key={customsCode}>{tenantName}</Option>)}
-                  </Select>)}
+                  {getFieldDecorator(
+                    'broker',
+                    { rules: [{ required: true, message: '报关代理必选' }] }
+                    )(<Select placeholder="请选择报关代理" >
+                      {brokers.map(broker => (
+                        <Option value={broker.customs_code} key={broker.customs_code}>
+                          {broker.name}</Option>))
+                          .concat(<Option value={customsCode} key={customsCode}>
+                            {tenantName}</Option>)}
+                    </Select>)}
                 </FormItem>
               </Col>
               <Col span={4}>
@@ -493,7 +541,7 @@ export default class BatchDeclModal extends Component {
               </Col>
               <Col span={3}>
                 <FormItem label="进出口标识">
-                  {getFieldDecorator('ietype', { initialValue: 'import' })(<RadioGroup>
+                  {getFieldDecorator('ietype', { initialValue: 'import', onChange: this.handleIeTypeChange })(<RadioGroup>
                     <RadioButton value="import">进口</RadioButton>
                     <RadioButton value="export">出口</RadioButton>
                   </RadioGroup>)}
@@ -521,7 +569,8 @@ export default class BatchDeclModal extends Component {
               <Col span={3}>
                 <FormItem label="制单规则">
                   <Select allowClear onChange={this.handleTemplateChange} value={template}>
-                    {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                    {billTemplates && billTemplates.map(data =>
+                      (<Option key={data.name} value={data.id}>{data.name}</Option>))}
                   </Select>
                 </FormItem>
               </Col>
@@ -538,11 +587,19 @@ export default class BatchDeclModal extends Component {
                     <Button icon="search" onClick={this.handlePortionOutsQuery} />
                     <div className={`bulk-actions ${this.state.portionRowSelKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.portionRowSelKeys.length}项</h3>
-                      {this.state.portionRowSelKeys.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
+                      {this.state.portionRowSelKeys.length !== 0 &&
+                      <Button onClick={this.batchAdd}>批量添加</Button>}
                     </div>
                   </div>
-                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" rowSelection={portionRowSelection}
-                    scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  <Table
+                    columns={this.portionRegColumns}
+                    dataSource={this.state.portionRegs}
+                    rowKey="id"
+                    rowSelection={portionRowSelection}
+                    scroll={{
+ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0),
+                      y: this.state.scrollY,
+}}
                   />
                 </div>
               </Card>
@@ -551,16 +608,27 @@ export default class BatchDeclModal extends Component {
               <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} hoverable={false}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
+                    <Search
+                      placeholder="出库单号"
+                      style={{ width: 200 }}
+                      onChange={this.handleFtzRelNoChange}
                       value={this.state.ftzRelNo}
                     />
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                      {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
+                      {this.state.selectedRowKeys.length !== 0 &&
+                      <Button onClick={this.batchDelete}>批量删除</Button>}
                     </div>
                   </div>
-                  <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
-                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  <Table
+                    columns={this.regDetailColumns}
+                    dataSource={dataSource}
+                    rowKey="id"
+                    rowSelection={rowSelection}
+                    scroll={{
+ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0),
+y: this.state.scrollY,
+}}
                   />
                 </div>
               </Card>
