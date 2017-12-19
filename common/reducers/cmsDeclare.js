@@ -47,6 +47,7 @@ const initialState = {
   },
   listRequire: {
     customs: [],
+    tradeModes: [],
   },
   decl_heads: [],
   sendDeclModal: {

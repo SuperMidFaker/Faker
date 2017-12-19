@@ -178,7 +178,7 @@ export default class HSCodeList extends Component {
             <PageHeader.Actions>
               <Dropdown overlay={menu} type="primary">
                 <Button >
-                  {this.msg('importItems')} <Icon type="down" />
+                  {this.msg('importHscodeItems')} <Icon type="down" />
                 </Button>
               </Dropdown>
             </PageHeader.Actions>

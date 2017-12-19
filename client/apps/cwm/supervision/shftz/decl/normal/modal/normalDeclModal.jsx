@@ -7,13 +7,13 @@ import { Button, Card, Row, Col, Table, Form, Modal, Radio, Select, Tag, Input, 
 import { getSuppliers } from 'common/reducers/cwmReceive';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../../message.i18n';
 import { loadBrokers } from 'common/reducers/cwmWarehouse';
 import { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
+import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
-const Search = Input.Search;
-const Option = Select.Option;
+const { Search } = Input;
+const { Option } = Select;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -26,7 +26,6 @@ const RadioButton = Radio.Button;
     visible: state.cwmShFtz.normalDeclModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
-    ownerCusCode: state.cwmShFtz.normalDeclModal.ownerCusCode,
     normalRegs: state.cwmShFtz.batchout_regs,
     billTemplates: state.cwmShFtz.billTemplates,
     loginId: state.account.loginId,
@@ -58,7 +57,14 @@ const RadioButton = Radio.Button;
     brokers: state.cwmWarehouse.brokers,
   }),
   {
-    loadBrokers, loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers,
+    loadBrokers,
+    loadManifestTemplates,
+    closeNormalDeclModal,
+    loadParams,
+    loadBatchOutRegs,
+    loadBatchRegDetails,
+    beginNormalDecl,
+    getSuppliers,
   }
 )
 @Form.create()
@@ -110,6 +116,7 @@ export default class NormalDeclModal extends Component {
       if (o) {
         return <Button>{o}</Button>;
       }
+      return o;
     },
   }, {
     title: '商品编码',
@@ -185,8 +192,10 @@ export default class NormalDeclModal extends Component {
     this.props.loadBatchRegDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relNo = row.ftz_rel_no;
-        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
-        const normalRegs = this.state.normalRegs.map(pr => (pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr));
+        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo)
+          .concat(result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
+        const normalRegs = this.state.normalRegs.map(pr =>
+          (pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr));
         this.setState({ regDetails, normalRegs });
       }
     });
@@ -197,8 +206,10 @@ export default class NormalDeclModal extends Component {
     const relNos = normalSelRows.map(item => item.ftz_rel_no);
     this.props.loadBatchRegDetails(preEntrySeqNos).then((result) => {
       if (!result.error) {
-        const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
-        const normalRegs = this.state.normalRegs.map(pr => (relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr));
+        const regDetails = this.state.regDetails.filter(reg =>
+          !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
+        const normalRegs = this.state.normalRegs.map(pr =>
+          (relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr));
         this.setState({
           regDetails, normalRegs, normalRowSelKeys: [], normalSelRows: [],
         });
@@ -207,7 +218,8 @@ export default class NormalDeclModal extends Component {
   }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
-    const normalRegs = this.state.normalRegs.map(pr => (pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr));
+    const normalRegs = this.state.normalRegs.map(pr =>
+      (pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr));
     this.setState({ regDetails, normalRegs });
   }
   batchDelete = () => {
@@ -331,7 +343,8 @@ export default class NormalDeclModal extends Component {
       rel_no: relNo,
       count: relCountObj[relNo],
     }));
-    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode).map(own => ({
+    const owner = this.props.owners.filter(own =>
+      own.customs_code === this.state.ownerCusCode).map(own => ({
       partner_id: own.id,
       tenant_id: own.partner_tenant_id,
       customs_code: own.customs_code,
@@ -343,7 +356,9 @@ export default class NormalDeclModal extends Component {
     const { destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id } : { name: tenantName };
+      const broker = fbroker ?
+        { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id }
+        : { name: tenantName };
       this.props.beginNormalDecl({
         ietype: values.ietype,
         template: this.state.template,
@@ -383,11 +398,29 @@ export default class NormalDeclModal extends Component {
       template: undefined,
     });
     if (owner) {
+      const ietype = this.props.form.getFieldValue('ietype');
+      this.handleBillTemplateLoad(ietype, owner);
+      this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
+    }
+  }
+  handleIeTypeChange = (ev) => {
+    if (this.state.ownerCusCode) {
+      const owner = this.props.owners.find(ow => ow.customs_code === this.state.ownerCusCode);
+      this.handleBillTemplateLoad(ev.target.value, owner);
+    }
+  }
+  handleBillTemplateLoad = (ietype, owner) => {
+    let ieval = -1;
+    if (ietype === 'import') {
+      ieval = 0;
+    } else if (ietype === 'export') {
+      ieval = 1;
+    }
+    if (ieval >= 0) {
       this.props.loadManifestTemplates({
         owner_partner_id: owner.id,
-        ietype: 0,
+        ietype: ieval,
       });
-      this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
     }
   }
   handleDutyModeChange = (dutyMode) => {
@@ -398,7 +431,8 @@ export default class NormalDeclModal extends Component {
   }
   render() {
     const {
-      form: { getFieldDecorator }, owners, ownerCusCode, brokers, customsCode, tenantName, submitting, billTemplates, exemptions, tradeCountries,
+      form: { getFieldDecorator }, owners, ownerCusCode, brokers, customsCode,
+      tenantName, submitting, billTemplates, exemptions, tradeCountries,
     } = this.props;
     const {
       relNo, template, regDetails, dutyMode, destCountry,
@@ -420,7 +454,12 @@ export default class NormalDeclModal extends Component {
       width: 150,
       filterDropdown: (
         <div className="filter-dropdown">
-          <Select allowClear onChange={this.handleSupplierChange} style={{ width: 150 }} value={this.state.supplier}>
+          <Select
+            allowClear
+            onChange={this.handleSupplierChange}
+            style={{ width: 150 }}
+            value={this.state.supplier}
+          >
             {this.props.suppliers.map(data => (
               <Option key={data.code} value={data.code}>
                 {data.name}
@@ -433,8 +472,8 @@ export default class NormalDeclModal extends Component {
       dataIndex: 'currency',
       width: 80,
       render: (o) => {
-        const currency = this.props.currencies.find(currency => currency.value === o);
-        return currency.text;
+        const currency = this.props.currencies.find(curr => curr.value === o);
+        return currency && currency.text;
       },
       filterDropdown: (
         <div className="filter-dropdown">
@@ -497,7 +536,8 @@ export default class NormalDeclModal extends Component {
       </div>
     </div>);
     return (
-      <Modal maskClosable={false}
+      <Modal
+        maskClosable={false}
         title={title}
         width="100%"
         wrapClassName="fullscreen-modal"
@@ -511,10 +551,12 @@ export default class NormalDeclModal extends Component {
               <Col span={4}>
                 <FormItem label="货主">
                   {getFieldDecorator('owner', {
- initialValue: ownerCusCode,
+                    initialValue: ownerCusCode,
                     rules: [{ required: true, message: '提货单位必选' }],
-                  })(<Select placeholder="请选择提货单位" showSearch optionFilterProp="children" onChange={this.handleOwnerChange}>
-                    {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                  })(<Select placeholder="请选择提货单位" showSearch onChange={this.handleOwnerChange}>
+                    {owners.map(owner => (
+                      <Option value={owner.customs_code} key={owner.customs_code}>
+                        {owner.name}</Option>))}
                   </Select>)}
                 </FormItem>
               </Col>
@@ -523,13 +565,18 @@ export default class NormalDeclModal extends Component {
                   {getFieldDecorator('broker', {
                     rules: [{ required: true, message: '报关代理必选' }],
                   })(<Select placeholder="请选择报关代理">
-                    {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(<Option value={customsCode} key={customsCode}>{tenantName}</Option>)}
+                    {brokers.map(broker => (
+                      <Option value={broker.customs_code} key={broker.customs_code}>
+                        {broker.name}
+                      </Option>)).concat(<Option value={customsCode} key={customsCode}>
+                        {tenantName}
+                      </Option>)}
                   </Select>)}
                 </FormItem>
               </Col>
               <Col span={3}>
                 <FormItem label="类型">
-                  {getFieldDecorator('ietype', { initialValue: 'import' })(<RadioGroup>
+                  {getFieldDecorator('ietype', { initialValue: 'import', onChange: this.handleIeTypeChange })(<RadioGroup>
                     <RadioButton value="import">进口</RadioButton>
                     <RadioButton value="export">出口</RadioButton>
                   </RadioGroup>)}
@@ -566,7 +613,8 @@ export default class NormalDeclModal extends Component {
               <Col span={3}>
                 <FormItem label="制单规则">
                   <Select allowClear onChange={this.handleTemplateChange} value={template}>
-                    {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                    {billTemplates && billTemplates.map(data =>
+                      (<Option key={data.name} value={data.id}>{data.name}</Option>))}
                   </Select>
                 </FormItem>
               </Col>
@@ -583,14 +631,20 @@ export default class NormalDeclModal extends Component {
                     <Button icon="search" onClick={this.handleNormalOutsQuery} />
                     <div className={`bulk-actions ${this.state.normalRowSelKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.normalRowSelKeys.length}项</h3>
-                      {this.state.normalRowSelKeys.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
+                      {this.state.normalRowSelKeys.length !== 0 &&
+                      <Button onClick={this.batchAdd}>批量添加</Button>}
                     </div>
                   </div>
-                  <Table columns={normalRegColumns}
+                  <Table
+                    columns={normalRegColumns}
                     dataSource={this.state.normalRegs}
                     rowKey="id"
                     rowSelection={normalRowSelection}
-                    scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                    scroll={{
+                      x: normalRegColumns.reduce((acc, cur) =>
+                      acc + (cur.width ? cur.width : 240), 0),
+                      y: this.state.scrollY,
+}}
                   />
                 </div>
               </Card>
@@ -602,14 +656,20 @@ export default class NormalDeclModal extends Component {
                     <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} />
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                      {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
+                      {this.state.selectedRowKeys.length !== 0 &&
+                      <Button onClick={this.batchDelete}>批量删除</Button>}
                     </div>
                   </div>
-                  <Table columns={this.regDetailColumns}
+                  <Table
+                    columns={this.regDetailColumns}
                     dataSource={dataSource}
                     rowKey="id"
                     rowSelection={rowSelection}
-                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 500), 0), y: this.state.scrollY }}
+                    scroll={{
+                      x: this.regDetailColumns.reduce((acc, cur) =>
+                      acc + (cur.width ? cur.width : 500), 0),
+                      y: this.state.scrollY,
+}}
                   />
                 </div>
               </Card>

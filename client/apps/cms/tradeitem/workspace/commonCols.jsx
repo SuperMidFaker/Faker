@@ -30,7 +30,7 @@ export default function makeColumns({
         return '忽略';
       } else if (status === 4) {
         return <Icon type="fork" style={{ fontSize: 16, color: '#52c41a' }} />;
-      } else if (status === -1) {
+      } else if (status === -1 || status === -2) {
         if (item.classified) {
           return <Icon type="link" style={{ fontSize: 16, color: '#52c41a' }} />;
         }

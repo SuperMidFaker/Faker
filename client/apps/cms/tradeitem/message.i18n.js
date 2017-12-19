@@ -50,6 +50,14 @@ const messages = defineMessages({
     id: 'cms.tradeitem.hscode.query',
     defaultMessage: 'HS编码查询',
   },
+  importHscodeItems: {
+    id: 'cms.tradeitem.hscodeitems.import',
+    defaultMessage: '对比导入',
+  },
+  importHsunit: {
+    id: 'cms.tradeitem.hscode.gunit.import',
+    defaultMessage: '导入申报单位',
+  },
   hscodeSpecial: {
     id: 'cms.tradeitem.hscode.special',
     defaultMessage: '特殊HS编码',
@@ -213,6 +221,10 @@ const messages = defineMessages({
   currency: {
     id: 'cms.tradeitem.col.currency',
     defaultMessage: '币制',
+  },
+  applCertCode: {
+    id: 'cms.tradeitem.appl.certcode',
+    defaultMessage: '商检出具证书',
   },
   preClassifyNo: {
     id: 'cms.tradeitem.col.pre.classify.no',

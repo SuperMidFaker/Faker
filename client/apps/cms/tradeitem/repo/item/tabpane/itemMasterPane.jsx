@@ -8,13 +8,13 @@ import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE } from 'common/constants';
+import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 function getFieldInits(formData) {
   const init = {};
@@ -34,7 +34,7 @@ function getFieldInits(formData) {
       let num = 0;
       for (let i = 0; i < formData.srcNos.length; i++) {
         if (formData.srcNos[i] === init.src_product_no) {
-          num++;
+          num += 1;
           init.src_product_no = `${formData.cop_product_no}_${formData.srcNos.length + num}`;
           i = 0;
         }
@@ -71,14 +71,14 @@ export default class ItemMasterPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    form: PropTypes.object.isRequired,
-    fieldInits: PropTypes.object.isRequired,
-    currencies: PropTypes.array,
-    units: PropTypes.array,
-    tradeCountries: PropTypes.array,
-    hscodes: PropTypes.object,
+    form: PropTypes.shape({ validateFields: PropTypes.func.isRequired }).isRequired,
+    fieldInits: PropTypes.shape({ cop_product_no: PropTypes.string }).isRequired,
+    currencies: PropTypes.arrayOf(PropTypes.shape({ curr_code: PropTypes.string })),
+    units: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string })),
+    tradeCountries: PropTypes.arrayOf(PropTypes.shape({ cntry_co: PropTypes.string })),
+    hscodes: PropTypes.arrayOf(PropTypes.shape({ hscode: PropTypes.string.isRequired })),
     action: PropTypes.string.isRequired,
-    itemData: PropTypes.object.isRequired,
+    itemData: PropTypes.shape({ cop_product_no: PropTypes.string }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -131,10 +131,9 @@ export default class ItemMasterPane extends React.Component {
     this.props.form.setFieldsValue({ src_product_no: e.target.value });
   }
   handleSrcNoChange = (e) => {
-    const srcNos = this.props.itemData.srcNos;
-    srcNos.forEach((no) => {
+    this.props.itemData.srcNos.forEach((no) => {
       if (no === e.target.value) {
-        return message.error('该源标记号已存在', 5);
+        message.error('该源标记号已存在', 5);
       }
     });
   }
@@ -259,7 +258,9 @@ export default class ItemMasterPane extends React.Component {
                   rules: [{ required: true, message: '商品编码必填' }],
                   initialValue: fieldInits.hscode,
                 })(<Select allowClear mode="combobox" optionFilterProp="search" onChange={this.handleHscodeChange} >
-                  { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
+                  { hscodes.data.map(data => (<Option
+                    value={data.hscode}
+                    key={data.hscode}
                     search={data.hscode}
                   >{data.hscode}
                   </Option>))}
@@ -408,8 +409,16 @@ export default class ItemMasterPane extends React.Component {
                 {getFieldDecorator('specialMark', {
                   initialValue: fieldInits.specialMark,
                 })(<Select mode="multiple" style={{ width: '100%' }} >
-                  { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
+                  { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>
+                    {data.text}</Option>))}
                 </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={24}>
+              <FormItem {...formItemSpan4Layout} label={this.msg('applCertCode')}>
+                {getFieldDecorator('appl_cert_code', {
+                  initialValue: fieldInits.appl_cert_code,
+                })(<Input placeholder="多个证书以;分隔" />)}
               </FormItem>
             </Col>
             <Col span={6}>
