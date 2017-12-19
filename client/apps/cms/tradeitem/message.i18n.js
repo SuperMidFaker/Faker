@@ -194,6 +194,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.origin.country',
     defaultMessage: '产销国',
   },
+  specialNo: {
+    id: 'cms.tradeitem.col.special.no',
+    defaultMessage: '特殊货号合并',
+  },
   unitNetWt: {
     id: 'cms.tradeitem.col.unit.netwt',
     defaultMessage: '单个净重',
