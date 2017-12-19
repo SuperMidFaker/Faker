@@ -21,15 +21,33 @@ export default function makeColumns({
         } else {
           content = '填写规格型号与规范申报要素项数不一致';
         }
-        return <Popover content={content} placement="right"><Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} /></Popover>;
+        return (<Popover content={content} placement="right">
+          <Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} />
+        </Popover>);
       } else if (status === 1) {
-        return <Icon type="exclamation-circle-o" style={{ fontSize: 16, color: '#f5222d' }} />;
+        const content = [];
+        if (item.hscode !== item.item_hscode) {
+          content.push('HS编码不一致 ');
+        }
+        if (item.g_name !== item.item_g_name) {
+          content.push('中文品名不一致 ');
+        }
+        if (item.g_model !== item.item_g_model) {
+          content.push('规范申报要素不一致 ');
+        }
+        return (<Popover content={content} placement="right">
+          <Icon type="exclamation-circle-o" style={{ fontSize: 16, color: '#f5222d' }} />
+        </Popover>);
       } else if (status === 2) {
-        return <Icon type="pushpin" style={{ fontSize: 16, color: '#52c41a' }} />;
+        return (<Popover content="已设为标准值" placement="right">
+          <Icon type="pushpin" style={{ fontSize: 16, color: '#52c41a' }} />
+        </Popover>);
       } else if (status === 3) {
         return '忽略';
       } else if (status === 4) {
-        return <Icon type="fork" style={{ fontSize: 16, color: '#52c41a' }} />;
+        return (<Popover content="已保留为分支" placement="right">
+          <Icon type="fork" style={{ fontSize: 16, color: '#52c41a' }} />
+        </Popover>);
       } else if (status === -1) {
         if (item.classified) {
           return <Icon type="link" style={{ fontSize: 16, color: '#52c41a' }} />;

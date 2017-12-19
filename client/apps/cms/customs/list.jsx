@@ -612,12 +612,11 @@ export default class CustomsList extends Component {
     }].concat(this.props.clients);
     const toolbarActions = (<span>
       <Search
-        style={{ width: 300 }}
+        style={{ width: 250 }}
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
         onChange={this.handleSearchChange}
         value={filterName}
-        enterButton
       />
       <Select
         showSearch

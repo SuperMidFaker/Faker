@@ -521,7 +521,6 @@ export default class DelegationList extends Component {
         onSearch={this.handleSearch}
         onChange={this.handleSearchChange}
         value={filterName}
-        enterButton
       />
       <Select
         showSearch
