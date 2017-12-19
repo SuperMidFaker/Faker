@@ -3,12 +3,19 @@ import PropTypes from 'prop-types';
 import { Table, Tooltip, Button, Popover, message } from 'antd';
 import classNames from 'classnames';
 import update from 'immutability-helper';
-import SelectItem from './selectItem';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import SelectItem from './selectItem';
 import './index.less';
 
 function noop() {
+}
+function isLocalDataSource(dataSource) {
+  return Array.isArray(dataSource);
+}
+function resolveCurrent(total, current, pageSize) {
+  // 删除完一页时返回上一页
+  return total > 0 && (current - 1) * pageSize === total ? current - 1 : current;
 }
 
 class DataSource {
@@ -34,6 +41,7 @@ class DataTable extends React.Component {
     baseCls: 'welo-data-table',
   }
   static propTypes = {
+    baseCls: PropTypes.string,
     scrollOffset: PropTypes.number,
     dataSource: PropTypes.oneOfType([
       PropTypes.array,
@@ -59,7 +67,7 @@ class DataTable extends React.Component {
   }
   componentWillMount() {
     const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
-    const location = this.context.router.location;
+    const { location } = this.context.router;
     let columnRule;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ scrollY: window.innerHeight - offset });
@@ -145,12 +153,8 @@ class DataTable extends React.Component {
         }
       }
       return true;
-    } else {
-      return false;
     }
-  }
-  isLocalDataSource(dataSource) {
-    return Array.isArray(dataSource);
+    return false;
   }
   fetch = (params = {}) => {
     const { dataSource } = this.props;
@@ -159,14 +163,10 @@ class DataTable extends React.Component {
   }
   handleTableChange = (pagination, filters, sorter) => {
     const { dataSource } = this.props;
-    if (!this.isLocalDataSource(dataSource)) {
+    if (!isLocalDataSource(dataSource)) {
       const builtinParams = dataSource.getParams.call(this, pagination, filters, sorter);
       this.fetch(builtinParams);
     }
-  }
-  resolveCurrent(total, current, pageSize) {
-    // 删除完一页时返回上一页
-    return total > 0 && (current - 1) * pageSize === total ? current - 1 : current;
   }
   handleCheckBoxChange = (index) => {
     const columns = [...this.state.popoverColumns];
@@ -208,8 +208,10 @@ class DataTable extends React.Component {
       visible: false,
     });
     if (window.localStorage) {
-      const popoverStorage = popoverColumns.map(column => ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
-      const tableStorage = newColumns.map(column => ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
+      const popoverStorage = popoverColumns.map(column =>
+        ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
+      const tableStorage = newColumns.map(column =>
+        ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
       const obj = { popoverStorage, tableStorage };
       const storage = window.localStorage;
       storage.setItem(pathname, JSON.stringify(obj));
@@ -249,24 +251,35 @@ class DataTable extends React.Component {
   }
   render() {
     const { baseCls, noBorder } = this.props;
-    let dataSource = this.props.dataSource;
-    let pagination = this.props.pagination;
-    if (dataSource && !this.isLocalDataSource(dataSource)) {
+    let { dataSource } = this.props;
+    let { pagination } = this.props;
+    if (dataSource && !isLocalDataSource(dataSource)) {
       const data = dataSource.resolve(dataSource.remotes);
       pagination = pagination !== false ? {
         ...pagination,
-        ...dataSource.getPagination(dataSource.remotes, this.resolveCurrent),
+        ...dataSource.getPagination(dataSource.remotes, resolveCurrent),
       } : pagination;
       dataSource = data;
     }
     let scrollProp;
     if (this.state.scrollY) {
       scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } :
-        { x: this.state.tableColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY };
+        {
+          x: this.state.tableColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0),
+          y: this.state.scrollY,
+        };
     }
     const content = this.state.popoverColumns.map((column, index) => (
-      <SelectItem id={index} key={column.index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
-        onChange={this.handleCheckBoxChange} onFixed={this.fixedColumns} fixed={column.fixed}
+      <SelectItem
+        id={index}
+        key={column.index}
+        index={column.index}
+        checked={column.checked}
+        title={column.title}
+        moveSelect={this.moveSelect}
+        onChange={this.handleCheckBoxChange}
+        onFixed={this.fixedColumns}
+        fixed={column.fixed}
       />));
     content.push(<div className="col-selection-actions" key="col-sel-buttons">
       <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>确定</Button>
@@ -281,11 +294,16 @@ class DataTable extends React.Component {
           {this.props.toolbarActions}
           <div className={`${baseCls}-toolbar-right`}>
             {this.props.total}
-            <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>}
-              visible={this.state.visible} onVisibleChange={this.handleVisibleChange}
+            <Popover
+              placement="leftTop"
+              trigger="click"
+              title="选择、排序显示字段"
+              content={<div className="col-selection">{content}</div>}
+              visible={this.state.visible}
+              onVisibleChange={this.handleVisibleChange}
             >
-              <Tooltip title="显示字段设置">
-                <Button shape="circle" icon="layout" />
+              <Tooltip title="表头设置">
+                <Button shape="circle" icon="table" />
               </Tooltip>
             </Popover>
           </div>
@@ -302,8 +320,13 @@ class DataTable extends React.Component {
           </div>}
         </div>
         <div className={`${baseCls}-body ${baseCls}-body-fixed`}>
-          <Table {...this.props} dataSource={dataSource} pagination={pagination}
-            onChange={this.handleTableChange} scroll={scrollProp} columns={this.state.tableColumns}
+          <Table
+            {...this.props}
+            dataSource={dataSource}
+            pagination={pagination}
+            onChange={this.handleTableChange}
+            scroll={scrollProp}
+            columns={this.state.tableColumns}
           />
         </div>
       </div>

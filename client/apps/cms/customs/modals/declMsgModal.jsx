@@ -48,14 +48,14 @@ export default class DeclMsgModal extends Component {
   render() {
     const { visible, fileType } = this.props;
     return (
-      <Modal width={800} title={fileType === 'sent' ? '发送报文' : '回执报文'} visible={visible} onCancel={this.handleCancel}>
+      <Modal width={800} style={{ top: 24 }} title={fileType === 'sent' ? '发送报文' : '回执报文'} visible={visible} onCancel={this.handleCancel}>
         <CodeMirror
           value={this.state.text}
           options={{
           mode: 'xml',
         }}
           scroll={{
-          y: 500,
+          y: 800,
         }}
           onChange={() => {}}
         />
