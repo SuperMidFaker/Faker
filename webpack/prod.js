@@ -1,3 +1,4 @@
+/* eslint-disable */
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
@@ -25,7 +26,7 @@ wpConfig.plugins.push(
   new webpack.optimize.OccurenceOrderPlugin(),
   new webpack.DefinePlugin({
     'process.env': {
-        // Useful to reduce the size of client-side libraries, e.g. react
+      // Useful to reduce the size of client-side libraries, e.g. react
       NODE_ENV: JSON.stringify('production'),
     },
   }),
@@ -42,11 +43,15 @@ wpConfig.module.loaders.push({
   loader: ExtractTextPlugin.extract('style', 'css?&sourceMap!postcss!less'),
 });
 
+wpConfig.module.loaders.push({
+  test: /\.css$/,
+  loader: ExtractTextPlugin.extract('style', 'css'),
+});
+
 wpConfig.plugins.push(isomorphicPlugin);
 
 wpConfig.module.loaders.push(
   // any image below or equal to 10K will be converted to inline base64 instead
-  { test: isomorphicPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' }
-);
+  { test: isomorphicPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' });
 
 module.exports = wpConfig;

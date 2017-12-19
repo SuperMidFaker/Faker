@@ -8,6 +8,10 @@ import DockPanel from 'client/components/DockPanel';
 import TrimSpan from 'client/components/trimSpan';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsDeclare';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
+
+require('codemirror/lib/codemirror.css');
+require('codemirror/mode/xml/xml.js');
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -234,7 +238,16 @@ export default class DeclMsgPanel extends React.Component {
       <DockPanel title="报文收发记录" size="large" visible={visible} onClose={this.hideDock}>
         {visible && this.renderTabs()}
         <Modal width={800} maskClosable={false} visible={modalVisible} title="declMsg" onCancel={this.hideDeclMsgModal} onOk={this.hideDeclMsgModal}>
-          <pre>{this.state.text}</pre>
+          <CodeMirror
+            value={this.state.text}
+            options={{
+          mode: 'xml',
+        }}
+            scroll={{
+          y: 700,
+        }}
+            onChange={() => {}}
+          />
         </Modal>
       </DockPanel>
     );

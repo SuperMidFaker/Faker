@@ -1,3 +1,4 @@
+/* eslint-disable */
 const webpack = require('webpack');
 const WebpackIsomorphicPlugin = require('webpack-isomorphic-tools/plugin');
 const wpConfig = require('./wpbase');
@@ -40,11 +41,15 @@ wpConfig.module.loaders.push({
   loader: 'style!css?&sourceMap!postcss!less',
 });
 
+wpConfig.module.loaders.push({
+  test: /\.css$/,
+  loader: 'style!css',
+});
+
 wpConfig.plugins.push(isomorphicPlugin.development());
 
 wpConfig.module.loaders.push(
   // any image below or equal to 10K will be converted to inline base64 instead
-  { test: isomorphicPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' }
-);
+  { test: isomorphicPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' });
 
 module.exports = wpConfig;
