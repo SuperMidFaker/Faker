@@ -3,25 +3,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
+import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import { getElementByHscode } from 'common/reducers/cmsHsCode';
+import { showDeclElementsModal } from 'common/reducers/cmsManifest';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tooltip, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import { getElementByHscode } from 'common/reducers/cmsHsCode';
-import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
-import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -116,9 +117,8 @@ export default class RepoContent extends Component {
             <span style={{ color: 'orange' }}>{o}</span>
           </Tooltip>
         );
-      } else {
-        return o === record.src_product_no ? o : <span>{o}|{record.src_product_no}</span>;
       }
+      return o === record.src_product_no ? o : <span>{record.src_product_no}</span>;
     },
   /*
   }, {
@@ -130,7 +130,7 @@ export default class RepoContent extends Component {
     title: this.msg('itemType'),
     dataIndex: 'item_type',
     width: 60,
-    render: o => o === 'FP' ? '成品' : '料件',
+    render: o => (o === 'FP' ? '成品' : '料件'),
   }, {
     title: this.msg('enName'),
     dataIndex: 'en_name',
@@ -248,11 +248,15 @@ export default class RepoContent extends Component {
   }, {
     title: this.msg('customsControl'),
     dataIndex: 'customs_control',
-    width: 140,
+    width: 120,
   }, {
     title: this.msg('inspQuarantine'),
     dataIndex: 'inspection_quarantine',
-    width: 140,
+    width: 120,
+  }, {
+    title: this.msg('applCertCode'),
+    dataIndex: 'appl_cert_code',
+    width: 150,
   }, {
     title: this.msg('preClassifyNo'),
     dataIndex: 'pre_classify_no',
@@ -260,24 +264,22 @@ export default class RepoContent extends Component {
   }, {
     title: this.msg('preClassifyStartDate'),
     dataIndex: 'pre_classify_start_date ',
-    width: 180,
+    width: 120,
     render: (o, record) => {
       if (record.pre_classify_start_date) {
         return moment(record.pre_classify_start_date).format('YYYY-MM-DD');
-      } else {
-        return '--';
       }
+      return '--';
     },
   }, {
     title: this.msg('preClassifyEndDate'),
     dataIndex: 'pre_classify_end_date ',
-    width: 180,
+    width: 120,
     render: (o, record) => {
       if (record.pre_classify_end_date) {
         return moment(record.pre_classify_end_date).format('YYYY-MM-DD');
-      } else {
-        return '--';
       }
+      return '--';
     },
   }, {
     title: this.msg('remark'),
@@ -295,20 +297,19 @@ export default class RepoContent extends Component {
             return (
               <RowAction onClick={this.handleItemFork} icon="fork" label={this.msg('fork')} row={record} />
             );
-          } else {
-            return (
-              <span>
-                <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
-                <RowAction onClick={this.handleItemFork} icon="fork" tooltip={this.msg('fork')} row={record} />
-              </span>
-            );
           }
-        } else {
           return (
-            <RowAction onClick={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
+            <span>
+              <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
+              <RowAction onClick={this.handleItemFork} icon="fork" tooltip={this.msg('fork')} row={record} />
+            </span>
           );
         }
+        return (
+          <RowAction onClick={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
+        );
       }
+      return <span />;
     },
   }]
   dataSource = new DataTable.DataSource({
@@ -369,13 +370,21 @@ export default class RepoContent extends Component {
   handleShowDeclElementModal = (record) => {
     this.props.getElementByHscode(record.hscode).then((result) => {
       if (!result.error) {
-        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, true, record.g_name);
+        this.props.showDeclElementsModal(
+          result.data.declared_elements,
+          record.id, record.g_model,
+          true,
+          record.g_name
+        );
       }
     });
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
-    this.props.deleteItems({ repoId: this.props.params.repoId, ids: selectedIds }).then((result) => {
+    this.props.deleteItems({
+      repoId: this.props.params.repoId,
+      ids: selectedIds,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -476,20 +485,29 @@ export default class RepoContent extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             { repo.mode === 'master' &&
-            <Popover placement="left" title="选择从库与同步方式" content={<Form>
-              <FormItem label="从库">
-                <Select allowClear showSearch onChange={this.handleReplicaSlave} getPopupContainer={triggerNode => triggerNode.parentNode}>
-                  {linkedSlaves.map(linkSl => <Option key={linkSl.creator_name} value={String(linkSl.id)}>{linkSl.creator_name}</Option>)}
-                </Select>
-              </FormItem>
-              <FormItem label="同步源">
-                <RadioGroup onChange={this.handleReplicaSource} value={listFilter.status}>
-                  <RadioButton value="master">主库</RadioButton>
-                  <RadioButton value="slave">从库</RadioButton>
-                </RadioGroup>
-              </FormItem>
-              <Button type="primary" onClick={this.handleMasterSlaveReplica}>确定</Button>
-            </Form>} trigger="click"
+            <Popover
+              placement="left"
+              title="选择从库与同步方式"
+              content={<Form>
+                <FormItem label="从库">
+                  <Select
+                    allowClear
+                    showSearch
+                    onChange={this.handleReplicaSlave}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >{linkedSlaves.map(slv =>
+                    <Option key={slv.creator_name} value={String(slv.id)}>{slv.creator_name}</Option>)}
+                  </Select>
+                </FormItem>
+                <FormItem label="同步源">
+                  <RadioGroup onChange={this.handleReplicaSource} value={listFilter.status}>
+                    <RadioButton value="master">主库</RadioButton>
+                    <RadioButton value="slave">从库</RadioButton>
+                  </RadioGroup>
+                </FormItem>
+                <Button type="primary" onClick={this.handleMasterSlaveReplica}>确定</Button>
+              </Form>}
+              trigger="click"
             >
               <Button type="primary" loading={submitting}>同步数据</Button>
             </Popover>
@@ -497,9 +515,17 @@ export default class RepoContent extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
-            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            loading={this.props.tradeItemsLoading} rowKey="id" columns={this.columns} dataSource={this.dataSource} bordered
+          <DataTable
+            toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            loading={this.props.tradeItemsLoading}
+            rowKey="id"
+            columns={this.columns}
+            dataSource={this.dataSource}
+            bordered
           />
           <DeclElementsModal onOk={null} />
         </Content>

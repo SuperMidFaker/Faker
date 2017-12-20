@@ -429,7 +429,7 @@ export default class ManifestEditor extends React.Component {
       filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
     const tabs = [];
-    tabs.push(<TabPane tab="清单表头" key="header">
+    tabs.push(<TabPane tab="申报清单表头" key="header">
       <Spin spinning={this.props.templateValLoading}>
         <ManifestHeadPane
           ietype={ietype}
@@ -440,7 +440,7 @@ export default class ManifestEditor extends React.Component {
         />
       </Spin>
     </TabPane>);
-    tabs.push(<TabPane tab="申报商品明细" key="body">
+    tabs.push(<TabPane tab="申报清单明细" key="body">
       <ManifestBodyPane
         ietype={ietype}
         readonly={!editable}

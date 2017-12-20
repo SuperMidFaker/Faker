@@ -4,9 +4,10 @@ import superAgent from 'superagent';
 import { Modal } from 'antd';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
+import './style.less';
 
 require('codemirror/lib/codemirror.css');
-require('codemirror/mode/xml/xml.js');
+require('codemirror/mode/xml/xml');
 
 @connect(
   state => ({
@@ -48,16 +49,23 @@ export default class DeclMsgModal extends Component {
   render() {
     const { visible, fileType } = this.props;
     return (
-      <Modal width={800} style={{ top: 24 }} title={fileType === 'sent' ? '发送报文' : '回执报文'} visible={visible} onCancel={this.handleCancel}>
+      <Modal
+        width={960}
+        style={{ top: 24 }}
+        title={fileType === 'sent' ? '申报报文' : '回执报文'}
+        visible={visible}
+        okText="下载"
+        onOk={this.handleDownload}
+        onCancel={this.handleCancel}
+      >
         <CodeMirror
+          autoScroll
           value={this.state.text}
           options={{
           mode: 'xml',
         }}
-          scroll={{
-          y: 800,
-        }}
           onChange={() => {}}
+          className="code-viewer"
         />
       </Modal>
     );

@@ -72,7 +72,7 @@ const messages = defineMessages({
   },
   tradeItemMaster: {
     id: 'cms.tradeitem.master',
-    defaultMessage: '物料主数据',
+    defaultMessage: '主数据',
   },
   tradeItemBranch: {
     id: 'cms.tradeitem.branch',
