@@ -600,9 +600,8 @@ export function StandardDocDef(head, bodies, declWayCode, orderNo, params, skele
             return 0;
           } else if (i === node.table.body.length) {
             return 0.8;
-          } else {
-            return 0.2;
           }
+          return 0.2;
         },
       },
     });

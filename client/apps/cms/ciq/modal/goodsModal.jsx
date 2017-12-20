@@ -28,6 +28,7 @@ const { Option } = Select;
     visible: state.cmsCiqDeclare.goodsModal.visible,
     data: state.cmsCiqDeclare.goodsModal.data,
     countries: state.cmsCiqDeclare.ciqParams.countries,
+    currencies: state.cmsCiqDeclare.ciqParams.currencies,
     units: state.cmsCiqDeclare.ciqParams.units,
     fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries,
   }),
@@ -108,7 +109,7 @@ export default class GoodsModal extends Component {
   }
   render() {
     const {
-      visible, ioType, data, units, countries, form, form: { getFieldDecorator },
+      visible, ioType, data, units, countries, currencies, form, form: { getFieldDecorator },
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -221,10 +222,10 @@ export default class GoodsModal extends Component {
                   <InputGroup compact>
                     {getFieldDecorator('g_qty', {
                       initialValue: data.g_qty,
-                    })(<Input style={{ width: '40%' }} />)}
+                    })(<Input style={{ width: '50%' }} />)}
                     {getFieldDecorator('g_unit', {
                       initialValue: data.g_unit,
-                    })(<Select showSearch optionFilterProp="children">
+                    })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
                       {units.map(unit =>
                         (<Option key={unit.unit_code} value={unit.unit_code}>
                           {unit.unit_name}
@@ -238,10 +239,10 @@ export default class GoodsModal extends Component {
                   <InputGroup compact>
                     {getFieldDecorator('weight', {
                       initialValue: data.weight,
-                    })(<Input style={{ width: '40%' }} />)}
+                    })(<Input style={{ width: '50%' }} />)}
                     {getFieldDecorator('wt_meas_unit', {
                       initialValue: data.wt_meas_unit,
-                    })(<Select showSearch optionFilterProp="children">
+                    })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
                       {units.map(unit =>
                         (<Option key={unit.unit_code} value={unit.unit_code}>
                           {unit.unit_name}
@@ -255,10 +256,10 @@ export default class GoodsModal extends Component {
                   <InputGroup compact>
                     {getFieldDecorator('std_qty', {
                       initialValue: data.std_qty,
-                    })(<Input style={{ width: '40%' }} />)}
+                    })(<Input style={{ width: '50%' }} />)}
                     {getFieldDecorator('std_unit', {
                       initialValue: data.std_unit,
-                    })(<Select showSearch optionFilterProp="children">
+                    })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
                       {units.map(unit =>
                         (<Option key={unit.unit_code} value={unit.unit_code}>
                           {unit.unit_name}
@@ -291,9 +292,19 @@ export default class GoodsModal extends Component {
               </Col>
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="货物总值" required >
-                  {getFieldDecorator('trade_total', {
-                    initialValue: data.trade_total,
-                  })(<Input />)}
+                  <InputGroup compact>
+                    {getFieldDecorator('trade_total', {
+                      initialValue: data.trade_total,
+                    })(<Input style={{ width: '50%' }} />)}
+                    {getFieldDecorator('trade_curr', {
+                      initialValue: data.trade_curr,
+                    })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
+                      {currencies.map(currency =>
+                        (<Option key={currency.curr_code} value={currency.curr_code}>
+                          {currency.curr_name}
+                        </Option>))}
+                    </Select>)}
+                  </InputGroup>
                 </FormItem>
               </Col>
               {ioType === 'in' &&

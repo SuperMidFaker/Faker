@@ -4,13 +4,19 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import connectNav from 'client/common/decorators/connect-nav';
+import { CMS_DECL_STATUS } from 'common/constants';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { format } from 'client/common/i18n/helpers';
+import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../common/dock/delegationDockPanel';
+import DeclTreePopover from '../common/popover/declTreePopover';
 import CusDeclHeadPane from './tabpane/cusDeclHeadPane';
 import CusDeclBodyPane from './tabpane/cusDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';
@@ -19,19 +25,13 @@ import AttachedCertsPane from './tabpane/attachedCertsPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import { CMS_DECL_STATUS } from 'common/constants';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
-import { StandardDocDef } from './print/standardDocDef';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
-import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
-import DeclTreePopover from '../common/popover/declTreePopover';
+import { DocDef } from './print/docDef';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 const navObj = {
   depth: 3,
@@ -41,7 +41,11 @@ const navObj = {
 
 function fetchData({ dispatch, params, state }) {
   const promises = [];
-  promises.push(dispatch(loadEntry(params.billseqno, params.preEntrySeqNo, state.account.tenantId)));
+  promises.push(dispatch(loadEntry(
+    params.billseqno,
+    params.preEntrySeqNo,
+    state.account.tenantId
+  )));
   promises.push(dispatch(loadCmsParams({
     ieType: 'import',
     tenantId: state.account.tenantId,
@@ -59,7 +63,15 @@ function fetchData({ dispatch, params, state }) {
     declSpinning: state.cmsManifest.customsDeclLoading,
   }),
   {
-    saveEntryHead, loadEntry, loadCmsParams, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer,
+    saveEntryHead,
+    loadEntry,
+    loadCmsParams,
+    deleteDecl,
+    setDeclReviewed,
+    openDeclReleasedModal,
+    showSendDeclModal,
+    setNavTitle,
+    showPreviewer,
   }
 )
 @connectFetch()(fetchData)
@@ -78,7 +90,6 @@ export default class CustomsDeclEditor extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    visible: false,
     collapsed: true,
     fullscreen: true,
   }
@@ -101,7 +112,11 @@ export default class CustomsDeclEditor extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.preEntrySeqNo !== this.props.params.preEntrySeqNo) {
-      this.props.loadEntry(nextProps.params.billseqno, nextProps.params.preEntrySeqNo, nextProps.tenantId);
+      this.props.loadEntry(
+        nextProps.params.billseqno,
+        nextProps.params.preEntrySeqNo,
+        nextProps.tenantId,
+      );
       this.props.setNavTitle(navObj);
     }
   }
@@ -114,16 +129,13 @@ export default class CustomsDeclEditor extends React.Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleDock = () => {
-    this.setState({ visible: true });
-  }
   handleManifestVisit = () => {
     const { params, billMeta } = this.props;
     const pathname = `/clearance/${params.ietype}/manifest/view/${billMeta.bill_seq_no}`;
     this.context.router.push({ pathname });
   }
   handleDelete = () => {
-    const head = this.props.head;
+    const { head } = this.props;
     this.props.deleteDecl(head.id, head.bill_seq_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -133,8 +145,11 @@ export default class CustomsDeclEditor extends React.Component {
     });
   }
   handleReview = () => {
-    const head = this.props.head;
-    this.props.setDeclReviewed([this.props.head.id], CMS_DECL_STATUS.reviewed.value).then((result) => {
+    const { head } = this.props;
+    this.props.setDeclReviewed(
+      [this.props.head.id],
+      CMS_DECL_STATUS.reviewed.value,
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -143,7 +158,7 @@ export default class CustomsDeclEditor extends React.Component {
     });
   }
   handleRecall = () => {
-    const head = this.props.head;
+    const { head } = this.props;
     this.props.setDeclReviewed([head.id], CMS_DECL_STATUS.proposed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -153,11 +168,15 @@ export default class CustomsDeclEditor extends React.Component {
     });
   }
   handleShowSendDeclModal = () => {
-    const head = this.props.head;
-    const ietype = this.props.params.ietype;
+    const { head } = this.props;
+    const { ietype } = this.props.params;
     this.props.showSendDeclModal({
       visible: true,
-      defaultDecl: { channel: head.dec_channel, dectype: head.pre_entry_dec_type, appuuid: head.ep_app_uuid },
+      defaultDecl: {
+        channel: head.dec_channel,
+        dectype: head.pre_entry_dec_type,
+        appuuid: head.ep_app_uuid,
+      },
       ietype,
       preEntrySeqNo: head.pre_entry_seq_no,
       delgNo: head.delg_no,
@@ -165,11 +184,15 @@ export default class CustomsDeclEditor extends React.Component {
     });
   }
   handleMarkReleasedModal = () => {
-    const head = this.props.head;
+    const { head } = this.props;
     this.props.openDeclReleasedModal(head.entry_id, head.pre_entry_seq_no, head.delg_no);
   }
   reloadEntry = () => {
-    this.props.loadEntry(this.props.head.bill_seq_no, this.props.head.pre_entry_seq_no, this.props.tenantId);
+    this.props.loadEntry(
+      this.props.head.bill_seq_no,
+      this.props.head.pre_entry_seq_no,
+      this.props.tenantId,
+    );
   }
   handleMoreMenuClick = (ev) => {
     if (ev.key === 'release') {
@@ -192,7 +215,7 @@ export default class CustomsDeclEditor extends React.Component {
     const {
       head, bodies, billMeta, formRequire,
     } = this.props;
-    let docDefinition;
+    let docDef;
     window.pdfMake.fonts = {
       yahei: {
         normal: 'msyh.ttf',
@@ -200,11 +223,11 @@ export default class CustomsDeclEditor extends React.Component {
       },
     };
     if (ev.key === 'standard') {
-      docDefinition = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
-      window.pdfMake.createPdf(docDefinition).open();
+      docDef = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+      window.pdfMake.createPdf(docDef).open();
     } else if (ev.key === 'skeleton') {
-      docDefinition = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire, true);
-      window.pdfMake.createPdf(docDefinition).print();
+      docDef = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire, true);
+      window.pdfMake.createPdf(docDef).print();
     }
   }
   handlePreview = (delgNo) => {
@@ -220,7 +243,8 @@ export default class CustomsDeclEditor extends React.Component {
     } else {
       filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
-    const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
+    const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey =>
+      CMS_DECL_STATUS[stkey].value === head.status)[0];
     const printMenu = (
       <Menu onClick={this.handlePrintMenuClick}>
         <Menu.Item key="standard">标准格式</Menu.Item>
@@ -235,7 +259,8 @@ export default class CustomsDeclEditor extends React.Component {
         <Menu.Item key="recall"><Popconfirm title={this.msg('recallConfirm')} onConfirm={() => this.handleRecall()}><Icon type="close-circle-o" /> 取消复核</Popconfirm></Menu.Item>}
         { head.status === CMS_DECL_STATUS.sent.value &&
         <Menu.Item key="resend"><Icon type="mail" /> 重新发送</Menu.Item>}
-        { (head.status === CMS_DECL_STATUS.reviewed.value || head.status === CMS_DECL_STATUS.sent.value) &&
+        { (head.status === CMS_DECL_STATUS.reviewed.value ||
+        head.status === CMS_DECL_STATUS.sent.value) &&
         <Menu.Item key="release"><Icon type="flag" /> 放行确认</Menu.Item>}
         { head.status > CMS_DECL_STATUS.reviewed.value && <Menu.Item key="declMsg"><Icon type="eye-o" /> 查看申报报文</Menu.Item>}
         { head.status > CMS_DECL_STATUS.sent.value && <Menu.Item key="resultMsg"><Icon type="eye-o" /> 查看回执报文</Menu.Item>}
@@ -248,7 +273,12 @@ export default class CustomsDeclEditor extends React.Component {
       <CusDeclHeadPane ietype={params.ietype} form={form} formData={head} />
     </TabPane>);
     tabs.push(<TabPane tab="报关单表体" key="body">
-      <CusDeclBodyPane ietype={params.ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
+      <CusDeclBodyPane
+        ietype={params.ietype}
+        data={bodies}
+        headNo={head.id}
+        fullscreen={this.state.fullscreen}
+      />
     </TabPane>);
     tabs.push(<TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
       <ContainersPane fullscreen={this.state.fullscreen} />
@@ -284,11 +314,16 @@ export default class CustomsDeclEditor extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
+            {declkey &&
+            <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {<DeclTreePopover entries={billMeta.entries} ciqs={billMeta.ciqs}
-              ietype={params.ietype} billSeqNo={billMeta.bill_seq_no} selectedKeys={[`0-0-0-${head.pre_entry_seq_no}`]}
+            {<DeclTreePopover
+              entries={billMeta.entries}
+              ciqs={billMeta.ciqs}
+              ietype={params.ietype}
+              billSeqNo={billMeta.bill_seq_no}
+              selectedKeys={[`0-0-0-${head.pre_entry_seq_no}`]}
             />}
             <Dropdown overlay={printMenu}>
               <Button >
@@ -310,7 +345,12 @@ export default class CustomsDeclEditor extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large readonly">
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
+          <MagicCard
+            bodyStyle={{ padding: 0 }}
+            hoverable={false}
+            loading={this.props.declSpinning}
+            onSizeChange={this.toggleFullscreen}
+          >
             <Tabs defaultActiveKey="header">
               {tabs}
             </Tabs>
