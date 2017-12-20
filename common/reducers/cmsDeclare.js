@@ -24,7 +24,6 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
-  'CHECK_DECL_MSG', 'CHECK_DECL_MSG_SUCCEED', 'CHECK_DECL_MSG_FAIL',
   'VALIDATE_ENTRY_ID', 'VALIDATE_ENTRY_ID_SUCCEED', 'VALIDATE_ENTRY_ID_FAIL',
 ]);
 
@@ -463,21 +462,6 @@ export function showDeclMsgModal() {
 export function hideDeclMsgModal() {
   return {
     type: actionTypes.HIDE_DECL_MSG_MODAL,
-  };
-}
-
-export function checkDeclMsg(preEntrySeqNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CHECK_DECL_MSG,
-        actionTypes.CHECK_DECL_MSG_SUCCEED,
-        actionTypes.CHECK_DECL_MSG_FAIL,
-      ],
-      endpoint: 'v1/cms/check/decl/msg',
-      method: 'get',
-      params: { preEntrySeqNo },
-    },
   };
 }
 
