@@ -5,12 +5,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Select, Input, message } from 'antd';
 import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
 import DataPane from 'client/components/DataPane';
+import RowAction from 'client/components/RowAction';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 
 function ColumnInput(props) {
   const {
@@ -48,10 +49,9 @@ function ColumnSelect(props) {
         }
       </Select>
     );
-  } else {
-    const existOpt = options.filter(opt => opt.key === record[field])[0];
-    return <span>{existOpt ? existOpt.text : ''}</span>;
   }
+  const existOpt = options.filter(opt => opt.key === record[field])[0];
+  return <span>{existOpt ? existOpt.text : ''}</span>;
 }
 
 ColumnSelect.proptypes = {
@@ -77,7 +77,6 @@ ColumnSelect.proptypes = {
 export default class CertMarkPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     certMarks: PropTypes.array,
     certParams: PropTypes.array,
   }
@@ -164,33 +163,53 @@ export default class CertMarkPane extends React.Component {
       title: this.msg('certSpec'),
       dataIndex: 'cert_code',
       render: (o, record) =>
-        (<ColumnSelect field="cert_code" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange} options={option}
+        (<ColumnSelect
+          field="cert_code"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+          options={option}
         />),
     }, {
       title: this.msg('certNum'),
       dataIndex: 'cert_num',
       render: (o, record) =>
-        (<ColumnInput field="cert_num" inEdit={!record.id} record={record}
+        (<ColumnInput
+          field="cert_num"
+          inEdit={!record.id}
+          record={record}
           onChange={this.handleEditChange}
         />),
     }, {
       width: 100,
       render: (o, record, index) => {
-        if (record.id) {
-          return <Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
-        } else {
+        const fileAction = record.cert_file ?
+          <RowAction shape="circle" onClick={this.handleView} icon="eye-o" tooltip="查看文件" row={record} /> :
+          <RowAction shape="circle" primary onClick={this.handleUpload} icon="upload" tooltip="上传文件" row={record} />;
+        if (head.status < CMS_DECL_STATUS.sent.value) {
+          if (record.id) {
+            return (<span>
+              {fileAction}
+              <RowAction shape="circle" danger confirm="确定删除?" onConfirm={() => this.handleDelete(record, index)} icon="delete" row={record} />
+            </span>);
+          }
           return (<span>
-            <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
-            <Button shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" style={{ marginLeft: 8 }} />
+            <RowAction shape="circle" primary onClick={this.handleSave} icon="save" tooltip="保存" row={record} />
+            <RowAction shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" tooltip="取消" row={record} />
           </span>);
         }
+        return fileAction;
       },
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={this.state.datas} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={this.state.datas}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           {head.status < CMS_DECL_STATUS.sent.value &&

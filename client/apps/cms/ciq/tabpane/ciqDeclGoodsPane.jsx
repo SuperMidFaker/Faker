@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
@@ -49,12 +48,7 @@ function calculateTotal(bodies) {
 export default class CiqDeclGoodsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     ioType: PropTypes.oneOf(['in', 'out']),
-    loginId: PropTypes.number.isRequired,
-    units: PropTypes.array,
-    countries: PropTypes.array,
-    currencies: PropTypes.array,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -116,7 +110,8 @@ export default class CiqDeclGoodsPane extends React.Component {
       dataIndex: 'g_unit',
       width: 100,
       align: 'center',
-      render: o => this.props.units.find(unit => unit.unit_code === o) && this.props.units.find(unit => unit.unit_code === o),
+      render: o => this.props.units.find(unit => unit.unit_code === o) &&
+      this.props.units.find(unit => unit.unit_code === o),
     }, {
       title: <div className="cell-align-right">{this.msg('重量')}</div>,
       dataIndex: 'weight',
@@ -127,7 +122,8 @@ export default class CiqDeclGoodsPane extends React.Component {
       dataIndex: 'wt_meas_unit',
       width: 100,
       align: 'center',
-      render: o => this.props.units.find(unit => unit.unit_code === o) && this.props.units.find(unit => unit.unit_code === o).unit_name,
+      render: o => this.props.units.find(unit => unit.unit_code === o) &&
+      this.props.units.find(unit => unit.unit_code === o).unit_name,
     }, {
       title: <div className="cell-align-right">{this.msg('HS标准量')}</div>,
       dataIndex: 'std_qty',
@@ -138,7 +134,8 @@ export default class CiqDeclGoodsPane extends React.Component {
       dataIndex: 'std_unit',
       width: 120,
       align: 'center',
-      render: o => this.props.units.find(unit => unit.unit_code === o) && this.props.units.find(unit => unit.unit_code === o).unit_name,
+      render: o => this.props.units.find(unit => unit.unit_code === o) &&
+      this.props.units.find(unit => unit.unit_code === o).unit_name,
     }, {
       title: <div className="cell-align-right">{this.msg('单价')}</div>,
       dataIndex: 'dec_price',
@@ -155,7 +152,8 @@ export default class CiqDeclGoodsPane extends React.Component {
       dataIndex: 'trade_curr',
       width: 100,
       align: 'center',
-      render: o => this.props.currencies.find(curr => curr.curr_code === o) && this.props.currencies.find(curr => curr.curr_code === o).curr_name,
+      render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
+      this.props.currencies.find(curr => curr.curr_code === o).curr_name,
     }, {
       title: this.msg('原产国'),
       dataIndex: 'ori_country',
@@ -165,7 +163,8 @@ export default class CiqDeclGoodsPane extends React.Component {
       title: this.msg('产地'),
       dataIndex: 'ori_place_code',
       width: 120,
-      render: o => this.props.countries.find(coun => coun.country_code === o) && this.props.countries.find(coun => coun.country_code === o).country_cn_name,
+      render: o => this.props.countries.find(coun => coun.country_code === o) &&
+      this.props.countries.find(coun => coun.country_code === o).country_cn_name,
     }, {
       title: this.msg('货物属性'),
       dataIndex: 'goods_attr',
@@ -212,14 +211,13 @@ export default class CiqDeclGoodsPane extends React.Component {
         })}
       >
         <DataPane.Toolbar>
-          <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
-          <DataPane.Actions>
+          <DataPane.Extra>
             <Summary>
               <Summary.Item label="总数量" addonAfter="KG">{totQty && totQty.toFixed(2)}</Summary.Item>
               <Summary.Item label="总重量" addonAfter="KG">{totWet && totWet.toFixed(3)}</Summary.Item>
               <Summary.Item label="总HS标准量" addonAfter="元">{totStdQty && totStdQty.toFixed(2)}</Summary.Item>
             </Summary>
-          </DataPane.Actions>
+          </DataPane.Extra>
         </DataPane.Toolbar>
         <GoodsModal ioType={ioType} />
       </DataPane>

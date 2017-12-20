@@ -6,11 +6,12 @@ import { Button, Select, Input, message } from 'antd';
 import { loadDocuMarks, saveDocuMark, delDocumark } from 'common/reducers/cmsManifest';
 import { CMS_DECL_DOCU, CMS_DECL_STATUS } from 'common/constants';
 import DataPane from 'client/components/DataPane';
+import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 
 function ColumnInput(props) {
   const {
@@ -44,14 +45,14 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map(opt => <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
+          options.map(opt =>
+            <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
         }
       </Select>
     );
-  } else {
-    const option = options.find(item => item.value === record[field]);
-    return <span>{option ? option.text : ''}</span>;
   }
+  const option = options.find(item => item.value === record[field]);
+  return <span>{option ? option.text : ''}</span>;
 }
 
 ColumnSelect.proptypes = {
@@ -76,7 +77,6 @@ ColumnSelect.proptypes = {
 export default class AttachedDocsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     head: PropTypes.object,
     docuMarks: PropTypes.array,
   }
@@ -152,36 +152,54 @@ export default class AttachedDocsPane extends React.Component {
       title: this.msg('docuSpec'),
       dataIndex: 'docu_spec',
       render: (o, record) =>
-        (<ColumnSelect field="docu_spec" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange} options={CMS_DECL_DOCU}
+        (<ColumnSelect
+          field="docu_spec"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+          options={CMS_DECL_DOCU}
         />),
     }, {
       title: this.msg('docuCode'),
       dataIndex: 'docu_code',
       render: (o, record) =>
-        (<ColumnInput field="docu_code" inEdit={!record.id} record={record}
+        (<ColumnInput
+          field="docu_code"
+          inEdit={!record.id}
+          record={record}
           onChange={this.handleEditChange}
         />),
-    }, {
-      title: this.msg('docuFile'),
-      dataIndex: 'docu_file',
-      render: (o, record, index) => o ? <a>{o}</a> : <Button type="primary" ghost onClick={() => this.handleUpload(record, index)} icon="upload" />,
+
     }, {
       width: 100,
       render: (o, record, index) => {
+        const fileAction = record.docu_file ?
+          <RowAction shape="circle" onClick={this.handleView} icon="eye-o" tooltip="查看文件" row={record} /> :
+          <RowAction shape="circle" primary onClick={this.handleUpload} icon="upload" tooltip="上传文件" row={record} />;
         if (head.status < CMS_DECL_STATUS.sent.value) {
-          return record.id ? <Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" /> :
-          <span>
-            <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
-            <Button shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" style={{ marginLeft: 8 }} />
-          </span>;
+          if (record.id) {
+            return (<span>
+              {fileAction}
+              <RowAction shape="circle" danger confirm="确定删除?" onConfirm={() => this.handleDelete(record, index)} icon="delete" row={record} />
+            </span>);
+          }
+          return (<span>
+            <RowAction shape="circle" primary onClick={this.handleSave} icon="save" tooltip="保存" row={record} />
+            <RowAction shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" tooltip="取消" row={record} />
+          </span>);
         }
+        return fileAction;
       },
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={this.state.datas} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={this.state.datas}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           {head.status < CMS_DECL_STATUS.sent.value &&

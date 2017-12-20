@@ -8,7 +8,7 @@ import DockPanel from 'client/components/DockPanel';
 import { format } from 'client/common/i18n/helpers';
 import { hideActivitiesDock } from 'common/reducers/activities';
 import { loadRecentActivities } from 'common/reducers/operationLog';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 
@@ -22,7 +22,7 @@ const formatMsg = format(messages);
   }),
   { loadRecentActivities, hideActivitiesDock }
 )
-export default class ActivitiesDockPanel extends React.Component {
+export default class CusDeclLogsPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -49,10 +49,10 @@ export default class ActivitiesDockPanel extends React.Component {
             <List.Item>
               <List.Item.Meta
                 avatar={<Avatar src={avatar} />}
-                title={<a>{item.op_content}</a>}
-                description={item.created_date && moment(item.created_date).fromNow()}
+                title={<a>{item.op_behavior}</a>}
+                description={item.created_date && moment(item.created_date)}
               />
-              <div>{item.op_ref_billno}</div>
+              <div>{item.op_content}</div>
             </List.Item>
           )}
         />

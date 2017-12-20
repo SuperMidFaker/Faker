@@ -22,7 +22,6 @@ import CusDeclBodyPane from './tabpane/cusDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';
 import AttachedDocsPane from './tabpane/attachedDocsPane';
 import AttachedCertsPane from './tabpane/attachedCertsPane';
-import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
@@ -265,6 +264,11 @@ export default class CustomsDeclEditor extends React.Component {
         { head.status > CMS_DECL_STATUS.reviewed.value && <Menu.Item key="declMsg"><Icon type="eye-o" /> 查看申报报文</Menu.Item>}
         { head.status > CMS_DECL_STATUS.sent.value && <Menu.Item key="resultMsg"><Icon type="eye-o" /> 查看回执报文</Menu.Item>}
         <Menu.Divider />
+        { head.ccd_file ?
+          <Menu.Item key="file"><Icon type="file" /> 查看报关单</Menu.Item> :
+          <Menu.Item key="upload"><Icon type="upload" /> 上传报关单</Menu.Item>
+        }
+        <Menu.Divider />
         <Menu.Item key="log"><Icon type="solution" /> 操作记录</Menu.Item>
       </Menu>
     );
@@ -293,9 +297,11 @@ export default class CustomsDeclEditor extends React.Component {
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     if (filterProducts.length > 0) {
+      /*
       tabs.push(<TabPane tab="法检商品" key="ciqDetails">
         <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
       </TabPane>);
+      */
     }
     return (
       <Layout>
@@ -323,7 +329,7 @@ export default class CustomsDeclEditor extends React.Component {
               ciqs={billMeta.ciqs}
               ietype={params.ietype}
               billSeqNo={billMeta.bill_seq_no}
-              selectedKeys={[`0-0-0-${head.pre_entry_seq_no}`]}
+              selectedKeys={[`cus-decl-${head.pre_entry_seq_no}`]}
             />}
             <Dropdown overlay={printMenu}>
               <Button >

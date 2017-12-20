@@ -193,15 +193,18 @@ export default class ManifestEditor extends React.Component {
     const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: templateId };
     const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
     if (tradeInfo) {
-      return message.error(`${tradeInfo}`);
+      message.error(`${tradeInfo}`);
+      return;
     }
     const ownInfo = this.validateCode(head.owner_code, head.owner_custco);
     if (ownInfo) {
-      return message.error(`${ownInfo}`);
+      message.error(`${ownInfo}`);
+      return;
     }
     const agentInfo = this.validateCode(head.agent_code, head.agent_custco);
     if (agentInfo) {
-      return message.error(`${agentInfo}`);
+      message.error(`${agentInfo}`);
+      return;
     }
     this.props.saveBillHead({
       head, ietype, loginId, tenantId,
@@ -509,7 +512,7 @@ export default class ManifestEditor extends React.Component {
                 ciqs={billMeta.ciqs}
                 billSeqNo={billMeta.bill_seq_no}
                 ietype={ietype}
-                selectedKeys={['0-0']}
+                selectedKeys={['manifest']}
               />}
               {billMeta.docts &&
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
