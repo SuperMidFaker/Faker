@@ -11,7 +11,7 @@ import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
-  openDeclReleasedModal, showBatchSendModal, showDeclMsgDock, checkDeclMsg } from 'common/reducers/cmsDeclare';
+  openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
@@ -65,7 +65,6 @@ const { Search } = Input;
     showBatchSendModal,
     showDeclMsgDock,
     toggleDeclMsgModal,
-    checkDeclMsg,
   }
 )
 @connectNav({
@@ -345,9 +344,9 @@ export default class CustomsList extends Component {
       }
       if (record.status >= CMS_DECL_STATUS.entered.value) {
         spanElems.push(<RowAction
-          overlay={<Menu onClick={item => this.showDeclMsgModal(item, record.pre_entry_seq_no)}>
-            {<Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
-            {<Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
+          overlay={<Menu onClick={this.showDeclMsgModal}>
+            {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
+            {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
           </Menu>}
           row={record}
         />);
@@ -358,19 +357,9 @@ export default class CustomsList extends Component {
       </span>);
     },
   }]
-  showDeclMsgModal = ({ key }, preEntrySeqNo) => {
+  showDeclMsgModal = ({ key }) => {
     const [fileName, fileType] = key.split('|');
-    if (fileType === 'return') {
-      this.props.checkDeclMsg(preEntrySeqNo).then((result) => {
-        if (result.data) {
-          this.props.toggleDeclMsgModal(true, result.data, fileType);
-        } else {
-          message.info('没有回执报文');
-        }
-      });
-    } else {
-      this.props.toggleDeclMsgModal(true, fileName, fileType);
-    }
+    this.props.toggleDeclMsgModal(true, fileName, fileType);
   }
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCustomsDecls(params),

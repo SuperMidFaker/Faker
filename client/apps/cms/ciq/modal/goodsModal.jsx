@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Col, DatePicker, Form, Row, Icon, Input, Select, Modal, Button } from 'antd';
-import { CIQ_PACK_TYPE } from 'common/constants';
+import { CIQ_PACK_TYPE, CIQ_GOODS_ATTR, CIQ_GOODS_USE_TO } from 'common/constants';
 import { hideGoodsModal,
   updateCiqGood,
   loadCiqDeclGoods,
@@ -68,6 +68,10 @@ export default class GoodsModal extends Component {
   handleOk = () => {
     const { form } = this.props;
     const values = form.getFieldsValue();
+    if (values.goods_attr.length !== 0) {
+      const goodsAttr = values.goods_attr.join(',');
+      values.goods_attr = goodsAttr;
+    }
     this.props.updateCiqGood(this.props.data.id, values).then((result) => {
       if (!result.error) {
         this.props.loadCiqDeclGoods(this.context.router.params.declNo);
@@ -167,8 +171,11 @@ export default class GoodsModal extends Component {
               <Col span="6">
                 <FormItem {...formItemLayout} colon={false} label="货物属性" required >
                   {getFieldDecorator('goods_attr', {
-                    initialValue: data.goods_attr,
-                  })(<Input />)}
+                    initialValue: data.goods_attr ? data.goods_attr.split(',') : [],
+                  })(<Select mode="multiple">
+                    {CIQ_GOODS_ATTR.map(type =>
+                      <Option key={type.value} value={type.value}>{type.text}</Option>)}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span="12">
@@ -210,7 +217,10 @@ export default class GoodsModal extends Component {
                 <FormItem {...formItemLayout} colon={false} label="用途" required >
                   {getFieldDecorator('use_to', {
                     initialValue: data.use_to,
-                  })(<Input />)}
+                  })(<Select>
+                    {CIQ_GOODS_USE_TO.map(item =>
+                      <Option key={item.value} value={item.value}>{`${item.value}|${item.text}`}</Option>)}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span="6">
