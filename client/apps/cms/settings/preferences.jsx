@@ -39,11 +39,13 @@ export default class Preferences extends Component {
   }
   state = {
     navOption: 'CC',
+    declChannel: '',
   }
   componentWillMount() {
     if (window.localStorage) {
       const navOption = window.localStorage.getItem('cms-nav-option');
-      this.setState({ navOption });
+      const declChannel = window.localStorage.getItem('decl-channel');
+      this.setState({ navOption, declChannel });
     }
   }
   handleNavOptionChange = (ev) => {
@@ -51,6 +53,12 @@ export default class Preferences extends Component {
     if (window.localStorage) {
       window.localStorage.setItem('cms-nav-option', ev.target.value);
       this.setState({ navOption: ev.target.value });
+    }
+  }
+  handleDeclChannelChange = (ev) => {
+    if (window.localStorage) {
+      window.localStorage.setItem('decl-channel', ev.target.value);
+      this.setState({ declChannel: ev.target.value });
     }
   }
   render() {
@@ -91,10 +99,16 @@ export default class Preferences extends Component {
           </Card>
           <Card title="报关">
             <FormItem label="默认申报通道" {...formItemLayout}>
-              <RadioGroup>
+              <RadioGroup value={this.state.declChannel} onChange={this.handleDeclChannelChange}>
                 {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
                   const channel = CMS_DECL_CHANNEL[declChannel];
-                  return <RadioButton value={channel.value} key={channel.value} disabled={channel.disabled}>{channel.text}</RadioButton>;
+                  return (<RadioButton
+                    value={channel.value}
+                    key={channel.value}
+                    disabled={channel.disabled}
+                  >
+                    {channel.text}
+                  </RadioButton>);
                 })}
               </RadioGroup>
             </FormItem>

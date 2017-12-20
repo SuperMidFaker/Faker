@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Modal, Input, DatePicker, message } from 'antd';
-import { closeDeclReleasedModal, setDeclReleased } from 'common/reducers/cmsDeclare';
+import { closeDeclReleasedModal, setDeclReleased, validateEntryId } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -18,7 +18,7 @@ const FormItem = Form.Item;
     entry: state.cmsDeclare.clearFillModal,
     loginName: state.account.username,
   }),
-  { closeDeclReleasedModal, setDeclReleased }
+  { closeDeclReleasedModal, setDeclReleased, validateEntryId }
 )
 export default class DeclReleasedModal extends React.Component {
   static propTypes = {
@@ -31,6 +31,7 @@ export default class DeclReleasedModal extends React.Component {
     entryNo: '',
     clearTime: null,
     ieTime: null,
+    validateStatus: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entry !== this.props.entry) {
@@ -43,9 +44,26 @@ export default class DeclReleasedModal extends React.Component {
   handleEntryNoChange = (ev) => {
     if (ev.target.value) {
       const declno = ev.target.value.trim();
-      this.setState({ entryNo: declno });
+      if (declno.length === 18) {
+        this.setState({
+          entryNo: declno,
+          validateStatus: 'validating',
+        });
+        this.props.validateEntryId(declno).then((result) => {
+          if (!result.error) {
+            this.setState({
+              validateStatus: result.data.exist ? 'error' : 'success',
+            });
+          }
+        });
+      } else {
+        this.setState({
+          entryNo: declno,
+          validateStatus: '',
+        });
+      }
     } else {
-      this.setState({ entryNo: '' });
+      this.setState({ entryNo: '', validateStatus: '' });
     }
   }
   handleClearDateChange = (clearDt) => {
@@ -58,6 +76,10 @@ export default class DeclReleasedModal extends React.Component {
     this.props.closeDeclReleasedModal();
   }
   handleOk = () => {
+    if (this.state.validateStatus === 'error') {
+      message.error('海关编号已存在');
+      return;
+    }
     if (!this.state.entryNo || this.state.entryNo.length !== 18) {
       message.error('报关单号长度应为18位数字', 10);
       return;
@@ -87,24 +109,39 @@ export default class DeclReleasedModal extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible } = this.props;
-    const entryNo = this.state.entryNo;
+    const { entryNo, validateStatus } = this.state;
+    let validate = null;
+    if (entryNo && entryNo.length === 18) {
+      validate = { validateStatus };
+    }
     // const ieLabel = entry.ietype === 0 ? '进口日期' : '出口日期';
     return (
-      <Modal maskClosable={false} title={this.msg('customsClearModalTitle')} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('customsClearModalTitle')}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form>
-          <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} hasFeedback={!!(entryNo && entryNo.length === 18)} {...validate}>
             <Input onChange={this.handleEntryNoChange} value={entryNo} />
           </FormItem>
           <FormItem label={this.state.ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <DatePicker onChange={this.handleIEDateChange} value={this.state.ieTime && moment(this.state.ieTime)}
-              style={{ width: '100%' }} format="YYYY-MM-DD"
+            <DatePicker
+              onChange={this.handleIEDateChange}
+              value={this.state.ieTime && moment(this.state.ieTime)}
+              style={{ width: '100%' }}
+              format="YYYY-MM-DD"
             />
           </FormItem>
           <FormItem label="放行时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <DatePicker onChange={this.handleClearDateChange} value={this.state.clearTime && moment(this.state.clearTime)}
-              style={{ width: '100%' }} format="YYYY-MM-DD HH:mm" showTime
+            <DatePicker
+              onChange={this.handleClearDateChange}
+              value={this.state.clearTime && moment(this.state.clearTime)}
+              style={{ width: '100%' }}
+              format="YYYY-MM-DD HH:mm"
+              showTime
             />
           </FormItem>
         </Form>

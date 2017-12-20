@@ -57,6 +57,9 @@ export default class GoodsModal extends Component {
         this.props.extendCountryParam(nextProps.data.orig_country);
       }
     }
+    if (!nextProps.visible) {
+      this.props.form.resetFields();
+    }
   }
   handleCancel = () => {
     this.props.hideGoodsModal();

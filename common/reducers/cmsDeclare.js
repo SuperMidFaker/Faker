@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
   'CHECK_DECL_MSG', 'CHECK_DECL_MSG_SUCCEED', 'CHECK_DECL_MSG_FAIL',
+  'VALIDATE_ENTRY_ID', 'VALIDATE_ENTRY_ID_SUCCEED', 'VALIDATE_ENTRY_ID_FAIL',
 ]);
 
 const initialState = {
@@ -479,3 +480,19 @@ export function checkDeclMsg(preEntrySeqNo) {
     },
   };
 }
+
+export function validateEntryId(entryNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VALIDATE_ENTRY_ID,
+        actionTypes.VALIDATE_ENTRY_ID_SUCCEED,
+        actionTypes.VALIDATE_ENTRY_ID_FAIL,
+      ],
+      endpoint: 'v1/cms/validate/entry/id',
+      method: 'get',
+      params: { entryNo },
+    },
+  };
+}
+
