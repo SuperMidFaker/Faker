@@ -6,8 +6,8 @@ import moment from 'moment';
 import { Breadcrumb, DatePicker, Icon, Input, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
-import ButtonToggle from 'client/components/ButtonToggle';
+import TrimSpan from 'client/components/trimSpan';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
@@ -18,8 +18,6 @@ import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import TrimSpan from 'client/components/trimSpan';
-import RowAction from 'client/components/RowAction';
 import { Logixon, Fontello } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
@@ -702,13 +700,7 @@ export default class CustomsList extends Component {
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <PageHint />
-              <ButtonToggle
-                tooltip="报文收发记录"
-                iconOn="double-right"
-                iconOff="double-left"
-                onClick={this.toggleRightSider}
-              />
+              <Button icon="mail" onClick={this.toggleRightSider}>报文</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

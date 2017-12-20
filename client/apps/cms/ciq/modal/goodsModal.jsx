@@ -151,7 +151,7 @@ export default class GoodsModal extends Component {
                 <FormItem {...formItemLayout} colon={false} label="CIQ代码" required >
                   {getFieldDecorator('ciq_code', {
                     initialValue: data.ciq_code,
-                  })(<Input />)}
+                  })(<Select />)}
                 </FormItem>
               </Col>
               <Col span="6">

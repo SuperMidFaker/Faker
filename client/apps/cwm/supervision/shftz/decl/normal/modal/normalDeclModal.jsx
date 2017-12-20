@@ -575,7 +575,7 @@ export default class NormalDeclModal extends Component {
                 </FormItem>
               </Col>
               <Col span={3}>
-                <FormItem label="类型">
+                <FormItem label="进出口标识">
                   {getFieldDecorator('ietype', { initialValue: 'import', onChange: this.handleIeTypeChange })(<RadioGroup>
                     <RadioButton value="import">进口</RadioButton>
                     <RadioButton value="export">出口</RadioButton>

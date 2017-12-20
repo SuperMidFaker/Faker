@@ -2,10 +2,11 @@ import React from 'react';
 import moment from 'moment';
 import superAgent from 'superagent';
 import { Tabs, Input, Modal } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import TrimSpan from 'client/components/trimSpan';
+import RowAction from 'client/components/RowAction';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsDeclare';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
@@ -50,7 +51,7 @@ export default class DeclMsgPanel extends React.Component {
       pageSize: returnRecords.pageSize,
     });
   }
-  sendDataSource = new Table.DataSource({
+  sendDataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadSendRecords(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -71,7 +72,7 @@ export default class DeclMsgPanel extends React.Component {
     },
     remotes: this.props.sendRecords,
   });
-  recvDataSource = new Table.DataSource({
+  recvDataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadReturnRecords(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -97,13 +98,14 @@ export default class DeclMsgPanel extends React.Component {
     dataIndex: 'pre_entry_seq_no',
     width: 180,
   }, {
-    title: '申报报文',
-    dataIndex: 'sent_file',
-    render: o => <a onClick={() => this.showDeclMsgModal('send', o)}><TrimSpan text={o} maxLen={50} tailer={20} /></a>,
-  }, {
-    title: '通道',
+    title: '申报通道',
     dataIndex: 'ep_code',
     width: 100,
+  }, {
+    title: '报文',
+    dataIndex: 'sent_file',
+    width: 80,
+    render: o => <RowAction onClick={() => this.showDeclMsgModal('send', o)} icon="eye-o" />,
   }, {
     title: '发送人员',
     dataIndex: 'sender_name',
@@ -111,8 +113,22 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '发送时间',
     dataIndex: 'sent_date',
-    width: 150,
-    render: o => moment(o).format('YYYY.MM.DD HH:mm'),
+    width: 120,
+    render: o => moment(o).format('MM.DD HH:mm'),
+  }, {
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
+    width: 180,
+  }, {
+    title: '回执',
+    dataIndex: 'return_file',
+    width: 80,
+    render: o => o && <RowAction onClick={() => this.showDeclMsgModal('return', o)} icon="eye-o" />,
+  }, {
+    title: '接收时间',
+    dataIndex: 'return_date',
+    width: 120,
+    render: o => o && moment(o).format('MM.DD HH:mm'),
   }];
   recvColumns = [{
     title: '统一编号',
@@ -189,44 +205,38 @@ export default class DeclMsgPanel extends React.Component {
     this.recvDataSource.remotes = returnRecords;
     return (
       <Tabs defaultActiveKey="sent">
-        <TabPane tab="发送记录" key="sent">
-          <div className="toolbar">
-            <Search
-              style={{ width: 200 }}
-              value={this.state.sendText}
-              onChange={this.searchSend}
-              onSearch={this.handleSearchSend}
-            />
-          </div>
-          <Table
+        <TabPane tab="申报报文" key="sent">
+          <DataTable
             size="middle"
             columns={this.sentColumns}
             dataSource={this.sendDataSource}
-            scrollOffset="400"
+            scrollOffset="240"
             rowkey="sent_file"
-            scroll={{
-              x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0),
-            }}
+            toolbarActions={
+              <Search
+                style={{ width: 200 }}
+                value={this.state.sendText}
+                onChange={this.searchSend}
+                onSearch={this.handleSearchSend}
+              />
+            }
           />
         </TabPane>
-        <TabPane tab="接收记录" key="recv">
-          <div className="toolbar">
-            <Search
-              style={{ width: 200 }}
-              value={this.state.recvText}
-              onChange={this.searchRecv}
-              onSearch={this.handleSearchRecv}
-            />
-          </div>
-          <Table
+        <TabPane tab="回执记录" key="recv">
+          <DataTable
             size="middle"
             columns={this.recvColumns}
             dataSource={this.recvDataSource}
             scrollOffset="400"
             rowkey="return_file"
-            scroll={{
-              x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0),
-            }}
+            toolbarActions={
+              <Search
+                style={{ width: 200 }}
+                value={this.state.recvText}
+                onChange={this.searchRecv}
+                onSearch={this.handleSearchRecv}
+              />
+            }
           />
         </TabPane>
       </Tabs>
