@@ -32,6 +32,19 @@ export default class GoodsLicenceInfo extends Component {
       }
     });
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.goodsId !== this.props.goodsId && nextProps.goodsId) {
+      this.props.form.resetFields();
+      this.props.loadGoodsLicenceInfo(nextProps.goodsId).then((result) => {
+        if (!result.error) {
+          this.setState({
+            info: result.data,
+            dangerFlag: result.data.danger_flag === '1',
+          });
+        }
+      });
+    }
+  }
   handleChange = (e) => {
     this.setState({
       dangerFlag: e.target.checked,
@@ -108,7 +121,6 @@ export default class GoodsLicenceInfo extends Component {
         content={content}
         trigger="click"
         visible={this.state.visible}
-        onVisibleChange={this.handleVisibleChange}
       >
         <Button
           type="primary"
