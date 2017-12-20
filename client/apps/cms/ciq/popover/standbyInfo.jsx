@@ -28,6 +28,18 @@ export default class StandByInfo extends Component {
       }
     });
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.goodsId !== this.props.goodsId && nextProps.goodsId) {
+      this.props.form.resetFields();
+      this.props.loadStandbyInfo(nextProps.goodsId).then((result) => {
+        if (!result.error) {
+          this.setState({
+            info: result.data,
+          });
+        }
+      });
+    }
+  }
   handleVisibleChange = (visible) => {
     this.setState({ visible });
   }
