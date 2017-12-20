@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message } from 'antd';
 import { closeEfModal } from 'common/reducers/cmsDelegation';
 import { fillEntryId } from 'common/reducers/cmsManifest';
+import { validateEntryId } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -19,7 +20,7 @@ const FormItem = Form.Item;
     billSeqNo: state.cmsDelegation.efModal.billSeqNo,
     delgNo: state.cmsDelegation.efModal.delgNo,
   }),
-  { closeEfModal, fillEntryId }
+  { closeEfModal, fillEntryId, validateEntryId }
 )
 export default class FillCustomsNoModal extends React.Component {
   static propTypes = {
@@ -32,19 +33,41 @@ export default class FillCustomsNoModal extends React.Component {
   }
   state = {
     entryNo: '',
+    validateStatus: '',
   }
   handleEntryNoChange = (ev) => {
     if (ev.target.value) {
       const declno = ev.target.value.trim();
-      this.setState({ entryNo: declno });
+      if (declno.length === 18) {
+        this.setState({
+          entryNo: declno,
+          validateStatus: 'validating',
+        });
+        this.props.validateEntryId(declno).then((result) => {
+          if (!result.error) {
+            this.setState({
+              validateStatus: result.data.exist ? 'error' : 'success',
+            });
+          }
+        });
+      } else {
+        this.setState({
+          entryNo: declno,
+          validateStatus: '',
+        });
+      }
     } else {
-      this.setState({ entryNo: '' });
+      this.setState({ entryNo: '', validateStatus: '' });
     }
   }
   handleCancel = () => {
     this.props.closeEfModal();
   }
   handleOk = () => {
+    if (this.state.validateStatus === 'error') {
+      message.error('海关编号已存在');
+      return;
+    }
     if (this.state.entryNo.length !== 18) {
       message.error('报关单号长度应为18位数字', 10);
       return;
@@ -67,12 +90,21 @@ export default class FillCustomsNoModal extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible } = this.props;
+    const { validateStatus, entryNo } = this.state;
+    let validate = null;
+    if (entryNo.length === 18) {
+      validate = { validateStatus };
+    }
     return (
-      <Modal maskClosable={false} title={this.msg('entryNoFillModalTitle')} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('entryNoFillModalTitle')}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form>
-          <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} hasFeedback={entryNo.length === 18} {...validate}>
             <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} />
           </FormItem>
         </Form>
