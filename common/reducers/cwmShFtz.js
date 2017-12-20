@@ -51,6 +51,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'CHECK_ENRSTU', 'CHECK_ENRSTU_SUCCEED', 'CHECK_ENRSTU_FAIL',
   'CANCEL_RER', 'CANCEL_RER_SUCCEED', 'CANCEL_RER_FAIL',
   'EDIT_GNAME', 'EDIT_GNAME_SUCCEED', 'EDIT_GNAME_FAIL',
+  'LOAD_SELFTFC', 'LOAD_SELFTFC_SUCCEED', 'LOAD_SELFTFC_FAIL',
   'EDIT_REL_WT', 'EDIT_REL_WT_SUCCEED', 'EDIT_REL_WT_FAIL',
   'TRANSFER_TO_OWN', 'TRANSFER_TO_OWN_SUCCEED', 'TRANSFER_TO_OWN_FAIL',
   'QUERY_OWNTRANF', 'QUERY_OWNTRANF_SUCCEED', 'QUERY_OWNTRANF_FAIL',
@@ -168,15 +169,36 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_TRANSFER_IN_MODAL:
       return { ...state, transInModal: { ...state.transInModal, ...action.data } };
     case actionTypes.OPEN_BATCH_DECL_MODAL:
-      return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: true, ...action.data } };
+      return {
+        ...state,
+        batchDeclModal: {
+          ...state.batchDeclModal,
+          visible: true,
+          ...action.data,
+        },
+      };
     case actionTypes.CLOSE_BATCH_DECL_MODAL:
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: false } };
     case actionTypes.OPEN_NORMAL_DECL_MODAL:
-      return { ...state, normalDeclModal: { ...state.normalDeclModal, visible: true, ...action.data } };
+      return {
+        ...state,
+        normalDeclModal: {
+          ...state.normalDeclModal,
+          visible: true,
+          ...action.data,
+        },
+      };
     case actionTypes.CLOSE_NORMAL_DECL_MODAL:
       return { ...state, normalDeclModal: { ...state.normalDeclModal, visible: false } };
     case actionTypes.OPEN_NORMAL_REL_REG_MODAL:
-      return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: true, ...action.data } };
+      return {
+        ...state,
+        normalRelRegModal: {
+          ...state.normalRelRegModal,
+          visible: true,
+          ...action.data,
+        },
+      };
     case actionTypes.CLOSE_NORMAL_REL_REG_MODAL:
       return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: false } };
     case actionTypes.OPEN_NTFO_MODAL:
@@ -187,12 +209,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
       return {
-        ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false,
+        ...state,
+        entryList: action.result.data,
+        listFilter: JSON.parse(action.params.filter),
+        loading: false,
       };
     case actionTypes.ENTRY_REG_LOAD_FAIL:
       return { ...state, loading: false };
     case actionTypes.ENTRY_DETAILS_LOAD_SUCCEED:
-      return { ...state, entry_asn: action.result.data.entry_asn, entry_regs: action.result.data.entry_regs };
+      return {
+        ...state,
+        entry_asn: action.result.data.entry_asn,
+        entry_regs: action.result.data.entry_regs,
+      };
     case actionTypes.LOAD_VTDETAILS_SUCCEED:
       return { ...state, entry_asn: action.result.data };
     case actionTypes.PARAMS_LOAD_SUCCEED:
@@ -201,7 +230,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.RELEASE_REG_LOAD_SUCCEED:
       return {
-        ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false,
+        ...state,
+        releaseList: action.result.data,
+        listFilter: JSON.parse(action.params.filter),
+        loading: false,
       };
     case actionTypes.RELEASE_REG_LOAD_FAIL:
       return { ...state, loading: false };
@@ -213,17 +245,23 @@ export default function reducer(state = initialState, action) {
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.PRODUCT_CARGO_LOAD_SUCCEED:
       return {
-        ...state, cargolist: action.result.data.list, cargoRule: action.result.data.rule, loading: false,
+        ...state,
+        cargolist: action.result.data.list,
+        cargoRule: action.result.data.rule,
+        loading: false,
       };
     case actionTypes.UPDATE_ERFIELD_SUCCEED: {
       const regs = state.entry_regs.map((er) => {
         if (er.pre_ftz_ent_no === action.data.preFtzEntNo) {
           return { ...er, [action.data.field]: action.data.value, ...action.result.data };
-        } else {
-          return er;
         }
+        return er;
       });
-      return { ...state, entry_regs: regs };
+      let entryAsn = state.entry_asn;
+      if (entryAsn.pre_ftz_ent_no === action.data.preFtzEntNo) {
+        entryAsn = { ...entryAsn, [action.data.field]: action.data.value, ...action.result.data };
+      }
+      return { ...state, entry_regs: regs, entry_asn: entryAsn };
     }
     case actionTypes.REL_DETAILS_LOAD_SUCCEED:
       return { ...state, rel_so: action.result.data.rel_so, rel_regs: action.result.data.rel_regs };
@@ -233,9 +271,8 @@ export default function reducer(state = initialState, action) {
         rel_regs: state.rel_regs.map((rr) => {
           if (rr.pre_entry_seq_no === action.data.pre_entry_seq_no) {
             return { ...rr, [action.data.field]: action.data.value };
-          } else {
-            return rr;
           }
+          return rr;
         }),
       };
     case actionTypes.FILE_RSO:
@@ -310,7 +347,12 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         submitting: false,
-        rel_regs: state.rel_regs.map(rr => ({ ...rr, status: action.result.data.status, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
+        rel_regs: state.rel_regs.map(rr =>
+          ({
+            ...rr,
+            status: action.result.data.status,
+            ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no],
+          })),
       };
     case actionTypes.LOAD_NDLIST:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
@@ -329,20 +371,35 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_NDELG_SUCCEED:
       return { ...state, normalDecl: action.result.data };
     case actionTypes.LOAD_DRDETAILS_SUCCEED:
-      return { ...state, declRelRegs: action.result.data.rel_regs, declRelDetails: action.result.data.details };
+      return {
+        ...state,
+        declRelRegs: action.result.data.rel_regs,
+        declRelDetails: action.result.data.details,
+      };
     case actionTypes.LOAD_APPLD_SUCCEED:
-      return { ...state, batch_decl: action.result.data.batch_decl, batch_applies: action.result.data.batch_applies };
+      return {
+        ...state,
+        batch_decl: action.result.data.batch_decl,
+        batch_applies: action.result.data.batch_applies,
+      };
     case actionTypes.FILE_BA_SUCCEED:
       return {
         ...state,
         batch_decl: { ...state.batch_decl, status: 'processing' },
-        batch_applies: state.batch_applies.map(ba => ({ ...ba, ftz_apply_no: action.result.data.preEntApplyMap[ba.pre_entry_seq_no] })),
+        batch_applies: state.batch_applies.map(ba => ({
+          ...ba,
+          ftz_apply_no: action.result.data.preEntApplyMap[ba.pre_entry_seq_no],
+        })),
         submitting: false,
       };
     case actionTypes.MAKE_BAL_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: 'applied' }, submitting: false };
     case actionTypes.CHECK_ENRSTU_SUCCEED:
-      return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status }, submitting: false };
+      return {
+        ...state,
+        entry_asn: { ...state.entry_asn, reg_status: action.result.data.status },
+        submitting: false,
+      };
     case actionTypes.CANCEL_RER_SUCCEED:
       return {
         ...state,
@@ -366,7 +423,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_STOTASKS:
       return { ...state, ftzTaskList: { ...state.ftzTaskList, loading: true, reload: false } };
     case actionTypes.LOAD_STOTASKS_SUCCEED:
-      return { ...state, ftzTaskList: { ...state.ftzTaskList, loading: false, data: action.result.data } };
+      return {
+        ...state,
+        ftzTaskList: {
+          ...state.ftzTaskList,
+          loading: false,
+          data: action.result.data,
+        },
+      };
     case actionTypes.LOAD_STOTASKS_FAIL:
       return { ...state, ftzTaskList: { ...state.ftzTaskList, loading: false } };
     case actionTypes.LOAD_STOCMPTASK_SUCCEED:
@@ -1202,6 +1266,21 @@ export function deleteVirtualTransfer(data) {
       endpoint: 'v1/cwm/shftz/virtual/transfer/delete',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function getSelfTransfFtzCargos(preFtzEntNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SELFTFC,
+        actionTypes.LOAD_SELFTFC_SUCCEED,
+        actionTypes.LOAD_SELFTFC_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/transfer/self/ftzcargomap',
+      method: 'get',
+      params: { preFtzEntNo },
     },
   };
 }
