@@ -297,13 +297,8 @@ export default class DelegationList extends Component {
     this.props.showPreviewer(delgNo, tabKey);
   }
   handleDelgListLoad = (currentPage, filter) => {
-    const {
-      tenantId, listFilter, loginId,
-      delegationlist: { pageSize, current },
-    } = this.props;
+    const { listFilter, delegationlist: { pageSize, current } } = this.props;
     this.props.loadDelegationList({
-      tenantId,
-      loginId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
@@ -481,8 +476,6 @@ export default class DelegationList extends Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          tenantId: this.props.tenantId,
-          loginId: this.props.loginId,
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
         };
