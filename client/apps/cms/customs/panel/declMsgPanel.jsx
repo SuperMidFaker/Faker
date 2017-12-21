@@ -66,6 +66,12 @@ export default class DeclMsgPanel extends React.Component {
     title: '申报通道',
     dataIndex: 'channel',
     width: 100,
+    render: (o, record) => {
+      if (o === 'EDI') {
+        return record.ep_code;
+      }
+      return o;
+    },
   }, {
     title: '报文',
     dataIndex: 'sent_file',
