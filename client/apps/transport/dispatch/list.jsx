@@ -24,34 +24,46 @@ import { loadTable,
 import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_VEHICLE_CONNECT, TRANS_MODE_INDICATOR } from 'common/constants';
+import { loadShipmtDetail } from 'common/reducers/shipment';
+import SearchBar from 'client/components/SearchBar';
 import messages from './message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
-import { loadShipmtDetail } from 'common/reducers/shipment';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import RevokeModal from '../common/modal/revokeModal';
-import SearchBar from 'client/components/SearchBar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 import MyShipmentsSelect from '../common/myShipmentsSelect';
+import ShipmentAdvanceModal from '../tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from '../tracking/land/modals/create-specialCharge';
 import CustomerSelect from '../common/customerSelect';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
-import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
-import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
+const { Option } = Select;
 const formatMsg = format(messages);
 
 function fetch({ state, dispatch, cookie }) {
   return dispatch(loadSegRq(cookie, {
     tenantId: state.account.tenantId,
   }));
+}
+function mergeFilters(curFilters, name, value) {
+  const newFilters = {};
+  Object.keys(curFilters).forEach((key) => {
+    if (key !== name) {
+      newFilters[key] = curFilters[key];
+    }
+  });
+  if (value !== null && value !== undefined && value !== '') {
+    newFilters[name] = value;
+  }
+  return newFilters;
 }
 
 @connectFetch()(fetch)
@@ -65,7 +77,6 @@ function fetch({ state, dispatch, cookie }) {
     shipmentlist: state.transportDispatch.shipmentlist,
     filters: { ...state.transportDispatch.filters, loginId: state.account.loginId },
     loading: state.transportDispatch.loading,
-    dispatched: state.transportDispatch.dispatched,
     expandList: state.transportDispatch.expandList,
     cond: state.transportDispatch.cond,
     loaded: state.transportDispatch.loaded,
@@ -96,9 +107,9 @@ export default class DispatchList extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,
-    filters: PropTypes.object.isRequired,
+    filters: PropTypes.shape({ shipmt_no: PropTypes.string }).isRequired,
     loading: PropTypes.bool.isRequired,
-    shipmentlist: PropTypes.object.isRequired,
+    shipmentlist: PropTypes.shape({ pageSize: PropTypes.number }).isRequired,
     loadTable: PropTypes.func.isRequired,
     doSend: PropTypes.func.isRequired,
     doReturn: PropTypes.func.isRequired,
@@ -108,16 +119,14 @@ export default class DispatchList extends React.Component {
     loadShipmtsGrouped: PropTypes.func.isRequired,
     removeGroupedSubShipmt: PropTypes.func.isRequired,
     loadExpandList: PropTypes.func.isRequired,
-    dispatched: PropTypes.bool.isRequired,
-    expandList: PropTypes.object.isRequired,
-    cond: PropTypes.object.isRequired,
+    // expandList: PropTypes.object.isRequired,
+    // cond: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     changeDockStatus: PropTypes.func.isRequired,
     loaded: PropTypes.bool.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    panelHeader: [],
     advancedSearchVisible: false,
     searchValue: '',
   }
@@ -237,7 +246,11 @@ export default class DispatchList extends React.Component {
       render: (o, record) => {
         if (!sub) {
           return (
-            <ShipmtnoColumn shipmtNo={record.shipmt_no} shipment={record} onClick={this.handleShipmtPreview} />
+            <ShipmtnoColumn
+              shipmtNo={record.shipmt_no}
+              shipment={record}
+              onClick={this.handleShipmtPreview}
+            />
           );
         }
         return (<span>{o}</span>);
@@ -260,7 +273,8 @@ export default class DispatchList extends React.Component {
         width: 100,
         render: (o, record) => {
           const mode = TRANS_MODE_INDICATOR.filter(ts => ts.value === o)[0];
-          return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span> : <span>{record.transport_mode}</span>;
+          return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span>
+            : <span>{record.transport_mode}</span>;
         },
       });
       cols = cols.concat(this.commonCols);
@@ -293,9 +307,8 @@ export default class DispatchList extends React.Component {
                   {this.msg('btnTextSegmentCancel')}
                 </a>
               </span>);
-            } else {
-              return (<span />);
             }
+            return (<span />);
           }
           return (
             <PrivilegeCover module="transport" feature="dispatch" action="create">
@@ -335,12 +348,10 @@ export default class DispatchList extends React.Component {
                   {spSpan}
                 </span>
               );
-            } else {
-              return spSpan;
             }
-          } else {
-            return this.msg('ownFleet');
+            return spSpan;
           }
+          return this.msg('ownFleet');
         },
       }, {
         title: this.msg('shipVehicle'),
@@ -352,7 +363,7 @@ export default class DispatchList extends React.Component {
       if (s === 'dispatched') {
         timetitle = this.msg('shipSendTime');
       }
-      cols.push(
+      cols.push({
         /* {
         title: this.msg('shipPod'),
         dataIndex: 'pod_type',
@@ -377,53 +388,54 @@ export default class DispatchList extends React.Component {
           }
         },
       }, */
-        {
-          title: timetitle,
-          dataIndex: 'disp_time',
-          width: 100,
-          render: (text, record) => (record.disp_time ?
-            moment(record.disp_time).format('MM-DD HH:mm') : ' '),
-        }, {
-          title: this.msg('spDispLoginName'),
-          dataIndex: 'sp_disp_login_name',
-          width: 80,
-        }, {
-          title: this.msg('shipmtOP'),
-          width: 100,
-          fixed: fixedRight,
-          dataIndex: 'OPS_COL',
-          render: (o, record) => {
-            if (s === 'dispatched') { // record is downstream dispatch
-              if (record.status < SHIPMENT_TRACK_STATUS.intransit && ( // 线下承运商和线下车队直接退回
-                (record.sp_tenant_id === 0 && record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) ||
-                record.sp_tenant_id === -1 || (record.status === SHIPMENT_TRACK_STATUS.unaccepted))) { // 线上承运商未接单可退回
-                return (
-                  <PrivilegeCover module="transport" feature="dispatch" action="edit">
-                    <span>
-                      <a role="presentation" onClick={ev => this.handleShipmtReturn(record, ev)}>
-                        {this.msg('btnTextReturn')}
-                      </a>
-                    </span>
-                  </PrivilegeCover>
-                );
-              }
-              return (<span />);
+        title: timetitle,
+        dataIndex: 'disp_time',
+        width: 100,
+        render: (text, record) => (record.disp_time ?
+          moment(record.disp_time).format('MM-DD HH:mm') : ' '),
+      }, {
+        title: this.msg('spDispLoginName'),
+        dataIndex: 'sp_disp_login_name',
+        width: 80,
+      }, {
+        title: this.msg('shipmtOP'),
+        width: 100,
+        fixed: fixedRight,
+        dataIndex: 'OPS_COL',
+        render: (o, record) => {
+          if (s === 'dispatched') { // record is downstream dispatch
+            if (record.status < SHIPMENT_TRACK_STATUS.intransit && ( // 线下承运商和线下车队直接退回
+              (record.sp_tenant_id === 0 && record.vehicle_connect_type ===
+                SHIPMENT_VEHICLE_CONNECT.disconnected) ||
+              record.sp_tenant_id === -1 || (record.status ===
+              SHIPMENT_TRACK_STATUS.unaccepted))) { // 线上承运商未接单可退回
+              return (
+                <PrivilegeCover module="transport" feature="dispatch" action="edit">
+                  <span>
+                    <a role="presentation" onClick={ev => this.handleShipmtReturn(record, ev)}>
+                      {this.msg('btnTextReturn')}
+                    </a>
+                  </span>
+                </PrivilegeCover>
+              );
             }
-            return (
-              <PrivilegeCover module="transport" feature="dispatch" action="edit">
-                <span>
-                  <a role="presentation" onClick={ev => this.handleShipmtSend(record, ev)}>
-                    {this.msg('btnTextSend')}
-                  </a>
-                  <span className="ant-divider" />
-                  <a role="presentation" onClick={ev => this.handleShipmtReturn(record, ev)}>
-                    {this.msg('btnTextReturn')}
-                  </a>
-                </span>
-              </PrivilegeCover>
-            );
-          },
-        });
+            return (<span />);
+          }
+          return (
+            <PrivilegeCover module="transport" feature="dispatch" action="edit">
+              <span>
+                <a role="presentation" onClick={ev => this.handleShipmtSend(record, ev)}>
+                  {this.msg('btnTextSend')}
+                </a>
+                <span className="ant-divider" />
+                <a role="presentation" onClick={ev => this.handleShipmtReturn(record, ev)}>
+                  {this.msg('btnTextReturn')}
+                </a>
+              </span>
+            </PrivilegeCover>
+          );
+        },
+      });
     }
 
     return cols;
@@ -575,20 +587,20 @@ export default class DispatchList extends React.Component {
       );
     }
 
-    this.setState({ panelHeader, selectedRowKeys: [] });
+    this.setState({ /* panelHeader, */ selectedRowKeys: [] });
     this.props.changeDockStatus({ dispDockShow: false, segDockShow: false, shipmts: [] });
   }
 
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.filters, 'shipmt_no', searchVal);
+    const filters = mergeFilters(this.props.filters, 'shipmt_no', searchVal);
     this.handleTableLoad(filters);
     this.setState({ searchValue: searchVal });
   }
 
   handleAdvancedSearch = (searchVals) => {
-    let filters = this.props.filters;
+    let { filters } = this.props;
     Object.keys(searchVals).forEach((key) => {
-      filters = this.mergeFilters(filters, key, searchVals[key]);
+      filters = mergeFilters(filters, key, searchVals[key]);
     });
     this.handleTableLoad(filters);
     this.showAdvancedSearch(false);
@@ -598,21 +610,9 @@ export default class DispatchList extends React.Component {
     if (srPartnerId !== -1) {
       value = srPartnerId;
     }
-    let filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
-    filters = this.mergeFilters(this.props.filters, 'sr_tenant_id', srTenantId);
+    let filters = mergeFilters(this.props.filters, 'sr_partner_id', value);
+    filters = mergeFilters(this.props.filters, 'sr_tenant_id', srTenantId);
     this.handleTableLoad(filters);
-  }
-  mergeFilters(curFilters, name, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== name) {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters[name] = value;
-    }
-    return newFilters;
   }
 
   handleDispatchDockShow(shipmt, ev) {
@@ -871,7 +871,10 @@ export default class DispatchList extends React.Component {
     }
     const ccols = this.buildCols('sub');
 
-    return (<DataTable columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
+    return (<DataTable
+      columns={ccols}
+      pagination={false}
+      dataSource={this.props.expandList[row.shipmt_no] || []}
       size="small"
     />);
   }
@@ -998,7 +1001,10 @@ export default class DispatchList extends React.Component {
     }
     const ccols = this.buildCols('merge');
 
-    return (<DataTable columns={ccols} pagination={false} dataSource={this.props.expandList[row.key] || []}
+    return (<DataTable
+      columns={ccols}
+      pagination={false}
+      dataSource={this.props.expandList[row.key] || []}
       size="small"
     />);
   }
@@ -1051,21 +1057,39 @@ export default class DispatchList extends React.Component {
         </Button>
       );
     }
-    let tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} selectedRowKeys={this.state.selectedRowKeys}
-      rowSelection={rowSelection} columns={cols} loading={loading}
-      dataSource={this.dataSource} scroll={{ x: 2300 }}
+    let tb = (<DataTable
+      toolbarActions={toolbarActions}
+      bulkActions={bulkBtns}
+      selectedRowKeys={this.state.selectedRowKeys}
+      rowSelection={rowSelection}
+      columns={cols}
+      loading={loading}
+      dataSource={this.dataSource}
+      scroll={{ x: 2300 }}
     />);
     if (origin) {
-      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} selectedRowKeys={this.state.selectedRowKeys}
-        expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2300 }}
+      tb = (<DataTable
+        toolbarActions={toolbarActions}
+        bulkActions={bulkBtns}
+        selectedRowKeys={this.state.selectedRowKeys}
+        expandedRowRender={this.handleExpandList}
+        columns={cols}
+        loading={loading}
+        dataSource={this.dataSource}
+        scroll={{ x: 2300 }}
       />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
-      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} selectedRowKeys={this.state.selectedRowKeys}
-        expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2300 }}
+      tb = (<DataTable
+        toolbarActions={toolbarActions}
+        bulkActions={bulkBtns}
+        selectedRowKeys={this.state.selectedRowKeys}
+        expandedRowRender={this.handleConditionExpandList}
+        columns={cols}
+        loading={loading}
+        dataSource={this.dataSource}
+        scroll={{ x: 2300 }}
       />);
     }
 
@@ -1084,7 +1108,11 @@ export default class DispatchList extends React.Component {
           </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
-          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+          <AdvancedSearchBar
+            visible={this.state.advancedSearchVisible}
+            onSearch={this.handleAdvancedSearch}
+            toggle={this.toggleAdvancedSearch}
+          />
           {tb}
         </Content>
         <ShipmentDockPanel />

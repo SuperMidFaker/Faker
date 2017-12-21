@@ -159,7 +159,7 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 120,
+    width: 150,
     fixed: 'left',
     render: (o, record) => (
       <a onClick={ev => this.handlePreview(o, record, ev)}>

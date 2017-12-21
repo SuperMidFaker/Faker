@@ -11,15 +11,15 @@ import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import ModuleMenu from '../../menu';
-import NormalDeclModal from './modal/normalDeclModal';
 import PageHeader from 'client/components/PageHeader';
 import { format } from 'client/common/i18n/helpers';
+import NormalDeclModal from './modal/normalDeclModal';
+import ModuleMenu from '../../menu';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -28,7 +28,6 @@ const RadioButton = Radio.Button;
   state => ({
     delglist: state.cwmShFtz.normalDelgList,
     listFilter: state.cwmShFtz.listFilter,
-    whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
@@ -45,24 +44,22 @@ const RadioButton = Radio.Button;
 export default class NormalDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
+    listFilter: PropTypes.shape({ status: PropTypes.string.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
+    const { listFilter } = this.props;
+    let { status, ownerView } = listFilter;
     if (['manifesting', 'sent', 'cleared', 'all'].filter(stkey => stkey === status).length === 0) {
       status = 'manifesting';
     }
-    let ownerView = listFilter.ownerView;
-    if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
+    if (ownerView !== 'all' && this.props.owners.filter(owner =>
+      listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
     const filter = { ...listFilter, status, ownerView };
@@ -77,7 +74,7 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '出区提货单号',
     dataIndex: 'ftz_rel_nos',
-    width: 180,
+    width: 250,
     render: o => <span className="text-emphasis"><TrimSpan text={o} maxLen={20} /></span>,
   }, {
     title: '报关单号',
@@ -97,7 +94,7 @@ export default class NormalDeclList extends React.Component {
         case 4:
           return <Badge status="success" text="已清关" />;
         default:
-          break;
+          return '';
       }
     },
   }, {
@@ -122,34 +119,23 @@ export default class NormalDeclList extends React.Component {
     title: '委托时间',
     width: 120,
     dataIndex: 'delg_time',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && `${moment(o).format('MM.DD HH:mm')}`,
   }, {
     title: '申报日期',
     width: 120,
     dataIndex: 'decl_time',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && `${moment(o).format('MM.DD HH:mm')}`,
   }, {
     title: '放行日期',
     width: 120,
     dataIndex: 'clean_time',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && `${moment(o).format('MM.DD HH:mm')}`,
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o) &&
+    this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '创建时间',
     width: 120,
@@ -207,7 +193,10 @@ export default class NormalDeclList extends React.Component {
     this.handleNormalDelgLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
   }
   handleDelgCancel = (row) => {
-    this.props.cancelBatchNormalClear({ normal_decl_no: row.normal_decl_no, delg_no: row.delg_no }).then((result) => {
+    this.props.cancelBatchNormalClear({
+      normal_decl_no: row.normal_decl_no,
+      delg_no: row.delg_no,
+    }).then((result) => {
       if (!result.error) {
         this.handleNewNormalDelgLoad();
       }
@@ -257,8 +246,15 @@ export default class NormalDeclList extends React.Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('normalSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
-        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
         {owners.map(data => (
@@ -303,8 +299,14 @@ export default class NormalDeclList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
-              toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              columns={this.columns}
+              rowSelection={rowSelection}
+              dataSource={this.dataSource}
+              rowKey="id"
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}
             />
           </Content>

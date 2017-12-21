@@ -182,7 +182,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 120,
+    width: 150,
     render: (o, record) => (
       <a onClick={ev => this.handlePreview(record, ev)}>
         {o}
