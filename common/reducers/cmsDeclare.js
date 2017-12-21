@@ -410,7 +410,7 @@ export function loadSendRecords({ searchText, current, pageSize }) {
   };
 }
 
-export function loadLatestSendRecord(preEntrySeqNo) {
+export function loadLatestSendRecord(searchText) {
   return {
     [CLIENT_API]: {
       types: [
@@ -420,7 +420,7 @@ export function loadLatestSendRecord(preEntrySeqNo) {
       ],
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
-      params: { preEntrySeqNo, current: 1, pageSize: 1 },
+      params: { searchText, current: 1, pageSize: 1 },
     },
   };
 }
