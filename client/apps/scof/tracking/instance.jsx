@@ -18,6 +18,16 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Search } = Input;
+function momentDateArg(itemDate) {
+  let momentArg = itemDate;
+  if (!moment(itemDate, moment.ISO_8601).isValid()) {
+    momentArg = parseFloat(itemDate);
+    if (!moment(momentArg, 'x').isValid()) {
+      momentArg = null;
+    }
+  }
+  return momentArg;
+}
 
 @injectIntl
 @connect(
@@ -120,9 +130,10 @@ export default class Instance extends Component {
       render: (fld, row) => {
         if (item.editable === 1) {
           if (item.datatype === 'DATE') {
+            const momentArg = momentDateArg(fld);
             return (
               <EditableCell
-                value={fld}
+                value={momentArg}
                 type="date"
                 cellTrigger
                 onSave={value => this.handleSave(row.id, item.field, value, item.source)}
@@ -137,10 +148,7 @@ export default class Instance extends Component {
             />
           );
         } else if (item.datatype === 'DATE') {
-          let momentArg = fld;
-          if (!Number.isNaN(Number(fld))) {
-            momentArg = Number(fld);
-          }
+          const momentArg = momentDateArg(fld);
           return momentArg && moment(momentArg).format('YYYY.MM.DD');
         }
         return fld;
