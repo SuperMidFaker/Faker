@@ -11,15 +11,15 @@ import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openBatchDeclModal, loadBatchApplyList, batchDelgCancel } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import ModuleMenu from '../../menu';
-import BatchDeclModal from './modal/batchDeclModal';
 import PageHeader from 'client/components/PageHeader';
 import { format } from 'client/common/i18n/helpers';
+import ModuleMenu from '../../menu';
+import BatchDeclModal from './modal/batchDeclModal';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -28,7 +28,6 @@ const RadioButton = Radio.Button;
   state => ({
     batchlist: state.cwmShFtz.batchApplyList,
     listFilter: state.cwmShFtz.listFilter,
-    whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
     loading: state.cwmShFtz.loading,
@@ -45,23 +44,20 @@ const RadioButton = Radio.Button;
 export default class BatchDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
+    listFilter: PropTypes.shape({ status: PropTypes.string.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
+    const { listFilter } = this.props;
+    let { status, ownerView } = listFilter;
     if (['manifesting', 'pending', 'sent', 'applied', 'cleared', 'all'].filter(stkey => stkey === status).length === 0) {
       status = 'manifesting';
     }
-    let ownerView = listFilter.ownerView;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
@@ -95,7 +91,7 @@ export default class BatchDeclList extends React.Component {
         case 'cleared':
           return (<Badge status="success" text="已清关" />);
         default:
-          break;
+          return '';
       }
     },
   }, {
@@ -135,7 +131,7 @@ export default class BatchDeclList extends React.Component {
         case '2':
           return <Tag>保展报关申请单</Tag>;
         default:
-          break;
+          return '';
       }
     },
   }, {
@@ -154,43 +150,28 @@ export default class BatchDeclList extends React.Component {
     title: '申请日期',
     width: 120,
     dataIndex: 'created_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
-      }
-    },
+    render: o => o && `${moment(o).format('YYYY.MM.DD')}`,
   }, {
     title: '申报日期',
     width: 120,
     dataIndex: 'decl_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
-      }
-    },
+    render: o => o && `${moment(o).format('YYYY.MM.DD')}`,
   }, {
     title: '放行日期',
     width: 120,
     dataIndex: 'clear_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
-      }
-    },
+    render: o => o && `${moment(o).format('YYYY.MM.DD')}`,
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o) &&
+    this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_time',
-    render: (o, record) => {
-      if (record.created_date) {
-        return `${moment(record.created_date).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: (o, record) => record.created_date && `${moment(record.created_date).format('MM.DD HH:mm')}`,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -297,11 +278,20 @@ export default class BatchDeclList extends React.Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('batchSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
-        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
-        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+        {owners.map(data => (<Option
+          key={data.customs_code}
+          value={data.customs_code}
           search={`${data.partner_code}${data.name}`}
         >{data.name}
         </Option>))}
@@ -345,8 +335,14 @@ export default class BatchDeclList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
-              toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              columns={this.columns}
+              rowSelection={rowSelection}
+              dataSource={this.dataSource}
+              rowKey="id"
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}
             />
           </Content>

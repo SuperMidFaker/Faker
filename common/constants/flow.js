@@ -7,14 +7,14 @@ exports.NODE_TRIGGERS = [{
 }];
 
 const CMS_DELEGATION_TRIGGERS = [
-  { key: 'created', text: 'onCreated' },
+  { key: 'delgCreated', text: 'onCreated' },
   { key: 'declared', text: 'onDelgDeclared', actionText: 'delgDeclare' },
   { key: 'inspected', text: 'onDelgInspected', actionText: 'delgInspect' },
   { key: 'released', text: 'onDelgReleased', actionText: 'delgRelease' },
 ];
 
 const CMS_MANIFEST_TRIGGERS = [
-  { key: 'created', text: 'onCreated', actionText: 'manifestCreate' },
+  { key: 'manifestCreated', text: 'onCreated', actionText: 'manifestCreate' },
   { key: 'generated', text: 'onManifestGenerated', actionText: 'manifestGenerate' },
 ];
 

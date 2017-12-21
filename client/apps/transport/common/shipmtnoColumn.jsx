@@ -5,7 +5,7 @@ import TrimSpan from 'client/components/trimSpan';
 export default class ShipmtNoColumnRender extends React.Component {
   static propTypes = {
     shipmtNo: PropTypes.string.isRequired,
-    shipment: PropTypes.object.isRequired,
+    shipment: PropTypes.shape({ shipmt_no: PropTypes.string.isRequired }).isRequired,
     onClick: PropTypes.func.isRequired,
   }
   handleClick = (ev) => {
@@ -18,7 +18,7 @@ export default class ShipmtNoColumnRender extends React.Component {
     const { shipment, ...rest } = extra; // eslint-disable-line no-unused-vars
     return (
       <a {...rest} onClick={this.handleClick}>
-        <TrimSpan text={shipmtNo} maxLen={14} />
+        <TrimSpan text={shipmtNo} maxLen={17} />
       </a>
     );
   }

@@ -15,11 +15,11 @@ import { createFilename } from 'client/util/dataTransform';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
-import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/SearchBar';
+import { format } from 'client/common/i18n/helpers';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -38,7 +38,7 @@ function ColumnSwitch(props) {
   return <Switch size="small" disabled={record.ciq_status === 1} checked={checked} onChange={handleChange} />;
 }
 ColumnSwitch.propTypes = {
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ ciq_status: PropTypes.bool }).isRequired,
   field: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
   onChange: PropTypes.func,
@@ -64,17 +64,15 @@ ColumnSwitch.propTypes = {
 export default class CiqDeclList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
-    ciqDeclList: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
+    ciqDeclList: PropTypes.shape({ pageSize: PropTypes.number }).isRequired,
+    listFilter: PropTypes.shape({ ieType: PropTypes.oneOf(['import', 'all', 'export']) }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
     this.handleTableLoad();
@@ -86,12 +84,12 @@ export default class CiqDeclList extends Component {
     dataIndex: 'pre_entry_seq_no',
     width: 180,
     fixed: 'left',
-    render: (o, record) => record.ciq_decl_no ? <span className="text-emphasis">{record.ciq_decl_no}</span> : <span className="text-normal">{o}</span>,
+    render: (o, record) => (record.ciq_decl_no ? <span className="text-emphasis">{record.ciq_decl_no}</span> : <span className="text-normal">{o}</span>),
   }, {
     title: <Tooltip title="申报项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
     width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
+    render: dc => (!Number.isNaN(Number(dc)) ? dc : null),
   }, {
     title: this.msg('ciqDeclCode'),
     width: 100,
@@ -113,7 +111,7 @@ export default class CiqDeclList extends Component {
         case 28:
           return <Tag color="orange">出境验证</Tag>;
         default:
-          break;
+          return null;
       }
     },
   }, {
@@ -150,7 +148,7 @@ export default class CiqDeclList extends Component {
         case 4:
           return <Badge status="success" text="签发证单" />;
         default:
-          break;
+          return null;
       }
     },
   }, {
@@ -167,7 +165,8 @@ export default class CiqDeclList extends Component {
     title: this.msg('orgCode'),
     dataIndex: 'ciq_org_code',
     width: 100,
-    render: o => this.props.organizations.find(org => org.org_code === o) && this.props.organizations.find(org => org.org_code === o).org_name,
+    render: o => this.props.organizations.find(org => org.org_code === o) &&
+    this.props.organizations.find(org => org.org_code === o).org_name,
   }, {
     title: this.msg('ciqDeclDate'),
     dataIndex: 'ciq_decl_date',
@@ -248,7 +247,6 @@ export default class CiqDeclList extends Component {
     });
   }
   handleTableLoad = (currentPage, filter) => {
-    this.setState({ expandedKeys: [] });
     this.props.loadCiqDecls({
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
@@ -272,11 +270,9 @@ export default class CiqDeclList extends Component {
     });
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
-    this.handleTableLoad(1, filters);
-  }
-  mergeFilters(curFilters, value) {
     const newFilters = {};
+    const curFilters = this.props.listFilter;
+    const value = searchVal;
     Object.keys(curFilters).forEach((key) => {
       if (key !== 'filterNo') {
         newFilters[key] = curFilters[key];
@@ -285,7 +281,7 @@ export default class CiqDeclList extends Component {
     if (value !== null && value !== undefined && value !== '') {
       newFilters.filterNo = value;
     }
-    return newFilters;
+    this.handleTableLoad(1, newFilters);
   }
   handleIEFilter = (e) => {
     const { listFilter, ciqDeclList } = this.props;
@@ -329,9 +325,15 @@ export default class CiqDeclList extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
-            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={ciqDeclList.loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={this.dataSource}
+            rowKey="id"
+            loading={ciqDeclList.loading}
             onRow={record => ({
               onClick: () => {},
               onDoubleClick: () => { this.handleDetail(record); },

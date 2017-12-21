@@ -16,16 +16,16 @@ import { loadTable, revokeOrReject, delDraft, acceptDispShipment, returnShipment
   'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES, SHIPMENT_TRACK_STATUS, TRANS_MODE_INDICATOR } from 'common/constants';
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
+import { format } from 'client/common/i18n/helpers';
 import RevokeModal from '../common/modal/revokeModal';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
-import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
-import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
-import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import CustomerSelect from '../common/customerSelect';
@@ -45,6 +45,22 @@ function TransitTimeLabel(props) {
     msg = '';
   }
   return <span>{msg}</span>;
+}
+
+function isCompleteShipment(shipmt) {
+  return shipmt.consigner_name && shipmt.consignee_province &&
+      shipmt.deliver_est_date && shipmt.pickup_est_date;
+}
+
+function mergeFilters(curFilters, name, value) {
+  const merged = curFilters.filter(flt => flt.name !== name);
+  if (value !== null && value !== undefined && value !== '') {
+    merged.push({
+      name,
+      value,
+    });
+  }
+  return merged;
 }
 // 暂时由 CreatorSelect 触发获取list
 // function fetchData({ state, dispatch, cookie }) {
@@ -91,12 +107,12 @@ export default class AcceptList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-    filters: PropTypes.array.isRequired,
+    filters: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })).isRequired,
     sortField: PropTypes.string.isRequired,
     sortOrder: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
-    shipmentlist: PropTypes.object.isRequired,
+    shipmentlist: PropTypes.shape({ currentPage: PropTypes.number }).isRequired,
     delDraft: PropTypes.func.isRequired,
     revokeOrReject: PropTypes.func.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
@@ -159,8 +175,11 @@ export default class AcceptList extends React.Component {
         return (<span style={style} >{record.shipmt_no}</span>);
       }
       return (
-        <ShipmtnoColumn shipmtNo={record.shipmt_no}
-          style={style} shipment={record} onClick={this.handleShipmtPreview}
+        <ShipmtnoColumn
+          shipmtNo={record.shipmt_no}
+          style={style}
+          shipment={record}
+          onClick={this.handleShipmtPreview}
         />
       );
     },
@@ -180,13 +199,14 @@ export default class AcceptList extends React.Component {
     width: 100,
     render: (o, record) => {
       const mode = TRANS_MODE_INDICATOR.filter(ts => ts.value === o)[0];
-      return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span> : <span>{record.transport_mode}</span>;
+      return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span>
+        : <span>{record.transport_mode}</span>;
     },
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',
     width: 100,
-    render: (o, record) => o ? moment(record.pickup_est_date).format('YYYY.MM.DD') : '',
+    render: (o, record) => (o ? moment(record.pickup_est_date).format('YYYY.MM.DD') : ''),
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
@@ -196,7 +216,7 @@ export default class AcceptList extends React.Component {
     title: this.msg('shipDeliveryDate'),
     dataIndex: 'deliver_est_date',
     width: 100,
-    render: (o, record) => o ? moment(record.deliver_est_date).format('YYYY.MM.DD') : '',
+    render: (o, record) => (o ? moment(record.deliver_est_date).format('YYYY.MM.DD') : ''),
   }, {
     title: this.msg('shipConsignor'),
     dataIndex: 'consigner_name',
@@ -246,9 +266,8 @@ export default class AcceptList extends React.Component {
         return this.msg('consginSource');
       } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
         return this.msg('subcontractSource');
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     dataIndex: 'effective',
@@ -262,7 +281,7 @@ export default class AcceptList extends React.Component {
         case -1:
           return <Tag color="red">已取消</Tag>;
         default:
-          break;
+          return '';
       }
     },
   }, {
@@ -304,6 +323,7 @@ export default class AcceptList extends React.Component {
             </PrivilegeCover>
           );
         }
+        return null;
       } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         return (
           <PrivilegeCover module="transport" feature="shipment" action="edit">
@@ -311,6 +331,7 @@ export default class AcceptList extends React.Component {
           </PrivilegeCover>
         );
       }
+      return null;
     },
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
@@ -333,7 +354,7 @@ export default class AcceptList extends React.Component {
     });
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.filters, 'name', searchVal);
+    const filters = mergeFilters(this.props.filters, 'name', searchVal);
     this.handleTableLoad(filters, 1);
     this.setState({ searchValue: searchVal });
   }
@@ -342,29 +363,28 @@ export default class AcceptList extends React.Component {
     if (srPartnerId !== -1) {
       value = srPartnerId;
     }
-    let filters = this.mergeFilters(this.props.filters, 'sr_partner_id', value);
-    filters = this.mergeFilters(filters, 'sr_tenant_id', srTenantId);
+    let filters = mergeFilters(this.props.filters, 'sr_partner_id', value);
+    filters = mergeFilters(filters, 'sr_tenant_id', srTenantId);
     this.handleTableLoad(filters, 1);
   }
   handleCreatorChange = (fieldsValue) => {
-    let filters = this.mergeFilters(this.props.filters, 'creator', fieldsValue.creator);
-    filters = this.mergeFilters(filters, 'loginId', this.props.loginId);
+    let filters = mergeFilters(this.props.filters, 'creator', fieldsValue.creator);
+    filters = mergeFilters(filters, 'loginId', this.props.loginId);
     this.handleTableLoad(filters, 1);
   }
   handleCreateBtnClick = () => {
     this.context.router.push('/transport/shipment/create');
   }
-  isCompleteShipment(shipmt) {
-    return shipmt.consigner_name && shipmt.consignee_province &&
-      shipmt.deliver_est_date && shipmt.pickup_est_date;
-  }
   handleShipmtAccept = (row) => {
-    if (!this.isCompleteShipment(row)) {
+    if (!isCompleteShipment(row)) {
       message.error('运单信息未完整, 请完善');
       return;
     }
 
-    this.props.acceptDispShipment([row.key], this.props.acpterId, this.props.acpterName, this.props.acpterId, this.props.acpterName).then((result) => {
+    this.props.acceptDispShipment(
+      [row.key], this.props.acpterId, this.props.acpterName,
+      this.props.acpterId, this.props.acpterName
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -383,7 +403,7 @@ export default class AcceptList extends React.Component {
       for (let j = 0; j < partnerIds.length; j++) {
         if (partnerIds[i] !== partnerIds[j]) {
           message.info('批量接单需选择同一客户');
-          return false;
+          return;
         }
       }
     }
@@ -391,7 +411,7 @@ export default class AcceptList extends React.Component {
     let valid = true;
     for (let i = 0; i < dispIds.length; i++) {
       const shipmt = this.props.shipmentlist.data.filter(shl => shl.key === dispIds[i])[0];
-      if (!this.isCompleteShipment(shipmt)) {
+      if (!isCompleteShipment(shipmt)) {
         message.error('运单信息未完整, 请完善');
         valid = false;
         break;
@@ -400,7 +420,10 @@ export default class AcceptList extends React.Component {
     if (!valid) {
       return;
     }
-    this.props.acceptDispShipment(dispIds, this.props.acpterId, this.props.acpterName, this.props.acpterId, this.props.acpterName).then((result) => {
+    this.props.acceptDispShipment(
+      dispIds, this.props.acpterId, this.props.acpterName,
+      this.props.acpterId, this.props.acpterName
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -453,16 +476,6 @@ export default class AcceptList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  mergeFilters(curFilters, name, value) {
-    const merged = curFilters.filter(flt => flt.name !== name);
-    if (value !== null && value !== undefined && value !== '') {
-      merged.push({
-        name,
-        value,
-      });
-    }
-    return merged;
-  }
   render() {
     const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
@@ -471,7 +484,8 @@ export default class AcceptList extends React.Component {
       onChange: (selectedRowKeys) => {
         const partnerIds = [];
         for (let i = 0; i < selectedRowKeys.length; i++) {
-          const partnerId = shipmentlist.data.find(item => item.key === selectedRowKeys[i]).partnerId;
+          const { partnerId } = shipmentlist.data.find(item =>
+            item.key === selectedRowKeys[i]);
           partnerIds.push(partnerId);
         }
         this.setState({
@@ -512,9 +526,14 @@ export default class AcceptList extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <DataTable
-            toolbarActions={toolbarActions} bulkActions={bulkActions}
-            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} loading={loading} dataSource={this.dataSource}
+            toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            loading={loading}
+            dataSource={this.dataSource}
           />
         </Content>
         <RevokeModal reload={this.handleTableLoad} />
