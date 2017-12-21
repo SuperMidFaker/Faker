@@ -36,6 +36,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'ADD_GOODS_CONT', 'ADD_GOODS_CONT_SUCCEED', 'ADD_GOODS_CONT_FAIL',
   'GOODS_CONT_LOAD', 'GOODS_CONT_LOAD_SUCCEED', 'GOODS_CONT_LOAD_FAIL',
   'DELETE_GOODS_CONT', 'DELETE_GOODS_CONT_SUCCEED', 'DELETE_GOODS_CONT_FAIL',
+  'GET_CIQCODE_BY_HSCODE', 'GET_CIQCODE_BY_HSCODE_SUCCEED', 'GET_CIQCODE_BY_HSCODE_FAIL',
 ]);
 
 const initialState = {
@@ -768,6 +769,21 @@ export function deleteGoodsCont(ids) {
       endpoint: 'v1/cms/ciq/goods/cont/delete',
       method: 'post',
       data: { ids },
+    },
+  };
+}
+
+export function getCiqCodeByHscode(hscode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_CIQCODE_BY_HSCODE,
+        actionTypes.GET_CIQCODE_BY_HSCODE_SUCCEED,
+        actionTypes.GET_CIQCODE_BY_HSCODE_FAIL,
+      ],
+      endpoint: 'v1/cms/ciqcode/get/by/hscode',
+      method: 'get',
+      params: { hscode },
     },
   };
 }
