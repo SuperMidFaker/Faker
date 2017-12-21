@@ -12,6 +12,7 @@ import { hideGoodsModal,
   extendCountryParam,
   toggleGoodsLicenceModal,
   toggleGoodsContModal,
+  getCiqCodeByHscode,
 } from 'common/reducers/cmsCiqDeclare';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import GoodsLicenceModal from './goodsLecenceModal';
@@ -41,6 +42,7 @@ const { Option } = Select;
     extendCountryParam,
     toggleGoodsLicenceModal,
     toggleGoodsContModal,
+    getCiqCodeByHscode,
   }
 )
 @Form.create()
@@ -51,12 +53,22 @@ export default class GoodsModal extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    ciqcode: [],
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
       const { countries } = this.props;
       if (!countries.find(coun => coun.country_code === nextProps.data.orig_country)) {
         this.props.extendCountryParam(nextProps.data.orig_country);
       }
+      this.props.getCiqCodeByHscode(nextProps.data.hscode).then((result) => {
+        if (!result.error) {
+          this.setState({
+            ciqcode: result.data,
+          });
+        }
+      });
     }
     if (!nextProps.visible) {
       this.props.form.resetFields();
@@ -71,6 +83,8 @@ export default class GoodsModal extends Component {
     if (values.goods_attr.length !== 0) {
       const goodsAttr = values.goods_attr.join(',');
       values.goods_attr = goodsAttr;
+    } else {
+      values.goods_attr = '';
     }
     this.props.updateCiqGood(this.props.data.id, values).then((result) => {
       if (!result.error) {
@@ -158,7 +172,12 @@ export default class GoodsModal extends Component {
                 <FormItem {...formItemLayout} colon={false} label="CIQ代码" required >
                   {getFieldDecorator('ciq_code', {
                     initialValue: data.ciq_code,
-                  })(<Select />)}
+                  })(<Select>
+                    {this.state.ciqcode.map(item =>
+                      (<Option key={item.ciqcode} value={item.ciqcode}>
+                        {item.ciqcode}
+                      </Option>))}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span="6">
