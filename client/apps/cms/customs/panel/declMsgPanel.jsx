@@ -1,20 +1,15 @@
 import React from 'react';
 import moment from 'moment';
-import superAgent from 'superagent';
-import { Tabs, Input, Modal } from 'antd';
+import { Input } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
-import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import { connect } from 'react-redux';
-import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsDeclare';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import { loadSendRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsDeclare';
+import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 
-require('codemirror/lib/codemirror.css');
-require('codemirror/mode/xml/xml.js');
 
-const { TabPane } = Tabs;
 const { Search } = Input;
 
 @injectIntl
@@ -22,33 +17,24 @@ const { Search } = Input;
   state => ({
     tenantId: state.account.tenantId,
     sendRecords: state.cmsDeclare.sendRecords,
-    returnRecords: state.cmsDeclare.returnRecords,
     visible: state.cmsDeclare.declMsgDock.visible,
-    modalVisible: state.cmsDeclare.declMsgModal.visible,
   }),
   {
-    loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal,
+    loadSendRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal, toggleDeclMsgModal,
   }
 )
 export default class DeclMsgPanel extends React.Component {
   static propTypes = {
   }
   state = {
-    sendText: '',
-    recvText: '',
-    text: '',
+    searchText: '',
   }
   componentWillMount() {
-    const { sendRecords, returnRecords } = this.props;
+    const { sendRecords } = this.props;
     this.props.loadSendRecords({
-      preEntrySeqNo: '',
+      searchText: '',
       current: sendRecords.current,
       pageSize: sendRecords.pageSize,
-    });
-    this.props.loadReturnRecords({
-      preEntrySeqNo: '',
-      current: returnRecords.current,
-      pageSize: returnRecords.pageSize,
     });
   }
   sendDataSource = new DataTable.DataSource({
@@ -64,7 +50,7 @@ export default class DeclMsgPanel extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        preEntrySeqNo: this.state.sendText,
+        searchText: this.state.searchText,
         pageSize: pagination.pageSize,
         current: pagination.current,
       };
@@ -72,40 +58,19 @@ export default class DeclMsgPanel extends React.Component {
     },
     remotes: this.props.sendRecords,
   });
-  recvDataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadReturnRecords(params),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-      showTotal: total => `共 ${total} 条`,
-    }),
-    getParams: (pagination) => {
-      const params = {
-        preEntrySeqNo: this.state.recvText,
-        pageSize: pagination.pageSize,
-        current: pagination.current,
-      };
-      return params;
-    },
-    remotes: this.props.returnRecords,
-  });
   sentColumns = [{
     title: '统一编号',
     dataIndex: 'pre_entry_seq_no',
     width: 180,
   }, {
     title: '申报通道',
-    dataIndex: 'ep_code',
+    dataIndex: 'channel',
     width: 100,
   }, {
     title: '报文',
     dataIndex: 'sent_file',
     width: 80,
-    render: o => <RowAction onClick={() => this.showDeclMsgModal('send', o)} icon="eye-o" />,
+    render: o => <RowAction onClick={() => this.showDeclMsgModal('sent', o)} icon="eye-o" />,
   }, {
     title: '发送人员',
     dataIndex: 'sender_name',
@@ -117,7 +82,7 @@ export default class DeclMsgPanel extends React.Component {
     render: o => moment(o).format('MM.DD HH:mm'),
   }, {
     title: '报关单号',
-    dataIndex: 'cus_decl_no',
+    dataIndex: 'entry_id',
     width: 180,
   }, {
     title: '回执',
@@ -130,135 +95,49 @@ export default class DeclMsgPanel extends React.Component {
     width: 120,
     render: o => o && moment(o).format('MM.DD HH:mm'),
   }];
-  recvColumns = [{
-    title: '统一编号',
-    dataIndex: 'pre_entry_seq_no',
-    width: 180,
-  }, {
-    title: '回执报文',
-    dataIndex: 'return_file',
-    render: o => <a onClick={() => this.showDeclMsgModal('return', o)}><TrimSpan text={o} maxLen={70} tailer={20} /></a>,
-  }, {
-    title: '接收时间',
-    dataIndex: 'return_date',
-    width: 150,
-    render: o => moment(o).format('YYYY.MM.DD HH:mm'),
-  }];
   hideDock = () => {
     this.props.hideDeclMsgDock();
   }
   searchSend = (e) => {
     this.setState({
-      sendText: e.target.value,
-    });
-  }
-  searchRecv = (e) => {
-    this.setState({
-      recvText: e.target.value,
+      searchText: e.target.value,
     });
   }
   handleSearchSend = () => {
     const { sendRecords } = this.props;
-    const { sendText } = this.state;
+    const { searchText } = this.state;
     this.props.loadSendRecords({
-      preEntrySeqNo: sendText,
+      searchText,
       current: 1,
       pageSize: sendRecords.pageSize,
-    });
-  }
-  handleSearchRecv = () => {
-    const { returnRecords } = this.props;
-    const { recvText } = this.state;
-    this.props.loadReturnRecords({
-      preEntrySeqNo: recvText,
-      current: 1,
-      pageSize: returnRecords.pageSize,
     });
   }
   hideDeclMsgModal = () => {
     this.props.hideDeclMsgModal();
   }
   showDeclMsgModal = (type, filename) => {
-    const me = this;
-    let url = '';
-    if (type === 'send') {
-      url = `${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`;
-    } else {
-      url = `${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`;
-    }
-    superAgent
-      .get(url)
-      .withCredentials()
-      .type('text/xml')
-      .end((err, req) => {
-        if (!err) {
-          me.setState({
-            text: req.text,
-          });
-        }
-      });
-    this.props.showDeclMsgModal();
-  }
-  renderTabs = () => {
-    const { sendRecords, returnRecords } = this.props;
-    this.sendDataSource.remotes = sendRecords;
-    this.recvDataSource.remotes = returnRecords;
-    return (
-      <Tabs defaultActiveKey="sent">
-        <TabPane tab="申报报文" key="sent">
-          <DataTable
-            size="middle"
-            columns={this.sentColumns}
-            dataSource={this.sendDataSource}
-            scrollOffset="240"
-            rowkey="sent_file"
-            toolbarActions={
-              <Search
-                style={{ width: 200 }}
-                value={this.state.sendText}
-                onChange={this.searchSend}
-                onSearch={this.handleSearchSend}
-              />
-            }
-          />
-        </TabPane>
-        <TabPane tab="回执记录" key="recv">
-          <DataTable
-            size="middle"
-            columns={this.recvColumns}
-            dataSource={this.recvDataSource}
-            scrollOffset="400"
-            rowkey="return_file"
-            toolbarActions={
-              <Search
-                style={{ width: 200 }}
-                value={this.state.recvText}
-                onChange={this.searchRecv}
-                onSearch={this.handleSearchRecv}
-              />
-            }
-          />
-        </TabPane>
-      </Tabs>
-    );
+    this.props.toggleDeclMsgModal(true, filename, type);
   }
   render() {
-    const { visible, modalVisible } = this.props;
+    const { visible, sendRecords } = this.props;
+    this.sendDataSource.remotes = sendRecords;
     return (
       <DockPanel title="报文收发记录" size="large" visible={visible} onClose={this.hideDock}>
-        {visible && this.renderTabs()}
-        <Modal width={800} maskClosable={false} visible={modalVisible} title="declMsg" onCancel={this.hideDeclMsgModal} onOk={this.hideDeclMsgModal}>
-          <CodeMirror
-            value={this.state.text}
-            options={{
-          mode: 'xml',
-        }}
-            scroll={{
-          y: 700,
-        }}
-            onChange={() => {}}
-          />
-        </Modal>
+        {visible && <DataTable
+          size="middle"
+          columns={this.sentColumns}
+          dataSource={this.sendDataSource}
+          scrollOffset="240"
+          rowkey="sent_file"
+          toolbarActions={
+            <Search
+              style={{ width: 200 }}
+              value={this.state.searchText}
+              onChange={this.searchSend}
+              onSearch={this.handleSearchSend}
+            />
+            }
+        />}
       </DockPanel>
     );
   }
