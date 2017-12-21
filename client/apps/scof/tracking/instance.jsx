@@ -18,6 +18,7 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Search } = Input;
+
 function momentDateArg(itemDate) {
   let momentArg = itemDate;
   if (!moment(itemDate, moment.ISO_8601).isValid()) {
