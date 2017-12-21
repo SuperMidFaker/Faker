@@ -364,7 +364,18 @@ export default class SHFTZTransferSelfDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
-                <Description term="货主">{transfSelfReg.owner_name}</Description>
+                <Description term="收货单位海关编码">
+                  <EditableCell
+                    value={transfSelfReg.owner_cus_code}
+                    onSave={value => this.handleInfoSave('owner_cus_code', value)}
+                  />
+                </Description>
+                <Description term="收货单位">
+                  <EditableCell
+                    value={transfSelfReg.owner_name}
+                    onSave={value => this.handleInfoSave('owner_name', value)}
+                  />
+                </Description>
                 <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
                 <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
                 <Description term="入库单号">

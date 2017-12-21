@@ -21,7 +21,7 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const Step = Steps.Step;
+const { Step } = Steps;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -74,13 +74,6 @@ export default class SHFTZTransferInDetail extends Component {
     comparable: false,
     fullscreen: true,
   }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
       const comparable = nextProps.transfInReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
@@ -90,11 +83,13 @@ export default class SHFTZTransferInDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleEnqueryPairing = () => {
-    const preFtzEntNo = this.props.params.preFtzEntNo;
-    const loginName = this.props.username;
-    const whse = this.props.whse;
-    const transfInReg = this.props.transfInReg;
-    this.props.pairEntryRegProducts(preFtzEntNo, transfInReg.asn_no, whse.code, whse.ftz_whse_code, loginName).then((result) => {
+    const {
+      username: loginName, params: { preFtzEntNo }, whse, transfInReg,
+    } = this.props;
+    this.props.pairEntryRegProducts(
+      preFtzEntNo, transfInReg.asn_no, whse.code,
+      whse.ftz_whse_code, loginName
+    ).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
@@ -211,7 +206,7 @@ export default class SHFTZTransferInDetail extends Component {
     },
   }]
   handleInfoSave = (field, value) => {
-    const preFtzEntNo = this.props.params.preFtzEntNo;
+    const { preFtzEntNo } = this.props.params;
     this.props.updateEntryReg(preFtzEntNo, field, value).then((result) => {
       if (result.error) {
         notification.error({
@@ -228,16 +223,17 @@ export default class SHFTZTransferInDetail extends Component {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.transfInReg.inbound_no}`);
   }
   handlePairingConfirmed = () => {
-    const preFtzEntNo = this.props.params.preFtzEntNo;
-    this.props.checkEntryRegStatus(preFtzEntNo, CWM_SHFTZ_APIREG_STATUS.completed).then((result) => {
-      if (result.error) {
-        notification.error({
-          message: '操作失败',
-          description: result.error.message,
-          duration: 15,
-        });
-      }
-    });
+    const { preFtzEntNo } = this.props.params;
+    this.props.checkEntryRegStatus(preFtzEntNo, CWM_SHFTZ_APIREG_STATUS.completed)
+      .then((result) => {
+        if (result.error) {
+          notification.error({
+            message: '操作失败',
+            description: result.error.message,
+            duration: 15,
+          });
+        }
+      });
   }
   render() {
     const {
@@ -247,7 +243,8 @@ export default class SHFTZTransferInDetail extends Component {
       return null;
     }
     const entType = CWM_ASN_BONDED_REGTYPES[2];
-    const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === transfInReg.inbound_status)[0];
+    const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status =>
+      status.value === transfInReg.inbound_status)[0];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -302,15 +299,27 @@ export default class SHFTZTransferInDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="海关入库单号">
-                  <EditableCell value={transfInReg.ftz_ent_no}
+                  <EditableCell
+                    value={transfInReg.ftz_ent_no}
                     onSave={value => this.handleInfoSave('ftz_ent_no', value)}
                   />
                 </Description>
-                <Description term="收货单位海关编码">{transfInReg.owner_cus_code}</Description>
-                <Description term="收货单位">{transfInReg.owner_name}</Description>
+                <Description term="收货单位海关编码">
+                  <EditableCell
+                    value={transfInReg.owner_cus_code}
+                    onSave={value => this.handleInfoSave('owner_cus_code', value)}
+                  />
+                </Description>
+                <Description term="收货单位">
+                  <EditableCell
+                    value={transfInReg.owner_name}
+                    onSave={value => this.handleInfoSave('owner_name', value)}
+                  />
+                </Description>
                 <Description term="收货仓库号">{transfInReg.receiver_ftz_whse_code}</Description>
                 <Description term="海关出库单号">
-                  <EditableCell value={transfInReg.ftz_rel_no}
+                  <EditableCell
+                    value={transfInReg.ftz_rel_no}
                     onSave={value => this.handleInfoSave('ftz_rel_no', value)}
                   />
                 </Description>
@@ -318,12 +327,16 @@ export default class SHFTZTransferInDetail extends Component {
                 <Description term="发货单位">{transfInReg.sender_name}</Description>
                 <Description term="发货仓库号">{transfInReg.sender_ftz_whse_code}</Description>
                 <Description term="进库日期">
-                  <EditableCell type="date" value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
+                  <EditableCell
+                    type="date"
+                    value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
                     onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
                   />
                 </Description>
                 <Description term="转入完成时间">
-                  <EditableCell type="date" value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
+                  <EditableCell
+                    type="date"
+                    value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
                     onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
                   />
                 </Description>
@@ -336,10 +349,19 @@ export default class SHFTZTransferInDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
-              <DataPane fullscreen={this.state.fullscreen}
-                columns={this.columns} rowSelection={rowSelection} indentSize={0}
-                dataSource={reg.details} rowKey="id" loading={this.state.loading}
+            <MagicCard
+              bodyStyle={{ padding: 0 }}
+              hoverable={false}
+              onSizeChange={this.toggleFullscreen}
+            >
+              <DataPane
+                fullscreen={this.state.fullscreen}
+                columns={this.columns}
+                rowSelection={rowSelection}
+                indentSize={0}
+                dataSource={reg.details}
+                rowKey="id"
+                loading={this.state.loading}
               >
                 <DataPane.Toolbar>
                   <Row type="flex">
