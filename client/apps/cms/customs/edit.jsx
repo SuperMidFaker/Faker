@@ -7,7 +7,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsManifest';
-import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
+import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog } from 'common/reducers/cmsDeclare';
+import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -25,7 +26,9 @@ import AttachedCertsPane from './tabpane/attachedCertsPane';
 import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
+import CusDeclLogsPanel from './panel/cusDeclLogsPanel';
 import { DocDef } from './print/docDef';
+import DeclMsgModal from './modals/declMsgModal';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -71,6 +74,8 @@ function fetchData({ dispatch, params, state }) {
     showSendDeclModal,
     setNavTitle,
     showPreviewer,
+    toggleDeclMsgModal,
+    showDeclLog,
   }
 )
 @connectFetch()(fetchData)
@@ -202,13 +207,15 @@ export default class CustomsDeclEditor extends React.Component {
       this.handleEpSendXmlView(this.props.head.ep_send_filename);
     } else if (ev.key === 'resultMsg') {
       this.handleEpRecvXmlView(this.props.head.ep_receipt_filename);
+    } else if (ev.key === 'log') {
+      this.props.showDeclLog();
     }
   }
   handleEpSendXmlView = (filename) => {
-    window.open(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`);
+    this.props.toggleDeclMsgModal(true, filename, 'sent');
   }
   handleEpRecvXmlView = (filename) => {
-    window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
+    this.props.toggleDeclMsgModal(true, filename, 'return');
   }
   handlePrintMenuClick = (ev) => {
     const {
@@ -366,6 +373,8 @@ export default class CustomsDeclEditor extends React.Component {
         <OrderDockPanel />
         <SendDeclMsgModal reload={this.reloadEntry} />
         <DeclReleasedModal reload={this.reloadEntry} />
+        <DeclMsgModal />
+        <CusDeclLogsPanel preEntrySeqNo={head.pre_entry_seq_no} />
       </Layout>
     );
   }

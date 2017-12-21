@@ -17,14 +17,14 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'CLEAR_CUSTOMS', 'CLEAR_CUSTOMS_SUCCEED', 'CLEAR_CUSTOMS_FAIL',
   'SEND_MUTI_DECL', 'SEND_MUTI_DECL_SUCCEED', 'SEND_MUTI_DECL_FAIL',
   'SHOW_BATCH_SEND_MODAL', 'SHOW_BATCH_SEND_MODAL_SUCCEED', 'SHOW_BATCH_SEND_MODAL_FAIL',
-  'CLOSE_BATCH_SEND_MODAL',
+  'CLOSE_BATCH_SEND_MODAL', 'SHOW_DECL_LOG', 'HIDE_DECL_LOG',
   'UPDATE_MARK', 'UPDATE_MARK_SUCCEED', 'UPDATE_MARK_FAIL',
   'LOAD_PESEND_RECORDS', 'LOAD_PESEND_RECORDS_SUCCEED', 'LOAD_PESEND_RECORDS_FAIL',
   'LOAD_SEND_RECORDS', 'LOAD_SEND_RECORDS_SUCCEED', 'LOAD_SEND_RECORDS_FAIL',
-  'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
   'VALIDATE_ENTRY_ID', 'VALIDATE_ENTRY_ID_SUCCEED', 'VALIDATE_ENTRY_ID_FAIL',
+  'LOAD_DECL_LOGS', 'LOAD_DECL_LOGS_SUCCEED', 'LOAD_DECL_LOGS_FAIL',
 ]);
 
 const initialState = {
@@ -76,16 +76,13 @@ const initialState = {
     current: 1,
     data: [],
   },
-  returnRecords: {
-    totalCount: 0,
-    pageSize: 10,
-    current: 1,
-    data: [],
-  },
   declMsgDock: {
     visible: false,
   },
   declMsgModal: {
+    visible: false,
+  },
+  declLogPanel: {
     visible: false,
   },
 };
@@ -136,8 +133,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchSendModal: { ...state.batchSendModal, visible: false } };
     case actionTypes.LOAD_SEND_RECORDS_SUCCEED:
       return { ...state, sendRecords: { ...action.result.data } };
-    case actionTypes.LOAD_RETURN_RECORDS_SUCCEED:
-      return { ...state, returnRecords: { ...action.result.data } };
     case actionTypes.SHOW_DECL_MSG_DOCK:
       return { ...state, declMsgDock: { ...state.declMsgDock, visible: true } };
     case actionTypes.HIDE_DECL_MSG_DOCK:
@@ -146,6 +141,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, declMsgModal: { ...state.declMsgModal, visible: true } };
     case actionTypes.HIDE_DECL_MSG_MODAL:
       return { ...state, declMsgModal: { ...state.declMsgModal, visible: false } };
+    case actionTypes.SHOW_DECL_LOG:
+      return { ...state, declLogPanel: { ...state.declLogPanel, visible: true } };
+    case actionTypes.HIDE_DECL_LOG:
+      return { ...state, declLogPanel: { ...state.declLogPanel, visible: false } };
     default:
       return state;
   }
@@ -396,7 +395,7 @@ export function updateMark(changeVal, entryHeadId) {
   };
 }
 
-export function loadSendRecords({ preEntrySeqNo, current, pageSize }) {
+export function loadSendRecords({ searchText, current, pageSize }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -406,7 +405,7 @@ export function loadSendRecords({ preEntrySeqNo, current, pageSize }) {
       ],
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
-      params: { preEntrySeqNo, current, pageSize },
+      params: { searchText, current, pageSize },
     },
   };
 }
@@ -422,21 +421,6 @@ export function loadLatestSendRecord(preEntrySeqNo) {
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
       params: { preEntrySeqNo, current: 1, pageSize: 1 },
-    },
-  };
-}
-
-export function loadReturnRecords({ preEntrySeqNo, current, pageSize }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_RETURN_RECORDS,
-        actionTypes.LOAD_RETURN_RECORDS_SUCCEED,
-        actionTypes.LOAD_RETURN_RECORDS_FAIL,
-      ],
-      endpoint: 'v1/cms/return/records/load',
-      method: 'get',
-      params: { preEntrySeqNo, current, pageSize },
     },
   };
 }
@@ -480,3 +464,29 @@ export function validateEntryId(entryNo) {
   };
 }
 
+export function showDeclLog() {
+  return {
+    type: actionTypes.SHOW_DECL_LOG,
+  };
+}
+
+export function hideDeclLog() {
+  return {
+    type: actionTypes.HIDE_DECL_LOG,
+  };
+}
+
+export function loadDeclLogs(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DECL_LOGS,
+        actionTypes.LOAD_DECL_LOGS_SUCCEED,
+        actionTypes.LOAD_DECL_LOGS_FAIL,
+      ],
+      endpoint: 'v1/cms/decl/logs/load',
+      method: 'get',
+      params: { preEntrySeqNo },
+    },
+  };
+}
