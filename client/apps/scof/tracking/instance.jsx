@@ -8,16 +8,16 @@ import { Breadcrumb, Layout, Button, Input } from 'antd';
 import EditableCell from 'client/components/EditableCell';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import RangePickerPopover from './modals/rangePickerPopover';
 import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/scvTracking';
 import { makeExcel } from 'common/reducers/common';
 import { createFilename } from 'client/util/dataTransform';
 import { format } from 'client/common/i18n/helpers';
+import RangePickerPopover from './modals/rangePickerPopover';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Search = Input.Search;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -38,8 +38,8 @@ const Search = Input.Search;
 export default class Instance extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    trackings: PropTypes.array.isRequired,
-    trackingItems: PropTypes.array.isRequired,
+    // trackings: PropTypes.array.isRequired,
+    // trackingItems: PropTypes.array.isRequired,
     loadTrackingItems: PropTypes.func.isRequired,
     loadTrackingOrders: PropTypes.func.isRequired,
     upsertTrackingOrderCustom: PropTypes.func.isRequired,
@@ -60,7 +60,10 @@ export default class Instance extends Component {
       nextProps.loadTrackingItems(Number(nextProps.params.trackingId));
       this.handleTableload(nextProps);
     }
-    this.setState({ tracking: nextProps.trackings.find(item => item.id === Number(nextProps.params.trackingId)) });
+    this.setState({
+      tracking: nextProps.trackings.find(item =>
+        item.id === Number(nextProps.params.trackingId)),
+    });
   }
   handleTableload = (props) => {
     props.loadTrackingOrders({
@@ -81,7 +84,12 @@ export default class Instance extends Component {
   }
   handleDateFilter = (field, values) => {
     if (values.length > 0) {
-      this.setState({ filters: { ...this.state.filters, [field]: [values[0].toString(), values[1].toString()] } }, () => {
+      this.setState({
+        filters: {
+          ...this.state.filters,
+          [field]: [values[0].toString(), values[1].toString()],
+        },
+      }, () => {
         this.handleTableload(this.props);
       });
     } else {
@@ -113,31 +121,37 @@ export default class Instance extends Component {
         if (item.editable === 1) {
           if (item.datatype === 'DATE') {
             return (
-              <EditableCell value={fld} type="date" cellTrigger
-                onSave={value => this.handleSave(row.id, item.field, value, item.source)}
-              />
-            );
-          } else {
-            return (
-              <EditableCell value={fld} cellTrigger
+              <EditableCell
+                value={fld}
+                type="date"
+                cellTrigger
                 onSave={value => this.handleSave(row.id, item.field, value, item.source)}
               />
             );
           }
+          return (
+            <EditableCell
+              value={fld}
+              cellTrigger
+              onSave={value => this.handleSave(row.id, item.field, value, item.source)}
+            />
+          );
         } else if (item.datatype === 'DATE') {
-          return fld && moment(fld).format('YYYY.MM.DD');
-        } else {
-          return fld;
+          let momentArg = fld;
+          if (!Number.isNaN(Number(fld))) {
+            momentArg = Number(fld);
+          }
+          return momentArg && moment(momentArg).format('YYYY.MM.DD');
         }
+        return fld;
       },
       renderExcelCell: (fld) => {
         if (item.source === 3) {
           return fld;
         } else if (item.datatype === 'DATE') {
           return fld ? moment(fld).format('YYYY-MM-DD') : '';
-        } else {
-          return fld;
         }
+        return fld;
       },
     };
   })
