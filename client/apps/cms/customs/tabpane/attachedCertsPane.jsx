@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Select, Input, message } from 'antd';
-import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
+import { Button, Select, Input, message, Tooltip, Upload } from 'antd';
+import { loadCertMarks, saveCertMark, delbillCertmark, addCmsDeclCert } from 'common/reducers/cmsManifest';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { CMS_DECL_STATUS } from 'common/constants';
@@ -27,7 +27,10 @@ function ColumnInput(props) {
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({
+    cert_code: PropTypes.string,
+    cert_num: PropTypes.string,
+  }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
@@ -54,12 +57,19 @@ function ColumnSelect(props) {
   return <span>{existOpt ? existOpt.text : ''}</span>;
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({
+    cert_code: PropTypes.string,
+    cert_num: PropTypes.string,
+  }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string,
+    value: PropTypes.string,
+    key: PropTypes.string,
+  })).isRequired,
 };
 
 @injectIntl
@@ -72,13 +82,21 @@ ColumnSelect.proptypes = {
     certMarks: state.cmsManifest.certMarks,
     certParams: state.cmsManifest.certParams,
   }),
-  { loadCertMarks, saveCertMark, delbillCertmark }
+  {
+    loadCertMarks, saveCertMark, delbillCertmark, addCmsDeclCert,
+  }
 )
 export default class CertMarkPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    certMarks: PropTypes.array,
-    certParams: PropTypes.array,
+    certMarks: PropTypes.arrayOf(PropTypes.shape({
+      cert_code: PropTypes.string,
+      cert_num: PropTypes.string,
+    })),
+    certParams: PropTypes.arrayOf(PropTypes.shape({
+      cert_code: PropTypes.string,
+      cert_spec: PropTypes.string,
+    })),
   }
   state = {
     datas: [],
@@ -152,6 +170,16 @@ export default class CertMarkPane extends React.Component {
     datas.splice(index, 1);
     this.setState({ datas });
   }
+  handleUploaded = (data) => {
+    this.props.addCmsDeclCert(data).then((result) => {
+      if (!result.error) {
+        this.props.loadCertMarks(this.props.head.pre_entry_seq_no);
+      }
+    });
+  }
+  handleView = (row) => {
+    window.open(row.cert_file);
+  }
   render() {
     const { certParams, head } = this.props;
     const option = certParams.map(cert => ({
@@ -183,9 +211,34 @@ export default class CertMarkPane extends React.Component {
     }, {
       width: 100,
       render: (o, record, index) => {
+        const me = this;
+        const props = {
+          action: `${API_ROOTS.default}v1/upload/img/`,
+          multiple: false,
+          showUploadList: false,
+          withCredentials: true,
+          onChange(info) {
+            if (info.file.response && info.file.response.status === 200) {
+              me.handleUploaded({
+                delg_no: head.delg_no,
+                pre_entry_seq_no: head.pre_entry_seq_no,
+                doc_code: record.cert_code,
+                doc_no: record.cert_num,
+                doc_name: info.file.name,
+                url: info.file.response.data,
+                doc_type: info.file.type,
+              });
+              message.success('上传成功');
+            }
+          },
+        };
         const fileAction = record.cert_file ?
           <RowAction shape="circle" onClick={this.handleView} icon="eye-o" tooltip="查看文件" row={record} /> :
-          <RowAction shape="circle" primary onClick={this.handleUpload} icon="upload" tooltip="上传文件" row={record} />;
+          (<Upload {...props}>
+            <Tooltip title="上传文件">
+              <Button shape="circle" icon="upload" size="small" style={{ marginRight: 8 }} />
+            </Tooltip>
+          </Upload>);
         if (head.status < CMS_DECL_STATUS.sent.value) {
           if (record.id) {
             return (<span>
