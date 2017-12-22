@@ -52,7 +52,6 @@ import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
-import * as CMSManual from './cms/manual';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
@@ -63,6 +62,8 @@ import * as CMSTradeItemRepo from './cms/tradeitem/repo';
 import * as CMSTradeItemRepoItem from './cms/tradeitem/repo/item';
 import * as CMSTradeItemTask from './cms/tradeitem/task';
 import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
+import * as CMSManual from './cms/manual';
+import * as CMSPermit from './cms/permit';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -332,6 +333,10 @@ export default(store) => {
             <Route path="manual">
               <IndexRoute component={CMSManual.List} />
               <Route path=":id" component={CMSManual.Detail} />
+            </Route>
+            <Route path="permit">
+              <IndexRoute component={CMSPermit.List} />
+              <Route path=":id" component={CMSPermit.Detail} />
             </Route>
             <Route path="billing">
               <IndexRedirect to="/clearance/billing/expense" />

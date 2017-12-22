@@ -127,9 +127,8 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'tradeItem'),
         }, {
           key: 'cms-compliance-2',
-          disabled: true,
-          path: '/clearance/license',
-          text: formatMsg(intl, 'license'),
+          path: '/clearance/permit',
+          text: formatMsg(intl, 'permit'),
         }, {
           key: 'cms-compliance-3',
           path: '/clearance/manual',

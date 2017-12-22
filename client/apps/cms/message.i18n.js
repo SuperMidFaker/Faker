@@ -65,9 +65,9 @@ const messages = defineMessages({
     id: 'cms.module.compliance.special.category',
     defaultMessage: '特殊商品编码分类',
   },
-  license: {
-    id: 'cms.module.compliance.license',
-    defaultMessage: '单证管理',
+  permit: {
+    id: 'cms.module.compliance.permit',
+    defaultMessage: '涉证资料',
   },
   manual: {
     id: 'cms.module.compliance.manual',
