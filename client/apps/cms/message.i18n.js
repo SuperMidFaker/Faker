@@ -49,25 +49,9 @@ const messages = defineMessages({
     id: 'cms.module.export.decl.ciq',
     defaultMessage: '出境报检申报',
   },
-  billing: {
-    id: 'cms.module.billing',
-    defaultMessage: '费收',
-  },
-  expense: {
-    id: 'cms.module.billing.expense',
-    defaultMessage: '费用管理',
-  },
-  quote: {
-    id: 'cms.module.resources.quote',
-    defaultMessage: '费率设置',
-  },
-  classification: {
-    id: 'cms.module.classification',
-    defaultMessage: '商品归类',
-  },
   tradeItem: {
     id: 'cms.module.classification.trade.item',
-    defaultMessage: '物料归类',
+    defaultMessage: '商品归类',
   },
   hscode: {
     id: 'cms.module.classification.hscode',
@@ -85,13 +69,21 @@ const messages = defineMessages({
     id: 'cms.module.manual',
     defaultMessage: '手册帐册',
   },
+  billing: {
+    id: 'cms.module.billing',
+    defaultMessage: '费收',
+  },
+  expense: {
+    id: 'cms.module.billing.expense',
+    defaultMessage: '费用管理',
+  },
+  quote: {
+    id: 'cms.module.billing.quote',
+    defaultMessage: '费率设置',
+  },
   analytics: {
     id: 'cms.module.analytics',
-    defaultMessage: '报表中心',
-  },
-  analyticsKPI: {
-    id: 'cms.module.analytics.kpi',
-    defaultMessage: 'KPI分析',
+    defaultMessage: '统计分析',
   },
   settings: {
     id: 'cms.module.settings',

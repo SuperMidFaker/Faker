@@ -114,8 +114,11 @@ export default class NewItemsList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <EmergeItemTable loadEmergeItems={this.props.loadWorkspaceItems} emergeList={workspaceItemList}
-              listFilter={this.state.filter} withRepo
+            <EmergeItemTable
+              loadEmergeItems={this.props.loadWorkspaceItems}
+              emergeList={workspaceItemList}
+              listFilter={this.state.filter}
+              withRepo
             />
           </Content>
         </Layout>

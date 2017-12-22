@@ -6,14 +6,17 @@ export default function makeColumns({
   msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit,
 }) {
   const columns = [{
-    title: msg('状态'),
+    title: msg('标记'),
     dataIndex: 'status',
     width: 45,
+    align: 'center',
     fixed: 'left',
     render: (status, item) => {
       if (status === 0) {
         if (item.classified) {
-          return <Icon type="check-circle-o" style={{ fontSize: 16, color: '#52c41a' }} />;
+          return (<Popover content="已完成归类" placement="right">
+            <Icon type="plus-square-o" style={{ fontSize: 16, color: '#52c41a' }} />
+          </Popover>);
         }
         let content;
         if (!(item.hscode && item.g_name && item.g_model)) {
