@@ -66,7 +66,7 @@ const initialState = {
     data: {},
   },
   ciqDeclHead: {
-    head: [],
+    head: {},
     entries: [],
     ciqs: [],
   },

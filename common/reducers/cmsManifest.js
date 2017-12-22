@@ -59,6 +59,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'UPDATE_BILLBODY', 'UPDATE_BILLBODY_SUCCEED', 'UPDATE_BILLBODY_FAIL',
   'SHOW_MANIFEST_RULES_CLONE_MODAL', 'HIDE_MANIFEST_RULES_CLONE_MODAL',
   'CLONE_MANIFEST_RULES', 'CLONE_MANIFEST_RULES_SUCCEED', 'CLONE_MANIFEST_RULES_FAIL',
+  'ADD_CMS_FILE', 'ADD_CMS_FILE_SUCCEED', 'ADD_CMS_FILE_FAIL',
 ]);
 
 const initialState = {
@@ -175,7 +176,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, manifestLoading: false };
     case actionTypes.LOAD_MANIFEST_SUCCEED: {
       const ports = [...state.params.ports];
-      const destPort = action.result.data.destPort;
+      const { destPort } = action.result.data;
       if (destPort &&
         ports.filter(prt => prt.port_code === destPort.port_code).length === 0) {
         ports.push(destPort);
@@ -193,7 +194,10 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.RESET_BILL_SUCCEED:
       return {
-        ...state, billHead: action.result.data.head, billBodies: [], billMeta: { ...state.billMeta, entries: [] },
+        ...state,
+        billHead: action.result.data.head,
+        billBodies: [],
+        billMeta: { ...state.billMeta, entries: [] },
       };
     case actionTypes.RESET_BILLHEAD_SUCCEED:
       return { ...state, billHead: action.result.data.head };
@@ -202,7 +206,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
       return { ...state, billHead: action.result.data }; // gross_wt float is string TODO
     case actionTypes.LOAD_CUSTOMS_DECL:
-      return { ...state, customsDeclLoading: true, billMeta: { ...state.billMeta, ...initialState.billMeta } };
+      return {
+        ...state,
+        customsDeclLoading: true,
+        billMeta: { ...state.billMeta, ...initialState.billMeta },
+      };
     case actionTypes.LOAD_CUSTOMS_DECL_FAILED:
       return { ...state, customsDeclLoading: false };
     case actionTypes.LOAD_CUSTOMS_DECL_SUCCEED:
@@ -244,7 +252,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...retParam } };
     }
     case actionTypes.SAVE_MANIFEST_HEAD_SUCCEED:
-      return { ...state, billHead: action.data.head, billHeadFieldsChangeTimes: 0 }; // float become string
+      return {
+        ...state,
+        billHead: action.data.head,
+        billHeadFieldsChangeTimes: 0,
+      }; // float become string
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
@@ -266,7 +278,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SET_PANE_TABKEY:
       return { ...state, tabKey: action.data };
     case actionTypes.LOAD_CERT_MARKS_SUCCEED:
-      return { ...state, certMarks: action.result.data.certMarks, certParams: action.result.data.certParams };
+      return {
+        ...state,
+        certMarks: action.result.data.certMarks,
+        certParams: action.result.data.certParams,
+      };
     case actionTypes.SAVE_CERT_MARK_SUCCEED:
       return { ...state, certMarks: action.result.data };
     case actionTypes.LOAD_DOCU_MARKS_SUCCEED:
@@ -363,7 +379,10 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.HIDE_MANIFEST_RULES_CLONE_MODAL:
-      return { ...state, manifestRulesCloneModal: { ...state.manifestRulesCloneModal, visible: false } };
+      return {
+        ...state,
+        manifestRulesCloneModal: { ...state.manifestRulesCloneModal, visible: false },
+      };
     default:
       return state;
   }
@@ -1205,6 +1224,21 @@ export function cloneManifestRules(name, templateId, userName) {
       endpoint: 'v1/cms/setting/manifest/rules/clone',
       method: 'post',
       data: { name, templateId, userName },
+    },
+  };
+}
+
+export function addCmsDeclCert(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_CMS_FILE,
+        actionTypes.ADD_CMS_FILE_SUCCEED,
+        actionTypes.ADD_CMS_FILE_FAIL,
+      ],
+      endpoint: 'v1/cms/decl/cert/add',
+      method: 'post',
+      data,
     },
   };
 }
