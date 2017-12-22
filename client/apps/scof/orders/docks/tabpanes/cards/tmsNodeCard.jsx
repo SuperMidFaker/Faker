@@ -3,33 +3,37 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadOrderNodesTriggers, hideDock } from 'common/reducers/crmOrders';
+import { loadOrderNodesTriggers, hideDock, manualEnterFlowInstance } from 'common/reducers/crmOrders';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
 
-const Step = Steps.Step;
+const { Step } = Steps;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
   }),
-  { loadOrderNodesTriggers, loadShipmtDetail, hideDock }
+  {
+    loadOrderNodesTriggers, loadShipmtDetail, hideDock, manualEnterFlowInstance,
+  }
 )
 export default class TMSNodeCard extends React.Component {
   static propTypes = {
-    name: PropTypes.string.isRequired,
-    children: PropTypes.any,
-    consignerName: PropTypes.string,
-    consigneeName: PropTypes.string,
-    trsMode: PropTypes.string,
-    uuid: PropTypes.string,
-    in_degree: PropTypes.number.isRequired,
-    pod: PropTypes.bool.isRequired,
+    children: PropTypes.arrayOf(PropTypes.node),
+    node: PropTypes.shape({
+      uuid: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      consignee_name: PropTypes.string,
+      consigner_name: PropTypes.string,
+      trs_mode: PropTypes.string,
+      in_degree: PropTypes.number.isRequired,
+      pod: PropTypes.bool.isRequired,
+    }),
   }
   state = {
     trigger: -1,
   }
   componentWillMount = () => {
-    const { uuid } = this.props;
+    const { node: { uuid } } = this.props;
     this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then((result) => {
       if (!result.data) return;
       this.setState({
@@ -38,8 +42,11 @@ export default class TMSNodeCard extends React.Component {
     });
   }
   componentWillReceiveProps = (nextProps) => {
-    if (nextProps.uuid !== this.props.uuid) {
-      this.props.loadOrderNodesTriggers(nextProps.uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then((result) => {
+    if (nextProps.node.uuid !== this.props.node.uuid) {
+      this.props.loadOrderNodesTriggers(
+        nextProps.node.uuid,
+        [NODE_BIZ_OBJECTS.tms[0].key]
+      ).then((result) => {
         if (!result.data) {
           this.setState({
             trigger: -1,
@@ -68,14 +75,24 @@ export default class TMSNodeCard extends React.Component {
       }
     });
   }
+  handleNodeEnterTrigger = (ev) => {
+    ev.stopPropagation();
+    const { node: { uuid, kind } } = this.props;
+    this.props.manualEnterFlowInstance(uuid, kind);
+  }
   render() {
     const {
-      name, children, consignerName, consigneeName, trsMode, in_degree: indegree, pod,
+      children, node: {
+        name, consigner_name: consignerName, consignee_name: consigneeName, trs_mode: trsMode,
+        in_degree: indegree, pod, out_degree: outdeg, multi_bizobj: multiple, uuid,
+      },
     } = this.props;
-    const extra = indegree === 0 ?
-      (<Tooltip title="进入详情">
-        <Button size="small" shape="circle" icon="right" />
-      </Tooltip>) : null;
+    const extra = [];
+    if (indegree === 0 && outdeg > 0 && multiple) {
+      extra.push(<Tooltip title="触发节点进入" key="enter">
+        <Button size="small" shape="circle" icon="plus" onClick={this.handleNodeEnterTrigger} />
+      </Tooltip>);
+    }
     const steps = [
       <Step title="接单" key="accept" />,
       <Step title="调度" key="dispatch" />,
@@ -86,7 +103,12 @@ export default class TMSNodeCard extends React.Component {
       steps.push(<Step title="回单" key="pod" />);
     }
     return (
-      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handleShipmtPreview(this.props.uuid)}>
+      <Card
+        title={<span>{name}</span>}
+        extra={extra}
+        bodyStyle={{ padding: 8, paddingBottom: 56 }}
+        onClick={() => this.handleShipmtPreview(uuid)}
+      >
         <Row>
           <Col span="8">
             <InfoItem label="发货方" field={consignerName} />

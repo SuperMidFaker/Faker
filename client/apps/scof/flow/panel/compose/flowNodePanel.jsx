@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Collapse, Form, Input, Select } from 'antd';
+import { Collapse, Form, Input, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FlowTriggerTable from './flowTriggerTable';
 import { loadOperators } from 'common/reducers/crmCustomers';
+import FlowTriggerTable from './flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
-const Panel = Collapse.Panel;
-const Option = Select.Option;
+const { Panel } = Collapse;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -23,7 +23,7 @@ const Option = Select.Option;
 export default class FlowNodePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     serviceTeam: PropTypes.arrayOf(PropTypes.shape({
       lid: PropTypes.number.isRequired, name: PropTypes.string.isRequired,
     })),
@@ -53,9 +53,15 @@ export default class FlowNodePanel extends Component {
           <FormItem label={this.msg('nodeExecutor')}>
             {getFieldDecorator('person_id', {
               initialValue: model.person_id,
-            })(<Select onChange={this.handleResponsiblerSelect} allowClear showSearch optionFilterProp="children">
+            })(<Select onChange={this.handleResponsiblerSelect} allowClear showSearch>
               {serviceTeam.map(st => <Option key={st.lid} value={st.lid}>{st.name}</Option>)}
             </Select>)}
+          </FormItem>
+          <FormItem label={this.msg('multiBizInstance')}>
+            {getFieldDecorator('multi_bizobj', {
+              initialValue: model.multi_bizobj,
+              valuePropName: 'checked',
+            })(<Switch />)}
           </FormItem>
         </Panel>
         <Panel header={this.msg('nodeEvents')} key="events">
