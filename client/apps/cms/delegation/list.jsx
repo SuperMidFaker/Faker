@@ -6,7 +6,6 @@ import moment from 'moment';
 import { Badge, Breadcrumb, Button, DatePicker, Layout, Input, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import {
@@ -687,7 +686,6 @@ export default class DelegationList extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <PageHint />
             <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus">
               {this.msg('createDelegation')}
             </Button>

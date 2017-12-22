@@ -49,24 +49,28 @@ const messages = defineMessages({
     id: 'cms.module.export.decl.ciq',
     defaultMessage: '出境报检申报',
   },
+  compliance: {
+    id: 'cms.module.compliance',
+    defaultMessage: '合规管理',
+  },
   tradeItem: {
-    id: 'cms.module.classification.trade.item',
+    id: 'cms.module.compliance.trade.item',
     defaultMessage: '商品归类',
   },
   hscode: {
-    id: 'cms.module.classification.hscode',
+    id: 'cms.module.compliance.hscode',
     defaultMessage: 'HS编码查询',
   },
   specialCategory: {
-    id: 'cms.module.classification.special.category',
+    id: 'cms.module.compliance.special.category',
     defaultMessage: '特殊商品编码分类',
   },
   license: {
-    id: 'cms.module.license',
+    id: 'cms.module.compliance.license',
     defaultMessage: '单证管理',
   },
   manual: {
-    id: 'cms.module.manual',
+    id: 'cms.module.compliance.manual',
     defaultMessage: '手册帐册',
   },
   billing: {

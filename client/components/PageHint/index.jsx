@@ -12,7 +12,6 @@ const formatMsg = format(messages);
 export default class PageHint extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    title: PropTypes.string,
     children: PropTypes.node,
   }
   state = {
