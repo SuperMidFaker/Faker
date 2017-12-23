@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../common/message.i18n';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { format } from 'client/common/i18n/helpers';
+import messages from '../../common/message.i18n';
 
 const formatMsg = format(messages);
 
@@ -56,7 +56,7 @@ function calculateTotal(bodies, currencies) {
     value: ep.value,
     text: ep.text,
   })),
-}), )
+}))
 export default class ManifestDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -69,7 +69,6 @@ export default class ManifestDetailsPane extends React.Component {
       totGrossWt: calresult.totGrossWt,
       totWetWt: calresult.totWetWt,
       totTrade: calresult.totTrade,
-      totPcs: calresult.totPcs,
     };
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -100,7 +99,7 @@ export default class ManifestDetailsPane extends React.Component {
       width: 400,
       dataIndex: 'g_model',
     }, {
-      title: <div className="cell-align-right">{this.msg('quantity')}</div>,
+      title: this.msg('quantity'),
       width: 80,
       align: 'right',
       dataIndex: 'g_qty',
@@ -115,12 +114,12 @@ export default class ManifestDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
+      title: this.msg('decPrice'),
       width: 100,
       align: 'right',
       dataIndex: 'dec_price',
     }, {
-      title: <div className="cell-align-right">{this.msg('decTotal')}</div>,
+      title: this.msg('decTotal'),
       width: 100,
       align: 'right',
       dataIndex: 'trade_total',
@@ -134,17 +133,17 @@ export default class ManifestDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
+      title: this.msg('grosswt'),
       width: 80,
       align: 'right',
       dataIndex: 'gross_wt',
     }, {
-      title: <div className="cell-align-right">{this.msg('netwt')}</div>,
+      title: this.msg('netwt'),
       width: 80,
       align: 'right',
       dataIndex: 'wet_wt',
     }, {
-      title: <div className="cell-align-right">{this.msg('qty1')}</div>,
+      title: this.msg('qty1'),
       width: 80,
       align: 'right',
       dataIndex: 'qty_1',
@@ -158,7 +157,7 @@ export default class ManifestDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: <div className="cell-align-right">{this.msg('qty2')}</div>,
+      title: this.msg('qty2'),
       width: 80,
       align: 'right',
       dataIndex: 'qty_2',

@@ -300,7 +300,7 @@ export default class CustomsDeclEditor extends React.Component {
     tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
       <AttachedDocsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
-    tabs.push(<TabPane tab="申报商品明细" key="manifestDetails" head={head}>
+    tabs.push(<TabPane tab="申报清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     if (filterProducts.length > 0) {

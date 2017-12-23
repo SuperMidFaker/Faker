@@ -6,7 +6,7 @@ import { toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif } 
 import { CIQ_ENT_QUALIFY_TYPE } from 'common/constants';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @connect(
   state => ({
@@ -86,7 +86,8 @@ export default class EntQualifiModal extends Component {
       dataIndex: 'ent_qualif_type_code',
     }, {
       title: '资质名称',
-      render: (o, record) => CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(record.ent_qualif_type_code)) &&
+      render: (o, record) => CIQ_ENT_QUALIFY_TYPE.find(type =>
+        type.value === Number(record.ent_qualif_type_code)) &&
        CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(record.ent_qualif_type_code)).text,
     }, {
       title: '企业资质编号',
@@ -99,15 +100,17 @@ export default class EntQualifiModal extends Component {
       dataIndex: 'ent_name',
     }];
     return (
-      <Modal width={960} title="企业资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
-        <Form>
+      <Modal width={1200} title="企业资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
+        <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
           <Row>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="企业资质类别编号">
+              <FormItem {...formItemLayout} label="企业资质类别">
                 {getFieldDecorator('ent_qualif_type_code', {
                   required: true,
                 })(<Select>
-                  {CIQ_ENT_QUALIFY_TYPE.map(type => <Option key={type.value} value={type.value}>{type.value} | {type.text}</Option>)}
+                  {CIQ_ENT_QUALIFY_TYPE.map(type =>
+                    (<Option key={type.value} value={type.value}>
+                      {type.value} | {type.text}</Option>))}
                 </Select>)}
               </FormItem>
             </Col>
@@ -116,8 +119,6 @@ export default class EntQualifiModal extends Component {
                 {getFieldDecorator('ent_qualif_no')(<Input />)}
               </FormItem>
             </Col>
-          </Row>
-          <Row>
             <Col span={12}>
               <FormItem {...formItemLayout} label="企业名称">
                 {getFieldDecorator('ent_name')(<Input />)}
@@ -131,12 +132,12 @@ export default class EntQualifiModal extends Component {
           </Row>
           <Row style={{ marginBottom: 8 }}>
             <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" icon="save" onClick={this.handleSave}>保存</Button>
-              <Button style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
+              <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
+              <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
             </Col>
           </Row>
         </Form>
-        <Table size="middle" rowSelection={rowSelection} columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />
+        <Table size="small" rowSelection={rowSelection} columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />
       </Modal>
     );
   }

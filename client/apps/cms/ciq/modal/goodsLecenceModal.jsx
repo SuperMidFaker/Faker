@@ -108,32 +108,26 @@ export default class GoodsLicenceModal extends Component {
     }];
     return (
       <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="商品编码" >
-              <Input value={goodsData.hscode} disabled />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="商品名称" >
-              <Input value={goodsData.gName} disabled />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="CIQ代码" >
-              <Input value={goodsData.ciqCode} disabled />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="序号" >
-              <Input value={goodsData.gNo} disabled />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="许可证类别" >
-              {getFieldDecorator('lic_type_code', {
+        <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
+          <Row>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="商品编码" >
+                <Input value={goodsData.hscode} disabled />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="商品名称" >
+                <Input value={goodsData.gName} disabled />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="CIQ代码" >
+                <Input value={goodsData.ciqCode} disabled />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="许可证类别" >
+                {getFieldDecorator('lic_type_code', {
                 required: true,
               })(<Select showSearch optionFilterProp="children" style={{ width: '100%' }}>
                 {CIQ_LICENCE_TYPE.map(type =>
@@ -141,51 +135,48 @@ export default class GoodsLicenceModal extends Component {
                     {type.text}
                   </Option>))}
               </Select>)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="许可证编号" >
-              {getFieldDecorator('licence_no', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="许可证编号" >
+                {getFieldDecorator('licence_no', {
                 required: true,
               })(<Input />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="核销货物序号" >
-              {getFieldDecorator('lic_wrtof_detail_no', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="核销货物序号" >
+                {getFieldDecorator('lic_wrtof_detail_no', {
               })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="核销数量" >
-              {getFieldDecorator('lic_wrtof_qty', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="核销数量" >
+                {getFieldDecorator('lic_wrtof_qty', {
               })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="核销明细余量" >
-              {getFieldDecorator('lic_detail_left', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="核销明细余量" >
+                {getFieldDecorator('lic_detail_left', {
               })(<Input />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="核销后余量" >
-              {getFieldDecorator('lic_wrtof_left', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="核销后余量" >
+                {getFieldDecorator('lic_wrtof_left', {
               })(<Input />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row style={{ marginBottom: 8 }}>
-          <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" icon="save" onClick={this.handleSave}>保存</Button>
-            <Button style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
-          </Col>
-        </Row>
-        <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" />
+              </FormItem>
+            </Col>
+          </Row>
+          <Row style={{ marginBottom: 8 }}>
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
+              <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
+            </Col>
+          </Row>
+        </Form>
+        <Table size="small" columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" />
       </Modal>
     );
   }

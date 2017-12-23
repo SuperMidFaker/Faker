@@ -115,111 +115,102 @@ export default class GoodsLicenceModal extends Component {
     }];
     return (
       <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="商品编码" >
-              <Input value={goodsData.hscode} disabled />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="商品名称" >
-              <Input value={goodsData.gName} disabled />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="CIQ代码" >
-              <Input value={goodsData.ciqCode} disabled />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="序号" >
-              <Input value={goodsData.gNo} disabled />
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="集装箱号" >
-              {getFieldDecorator('cont_code', {
-                required: true,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="运输工具类型代码" >
-              {getFieldDecorator('trans_means_type', {
+        <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
+          <Row>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="商品编码" >
+                <Input value={goodsData.hscode} disabled />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="商品名称" >
+                <Input value={goodsData.gName} disabled />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="CIQ代码" >
+                <Input value={goodsData.ciqCode} disabled />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="运输工具类型" >
+                {getFieldDecorator('trans_means_type', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_TRANS_MEANS_TYPE.map(type =>
                   <Option key={type.value} value={type.value}>{`${type.value}|${type.text}`}</Option>)}
               </Select>)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="集装箱规格" >
-              {getFieldDecorator('cntnr_mode_code', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="集装箱号" >
+                {getFieldDecorator('cont_code', {
+                required: true,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="集装箱规格" >
+                {getFieldDecorator('cntnr_mode_code', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_CNTNR_MODE_CODE.map(code =>
                   <Option key={code.value} value={code.value}>{`${code.value}|${code.text}`}</Option>)}
               </Select>)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="数量" >
-              {getFieldDecorator('qty', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="数量" >
+                {getFieldDecorator('qty', {
               })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="数量计量单位" >
-              {getFieldDecorator('qty_meas_unit', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="计量单位" >
+                {getFieldDecorator('qty_meas_unit', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_QTY_MEAS_UNIT.map(unit =>
                   <Option value={unit.value} key={unit.value}>{`${unit.value}|${unit.text}`}</Option>)}
               </Select>)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="标准数量" >
-              {getFieldDecorator('std_meas_unit_qty', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="标准数量" >
+                {getFieldDecorator('std_meas_unit_qty', {
               })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="标准数量单位" >
-              {getFieldDecorator('std_meas_unit', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="标准数量单位" >
+                {getFieldDecorator('std_meas_unit', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_QTY_MEAS_UNIT.map(unit =>
                   <Option value={unit.value} key={unit.value}>{`${unit.value}|${unit.text}`}</Option>)}
               </Select>)}
-            </FormItem>
-          </Col>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="重量" >
-              {getFieldDecorator('weight', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="重量" >
+                {getFieldDecorator('weight', {
               })(<Input />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label="重量单位代码" >
-              {getFieldDecorator('wt_unit_code', {
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="重量单位" >
+                {getFieldDecorator('wt_unit_code', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_WT_UNIT_CODE.map(code =>
                   <Option key={code.value} value={code.value}>{`${code.value}|${code.text}`}</Option>)}
               </Select>)}
-            </FormItem>
-          </Col>
-          <Col span={16} style={{ textAlign: 'right' }}>
-            <Button type="primary" icon="save" onClick={this.handleSave}>保存</Button>
-            <Button style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
-          </Col>
-        </Row>
-        <Table columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" />
+              </FormItem>
+            </Col>
+          </Row>
+          <Row style={{ marginBottom: 8 }}>
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
+              <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
+            </Col>
+          </Row>
+        </Form>
+        <Table size="small" columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" />
       </Modal>
     );
   }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Layout } from 'antd';
+import { Breadcrumb, Button, Layout, Radio } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
@@ -14,6 +14,8 @@ import { loadCmsParams } from 'common/reducers/cmsManifest';
 import SearchBar from 'client/components/SearchBar';
 import messages from './message.i18n';
 
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const formatMsg = format(messages);
 const { Content } = Layout;
 
@@ -89,22 +91,17 @@ export default class PermitList extends Component {
     title: this.msg('证书编号'),
     dataIndex: 'permit_no',
     width: 150,
-    fixed: 'left',
-    render: (o, record) => (
-      <a onClick={() => this.handlePreview(o, record)}>
-        {o}
-      </a>),
   }, {
     title: this.msg('关联货主'),
     width: 180,
     dataIndex: 'owner_name',
   }, {
     title: this.msg('涉证标准'),
-    width: 150,
+    width: 100,
     dataIndex: 'permit_category',
   }, {
     title: this.msg('证书类型'),
-    width: 180,
+    width: 200,
     dataIndex: 'permit_type',
   }, {
     title: this.msg('总使用次数'),
@@ -117,11 +114,11 @@ export default class PermitList extends Component {
   }, {
     title: this.msg('发证日期'),
     dataIndex: 'start_date',
-    render: (o, record) => (record.input_date ? moment(record.input_date).format('MM.DD HH:mm') : '-'),
+    render: (o, record) => (record.start_date ? moment(record.start_date).format('MM.DD HH:mm') : '-'),
   }, {
-    title: this.msg('有效期至'),
+    title: this.msg('到期日期'),
     dataIndex: 'stop_date',
-    render: (o, record) => (record.decl_date ? moment(record.decl_date).format('MM.DD HH:mm') : '-'),
+    render: (o, record) => (record.stop_date ? moment(record.stop_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: this.msg('状态'),
     width: 80,
@@ -153,11 +150,8 @@ export default class PermitList extends Component {
       filters: { text: value },
     });
   }
-  handleExportClick = () => {
-    window.open(`${XLSX_CDN}/手册导入模板.xlsx`);
-  }
   render() {
-    const { loading } = this.props.loading;
+    const { loading } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -166,7 +160,7 @@ export default class PermitList extends Component {
     };
     const toolbarActions = (<span>
       <SearchBar
-        placeholder={this.msg('搜索手/账册编号')}
+        placeholder={this.msg('证书编号')}
         onInputSearch={this.handleSearch}
       />
     </span>);
@@ -201,6 +195,12 @@ export default class PermitList extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup onChange={this.handleStatusFilter}>
+              <RadioButton value="valid">{this.msg('valid')}</RadioButton>
+              <RadioButton value="invalid">{this.msg('invalid')}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" onClick={this.handleCreateBtnClick} icon="upload">
               {this.msg('导入')}

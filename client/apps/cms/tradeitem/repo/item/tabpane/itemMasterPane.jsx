@@ -284,11 +284,11 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unit1')} required>
+              <FormItem {...formItemLayout} label={this.msg('unit1')}>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
                   rules: [{ required: true, message: '法一计量单位必填' }],
-                })(<Select showSearch showArrow optionFilterProp="search">
+                })(<Select disabled>
                   {
                     units.map(gt =>
                       <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
@@ -300,7 +300,7 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('unit2')}>
                 {getFieldDecorator('unit_2', {
                   initialValue: fieldInits.unit_2,
-                })(<Select showSearch showArrow optionFilterProp="search">
+                })(<Select disabled>
                   {
                     units.map(gt =>
                       <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
@@ -334,6 +334,32 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('unitNetWt')}>
+                {getFieldDecorator('unit_net_wt', {
+                  initialValue: fieldInits.unit_net_wt,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('fixedQty')}>
+                {getFieldDecorator('fixed_qty', {
+                  initialValue: fieldInits.fixed_qty,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('fixedUnit')}>
+                {getFieldDecorator('fixed_unit', {
+                  initialValue: fieldInits.fixed_unit,
+                })(<Select showSearch showArrow optionFilterProp="search">
+                  {
+                units.map(gt =>
+                  <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
+              }
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('gUnit3')}>
                 {getFieldDecorator('g_unit_3', {
                   initialValue: fieldInits.g_unit_3,
@@ -343,13 +369,6 @@ export default class ItemMasterPane extends React.Component {
                     <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unitNetWt')}>
-                {getFieldDecorator('unit_net_wt', {
-                  initialValue: fieldInits.unit_net_wt,
-                })(<Input />)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -369,25 +388,6 @@ export default class ItemMasterPane extends React.Component {
                     <Option key={data.value} search={`${data.search}`} >
                       {`${data.text}`}
                     </Option>))}
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('fixedQty')}>
-                {getFieldDecorator('fixed_qty', {
-                  initialValue: fieldInits.fixed_qty,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('fixedUnit')}>
-                {getFieldDecorator('fixed_unit', {
-                  initialValue: fieldInits.fixed_unit,
-                })(<Select showSearch showArrow optionFilterProp="search">
-                  {
-                units.map(gt =>
-                  <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
-              }
                 </Select>)}
               </FormItem>
             </Col>
@@ -414,11 +414,25 @@ export default class ItemMasterPane extends React.Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col span={24}>
-              <FormItem {...formItemSpan4Layout} label={this.msg('applCertCode')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('customsPermit')}>
+                {getFieldDecorator('customs_control', {
+                  initialValue: fieldInits.customs_control,
+                })(<Input disabled />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('ciqPermit')}>
+                {getFieldDecorator('inspection_quarantine', {
+                  initialValue: fieldInits.inspection_quarantine,
+                })(<Input disabled />)}
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('applCertCode')}>
                 {getFieldDecorator('appl_cert_code', {
                   initialValue: fieldInits.appl_cert_code,
-                })(<Input placeholder="多个证书以;分隔" />)}
+                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowDeclElementModal}><Icon type="ellipsis" /></Button>} />)}
               </FormItem>
             </Col>
             <Col span={6}>

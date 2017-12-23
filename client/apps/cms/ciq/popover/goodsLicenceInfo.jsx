@@ -110,7 +110,7 @@ export default class GoodsLicenceInfo extends Component {
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button onClick={this.handleCancel}>取消</Button>
+            <Button onClick={this.handleCancel} style={{ marginRight: 8 }}>取消</Button>
             <Button type="primary" onClick={this.handleOk}>确定</Button>
           </Col>
         </Row>

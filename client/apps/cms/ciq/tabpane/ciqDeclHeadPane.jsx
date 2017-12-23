@@ -523,7 +523,8 @@ export default class CiqDeclHeadPane extends React.Component {
                   initialValue: ciqDeclHead.traf_mode && Number(ciqDeclHead.traf_mode),
                 })(<Select>
                   {CIQ_TRANSPORTS_TYPE.map(tran =>
-                    <Option value={tran.value} key={tran.value}>{tran.text}</Option>)}
+                    (<Option value={tran.value} key={tran.value}>
+                      {tran.value} | {tran.text}</Option>))}
                 </Select>)}
               </FormItem>
             </Col>
@@ -568,7 +569,8 @@ export default class CiqDeclHeadPane extends React.Component {
                   initialValue: ciqDeclHead.ciq_trade_mode && Number(ciqDeclHead.ciq_trade_mode),
                 })(<Select>
                   {CIQ_TRADE_MODE.map(mode =>
-                    <Option key={mode.value} value={mode.value}>{mode.text}</Option>)}
+                    (<Option key={mode.value} value={mode.value}>
+                      {mode.value} | {mode.text}</Option>))}
                 </Select>)}
               </FormItem>
             </Col>
