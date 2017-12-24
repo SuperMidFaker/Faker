@@ -17,7 +17,7 @@ import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL
   CIQ_TRANSPORTS_TYPE, CIQ_TRADE_MODE, CIQ_ENT_QUALIFY_TYPE } from 'common/constants';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import { CiqCodeAutoCompSelect } from '../../common/form/headFormItems';
-import EntQualifiModal from '../modal/entQualifiModal';
+import EntQualifyModal from '../modal/entQualifyModal';
 import RequiredDocuModal from '../modal/requiredDocuModal';
 import AttachedDocuModal from '../modal/attachedDocuModal';
 
@@ -886,7 +886,7 @@ export default class CiqDeclHeadPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <EntQualifiModal
+        <EntQualifyModal
           ciqCode={ioType === 'in' ? ciqDeclHead.ciq_consignee_code : ciqDeclHead.ciq_consignor_code}
           customerPartnerId={this.props.ciqDeclHead.owner_cuspartner_id}
         />

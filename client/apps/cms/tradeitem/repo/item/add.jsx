@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
+import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import ItemMasterPane from './tabpane/itemMasterPane';
 import { createTradeItem } from 'common/reducers/cmsTradeitem';
-import { intlShape, injectIntl } from 'react-intl';
+import ItemMasterPane from './tabpane/itemMasterPane';
 import messages from '../../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -97,7 +98,11 @@ export default class TradeItemAdd extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard
+            bodyStyle={{ padding: 0 }}
+            hoverable={false}
+            onSizeChange={this.toggleFullscreen}
+          >
             <Tabs defaultActiveKey="master">
               {tabs}
             </Tabs>

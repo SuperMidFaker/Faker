@@ -14,7 +14,6 @@ function calculateTotal(bodies, currencies) {
   let totGrossWt = 0;
   let totWetWt = 0;
   let totTrade = 0;
-  let totPcs = 0;
   for (let i = 0; i < bodies.length; i++) {
     const body = bodies[i];
     if (body.gross_wt) {
@@ -28,12 +27,9 @@ function calculateTotal(bodies, currencies) {
       const rate = currency ? currency.rate_cny : 1;
       totTrade += Number(body.trade_total * rate);
     }
-    if (body.qty_pcs) {
-      totPcs += Number(body.qty_pcs);
-    }
   }
   return {
-    totGrossWt, totWetWt, totTrade, totPcs,
+    totGrossWt, totWetWt, totTrade,
   };
 }
 

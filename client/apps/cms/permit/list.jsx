@@ -7,6 +7,7 @@ import { Breadcrumb, Button, Layout, Radio } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
+import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showImportModal, loadManualLists } from 'common/reducers/cmsTradeManual';
@@ -127,7 +128,17 @@ export default class PermitList extends Component {
     title: this.msg('证书文件'),
     width: 80,
     dataIndex: 'permit_files',
+  }, {
+    title: this.msg('操作'),
+    width: 100,
+    render: (o, record) => (
+      <span>
+        <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />
+      </span>),
   }]
+  handleAdd = () => {
+    this.context.router.push('/clearance/permit/add');
+  }
   handlePreview = (manualNo) => {
     this.context.router.push(`/clearance/manual/${manualNo}`);
   }
@@ -197,13 +208,14 @@ export default class PermitList extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusFilter}>
-              <RadioButton value="valid">{this.msg('valid')}</RadioButton>
-              <RadioButton value="invalid">{this.msg('invalid')}</RadioButton>
+              <RadioButton value="valid">{this.msg('filterValid')}</RadioButton>
+              <RadioButton value="expiring">{this.msg('filterExpiring')}</RadioButton>
+              <RadioButton value="expired">{this.msg('filterExpired')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button type="primary" onClick={this.handleCreateBtnClick} icon="upload">
-              {this.msg('导入')}
+            <Button type="primary" onClick={this.handleAdd} icon="plus">
+              {this.msg('addPermit')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

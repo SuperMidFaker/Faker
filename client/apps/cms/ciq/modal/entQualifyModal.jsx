@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Modal, Form, Select, Row, Col, Input, Button, Table } from 'antd';
 import { toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_ENT_QUALIFY_TYPE } from 'common/constants';
+import RowAction from 'client/components/RowAction';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -18,13 +19,10 @@ const { Option } = Select;
   }
 )
 @Form.create()
-export default class EntQualifiModal extends Component {
+export default class EntQualifyModal extends Component {
   static propTypes = {
     customerPartnerId: PropTypes.string.isRequired,
     ciqCode: PropTypes.string,
-  }
-  state = {
-    selectedRowKeys: [],
   }
   handleCancel = () => {
     this.props.toggleEntQualifiModal(false);
@@ -45,19 +43,13 @@ export default class EntQualifiModal extends Component {
       }
     });
   }
-  handleDelete = () => {
+  handleDelete = (row) => {
     const { customerPartnerId, ciqCode } = this.props;
-    const { selectedRowKeys } = this.state;
-    if (selectedRowKeys.length > 0) {
-      this.props.deleteEntQualif(selectedRowKeys).then((result) => {
-        if (!result.error) {
-          this.props.loadEntQualif(customerPartnerId, ciqCode);
-          this.setState({
-            selectedRowKeys: [],
-          });
-        }
-      });
-    }
+    this.props.deleteEntQualif([row.id]).then((result) => {
+      if (!result.error) {
+        this.props.loadEntQualif(customerPartnerId, ciqCode);
+      }
+    });
   }
   render() {
     const { visible, form: { getFieldDecorator }, entQualifs } = this.props;
@@ -71,17 +63,7 @@ export default class EntQualifiModal extends Component {
         sm: { span: 16 },
       },
     };
-    const rowSelection = {
-      onChange: (selectedRowKeys) => {
-        this.setState({
-          selectedRowKeys,
-        });
-      },
-    };
     const columns = [{
-      title: '序号',
-      render: (o, record, index) => index + 1,
-    }, {
       title: '企业资质类别编号',
       dataIndex: 'ent_qualif_type_code',
     }, {
@@ -98,6 +80,10 @@ export default class EntQualifiModal extends Component {
     }, {
       title: '企业名称',
       dataIndex: 'ent_name',
+    }, {
+      dataIndex: 'OPS_COL',
+      width: 45,
+      render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
     }];
     return (
       <Modal width={1200} title="企业资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
@@ -130,14 +116,11 @@ export default class EntQualifiModal extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row style={{ marginBottom: 8 }}>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
-              <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
-            </Col>
+          <Row style={{ marginBottom: 8, textAlign: 'right' }}>
+            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
           </Row>
         </Form>
-        <Table size="small" rowSelection={rowSelection} columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />
+        <Table size="small" columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />
       </Modal>
     );
   }

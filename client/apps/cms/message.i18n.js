@@ -70,8 +70,8 @@ const messages = defineMessages({
     defaultMessage: '涉证资料',
   },
   manual: {
-    id: 'cms.module.compliance.manual',
-    defaultMessage: '手册帐册',
+    id: 'cms.module.compliance.ebook',
+    defaultMessage: '电子帐册',
   },
   billing: {
     id: 'cms.module.billing',

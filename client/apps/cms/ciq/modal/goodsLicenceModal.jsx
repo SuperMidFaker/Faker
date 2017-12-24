@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Col, Form, Row, Input, Select, Modal, Table, Button } from 'antd';
 import { toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
+import RowAction from 'client/components/RowAction';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -20,7 +21,6 @@ const { Option } = Select;
 export default class GoodsLicenceModal extends Component {
   state = {
     dataSource: [],
-    selectedRowKeys: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.goodsData.id && nextProps.goodsData.id !== this.props.goodsData.id) {
@@ -52,10 +52,9 @@ export default class GoodsLicenceModal extends Component {
       }
     });
   }
-  handleDelete = () => {
-    const { selectedRowKeys } = this.state;
+  handleDelete = (row) => {
     const { id } = this.props.goodsData;
-    this.props.deleteGoodsLicences(selectedRowKeys).then((result) => {
+    this.props.deleteGoodsLicences([row.id]).then((result) => {
       if (!result.error) {
         this.loadDataSource(id);
       }
@@ -64,14 +63,6 @@ export default class GoodsLicenceModal extends Component {
   render() {
     const { visible, form: { getFieldDecorator }, goodsData } = this.props;
     const { dataSource } = this.state;
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({
-          selectedRowKeys,
-        });
-      },
-    };
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -83,9 +74,6 @@ export default class GoodsLicenceModal extends Component {
       },
     };
     const columns = [{
-      title: '序号',
-      render: (o, record, index) => index + 1,
-    }, {
       title: '许可证类别',
       dataIndex: 'lic_type_code',
       render: o => CIQ_LICENCE_TYPE.find(type => type.value === o) &&
@@ -99,12 +87,19 @@ export default class GoodsLicenceModal extends Component {
     }, {
       title: '核销数量',
       dataIndex: 'lic_wrtof_qty',
+      align: 'right',
     }, {
       title: '核销明细余量',
       dataIndex: 'lic_detail_left',
+      align: 'right',
     }, {
       title: '核销后余量',
       dataIndex: 'lic_wrtof_left',
+      align: 'right',
+    }, {
+      dataIndex: 'OPS_COL',
+      width: 45,
+      render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
     }];
     return (
       <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
@@ -151,32 +146,29 @@ export default class GoodsLicenceModal extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
+              <FormItem {...formItemLayout} colon={false} label="核销明细余量" >
+                {getFieldDecorator('lic_detail_left', {
+              })(<Input disabled />)}
+              </FormItem>
+            </Col>
+            <Col span={8}>
               <FormItem {...formItemLayout} colon={false} label="核销数量" >
                 {getFieldDecorator('lic_wrtof_qty', {
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="核销明细余量" >
-                {getFieldDecorator('lic_detail_left', {
-              })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={8}>
               <FormItem {...formItemLayout} colon={false} label="核销后余量" >
                 {getFieldDecorator('lic_wrtof_left', {
-              })(<Input />)}
+              })(<Input disabled />)}
               </FormItem>
             </Col>
           </Row>
-          <Row style={{ marginBottom: 8 }}>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
-              <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
-            </Col>
+          <Row style={{ marginBottom: 8, textAlign: 'right' }}>
+            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
           </Row>
         </Form>
-        <Table size="small" columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" />
+        <Table size="small" columns={columns} dataSource={dataSource} pagination={null} rowKey="id" />
       </Modal>
     );
   }

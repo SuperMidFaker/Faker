@@ -9,7 +9,6 @@ import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { createTradeItem } from 'common/reducers/cmsTradeitem';
 import PermitHeadPane from './tabpane/permitHeadPane';
-import PermitItemsPane from './tabpane/permitItemsPane';
 import messages from '../../message.i18n';
 
 
@@ -32,7 +31,7 @@ const { TabPane } = Tabs;
   moduleName: 'clearance',
 })
 @Form.create()
-export default class PermitDetail extends Component {
+export default class PermitAdd extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -74,10 +73,7 @@ export default class PermitDetail extends Component {
     const { form } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab="基本信息" key="head">
-      <PermitHeadPane action="edit" form={form} />
-    </TabPane>);
-    tabs.push(<TabPane tab="关联商品" key="items">
-      <PermitItemsPane action="create" form={form} />
+      <PermitHeadPane action="create" form={form} />
     </TabPane>);
     return (
       <Layout>

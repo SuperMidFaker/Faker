@@ -336,6 +336,7 @@ export default(store) => {
             </Route>
             <Route path="permit">
               <IndexRoute component={CMSPermit.List} />
+              <Route path="add" component={CMSPermit.Add} />
               <Route path=":id" component={CMSPermit.Detail} />
             </Route>
             <Route path="billing">

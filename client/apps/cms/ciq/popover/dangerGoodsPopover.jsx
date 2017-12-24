@@ -13,7 +13,7 @@ const { Option } = Select;
   () => ({}),
   { updateGoodsLicenceInfo, loadGoodsLicenceInfo }
 )
-export default class GoodsLicenceInfo extends Component {
+export default class GoodsLicencePopover extends Component {
   static propTypes = {
     goodsId: PropTypes.string.isRequired,
   }
@@ -78,7 +78,7 @@ export default class GoodsLicenceInfo extends Component {
       wrapperCol: { span: 16 },
     };
     const content = (
-      <div>
+      <Form className="form-layout-compact">
         <FormItem {...formItemLayout} colon={false} label="非危险化学品">
           <Checkbox
             checked={dangerFlag}
@@ -114,10 +114,11 @@ export default class GoodsLicenceInfo extends Component {
             <Button type="primary" onClick={this.handleOk}>确定</Button>
           </Col>
         </Row>
-      </div>
+      </Form>
     );
     return (
       <Popover
+        title="危险货物信息"
         content={content}
         trigger="click"
         visible={this.state.visible}

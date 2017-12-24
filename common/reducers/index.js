@@ -37,6 +37,7 @@ import cmsQuote from './cmsQuote';
 import cmsResources from './cmsResources';
 import cmsBrokers from './cmsBrokers';
 import cmsTradeManual from './cmsTradeManual';
+import cmsTradePermit from './cmsTradePermit';
 import cmsPreferences from './cmsPreferences';
 import scofFlow from './scofFlow';
 import sofVendors from './sofVendors';
@@ -115,6 +116,7 @@ export default combineReducers({
   cmsHsCode,
   cmsBrokers,
   cmsTradeManual,
+  cmsTradePermit,
   scofFlow,
   sofVendors,
   scvInboundShipments,

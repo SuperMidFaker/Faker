@@ -11,7 +11,7 @@ const FormItem = Form.Item;
   () => ({}),
   { updateStandbyInfo, loadStandbyInfo }
 )
-export default class StandByInfo extends Component {
+export default class StandbyPopover extends Component {
   static propTypes = {
     goodsId: PropTypes.string.isRequired,
   }
@@ -60,7 +60,7 @@ export default class StandByInfo extends Component {
       wrapperCol: { span: 18 },
     };
     const content = (
-      <div>
+      <Form className="form-layout-compact">
         <FormItem {...formItemLayout} colon={false} label="备用一">
           {getFieldDecorator('standby_1', {
             initialValue: info.standby_1,
@@ -76,10 +76,11 @@ export default class StandByInfo extends Component {
             <Button type="primary" style={{ float: 'right' }} onClick={this.handleOk}>确定</Button>
           </Col>
         </Row>
-      </div>
+      </Form>
     );
     return (
       <Popover
+        title="备用信息"
         content={content}
         trigger="click"
         visible={this.state.visible}

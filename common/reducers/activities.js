@@ -1,5 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
+
 const initialState = {
   dockVisible: false,
   loading: false,
