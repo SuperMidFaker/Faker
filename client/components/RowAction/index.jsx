@@ -14,7 +14,6 @@ export default class RowAction extends Component {
     onConfirm: PropTypes.func,
     row: PropTypes.object,
     index: PropTypes.number,
-    extra: PropTypes.object,
     tooltip: PropTypes.string,
     confirm: PropTypes.string,
     primary: PropTypes.bool,
@@ -54,8 +53,16 @@ export default class RowAction extends Component {
         <Button shape={shape} disabled={disabled} size="small"><Icon type="ellipsis" /></Button>
       </Dropdown>)
       :
-      (<Button type={type} shape={shape} ghost={primary} disabled={disabled} size="small" icon={icon}
-        onClick={this.handleClick} onMouseEnter={this.handleHover} className="welo-row-action"
+      (<Button
+        type={type}
+        shape={shape}
+        ghost={primary}
+        disabled={disabled}
+        size="small"
+        icon={icon}
+        onClick={this.handleClick}
+        onMouseEnter={this.handleHover}
+        className="welo-row-action"
       >
         {label}
       </Button>);
@@ -70,9 +77,8 @@ export default class RowAction extends Component {
       return (<Popover trigger="click" content={popover} placement="left">
         {this.renderButton()}
       </Popover>);
-    } else {
-      return this.renderButton();
     }
+    return this.renderButton();
   }
 
   render() {
@@ -81,8 +87,7 @@ export default class RowAction extends Component {
       return (<Tooltip title={tooltip}>
         {this.renderButtonWrapper()}
       </Tooltip>);
-    } else {
-      return this.renderButtonWrapper();
     }
+    return this.renderButtonWrapper();
   }
 }

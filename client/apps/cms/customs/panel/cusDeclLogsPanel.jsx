@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Avatar, List } from 'antd';
+import { List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
+import UserAvatar from 'client/components/UserAvatar';
 import { hideDeclLog, loadDeclLogs } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -69,7 +70,7 @@ export default class CusDeclLogsPanel extends React.Component {
           renderItem={item => (
             <List.Item>
               <List.Item.Meta
-                avatar={<Avatar src={this.getUser(item.login_id).avatar} icon="user" />}
+                avatar={<UserAvatar loginId={item.login_id} />}
                 title={(<span>
                   {this.getUser(item.login_id).name} <a>{getBehavior(item.op_behavior)}</a>
                 </span>)}

@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Avatar, List } from 'antd';
+import { List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
+import UserAvatar from 'client/components/UserAvatar';
 import { format } from 'client/common/i18n/helpers';
 import { hideActivitiesDock } from 'common/reducers/activities';
 import { loadRecentActivities } from 'common/reducers/operationLog';
@@ -16,8 +17,6 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     loginId: state.account.loginId,
-    avatar: state.account.profile.avatar,
-    name: state.account.profile.name,
     visible: state.activities.dockVisible,
     recentActivities: state.operationLog.userActivities,
   }),
@@ -36,7 +35,7 @@ export default class ActivitiesDockPanel extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const {
-      avatar, name, visible, recentActivities,
+      visible, recentActivities,
     } = this.props;
     return (
       <DockPanel
@@ -51,7 +50,7 @@ export default class ActivitiesDockPanel extends React.Component {
           renderItem={item => (
             <List.Item>
               <List.Item.Meta
-                avatar={avatar ? <Avatar src={avatar} /> : <Avatar>{name}</Avatar>}
+                avatar={<UserAvatar currentUser />}
                 title={<a>{item.op_content}</a>}
                 description={item.created_date && moment(item.created_date).fromNow()}
               />

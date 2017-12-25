@@ -8,6 +8,7 @@ import { Avatar, Breadcrumb, Button, DatePicker, Input, Layout, Select } from 'a
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
+import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadOperationLogs } from 'common/reducers/operationLog';
 import { SAAS_OPLOG_BEHAVIORS, SCOF_BIZ_OBJECT_KEY } from 'common/constants';
@@ -63,10 +64,7 @@ export default class LogsList extends React.Component {
     dataIndex: 'login_id',
     width: 120,
     fixed: 'left',
-    render: (lid) => {
-      const user = this.props.userMembers.filter(usm => usm.login_id === lid)[0];
-      return user && <span>{user.avatar ? <Avatar size="small" src={user.avatar} /> : <Avatar size="small" icon="user" />} {user.name}</span>;
-    },
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
     title: '行为',
     dataIndex: 'op_behavior',
