@@ -145,7 +145,7 @@ export default class CiqDeclList extends Component {
     render: (o) => {
       switch (o) {
         case 0:
-          return <Badge status="default" text="已创建" />;
+          return <Badge status="default" text="待申报" />;
         case 1:
           return <Badge status="processing" text="报检受理" />;
         case 2:

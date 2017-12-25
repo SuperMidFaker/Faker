@@ -78,13 +78,13 @@ const messages = defineMessages({
     id: 'cms.tradeitem.branch',
     defaultMessage: '分支数据',
   },
-  newItem: {
-    id: 'cms.classificagtion.tradeitem.new.item',
-    defaultMessage: '新增物料',
+  addItem: {
+    id: 'cms.classificagtion.tradeitem.add.item',
+    defaultMessage: '新增料件',
   },
   editItem: {
     id: 'cms.classificagtion.tradeitem.edit.item',
-    defaultMessage: '修改物料',
+    defaultMessage: '修改料件',
   },
   searchRepoPlaceholder: {
     id: 'cms.tradeitem.searchRepoPlaceholder',
@@ -225,6 +225,14 @@ const messages = defineMessages({
   currency: {
     id: 'cms.tradeitem.col.currency',
     defaultMessage: '币制',
+  },
+  customsPermit: {
+    id: 'cms.tradeitem.customs.permit',
+    defaultMessage: '海关监管条件',
+  },
+  ciqPermit: {
+    id: 'cms.tradeitem.ciq.permit',
+    defaultMessage: '检验检疫条件',
   },
   applCertCode: {
     id: 'cms.tradeitem.appl.certcode',

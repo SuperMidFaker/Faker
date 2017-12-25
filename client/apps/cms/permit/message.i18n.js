@@ -17,4 +17,8 @@ export default defineMessages({
     id: 'cms.permit.filter.expired',
     defaultMessage: '已失效',
   },
+  addPermit: {
+    id: 'cms.permit.add',
+    defaultMessage: '添加证件',
+  },
 });

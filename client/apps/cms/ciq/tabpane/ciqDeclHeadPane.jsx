@@ -385,7 +385,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   })(<Input placeholder="编码" style={{ width: '50%' }} />)}
                   {getFieldDecorator('agent_ciq_person', {
                     initialValue: ciqDeclHead.agent_ciq_person,
-                  })(<Input prefix={<Icon type="user" />} placeholder="姓名" value={ciqDeclHead.agent_ciq_person} style={{ width: '50%' }} />)}
+                  })(<Input prefix={<Icon type="user" />} placeholder="姓名" style={{ width: '50%' }} />)}
                 </InputGroup>
               </FormItem>
             </Col>
@@ -862,6 +862,30 @@ export default class CiqDeclHeadPane extends React.Component {
           </Row>
           <Row>
             <Col span="12">
+              <FormItem {...formItemSpan2Layout} label="所需单证" >
+                {getFieldDecorator('app_cert_name', {
+                    initialValue: ciqDeclHead.app_cert_name,
+                  })(<Input
+                    addonAfter={<Button type="primary" ghost size="small" onClick={this.handleToggleInspQuarDocuReModal}>
+                      <Icon type="ellipsis" />
+                    </Button>}
+                  />)}
+              </FormItem>
+            </Col>
+            <Col span="12">
+              <FormItem {...formItemSpan2Layout} label="随附单据" >
+                {getFieldDecorator('atta_collect_name', {
+                    initialValue: ciqDeclHead.atta_collect_name,
+                  })(<Input
+                    addonAfter={<Button type="primary" ghost size="small" onClick={this.toggleAttDocuModal}>
+                      <Icon type="ellipsis" />
+                    </Button>}
+                  />)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="12">
               <FormItem {...formItemSpan2Layout} label="特殊检验检疫要求" >
                 {getFieldDecorator('specl_insp_qura_re', {
                   initialValue: ciqDeclHead.specl_insp_qura_re,
@@ -873,28 +897,6 @@ export default class CiqDeclHeadPane extends React.Component {
                 {getFieldDecorator('mark_no', {
                   initialValue: ciqDeclHead.mark_no,
                 })(<TextArea autosize />)}
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <FormItem {...formItemSpan2Layout} label="所需单证" >
-                <Input
-                  value={ciqDeclHead.app_cert_name}
-                  addonAfter={<Button type="primary" ghost size="small" onClick={this.handleToggleInspQuarDocuReModal}>
-                    <Icon type="ellipsis" />
-                  </Button>}
-                />
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem {...formItemSpan2Layout} label="随附单据" >
-                <Input
-                  value={ciqDeclHead.atta_collect_name}
-                  addonAfter={<Button type="primary" ghost size="small" onClick={this.toggleAttDocuModal}>
-                    <Icon type="ellipsis" />
-                  </Button>}
-                />
               </FormItem>
             </Col>
           </Row>

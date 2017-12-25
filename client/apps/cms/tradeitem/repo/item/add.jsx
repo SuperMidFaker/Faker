@@ -84,7 +84,7 @@ export default class TradeItemAdd extends Component {
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('newItem')}
+                {this.msg('addItem')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>

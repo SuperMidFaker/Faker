@@ -336,6 +336,10 @@ export default class RepoContent extends Component {
     },
     remotes: this.props.tradeItemlist,
   })
+  handleItemAdd = () => {
+    const link = '/clearance/tradeitem/repo/item/add';
+    this.context.router.push(link);
+  }
   handleItemEdit = (record) => {
     const link = `/clearance/tradeitem/repo/item/edit/${record.id}`;
     this.context.router.push(link);
@@ -496,7 +500,8 @@ export default class RepoContent extends Component {
                     onChange={this.handleReplicaSlave}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                   >{linkedSlaves.map(slv =>
-                    <Option key={slv.creator_name} value={String(slv.id)}>{slv.creator_name}</Option>)}
+                    (<Option key={slv.creator_name} value={String(slv.id)}>
+                      {slv.creator_name}</Option>))}
                   </Select>
                 </FormItem>
                 <FormItem label="同步源">
@@ -509,9 +514,10 @@ export default class RepoContent extends Component {
               </Form>}
               trigger="click"
             >
-              <Button type="primary" loading={submitting}>同步数据</Button>
+              <Button loading={submitting}>同步数据</Button>
             </Popover>
             }
+            <Button icon="plus-circle-o" onClick={this.handleItemAdd}>{this.msg('addItem')}</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

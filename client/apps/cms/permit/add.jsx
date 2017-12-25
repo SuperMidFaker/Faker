@@ -9,7 +9,7 @@ import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { createTradeItem } from 'common/reducers/cmsTradeitem';
 import PermitHeadPane from './tabpane/permitHeadPane';
-import messages from '../../message.i18n';
+import messages from './message.i18n';
 
 
 const formatMsg = format(messages);
