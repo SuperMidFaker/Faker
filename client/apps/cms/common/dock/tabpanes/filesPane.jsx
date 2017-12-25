@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Spin, Card, Table } from 'antd';
@@ -7,7 +6,6 @@ import moment from 'moment';
 import { loadCmsFiles } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import RowAction from 'client/components/RowAction';
-import CiqDispModal from '../ciqDispModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -18,13 +16,13 @@ const formatMsg = format(messages);
     tabKey: state.cmsDelgInfoHub.tabKey,
     ciqSpinning: state.cmsDelgInfoHub.ciqPanelLoading,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
+    userMembers: state.account.userMembers,
   }),
   { loadCmsFiles }
 )
 export default class FilesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   state = {
     records: [],
@@ -50,9 +48,14 @@ export default class FilesPane extends React.Component {
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleCiqAssign = () => {
-    this.props.loadciqSups(this.props.tenantId, 'CIB');
-    this.props.setDispStatus({ ciqDispShow: true });
+  handlePreview = (row) => {
+    window.open(row.url);
+  }
+  handleDownload = (row) => {
+    const a = document.createElement('a');
+    a.href = row.url;
+    a.download = row.doc_name;
+    a.click();
   }
   render() {
     const { ciqSpinning } = this.props;
@@ -62,7 +65,7 @@ export default class FilesPane extends React.Component {
       dataIndex: 'doc_name',
     }, {
       title: '类别',
-      dataIndex: 'doc_type',
+      dataIndex: 'doc_code',
       width: 150,
     }, {
       title: '编号',
@@ -72,6 +75,8 @@ export default class FilesPane extends React.Component {
       title: '上传人',
       dataIndex: 'creater_login_id',
       width: 100,
+      render: o => this.props.userMembers.find(user => user.login_id === o) &&
+       this.props.userMembers.find(user => user.login_id === o).name,
     }, {
       title: '上传时间',
       dataIndex: 'created_date',
@@ -92,7 +97,6 @@ export default class FilesPane extends React.Component {
             <Table size="middle" columns={columns} pagination={false} dataSource={records} />
           </Card>
         </Spin>
-        <CiqDispModal />
       </div>
     );
   }
