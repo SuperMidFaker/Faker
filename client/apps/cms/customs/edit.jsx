@@ -272,7 +272,7 @@ export default class CustomsDeclEditor extends React.Component {
         <Menu.Item key="skeleton">套打格式</Menu.Item>
       </Menu>
     );
-    const props = {
+    const uploadProps = {
       action: `${API_ROOTS.default}v1/upload/img/`,
       multiple: false,
       showUploadList: false,
@@ -309,7 +309,7 @@ export default class CustomsDeclEditor extends React.Component {
         { head.ccd_file ?
           <Menu.Item key="file"><Icon type="file" /> 查看报关单</Menu.Item> :
           <Menu.Item key="upload">
-            <Upload {...props}>
+            <Upload {...uploadProps}>
               <Icon type="upload" /> 上传报关单
             </Upload>
           </Menu.Item>

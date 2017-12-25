@@ -17,6 +17,7 @@ const formatMsg = format(messages);
   state => ({
     loginId: state.account.loginId,
     avatar: state.account.profile.avatar,
+    name: state.account.profile.name,
     visible: state.activities.dockVisible,
     recentActivities: state.operationLog.userActivities,
   }),
@@ -34,7 +35,9 @@ export default class ActivitiesDockPanel extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { avatar, visible, recentActivities } = this.props;
+    const {
+      avatar, name, visible, recentActivities,
+    } = this.props;
     return (
       <DockPanel
         size="small"
@@ -48,7 +51,7 @@ export default class ActivitiesDockPanel extends React.Component {
           renderItem={item => (
             <List.Item>
               <List.Item.Meta
-                avatar={<Avatar src={avatar} />}
+                avatar={avatar ? <Avatar src={avatar} /> : <Avatar>{name}</Avatar>}
                 title={<a>{item.op_content}</a>}
                 description={item.created_date && moment(item.created_date).fromNow()}
               />
