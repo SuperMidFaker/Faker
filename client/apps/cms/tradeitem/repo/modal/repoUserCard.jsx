@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Radio, Table, Select, message } from 'antd';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { loadRepoUsers, addRepoUser, deleteRepoUser } from 'common/reducers/cmsTradeitem';
 import { loadPartners } from 'common/reducers/partner';
 import RowAction from 'client/components/RowAction';
 import { formatMsg } from '../../message.i18n';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -31,7 +31,6 @@ const RadioButton = Radio.Button;
 export default class RepoUsersCard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantName: PropTypes.string.isRequired,
     tenantId: PropTypes.number.isRequired,
     repoUsers: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string.isRequired })),
     repo: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
@@ -43,7 +42,9 @@ export default class RepoUsersCard extends React.Component {
   };
   componentDidMount() {
     this.props.loadPartners({ role, businessType }).then((result) => {
-      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1 && item.status === 1) });
+      this.setState({
+        brokers: result.data.filter(item => item.partner_tenant_id !== -1 && item.status === 1),
+      });
     });
     if (this.props.repo.id) {
       this.props.loadRepoUsers(this.props.repo.id);
@@ -69,7 +70,13 @@ export default class RepoUsersCard extends React.Component {
     this.setState({ repoUserList: data, addOne });
   }
   handleSave = (record) => {
-    this.props.addRepoUser(this.props.tenantId, this.props.repo.id, record.partnerTenantId, record.name, record.permission).then((result) => {
+    this.props.addRepoUser(
+      this.props.tenantId,
+      this.props.repo.id,
+      record.partnerTenantId,
+      record.name,
+      record.permission
+    ).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -117,24 +124,23 @@ export default class RepoUsersCard extends React.Component {
     const columns = [{
       title: this.msg('authUserName'),
       dataIndex: 'name',
-      width: 200,
       render: (o, record) => {
         if (!record.id) {
           return (
             <Select value={record.partnerTenantId || ''} onChange={this.handleTradeSel} style={{ width: '100%' }}>
               {
-                brokers.map(opt => <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
+                brokers.map(opt =>
+                  <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
               }
             </Select>
           );
-        } else {
-          return record.name;
         }
+        return record.name;
       },
     }, {
       title: '权限',
       dataIndex: 'permission',
-      width: 120,
+      width: 140,
       render: (perm, record) =>
         (<RadioGroup value={perm} disabled={record.id} onChange={this.handlePermission}>
           <RadioButton value={CMS_TRADE_REPO_PERMISSION.edit}>编辑</RadioButton>
@@ -143,22 +149,25 @@ export default class RepoUsersCard extends React.Component {
     }, {
       width: 80,
       render: (o, record, index) => {
-        let ruAction = <RowAction confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" row={record} index={index} />;
+        let ruAction = <RowAction shape="circle" confirm="确定删除?" onConfirm={() => this.handleDelete(record, index)} icon="delete" />;
         if (!record.id) {
           ruAction = (
             <span>
-              <RowAction onClick={this.handleSave} icon="save" row={record} />
-              <RowAction onClick={this.handleAddCancel} icon="close" index={index} />
+              <RowAction shape="circle" onClick={this.handleSave} icon="save" row={record} />
+              <RowAction shape="circle" onClick={this.handleAddCancel} icon="close" index={index} />
             </span>
           );
         }
-        return (<div className="editable-row-operations">
-          {ruAction}
-        </div>);
+        return ruAction;
       },
     }];
     return (
-      <Table size="middle" pagination={false} columns={columns} dataSource={repoUserList} rowKey="id"
+      <Table
+        size="middle"
+        pagination={false}
+        columns={columns}
+        dataSource={repoUserList}
+        rowKey="id"
         footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>新增</Button>}
       />
     );

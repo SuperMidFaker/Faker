@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   slogan: {
     id: 'container.slogan',
-    defaultMessage: '跨境物流链云平台',
+    defaultMessage: '跨境供应链链物流云平台',
   },
   loading: {
     id: 'sso.login.loading',

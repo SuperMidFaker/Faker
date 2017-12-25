@@ -108,7 +108,7 @@ const messages = defineMessages({
   },
   linkSlave: {
     id: 'cms.tradeitem.model.slave.link',
-    defaultMessage: '添加从库关联',
+    defaultMessage: '添加关联从库',
   },
   authUserName: {
     id: 'cms.tradeitem.modal.auth.username',

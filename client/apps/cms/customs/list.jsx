@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Icon, Input, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Avatar, Breadcrumb, DatePicker, Icon, Input, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
@@ -36,7 +36,6 @@ const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
-const { OptGroup } = Select;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 
@@ -45,12 +44,13 @@ const { Search } = Input;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    avatar: state.account.profile.avatar,
+    loginName: state.account.username,
     customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
     clients: state.partner.partners,
     customs: state.cmsDeclare.listRequire.customs,
     tradeModes: state.cmsDeclare.listRequire.tradeModes,
-    // trades: state.cmsDeclare.trades,
   }),
   {
     loadCustomsDecls,
@@ -76,7 +76,6 @@ export default class CustomsList extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-
     showSendDeclModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -558,7 +557,9 @@ export default class CustomsList extends Component {
     this.props.showDeclMsgDock();
   }
   render() {
-    const { customslist, listFilter } = this.props;
+    const {
+      customslist, listFilter, avatar, loginName,
+    } = this.props;
     const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
     this.dataSource.remotes = customslist;
     const rowSelection = {
@@ -606,7 +607,7 @@ export default class CustomsList extends Component {
       [clientPid] = listFilter.clientView.partnerIds;
     }
     const clients = [{
-      name: '全部客户',
+      name: '全部委托单位',
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
@@ -630,28 +631,14 @@ export default class CustomsList extends Component {
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
         </Option>))}
       </Select>
-      {/*
-        <Select showSearch optionFilterProp="children" style={{ width: 160 }}
-        onChange={this.handleTradesSelectChange} defaultValue="all"
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-      >
-        <Option value="all">全部收发货人</Option>
-        {trades.map(data => (<Option key={data.id} value={data.id}
-          search={`${data.code}${data.name}`}
-        >{data.name}</Option>)
-        )}
-      </Select>
-      */}
       <Select
         value={listFilter.viewStatus}
         style={{ width: 160 }}
         showSearch={false}
         onChange={this.handleViewChange}
       >
-        <OptGroup label="常用视图">
-          <Option value="all">全部委托</Option>
-          <Option value="my">我负责的委托</Option>
-        </OptGroup>
+        <Option value="all"><Avatar size="small" icon="team" /> 全部报关人员</Option>
+        <Option value="my">{avatar ? <Avatar size="small" src={avatar} /> : <Avatar size="small" icon="user" />} {loginName}</Option>
       </Select>
       <RangePicker
         value={dateVal}

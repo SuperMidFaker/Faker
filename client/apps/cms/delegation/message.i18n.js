@@ -77,9 +77,9 @@ export default defineMessages({
     id: 'cms.delegation.no',
     defaultMessage: '委托编号',
   },
-  customer: {
+  client: {
     id: 'cms.delegation.client',
-    defaultMessage: '客户',
+    defaultMessage: '委托单位',
   },
   delgTime: {
     id: 'cms.delegation.time',
@@ -171,7 +171,7 @@ export default defineMessages({
   },
   operatedBy: {
     id: 'cms.delegation.opertated.by',
-    defaultMessage: '操作人员',
+    defaultMessage: '制单人员',
   },
   goodsType: {
     id: 'cms.delegation.goodstype',

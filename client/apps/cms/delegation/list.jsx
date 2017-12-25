@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Layout, Input, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
+import { Avatar, Badge, Breadcrumb, Button, DatePicker, Layout, Input, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
@@ -33,7 +33,6 @@ const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
-const { OptGroup } = Select;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 
@@ -42,6 +41,7 @@ const { Search } = Input;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    avatar: state.account.profile.avatar,
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
@@ -165,7 +165,7 @@ export default class DelegationList extends Component {
         {o}
       </a>),
   }, {
-    title: this.msg('customer'),
+    title: this.msg('client'),
     width: 180,
     dataIndex: 'send_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
@@ -460,7 +460,9 @@ export default class DelegationList extends Component {
     this.handleDelgListLoad(1, filters);
   }
   render() {
-    const { delegationlist, listFilter, tenantId } = this.props;
+    const {
+      delegationlist, listFilter, tenantId, avatar, loginName,
+    } = this.props;
     const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadDelegationList(params),
@@ -503,7 +505,7 @@ export default class DelegationList extends Component {
       [clientPid] = listFilter.clientView.partnerIds;
     }
     const clients = [{
-      name: '全部客户',
+      name: '全部委托单位',
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
@@ -533,10 +535,8 @@ export default class DelegationList extends Component {
         showSearch={false}
         onChange={this.handleViewChange}
       >
-        <OptGroup label="常用视图">
-          <Option value="all">全部委托</Option>
-          <Option value="my">我负责的委托</Option>
-        </OptGroup>
+        <Option value="all"><Avatar size="small" icon="team" /> 全部制单人员</Option>
+        <Option value="my">{avatar ? <Avatar size="small" src={avatar} /> : <Avatar size="small" icon="user" />} {loginName}</Option>
       </Select>
       <RangePicker
         value={dateVal}

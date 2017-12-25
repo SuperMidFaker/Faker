@@ -67,7 +67,7 @@ export default class DeclMsgPanel extends React.Component {
     dataIndex: 'channel',
     width: 100,
     render: (o, record) => {
-      if (o === 'EDI') {
+      if (o === 'ep') {
         return record.ep_code;
       }
       return o;
