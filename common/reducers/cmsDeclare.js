@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
   'VALIDATE_ENTRY_ID', 'VALIDATE_ENTRY_ID_SUCCEED', 'VALIDATE_ENTRY_ID_FAIL',
   'LOAD_DECL_LOGS', 'LOAD_DECL_LOGS_SUCCEED', 'LOAD_DECL_LOGS_FAIL',
+  'UPLOAD_DECL', 'UPLOAD_DECL_SUCCEED', 'UPLOAD_DECL_FAIL',
 ]);
 
 const initialState = {
@@ -487,6 +488,21 @@ export function loadDeclLogs(preEntrySeqNo) {
       endpoint: 'v1/cms/decl/logs/load',
       method: 'get',
       params: { preEntrySeqNo },
+    },
+  };
+}
+
+export function uploadDecl(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPLOAD_DECL,
+        actionTypes.UPLOAD_DECL_SUCCEED,
+        actionTypes.UPLOAD_DECL_FAIL,
+      ],
+      endpoint: 'v1/cms/decl/upload',
+      method: 'post',
+      data,
     },
   };
 }

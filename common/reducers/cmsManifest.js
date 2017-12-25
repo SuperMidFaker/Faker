@@ -59,7 +59,8 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'UPDATE_BILLBODY', 'UPDATE_BILLBODY_SUCCEED', 'UPDATE_BILLBODY_FAIL',
   'SHOW_MANIFEST_RULES_CLONE_MODAL', 'HIDE_MANIFEST_RULES_CLONE_MODAL',
   'CLONE_MANIFEST_RULES', 'CLONE_MANIFEST_RULES_SUCCEED', 'CLONE_MANIFEST_RULES_FAIL',
-  'ADD_CMS_FILE', 'ADD_CMS_FILE_SUCCEED', 'ADD_CMS_FILE_FAIL',
+  'ADD_CMS_DECL_CERT', 'ADD_CMS_DECL_CERT_SUCCEED', 'ADD_CMS_DECL_CERT_FAIL',
+  'ADD_CMS_DECL_DOCU', 'ADD_CMS_DECL_DOCU_SUCCEED', 'ADD_CMS_DECL_DOCU_FAIL',
 ]);
 
 const initialState = {
@@ -507,7 +508,7 @@ export function delbillCertmark(id) {
   };
 }
 
-export function loadDocuMarks(entryId) {
+export function loadDocuMarks(preEntrySeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -517,7 +518,7 @@ export function loadDocuMarks(entryId) {
       ],
       endpoint: 'v1/cms/manifest/docuMark',
       method: 'get',
-      params: { entryId },
+      params: { preEntrySeqNo },
     },
   };
 }
@@ -1232,11 +1233,26 @@ export function addCmsDeclCert(data) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.ADD_CMS_FILE,
-        actionTypes.ADD_CMS_FILE_SUCCEED,
-        actionTypes.ADD_CMS_FILE_FAIL,
+        actionTypes.ADD_CMS_DECL_CERT,
+        actionTypes.ADD_CMS_DECL_CERT_SUCCEED,
+        actionTypes.ADD_CMS_DECL_CERT_FAIL,
       ],
       endpoint: 'v1/cms/decl/cert/add',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function addCmsDeclDocu(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_CMS_DECL_DOCU,
+        actionTypes.ADD_CMS_DECL_DOCU_SUCCEED,
+        actionTypes.ADD_CMS_DECL_DOCU_FAIL,
+      ],
+      endpoint: 'v1/cms/decl/docu/add',
       method: 'post',
       data,
     },

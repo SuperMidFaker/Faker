@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Select, Input, message } from 'antd';
-import { loadDocuMarks, saveDocuMark, delDocumark } from 'common/reducers/cmsManifest';
+import { Button, Select, Input, message, Upload, Tooltip } from 'antd';
+import { loadDocuMarks, saveDocuMark, delDocumark, addCmsDeclDocu } from 'common/reducers/cmsManifest';
 import { CMS_DECL_DOCU, CMS_DECL_STATUS } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
@@ -27,7 +27,10 @@ function ColumnInput(props) {
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({
+    docu_spec: PropTypes.string,
+    docu_code: PropTypes.string,
+  }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
@@ -51,16 +54,23 @@ function ColumnSelect(props) {
       </Select>
     );
   }
-  const option = options.find(item => item.value === record[field]);
+  const option = options.find(item => item.text === record[field]);
   return <span>{option ? option.text : ''}</span>;
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({
+    docu_spec: PropTypes.string,
+    docu_code: PropTypes.string,
+  }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string,
+    value: PropTypes.string,
+    key: PropTypes.string,
+  })).isRequired,
 };
 
 @injectIntl
@@ -72,24 +82,38 @@ ColumnSelect.proptypes = {
     head: state.cmsManifest.entryHead,
     docuMarks: state.cmsManifest.docuMarks,
   }),
-  { loadDocuMarks, saveDocuMark, delDocumark }
+  {
+    loadDocuMarks, saveDocuMark, delDocumark, addCmsDeclDocu,
+  }
 )
 export default class AttachedDocsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    head: PropTypes.object,
-    docuMarks: PropTypes.array,
+    head: PropTypes.shape({
+      bill_seq_no: PropTypes.string,
+      ccd_file: PropTypes.string,
+      delg_no: PropTypes.string,
+      id: PropTypes.number,
+    }),
+    docuMarks: PropTypes.arrayOf(PropTypes.shape({
+      pre_entry_seq_no: PropTypes.string,
+      id: PropTypes.number,
+      docu_spec: PropTypes.string,
+      docu_file: PropTypes.string,
+      docu_code: PropTypes.string,
+      delg_no: PropTypes.string,
+    })),
   }
   state = {
     datas: [],
   };
   componentDidMount() {
-    this.props.loadDocuMarks(this.props.head.entry_id);
+    this.props.loadDocuMarks(this.props.head.pre_entry_seq_no);
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.head !== nextProps.head ||
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'document')) {
-      this.props.loadDocuMarks(nextProps.head.entry_id);
+      this.props.loadDocuMarks(nextProps.head.pre_entry_seq_no);
     }
     if (this.props.docuMarks !== nextProps.docuMarks) {
       this.setState({ datas: nextProps.docuMarks });
@@ -122,7 +146,10 @@ export default class AttachedDocsPane extends React.Component {
       message.info('随附单据编号为必填项');
       return;
     }
-    this.props.saveDocuMark(record).then((result) => {
+    this.props.saveDocuMark({
+      ...record,
+      preEntrySeqNo: this.props.head.pre_entry_seq_no,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -145,6 +172,16 @@ export default class AttachedDocsPane extends React.Component {
     const datas = [...this.state.datas];
     datas.splice(index, 1);
     this.setState({ datas });
+  }
+  handleUploaded = (data) => {
+    this.props.addCmsDeclDocu(data).then((result) => {
+      if (!result.error) {
+        this.props.loadDocuMarks(this.props.head.pre_entry_seq_no);
+      }
+    });
+  }
+  handleView = (row) => {
+    window.open(row.docu_file);
   }
   render() {
     const { head } = this.props;
@@ -173,9 +210,35 @@ export default class AttachedDocsPane extends React.Component {
     }, {
       width: 100,
       render: (o, record, index) => {
+        const me = this;
+        const props = {
+          action: `${API_ROOTS.default}v1/upload/img/`,
+          multiple: false,
+          showUploadList: false,
+          withCredentials: true,
+          onChange(info) {
+            if (info.file.response && info.file.response.status === 200) {
+              const docCode = CMS_DECL_DOCU.find(doc => doc.text === record.docu_spec).value;
+              me.handleUploaded({
+                delg_no: head.delg_no,
+                pre_entry_seq_no: head.pre_entry_seq_no,
+                doc_code: docCode,
+                doc_no: record.docu_code,
+                doc_name: info.file.name,
+                url: info.file.response.data,
+                doc_type: info.file.type,
+              });
+              message.success('上传成功');
+            }
+          },
+        };
         const fileAction = record.docu_file ?
           <RowAction shape="circle" onClick={this.handleView} icon="eye-o" tooltip="查看文件" row={record} /> :
-          <RowAction shape="circle" primary onClick={this.handleUpload} icon="upload" tooltip="上传文件" row={record} />;
+          (<Upload {...props}>
+            <Tooltip title="上传文件">
+              <Button shape="circle" icon="upload" size="small" style={{ marginRight: 8 }} />
+            </Tooltip>
+          </Upload>);
         if (head.status < CMS_DECL_STATUS.sent.value) {
           if (record.id) {
             return (<span>
