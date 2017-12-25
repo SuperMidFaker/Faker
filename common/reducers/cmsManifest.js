@@ -61,6 +61,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'CLONE_MANIFEST_RULES', 'CLONE_MANIFEST_RULES_SUCCEED', 'CLONE_MANIFEST_RULES_FAIL',
   'ADD_CMS_DECL_CERT', 'ADD_CMS_DECL_CERT_SUCCEED', 'ADD_CMS_DECL_CERT_FAIL',
   'ADD_CMS_DECL_DOCU', 'ADD_CMS_DECL_DOCU_SUCCEED', 'ADD_CMS_DECL_DOCU_FAIL',
+  'LOAD_CMS_FILES', 'LOAD_CMS_FILES_SUCCEED', 'LOAD_CMS_FILES_FAIL',
 ]);
 
 const initialState = {
@@ -1229,7 +1230,7 @@ export function cloneManifestRules(name, templateId, userName) {
   };
 }
 
-export function addCmsDeclCert(data) {
+export function addCmsDeclCert(data, id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -1239,12 +1240,12 @@ export function addCmsDeclCert(data) {
       ],
       endpoint: 'v1/cms/decl/cert/add',
       method: 'post',
-      data,
+      data: { data: JSON.stringify(data), id },
     },
   };
 }
 
-export function addCmsDeclDocu(data) {
+export function addCmsDeclDocu(data, id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -1254,7 +1255,22 @@ export function addCmsDeclDocu(data) {
       ],
       endpoint: 'v1/cms/decl/docu/add',
       method: 'post',
-      data,
+      data: { data: JSON.stringify(data), id },
+    },
+  };
+}
+
+export function loadCmsFiles(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CMS_FILES,
+        actionTypes.LOAD_CMS_FILES_SUCCEED,
+        actionTypes.LOAD_CMS_FILES_FAIL,
+      ],
+      endpoint: 'v1/cms/files/load',
+      method: 'get',
+      params: { delgNo },
     },
   };
 }

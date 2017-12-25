@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'UPDATE_MARK', 'UPDATE_MARK_SUCCEED', 'UPDATE_MARK_FAIL',
   'LOAD_PESEND_RECORDS', 'LOAD_PESEND_RECORDS_SUCCEED', 'LOAD_PESEND_RECORDS_FAIL',
   'LOAD_SEND_RECORDS', 'LOAD_SEND_RECORDS_SUCCEED', 'LOAD_SEND_RECORDS_FAIL',
+  'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
   'VALIDATE_ENTRY_ID', 'VALIDATE_ENTRY_ID_SUCCEED', 'VALIDATE_ENTRY_ID_FAIL',
@@ -72,6 +73,12 @@ const initialState = {
   customsResults: [],
   customsResultsLoading: false,
   sendRecords: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
+  },
+  returnRecords: {
     totalCount: 0,
     pageSize: 10,
     current: 1,
@@ -134,6 +141,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchSendModal: { ...state.batchSendModal, visible: false } };
     case actionTypes.LOAD_SEND_RECORDS_SUCCEED:
       return { ...state, sendRecords: { ...action.result.data } };
+    case actionTypes.LOAD_RETURN_RECORDS_SUCCEED:
+      return { ...state, returnRecords: { ...action.result.data } };
     case actionTypes.SHOW_DECL_MSG_DOCK:
       return { ...state, declMsgDock: { ...state.declMsgDock, visible: true } };
     case actionTypes.HIDE_DECL_MSG_DOCK:
@@ -407,6 +416,21 @@ export function loadSendRecords({ searchText, current, pageSize }) {
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
       params: { searchText, current, pageSize },
+    },
+  };
+}
+
+export function loadReturnRecords({ preEntrySeqNo, current, pageSize }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_RETURN_RECORDS,
+        actionTypes.LOAD_RETURN_RECORDS_SUCCEED,
+        actionTypes.LOAD_RETURN_RECORDS_FAIL,
+      ],
+      endpoint: 'v1/cms/return/records/load',
+      method: 'get',
+      params: { preEntrySeqNo, current, pageSize },
     },
   };
 }

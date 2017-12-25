@@ -170,8 +170,8 @@ export default class CertMarkPane extends React.Component {
     datas.splice(index, 1);
     this.setState({ datas });
   }
-  handleUploaded = (data) => {
-    this.props.addCmsDeclCert(data).then((result) => {
+  handleUploaded = (data, id) => {
+    this.props.addCmsDeclCert(data, id).then((result) => {
       if (!result.error) {
         this.props.loadCertMarks(this.props.head.pre_entry_seq_no);
       }
@@ -227,7 +227,7 @@ export default class CertMarkPane extends React.Component {
                 doc_name: info.file.name,
                 url: info.file.response.data,
                 doc_type: info.file.type,
-              });
+              }, record.id);
               message.success('上传成功');
             }
           },
