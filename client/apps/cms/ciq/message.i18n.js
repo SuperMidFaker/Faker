@@ -54,6 +54,10 @@ export default defineMessages({
     id: 'cms.ciq.decl.org.code',
     defaultMessage: '报检地',
   },
+  client: {
+    id: 'cms.ciq.decl.client',
+    defaultMessage: '委托单位',
+  },
   consignorCname: {
     id: 'cms.ciq.decl.consignor.cname',
     defaultMessage: '发货人',

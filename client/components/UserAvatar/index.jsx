@@ -37,10 +37,13 @@ export default class UserAvatar extends React.Component {
     } = this.props;
     if (!currentUser) {
       const user = this.props.userMembers.filter(usm => usm.login_id === loginId)[0];
-      return user && (showName ?
-        <span>{this.renderAvatar(user.avatar, user.name)}
-          <span style={{ marginLeft: 8 }}>{user.name}</span></span> :
-        this.renderAvatar(user.avatar, user.name));
+      if (user) {
+        return showName ?
+          <span>{this.renderAvatar(user.avatar, user.name)}
+            <span style={{ marginLeft: 8 }}>{user.name}</span></span> :
+          this.renderAvatar(user.avatar, user.name);
+      }
+      return this.renderAvatar();
     }
     return showName ? <span>{this.renderAvatar(avatar, name)}
       <span style={{ marginLeft: 8 }}>{name}</span></span> :

@@ -8,6 +8,7 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
+import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
@@ -147,20 +148,20 @@ export default class CustomsList extends Component {
   }, {
     title: '类型',
     dataIndex: 'sheet_type',
-    width: 100,
+    width: 80,
     render: (o, record) => {
       let child = <span />;
       if (record.i_e_type === 0) {
         if (o === 'CDF') {
-          child = <Tag color="blue">进口报关单</Tag>;
+          child = <Tag color="blue">进口报关</Tag>;
         } else if (o === 'FTZ') {
-          child = <Tag color="blue">进境备案清单</Tag>;
+          child = <Tag color="blue">进境备案</Tag>;
         }
       } else if (record.i_e_type === 1) {
         if (o === 'CDF') {
-          child = <Tag color="cyan">出口报关单</Tag>;
+          child = <Tag color="cyan">出口报关</Tag>;
         } else if (o === 'FTZ') {
-          child = <Tag color="cyan">出境备案清单</Tag>;
+          child = <Tag color="cyan">出境备案</Tag>;
         }
       }
       let entryDecType = '';
@@ -299,8 +300,9 @@ export default class CustomsList extends Component {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '报关人员',
-    dataIndex: 'epsend_login_name',
+    dataIndex: 'epsend_login_id',
     width: 120,
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -325,6 +327,7 @@ export default class CustomsList extends Component {
       }
       if (record.status === CMS_DECL_STATUS.sent.value) {
         spanElems.push(<RowAction
+          key="sent"
           overlay={<Menu onClick={this.showDeclMsgModal}>
             <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>
           </Menu>}
@@ -343,6 +346,7 @@ export default class CustomsList extends Component {
       }
       if (record.status >= CMS_DECL_STATUS.entered.value) {
         spanElems.push(<RowAction
+          key="return"
           overlay={<Menu onClick={this.showDeclMsgModal}>
             {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
             {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}

@@ -8,6 +8,7 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
+import UserAvatar from 'client/components/UserAvatar';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE,
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -272,8 +273,9 @@ export default class DelegationList extends Component {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('operatedBy'),
-    width: 80,
-    dataIndex: 'recv_login_name',
+    width: 120,
+    dataIndex: 'recv_login_id',
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
     title: this.msg('lastActTime'),
     dataIndex: 'last_act_time',

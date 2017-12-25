@@ -21,7 +21,7 @@ const { Option } = Select;
 @Form.create()
 export default class EntQualifyModal extends Component {
   static propTypes = {
-    customerPartnerId: PropTypes.string.isRequired,
+    customerPartnerId: PropTypes.number.isRequired,
     ciqCode: PropTypes.string,
   }
   handleCancel = () => {

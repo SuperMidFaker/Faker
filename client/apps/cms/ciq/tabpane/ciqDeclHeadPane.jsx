@@ -481,7 +481,10 @@ export default class CiqDeclHeadPane extends React.Component {
             <Col span="6">
               <FormItem {...formItemLayout} label="企业资质" >
                 {getFieldDecorator('ent_qualif_type_code', {
-                  initialValue: entQualif.ent_qualif_type_code ? `${entQualif.ent_qualif_type_code}|${CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(entQualif.ent_qualif_type_code)) && CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(entQualif.ent_qualif_type_code)).text}` : '',
+                  initialValue: entQualif.ent_qualif_type_code ?
+                  `${entQualif.ent_qualif_type_code}|${CIQ_ENT_QUALIFY_TYPE.find(type =>
+                    type.value === Number(entQualif.ent_qualif_type_code)) &&
+                    CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(entQualif.ent_qualif_type_code)).text}` : '',
                 })(<Input addonAfter={addonAfter} />)}
               </FormItem>
             </Col>
@@ -876,19 +879,29 @@ export default class CiqDeclHeadPane extends React.Component {
           <Row>
             <Col span="12">
               <FormItem {...formItemSpan2Layout} label="所需单证" >
-                <Input value={ciqDeclHead.app_cert_name} addonAfter={<Button type="primary" ghost size="small" onClick={this.handleToggleInspQuarDocuReModal}><Icon type="ellipsis" /></Button>} />
+                <Input
+                  value={ciqDeclHead.app_cert_name}
+                  addonAfter={<Button type="primary" ghost size="small" onClick={this.handleToggleInspQuarDocuReModal}>
+                    <Icon type="ellipsis" />
+                  </Button>}
+                />
               </FormItem>
             </Col>
             <Col span="12">
               <FormItem {...formItemSpan2Layout} label="随附单据" >
-                <Input value={ciqDeclHead.atta_collect_name} addonAfter={<Button type="primary" ghost size="small" onClick={this.toggleAttDocuModal}><Icon type="ellipsis" /></Button>} />
+                <Input
+                  value={ciqDeclHead.atta_collect_name}
+                  addonAfter={<Button type="primary" ghost size="small" onClick={this.toggleAttDocuModal}>
+                    <Icon type="ellipsis" />
+                  </Button>}
+                />
               </FormItem>
             </Col>
           </Row>
         </Card>
         <EntQualifyModal
           ciqCode={ioType === 'in' ? ciqDeclHead.ciq_consignee_code : ciqDeclHead.ciq_consignor_code}
-          customerPartnerId={this.props.ciqDeclHead.owner_cuspartner_id}
+          customerPartnerId={ciqDeclHead.owner_cuspartner_id}
         />
         <RequiredDocuModal
           selectedRowKeys={ciqDeclHead.app_cert_code}

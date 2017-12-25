@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Avatar, Breadcrumb, Button, DatePicker, Input, Layout, Select } from 'antd';
-import DataTable from 'client/components/DataTable';
+import { Breadcrumb, Button, DatePicker, Input, Layout, Select, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -17,7 +17,6 @@ import { formatMsg } from './message.i18n';
 const { Option } = Select;
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
-const InputGroup = Input.Group;
 const initialFilter = {
   user: '',
   behavior: '',
@@ -69,7 +68,7 @@ export default class LogsList extends React.Component {
     title: '行为',
     dataIndex: 'op_behavior',
     width: 100,
-    render: beha => SAAS_OPLOG_BEHAVIORS[beha] && SAAS_OPLOG_BEHAVIORS[beha].text,
+    render: behav => SAAS_OPLOG_BEHAVIORS[behav] && <Tag>{SAAS_OPLOG_BEHAVIORS[behav].text}</Tag>,
   }, {
     title: '业务编号',
     dataIndex: 'op_ref_billno',
@@ -134,14 +133,14 @@ export default class LogsList extends React.Component {
       <Select
         placeholder="操作人员"
         value={searchFilter.user}
-        style={{ width: 100 }}
+        style={{ width: 150 }}
         showArrow={false}
         showSearch
         onChange={value => this.handleFilterChange('user', value)}
         allowClear
       >
         {userMembers.map(usm =>
-          <Option key={String(usm.login_id)} value={String(usm.login_id)}>{usm.name}</Option>)}
+          <Option key={String(usm.login_id)} value={String(usm.login_id)}><UserAvatar size="small" loginId={usm.login_id} showName /></Option>)}
       </Select>
       <Select
         showSearch
@@ -156,27 +155,25 @@ export default class LogsList extends React.Component {
           return <Option key={behavior.key} value={behavior.key}>{behavior.text}</Option>;
         })}
       </Select>
-      <InputGroup compact style={{ width: 290 }}>
-        <Select
-          showSearch
-          placeholder="业务对象"
-          style={{ width: '30%' }}
-          value={searchFilter.bizobject}
-          onChange={value => this.handleFilterChange('bizobject', value)}
-          allowClear
-        >
-          {Object.keys(SCOF_BIZ_OBJECT_KEY).map((bokey) => {
+      <Select
+        showSearch
+        placeholder="业务对象"
+        style={{ width: 100 }}
+        value={searchFilter.bizobject}
+        onChange={value => this.handleFilterChange('bizobject', value)}
+        allowClear
+      >
+        {Object.keys(SCOF_BIZ_OBJECT_KEY).map((bokey) => {
             const bizobj = SCOF_BIZ_OBJECT_KEY[bokey];
             return <Option key={bizobj.key} value={bizobj.key}>{bizobj.defaultText}</Option>;
           })}
-        </Select>
-        <Input
-          style={{ width: '70%' }}
-          placeholder="业务编号"
-          value={searchFilter.billno}
-          onChange={ev => this.handleFilterChange('billno', ev.target.value)}
-        />
-      </InputGroup>
+      </Select>
+      <Input
+        style={{ width: 200 }}
+        placeholder="业务编号"
+        value={searchFilter.billno}
+        onChange={ev => this.handleFilterChange('billno', ev.target.value)}
+      />
       <RangePicker
         ranges={searchFilter.daterange}
         onChange={range => this.handleFilterChange('daterange', range)}

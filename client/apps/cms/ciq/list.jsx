@@ -127,6 +127,13 @@ export default class CiqDeclList extends Component {
         {o}
       </a>),
   }, {
+    title: this.msg('client'),
+    dataIndex: 'i_e_type',
+    width: 180,
+    render: (o, record) => (o === 0 ?
+      <TrimSpan text={record.ciq_consignee_name_cn} maxLen={12} /> :
+      <TrimSpan text={record.ciq_consignor_name_cn} maxLen={12} />),
+  }, {
     title: this.msg('custOrderNo'),
     width: 180,
     dataIndex: 'cust_order_no',
@@ -152,16 +159,6 @@ export default class CiqDeclList extends Component {
       }
     },
   }, {
-    title: this.msg('consigneeCname'),
-    dataIndex: 'ciq_consignee_name_cn',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
-  }, {
-    title: this.msg('consignorCname'),
-    dataIndex: 'ciq_consignor_name_cn',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
-  }, {
     title: this.msg('orgCode'),
     dataIndex: 'ciq_org_code',
     width: 100,
@@ -172,20 +169,6 @@ export default class CiqDeclList extends Component {
     dataIndex: 'ciq_decl_date',
     width: 120,
     render: o => (o ? moment(0).format('MM.DD HH:mm') : '-'),
-  /*
-  }, {
-    title: this.msg('ciqQualityInsp'),
-    dataIndex: 'ciq_quality_inspect',
-    width: 80,
-    render: (o, record) =>
-      <ColumnSwitch field="pzcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
-  }, {
-    title: this.msg('ciqApInsp'),
-    dataIndex: 'ciq_ap_inspect',
-    width: 100,
-    render: (o, record) =>
-      <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
-  */
   }, {
     title: this.msg('declRegNo'),
     dataIndex: 'agent_name',
@@ -193,7 +176,7 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('报检人员'),
     dataIndex: 'agent_ciq_person',
-    width: 180,
+    width: 120,
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
