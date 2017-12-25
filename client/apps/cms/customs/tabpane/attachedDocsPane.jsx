@@ -218,11 +218,10 @@ export default class AttachedDocsPane extends React.Component {
           withCredentials: true,
           onChange(info) {
             if (info.file.response && info.file.response.status === 200) {
-              const docCode = CMS_DECL_DOCU.find(doc => doc.text === record.docu_spec).value;
               me.handleUploaded({
                 delg_no: head.delg_no,
                 pre_entry_seq_no: head.pre_entry_seq_no,
-                doc_code: docCode,
+                doc_code: 'CUS_DOCU',
                 doc_no: record.docu_code,
                 doc_name: info.file.name,
                 url: info.file.response.data,

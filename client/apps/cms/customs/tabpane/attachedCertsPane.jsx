@@ -222,7 +222,7 @@ export default class CertMarkPane extends React.Component {
               me.handleUploaded({
                 delg_no: head.delg_no,
                 pre_entry_seq_no: head.pre_entry_seq_no,
-                doc_code: record.cert_code,
+                doc_code: 'CUS_CERT',
                 doc_no: record.cert_num,
                 doc_name: info.file.name,
                 url: info.file.response.data,
