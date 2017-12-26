@@ -91,33 +91,45 @@ export default class PackinglistTemplate extends React.Component {
                 </FormItem>
               </Panel>
               <Panel header="Item Table" key="item">
-                <MSCheckbox field="containerno_en"
+                <MSCheckbox
+                  field="containerno_en"
                   text={this.msg('containerNo')}
-                  onChange={this.handleCheckChange} checked={invData.containerno_en}
+                  onChange={this.handleCheckChange}
+                  checked={invData.containerno_en}
                 />
-                <MSCheckbox field="eng_name_en"
+                <MSCheckbox
+                  field="eng_name_en"
                   text={this.msg('enGName')}
-                  onChange={this.handleCheckChange} checked={invData.eng_name_en}
+                  onChange={this.handleCheckChange}
+                  checked={invData.eng_name_en}
                 />
               </Panel>
               <Panel header="Total" key="total">
-                <MSCheckbox field="sub_total_en"
+                <MSCheckbox
+                  field="sub_total_en"
                   text={this.msg('subTotal')}
-                  onChange={this.handleCheckChange} checked={invData.sub_total_en}
+                  onChange={this.handleCheckChange}
+                  checked={invData.sub_total_en}
                 />
               </Panel>
               <Panel header="Footer" key="footer">
-                <MSCheckbox field="insurance_en"
+                <MSCheckbox
+                  field="insurance_en"
                   text={this.msg('insurance')}
-                  onChange={this.handleCheckChange} checked={invData.insurance_en}
+                  onChange={this.handleCheckChange}
+                  checked={invData.insurance_en}
                 />
-                <MSCheckbox field="dest_port_en"
+                <MSCheckbox
+                  field="dest_port_en"
                   text={this.msg('destPort')}
-                  onChange={this.handleCheckChange} checked={invData.dest_port_en}
+                  onChange={this.handleCheckChange}
+                  checked={invData.dest_port_en}
                 />
-                <MSCheckbox field="remark_en"
+                <MSCheckbox
+                  field="remark_en"
                   text={this.msg('remark')}
-                  onChange={this.handleCheckChange} checked={invData.remark_en}
+                  onChange={this.handleCheckChange}
+                  checked={invData.remark_en}
                 />
               </Panel>
             </Collapse>

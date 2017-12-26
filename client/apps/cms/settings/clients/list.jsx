@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { loadPartners } from 'common/reducers/partner';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { setResTabkey, setCustomer } from 'common/reducers/cmsResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Layout, Table, Input, Breadcrumb, Tabs, Form } from 'antd';
@@ -9,13 +12,11 @@ import TradersPane from './tabpane/tradersPane';
 import ManifestRulesPane from './tabpane/manifestRulesPane';
 import DocuTemplatesPane from './tabpane/docuTemplatesPane';
 import { formatMsg } from '../message.i18n';
-import { loadPartners } from 'common/reducers/partner';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import { setResTabkey, setCustomer } from 'common/reducers/cmsResources';
+
 
 const { Header, Content, Sider } = Layout;
-const Search = Input.Search;
-const TabPane = Tabs.TabPane;
+const { Search } = Input;
+const { TabPane } = Tabs;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadPartners({
@@ -41,7 +42,7 @@ function fetchData({ state, dispatch }) {
   { setResTabkey, setCustomer }
 )
 @Form.create()
-export default class ResourcesList extends Component {
+export default class ClientsList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tabkey: PropTypes.string.isRequired,
@@ -65,7 +66,7 @@ export default class ResourcesList extends Component {
     this.props.setResTabkey(tabkey);
   }
   handleSearch = (value) => {
-    let customers = this.props.customers;
+    let { customers } = this.props;
     if (value) {
       customers = this.props.customers.filter((item) => {
         const reg = new RegExp(value);
@@ -87,7 +88,11 @@ export default class ResourcesList extends Component {
     }];
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -107,9 +112,18 @@ export default class ResourcesList extends Component {
               <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="code"
+              <Table
+                size="middle"
+                columns={columns}
+                dataSource={this.state.customers}
+                showHeader={false}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 15,
+                  onChange: this.handlePageChange,
+                }}
+                rowClassName={record => (record.id === customer.id ? 'table-row-selected' : '')}
+                rowKey="code"
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}
@@ -128,13 +142,13 @@ export default class ResourcesList extends Component {
           <Content className="main-content">
             <div className="page-body tabbed">
               <Tabs activeKey={this.props.tabkey} onChange={this.handleTabChange}>
-                <TabPane tab="收发货人" key="owners">
+                <TabPane tab="收发货人" key="traders">
                   <TradersPane />
                 </TabPane>
-                <TabPane tab="制单规则" key="location">
+                <TabPane tab="制单规则" key="rules">
                   <ManifestRulesPane />
                 </TabPane>
-                <TabPane tab="随附单据模板" key="dock">
+                <TabPane tab="单据模板" key="templates">
                   <DocuTemplatesPane />
                 </TabPane>
               </Tabs>

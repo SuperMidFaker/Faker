@@ -115,7 +115,7 @@ export default class InvoiceTemplate extends Component {
     } else if (record.docu_type === CMS_DOCU_TYPE.packingList) {
       type = 'packinglist';
     }
-    this.context.router.push(`/clearance/settings/resources/templates/${type}/${record.id}`);
+    this.context.router.push(`/clearance/settings/clients/templates/${type}/${record.id}`);
   }
   handleDelete = (record) => {
     this.props.deleteInvTemplate(record.id).then((result) => {
@@ -199,9 +199,14 @@ export default class InvoiceTemplate extends Component {
         </span>),
     }];
     const excelTemplPopover = (<div style={{ width: 300 }}>
-      <Upload listType="text" fileList={this.state.attachments} accept=".xls,.xlsx,.xlsm"
-        onRemove={this.handleRemove} onChange={this.handleImport}
-        action={`${API_ROOTS.default}v1/upload/img/`} withCredentials
+      <Upload
+        listType="text"
+        fileList={this.state.attachments}
+        accept=".xls,.xlsx,.xlsm"
+        onRemove={this.handleRemove}
+        onChange={this.handleImport}
+        action={`${API_ROOTS.default}v1/upload/img/`}
+        withCredentials
       >
         <Button>
           <Icon type="upload" /> upload

@@ -68,9 +68,8 @@ export default class TraderList extends Component {
       if (this.state.searchText) {
         const reg = new RegExp(this.state.searchText);
         return reg.test(item.comp_name) || reg.test(item.comp_code) || reg.test(item.receive_code);
-      } else {
-        return true;
       }
+      return true;
     });
     const columns = [{
       title: '企业名称',

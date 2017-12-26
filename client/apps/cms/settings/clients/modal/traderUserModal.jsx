@@ -112,18 +112,17 @@ export default class TraderUserModal extends React.Component {
               }
             </Select>
           );
-        } else {
-          return record.tenant_name;
         }
+        return record.tenant_name;
       },
     }, {
       width: 70,
       render: (o, record, index) => {
         if (record.tenant_id === this.props.tenantId) {
           return '';
-        } else {
-          return (
-            <div className="editable-row-operations">{
+        }
+        return (
+          <div className="editable-row-operations">{
               (record.id) ?
                 <span>
                   <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>
@@ -135,13 +134,17 @@ export default class TraderUserModal extends React.Component {
                   <a onClick={() => this.editDone(index)}><Icon type="close" /></a>
                 </span>
               }
-            </div>);
-        }
+          </div>);
       },
     }];
     return (
       <Modal maskClosable={false} title="授权使用单位" visible={visible} onCancel={this.handleCancel} footer={null} >
-        <Table size="middle" showHeader={false} pagination={false} columns={columns} dataSource={this.state.datas}
+        <Table
+          size="middle"
+          showHeader={false}
+          pagination={false}
+          columns={columns}
+          dataSource={this.state.datas}
           footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} />}
         />
       </Modal>

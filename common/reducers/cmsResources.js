@@ -23,7 +23,7 @@ const initialState = {
     businessUnit: {},
   },
   customer: {},
-  tabkey: 'owners',
+  tabkey: 'traders',
   unitRuleSetModal: {
     visible: false,
     relationId: null,

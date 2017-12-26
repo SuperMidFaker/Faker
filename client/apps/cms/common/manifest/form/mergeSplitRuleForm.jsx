@@ -117,7 +117,7 @@ export default class MergeSplitForm extends React.Component {
             </FormItem>
             {mergeOpt.checked && !mergeOpt.byCopGNo ? <Col offset="5">
               <FormItem>
-                {getFieldDecorator('merge_bysplhs', { initialValue: formData.merge_bysplhs === 1 })(<Checkbox defaultChecked={formData.merge_bysplhs}>{this.msg('mergeSpecialHscode')}</Checkbox>)
+                {getFieldDecorator('merge_bysplhs', { initialValue: !!formData.merge_bysplhs })(<Checkbox defaultChecked={formData.merge_bysplhs}>{this.msg('mergeSpecialHscode')}</Checkbox>)
                   }
                 {getFieldValue('merge_bysplhs') &&
                 <div>
@@ -132,7 +132,7 @@ export default class MergeSplitForm extends React.Component {
                   }
               </FormItem>
               <FormItem>
-                {getFieldDecorator('merge_bysplno', { initialValue: formData.merge_bysplno === 1 })(<Checkbox defaultChecked={formData.merge_bysplno}>{this.msg('mergeSpecialNo')}</Checkbox>)
+                {getFieldDecorator('merge_bysplno', { initialValue: !!formData.merge_bysplno })(<Checkbox defaultChecked={formData.merge_bysplno}>{this.msg('mergeSpecialNo')}</Checkbox>)
                   }
                 {getFieldValue('merge_bysplno') &&
                 <div>
@@ -168,7 +168,7 @@ export default class MergeSplitForm extends React.Component {
               </Select>)}
             </FormItem>
             <FormItem>
-              {getFieldDecorator('split_hscode', { initialValue: formData.split_hscode === 1 })(<Checkbox defaultChecked={formData.split_hscode}>{this.msg('specialHscodeDeclare')}</Checkbox>)
+              {getFieldDecorator('split_hscode', { initialValue: !!formData.split_hscode })(<Checkbox defaultChecked={formData.split_hscode}>{this.msg('specialHscodeDeclare')}</Checkbox>)
               }
               {getFieldValue('split_hscode') &&
                 <div>

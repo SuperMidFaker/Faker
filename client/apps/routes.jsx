@@ -56,6 +56,7 @@ import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
+import * as CMSClients from './cms/settings/clients';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
 import * as CMSTradeItemRepo from './cms/tradeitem/repo';
@@ -364,15 +365,14 @@ export default(store) => {
               </Route>
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/clearance/settings/resources" />
               <Route path="brokers" component={CMSBrokers.List} />
-              <Route path="preferences" component={CMSSettings.Preferences} />
-              <Route path="resources">
-                <IndexRoute component={CMSSettings.Resources} />
-                <Route path="templates/invoice/:id" component={CMSSettings.InvoiceTemplate} />
-                <Route path="templates/contract/:id" component={CMSSettings.ContractTemplate} />
-                <Route path="templates/packinglist/:id" component={CMSSettings.PackingListTemplate} />
+              <Route path="clients">
+                <IndexRoute component={CMSClients.List} />
+                <Route path="templates/invoice/:id" component={CMSClients.InvoiceTemplate} />
+                <Route path="templates/contract/:id" component={CMSClients.ContractTemplate} />
+                <Route path="templates/packinglist/:id" component={CMSClients.PackingListTemplate} />
               </Route>
+              <Route path="preferences" component={CMSSettings.Preferences} />
             </Route>
             <Route path="tradeitem">
               <IndexRedirect to="/clearance/tradeitem/repo" />

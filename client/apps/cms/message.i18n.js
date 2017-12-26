@@ -93,13 +93,13 @@ const messages = defineMessages({
     id: 'cms.module.settings',
     defaultMessage: '设置',
   },
-  resources: {
-    id: 'cms.module.settings.resources',
-    defaultMessage: '客户设置',
+  clients: {
+    id: 'cms.module.settings.clients',
+    defaultMessage: '委托方设置',
   },
   brokers: {
     id: 'cms.module.settings.brokers',
-    defaultMessage: '代理设置',
+    defaultMessage: '申报代理',
   },
   preferences: {
     id: 'cms.module.settings.preferences',

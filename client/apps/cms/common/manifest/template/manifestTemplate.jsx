@@ -4,19 +4,20 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, message, Mention, Collapse, Tabs } from 'antd';
 import { saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import ButtonToggle from 'client/components/ButtonToggle';
+import MagicCard from 'client/components/MagicCard';
 import HeadRulesPane from './tabpane/headRulesPane';
 import ImportRulesPane from './tabpane/importRulesPane';
 import MergeSplitRulesPane from './tabpane/mergeSplitRulesPane';
 import TemplateUsersPane from './tabpane/templateUsersPane';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const Panel = Collapse.Panel;
-const TabPane = Tabs.TabPane;
+const { Panel } = Collapse;
+const { TabPane } = Tabs;
 
 function getFieldInits(formData) {
   const init = {
@@ -70,7 +71,9 @@ function getFieldInits(formData) {
     ['merge_checked', 'sort_customs'].forEach((fd) => {
       init[fd] = formData[fd] === 0 ? formData[fd] : 1;
     });
-    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr', 'set_special_code', 'set_merge_split', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
+    ['sort_dectotal', 'sort_hscode',
+      'split_hscode', 'split_ciqdecl', 'split_applcert', 'split_curr',
+      'set_special_code', 'set_merge_split', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
     init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
@@ -106,7 +109,6 @@ export default class ManifestTemplate extends Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
     template: PropTypes.object.isRequired,
     operation: PropTypes.string.isRequired,
     changeTimes: PropTypes.number,
@@ -116,7 +118,6 @@ export default class ManifestTemplate extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    attachments: [],
     rightSidercollapsed: true,
     changed: false,
   }
@@ -233,27 +234,31 @@ export default class ManifestTemplate extends Component {
                 {this.msg('save')}
               </Button>}
               <ButtonToggle
-                iconOn="setting" iconOff="setting"
+                iconOn="setting"
+                iconOff="setting"
                 onClick={this.toggleRightSider}
               />
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large">
-            <div className="page-body tabbed">
-              <Form layout="horizontal">
-                <Tabs>
-                  <TabPane tab="清单表头规则" key="head">
-                    <HeadRulesPane ietype={ietype} form={form} formData={formData} />
-                  </TabPane>
-                  <TabPane tab="特殊字段规则" key="importRules">
-                    <ImportRulesPane form={form} formData={fieldInits} />
-                  </TabPane>
-                  <TabPane tab="归并拆分规则" key="mergeSplitRules">
-                    <MergeSplitRulesPane form={form} formData={fieldInits} />
-                  </TabPane>
-                </Tabs>
-              </Form>
-            </div>
+            <MagicCard
+              bodyStyle={{ padding: 0 }}
+              hoverable={false}
+              loading={this.props.manifestSpinning}
+              onSizeChange={this.toggleFullscreen}
+            >
+              <Tabs>
+                <TabPane tab="清单表头规则" key="head">
+                  <HeadRulesPane ietype={ietype} form={form} formData={formData} />
+                </TabPane>
+                <TabPane tab="特殊字段规则" key="importRules">
+                  <ImportRulesPane form={form} formData={fieldInits} />
+                </TabPane>
+                <TabPane tab="归并拆分规则" key="mergeSplitRules">
+                  <MergeSplitRulesPane form={form} formData={fieldInits} />
+                </TabPane>
+              </Tabs>
+            </MagicCard>
           </Content>
         </Layout>
         <Sider
@@ -271,11 +276,6 @@ export default class ManifestTemplate extends Component {
             </div>
             <Collapse accordion defaultActiveKey="properties">
               <Panel header="模板属性" key="properties">
-                {/*
-                <InfoItem type="select" label="关联客户" placeholder="关联客户" field={template.customer_partner_id}
-                  editable options={customers} onEdit={value => this.handleTempInfoChange(value, 'customer_partner_id')}
-                />
-                */}
                 <InfoItem label="模板名称" field={templateName} dataIndex="template_name" placeholder="模板名称" editable onEdit={this.handleTempInfoChange} />
               </Panel>
               <Panel header="授权使用单位" key="user">
