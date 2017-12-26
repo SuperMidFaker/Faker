@@ -19,7 +19,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     easipass: state.openIntegration.easipassApp,
   }),
   { updateEasipassApp }
@@ -28,8 +27,7 @@ function fetchData({ dispatch, params }) {
 export default class ConfigEasipassEDI extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ validateFields: PropTypes.func.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
