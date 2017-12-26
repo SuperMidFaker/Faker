@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Input, Select, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
-import { CMS_CNTNR_SPEC_CUS, CMS_CNTNR_SPEC_CIQ } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
@@ -68,14 +67,14 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     tabKey: state.cmsManifest.tabKey,
     billHead: state.cmsManifest.billHead,
-    containers: state.cmsManifest.containers,
+    invoices: state.cmsManifest.invoices,
   }),
   { loadContainers, saveContainer, delContainer }
 )
-export default class ContainersPane extends React.Component {
+export default class InvoicesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    containers: PropTypes.array,
+    invoices: PropTypes.array,
     billHead: PropTypes.object,
   }
   state = {
@@ -89,8 +88,8 @@ export default class ContainersPane extends React.Component {
       (this.props.tabKey !== nextProps.tabKey && nextProps.tabKey === 'container')) {
       this.props.loadContainers(nextProps.billHead.delg_no);
     }
-    if (this.props.containers !== nextProps.containers) {
-      this.setState({ datas: nextProps.containers });
+    if (this.props.invoices !== nextProps.invoices) {
+      this.setState({ datas: nextProps.invoices });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
@@ -140,53 +139,108 @@ export default class ContainersPane extends React.Component {
 
   render() {
     const columns = [{
-      title: this.msg('seqNo'),
-      dataIndex: 'seq_no',
-      width: 60,
-    }, {
-      title: this.msg('containerId'),
-      dataIndex: 'container_id',
+      title: this.msg('invoiceNo'),
+      dataIndex: 'invoice_no',
       render: (o, record) =>
         (<ColumnInput
-          field="container_id"
+          field="invoice_no"
           inEdit={!record.id}
           record={record}
           onChange={this.handleEditChange}
         />),
     }, {
-      title: this.msg('containerSpec'),
-      dataIndex: 'container_spec',
-      render: (o, record) =>
-        (<ColumnSelect
-          field="container_spec"
-          inEdit={!record.id}
-          record={record}
-          onChange={this.handleEditChange}
-          options={CMS_CNTNR_SPEC_CUS}
-        />),
-    }, {
-      title: this.msg('containerSpecCiq'),
-      dataIndex: 'container_spec_ciq',
-      render: (o, record) =>
-        (<ColumnSelect
-          field="container_spec_ciq"
-          inEdit={!record.id}
-          record={record}
-          onChange={this.handleEditChange}
-          options={CMS_CNTNR_SPEC_CIQ}
-        />),
-    }, {
-      title: this.msg('containerWt'),
-      dataIndex: 'container_wt',
+      title: this.msg('invoiceDate'),
+      dataIndex: 'invoice_date',
       render: (o, record) =>
         (<ColumnInput
-          field="container_wt"
+          field="invoice_date"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('orderNo'),
+      dataIndex: 'order_no',
+      render: (o, record) =>
+        (<ColumnInput
+          field="order_no"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('invoiceType'),
+      dataIndex: 'invoice_type',
+      render: (o, record) =>
+        (<ColumnInput
+          field="invoice_type"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('invoiceStatus'),
+      dataIndex: 'invoice_status',
+      render: (o, record) =>
+        (<ColumnInput
+          field="invoice_status"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('totalAmount'),
+      dataIndex: 'total_amount',
+      render: (o, record) =>
+        (<ColumnInput
+          field="total_amount"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('totalQuant'),
+      dataIndex: 'total_quant',
+      render: (o, record) =>
+        (<ColumnInput
+          field="total_quant"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('totalNetWt'),
+      dataIndex: 'total_net_wt',
+      render: (o, record) =>
+        (<ColumnInput
+          field="total_net_wt"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('pieces'),
+      dataIndex: 'pieces',
+      render: (o, record) =>
+        (<ColumnInput
+          field="pieces"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('grossWt'),
+      dataIndex: 'gross_wt',
+      render: (o, record) =>
+        (<ColumnInput
+          field="gross_wt"
           inEdit={!record.id}
           record={record}
           onChange={this.handleEditChange}
         />),
     }, {
       width: 100,
+      fixed: 'right',
       render: (o, record, index) => {
         if (record.id) {
           return (<span>

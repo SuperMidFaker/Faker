@@ -17,6 +17,7 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
     categoryHscodes: state.cmsHsCode.categoryHscodes,
+    loading: state.cmsHsCode.categoryHscodesLoading,
   }),
   { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode }
 )
@@ -85,12 +86,12 @@ export default class HSCodeSpecialList extends React.Component {
   }
   render() {
     const { hscode } = this.state;
-    const { hscodeCategory } = this.props;
+    const { hscodeCategory, loading } = this.props;
     const categoryHscodesDataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadCategoryHsCode(params),
       resolve: (result) => {
         if (result.data.length === result.pageSize) return result.data;
-        else return result.data.concat([{ id: -1 }]);
+        return result.data.concat([{ id: -1 }]);
       },
       getPagination: (result, resolve) => ({
         total: result.totalCount + 1,
@@ -131,11 +132,13 @@ export default class HSCodeSpecialList extends React.Component {
       }
       return col;
     };
-    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
+    const toolbarActions = (<SearchBar
+      placeholder="编码/名称/描述/申报要素"
+      onInputSearch={this.handleSearch}
       value={this.props.categoryHscodes.searchText}
     />);
     return (
-      <DataTable toolbarActions={toolbarActions} dataSource={categoryHscodesDataSource} columns={columns} rowKey="id" bordered />
+      <DataTable toolbarActions={toolbarActions} dataSource={categoryHscodesDataSource} columns={columns} rowKey="id" bordered loading={loading} />
     );
   }
 }

@@ -22,6 +22,7 @@ const initialState = {
     searchText: '',
   },
   hscodeCategories: [],
+  categoryHscodesLoading: true,
   categoryHscodes: {
     data: [],
     categoryId: -1,
@@ -36,8 +37,16 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_HSCODES_SUCCEED:
       return { ...state, hscodes: { ...state.hscodes, ...action.result.data } };
+    case actionTypes.LOAD_HSCODE_CATEGORIES:
+      return { ...state, categoryHscodesLoading: true };
     case actionTypes.LOAD_HSCODE_CATEGORIES_SUCCEED:
-      return { ...state, hscodeCategories: action.result.data.categories };
+      return {
+        ...state,
+        hscodeCategories: action.result.data.categories,
+        categoryHscodesLoading: false,
+      };
+    case actionTypes.LOAD_HSCODE_CATEGORIES_FAIL:
+      return { ...state, categoryHscodesLoading: false };
     case actionTypes.ADD_HSCODE_CATEGORY_SUCCEED: {
       const hscodeCategories = [...state.hscodeCategories];
       hscodeCategories.push(action.result.data);

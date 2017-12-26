@@ -55,7 +55,6 @@ export default class HSCodeSpecial extends React.Component {
     removeHsCodeCategory: PropTypes.func.isRequired,
     updateHsCodeCategory: PropTypes.func.isRequired,
     loadCategoryHsCode: PropTypes.func.isRequired,
-
   }
   state = {
     collapsed: false,

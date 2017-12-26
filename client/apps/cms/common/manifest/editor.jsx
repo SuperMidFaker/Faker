@@ -19,7 +19,7 @@ import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
-import DocuPane from './tabpane/doctsPane';
+import InvoicesPane from './tabpane/invoicesPane';
 import MergeSplitModal from './modals/mergeSplitModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
 import messages from './message.i18n';
@@ -458,9 +458,15 @@ export default class ManifestEditor extends React.Component {
     tabs.push(<TabPane tab="集装箱" key="containers">
       <ContainersPane fullscreen={this.state.fullscreen} />
     </TabPane>);
-    tabs.push(<TabPane tab="随附单据" key="attachedDocs" >
+    tabs.push(<TabPane tab="商业发票" key="invoices">
+      <InvoicesPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    /*
+      tabs.push(<TabPane tab="随附单据" key="attachedDocs" >
       <DocuPane billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
     </TabPane>);
+    */
+
     return (
       <Layout>
         <Layout>
