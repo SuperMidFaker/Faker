@@ -104,6 +104,9 @@ export default class ManifestHeadPane extends React.Component {
     const {
       form, readonly, formData, formRequire, ietype, intl,
     } = this.props;
+    if (!formData.bill_seq_no) {
+      return null;
+    }
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -136,11 +139,18 @@ export default class ManifestHeadPane extends React.Component {
         <Card hoverable={false}>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
-                codeField="trade_co" custCodeField="trade_custco" nameField="trade_name"
-                codeRules={[{ required: false }]} nameRules={[{ required: true }]}
-                onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                {...formProps} options={tradesOpt}
+              <RelationAutoCompSelect
+                label={this.msg('forwardName')}
+                intl={intl}
+                codeField="trade_co"
+                custCodeField="trade_custco"
+                nameField="trade_name"
+                codeRules={[{ required: false }]}
+                nameRules={[{ required: true }]}
+                onSelect={this.handleRelationSel}
+                onChange={this.handleRelationChange}
+                {...formProps}
+                options={tradesOpt}
               />
             </Col>
             <Col span="16">
@@ -157,23 +167,38 @@ export default class ManifestHeadPane extends React.Component {
           </Row>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={
+              <RelationAutoCompSelect
+                label={
                   ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
-                } codeField="owner_code" custCodeField="owner_custco" nameField="owner_name" intl={intl}
-                codeRules={[{ required: false }]} nameRules={[{ required: true }]}
-                onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                {...formProps} options={tradesOpt}
+                }
+                codeField="owner_code"
+                custCodeField="owner_custco"
+                nameField="owner_name"
+                intl={intl}
+                codeRules={[{ required: false }]}
+                nameRules={[{ required: true }]}
+                onSelect={this.handleRelationSel}
+                onChange={this.handleRelationChange}
+                {...formProps}
+                options={tradesOpt}
               />
             </Col>
             <Transport {...formProps} intl={intl} formRequire={formRequire} />
           </Row>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={this.msg('agentName')}
-                codeField="agent_code" custCodeField="agent_custco" nameField="agent_name" intl={intl}
-                codeRules={[{ required: false }]} nameRules={[{ required: true }]}
-                onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                {...formProps} options={formRequire.agents}
+              <RelationAutoCompSelect
+                label={this.msg('agentName')}
+                codeField="agent_code"
+                custCodeField="agent_custco"
+                nameField="agent_name"
+                intl={intl}
+                codeRules={[{ required: false }]}
+                nameRules={[{ required: true }]}
+                onSelect={this.handleRelationSel}
+                onChange={this.handleRelationChange}
+                {...formProps}
+                options={formRequire.agents}
               />
             </Col>
             <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
@@ -202,8 +227,12 @@ export default class ManifestHeadPane extends React.Component {
               <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
             </Col>
             <Col span={16}>
-              <FormInput field="cert_mark" outercol={24} col={3}
-                label={this.msg('certMark')} {...entryFormProps}
+              <FormInput
+                field="cert_mark"
+                outercol={24}
+                col={3}
+                label={this.msg('certMark')}
+                {...entryFormProps}
               />
             </Col>
           </Row>
@@ -212,8 +241,12 @@ export default class ManifestHeadPane extends React.Component {
               <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} />
             </Col>
             <Col span={16}>
-              <FormInput field="note" outercol={24} col={3}
-                label={this.msg('markNotes')} {...entryFormProps}
+              <FormInput
+                field="note"
+                outercol={24}
+                col={3}
+                label={this.msg('markNotes')}
+                {...entryFormProps}
               />
             </Col>
           </Row>

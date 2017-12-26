@@ -141,6 +141,13 @@ export default class CMSNodeCard extends React.Component {
             <Step title="申报" />
             <Step title="放行" />
           </Steps>
+          {triggerActions && triggerActions.length > 0 &&
+          <ul className="ant-card-actions">
+            {triggerActions.map(trButton => (
+              <li style={{ width: '100%' }}>
+                {trButton}
+              </li>))}
+          </ul>}
         </div>
       </Card>
     );
