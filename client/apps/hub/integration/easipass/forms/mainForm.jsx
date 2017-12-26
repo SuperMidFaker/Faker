@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 export default class MainForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     easipass: PropTypes.shape({
       send_dir: PropTypes.string.isRequired,
     }),
@@ -36,10 +36,18 @@ export default class MainForm extends Component {
             })(<Input />)}
           </FormItem>
         </Col>
-        <Col sm={24} lg={24}>
+        <Col sm={24} lg={12}>
           <FormItem label={this.msg('epUserCode')}>
             {getFieldDecorator('ep_user_code', {
               initialValue: easipass.ep_user_code,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
+            })(<Input />)}
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={12}>
+          <FormItem label={this.msg('agentCustCode')}>
+            {getFieldDecorator('agent_code', {
+              initialValue: easipass.agent_code,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>

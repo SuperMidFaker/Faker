@@ -98,6 +98,10 @@ const messages = defineMessages({
     id: 'hub.integration.easipass.epUserCode',
     defaultMessage: '接收方用户ID(多个逗号分隔)',
   },
+  agentCustCode: {
+    id: 'hub.integration.easipass.agent.custcode',
+    defaultMessage: '申报单位十位编码',
+  },
   FTPserver: {
     id: 'hub.integration.easipass.ftp.server',
     defaultMessage: 'FTP地址',

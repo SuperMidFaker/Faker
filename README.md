@@ -95,3 +95,4 @@ server
   webpack build time reduce
   remove server babel-register import reducers require babel
   env test hmr locals[0] error
+  manifest form saveRef generateCDP error

@@ -420,7 +420,7 @@ export function loadLatestSendRecord(preEntrySeqNo) {
       ],
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
-      params: { preEntrySeqNo, current: 1, pageSize: 1 },
+      params: { searchText: preEntrySeqNo, current: 1, pageSize: 1 },
     },
   };
 }
