@@ -48,6 +48,10 @@ const initialState = {
   },
   ciqListFilter: {
     ieType: 'all',
+    status: 'all',
+    clientPid: -1,
+    startTime: '',
+    endTime: '',
   },
   ciqParams: {
     organizations: [],
@@ -66,7 +70,7 @@ const initialState = {
     data: {},
   },
   ciqDeclHead: {
-    head: {},
+    head: [],
     entries: [],
     ciqs: [],
   },
