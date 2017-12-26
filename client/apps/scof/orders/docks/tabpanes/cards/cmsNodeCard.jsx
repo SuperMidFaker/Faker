@@ -85,18 +85,19 @@ export default class CMSNodeCard extends React.Component {
     const {
       /* children, */ node: {
         name, decl_way_code: declWayCode, trans_mode: transMode, bl_wb_no: blWbNo,
-        in_degree: indegree, uuid, out_degree: outdeg, multi_bizobj: multiple,
+        in_degree: indegree, uuid, out_degree: outdeg, multi_bizobj: multiple, primary,
       },
     } = this.props;
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     const declWayItem = declWayMap.find(item => item.key === declWayCode);
     const tm = TRANS_MODE.filter(item => item.value === transMode)[0];
     const extra = [];
+    let triggerActions;
     if (indegree === 0) {
-      if (outdeg > 0 && multiple) {
-        extra.push(<Tooltip title="触发节点进入" key="enter">
-          <Button type="primary" size="small" shape="circle" icon="plus" onClick={this.handleNodeEnterTrigger} />
-        </Tooltip>);
+      if (outdeg > 0 && multiple && primary) {
+        triggerActions = [(<Tooltip title="触发节点进入" key="enter">
+          <Button type="primary" icon="plus" onClick={this.handleNodeEnterTrigger} />
+        </Tooltip>)];
       }
       extra.push(<Tooltip title="进入详情" key="detail">
         <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleManifest} />
@@ -108,6 +109,7 @@ export default class CMSNodeCard extends React.Component {
         extra={extra}
         bodyStyle={{ padding: 8, paddingBottom: 56 }}
         onClick={() => this.handlePreview(uuid)}
+        actions={triggerActions}
       >
         <Row>
           <Col span="8">

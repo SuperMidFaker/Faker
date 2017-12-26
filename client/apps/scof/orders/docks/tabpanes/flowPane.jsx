@@ -53,6 +53,10 @@ export default class FlowPane extends React.Component {
                   return (
                     <Timeline.Item dot={<Ikons type="login" />} key={item.uuid}>
                       <CMSNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="login" />} key={subitem.biz_no}>
+                          <CMSNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
                   case 'tms':
