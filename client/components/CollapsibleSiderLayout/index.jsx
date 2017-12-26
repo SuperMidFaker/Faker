@@ -5,7 +5,7 @@ import NavLink from '../NavLink';
 import './index.less';
 
 const { Sider } = Layout;
-const SubMenu = Menu.SubMenu;
+const { SubMenu } = Menu;
 const MenuItem = Menu.Item;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -107,8 +107,7 @@ export default class CollapsibleSiderLayout extends PureComponent {
   }
   render() {
     const links = this.props.links.filter(l => !l.invisible);
-    const childContent = this.props.childContent;
-    const showLogo = this.props.showLogo;
+    const { childContent, showLogo } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
         <Sider
@@ -119,7 +118,10 @@ export default class CollapsibleSiderLayout extends PureComponent {
           className="left-sider"
         >
           {showLogo ? <div className="layout-logo" /> : ''}
-          <Menu mode="inline" theme="dark" onSelect={this.handleMenuSelect}
+          <Menu
+            mode="inline"
+            theme="dark"
+            onSelect={this.handleMenuSelect}
             selectedKeys={this.state.selectedKeys}
             onClick={this.handleClick}
           >
@@ -133,9 +135,10 @@ export default class CollapsibleSiderLayout extends PureComponent {
                         <span className="nav-text">{link.text}</span>
                       </NavLink>
                     </MenuItem>);
-                } else {
+                }
                   let subMenuItems;
-                  const isGrouped = link.sublinks.filter(sub => sub.group).length === link.sublinks.length;
+                  const isGrouped = link.sublinks.filter(sub =>
+                    sub.group).length === link.sublinks.length;
                   if (isGrouped) {
                     const groupLinks = [];
                     for (let i = 0; i < link.sublinks.length; i++) {
@@ -178,7 +181,8 @@ export default class CollapsibleSiderLayout extends PureComponent {
                       </MenuItem>));
                   }
                   return (
-                    <SubMenu key={link.key}
+                    <SubMenu
+                      key={link.key}
                       disabled={link.disabled}
                       className={this.state.openedKey[0] === link.key ? 'ant-menu-submenu-selected' : ''}
                       title={<div><i className={`icon ${link.icon}`} /><span className="nav-text">{link.text}</span></div>}
@@ -186,7 +190,6 @@ export default class CollapsibleSiderLayout extends PureComponent {
                       { subMenuItems }
                     </SubMenu>
                   );
-                }
               })
             }
           </Menu>
