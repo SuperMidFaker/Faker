@@ -6,18 +6,19 @@ import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Ta
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
-  loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
-import HSCodeSpecialList from './specialList';
 import PageHeader from 'client/components/PageHeader';
 import NavLink from 'client/components/NavLink';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
+import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
+  loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
+import HSCodeSpecialList from './specialList';
+
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
@@ -50,13 +51,11 @@ export default class HSCodeSpecial extends React.Component {
     tenantId: PropTypes.number.isRequired,
     hscodeCategories: PropTypes.array.isRequired,
     categoryHscodes: PropTypes.object.isRequired,
-    loadHsCodeCategories: PropTypes.func.isRequired,
     addHsCodeCategory: PropTypes.func.isRequired,
     removeHsCodeCategory: PropTypes.func.isRequired,
     updateHsCodeCategory: PropTypes.func.isRequired,
     loadCategoryHsCode: PropTypes.func.isRequired,
-    addCategoryHsCode: PropTypes.func.isRequired,
-    removeCategoryHsCode: PropTypes.func.isRequired,
+
   }
   state = {
     collapsed: false,
@@ -97,7 +96,11 @@ export default class HSCodeSpecial extends React.Component {
   handleAddCategory = () => {
     const { editIndex, hscodeCategories } = this.state;
     if (hscodeCategories[editIndex].name) {
-      this.props.addHsCodeCategory(this.props.tenantId, hscodeCategories[editIndex].name, this.state.type).then((result) => {
+      this.props.addHsCodeCategory(
+        this.props.tenantId,
+        hscodeCategories[editIndex].name,
+        this.state.type
+      ).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -168,15 +171,16 @@ export default class HSCodeSpecial extends React.Component {
       title: '分类名称',
       render: (col, row, index) => {
         if (this.state.editIndex === index) {
-          return (<Input value={col} onChange={(e) => {
+          return (<Input
+            value={col}
+            onChange={(e) => {
             const { hscodeCategories } = this.state;
             hscodeCategories[index].name = e.target.value;
             this.setState({ hscodeCategories });
           }}
           />);
-        } else {
-          return col;
         }
+        return col;
       },
     }, {
       dataIndex: 'option',
@@ -190,30 +194,39 @@ export default class HSCodeSpecial extends React.Component {
               <span className="ant-divider" />
               <a onClick={() => this.handleCancel(row, index)}><Icon type="close" /></a>
             </span>);
-          } else {
-            return (<a onClick={() => this.handleEditCategory(row.id)}><Icon type="save" /></a>);
           }
-        } else {
-          return (
-            <span>
-              <a onClick={() => {
+          return (<a onClick={() => this.handleEditCategory(row.id)}><Icon type="save" /></a>);
+        }
+        return (
+          <span>
+            <a onClick={() => {
                 this.setState({ editIndex: index });
               }}
-              ><Icon type="edit" />
-              </a>
-              <span className="ant-divider" />
-              <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
-                <a role="presentation"><Icon type="delete" /></a>
-              </Popconfirm>
-            </span>
-          );
-        }
+            ><Icon type="edit" />
+            </a>
+            <span className="ant-divider" />
+            <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
+              <a role="presentation"><Icon type="delete" /></a>
+            </Popconfirm>
+          </span>
+        );
       },
     }];
     const tabTable = (
-      <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns}
-        pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-        rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
+      <Table
+        size="middle"
+        dataSource={this.state.hscodeCategories}
+        columns={columns}
+        pagination={{
+          current: this.state.currentPage,
+          defaultPageSize: 15,
+          onChange: this.handlePageChange,
+        }}
+        rowKey="id"
+        rowClassName={record => (record.name === hscodeCategory.name ? 'table-row-selected' : '')}
+        onRow={(record, index) => ({
+                onClick: () => { this.handleRowClick(record, index); },
+              })}
         footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} disabled={this.state.disabled} style={{ width: '100%' }}>添加分类</Button>}
       />
     );
@@ -222,7 +235,11 @@ export default class HSCodeSpecial extends React.Component {
     );
     return (
       <Layout className="ant-layout-wrapper">
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={280}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -264,13 +281,15 @@ export default class HSCodeSpecial extends React.Component {
                 {this.msg('导出')}
               </Button>
               <Popover title="导入数据表格式如下" content={content}>
-                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
+                <ExcelUploader
+                  endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
                   formData={{
                     data: JSON.stringify({
                       categoryId: hscodeCategory.id,
                       tenantId: this.props.tenantId,
                     }),
-                  }} onUploaded={this.handleUploaded}
+                  }}
+                  onUploaded={this.handleUploaded}
                 >
                   <Button type="primary" ghost><Icon type="upload" /> 导入</Button>
                 </ExcelUploader>
