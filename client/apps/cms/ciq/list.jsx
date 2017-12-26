@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -18,6 +18,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import { format } from 'client/common/i18n/helpers';
+import { loadPartnersByTypes } from 'common/reducers/partner';
+import { CIQ_LIST_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import messages from './message.i18n';
 
@@ -25,6 +27,8 @@ const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 function ColumnSwitch(props) {
   const {
@@ -51,9 +55,10 @@ ColumnSwitch.propTypes = {
     ciqDeclList: state.cmsCiqDeclare.ciqDeclList,
     listFilter: state.cmsCiqDeclare.ciqListFilter,
     organizations: state.cmsCiqDeclare.ciqParams.organizations,
+    clients: state.partner.partners,
   }),
   {
-    loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams,
+    loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams, loadPartnersByTypes,
   }
 )
 @connectNav({
@@ -66,7 +71,10 @@ export default class CiqDeclList extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     ciqDeclList: PropTypes.shape({ pageSize: PropTypes.number }).isRequired,
-    listFilter: PropTypes.shape({ ieType: PropTypes.oneOf(['import', 'all', 'export']) }).isRequired,
+    listFilter: PropTypes.shape({
+      ieType: PropTypes.oneOf(['import', 'all', 'export']),
+      status: PropTypes.string,
+    }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -77,6 +85,10 @@ export default class CiqDeclList extends Component {
   componentDidMount() {
     this.handleTableLoad();
     this.props.loadCiqParams();
+    this.props.loadPartnersByTypes(
+      this.props.tenantId,
+      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance
+    );
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -274,6 +286,18 @@ export default class CiqDeclList extends Component {
   exportCiqDecl = (row) => {
     window.open(`${API_ROOTS.default}v1/cms/clearance/ciqdecl/${createFilename('ciqdecl')}.xlsx?preEntrySeqNo=${row.pre_entry_seq_no}`);
   }
+  handleStatusChange = (value) => {
+    const filters = { ...this.props.listFilter, status: value };
+    this.handleTableLoad(this.props.ciqDeclList.current, filters);
+  }
+  handleClientSelectChange = (value) => {
+    const filters = { ...this.props.listFilter, clientPid: value };
+    this.handleTableLoad(this.props.ciqDeclList.current, filters);
+  }
+  handleDateChange = (value, dateString) => {
+    const filters = { ...this.props.listFilter, startTime: dateString[0], endTime: dateString[1] };
+    this.handleTableLoad(this.props.ciqDeclList.current, filters);
+  }
   render() {
     const { ciqDeclList, listFilter } = this.props;
     this.dataSource.remotes = ciqDeclList;
@@ -283,8 +307,38 @@ export default class CiqDeclList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const clients = [{
+      name: '全部委托单位',
+      partner_id: -1,
+    }].concat(this.props.clients);
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={listFilter.status}
+        onChange={this.handleStatusChange}
+      >
+        <Option value="all" key="all">全部</Option>
+        {CIQ_LIST_STATUS.map(item => (
+          <Option key={item.value} value={item.value}>
+            {item.text}
+          </Option>))}
+      </Select>
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
+        value={listFilter.clientPid}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+      >
+        {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}>
+          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+        </Option>))}
+      </Select>
+      <RangePicker defaultValue={[listFilter.startTime, listFilter.endTime]} onChange={this.handleDateChange} format="YYYY/MM/DD" />
     </span>);
     return (
       <Layout>

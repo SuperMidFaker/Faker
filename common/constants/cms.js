@@ -832,3 +832,11 @@ export const CIQ_GOODS_USE_TO = [
   { value: '29', text: '肥料' },
   { value: '30', text: '保健品' },
 ];
+
+export const CIQ_LIST_STATUS = [
+  { value: '0', text: '待报检' },
+  { value: '1', text: '报检受理' },
+  { value: '2', text: '施检查验' },
+  { value: '3', text: '通关放行' },
+  { value: '4', text: '签发证单' },
+];
