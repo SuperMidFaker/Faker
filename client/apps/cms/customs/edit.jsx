@@ -27,7 +27,7 @@ import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import CusDeclLogsPanel from './panel/cusDeclLogsPanel';
-import { DocDef } from './print/docDef';
+import { StandardDocDef } from './print/docDef';
 import DeclMsgModal from './modals/declMsgModal';
 import messages from './message.i18n';
 
@@ -232,10 +232,13 @@ export default class CustomsDeclEditor extends React.Component {
       },
     };
     if (ev.key === 'standard') {
-      docDef = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+      docDef = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
       window.pdfMake.createPdf(docDef).open();
     } else if (ev.key === 'skeleton') {
-      docDef = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire, true);
+      docDef = StandardDocDef(
+        head, bodies, billMeta.declWayCode, billMeta.orderNo,
+        formRequire, true
+      );
       window.pdfMake.createPdf(docDef).print();
     }
   }
