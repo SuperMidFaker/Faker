@@ -108,11 +108,14 @@ export default class ManifestTemplate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
-    form: PropTypes.object.isRequired,
-    template: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldValue: PropTypes.func }).isRequired,
+    template: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      template_name: PropTypes.string,
+    }).isRequired,
     operation: PropTypes.string.isRequired,
     changeTimes: PropTypes.number,
-    customers: PropTypes.array.isRequired,
+    customers: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.number })).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -151,7 +154,7 @@ export default class ManifestTemplate extends Component {
       merge_bycopgno: 0,
       merge_byengno: 0,
     };
-    for (const mergeOpt of mergeOptArr) {
+    mergeOptArr.forEach((mergeOpt) => {
       if (mergeOpt === 'byHsCode') {
         mergeObj.merge_byhscode = 1;
       } else if (mergeOpt === 'byGName') {
@@ -165,8 +168,14 @@ export default class ManifestTemplate extends Component {
       } else if (mergeOpt === 'byEmGNo') {
         mergeObj.merge_byengno = 1;
       }
+    });
+    if (this.props.form.getFieldValue('merge_check_radio')) {
+      mergeObj.merge_checked = true;
+    } else if (this.props.form.getFieldValue('merge_uncheck_radio')) {
+      mergeObj.merge_checked = false;
+    } else {
+      mergeObj.merge_checked = fieldInits.merge_checked;
     }
-    mergeObj.merge_checked = this.props.form.getFieldValue('merge_checked') || fieldInits.merge_checked;
     let specialHsSorts = '';
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');

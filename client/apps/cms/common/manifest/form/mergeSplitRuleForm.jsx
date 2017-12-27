@@ -80,11 +80,16 @@ export default class MergeSplitForm extends React.Component {
     });
     this.setState({ mergeOpt: { ...this.state.mergeOpt, byCopGNo: opt.byCopGNo } });
   }
-  handleMergeRadioChange = () => {
+  handleMergeRadioChange = (ev) => {
     this.setState({
       mergeOpt: { checked: !this.state.mergeOpt.checked },
     });
-    return !this.state.mergeOpt.checked;
+    if (this.state.mergeOpt.checked) {
+      this.props.form.setFieldsValue({ merge_check_radio: false, merge_uncheck_radio: true });
+    } else {
+      this.props.form.setFieldsValue({ merge_check_radio: true, merge_uncheck_radio: false });
+    }
+    return ev.target.checked;
   }
   handleSplitCiqdeclCheck = (ev) => {
     if (ev.target.checked) {
@@ -103,7 +108,7 @@ export default class MergeSplitForm extends React.Component {
           <Panel key="merge" header={this.msg('mergePrinciple')} >
             <FormItem>
               <Col span="3">
-                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={!mergeOpt.checked}>
+                {getFieldDecorator('merge_uncheck_radio', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={!mergeOpt.checked}>
                   {this.msg('nonMerge')}
                 </Radio>)}
               </Col>
@@ -113,7 +118,7 @@ export default class MergeSplitForm extends React.Component {
             </FormItem>
             <FormItem>
               <Col span="3">
-                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={mergeOpt.checked}>
+                {getFieldDecorator('merge_check_radio', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={mergeOpt.checked}>
                   {this.msg('conditionalMerge')}
                 </Radio>)}
               </Col>
