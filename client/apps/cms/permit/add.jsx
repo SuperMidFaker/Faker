@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
+import { Breadcrumb, Form, Layout, Button, Tabs } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { createTradeItem } from 'common/reducers/cmsTradeitem';
+import { addPermit } from 'common/reducers/cmsPermit';
 import PermitHeadPane from './tabpane/permitHeadPane';
 import messages from './message.i18n';
 
@@ -20,11 +20,8 @@ const { TabPane } = Tabs;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
-    repoId: state.cmsTradeitem.repoId,
   }),
-  { createTradeItem }
+  { addPermit }
 )
 @connectNav({
   depth: 3,
@@ -34,32 +31,21 @@ const { TabPane } = Tabs;
 export default class PermitAdd extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
-    repoId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    this.props.form.validateFields((errors) => {
+    this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        const {
-          repoId, tenantId, loginId, loginName,
-        } = this.props;
-        const item = this.props.form.getFieldsValue();
-        item.special_mark = item.specialMark.join('/');
-        this.props.createTradeItem({
-          item, repoId, tenantId, loginId, loginName,
-        }).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.success('保存成功');
-            this.context.router.goBack();
+        const data = { ...values };
+        if (data.permit_file) {
+          data.permit_file = data.permit_file.file.response.data;
+        }
+        this.props.addPermit(data).then((result) => {
+          if (!result.error) {
+            this.context.router.push('clearance/permit');
           }
         });
       }

@@ -7,6 +7,7 @@ import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
+import { updatePermit } from 'common/reducers/cmsPermit';
 import PermitHeadPane from './tabpane/permitHeadPane';
 import PermitItemsPane from './tabpane/permitItemsPane';
 import PermitUsagePane from './tabpane/permitUsagePane';
@@ -24,7 +25,7 @@ const { TabPane } = Tabs;
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { }
+  { updatePermit }
 )
 @connectNav({
   depth: 3,
@@ -34,31 +35,21 @@ const { TabPane } = Tabs;
 export default class PermitDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    this.props.form.validateFields((errors) => {
+    this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        const {
-          repoId, tenantId, loginId, loginName,
-        } = this.props;
-        const item = this.props.form.getFieldsValue();
-        item.special_mark = item.specialMark.join('/');
-        this.props.createTradeItem({
-          item, repoId, tenantId, loginId, loginName,
-        }).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.success('保存成功');
-            this.context.router.goBack();
+        const data = { ...values };
+        if (data.permit_file && typeof data.permit_file === 'object') {
+          data.permit_file = data.permit_file.file.response.data;
+        }
+        this.props.updatePermit({ ...data, id: this.context.router.params.id }).then((result) => {
+          if (!result.error) {
+            message.info('更新成功');
           }
         });
       }
@@ -89,7 +80,7 @@ export default class PermitDetail extends Component {
                 {this.msg('permit')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('addPermit')}
+                {this.msg('editPermit')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>

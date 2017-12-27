@@ -71,6 +71,7 @@ import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
 import saasLineFileAdaptor from './saasLineFileAdaptor';
 import cmsCiqDeclare from './cmsCiqDeclare';
+import cmsPermit from './cmsPermit';
 
 export default combineReducers({
   activities,
@@ -145,4 +146,5 @@ export default combineReducers({
   cwmMovement,
   saasLineFileAdaptor,
   cmsCiqDeclare,
+  cmsPermit,
 });

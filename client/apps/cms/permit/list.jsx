@@ -5,13 +5,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Breadcrumb, Button, Layout, Radio } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showImportModal, loadManualLists } from 'common/reducers/cmsTradeManual';
-import { loadCmsParams } from 'common/reducers/cmsManifest';
+import { loadPermits, loadCertParams } from 'common/reducers/cmsPermit';
+import { loadPartnersByTypes } from 'common/reducers/partner';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SearchBar from 'client/components/SearchBar';
 import messages from './message.i18n';
 
@@ -20,56 +20,18 @@ const RadioButton = Radio.Button;
 const formatMsg = format(messages);
 const { Content } = Layout;
 
-function fetchData({ state, dispatch }) {
-  dispatch(loadManualLists({
-    pageSize: state.cmsTradeManual.manuallist.pageSize,
-    current: state.cmsTradeManual.manuallist.current,
-  }));
-  const promises = [];
-  promises.push(dispatch(loadManualLists({
-    pageSize: state.cmsTradeManual.manuallist.pageSize,
-    current: state.cmsTradeManual.manuallist.current,
-  })));
-  promises.push(dispatch(loadCmsParams()));
-  return Promise.all(promises);
-}
 
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    loginName: state.account.username,
-    manuallist: state.cmsTradeManual.manuallist,
-    loading: state.cmsTradeManual.manuallist.loading,
-    units: state.cmsManifest.params.units.map(un => ({
-      value: un.unit_code,
-      text: un.unit_name,
-    })),
-    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
-    currencies: state.cmsManifest.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-      rate_cny: cr.rate_CNY,
-    })),
-    remissionModes: state.cmsManifest.params.remissionModes.map(rm => ({
-      value: rm.rm_mode,
-      text: rm.rm_abbr,
-    })),
-    customs: state.cmsManifest.params.customs.map(cs => ({
-      value: cs.customs_code,
-      text: cs.customs_name,
-    })),
-    tradeModes: state.cmsManifest.params.tradeModes.map(tm => ({
-      value: tm.trade_mode,
-      text: tm.trade_abbr,
-    })),
+    permitList: state.cmsPermit.permitList,
+    loading: state.cmsPermit.permitList.loading,
+    clients: state.partner.partners,
+    certParams: state.cmsPermit.certParams,
   }),
-  { showImportModal, loadManualLists }
+  { loadPermits, loadPartnersByTypes, loadCertParams }
 )
 @connectNav({
   depth: 2,
@@ -86,8 +48,21 @@ export default class PermitList extends Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-
+  componentWillMount() {
+    this.props.loadPermits({
+      pageSize: this.props.permitList.pageSize,
+      current: this.props.permitList.current,
+    });
+    this.props.loadPartnersByTypes(
+      this.props.tenantId,
+      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance
+    );
+    this.props.loadCertParams();
+  }
   msg = key => formatMsg(this.props.intl, key);
+  handleDetail = (row) => {
+    this.context.router.push(`clearance/permit/${row.id}`);
+  }
   columns = [{
     title: this.msg('证书编号'),
     dataIndex: 'permit_no',
@@ -95,7 +70,9 @@ export default class PermitList extends Component {
   }, {
     title: this.msg('关联货主'),
     width: 180,
-    dataIndex: 'owner_name',
+    dataIndex: 'owner_partner_id',
+    render: o => this.props.clients.find(cl => cl.partner_id === o) &&
+    this.props.clients.find(cl => cl.partner_id === o).name,
   }, {
     title: this.msg('涉证标准'),
     width: 100,
@@ -103,7 +80,9 @@ export default class PermitList extends Component {
   }, {
     title: this.msg('证书类型'),
     width: 200,
-    dataIndex: 'permit_type',
+    dataIndex: 'permit_code',
+    render: o => this.props.certParams.find(cert => cert.cert_code === o) &&
+    this.props.certParams.find(cert => cert.cert_code === o).cert_spec,
   }, {
     title: this.msg('总使用次数'),
     width: 120,
@@ -111,7 +90,7 @@ export default class PermitList extends Component {
   }, {
     title: this.msg('剩余使用次数'),
     width: 120,
-    dataIndex: 'avail_usage',
+    dataIndex: 'ava_usage',
   }, {
     title: this.msg('发证日期'),
     dataIndex: 'start_date',
@@ -124,10 +103,16 @@ export default class PermitList extends Component {
     title: this.msg('状态'),
     width: 80,
     dataIndex: 'status',
+    render: (o) => {
+      if (o) {
+        return '有效';
+      }
+      return '失效';
+    },
   }, {
     title: this.msg('证书文件'),
     width: 80,
-    dataIndex: 'permit_files',
+    dataIndex: 'permit_file',
   }, {
     title: this.msg('操作'),
     width: 100,
@@ -145,20 +130,12 @@ export default class PermitList extends Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleCreateBtnClick = () => {
-    this.props.showImportModal();
-  }
   handleReload = () => {
-    this.props.loadManualLists({
-      pageSize: this.props.manuallist.pageSize,
-      current: this.props.manuallist.current,
+    this.props.loadPermits({
     });
   }
-  handleSearch = (value) => {
-    this.props.loadManualLists({
-      pageSize: this.props.manuallist.pageSize,
-      current: this.props.manuallist.current,
-      filters: { text: value },
+  handleSearch = () => {
+    this.props.loadPermits({
     });
   }
   render() {
@@ -176,7 +153,7 @@ export default class PermitList extends Component {
       />
     </span>);
     const dataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadManualLists(params),
+      fetcher: params => this.props.loadPermits(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -194,7 +171,7 @@ export default class PermitList extends Component {
         };
         return params;
       },
-      remotes: this.props.manuallist,
+      remotes: this.props.permitList,
     });
     return (
       <Layout>
