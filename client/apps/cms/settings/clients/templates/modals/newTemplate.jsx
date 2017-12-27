@@ -42,7 +42,11 @@ export default class InvTemplateModal extends React.Component {
   handleAddNew = (formData) => {
     const { tenantId, loginName, customer } = this.props;
     const params = {
-      ...formData, tenant_id: tenantId, modify_name: loginName, customer_name: customer.name, customer_partner_id: customer.id,
+      ...formData,
+      tenant_id: tenantId,
+      modify_name: loginName,
+      customer_name: customer.name,
+      customer_partner_id: customer.id,
     };
     this.props.createInvTemplate(params).then((result) => {
       if (result.error) {

@@ -1,25 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  import: {
-    id: 'cms.delegation.import',
-    defaultMessage: '进口',
-  },
-  export: {
-    id: 'cms.delegation.export',
-    defaultMessage: '出口',
-  },
-  importClearance: {
-    id: 'cms.delegation.import.clearance',
-    defaultMessage: '进口申报',
-  },
-  exportClearance: {
-    id: 'cms.delegation.export.clearance',
-    defaultMessage: '出口申报',
-  },
-  cmsDelegation: {
-    id: 'cms.delegation',
-    defaultMessage: '委托',
+  delgManifest: {
+    id: 'cms.delegation.manifest',
+    defaultMessage: '委托制单',
   },
   createDelegation: {
     id: 'cms.delegation.create',
@@ -29,17 +13,17 @@ export default defineMessages({
     id: 'cms.delegation.edit',
     defaultMessage: '修改委托',
   },
-  delgClearance: {
-    id: 'cms.delegation.clearance',
-    defaultMessage: '清关业务',
-  },
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
     defaultMessage: '委托编号/提运单号/客户单号',
   },
-  delegationManagement: {
-    id: 'cms.delegation.management',
-    defaultMessage: '委托管理',
+  filterImport: {
+    id: 'cms.delegation.filter.import',
+    defaultMessage: '进口',
+  },
+  filterExport: {
+    id: 'cms.delegation.filter.export',
+    defaultMessage: '出口',
   },
   all: {
     id: 'cms.delegation.stage.all',

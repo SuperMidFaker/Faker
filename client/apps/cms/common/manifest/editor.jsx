@@ -12,7 +12,6 @@ import { loadDocuDatas } from 'common/reducers/cmsInvoice';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
@@ -20,7 +19,7 @@ import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
 import InvoicesPane from './tabpane/invoicesPane';
-import MergeSplitModal from './modals/mergeSplitModal';
+import GenerateDeclModal from './modals/generateDeclModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
@@ -474,7 +473,7 @@ export default class ManifestEditor extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <NavLink to={path}>{this.msg('declManifest')}</NavLink>
+                  {this.msg('declManifest')}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
@@ -558,7 +557,7 @@ export default class ManifestEditor extends React.Component {
         </Layout>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
-        <MergeSplitModal />
+        <GenerateDeclModal />
         <SaveAsTemplateModal ietype={ietype} />
         <SendDeclsModal ietype={ietype} entries={billMeta.entries} reload={this.handleMetaLoad} />
       </Layout>

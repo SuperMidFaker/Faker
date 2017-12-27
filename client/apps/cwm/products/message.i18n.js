@@ -12,7 +12,7 @@ const messages = defineMessages({
   },
   syncTradeItems: {
     id: 'cwm.products.sku.sync.tradeitems',
-    defaultMessage: '同步企业物料库',
+    defaultMessage: '同步商品归类库',
   },
   productImport: {
     id: 'cwm.products.import',

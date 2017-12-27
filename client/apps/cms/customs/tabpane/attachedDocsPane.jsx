@@ -265,7 +265,9 @@ export default class AttachedDocsPane extends React.Component {
       >
         <DataPane.Toolbar>
           {head.status < CMS_DECL_STATUS.sent.value &&
-          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('添加')}</Button>}
+          <Button type="primary" ghost onClick={this.handleAdd} icon="plus-circle-o">{this.msg('添加')}</Button>}
+          {head.status < CMS_DECL_STATUS.sent.value && this.state.datas.length === 0 &&
+          <Button onClick={this.handleGeneratePack} icon="file-pdf">{this.msg('生成发票/箱单/合同')}</Button>}
         </DataPane.Toolbar>
       </DataPane>
     );

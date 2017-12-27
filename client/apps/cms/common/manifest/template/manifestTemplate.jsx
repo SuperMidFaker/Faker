@@ -144,7 +144,12 @@ export default class ManifestTemplate extends Component {
     const splHsMergeArr = this.props.form.getFieldValue('merge_spl_hs') || fieldInits.splHsMergeArr;
     const splNoMergeArr = this.props.form.getFieldValue('merge_spl_no') || fieldInits.splNoMergeArr;
     const mergeObj = {
-      merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0,
+      merge_byhscode: 0,
+      merge_bygname: 0,
+      merge_bycurr: 0,
+      merge_bycountry: 0,
+      merge_bycopgno: 0,
+      merge_byengno: 0,
     };
     for (const mergeOpt of mergeOptArr) {
       if (mergeOpt === 'byHsCode') {
@@ -254,7 +259,7 @@ export default class ManifestTemplate extends Component {
                 <TabPane tab="特殊字段规则" key="importRules">
                   <ImportRulesPane form={form} formData={fieldInits} />
                 </TabPane>
-                <TabPane tab="归并拆分规则" key="mergeSplitRules">
+                <TabPane tab="单据生成规则" key="mergeSplitRules">
                   <MergeSplitRulesPane form={form} formData={fieldInits} />
                 </TabPane>
               </Tabs>

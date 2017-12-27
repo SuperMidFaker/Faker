@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Layout, Row, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
+import { DELG_SOURCE } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
 import UploadGroup from './forms/attachmentUpload';
-import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
-import { DELG_SOURCE } from 'common/constants';
-import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
-import { format } from 'client/common/i18n/helpers';
+
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -98,7 +99,7 @@ export default class CreateDelegation extends Component {
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('delegationManagement')}
+              {this.msg('delgManifest')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('createDelegation')}

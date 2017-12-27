@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import { CMS_DOCU_TYPE } from 'common/constants';
+import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile } from 'common/reducers/cmsInvoice';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Table, Button, Icon, Layout, Menu, Popconfirm, Popover, Upload, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import InvTemplateModal from '../templates/modals/newTemplate';
-import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile } from 'common/reducers/cmsInvoice';
-import { CMS_DOCU_TYPE } from 'common/constants';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
@@ -26,7 +26,12 @@ const { Content, Sider } = Layout;
     tempFile: state.cmsInvoice.tempFile,
   }),
   {
-    toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile,
+    toggleInvTempModal,
+    loadInvTemplates,
+    deleteInvTemplate,
+    saveDoctsTempFile,
+    loadTempFile,
+    deleteTempFile,
   }
 )
 @connectNav({
@@ -54,7 +59,10 @@ export default class InvoiceTemplate extends Component {
   }
   componentWillMount() {
     if (this.props.customer.id) {
-      this.props.loadTempFile({ tenantId: this.props.tenantId, partnerId: this.props.customer.id }).then((result) => {
+      this.props.loadTempFile({
+        tenantId: this.props.tenantId,
+        partnerId: this.props.customer.id,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         } else if (result.data && result.data.id) {
@@ -76,8 +84,15 @@ export default class InvoiceTemplate extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.customer !== this.props.customer) {
-      this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: this.props.docuType, partnerId: nextProps.customer.id });
-      this.props.loadTempFile({ tenantId: this.props.tenantId, partnerId: nextProps.customer.id }).then((result) => {
+      this.props.loadInvTemplates({
+        tenantId: this.props.tenantId,
+        docuType: this.props.docuType,
+        partnerId: nextProps.customer.id,
+      });
+      this.props.loadTempFile({
+        tenantId: this.props.tenantId,
+        partnerId: nextProps.customer.id,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 5);
         } else if (result.data && result.data.id) {
@@ -101,7 +116,11 @@ export default class InvoiceTemplate extends Component {
     this.context.router.push({ pathname: to, query });
   }
   handleListLoad = (type) => {
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: type, partnerId: this.props.customer.id });
+    this.props.loadInvTemplates({
+      tenantId: this.props.tenantId,
+      docuType: type,
+      partnerId: this.props.customer.id,
+    });
   }
   handleCreateNew = () => {
     this.props.toggleInvTempModal(true);
@@ -149,7 +168,7 @@ export default class InvoiceTemplate extends Component {
       message.error(info.file.response.msg);
       return;
     }
-    const file = info.file;
+    const { file } = info;
     const nextFile = {
       uid: file.uid,
       name: file.name,

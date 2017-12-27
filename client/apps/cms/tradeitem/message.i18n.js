@@ -4,11 +4,11 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   tradeitem: {
     id: 'cms.tradeitem',
-    defaultMessage: '物料归类',
+    defaultMessage: '商品归类',
   },
   repoList: {
     id: 'cms.tradeitem.repo.list',
-    defaultMessage: '物料库列表',
+    defaultMessage: '归类库列表',
   },
   repoOwner: {
     id: 'cms.tradeitem.repo.owner',
@@ -268,7 +268,7 @@ const messages = defineMessages({
   },
   addRepo: {
     id: 'cms.tradeitem.repo.add',
-    defaultMessage: '新增物料库',
+    defaultMessage: '新增归类库',
   },
   create: {
     id: 'cms.tradeitem.create',

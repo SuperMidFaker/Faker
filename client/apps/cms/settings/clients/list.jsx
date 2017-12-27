@@ -103,7 +103,7 @@ export default class ClientsList extends Component {
                 {this.msg('settings')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('resources')}
+                {this.msg('clients')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

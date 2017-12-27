@@ -266,7 +266,7 @@ export default class CertMarkPane extends React.Component {
       >
         <DataPane.Toolbar>
           {head.status < CMS_DECL_STATUS.sent.value &&
-          <Button type="primary" onClick={this.handleAdd} icon="plus" >{this.msg('添加')}</Button>}
+          <Button type="primary" ghost onClick={this.handleAdd} icon="plus-circle-o" >{this.msg('添加')}</Button>}
         </DataPane.Toolbar>
       </DataPane>
     );

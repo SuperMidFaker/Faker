@@ -103,6 +103,16 @@ export default class MergeSplitForm extends React.Component {
           <Panel key="merge" header={this.msg('mergePrinciple')} >
             <FormItem>
               <Col span="3">
+                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={!mergeOpt.checked}>
+                  {this.msg('nonMerge')}
+                </Radio>)}
+              </Col>
+              <Col offset="2" span="19">
+                按清单数据直接生成报关建议书
+              </Col>
+            </FormItem>
+            <FormItem>
+              <Col span="3">
                 {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={mergeOpt.checked}>
                   {this.msg('conditionalMerge')}
                 </Radio>)}
@@ -124,7 +134,7 @@ export default class MergeSplitForm extends React.Component {
                   {getFieldDecorator('merge_spl_hs', {
                     rules: [{ type: 'array' }],
                     initialValue: formData.splHsMergeArr,
-                  })(<Select mode="multiple" placeholder={this.msg('specialHscodeSort')}>
+                  })(<Select mode="multiple">
                     {mergeCategories.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
                   </Select>)}
@@ -147,16 +157,6 @@ export default class MergeSplitForm extends React.Component {
                   }
               </FormItem>
             </Col> : null}
-            <FormItem>
-              <Col span="3">
-                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={!mergeOpt.checked}>
-                  {this.msg('nonMerge')}
-                </Radio>)}
-              </Col>
-              <Col offset="2" span="19">
-                按清单数据直接生成报关建议书
-              </Col>
-            </FormItem>
           </Panel>
           <Panel key="split" header={this.msg('splitPrinciple')} >
             <FormItem>

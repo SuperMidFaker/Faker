@@ -60,7 +60,7 @@ const messages = defineMessages({
   },
   repoCount: {
     id: 'cms.dashboard.stats.classification.repo.count',
-    defaultMessage: '企业物料库',
+    defaultMessage: '企业归类库',
   },
   classifiedItems: {
     id: 'cms.dashboard.stats.classification.classified.items',

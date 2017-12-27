@@ -317,6 +317,7 @@ export default class MergeSplitModal extends React.Component {
         maskClosable={false}
         title="生成报关建议书"
         width={800}
+        style={{ top: 24 }}
         onCancel={this.handleCancel}
         onOk={this.handleOk}
         visible={this.props.visible}

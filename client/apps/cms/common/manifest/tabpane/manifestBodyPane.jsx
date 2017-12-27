@@ -3,29 +3,31 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel, refreshRelatedBodies,
-  deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
+import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt,
+  loadBillBody, openAmountModel, refreshRelatedBodies,
+  deleteSelectedBodies, resetBillBody, openRuleModel,
+  showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
 import { toggleDeclImportModal } from 'common/reducers/cmsManifestImport';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
+import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import { createFilename } from 'client/util/dataTransform';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
+import ImportDataPanel from 'client/components/ImportDataPanel';
+import RowAction from 'client/components/RowAction';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
 import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
-import ImportDataPanel from 'client/components/ImportDataPanel';
 import AmountModel from '../modals/amountDivid';
-import RowAction from 'client/components/RowAction';
 import RelateImportRuleModal from '../modals/relateImportRules';
 import { dividGrossWt } from './helper';
-import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
-import { createFilename } from 'client/util/dataTransform';
-import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 
 function ColumnInput(props) {
   const {
@@ -222,7 +224,6 @@ export default class ManifestBodyPane extends React.Component {
     readonly: PropTypes.bool,
     data: PropTypes.array.isRequired,
     billSeqNo: PropTypes.string,
-    loginId: PropTypes.number.isRequired,
     units: PropTypes.array,
     countries: PropTypes.array,
     currencies: PropTypes.array,
@@ -315,7 +316,7 @@ export default class ManifestBodyPane extends React.Component {
         } else if (index === editIndex) {
           return (<Input onChange={this.handleCopGnoChange} />);
         } else if (record.feedback === 'noMatch') {
-          return (<Tooltip title="物料库中未对该货号归类"><Tag color="red">
+          return (<Tooltip title="归类库中未对该货号归类"><Tag color="red">
             <a onClick={() => this.handleEditBody(record)}>{o}</a>
           </Tag>
           </Tooltip>);
@@ -635,7 +636,12 @@ export default class ManifestBodyPane extends React.Component {
   handleShowDeclElementModal = (record) => {
     this.props.getElementByHscode(record.codes).then((result) => {
       if (!result.error) {
-        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, this.props.readonly, record.g_name);
+        this.props.showDeclElementsModal(
+          result.data.declared_elements,
+          record.id, record.g_model,
+          this.props.readonly,
+          record.g_name
+        );
       }
     });
   }
@@ -694,9 +700,10 @@ export default class ManifestBodyPane extends React.Component {
     this.setState({ editBody: {} });
     this.props.showEditBodyModal(true);
   }
+  /*
   handleSave = (row, index) => {
     const { editBody, pagination: origPagi } = this.state;
-    const recordIdx = index + (origPagi.current - 1) * origPagi.pageSize;
+    const recordIdx = index + ((origPagi.current - 1) * origPagi.pageSize);
     if (!editBody.wet_wt) {
       return message.error('净重必填');
     }
@@ -758,16 +765,19 @@ export default class ManifestBodyPane extends React.Component {
       });
     }
   }
+  */
   handleDel = (row, index) => {
     this.props.delBillBody(row.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
         const bodies = [...this.state.bodies];
-        const recordIdx = index + (this.state.pagination.current - 1) * this.state.pagination.pageSize;
+        const recordIdx = index +
+          ((this.state.pagination.current - 1) * this.state.pagination.pageSize);
         bodies.splice(recordIdx, 1);
         const pagination = { ...this.state.pagination, total: bodies.length };
-        if (pagination.current > 1 && (pagination.current - 1) * pagination.pageSize === pagination.total) {
+        if (pagination.current > 1 &&
+          (pagination.current - 1) * pagination.pageSize === pagination.total) {
           pagination.current -= 1;
         }
         const calresult = calculateTotal(bodies, this.props.currencies);
@@ -824,7 +834,8 @@ export default class ManifestBodyPane extends React.Component {
     }
     const bodyDatas = this.state.bodies;
     if (bodyDatas.length > 1) {
-      const grossWts = dividGrossWt(bodyDatas.slice(0, bodyDatas.length - 1).map(bd => bd.wet_wt || 0), totGrossWt);
+      const grossWts = dividGrossWt(bodyDatas.slice(0, bodyDatas.length - 1).map(bd =>
+        bd.wet_wt || 0), totGrossWt);
       const datas = [];// server side todo
       for (let i = 0; i < bodyDatas.length - 1; i++) {
         const body = bodyDatas[i];
@@ -878,8 +889,8 @@ export default class ManifestBodyPane extends React.Component {
   }
   handleBodyExportToItem = () => {
     const vurl = 'v1/cms/manifest/billbody/unclassified/to/item/export/';
-    const billSeqNo = this.props.billSeqNo;
-    const repoId = this.props.billMeta.repoId;
+    const { billSeqNo } = this.props;
+    const { repoId } = this.props.billMeta;
     window.open(`${API_ROOTS.default}${vurl}${createFilename('bodyExportToItem')}.xlsx?billSeqNo=${billSeqNo}&repoId=${repoId}`);
   }
   handleReload = (reloadHead) => {
@@ -1005,7 +1016,11 @@ export default class ManifestBodyPane extends React.Component {
     return (<span>
       <Button icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
       <Button icon="upload" onClick={this.handleUnrelatedImport} style={{ marginLeft: 8 }}>{this.msg('unrelatedImport')}</Button>
-      <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
+      <Dropdown.Button
+        onClick={this.handleRelatedImport}
+        overlay={relatedImportMenu}
+        style={{ marginLeft: 8 }}
+      >
         <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
       </Dropdown.Button>
       { this.props.billHead.manual_no &&
@@ -1031,7 +1046,14 @@ export default class ManifestBodyPane extends React.Component {
 
   render() {
     const {
-      totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup, editBody, importPanelVisible, importPanel,
+      totGrossWt,
+      totWetWt,
+      totTrade,
+      totPcs,
+      tradeCurrGroup,
+      editBody,
+      importPanelVisible,
+      importPanel,
     } = this.state;
     const disabled = this.props.readonly;
     const rowSelection = {
@@ -1059,7 +1081,10 @@ export default class ManifestBodyPane extends React.Component {
       >
         <DataPane.Toolbar>
           {this.renderToolbar()}
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             <Popconfirm title="是否删除所有选择项？" onConfirm={() => this.handleDeleteSelected()}>
               <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>
               批量删除

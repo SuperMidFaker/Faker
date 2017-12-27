@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Input, message } from 'antd';
+import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'common/reducers/cmsHsCode';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'common/reducers/cmsHsCode';
 import { hscodeColumns } from './hscodeColumns';
 
 const formatMsg = format(messages);

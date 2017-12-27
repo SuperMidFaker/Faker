@@ -668,15 +668,15 @@ export default class DelegationList extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('delegationManagement')}
+                {this.msg('delgManifest')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter}>
               <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="import">{this.msg('import')}</RadioButton>
-              <RadioButton value="export">{this.msg('export')}</RadioButton>
+              <RadioButton value="import">{this.msg('filterImport')}</RadioButton>
+              <RadioButton value="export">{this.msg('filterExport')}</RadioButton>
             </RadioGroup>
             <span />
             <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter}>

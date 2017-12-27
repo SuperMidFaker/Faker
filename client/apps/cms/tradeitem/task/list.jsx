@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { notification, Badge, Button, Breadcrumb, Layout, Select } from 'antd';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import { loadWorkspaceTasks, delWorkspaceTask } from 'common/reducers/cmsTradeitem';
@@ -11,16 +12,16 @@ import connectNav from 'client/common/decorators/connect-nav';
 import RowAction from 'client/components/RowAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import ModuleMenu from '../menu';
-import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
   state => ({
-    repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
+    repos: state.cmsTradeitem.repos.filter(rep =>
+      rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
     loading: state.cmsTradeitem.workspaceLoading,
     workspaceTaskList: state.cmsTradeitem.workspaceTaskList,
   }),
@@ -116,13 +117,19 @@ export default class TradeItemTaskList extends React.Component {
     this.props.loadWorkspaceTasks({ repoId });
   }
   handleCompareImportInit = () => {
-    this.setState({ comparisonImportPanel: { ...this.state.comparisonImportPanel, visible: true } });
+    this.setState({
+      comparisonImportPanel: { ...this.state.comparisonImportPanel, visible: true },
+    });
   }
   handleCompareImptRepoSelect = (repoId) => {
-    this.setState({ comparisonImportPanel: { ...this.state.comparisonImportPanel, repo_id: repoId } });
+    this.setState({
+      comparisonImportPanel: { ...this.state.comparisonImportPanel, repo_id: repoId },
+    });
   }
   handleCompareImportEnd = () => {
-    this.setState({ comparisonImportPanel: { ...this.state.comparisonImportPanel, visible: false, repo_id: null } });
+    this.setState({
+      comparisonImportPanel: { ...this.state.comparisonImportPanel, visible: false, repo_id: null },
+    });
   }
   handleCompareImportUploaded = (resp) => {
     if (resp.existEmerges.length > 0) {
@@ -150,8 +157,14 @@ export default class TradeItemTaskList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <Select showSearch placeholder="所属物料库" allowClear style={{ width: 200 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
+      <Select
+        showSearch
+        placeholder="所属归类库"
+        allowClear
+        style={{ width: 200 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+        onChange={this.handleRepoSelect}
       >
         {repos.map(rep => <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
@@ -184,12 +197,19 @@ export default class TradeItemTaskList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows} loading={loading}
-              columns={this.columns} dataSource={workspaceTaskList} rowSelection={rowSelection} rowKey="id"
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              loading={loading}
+              columns={this.columns}
+              dataSource={workspaceTaskList}
+              rowSelection={rowSelection}
+              rowKey="id"
             />
           </Content>
-          <ImportDataPanel title="对比导入"
+          <ImportDataPanel
+            title="对比导入"
             visible={comparisonImportPanel.visible}
             endpoint={comparisonImportPanel.endpoint}
             formData={{ repo_id: comparisonImportPanel.repo_id }}
@@ -197,10 +217,15 @@ export default class TradeItemTaskList extends React.Component {
             onUploaded={this.handleCompareImportUploaded}
             template={comparisonImportPanel.template}
           >
-            <Select showSearch allowClear style={{ width: '100%' }} placeholder="导入物料库必选"
+            <Select
+              showSearch
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="导入归类库必选"
               onChange={this.handleCompareImptRepoSelect}
             >
-              {repos.map(rep => <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}
+              {repos.map(rep =>
+                <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}
             </Select>
           </ImportDataPanel>
         </Layout>

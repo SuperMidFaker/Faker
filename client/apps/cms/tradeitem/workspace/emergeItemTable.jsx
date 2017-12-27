@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { notification, Select } from 'antd';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
 import { delWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import makeColumns from './commonCols';
-import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -29,7 +29,8 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
+    repos: state.cmsTradeitem.repos.filter(rep =>
+      rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
   }),
   { delWorkspaceItem }
 )
@@ -38,7 +39,11 @@ export default class EmergeItemTable extends React.Component {
     intl: intlShape.isRequired,
     withRepo: PropTypes.bool,
     loadEmergeItems: PropTypes.func.isRequired,
-    listFilter: PropTypes.shape({ taskId: PropTypes.number, repoId: PropTypes.number, name: PropTypes.string }),
+    listFilter: PropTypes.shape({
+      taskId: PropTypes.number,
+      repoId: PropTypes.number,
+      name: PropTypes.string,
+    }),
     noBorder: PropTypes.bool,
   }
   static contextTypes = {
@@ -148,17 +153,32 @@ export default class EmergeItemTable extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      {withRepo && <Select showSearch placeholder="所属物料库" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
+      {withRepo && <Select
+        showSearch
+        placeholder="所属归类库"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+        onChange={this.handleRepoSelect}
       >
-        {repos.map(rep => <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
+        {repos.map(rep =>
+          <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>}
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
     </span>);
     return (
-      <DataTable selectedRowKeys={emergeSelRowKeys} handleDeselectRows={this.handleRowDeselect} loading={loading}
-        columns={this.emergeColumns} dataSource={this.emergeDataSource} rowSelection={emergeSelRows} rowKey="id"
-        locale={{ emptyText: '当前没有新的料件' }} toolbarActions={toolbarActions} noBorder={noBorder}
+      <DataTable
+        selectedRowKeys={emergeSelRowKeys}
+        handleDeselectRows={this.handleRowDeselect}
+        loading={loading}
+        columns={this.emergeColumns}
+        dataSource={this.emergeDataSource}
+        rowSelection={emergeSelRows}
+        rowKey="id"
+        locale={{ emptyText: '当前没有新的料件' }}
+        toolbarActions={toolbarActions}
+        noBorder={noBorder}
       />
     );
   }

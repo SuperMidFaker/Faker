@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Icon, Button, Breadcrumb, Layout, Select } from 'antd';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
@@ -12,11 +13,10 @@ import connectNav from 'client/common/decorators/connect-nav';
 import ModuleMenu from '../menu';
 import WsItemExportButton from './exportButton';
 import makeColumns from './commonCols';
-import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -37,7 +37,8 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
+    repos: state.cmsTradeitem.repos.filter(rep =>
+      rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
     workspaceLoading: state.cmsTradeitem.workspaceLoading,
     workspaceItemList: state.cmsTradeitem.workspaceItemList,
     invalidStat: state.cmsTradeitem.workspaceStat.invalid,
@@ -140,10 +141,17 @@ export default class InvalidItemsList extends React.Component {
       remotes: workspaceItemList,
     });
     const toolbarActions = (<span>
-      <Select showSearch placeholder="所属物料库" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
+      <Select
+        showSearch
+        placeholder="所属归类库"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+        onChange={this.handleRepoSelect}
       >
-        {repos.map(rep => <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
+        {repos.map(rep =>
+          <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={filter.name} />
     </span>);
@@ -177,9 +185,15 @@ export default class InvalidItemsList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={workspaceLoading}
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={dataSource}
+              rowSelection={rowSelection}
+              rowKey="id"
+              loading={workspaceLoading}
               locale={{ emptyText: '当前没有失效的料件归类' }}
             />
           </Content>

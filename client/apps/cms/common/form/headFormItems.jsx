@@ -3,16 +3,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input, Select } from 'antd';
+import { CMS_FEE_UNIT, CMS_CONFIRM } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import FormInput from './formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CMS_FEE_UNIT, CMS_CONFIRM } from 'common/constants';
+
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const InputGroup = Input.Group;
 
 // 进出口口岸
@@ -43,7 +44,7 @@ export function IEPort(props) {
   );
 }
 IEPort.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   ietype: PropTypes.oneOf(['import', 'export']),
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -73,7 +74,7 @@ export function IEDate(props) {
   );
 }
 IEDate.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   ietype: PropTypes.oneOf(['import', 'export']),
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -101,7 +102,7 @@ export function DeclDate(props) {
   );
 }
 DeclDate.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -238,7 +239,7 @@ export function DeclCustoms(props) {
   );
 }
 DeclCustoms.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -264,7 +265,7 @@ export function LicenseNo(props) {
   );
 }
 LicenseNo.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -289,7 +290,7 @@ export function ContractNo(props) {
   );
 }
 ContractNo.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -314,7 +315,7 @@ export function ManualNo(props) {
   );
 }
 ManualNo.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -390,7 +391,7 @@ export function Transport(props) {
   );
 }
 Transport.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -424,7 +425,7 @@ export function DelVoyageNo(props) {
   );
 }
 DelVoyageNo.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -496,7 +497,7 @@ export function TradeRemission(props) {
   );
 }
 TradeRemission.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -594,7 +595,7 @@ export function CountryAttr(props) {
 }
 
 CountryAttr.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   ietype: PropTypes.oneOf(['import', 'export']),
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -631,7 +632,7 @@ export function TradeMode(props) {
 }
 
 TradeMode.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -725,18 +726,35 @@ export function Fee(props) {
   return (
     <Col span={16}>
       <Col span={8}>
-        <FeeFormItem {...props} label={msg('freightCharge')} feeField="fee_rate"
-          currencyField="fee_curr" markField="fee_mark" require={fobRequire || ciRequire} feeCurrReq={feeCurrReq}
+        <FeeFormItem
+          {...props}
+          label={msg('freightCharge')}
+          feeField="fee_rate"
+          currencyField="fee_curr"
+          markField="fee_mark"
+          require={fobRequire || ciRequire}
+          feeCurrReq={feeCurrReq}
         />
       </Col>
       <Col span={8}>
-        <FeeFormItem {...props} label={msg('insurance')} feeField="insur_rate"
-          currencyField="insur_curr" markField="insur_mark" require={fobRequire} insurCurrReq={insurCurrReq}
+        <FeeFormItem
+          {...props}
+          label={msg('insurance')}
+          feeField="insur_rate"
+          currencyField="insur_curr"
+          markField="insur_mark"
+          require={fobRequire}
+          insurCurrReq={insurCurrReq}
         />
       </Col>
       <Col span={8}>
-        <FeeFormItem {...props} label={msg('sundry')} feeField="other_rate"
-          currencyField="other_curr" markField="other_mark" require={false}
+        <FeeFormItem
+          {...props}
+          label={msg('sundry')}
+          feeField="other_rate"
+          currencyField="other_curr"
+          markField="other_mark"
+          require={false}
         />
       </Col>
     </Col>
@@ -744,7 +762,7 @@ export function Fee(props) {
 }
 
 Fee.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
@@ -772,7 +790,7 @@ export function ContainerNo(props) {
 }
 
 ContainerNo.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -800,7 +818,7 @@ export function Pieces(props) {
   );
 }
 Pieces.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -861,7 +879,7 @@ export function PackWeight(props) {
 }
 
 PackWeight.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
@@ -919,7 +937,7 @@ export function TermConfirm(props) {
 }
 
 TermConfirm.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
@@ -961,7 +979,7 @@ export function RaDeclManulNo(props) {
 }
 
 RaDeclManulNo.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,
@@ -1002,7 +1020,7 @@ export function StoreYard(props) {
 }
 
 StoreYard.propTypes = {
-  intl: intlShape.isRequired,
+  intl: intlShape,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   formData: PropTypes.object.isRequired,

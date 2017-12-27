@@ -319,7 +319,7 @@ export default class CiqDeclList extends Component {
         value={listFilter.status}
         onChange={this.handleStatusChange}
       >
-        <Option value="all" key="all">全部</Option>
+        <Option value="all" key="all">全部状态</Option>
         {CIQ_LIST_STATUS.map(item => (
           <Option key={item.value} value={item.value}>
             {item.text}

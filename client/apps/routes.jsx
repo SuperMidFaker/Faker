@@ -92,9 +92,6 @@ import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbon
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
-import * as SCVCustomsDecl from './scv/clearance/customsdecl';
-import * as SCVDeclManifest from './scv/clearance/manifest';
-import * as SCVClassification from './scv/compliance/classification';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
@@ -406,19 +403,6 @@ export default(store) => {
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
-            <Route path="clearance">
-              <Route path="manifest" component={SCVDeclManifest.List} />
-              <Route path="decl" component={SCVCustomsDecl.List} />
-            </Route>
-            <Route path="compliance">
-              <Route path="classification">
-                <IndexRoute component={SCVClassification.List} />
-                <Route path="create" component={SCVClassification.Create} />
-                <Route path="edit/:id" component={SCVClassification.Edit} />
-                <Route path="master" component={SCVClassification.Master} />
-                <Route path="slave" component={SCVClassification.Slave} />
-              </Route>
-            </Route>
           </Route>
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
             <IndexRedirect to="/cwm/dashboard" />
