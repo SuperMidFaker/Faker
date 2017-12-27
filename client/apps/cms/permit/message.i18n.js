@@ -17,6 +17,18 @@ export default defineMessages({
     id: 'cms.permit.filter.expired',
     defaultMessage: '已失效',
   },
+  infoTab: {
+    id: 'cms.permit.tab.info',
+    defaultMessage: '基本信息',
+  },
+  itemsTab: {
+    id: 'cms.permit.tab.items',
+    defaultMessage: '关联商品',
+  },
+  usageTab: {
+    id: 'cms.permit.tab.usage',
+    defaultMessage: '使用记录',
+  },
   addPermit: {
     id: 'cms.permit.add',
     defaultMessage: '添加证件',

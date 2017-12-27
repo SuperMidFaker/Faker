@@ -72,7 +72,7 @@ export default class PermitAdd extends Component {
   render() {
     const { form } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab="基本信息" key="head">
+    tabs.push(<TabPane tab={this.msg('infoTab')} key="head">
       <PermitHeadPane action="create" form={form} />
     </TabPane>);
     return (

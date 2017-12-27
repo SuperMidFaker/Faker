@@ -7,10 +7,10 @@ import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { createTradeItem } from 'common/reducers/cmsTradeitem';
 import PermitHeadPane from './tabpane/permitHeadPane';
 import PermitItemsPane from './tabpane/permitItemsPane';
-import messages from '../../message.i18n';
+import PermitUsagePane from './tabpane/permitUsagePane';
+import messages from './message.i18n';
 
 
 const formatMsg = format(messages);
@@ -23,9 +23,8 @@ const { TabPane } = Tabs;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    repoId: state.cmsTradeitem.repoId,
   }),
-  { createTradeItem }
+  { }
 )
 @connectNav({
   depth: 3,
@@ -39,7 +38,6 @@ export default class PermitDetail extends Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    repoId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -73,11 +71,14 @@ export default class PermitDetail extends Component {
   render() {
     const { form } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab="基本信息" key="head">
+    tabs.push(<TabPane tab={this.msg('infoTab')} key="head">
       <PermitHeadPane action="edit" form={form} />
     </TabPane>);
-    tabs.push(<TabPane tab="关联商品" key="items">
-      <PermitItemsPane action="create" form={form} />
+    tabs.push(<TabPane tab={this.msg('itemsTab')} key="items">
+      <PermitItemsPane />
+    </TabPane>);
+    tabs.push(<TabPane tab={this.msg('usageTab')} key="usage">
+      <PermitUsagePane />
     </TabPane>);
     return (
       <Layout>

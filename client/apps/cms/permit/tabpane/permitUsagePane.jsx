@@ -5,7 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
-import RowAction from 'client/components/RowAction';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -16,7 +15,7 @@ const formatMsg = format(messages);
   loginId: state.account.loginId,
   permitItems: state.cmsCiqDeclare.permitItems,
 }), { })
-export default class PermitItemsPane extends React.Component {
+export default class PermitUsagePane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -38,12 +37,6 @@ export default class PermitItemsPane extends React.Component {
   }
   getColumns() {
     const columns = [{
-      title: this.msg('序号'),
-      dataIndex: 's_no',
-      fixed: 'left',
-      width: 45,
-      align: 'center',
-    }, {
       title: this.msg('型号系列'),
       dataIndex: 'permit_model',
       width: 200,
@@ -51,14 +44,14 @@ export default class PermitItemsPane extends React.Component {
       title: this.msg('关联商品货号'),
       dataIndex: 'rel_product_nos',
     }, {
-      dataIndex: 'OP_COL',
-      width: 60,
-      fixed: 'right',
-      render: (o, record, index) => (
-        <span>
-          <RowAction onClick={this.handleRowClick} icon="edit" row={record} index={index} />
-        </span>
-      ),
+      title: this.msg('使用次数'),
+      dataIndex: 'usage_count',
+    }, {
+      title: this.msg('使用时间'),
+      dataIndex: 'usage_date',
+    }, {
+      title: this.msg('使用对象'),
+      dataIndex: 'pre_entry_seq_no',
     }];
     return columns;
   }
