@@ -173,14 +173,14 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('orgCode'),
     dataIndex: 'ciq_org_code',
-    width: 100,
+    width: 150,
     render: o => this.props.organizations.find(org => org.org_code === o) &&
     this.props.organizations.find(org => org.org_code === o).org_name,
   }, {
     title: this.msg('ciqDeclDate'),
     dataIndex: 'ciq_decl_date',
     width: 120,
-    render: o => (o ? moment(0).format('MM.DD HH:mm') : '-'),
+    render: o => (o ? moment(o).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('declRegNo'),
     dataIndex: 'agent_name',

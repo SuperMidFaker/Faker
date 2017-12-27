@@ -554,9 +554,14 @@ export default class CiqDeclHeadPane extends React.Component {
             </Col>}
             {ioType === 'in' && <Col span="6">
               <FormItem {...formItemLayout} label="提/运单号" required >
-                {getFieldDecorator('bill_lad_no', {
+                <InputGroup compact>
+                  {getFieldDecorator('bill_lad_no', {
                   initialValue: ciqDeclHead.bill_lad_no,
-                })(<Input />)}
+                })(<Input style={{ width: '60%' }} />)}
+                  {getFieldDecorator('split_bill_lad_no', {
+                  initialValue: ciqDeclHead.split_bill_lad_no,
+                })(<Input placeholder="分运单号" style={{ width: '40%' }} />)}
+                </InputGroup>
               </FormItem>
             </Col>}
             <Col span="6">
@@ -827,13 +832,6 @@ export default class CiqDeclHeadPane extends React.Component {
               <FormItem {...formItemLayout} label="关联理由" >
                 {getFieldDecorator('correl_reason_flag', {
                   initialValue: ciqDeclHead.correl_reason_flag,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem {...formItemLayout} label="分运单号" >
-                {getFieldDecorator('split_bill_lad_no', {
-                  initialValue: ciqDeclHead.split_bill_lad_no,
                 })(<Input />)}
               </FormItem>
             </Col>

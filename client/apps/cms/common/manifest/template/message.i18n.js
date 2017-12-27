@@ -62,11 +62,11 @@ export default defineMessages({
     defaultMessage: '不同币制独立报关',
   },
   byCiqDeclSplit: {
-    id: 'cms.manifest.modal.split.ciq.decl',
+    id: 'cms.settings.modal.split.ciq.decl',
     defaultMessage: '报检独立报关',
   },
   byApplCertSplit: {
-    id: 'cms.manifest.modal.split.appl.cert',
+    id: 'cms.settings.modal.split.appl.cert',
     defaultMessage: '报检出证独立报关',
   },
   customOnTop: {
