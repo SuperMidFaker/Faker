@@ -51,11 +51,24 @@ export default function makeColumns({
         return (<Popover content="已保留为分支" placement="right">
           <Icon type="fork" style={{ fontSize: 16, color: '#52c41a' }} />
         </Popover>);
-      } else if (status === -1 || status === -2) {
-        if (item.classified) {
-          return <Icon type="link" style={{ fontSize: 16, color: '#52c41a' }} />;
+      } else if (status === -1 || status === -2 || status === -3 || status === -4) {
+        let tooltip = '';
+        if (status === -1) {
+          tooltip = '当前归类HS编码失效';
+        } else if (status === -2) {
+          tooltip = '历史归类HS编码失效';
+        } else if (status === -3) {
+          tooltip = '当前归类HS编码对应规范申报要素变更';
+        } else if (status === -4) {
+          tooltip = '历史归类HS编码对应规范申报要素变更';
         }
-        return <Icon type="disconnect" style={{ fontSize: 16, color: '#f5222d' }} />;
+        let iconInfo = { type: 'disconnect', color: '#f5222d' };
+        if (item.classified) {
+          iconInfo = { type: 'link', color: '#52c41a' };
+        }
+        return (<Popover content={tooltip} placement="right">
+          <Icon type={iconInfo.type} style={{ fontSize: 16, color: iconInfo.color }} />
+        </Popover>);
       }
       return <span />;
     },
