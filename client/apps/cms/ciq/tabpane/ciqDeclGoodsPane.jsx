@@ -111,7 +111,7 @@ export default class CiqDeclGoodsPane extends React.Component {
       width: 100,
       align: 'center',
       render: o => this.props.units.find(unit => unit.unit_code === o) &&
-      this.props.units.find(unit => unit.unit_code === o),
+      this.props.units.find(unit => unit.unit_code === o).unit_name,
     }, {
       title: <div className="cell-align-right">{this.msg('重量')}</div>,
       dataIndex: 'weight',
@@ -156,15 +156,14 @@ export default class CiqDeclGoodsPane extends React.Component {
       this.props.currencies.find(curr => curr.curr_code === o).curr_name,
     }, {
       title: this.msg('原产国'),
-      dataIndex: 'ori_country',
+      dataIndex: 'orig_country',
       width: 100,
-
-    }, {
-      title: this.msg('产地'),
-      dataIndex: 'ori_place_code',
-      width: 120,
       render: o => this.props.countries.find(coun => coun.country_code === o) &&
       this.props.countries.find(coun => coun.country_code === o).country_cn_name,
+    }, {
+      title: this.msg('产地'),
+      dataIndex: 'orig_place_code',
+      width: 120,
     }, {
       title: this.msg('货物属性'),
       dataIndex: 'goods_attr',

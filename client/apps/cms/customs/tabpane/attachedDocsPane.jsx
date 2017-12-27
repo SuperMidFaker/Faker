@@ -268,6 +268,8 @@ export default class AttachedDocsPane extends React.Component {
           <Button type="primary" ghost onClick={this.handleAdd} icon="plus-circle-o">{this.msg('添加')}</Button>}
           {head.status < CMS_DECL_STATUS.sent.value && this.state.datas.length === 0 &&
           <Button onClick={this.handleGeneratePack} icon="file-pdf">{this.msg('生成发票/箱单/合同')}</Button>}
+          {this.state.datas.length > 0 && // TODO: 判断是否存在可供下载的文件
+          <Button icon="download" onClick={this.handleDownloadAll}>全部下载</Button>}
         </DataPane.Toolbar>
       </DataPane>
     );

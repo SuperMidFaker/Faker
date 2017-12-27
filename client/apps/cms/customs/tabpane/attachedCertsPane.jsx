@@ -266,7 +266,9 @@ export default class CertMarkPane extends React.Component {
       >
         <DataPane.Toolbar>
           {head.status < CMS_DECL_STATUS.sent.value &&
-          <Button type="primary" ghost onClick={this.handleAdd} icon="plus-circle-o" >{this.msg('添加')}</Button>}
+          <Button type="primary" ghost icon="plus-circle-o" onClick={this.handleAdd} >{this.msg('添加')}</Button>}
+          {this.state.datas.length > 0 && // TODO: 判断是否存在可供下载的文件
+          <Button icon="download" onClick={this.handleDownloadAll}>全部下载</Button>}
         </DataPane.Toolbar>
       </DataPane>
     );
