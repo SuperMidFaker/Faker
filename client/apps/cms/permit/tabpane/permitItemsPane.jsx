@@ -6,6 +6,9 @@ import { Button, Tag } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
+import { togglePermitItemModal, loadPermitModels, toggleTradeItemModal } from 'common/reducers/cmsPermit';
+import PermitItemModal from '../modal/permitItemModal';
+import TradeItemsModal from '../modal/tradeItemsModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -14,8 +17,8 @@ const formatMsg = format(messages);
 @connect(state => ({
   tenantId: state.account.tenantId,
   loginId: state.account.loginId,
-  permitItems: state.cmsCiqDeclare.permitItems,
-}), { })
+  permitItems: state.cmsPermit.permitItems,
+}), { togglePermitItemModal, loadPermitModels, toggleTradeItemModal })
 export default class PermitItemsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -36,6 +39,9 @@ export default class PermitItemsPane extends React.Component {
 
     };
   }
+  componentDidMount() {
+    this.props.loadPermitModels(this.context.router.params.id);
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   columns = [{
     title: this.msg('序号'),
@@ -43,6 +49,7 @@ export default class PermitItemsPane extends React.Component {
     fixed: 'left',
     width: 45,
     align: 'center',
+    render: (o, record, index) => index + 1,
   }, {
     title: this.msg('型号系列'),
     dataIndex: 'permit_model',
@@ -82,8 +89,11 @@ export default class PermitItemsPane extends React.Component {
       },
     });
   }
-  handleRowClick = (record) => {
-    this.props.showGoodsModal(record);
+  handleRowClick = () => {
+    this.props.toggleTradeItemModal(true);
+  }
+  handelAdd = () => {
+    this.props.togglePermitItemModal(true);
   }
   render() {
     return (
@@ -97,8 +107,10 @@ export default class PermitItemsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Button type="primary" ghost icon="plus">新增型号系列</Button>
+          <Button type="primary" ghost icon="plus" onClick={this.handelAdd}>新增型号系列</Button>
         </DataPane.Toolbar>
+        <PermitItemModal permitId={this.context.router.params.id} />
+        <TradeItemsModal />
       </DataPane>
     );
   }
