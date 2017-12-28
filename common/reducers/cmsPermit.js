@@ -7,6 +7,9 @@ const actionTypes = createActionTypes('@@welogix/cms/permit/', [
   'LOAD_CERT_PARAMS', 'LOAD_CERT_PARAMS_SUCCEED', 'LOAD_CERT_PARAMS_FAIL',
   'LOAD_PERMIT', 'LOAD_PERMIT_SUCCEED', 'LOAD_PERMIT_FAIL',
   'UPDATE_PERMIT', 'UPDATE_PERMIT_SUCCEED', 'UPDATE_PERMIT_FAIL',
+  'TOGGLE_PERMIT_ITEM_MODAL', 'TOGGLE_TRADE_ITEM_MODAL',
+  'ADD_PERMIT_MODEL', 'ADD_PERMIT_MODEL_SUCCEED', 'ADD_PERMIT_MODEL_FAIL',
+  'LOAD_PERMIT_MODELS', 'LOAD_PERMIT_MODELS_SUCCEED', 'LOAD_PERMIT_MODELS_FAIL',
 ]);
 
 const initialState = {
@@ -21,6 +24,13 @@ const initialState = {
     status: 'all',
   },
   certParams: [],
+  permitItemModal: {
+    visible: false,
+  },
+  permitItems: [],
+  tradeItemModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -40,6 +50,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, permitList: { ...state.permitList, loading: false } };
     case actionTypes.LOAD_CERT_PARAMS_SUCCEED:
       return { ...state, certParams: action.result.data };
+    case actionTypes.TOGGLE_PERMIT_ITEM_MODAL:
+      return { ...state, permitItemModal: { ...state.permitItemModal, visible: action.visible } };
+    case actionTypes.LOAD_PERMIT_MODELS_SUCCEED:
+      return { ...state, permitItems: action.result.data };
+    case actionTypes.TOGGLE_TRADE_ITEM_MODAL:
+      return { ...state, tradeItemModal: { ...state.tradeItemModal, visible: action.visible } };
     default:
       return state;
   }
@@ -116,5 +132,49 @@ export function updatePermit(data) {
       method: 'post',
       data,
     },
+  };
+}
+
+export function togglePermitItemModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_PERMIT_ITEM_MODAL,
+    visible,
+  };
+}
+
+export function addPermitModel(permitId, model) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_PERMIT_MODEL,
+        actionTypes.ADD_PERMIT_MODEL_SUCCEED,
+        actionTypes.ADD_PERMIT_MODEL_FAIL,
+      ],
+      endpoint: 'v1/cms/permit/model/add',
+      method: 'post',
+      data: { permitId, model },
+    },
+  };
+}
+
+export function loadPermitModels(permitId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PERMIT_MODELS,
+        actionTypes.LOAD_PERMIT_MODELS_SUCCEED,
+        actionTypes.LOAD_PERMIT_MODELS_FAIL,
+      ],
+      endpoint: 'v1/cms/permit/models/load',
+      method: 'get',
+      params: { permitId },
+    },
+  };
+}
+
+export function toggleTradeItemModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_TRADE_ITEM_MODAL,
+    visible,
   };
 }
