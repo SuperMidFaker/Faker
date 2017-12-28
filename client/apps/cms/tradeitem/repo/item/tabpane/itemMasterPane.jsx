@@ -8,8 +8,10 @@ import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
+import { toggleApplyCertsModal } from 'common/reducers/cmsTradeitem';
 import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE } from 'common/constants';
 import DeclElementsModal from '../../../../common/modal/declElementsModal';
+import ApplyCertsModal from '../modal/applyCertsModal';
 import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
@@ -65,6 +67,7 @@ function getFieldInits(formData) {
     loadHscodes,
     getElementByHscode,
     showDeclElementsModal,
+    toggleApplyCertsModal,
   }
 )
 export default class ItemMasterPane extends React.Component {
@@ -145,6 +148,9 @@ export default class ItemMasterPane extends React.Component {
         this.props.showDeclElementsModal(result.data.declared_elements, fieldInits.id, form.getFieldValue('g_model'), false, form.getFieldValue('g_name'));
       }
     });
+  }
+  handleShowApplyCertsModal = () => {
+    this.props.toggleApplyCertsModal(true);
   }
   handleModalChange = (model) => {
     this.props.form.setFieldsValue({ g_model: model });
@@ -432,7 +438,7 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemSpan2Layout} label={this.msg('applCertCode')}>
                 {getFieldDecorator('appl_cert_code', {
                   initialValue: fieldInits.appl_cert_code,
-                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowDeclElementModal}><Icon type="ellipsis" /></Button>} />)}
+                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -466,6 +472,7 @@ export default class ItemMasterPane extends React.Component {
           </Row>
         </Card>
         <DeclElementsModal onOk={this.handleModalChange} />
+        <ApplyCertsModal />
       </FormPane>
     );
   }

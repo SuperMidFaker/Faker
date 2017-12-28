@@ -47,6 +47,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
+  'TOGGLE_APPLY_CERTS_MODAL',
 ]);
 
 const initialState = {
@@ -121,6 +122,10 @@ const initialState = {
     data: [],
   },
   workspaceItem: {},
+  applyCertsModal: {
+    visible: false,
+    data: {},
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -239,6 +244,15 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SUBMIT_AUDIT_SUCCEED:
     case actionTypes.AUDIT_ITEMS_SUCCEED:
       return { ...state, submitting: false, wsStatReload: true };
+    case actionTypes.TOGGLE_APPLY_CERTS_MODAL:
+      return {
+        ...state,
+        applyCertsModal: {
+          ...state.applyCertsModal,
+          visible: action.visible,
+          data: action.data,
+        },
+      };
     default:
       return state;
   }
@@ -904,3 +918,12 @@ export function auditItems(itemIds, auditMethod) {
     },
   };
 }
+
+export function toggleApplyCertsModal(visible, data = {}) {
+  return {
+    type: actionTypes.TOGGLE_APPLY_CERTS_MODAL,
+    visible,
+    data,
+  };
+}
+

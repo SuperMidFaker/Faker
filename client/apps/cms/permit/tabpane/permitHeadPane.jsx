@@ -122,9 +122,9 @@ export default class PermitHeadPane extends Component {
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
           <Row>
             <Col span={16}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('owner')}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('permitOwner')}>
                 {getFieldDecorator('owner_partner_id', {
-                    rules: [{ required: true, message: '关联货主必选' }],
+                    rules: [{ required: true, message: '所属企业必选' }],
                     initialValue: action === 'edit' && formData.owner_partner_id,
                   })(<Select
                     showSearch
