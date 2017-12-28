@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { notification, Card, Breadcrumb, Button, Layout, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import { loadWorkspaceTask, loadTaskEmergeItems, loadTaskConflictItems, submitAudit } from 'common/reducers/cmsTradeitem';
+import PageHeader from 'client/components/PageHeader';
 import EmergeItemTable from '../workspace/emergeItemTable';
 import ConflictItemTable from '../workspace/conflictItemTable';
 import WsItemExportButton from '../workspace/exportButton';
-import { loadWorkspaceTask, loadTaskEmergeItems, loadTaskConflictItems, submitAudit } from 'common/reducers/cmsTradeitem';
-import PageHeader from 'client/components/PageHeader';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -49,6 +49,10 @@ export default class TaskDetail extends React.Component {
   }
   componentDidMount() {
     this.props.loadWorkspaceTask(this.props.params.id);
+    this.handleReload();
+  }
+  msg = formatMsg(this.props.intl)
+  handleReload = () => {
     this.props.loadTaskEmergeItems({
       pageSize: this.props.emergeList.pageSize,
       current: 1,
@@ -60,7 +64,6 @@ export default class TaskDetail extends React.Component {
       filter: JSON.stringify(this.state.conflictFilter),
     });
   }
-  msg = formatMsg(this.props.intl)
   handleLocalAudit = () => {
     const taskId = Number(this.props.params.id);
     this.props.submitAudit({ taskId, auditor: 'local' }).then((result) => {
@@ -135,7 +138,7 @@ export default class TaskDetail extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <WsItemExportButton taskId={this.props.params.id} />
+              <WsItemExportButton taskId={this.props.params.id} onUploaded={this.handleReload} />
               {task.master_repo_id && <Button type="primary" icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>
@@ -144,10 +147,20 @@ export default class TaskDetail extends React.Component {
             <Card bodyStyle={{ padding: 0 }} hoverable={false}>
               <Tabs defaultActiveKey="emerge">
                 <TabPane tab="新物料区" key="emerge">
-                  <EmergeItemTable loadEmergeItems={this.props.loadTaskEmergeItems} emergeList={emergeList} listFilter={emergeFilter} noBorder />
+                  <EmergeItemTable
+                    loadEmergeItems={this.props.loadTaskEmergeItems}
+                    emergeList={emergeList}
+                    listFilter={emergeFilter}
+                    noBorder
+                  />
                 </TabPane>
                 <TabPane tab="冲突区" key="conflict">
-                  <ConflictItemTable loadConflictItems={this.props.loadTaskConflictItems} conflictList={conflictList} listFilter={conflictFilter} noBorder />
+                  <ConflictItemTable
+                    loadConflictItems={this.props.loadTaskConflictItems}
+                    conflictList={conflictList}
+                    listFilter={conflictFilter}
+                    noBorder
+                  />
                 </TabPane>
               </Tabs>
             </Card>
@@ -157,4 +170,3 @@ export default class TaskDetail extends React.Component {
     );
   }
 }
-

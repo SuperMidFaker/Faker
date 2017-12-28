@@ -6,19 +6,19 @@ import moment from 'moment';
 import { Steps } from 'antd';
 import { loadOrderProgress } from 'common/reducers/crmOrders';
 import { CRM_ORDER_STATUS, NODE_BIZ_OBJECTS } from 'common/constants';
-import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 import '../orders.less';
 
 const formatMsg = format(messages);
-const Step = Steps.Step;
+const { Step } = Steps;
 
 @injectIntl
 @connect()
 export default class ProgressColumn extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    order: PropTypes.object.isRequired,
+    order: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
   }
   state = { progress: [] }
   componentWillMount() {
@@ -43,13 +43,13 @@ export default class ProgressColumn extends React.Component {
         progWidth = 160;
         break;
       case 2:
-        progWidth = 160 * 2 + 100;
+        progWidth = (160 * 2) + 100;
         break;
       case 3:
-        progWidth = 160 * 3 + 100 * 2;
+        progWidth = (160 * 3) + (100 * 2);
         break;
       case 4:
-        progWidth = 160 * 4 + 100 * 3;
+        progWidth = (160 * 4) + (100 * 3);
         break;
       default:
         progWidth = '100%';
@@ -62,19 +62,24 @@ export default class ProgressColumn extends React.Component {
           {progress.map((prog) => {
             let endDesc;
             if (prog.end && NODE_BIZ_OBJECTS[prog.kind]) {
-              const bizObject = NODE_BIZ_OBJECTS[prog.kind].filter(nbo => nbo.key === prog.end.biz_object)[0];
+              const bizObject = NODE_BIZ_OBJECTS[prog.kind].filter(nbo =>
+                nbo.key === prog.end.biz_object)[0];
               if (bizObject) {
-                const trigger = bizObject.triggers.filter(tr => tr.key === prog.end.trigger_name)[0];
+                const trigger = bizObject.triggers.filter(tr =>
+                  tr.key === prog.end.trigger_name)[0];
                 if (trigger && trigger.actionText) {
                   endDesc = this.msg(trigger.actionText);
                 }
               }
             }
-            return (<Step title={prog.name} key={prog.name} description={(
-              <span>
-                {prog.start && <div className="mdc-text-grey table-font-small">开始: {prog.start.trigger_time && moment(prog.start.trigger_time).format('MM.DD HH:mm')}</div>}
-                {prog.end && <div className="mdc-text-grey table-font-small">{endDesc}: {prog.end.trigger_time && moment(prog.end.trigger_time).format('MM.DD HH:mm')}</div>}
-              </span>)}
+            return (<Step
+              title={prog.name}
+              key={prog.key}
+              description={(
+                <span>
+                  {prog.start && <div className="mdc-text-grey table-font-small">开始: {prog.start.trigger_time && moment(prog.start.trigger_time).format('MM.DD HH:mm')}</div>}
+                  {prog.end && <div className="mdc-text-grey table-font-small">{endDesc}: {prog.end.trigger_time && moment(prog.end.trigger_time).format('MM.DD HH:mm')}</div>}
+                </span>)}
             />);
           })}
         </Steps>}

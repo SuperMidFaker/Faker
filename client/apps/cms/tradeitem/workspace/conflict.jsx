@@ -37,13 +37,16 @@ export default class ConflictItemsList extends React.Component {
     filter: { status: 'conflict' },
   }
   componentDidMount() {
+    this.handleReload();
+  }
+  msg = formatMsg(this.props.intl)
+  handleReload = () => {
     this.props.loadWorkspaceItems({
       pageSize: this.props.workspaceItemList.pageSize,
       current: 1,
       filter: JSON.stringify(this.state.filter),
     });
   }
-  msg = formatMsg(this.props.intl)
   handleLocalAudit = () => {
     this.props.submitAudit({ auditor: 'local', status: 'conflict' }).then((result) => {
       if (!result.error) {
@@ -109,13 +112,18 @@ export default class ConflictItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <WsItemExportButton {...this.state.filter} />
+              <WsItemExportButton {...this.state.filter} onUploaded={this.handleReload} />
               {conflictStat.master && <Button type="primary" loading={submitting} ghost icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" loading={submitting} onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <ConflictItemTable loadConflictItems={this.props.loadWorkspaceItems} conflictList={workspaceItemList} listFilter={filter} withRepo />
+            <ConflictItemTable
+              loadConflictItems={this.props.loadWorkspaceItems}
+              conflictList={workspaceItemList}
+              listFilter={filter}
+              withRepo
+            />
           </Content>
         </Layout>
       </Layout>

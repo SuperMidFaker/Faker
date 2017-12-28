@@ -61,11 +61,7 @@ export default class InvalidItemsList extends React.Component {
     filter: { repoId: null, status: 'invalid', name: '' },
   }
   componentDidMount() {
-    this.props.loadWorkspaceItems({
-      pageSize: this.props.workspaceItemList.pageSize,
-      current: 1,
-      filter: JSON.stringify(this.state.filter),
-    });
+    this.handleReload();
   }
   msg = formatMsg(this.props.intl)
   columns = makeColumns({
@@ -104,6 +100,13 @@ export default class InvalidItemsList extends React.Component {
       filter: JSON.stringify(filter),
     });
     this.setState({ filter });
+  }
+  handleReload = () => {
+    this.props.loadWorkspaceItems({
+      pageSize: this.props.workspaceItemList.pageSize,
+      current: 1,
+      filter: JSON.stringify(this.state.filter),
+    });
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -214,7 +217,7 @@ export default class InvalidItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <WsItemExportButton {...this.state.filter} />
+              <WsItemExportButton {...this.state.filter} onUploaded={this.handleReload} />
               {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>

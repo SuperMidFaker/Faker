@@ -96,7 +96,7 @@ export default class CMSNodeCard extends React.Component {
     if (indegree === 0) {
       if (outdeg > 0 && multiple && primary) {
         triggerActions = [(<Tooltip title="触发节点进入" key="enter">
-          <Button type="primary" icon="plus" onClick={this.handleNodeEnterTrigger} />
+          <Button icon="plus" onClick={this.handleNodeEnterTrigger} />
         </Tooltip>)];
       }
       extra.push(<Tooltip title="进入详情" key="detail">
@@ -109,7 +109,6 @@ export default class CMSNodeCard extends React.Component {
         extra={extra}
         bodyStyle={{ padding: 8, paddingBottom: 56 }}
         onClick={() => this.handlePreview(uuid)}
-        actions={triggerActions}
       >
         <Row>
           <Col span="8">
@@ -141,14 +140,14 @@ export default class CMSNodeCard extends React.Component {
             <Step title="申报" />
             <Step title="放行" />
           </Steps>
-          {triggerActions && triggerActions.length > 0 &&
+        </div>
+        {triggerActions && triggerActions.length > 0 &&
           <ul className="ant-card-actions">
             {triggerActions.map(trButton => (
               <li style={{ width: '100%' }}>
                 {trButton}
               </li>))}
           </ul>}
-        </div>
       </Card>
     );
   }

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Dropdown, Menu } from 'antd';
+import { Icon, Button, Dropdown, Menu } from 'antd';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 
 export default function WsItemExportButton(props) {
@@ -19,11 +20,23 @@ export default function WsItemExportButton(props) {
       window.open(`${wsItemExportUrl}/${createFilename('workItemsExport')}.xlsx?unclassified=true&${query}`);
     }
   }
+  function handleWorkItemImport() {
+    props.onUploaded();
+  }
   const exptMenu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="unclassified">未归类物料</Menu.Item>
     </Menu>);
-  return (<Dropdown overlay={exptMenu}>
-    <Button icon="file-excel"> 导出 </Button>
-  </Dropdown>);
+  return (<React.Fragment>
+    <Dropdown overlay={exptMenu}>
+      <Button icon="file-excel"> 导出 </Button>
+    </Dropdown>
+    <ExcelUploader
+      endpoint={`${API_ROOTS.default}v1/cms/tradeitem/workspace/importitem`}
+      formData={{ data: JSON.stringify({ }) }}
+      onUploaded={handleWorkItemImport}
+    >
+      <Button ><Icon type="upload" /> 导入</Button>
+    </ExcelUploader>
+  </React.Fragment>);
 }
