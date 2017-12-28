@@ -69,7 +69,7 @@ function getFieldInits(formData) {
       init.splNoMergeArr = formData.merge_spl_no.split(',');
     }
     ['merge_checked', 'sort_customs'].forEach((fd) => {
-      init[fd] = formData[fd] === 0 ? formData[fd] : 1;
+      init[fd] = formData[fd] !== 0;
     });
     ['sort_dectotal', 'sort_hscode',
       'split_hscode', 'split_ciqdecl', 'split_applcert', 'split_curr',
