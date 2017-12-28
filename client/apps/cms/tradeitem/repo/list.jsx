@@ -5,7 +5,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Icon, Menu, Modal, Layout, Input, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave, setRepo } from 'common/reducers/cmsTradeitem';
+import { loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -33,7 +33,6 @@ const { Search } = Input;
     switchRepoMode,
     showLinkSlaveModal,
     unlinkMasterSlave,
-    setRepo,
     loadCustomers,
   }
 )
@@ -143,7 +142,6 @@ export default class RepoList extends React.Component {
   },
   ];
   handleEnter = (record) => {
-    this.props.setRepo(record);
     const link = `/clearance/tradeitem/repo/${record.id}`;
     this.context.router.push(link);
   }

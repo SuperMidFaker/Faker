@@ -8,7 +8,7 @@ import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -64,9 +64,9 @@ const { Option } = Select;
 export default class RepoContent extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tradeItemlist: PropTypes.object.isRequired,
-    repo: PropTypes.object,
-    listFilter: PropTypes.object.isRequired,
+    tradeItemlist: PropTypes.shape({ pageSize: PropTypes.number }).isRequired,
+    repo: PropTypes.shape({ id: PropTypes.number.isRequired }),
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
     tradeItemsLoading: PropTypes.bool.isRequired,
   }
   static contextTypes = {
@@ -110,16 +110,8 @@ export default class RepoContent extends Component {
     dataIndex: 'cop_product_no',
     width: 150,
     fixed: 'left',
-    render: (o, record) => {
-      if (record.master_rejected) {
-        return (
-          <Tooltip title={record.reason}>
-            <span style={{ color: 'orange' }}>{o}</span>
-          </Tooltip>
-        );
-      }
-      return o === record.src_product_no ? o : <span>{record.src_product_no}</span>;
-    },
+    render: (o, record) => (o === record.src_product_no || !record.src_product_no ?
+      o : <span>{record.src_product_no}</span>),
   /*
   }, {
     title: this.msg('srcProductNo'),
@@ -337,15 +329,18 @@ export default class RepoContent extends Component {
     remotes: this.props.tradeItemlist,
   })
   handleItemAdd = () => {
-    const link = '/clearance/tradeitem/repo/item/add';
+    const { params: { repoId } } = this.props;
+    const link = `/clearance/tradeitem/repo/${repoId}/item/add`;
     this.context.router.push(link);
   }
   handleItemEdit = (record) => {
-    const link = `/clearance/tradeitem/repo/item/edit/${record.id}`;
+    const { params: { repoId } } = this.props;
+    const link = `/clearance/tradeitem/repo/${repoId}/item/edit/${record.id}`;
     this.context.router.push(link);
   }
   handleItemFork = (record) => {
-    const link = `/clearance/tradeitem/repo/item/fork/${record.id}`;
+    const { params: { repoId } } = this.props;
+    const link = `/clearance/tradeitem/repo/${repoId}/item/fork/${record.id}`;
     this.context.router.push(link);
   }
   handleItemDelete = (row) => {
@@ -517,7 +512,8 @@ export default class RepoContent extends Component {
               <Button loading={submitting}>同步数据</Button>
             </Popover>
             }
-            <Button icon="plus-circle-o" onClick={this.handleItemAdd}>{this.msg('addItem')}</Button>
+            {!repo.master_repo_id &&
+            <Button icon="plus-circle-o" onClick={this.handleItemAdd}>{this.msg('addItem')}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

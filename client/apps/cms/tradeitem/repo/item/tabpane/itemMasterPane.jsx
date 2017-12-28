@@ -21,7 +21,7 @@ const { Option } = Select;
 function getFieldInits(formData) {
   const init = {};
   if (formData) {
-    ['cop_product_no', 'src_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'element', 'g_unit_1', 'g_unit_2', 'g_unit_3',
+    ['cop_product_no', 'src_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'g_unit_1', 'g_unit_2', 'g_unit_3',
       'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
       'currency', 'pre_classify_no', 'remark',
     ].forEach((fd) => {
@@ -97,7 +97,6 @@ export default class ItemMasterPane extends React.Component {
         const unit2 = secondUnit ? secondUnit.value : '';
         this.props.form.setFieldsValue({
           g_name: hscode.product_name,
-          element: hscode.declared_elements,
           unit_1: unit1,
           unit_2: unit2,
           customs_control: hscode.customs,
@@ -106,7 +105,6 @@ export default class ItemMasterPane extends React.Component {
       } else {
         this.props.form.setFieldsValue({
           g_name: '',
-          element: '',
           unit_1: '',
           unit_2: '',
           customs_control: '',

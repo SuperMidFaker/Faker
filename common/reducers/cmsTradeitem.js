@@ -7,7 +7,6 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
   'CREATE_REPO', 'CREATE_REPO_SUCCEED', 'CREATE_REPO_FAIL',
   'DELETE_REPO', 'DELETE_REPO_SUCCEED', 'DELETE_REPO_FAIL',
-  'SET_SELECTED_REPOID', 'SET_PANE_TABKEY',
   'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'CREATE_ITEM', 'CREATE_ITEM_SUCCEED', 'CREATE_ITEM_FAIL',
@@ -16,7 +15,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'DELETE_ITEMS', 'DELETE_ITEMS_SUCCEED', 'DELETE_ITEMS_FAIL',
   'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
   'LOAD_BODY_HSCODE', 'LOAD_BODY_HSCODE_SUCCEED', 'LOAD_BODY_HSCODE_FAIL',
-  'SET_REPO', 'SET_COMPARE_VISIBLE',
+  'SET_COMPARE_VISIBLE',
   'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
   'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
   'LOAD_REPO_USERS', 'LOAD_REPO_USERS_SUCCEED', 'LOAD_REPO_USERS_FAIL',
@@ -75,9 +74,6 @@ const initialState = {
   visibleAddModal: false,
   repos: [],
   reposLoaded: false,
-  tradeCodes: [],
-  tabKey: 'copCodes',
-  repoId: null,
   repoUsers: [],
   params: {
     currencies: [],
@@ -88,7 +84,7 @@ const initialState = {
   bodyItem: {},
   bodyHscode: {},
   hstabKey: 'declunit',
-  repo: {},
+  repo: { id: null },
   repoLoading: false,
   visibleCompareModal: false,
   linkSlaveModal: {
@@ -148,12 +144,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleAddModal: true };
     case actionTypes.CLOSE_ADD_MODEL:
       return { ...state, visibleAddModal: false };
-    case actionTypes.SET_PANE_TABKEY:
-      return { ...state, tabKey: action.data };
-    case actionTypes.SET_REPO:
-      return { ...state, repo: action.data };
-    case actionTypes.SET_SELECTED_REPOID:
-      return { ...state, repoId: action.payload.repoId };
     case actionTypes.LOAD_TRADE_ITEMS:
       return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
@@ -173,8 +163,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, bodyItem: action.result.data };
     case actionTypes.LOAD_BODY_HSCODE_SUCCEED:
       return { ...state, bodyHscode: action.result.data };
-    case actionTypes.CREATE_REPO_SUCCEED:
-      return { ...state, repoId: action.result.data };
     case actionTypes.SET_COMPARE_VISIBLE:
       return { ...state, visibleCompareModal: action.data };
     case actionTypes.LOAD_REPO_USERS_SUCCEED:
@@ -400,27 +388,6 @@ export function openAddModal() {
 export function closeAddModal() {
   return {
     type: actionTypes.CLOSE_ADD_MODEL,
-  };
-}
-
-export function selectedRepoId(repoId) {
-  return {
-    type: actionTypes.SET_SELECTED_REPOID,
-    payload: { repoId },
-  };
-}
-
-export function setPaneTabkey(tabkey) {
-  return {
-    type: actionTypes.SET_PANE_TABKEY,
-    data: tabkey,
-  };
-}
-
-export function setRepo(repo) {
-  return {
-    type: actionTypes.SET_REPO,
-    data: repo,
   };
 }
 

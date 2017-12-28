@@ -375,11 +375,13 @@ export default(store) => {
               <IndexRedirect to="/clearance/tradeitem/repo" />
               <Route path="repo">
                 <IndexRoute component={CMSTradeItemRepo.List} />
-                <Route path=":repoId" component={CMSTradeItemRepo.Content} />
-                <Route path="item">
-                  <Route path="add" component={CMSTradeItemRepoItem.Add} />
-                  <Route path="edit/:id" component={CMSTradeItemRepoItem.Edit} />
-                  <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
+                <Route path=":repoId">
+                  <IndexRoute component={CMSTradeItemRepo.Content} />
+                  <Route path="item">
+                    <Route path="add" component={CMSTradeItemRepoItem.Add} />
+                    <Route path="edit/:id" component={CMSTradeItemRepoItem.Edit} />
+                    <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
+                  </Route>
                 </Route>
               </Route>
               <Route path="task">

@@ -18,12 +18,7 @@ const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
-    repoId: state.cmsTradeitem.repoId,
-  }),
+  () => ({}),
   { createTradeItem }
 )
 @connectNav({
@@ -34,11 +29,7 @@ const { TabPane } = Tabs;
 export default class TradeItemAdd extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
-    repoId: PropTypes.number.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -47,14 +38,10 @@ export default class TradeItemAdd extends Component {
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const {
-          repoId, tenantId, loginId, loginName,
-        } = this.props;
+        const { params: { repoId } } = this.props;
         const item = this.props.form.getFieldsValue();
         item.special_mark = item.specialMark.join('/');
-        this.props.createTradeItem({
-          item, repoId, tenantId, loginId, loginName,
-        }).then((result) => {
+        this.props.createTradeItem({ item, repoId }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -73,7 +60,7 @@ export default class TradeItemAdd extends Component {
     const { form } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab="主数据" key="master">
-      <ItemMasterPane action="create" form={form} />
+      <ItemMasterPane action="create" form={form} itemData={{}} />
     </TabPane>);
     return (
       <Layout>
