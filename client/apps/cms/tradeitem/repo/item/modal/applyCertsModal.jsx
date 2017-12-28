@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Modal, Table } from 'antd';
 import { toggleApplyCertsModal } from 'common/reducers/cmsTradeitem';
-import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
+import { TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 
 @connect(
   state => ({
@@ -22,7 +22,7 @@ export default class ApplyCertsModal extends Component {
     selectedRows: [],
   }
   componentWillMount() {
-    const documents = [...CIQ_INSP_QUAE_DOCUMENTS];
+    const documents = [...TRADE_ITEM_APPLY_CERTS];
     this.setState({
       documents,
     });

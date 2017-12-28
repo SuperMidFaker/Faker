@@ -34,27 +34,25 @@ export default class PermitUsagePane extends React.Component {
 
     };
   }
-  getColumns() {
-    const columns = [{
-      title: this.msg('型号系列'),
-      dataIndex: 'permit_model',
-      width: 200,
-    }, {
-      title: this.msg('关联商品货号'),
-      dataIndex: 'rel_product_nos',
-    }, {
-      title: this.msg('使用次数'),
-      dataIndex: 'usage_count',
-    }, {
-      title: this.msg('使用时间'),
-      dataIndex: 'usage_date',
-    }, {
-      title: this.msg('使用对象'),
-      dataIndex: 'pre_entry_seq_no',
-    }];
-    return columns;
-  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  columns = [{
+    title: this.msg('型号系列'),
+    dataIndex: 'permit_model',
+    width: 200,
+  }, {
+    title: this.msg('关联商品货号'),
+    dataIndex: 'rel_product_nos',
+  }, {
+    title: this.msg('使用次数'),
+    dataIndex: 'usage_count',
+  }, {
+    title: this.msg('使用时间'),
+    dataIndex: 'usage_date',
+  }, {
+    title: this.msg('使用对象'),
+    dataIndex: 'pre_entry_seq_no',
+  }];
+
   handlePageChange = (current) => {
     this.setState({
       pagination: {
@@ -68,19 +66,15 @@ export default class PermitUsagePane extends React.Component {
   }
   render() {
     const { permitItems } = this.props;
-    const columns = this.getColumns();
     return (
       <DataPane
         fullscreen={this.props.fullscreen}
-        columns={columns}
+        columns={this.columns}
         bordered
         scrollOffset={312}
         dataSource={permitItems}
         rowKey="id"
         loading={this.state.loading}
-        onRow={record => ({
-          onDoubleClick: () => { this.handleRowClick(record); },
-        })}
       />
     );
   }

@@ -7,6 +7,7 @@ import { Button, Card, DatePicker, Form, Icon, Input, Select, Switch, Radio, Row
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
+import { Logixon } from 'client/components/FontIcon';
 import { loadPermit } from 'common/reducers/cmsPermit';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
 import messages from '../message.i18n';
@@ -159,8 +160,8 @@ export default class PermitHeadPane extends Component {
                 {getFieldDecorator('permit_category', {
                     initialValue: action === 'edit' ? formData.permit_category : permitCategory,
                     })(<RadioGroup disabled={action !== 'create'} onChange={this.handleCategoryChange}>
-                      <RadioButton value="customs">海关标准</RadioButton>
-                      <RadioButton value="ciq">国检标准</RadioButton>
+                      <RadioButton value="customs"><Logixon type="customs" /> 海关标准</RadioButton>
+                      <RadioButton value="ciq"><Logixon type="ciq" /> 国检标准</RadioButton>
                     </RadioGroup>)}
               </FormItem>
             </Col>
@@ -171,7 +172,7 @@ export default class PermitHeadPane extends Component {
                   initialValue: action === 'edit' && formData.permit_code,
                   })(<Select disabled={action !== 'create'} style={{ width: '100%' }}>
                     {
-                    certParams.map(cert => <Option value={cert.cert_code} key={cert.cert_code}>{`${cert.cert_code}|${cert.cert_spec}`}</Option>)
+                    certParams.map(cert => <Option value={cert.cert_code} key={cert.cert_code}>{`${cert.cert_code} | ${cert.cert_spec}`}</Option>)
                   }
                   </Select>)}
               </FormItem>) :
@@ -180,7 +181,7 @@ export default class PermitHeadPane extends Component {
                   initialValue: action === 'edit' && formData.permit_code,
                   })(<Select disabled={action !== 'create'} style={{ width: '100%' }}>
                     {
-                    CIQ_LICENCE_TYPE.map(type => <Option value={type.value} key={type.text}>{`${type.value}|${type.text}`}</Option>)
+                    CIQ_LICENCE_TYPE.map(type => <Option value={type.value} key={type.text}>{`${type.value} | ${type.text}`}</Option>)
                   }
                   </Select>)}
               </FormItem>)}
