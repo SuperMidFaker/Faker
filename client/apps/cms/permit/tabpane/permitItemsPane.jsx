@@ -6,6 +6,9 @@ import { Button } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
+import { togglePermitItemModal, loadPermitModels, toggleTradeItemModal } from 'common/reducers/cmsPermit';
+import PermitItemModal from '../modal/permitItemModal';
+import TradeItemsModal from '../modal/tradeItemsModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -14,8 +17,8 @@ const formatMsg = format(messages);
 @connect(state => ({
   tenantId: state.account.tenantId,
   loginId: state.account.loginId,
-  permitItems: state.cmsCiqDeclare.permitItems,
-}), { })
+  permitItems: state.cmsPermit.permitItems,
+}), { togglePermitItemModal, loadPermitModels, toggleTradeItemModal })
 export default class PermitItemsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -36,27 +39,31 @@ export default class PermitItemsPane extends React.Component {
 
     };
   }
+  componentDidMount() {
+    this.props.loadPermitModels(this.context.router.params.id);
+  }
   getColumns() {
     const columns = [{
       title: this.msg('序号'),
-      dataIndex: 's_no',
       fixed: 'left',
       width: 45,
       align: 'center',
+      render: (o, record, index) => index + 1,
     }, {
       title: this.msg('型号系列'),
       dataIndex: 'permit_model',
       width: 200,
     }, {
       title: this.msg('关联商品货号'),
-      dataIndex: 'rel_product_nos',
+      dataIndex: 'product_no',
     }, {
       dataIndex: 'OP_COL',
-      width: 60,
+      width: 160,
       fixed: 'right',
       render: (o, record, index) => (
         <span>
-          <RowAction onClick={this.handleRowClick} icon="edit" row={record} index={index} />
+          <RowAction onClick={this.handleRowClick} icon="sync" label="自动匹配" row={record} index={index} />
+          <RowAction onClick={this.handleRowClick} icon="edit" label="手动匹配" row={record} index={index} />
         </span>
       ),
     }];
@@ -71,8 +78,11 @@ export default class PermitItemsPane extends React.Component {
       },
     });
   }
-  handleRowClick = (record) => {
-    this.props.showGoodsModal(record);
+  handleRowClick = () => {
+    this.props.toggleTradeItemModal(true);
+  }
+  handelAdd = () => {
+    this.props.togglePermitItemModal(true);
   }
   render() {
     const { permitItems } = this.props;
@@ -86,13 +96,12 @@ export default class PermitItemsPane extends React.Component {
         dataSource={permitItems}
         rowKey="id"
         loading={this.state.loading}
-        onRow={record => ({
-          onDoubleClick: () => { this.handleRowClick(record); },
-        })}
       >
         <DataPane.Toolbar>
-          <Button>添加</Button>
+          <Button onClick={this.handelAdd}>添加</Button>
         </DataPane.Toolbar>
+        <PermitItemModal permitId={this.context.router.params.id} />
+        <TradeItemsModal />
       </DataPane>
     );
   }
