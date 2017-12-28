@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 import messages from '../message.i18n';
@@ -82,11 +81,7 @@ export default class PermitUsagePane extends React.Component {
         onRow={record => ({
           onDoubleClick: () => { this.handleRowClick(record); },
         })}
-      >
-        <DataPane.Toolbar>
-          <Button>添加</Button>
-        </DataPane.Toolbar>
-      </DataPane>
+      />
     );
   }
 }

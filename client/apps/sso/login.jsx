@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { Alert, Card, Form, Icon, Input, Button, Checkbox, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { submit, setValue, systemLoading } from '../../../common/reducers/auth';
-import NavLink from '../../components/NavLink';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
+import { submit, setValue, systemLoading } from '../../../common/reducers/auth';
+import NavLink from '../../components/NavLink';
+
 import messages from './message.i18n';
+
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 
@@ -67,29 +69,32 @@ export default class Login extends React.Component {
             <h3>{formatMsg(intl, 'slogan')}</h3>
           </div>
           {error ? <div>{
-            <Alert type="warning" showIcon message={`C${error.code}:
-              ${getFormatMsg(error.message, (key, values) => formatMsg(intl, key, values))}`}
+            <Alert
+              type="warning"
+              showIcon
+              message={`${error.code}:${getFormatMsg(error.message, (key, values) =>
+               formatMsg(intl, key, values))}`}
             />}
           </div> : null}
           <Form onSubmit={::this.handleSubmit} className="login-form">
             <FormItem>
-              {(
-                <Input addonBefore={<Icon type="user" />} placeholder={formatMsg(intl, 'userPlaceholder')} value={username}
-                  onChange={ev => this.handleTextChange(ev, 'username')}
-                />
-              )}
+              <Input
+                addonBefore={<Icon type="user" />}
+                placeholder={formatMsg(intl, 'userPlaceholder')}
+                value={username}
+                onChange={ev => this.handleTextChange(ev, 'username')}
+              />
             </FormItem>
             <FormItem>
-              {(
-                <Input addonBefore={<Icon type="lock" />} type="Password" placeholder={formatMsg(intl, 'pwdPlaceholder')}
-                  onChange={ev => this.handleTextChange(ev, 'password')}
-                />
-              )}
+              <Input
+                addonBefore={<Icon type="lock" />}
+                type="Password"
+                placeholder={formatMsg(intl, 'pwdPlaceholder')}
+                onChange={ev => this.handleTextChange(ev, 'password')}
+              />
             </FormItem>
             <FormItem>
-              {(
-                <Checkbox checked={remember} onChange={ev => this.handleCheckboxChange(ev, 'remember')}>{formatMsg(intl, 'rememberMe')}</Checkbox>
-              )}
+              <Checkbox checked={remember} onChange={ev => this.handleCheckboxChange(ev, 'remember')}>{formatMsg(intl, 'rememberMe')}</Checkbox>
               <NavLink className="pull-right" to="/forgot">
                 {formatMsg(intl, 'forgotPwd')}?
               </NavLink>

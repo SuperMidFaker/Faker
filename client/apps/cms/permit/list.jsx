@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Layout, Radio } from 'antd';
+import { Breadcrumb, Button, Icon, Layout, Radio, Tag } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
+import { Logixon } from 'client/components/FontIcon';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadPermits, loadCertParams } from 'common/reducers/cmsPermit';
 import { loadPartnersByTypes } from 'common/reducers/partner';
@@ -64,19 +65,17 @@ export default class PermitList extends Component {
     this.context.router.push(`clearance/permit/${row.id}`);
   }
   columns = [{
-    title: this.msg('证书编号'),
-    dataIndex: 'permit_no',
-    width: 150,
-  }, {
     title: this.msg('关联货主'),
-    width: 180,
+    width: 250,
     dataIndex: 'owner_partner_id',
     render: o => this.props.clients.find(cl => cl.partner_id === o) &&
     this.props.clients.find(cl => cl.partner_id === o).name,
   }, {
-    title: this.msg('涉证标准'),
-    width: 100,
+    title: this.msg('标准'),
+    width: 60,
     dataIndex: 'permit_category',
+    align: 'center',
+    render: o => <Logixon type={o} />,
   }, {
     title: this.msg('证书类型'),
     width: 200,
@@ -84,35 +83,63 @@ export default class PermitList extends Component {
     render: o => this.props.certParams.find(cert => cert.cert_code === o) &&
     this.props.certParams.find(cert => cert.cert_code === o).cert_spec,
   }, {
-    title: this.msg('总使用次数'),
-    width: 120,
-    dataIndex: 'max_usage',
+    title: this.msg('证书编号'),
+    dataIndex: 'permit_no',
+    width: 150,
   }, {
-    title: this.msg('剩余使用次数'),
-    width: 120,
+    title: this.msg('次数管控'),
+    width: 100,
+    dataIndex: 'usage_control',
+    align: 'center',
+    render: o => (o ? <Tag color="#87d068">开启</Tag> : <Tag>关闭</Tag>),
+  }, {
+    title: this.msg('总次数'),
+    width: 100,
+    dataIndex: 'max_usage',
+    align: 'right',
+  }, {
+    title: this.msg('剩余次数'),
+    width: 100,
     dataIndex: 'ava_usage',
+    align: 'right',
+  }, {
+    title: this.msg('有效期管控'),
+    width: 120,
+    dataIndex: 'expiry_control',
+    align: 'center',
+    render: o => (o ? <Tag color="#87d068">开启</Tag> : <Tag>关闭</Tag>),
   }, {
     title: this.msg('发证日期'),
     dataIndex: 'start_date',
-    render: (o, record) => (record.start_date ? moment(record.start_date).format('MM.DD HH:mm') : '-'),
+    width: 150,
+    align: 'center',
+    render: (o, record) => (record.start_date ? moment(record.start_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('到期日期'),
     dataIndex: 'stop_date',
-    render: (o, record) => (record.stop_date ? moment(record.stop_date).format('MM.DD HH:mm') : '-'),
+    width: 150,
+    align: 'center',
+    render: (o, record) => (record.stop_date ? moment(record.stop_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('状态'),
     width: 80,
     dataIndex: 'status',
     render: (o) => {
       if (o) {
-        return '有效';
+        return <Tag color="green">有效</Tag>;
       }
-      return '失效';
+      return <Tag color="red">失效</Tag>;
     },
   }, {
     title: this.msg('证书文件'),
-    width: 80,
     dataIndex: 'permit_file',
+    align: 'center',
+    render: (o) => {
+      if (o && o !== '') {
+        return <a href={o} target="_blank"><Icon type="file-pdf" /></a>;
+      }
+      return <span />;
+    },
   }, {
     title: this.msg('操作'),
     width: 100,
