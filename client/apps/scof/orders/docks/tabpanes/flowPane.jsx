@@ -15,12 +15,10 @@ import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 
-// const timeFormat = 'YYYY-MM-DD HH:mm';
-
 @injectIntl
 @connect(
   state => ({
-    order: state.crmOrders.dock.order,
+    shipmtOrderNo: state.crmOrders.dock.order.shipmt_order_no,
     bizObjects: state.crmOrders.orderBizObjects,
   }),
   { loadOrderNodes }
@@ -28,20 +26,16 @@ const formatMsg = format(messages);
 export default class FlowPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    bizObjects: PropTypes.arrayOf(PropTypes.shape({ kind: PropTypes.oneOf(['import', 'export', 'cwmrec', 'tms', 'cwmso']) })).isRequired,
-    order: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
+    bizObjects: PropTypes.arrayOf(PropTypes.shape({ kind: PropTypes.oneOf(['import', 'export', 'cwmrec', 'tms', 'cwmship']) })).isRequired,
+    shipmtOrderNo: PropTypes.string.isRequired,
   }
-  componentWillMount() {
-    const { order } = this.props;
-    this.props.loadOrderNodes(order.shipmt_order_no);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.order.shipmt_order_no !== this.props.order.shipmt_order_no) {
-      this.props.loadOrderNodes(nextProps.order.shipmt_order_no);
-    }
+  componentDidMount() {
+    const { shipmtOrderNo } = this.props;
+    this.props.loadOrderNodes(shipmtOrderNo);
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
+    console.log(this.props.bizObjects, this.props.shipmtOrderNo);
     return (
       <div className="pane-content tab-pane">
         <Timeline>
@@ -63,18 +57,30 @@ export default class FlowPane extends React.Component {
                   return (
                     <Timeline.Item dot={<MdIcon type="truck" />} key={item.uuid}>
                       <TMSNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="truck" />} key={subitem.biz_no}>
+                          <TMSNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
                   case 'cwmrec':
                   return (
                     <Timeline.Item dot={<MdIcon type="layers" />} key={item.uuid}>
                       <CWMInboundNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="layers" />} key={subitem.biz_no}>
+                          <CWMInboundNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
-                  case 'cwmso':
+                  case 'cwmship':
                   return (
                     <Timeline.Item dot={<MdIcon type="layers" />} key={item.uuid}>
                       <CWMOutboundNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="layers" />} key={subitem.biz_no}>
+                          <CWMOutboundNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
                   default:

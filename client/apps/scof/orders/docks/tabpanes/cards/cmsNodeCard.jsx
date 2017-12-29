@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Col, Row, Steps } from 'antd';
+import { Button, Tooltip, Card, Col, Row } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadOrderNodesTriggers, hideDock, manualEnterFlowInstance } from 'common/reducers/crmOrders';
+import { hideDock, manualEnterFlowInstance } from 'common/reducers/crmOrders';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { NODE_BIZ_OBJECTS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { MdIcon } from 'client/components/FontIcon';
-
-const { Step } = Steps;
+import NodeFooter from './nodeFooter';
+import NodeFooterAction from './nodeFooterAction';
 
 @connect(
   () => ({}),
   {
-    loadOrderNodesTriggers, showPreviewer, hideDock, manualEnterFlowInstance,
+    showPreviewer, hideDock, manualEnterFlowInstance,
   }
 )
 
@@ -32,35 +32,6 @@ export default class CMSNodeCard extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    trigger: -1,
-  }
-  componentWillMount() {
-    const { node: { uuid, kind } } = this.props;
-    this.props.loadOrderNodesTriggers(
-      uuid,
-      [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]
-    ).then((result) => {
-      if (!result.data) return;
-      this.setState({
-        trigger: this.triggerStepMap[result.data.trigger_name],
-      });
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    const { node: { uuid, kind } } = nextProps;
-    if (uuid !== this.props.node.uuid) {
-      this.props.loadOrderNodesTriggers(
-        uuid,
-        [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]
-      ).then((result) => {
-        if (!result.data) return;
-        this.setState({
-          trigger: this.triggerStepMap[result.data.trigger_name],
-        });
-      });
-    }
-  }
   triggerStepMap = {
     [NODE_BIZ_OBJECTS[this.props.node.kind][0].triggers[0].key]: 0,
     [NODE_BIZ_OBJECTS[this.props.node.kind][1].triggers[1].key]: 1,
@@ -68,12 +39,14 @@ export default class CMSNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS[this.props.node.kind][0].triggers[3].key]: 3,
   }
   handlePreview = (No) => {
-    this.props.showPreviewer(No, 'shipment');
-    this.props.hideDock();
+    if (No) {
+      this.props.showPreviewer(No, 'shipment');
+      this.props.hideDock();
+    }
   }
   handleManifest = () => {
     const link = `/clearance/${this.props.node.kind}/manifest/`;
-    this.context.router.push(`${link}${this.props.node.uuid}`); // TODO
+    this.context.router.push(`${link}${this.props.node.biz_no}`);
   }
   handleNodeEnterTrigger = (ev) => {
     ev.preventDefault();
@@ -84,31 +57,25 @@ export default class CMSNodeCard extends React.Component {
   render() {
     const {
       /* children, */ node: {
-        name, decl_way_code: declWayCode, trans_mode: transMode, bl_wb_no: blWbNo,
-        in_degree: indegree, uuid, out_degree: outdeg, multi_bizobj: multiple, primary,
+        name, kind, decl_way_code: declWayCode, trans_mode: transMode, bl_wb_no: blWbNo,
+        uuid, biz_no: bizno,
       },
     } = this.props;
-    const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
+    const declWayMap = kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     const declWayItem = declWayMap.find(item => item.key === declWayCode);
     const tm = TRANS_MODE.filter(item => item.value === transMode)[0];
     const extra = [];
-    let triggerActions;
-    if (indegree === 0) {
-      if (outdeg > 0 && multiple && primary) {
-        triggerActions = [(<Tooltip title="触发节点进入" key="enter">
-          <Button icon="plus" onClick={this.handleNodeEnterTrigger} />
-        </Tooltip>)];
-      }
+    if (bizno) {
       extra.push(<Tooltip title="进入详情" key="detail">
         <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleManifest} />
       </Tooltip>);
     }
     return (
       <Card
-        title={<span>{name}</span>}
+        title={`${name}${bizno || ' 尚未进入节点'}`}
         extra={extra}
         bodyStyle={{ padding: 8, paddingBottom: 56 }}
-        onClick={() => this.handlePreview(uuid)}
+        onClick={() => this.handlePreview(bizno)}
       >
         <Row>
           <Col span="8">
@@ -133,21 +100,18 @@ export default class CMSNodeCard extends React.Component {
             />
           </Col>
         </Row>
+        <NodeFooterAction
+          node={this.props.node}
+          manualEnterFlowInstance={this.props.manualEnterFlowInstance}
+        />
         <div className="card-footer">
-          <Steps current={this.state.trigger} progressDot>
-            <Step title="接单" />
-            <Step title="制单" />
-            <Step title="申报" />
-            <Step title="放行" />
-          </Steps>
+          <NodeFooter
+            node={{ uuid, biz_no: bizno }}
+            bizObjects={[NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]}
+            triggerMap={this.triggerStepMap}
+            stepDesc={['接单', '制单', '申报', '放行']}
+          />
         </div>
-        {triggerActions && triggerActions.length > 0 &&
-          <ul className="ant-card-actions">
-            {triggerActions.map(trButton => (
-              <li style={{ width: '100%' }}>
-                {trButton}
-              </li>))}
-          </ul>}
       </Card>
     );
   }

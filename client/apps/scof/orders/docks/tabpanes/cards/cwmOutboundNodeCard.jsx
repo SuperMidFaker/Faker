@@ -2,21 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { routerShape } from 'react-router';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
+import { Button, Tooltip, Card, Col, Row, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadOrderNodesTriggers, hideDock, getSoFromFlow, manualEnterFlowInstance } from 'common/reducers/crmOrders';
+import { hideDock, getSoFromFlow, manualEnterFlowInstance } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
-// import { Logixon } from 'client/components/FontIcon';
+import NodeFooter from './nodeFooter';
+import NodeFooterAction from './nodeFooterAction';
 
-const { Step } = Steps;
 @connect(
   (state, props) => ({
     tenantId: state.account.tenantId,
     so: state.crmOrders.dockInstMap[props.node.uuid],
   }),
   {
-    hideDock, showDock, loadOrderNodesTriggers, getSoFromFlow, manualEnterFlowInstance,
+    hideDock, showDock, getSoFromFlow, manualEnterFlowInstance,
   }
 )
 export default class CWMOutboundNodeCard extends React.Component {
@@ -26,28 +26,13 @@ export default class CWMOutboundNodeCard extends React.Component {
   static contextTypes = {
     router: routerShape.isRequired,
   }
-  state = {
-    trigger: -1,
-  }
   componentWillMount() {
-    const { node: { uuid, kind }, tenantId } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
-      if (!result.data) return;
-      this.setState({
-        trigger: this.triggerStepMap[result.data.trigger_name],
-      });
-    });
+    const { node: { uuid }, tenantId } = this.props;
     this.props.getSoFromFlow(uuid, tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    const { node: { uuid, kind }, tenantId } = nextProps;
+    const { node: { uuid }, tenantId } = nextProps;
     if (uuid !== this.props.node.uuid) {
-      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
-        if (!result.data) return;
-        this.setState({
-          trigger: this.triggerStepMap[result.data.trigger_name],
-        });
-      });
       this.props.getSoFromFlow(uuid, tenantId);
     }
   }
@@ -80,11 +65,6 @@ export default class CWMOutboundNodeCard extends React.Component {
       return null;
     }
     const extra = [];
-    if (node.multi_bizobj && node.in_degree === 0 && node.out_degree > 0) {
-      extra.push(<Tooltip title="触发节点进入" key="enter">
-        <Button size="small" shape="circle" icon="plus" onClick={this.handleNodeEnterTrigger} />
-      </Tooltip>);
-    }
     if (so.outbound_no) {
       extra.push(<Tooltip title="进入详情" key="detail">
         <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleOutbound} />
@@ -112,12 +92,17 @@ export default class CWMOutboundNodeCard extends React.Component {
           </Col>
         </Row>
         {children}
+        <NodeFooterAction
+          node={node}
+          manualEnterFlowInstance={this.props.manualEnterFlowInstance}
+        />
         <div className="card-footer">
-          <Steps current={this.state.trigger} progressDot>
-            <Step title="订单接收" />
-            <Step title="出库操作" />
-            <Step title="发货完成" />
-          </Steps>
+          <NodeFooter
+            node={{ uuid: node.uuid, biz_no: node.biz_no }}
+            bizObjects={[NODE_BIZ_OBJECTS[node.kind][0].key]}
+            triggerMap={this.triggerStepMap}
+            stepDesc={['订单接收', '出库操作', '发货完成']}
+          />
         </div>
       </Card>
     );

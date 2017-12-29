@@ -118,6 +118,7 @@ export default function reducer(state = initialState, action) {
           tabKey: action.tabKey,
           ...action.result.data,
         },
+        orderBizObjects: [],
       };
     }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
@@ -400,7 +401,7 @@ export function loadOrderNodes(orderNo) {
   };
 }
 
-export function loadOrderNodesTriggers(uuid, bizObjects) {
+export function loadOrderNodesTriggers(uuid, bizObjects, bizno) {
   return {
     [CLIENT_API]: {
       types: [
@@ -410,7 +411,7 @@ export function loadOrderNodesTriggers(uuid, bizObjects) {
       ],
       endpoint: 'v1/scof/order/nodes/triggers/load',
       method: 'post',
-      data: { uuid, bizObjects },
+      data: { uuid, bizObjects, bizno },
     },
   };
 }
