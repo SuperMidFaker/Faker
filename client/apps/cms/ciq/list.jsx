@@ -135,7 +135,7 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 150,
+    width: 160,
     render: (o, record) => (
       <a onClick={ev => this.showDelegationDock(record, ev)}>
         {o}
