@@ -37,6 +37,7 @@ import cmsQuote from './cmsQuote';
 import cmsResources from './cmsResources';
 import cmsBrokers from './cmsBrokers';
 import cmsTradeManual from './cmsTradeManual';
+import cmsTradePermit from './cmsTradePermit';
 import cmsPreferences from './cmsPreferences';
 import scofFlow from './scofFlow';
 import sofVendors from './sofVendors';
@@ -70,6 +71,7 @@ import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
 import saasLineFileAdaptor from './saasLineFileAdaptor';
 import cmsCiqDeclare from './cmsCiqDeclare';
+import cmsPermit from './cmsPermit';
 
 export default combineReducers({
   activities,
@@ -115,6 +117,7 @@ export default combineReducers({
   cmsHsCode,
   cmsBrokers,
   cmsTradeManual,
+  cmsTradePermit,
   scofFlow,
   sofVendors,
   scvInboundShipments,
@@ -143,4 +146,5 @@ export default combineReducers({
   cwmMovement,
   saasLineFileAdaptor,
   cmsCiqDeclare,
+  cmsPermit,
 });

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { locationShape } from 'react-router';
-import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import { loadTrackings } from 'common/reducers/scvTracking';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 
@@ -42,14 +42,6 @@ export default class ModuleSCOF extends React.Component {
     }
     const { intl } = this.props;
     const linkMenus = [];
-    linkMenus.push({
-      single: true,
-      key: 'scof-dashboard',
-      disabled: true,
-      path: '/scof/dashboard',
-      icon: 'logixon icon-apps',
-      text: formatMsg(intl, 'dashboard'),
-    });
     linkMenus.push({
       single: true,
       key: 'scof-order',
@@ -94,7 +86,11 @@ export default class ModuleSCOF extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout
+        links={this.state.linkMenus}
+        childContent={this.props.children}
+        location={this.props.location}
+      />
     );
   }
 }

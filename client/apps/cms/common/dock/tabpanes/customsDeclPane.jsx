@@ -7,9 +7,10 @@ import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
 import { loadOperators } from 'common/reducers/crmCustomers';
-import CustomsDeclSheetCard from '../card/customsDeclSheetCard';
 import MemberSelect from 'client/components/MemberSelect';
 import InfoItem from 'client/components/InfoItem';
+import CusDeclCard from '../card/cusDeclCard';
+
 
 @injectIntl
 @connect(
@@ -65,7 +66,7 @@ export default class CustomsDeclPane extends React.Component {
   }
   handleView = (ev) => {
     ev.stopPropagation();
-    const bill = this.props.customsPanel.bill;
+    const { bill } = this.props.customsPanel;
     const clearType = bill.i_e_type === 0 ? 'import' : 'export';
     const link = `/clearance/${clearType}/manifest/view/`;
     this.context.router.push(`${link}${bill.bill_seq_no}`);
@@ -97,7 +98,7 @@ export default class CustomsDeclPane extends React.Component {
   }
   renderManifestAction() {
     const { customsPanel } = this.props;
-    const bill = customsPanel.bill;
+    const { bill } = customsPanel;
     if (customsPanel.accepted) {
       if (bill.bill_status === 0) {
         return <Button type="primary" ghost icon="addfile" onClick={this.handleMake}>创建清单</Button>;
@@ -114,27 +115,30 @@ export default class CustomsDeclPane extends React.Component {
     const {
       customsPanel, customsSpinning, tenantId, partnerId,
     } = this.props;
-    const bill = customsPanel.bill;
+    const { bill } = customsPanel;
     const tableDatas = customsPanel.decls;
-    // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
-    // const panelHeader = (
-    //  <span>{declTypes.length > 0 ? declTypes[0].value : ''}：{bill.pack_count}件/{bill.gross_wt}千克</span>
-    // );
-    const manifestProgress = (<div style={{ width: 200 }}>制单进度 <Progress strokeWidth={5} percent={bill.bill_status} /></div>);
-    const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
+
+    const manifestProgress = (<div style={{ width: 200 }}>
+      制单进度 <Progress strokeWidth={5} percent={bill.bill_status} /></div>);
+    const assignable = (customsPanel.customs_tenant_id === tenantId ||
+      customsPanel.customs_tenant_id === -1);
     return (
       <div className="pane-content tab-pane table-list">
         <Spin spinning={customsSpinning}>
-          <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }} hoverable={false}>
+          <Card
+            title={manifestProgress}
+            extra={this.renderManifestAction()}
+            bodyStyle={{ padding: 16 }}
+            hoverable={false}
+          >
             <Row gutter={16} className="info-group-underline">
               <Col span="6">
-                {/* <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>} */}
-                {/* field={bill.preparer_name} placeholder="分配操作人员" editable={assignable} */}
-                {/* overlay={<Menu onClick={this.handleMenuClick}> */}
-                {/* {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))} */}
-                {/* </Menu>} */}
-                {/* /> */}
-                <MemberSelect preparerName={bill.preparer_name} editable={assignable} partnerId={partnerId} onSelect={this.handleMenuClick} />
+                <MemberSelect
+                  preparerName={bill.preparer_name}
+                  editable={assignable}
+                  partnerId={partnerId}
+                  onSelect={this.handleMenuClick}
+                />
               </Col>
               <Col span="2">
                 <InfoItem label="清单项数" addonAfter="项" field={bill.g_count} />
@@ -149,7 +153,9 @@ export default class CustomsDeclPane extends React.Component {
                 <InfoItem label="总金额" addonAfter="美元" field={bill.total_trades} />
               </Col>
               <Col span="6">
-                <InfoItem label="制单时间" addonBefore={<Icon type="clock-circle-o" />}
+                <InfoItem
+                  label="制单时间"
+                  addonBefore={<Icon type="clock-circle-o" />}
                   field={bill.created_date && moment(bill.created_date).format('YYYY.MM.DD HH:mm')}
                 />
               </Col>
@@ -160,7 +166,7 @@ export default class CustomsDeclPane extends React.Component {
             dataSource={tableDatas}
             renderItem={item => (
               <List.Item>
-                <CustomsDeclSheetCard customsDecl={item} manifest={bill} />
+                <CusDeclCard customsDecl={item} manifest={bill} />
               </List.Item>
             )}
           />

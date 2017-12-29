@@ -2,23 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Menu, Icon, Col, Card } from 'antd';
+import { Row, Menu, Col, Card } from 'antd';
 import { saveBaseInfo } from 'common/reducers/cmsDelgInfoHub';
-import downloadMultiple from 'client/util/multipleDownloader';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import { MdIcon } from 'client/components/FontIcon';
+import messages from '../message.i18n';
 
-function getExtension(filename) {
-  const parts = filename.split('.');
-  return parts[parts.length - 1];
-}
+const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
     delegation: state.cmsDelgInfoHub.previewer.delegation,
-    files: state.cmsDelgInfoHub.previewer.files,
+
   }),
   { saveBaseInfo }
 )
@@ -26,34 +24,8 @@ export default class MainInfoCard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     delegation: PropTypes.object.isRequired,
-    files: PropTypes.array.isRequired,
   }
-  state = {
-    sortedFiles: [],
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.files.length !== this.props.files.length) {
-      const sortedFiles = [];
-      nextProps.files.forEach((fl) => {
-        const filename = fl.name;
-        const ext = getExtension(filename);
-        const type = ext.toLowerCase();
-        if (type === 'doc' || type === 'pages' || type === 'docx') {
-          sortedFiles.push({ type: 'doc', name: filename });
-        } else if (type === 'xls' || type === 'numbers') {
-          sortedFiles.push({ type: 'xls', name: filename });
-        } else if (type === 'zip' || type === 'rar') {
-          sortedFiles.push({ type: 'zip', name: filename });
-        } else {
-          sortedFiles.push({ type: 'pdf', name: filename });
-        }
-      });
-      this.setState({ sortedFiles });
-    }
-  }
-  handleFilesDownload = () => {
-    downloadMultiple(this.files);
-  }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleFill = (val, field) => {
     const change = {};
     change[field] = val;
@@ -85,17 +57,31 @@ export default class MainInfoCard extends React.Component {
       <Card bodyStyle={{ padding: 16 }} hoverable={false}>
         <Row gutter={16} className="info-group-underline">
           <Col span="8">
-            <InfoItem label="运输方式" addonBefore={transMode && <MdIcon type={transMode.icon} />}
+            <InfoItem
+              label="运输方式"
+              addonBefore={transMode && <MdIcon type={transMode.icon} />}
               field={transMode ? transMode.text : ''}
             />
           </Col>
           <Col span="8">
-            <InfoItem label="提运单号" addonBefore={<Icon type="tag-o" />}
-              field={delegation.bl_wb_no} dataIndex="bl_wb_no" placeholder="添加提运单号" editable onEdit={this.handleFill}
+            <InfoItem
+              label="提运单号"
+              field={delegation.bl_wb_no}
+              dataIndex="bl_wb_no"
+              placeholder="添加提运单号"
+              editable
+              onEdit={this.handleFill}
             />
           </Col>
           <Col span="8">
-            <InfoItem label="运输工具名称" field={delegation.traf_name} editable placeholder="添加运输工具名称" dataIndex="traf_name" onEdit={this.handleFill} />
+            <InfoItem
+              label="运输工具名称"
+              field={delegation.traf_name}
+              editable
+              placeholder="添加运输工具名称"
+              dataIndex="traf_name"
+              onEdit={this.handleFill}
+            />
           </Col>
         </Row>
         {
@@ -111,21 +97,37 @@ export default class MainInfoCard extends React.Component {
             }
         <Row gutter={16} className="info-group-underline">
           <Col span="8">
-            <InfoItem type="dropdown" label="货物类型"
-              field={goods ? goods.text : ''} placeholder="选择货物类型" editable
+            <InfoItem
+              type="dropdown"
+              label="货物类型"
+              field={goods ? goods.text : ''}
+              placeholder="选择货物类型"
+              editable
               overlay={<Menu onClick={this.handleMenuClick}>
                 {GOODSTYPES.map(gt => (<Menu.Item key={gt.value}>{gt.text}</Menu.Item>))}
               </Menu>}
             />
           </Col>
           <Col span="8">
-            <InfoItem label="总件数"
-              field={delegation.pieces} addonAfter="件" editable onEdit={this.handleFill} dataIndex="pieces"
+            <InfoItem
+              label="总件数"
+              field={delegation.pieces}
+              addonAfter="件"
+              editable
+              onEdit={this.handleFill}
+              dataIndex="pieces"
             />
           </Col>
           <Col span="8">
-            <InfoItem type="number" label="总重量"
-              field={delegation.weight} dataIndex="weight" addonAfter="千克" placeholder="设置总重量" editable onEdit={this.handleFill}
+            <InfoItem
+              type="number"
+              label="总重量"
+              field={delegation.weight}
+              dataIndex="weight"
+              addonAfter="千克"
+              placeholder="设置总重量"
+              editable
+              onEdit={this.handleFill}
             />
           </Col>
         </Row>

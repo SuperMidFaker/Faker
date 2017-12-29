@@ -12,7 +12,7 @@ import { CERTS, INSPECT_STATUS } from 'common/constants';
 import MainInfoCard from '../card/mainInfoCard';
 import ActivityEditCard from '../card/activityEditCard';
 
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 
 const ACTIVITY_DESC_MAP = {
   create: { text: '创建清关委托', icon: 'plus-circle-o' },
@@ -50,7 +50,6 @@ const ACTIVITY_DESC_MAP = {
 @Form.create()
 export default class DelegationPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string.isRequired,
   }
@@ -111,7 +110,10 @@ export default class DelegationPane extends React.Component {
   }
   handleSaveCert = ({ field, value }) => {
     const certQty = value || null;
-    this.props.updateCertParam(this.props.previewer.delegation.delg_no, this.props.previewer.delgDispatch.id, field, certQty).then((result) => {
+    this.props.updateCertParam(
+      this.props.previewer.delegation.delg_no,
+      this.props.previewer.delgDispatch.id, field, certQty
+    ).then((result) => {
       if (result.error) {
         if (result.error.message === 'repeated') {
           if (certQty === null) {
@@ -166,7 +168,8 @@ export default class DelegationPane extends React.Component {
     } else if (this.state.filterKey === 'all') {
       this.setState({
         filterKey: filterKey === 'ciq' ? 'operation' : 'ciq',
-        filterActivities: this.props.previewer.activities.filter(acty => acty.category !== filterKey),
+        filterActivities: this.props.previewer.activities.filter(acty =>
+          acty.category !== filterKey),
       });
     }
   }
@@ -174,9 +177,7 @@ export default class DelegationPane extends React.Component {
     const { previewer } = this.props;
     const key = this.state.tabKey;
     const formVals = this.props.form.getFieldsValue();
-    if (key === 'message') {
-
-    } else if (key === 'exchange') {
+    if (key === 'exchange') {
       this.handleBlNoExchange({ value: formVals.bl_wb_no });
     } else if (key === 'certs') {
       if (formVals.certs) {
@@ -237,8 +238,13 @@ export default class DelegationPane extends React.Component {
                     case 'exchange':
                       return (
                         <Timeline.Item dot={<Icon type="retweet" />} key={activity.id}>
-                          <ActivityEditCard title="换单" createdDate={activity.oper_date} leftLabel="海运单号"
-                            leftValue={delegation.swb_no} rightLabel="提货单号" rightValue={delegation.bl_wb_no}
+                          <ActivityEditCard
+                            title="换单"
+                            createdDate={activity.oper_date}
+                            leftLabel="海运单号"
+                            leftValue={delegation.swb_no}
+                            rightLabel="提货单号"
+                            rightValue={delegation.bl_wb_no}
                             onSave={this.handleBlNoExchange}
                           />
                         </Timeline.Item>);
@@ -253,35 +259,46 @@ export default class DelegationPane extends React.Component {
                         inspectStatusTxt = '通过';
                       }
                       return (<Timeline.Item dot={<Icon type="exception" />} color="red" key={activity.id}>
-                        <Card title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
-                          <small className="timestamp">{moment(activity.oper_date).format('YYYY-MM-DD HH:mm')}</small>
-                        </span>}
+                        <Card
+                          title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
+                            <small className="timestamp">{moment(activity.oper_date).format('YYYY-MM-DD HH:mm')}</small>
+                          </span>}
                           extra={<span className="toolbar-right">
                             {inspect !== INSPECT_STATUS.finish &&
                             <Tooltip title="标记查验通过" placement="left">
-                              <Button type="primary" shape="circle" size="small" icon="check" onClick={() => this.handleInspectSave({
+                              <Button
+                                type="primary"
+                                shape="circle"
+                                size="small"
+                                icon="check"
+                                onClick={() => this.handleInspectSave({
                                 preEntrySeqNo: activity.field, delgNo: delegation.delg_no, enabled: 'passed', field: activity.type,
                               })}
                               />
                             </Tooltip>
                             }
-                            <Popover trigger="click" content={
-                              <div>
-                                <a className="mdc-text-red" onClick={() =>
+                            <Popover
+                              trigger="click"
+                              content={
+                                <div>
+                                  <a
+                                    className="mdc-text-red"
+                                    onClick={() =>
                                   this.handleInspectSave({
- preEntrySeqNo: activity.field,
+                                    preEntrySeqNo: activity.field,
                                     delgNo: delegation.delg_no,
                                     enabled: false,
                                     field: activity.type,
-})}
-                                >
+                                  })}
+                                  >
                                   删除
-                                </a>
-                              </div>}
+                                  </a>
+                                </div>}
                             >
                               <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
                             </Popover>
-                          </span>} bodyStyle={{ padding: 8 }}
+                          </span>}
+                          bodyStyle={{ padding: 8 }}
                         >
                           <Row>
                             <Col span={12}>
@@ -300,9 +317,15 @@ export default class DelegationPane extends React.Component {
                       const certText = CERTS.filter(ct => ct.value === certKey)[0].text;
                       return (
                         <Timeline.Item dot={<Icon type="addfile" />} key={activity.id}>
-                          <ActivityEditCard title="办证" createdDate={activity.oper_date} leftLabel="办证类别"
-                            leftValue={certText} rightLabel="型号数量" rightValue={certQty}
-                            onSave={this.handleSaveCert} field={certKey}
+                          <ActivityEditCard
+                            title="办证"
+                            createdDate={activity.oper_date}
+                            leftLabel="办证类别"
+                            leftValue={certText}
+                            rightLabel="型号数量"
+                            rightValue={certQty}
+                            onSave={this.handleSaveCert}
+                            field={certKey}
                           />
                         </Timeline.Item>
                       );

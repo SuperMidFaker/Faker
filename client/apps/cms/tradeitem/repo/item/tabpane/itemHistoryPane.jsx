@@ -21,7 +21,6 @@ const formatMsg = format(messages);
 export default class ItemHistoryPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -29,15 +28,33 @@ export default class ItemHistoryPane extends React.Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '行号',
-    dataIndex: 'asn_seq_no',
-    width: 50,
-    fixed: 'left',
-    align: 'center',
+    title: this.msg('HS编码'),
+    width: 150,
+    dataIndex: 'hscode',
   }, {
-    title: '货品',
-    dataIndex: 'product_sku',
-    width: 220,
+    title: this.msg('品名'),
+    width: 200,
+    dataIndex: 'gname',
+  }, {
+    title: this.msg('规范申报要素'),
+    width: 300,
+    dataIndex: 'gmodel',
+  }, {
+    title: this.msg('变更原因'),
+    width: 200,
+    dataIndex: 'reason',
+  }, {
+    title: this.msg('变更时间'),
+    width: 150,
+    dataIndex: 'revised_date',
+  }, {
+    title: this.msg('归类人员'),
+    width: 150,
+    dataIndex: 'classified_by',
+  }, {
+    title: this.msg('审核人员'),
+    width: 150,
+    dataIndex: 'reviewed_by',
   }]
   render() {
     return (

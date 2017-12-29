@@ -12,73 +12,82 @@ import TMSNodeCard from './cards/tmsNodeCard';
 import CWMInboundNodeCard from './cards/cwmInboundNodeCard';
 import CWMOutboundNodeCard from './cards/cwmOutboundNodeCard';
 import messages from '../../message.i18n';
-const formatMsg = format(messages);
 
-// const timeFormat = 'YYYY-MM-DD HH:mm';
+const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
-    order: state.crmOrders.dock.order,
-    kinds: state.crmOrders.kinds,
+    shipmtOrderNo: state.crmOrders.dock.order.shipmt_order_no,
+    bizObjects: state.crmOrders.orderBizObjects,
   }),
   { loadOrderNodes }
 )
 export default class FlowPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    kinds: PropTypes.array.isRequired,
-    order: PropTypes.object.isRequired,
+    bizObjects: PropTypes.arrayOf(PropTypes.shape({ kind: PropTypes.oneOf(['import', 'export', 'cwmrec', 'tms', 'cwmship']) })).isRequired,
+    shipmtOrderNo: PropTypes.string.isRequired,
   }
-  componentWillMount() {
-    const { shipmt_order_no } = this.props.order;
-    this.props.loadOrderNodes(shipmt_order_no);
-  }
-  componentWillReceiveProps(nextProps) {
-    const { shipmt_order_no } = nextProps.order;
-    if (nextProps.order.shipmt_order_no !== this.props.order.shipmt_order_no) {
-      this.props.loadOrderNodes(shipmt_order_no);
-    }
+  componentDidMount() {
+    const { shipmtOrderNo } = this.props;
+    this.props.loadOrderNodes(shipmtOrderNo);
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
+    console.log(this.props.bizObjects, this.props.shipmtOrderNo);
     return (
       <div className="pane-content tab-pane">
         <Timeline>
           {
-              this.props.kinds.map((item) => {
-                if (item.kind === 'import' || item.kind === 'export') {
+              this.props.bizObjects.map((item) => {
+                switch (item.kind) {
+                  case 'import':
+                  case 'export':
                   return (
-                    <Timeline.Item dot={<Ikons type="login" />} key={item.name}>
-                      <CMSNodeCard uuid={item.uuid} name={item.name} declWayCode={item.decl_way_code}
-                        kind={item.kind} transMode={item.trans_mode} blWbNo={item.bl_wb_no} in_degree={item.in_degree}
-                      />
+                    <Timeline.Item dot={<Ikons type="login" />} key={item.uuid}>
+                      <CMSNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="login" />} key={subitem.biz_no}>
+                          <CMSNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
-                } else if (item.kind === 'tms') {
+                  case 'tms':
                   return (
-                    <Timeline.Item dot={<MdIcon type="truck" />} key={item.name}>
-                      <TMSNodeCard uuid={item.uuid} name={item.name} consigneeName={item.consignee_name}
-                        consignerName={item.consigner_name} trsMode={item.trs_mode} in_degree={item.in_degree}
-                        pod={!!item.pod}
-                      />
+                    <Timeline.Item dot={<MdIcon type="truck" />} key={item.uuid}>
+                      <TMSNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="truck" />} key={subitem.biz_no}>
+                          <TMSNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
-                } else if (item.kind === 'cwmrec') {
+                  case 'cwmrec':
                   return (
-                    <Timeline.Item dot={<MdIcon type="layers" />} key={item.name}>
-                      <CWMInboundNodeCard uuid={item.uuid} kind={item.kind} title={item.name} in_degree={item.in_degree} />
+                    <Timeline.Item dot={<MdIcon type="layers" />} key={item.uuid}>
+                      <CWMInboundNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="layers" />} key={subitem.biz_no}>
+                          <CWMInboundNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
-                } else {
+                  case 'cwmship':
                   return (
-                    <Timeline.Item dot={<MdIcon type="layers" />} key={item.name}>
-                      <CWMOutboundNodeCard uuid={item.uuid} kind={item.kind} title={item.name} in_degree={item.in_degree} />
+                    <Timeline.Item dot={<MdIcon type="layers" />} key={item.uuid}>
+                      <CWMOutboundNodeCard node={item} />
+                      {item.children.map(subitem =>
+                        (<Timeline.Item dot={<Ikons type="layers" />} key={subitem.biz_no}>
+                          <CWMOutboundNodeCard node={subitem} />
+                        </Timeline.Item>))}
                     </Timeline.Item>
                   );
-                }
-              })
-            }
+                  default:
+                  return null;
+              }
+            })
+          }
         </Timeline>
       </div>);
   }

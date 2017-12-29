@@ -77,7 +77,6 @@ export default class ExpenseList extends Component {
     expslist: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.object.isRequired,
-    loadCurrencies: PropTypes.func.isRequired,
     loadExpense: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
     partners: PropTypes.object.isRequired,
@@ -87,7 +86,6 @@ export default class ExpenseList extends Component {
   }
   state = {
     selectedRowKeys: [],
-    expandedKeys: [],
     expEptVisible: false,
     custFilter: [],
     supeFilter: [],
@@ -101,7 +99,7 @@ export default class ExpenseList extends Component {
       this.handleExpListLoad();
     }
     if (nextProps.partners !== this.props.partners) {
-      const partners = nextProps.partners;
+      const { partners } = nextProps;
       const custFilter = [];
       const supeFilter = [];
       for (let i = 0; i < partners.customer.length; i++) {
@@ -382,11 +380,10 @@ export default class ExpenseList extends Component {
   })
 
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(delgNo, 'expenses');
+    this.props.showPreviewer(delgNo, 'shipment');
   }
   handleExpListLoad = (currentPage, filter) => {
     const { tenantId, listFilter, expslist: { pageSize, current } } = this.props;
-    this.setState({ expandedKeys: [] });
     this.props.loadExpense({
       tenantId,
       filter: JSON.stringify(filter || listFilter),

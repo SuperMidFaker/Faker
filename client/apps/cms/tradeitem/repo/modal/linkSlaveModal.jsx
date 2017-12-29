@@ -50,7 +50,7 @@ export default class LinkSlaveModal extends React.Component {
     });
   }
   columns = [{
-    title: '库创建者',
+    title: '创建企业',
     dataIndex: 'creator_name',
   }, {
     title: '物料数',
@@ -58,6 +58,7 @@ export default class LinkSlaveModal extends React.Component {
   }, {
     title: '最后更新时间',
     dataIndex: 'last_modified_date',
+    width: 120,
     render: (modifdate, row) => (modifdate ? moment(modifdate).format('YYYY-MM-DD') : moment(row.created_date).format('YYYY-MM-DD')),
   }];
   render() {
@@ -69,7 +70,7 @@ export default class LinkSlaveModal extends React.Component {
     };
     return (
       <Modal maskClosable={false} title={this.msg('linkSlave')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
-        <Table columns={this.columns} dataSource={slaveList} rowKey="id" rowSelection={rowSelection} />
+        <Table size="middle" columns={this.columns} dataSource={slaveList} rowKey="id" rowSelection={rowSelection} pagination={false} />
       </Modal>
     );
   }

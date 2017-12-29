@@ -4,11 +4,11 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   tradeitem: {
     id: 'cms.tradeitem',
-    defaultMessage: '物料归类',
+    defaultMessage: '商品归类',
   },
   repoList: {
     id: 'cms.tradeitem.repo.list',
-    defaultMessage: '物料库列表',
+    defaultMessage: '归类库列表',
   },
   repoOwner: {
     id: 'cms.tradeitem.repo.owner',
@@ -78,13 +78,13 @@ const messages = defineMessages({
     id: 'cms.tradeitem.branch',
     defaultMessage: '分支数据',
   },
-  newItem: {
-    id: 'cms.classificagtion.tradeitem.new.item',
-    defaultMessage: '新增物料',
+  addItem: {
+    id: 'cms.classificagtion.tradeitem.add.item',
+    defaultMessage: '新增料件',
   },
   editItem: {
     id: 'cms.classificagtion.tradeitem.edit.item',
-    defaultMessage: '修改物料',
+    defaultMessage: '修改料件',
   },
   searchRepoPlaceholder: {
     id: 'cms.tradeitem.searchRepoPlaceholder',
@@ -108,7 +108,7 @@ const messages = defineMessages({
   },
   linkSlave: {
     id: 'cms.tradeitem.model.slave.link',
-    defaultMessage: '添加从库关联',
+    defaultMessage: '添加关联从库',
   },
   authUserName: {
     id: 'cms.tradeitem.modal.auth.username',
@@ -226,6 +226,14 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.currency',
     defaultMessage: '币制',
   },
+  customsPermit: {
+    id: 'cms.tradeitem.customs.permit',
+    defaultMessage: '海关监管条件',
+  },
+  ciqPermit: {
+    id: 'cms.tradeitem.ciq.permit',
+    defaultMessage: '检验检疫条件',
+  },
   applCertCode: {
     id: 'cms.tradeitem.appl.certcode',
     defaultMessage: '商检出具证书',
@@ -260,7 +268,7 @@ const messages = defineMessages({
   },
   addRepo: {
     id: 'cms.tradeitem.repo.add',
-    defaultMessage: '新增物料库',
+    defaultMessage: '新增归类库',
   },
   create: {
     id: 'cms.tradeitem.create',

@@ -8,7 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 const FormItem = Form.Item;
 
 @injectIntl
@@ -76,15 +76,24 @@ export default class AddTradeRepoModal extends React.Component {
       newCustomers = newCustomers.filter(ct => ct.id !== owner.owner_partner_id);
     }
     return (
-      <Modal maskClosable={false} title={this.msg('addRepo')} visible={visibleAddModal}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('addRepo')}
+        visible={visibleAddModal}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form>
           <FormItem label={this.msg('repoOwner')} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('customs')(<Select showSearch placeholder="选择客户" optionFilterProp="children"
+            {getFieldDecorator('customs')(<Select
+              showSearch
+              placeholder="选择客户"
+              optionFilterProp="children"
               onChange={this.handleSelectChange}
             >
-              {newCustomers.map(data => (<Option key={data.id} value={data.id}
+              {newCustomers.map(data => (<Option
+                key={data.id}
+                value={data.id}
                 search={`${data.partner_code}${data.name}`}
               >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
               </Option>))}

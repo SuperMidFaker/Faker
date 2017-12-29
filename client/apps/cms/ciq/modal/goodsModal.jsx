@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Col, DatePicker, Form, Row, Icon, Input, Select, Modal, Button } from 'antd';
+import { Col, DatePicker, Form, Row, Icon, Input, Select, Modal, Button } from 'antd';
 import { CIQ_PACK_TYPE, CIQ_GOODS_ATTR, CIQ_GOODS_USE_TO } from 'common/constants';
 import { hideGoodsModal,
   updateCiqGood,
@@ -15,9 +15,9 @@ import { hideGoodsModal,
   getCiqCodeByHscode,
 } from 'common/reducers/cmsCiqDeclare';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
-import GoodsLicenceModal from './goodsLecenceModal';
-import StandbyInfo from '../popover/standbyInfo';
-import GoodsLicenceInfo from '../popover/goodsLicenceInfo';
+import GoodsLicenceModal from './goodsLicenceModal';
+import StandbyPopover from '../popover/standbyPopover';
+import DangerGoodsPopover from '../popover/dangerGoodsPopover';
 import GoodsContModal from './goodsContModal';
 
 const FormItem = Form.Item;
@@ -153,24 +153,19 @@ export default class GoodsModal extends Component {
       },
     };
     return (
-      <Modal title="商品信息" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={1200}>
+      <Modal title="商品信息" visible={visible} okText="保存" onOk={this.handleOk} onCancel={this.handleCancel} width={1200}>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
-          <Card
-            bodyStyle={{ padding: 16, paddingBottom: 0 }}
-            style={{ marginBottom: 0 }}
-            hoverable={false}
-          >
-            <Row>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="HS编码" required >
-                  {getFieldDecorator('hscode', {
+          <Row>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="HS编码" required >
+                {getFieldDecorator('hscode', {
                     initialValue: data.hscode,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="CIQ代码" required >
-                  {getFieldDecorator('ciq_code', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="CIQ代码" required >
+                {getFieldDecorator('ciq_code', {
                     initialValue: data.ciq_code,
                   })(<Select>
                     {this.state.ciqcode.map(item =>
@@ -178,84 +173,84 @@ export default class GoodsModal extends Component {
                         {item.ciqcode}
                       </Option>))}
                   </Select>)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="监管条件" >
-                  {getFieldDecorator('insp_type', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="监管条件" >
+                {getFieldDecorator('insp_type', {
                     initialValue: data.insp_type,
                   })(<Input disabled />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="货物属性" required >
-                  {getFieldDecorator('goods_attr', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="货物属性" required >
+                {getFieldDecorator('goods_attr', {
                     initialValue: data.goods_attr ? data.goods_attr.split(',') : [],
                   })(<Select mode="multiple">
                     {CIQ_GOODS_ATTR.map(type =>
                       <Option key={type.value} value={type.value}>{type.text}</Option>)}
                   </Select>)}
-                </FormItem>
-              </Col>
-              <Col span="12">
-                <FormItem {...formItemSpan2Layout} colon={false} label="货物名称" required >
-                  {getFieldDecorator('g_name', {
+              </FormItem>
+            </Col>
+            <Col span="12">
+              <FormItem {...formItemSpan2Layout} colon={false} label="货物名称" required >
+                {getFieldDecorator('g_name', {
                     initialValue: data.g_name,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="英文名称" >
-                  {getFieldDecorator('en_name', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="英文名称" >
+                {getFieldDecorator('en_name', {
                     initialValue: data.en_name,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="货物品牌" >
-                  {getFieldDecorator('goods_brand', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="货物品牌" >
+                {getFieldDecorator('goods_brand', {
                     initialValue: data.goods_brand,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="货物规格" >
-                  {getFieldDecorator('goods_spec', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="货物规格" >
+                {getFieldDecorator('goods_spec', {
                     initialValue: data.goods_spec,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="货物型号" >
-                  {getFieldDecorator('g_model', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="货物型号" >
+                {getFieldDecorator('g_model', {
                     initialValue: data.g_model,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="用途" required >
-                  {getFieldDecorator('use_to', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="用途" required >
+                {getFieldDecorator('use_to', {
                     initialValue: data.use_to,
                   })(<Select>
                     {CIQ_GOODS_USE_TO.map(item =>
-                      <Option key={item.value} value={item.value}>{`${item.value}|${item.text}`}</Option>)}
+                      <Option key={item.value} value={item.value}>{`${item.value} | ${item.text}`}</Option>)}
                   </Select>)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="成分/原料" >
-                  {getFieldDecorator('stuff', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="成分/原料" >
+                {getFieldDecorator('stuff', {
                     initialValue: data.stuff,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="报检数量" required >
-                  <InputGroup compact>
-                    {getFieldDecorator('g_qty', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="报检数量" required >
+                <InputGroup compact>
+                  {getFieldDecorator('g_qty', {
                       initialValue: data.g_qty,
                     })(<Input style={{ width: '50%' }} />)}
-                    {getFieldDecorator('g_unit', {
+                  {getFieldDecorator('g_unit', {
                       initialValue: data.g_unit,
                     })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
                       {units.map(unit =>
@@ -263,16 +258,16 @@ export default class GoodsModal extends Component {
                           {unit.unit_name}
                         </Option>))}
                     </Select>)}
-                  </InputGroup>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="报检重量" >
-                  <InputGroup compact>
-                    {getFieldDecorator('weight', {
+                </InputGroup>
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="报检重量" >
+                <InputGroup compact>
+                  {getFieldDecorator('weight', {
                       initialValue: data.weight,
                     })(<Input style={{ width: '50%' }} />)}
-                    {getFieldDecorator('wt_meas_unit', {
+                  {getFieldDecorator('wt_meas_unit', {
                       initialValue: data.wt_meas_unit,
                     })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
                       {units.map(unit =>
@@ -280,16 +275,16 @@ export default class GoodsModal extends Component {
                           {unit.unit_name}
                         </Option>))}
                     </Select>)}
-                  </InputGroup>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="HS标准量" required >
-                  <InputGroup compact>
-                    {getFieldDecorator('std_qty', {
+                </InputGroup>
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="HS标准量" required >
+                <InputGroup compact>
+                  {getFieldDecorator('std_qty', {
                       initialValue: data.std_qty,
                     })(<Input style={{ width: '50%' }} />)}
-                    {getFieldDecorator('std_unit', {
+                  {getFieldDecorator('std_unit', {
                       initialValue: data.std_unit,
                     })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
                       {units.map(unit =>
@@ -297,38 +292,38 @@ export default class GoodsModal extends Component {
                           {unit.unit_name}
                         </Option>))}
                     </Select>)}
-                  </InputGroup>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="包装数量" >
-                  <InputGroup compact>
-                    {getFieldDecorator('std_pack_count', {
+                </InputGroup>
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="包装数量" >
+                <InputGroup compact>
+                  {getFieldDecorator('std_pack_count', {
                       initialValue: data.std_pack_count,
                     })(<Input style={{ width: '40%' }} />)}
-                    {getFieldDecorator('std_pack_type', {
+                  {getFieldDecorator('std_pack_type', {
                       initialValue: data.std_pack_type,
                     })(<Select showSearch optionFilterProp="children" style={{ width: '60%' }}>
                       {CIQ_PACK_TYPE.map(type =>
                         <Option key={type.value} value={type.value}>{type.text}</Option>)}
                     </Select>)}
-                  </InputGroup>
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="货物单价" >
-                  {getFieldDecorator('dec_price', {
+                </InputGroup>
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="货物单价" >
+                {getFieldDecorator('dec_price', {
                     initialValue: data.dec_price,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="货物总值" required >
-                  <InputGroup compact>
-                    {getFieldDecorator('trade_total', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="货物总值" required >
+                <InputGroup compact>
+                  {getFieldDecorator('trade_total', {
                       initialValue: data.trade_total,
                     })(<Input style={{ width: '50%' }} />)}
-                    {getFieldDecorator('trade_curr', {
+                  {getFieldDecorator('trade_curr', {
                       initialValue: data.trade_curr,
                     })(<Select showSearch optionFilterProp="children" style={{ width: '50%' }}>
                       {currencies.map(currency =>
@@ -336,124 +331,125 @@ export default class GoodsModal extends Component {
                           {currency.curr_name}
                         </Option>))}
                     </Select>)}
-                  </InputGroup>
-                </FormItem>
-              </Col>
-              {ioType === 'in' &&
-                <FormRemoteSearchSelect
-                  outercol={6}
-                  label="原产国"
-                  col={8}
-                  field="orig_country"
-                  getFieldDecorator={form.getFieldDecorator}
-                  formData={data}
-                  options={countries.map(coun => ({
+                </InputGroup>
+              </FormItem>
+            </Col>
+            {ioType === 'in' &&
+            <FormRemoteSearchSelect
+              outercol={6}
+              label="原产国"
+              col={8}
+              field="orig_country"
+              getFieldDecorator={form.getFieldDecorator}
+              formData={data}
+              options={countries.map(coun => ({
                     value: coun.country_code,
                     text: `${coun.country_code} | ${coun.country_cn_name}`,
                     search: `${coun.country_code}${coun.country_cn_name}`,
                   }))}
-                  onSearch={this.handleSearchCountries}
-                  onSelect={this.handleCountrySelect}
-                />}
-              {ioType === 'in' && <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="原产地区" >
-                  {getFieldDecorator('orig_place_code', {
+              onSearch={this.handleSearchCountries}
+              onSelect={this.handleCountrySelect}
+            />}
+            {ioType === 'in' && <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="原产地区" >
+                {getFieldDecorator('orig_place_code', {
                     initialValue: data.orig_place_code,
                   })(<Input />)}
-                </FormItem>
+              </FormItem>
               </Col>}
-              {ioType === 'in' && <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="境外生产企业" >
-                  {getFieldDecorator('eng_man_ent_cnm', {
+            {ioType === 'in' && <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="境外生产企业" >
+                {getFieldDecorator('eng_man_ent_cnm', {
                     initialValue: data.eng_man_ent_cnm,
                   })(<Input />)}
-                </FormItem>
+              </FormItem>
               </Col>}
-              {ioType === 'out' && <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="产地" >
-                  {getFieldDecorator('orig_place_code', {
+            {ioType === 'out' && <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="产地" >
+                {getFieldDecorator('orig_place_code', {
                     initialValue: data.orig_place_code,
                   })(<Input />)}
-                </FormItem>
+              </FormItem>
               </Col>}
-              {ioType === 'out' && <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="生产单位" required >
-                  {getFieldDecorator('eng_man_ent_cnm', {
+            {ioType === 'out' && <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="生产单位" required >
+                {getFieldDecorator('eng_man_ent_cnm', {
                     initialValue: data.eng_man_ent_cnm,
                   })(<Input />)}
-                </FormItem>
+              </FormItem>
               </Col>}
-              {ioType === 'out' && <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="生产单位注册号" required >
-                  {getFieldDecorator('mnufctr_reg_no', {
+            {ioType === 'out' && <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="生产单位注册号" required >
+                {getFieldDecorator('mnufctr_reg_no', {
                     initialValue: data.mnufctr_reg_no,
                   })(<Input />)}
-                </FormItem>
+              </FormItem>
               </Col>}
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="生产批号" >
-                  {getFieldDecorator('prod_batch_no', {
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="生产批号" >
+                {getFieldDecorator('prod_batch_no', {
                     initialValue: data.prod_batch_no,
                   })(<Input />)}
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="生产日期" >
-                  {getFieldDecorator('produce_date', {
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="生产日期" >
+                {getFieldDecorator('produce_date', {
                     initialValue: data.produce_date && moment(data.produce_date, 'YYYY/MM/DD'),
                   })(<DatePicker style={{ width: '100%' }} />)}
-                </FormItem>
-              </Col>
-              {ioType === 'in' && <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="产品有效期" >
-                  {getFieldDecorator('prod_valid_dt', {
+              </FormItem>
+            </Col>
+            {ioType === 'in' && <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="产品有效期" >
+                {getFieldDecorator('prod_valid_dt', {
                     initialValue: data.prod_valid_dt && moment(data.prod_valid_dt, 'YYYY/MM/DD'),
                   })(<DatePicker style={{ width: '100%' }} />)}
-                </FormItem>
+              </FormItem>
               </Col>}
-              {ioType === 'in' && <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="产品保质期" >
-                  {getFieldDecorator('prod_qgp', {
+            {ioType === 'in' && <Col span={6}>
+              <FormItem {...formItemLayout} colon={false} label="产品保质期" >
+                {getFieldDecorator('prod_qgp', {
                     initialValue: data.prod_qgp,
                   })(<Input addonAfter="天" />)}
-                </FormItem>
-                </Col>}
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="产品资质" >
-                  <Input addonAfter={
-                    <Button
-                      type="primary"
-                      size="small"
-                      ghost
-                      onClick={this.showGoodsLicenceModal}
-                    ><Icon type="ellipsis" /></Button>}
-                  />
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="危险货物信息" >
-                  <Input addonAfter={<GoodsLicenceInfo goodsId={data.id} />} />
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="备用信息" >
-                  <Input addonAfter={<StandbyInfo goodsId={data.id} />} />
-                </FormItem>
-              </Col>
-              <Col span="6">
-                <FormItem {...formItemLayout} colon={false} label="箱货关联信息" >
-                  <Input addonAfter={
-                    <Button
-                      type="primary"
-                      size="small"
-                      ghost
-                      onClick={this.showGoodsContModal}
-                    ><Icon type="ellipsis" /></Button>}
-                  />
-                </FormItem>
-              </Col>
-            </Row>
-          </Card>
+              </FormItem>
+            </Col>}
+          </Row>
+          <Row>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} colon={false} label="产品资质" >
+                <Input addonAfter={
+                  <Button
+                    type="primary"
+                    size="small"
+                    ghost
+                    onClick={this.showGoodsLicenceModal}
+                  ><Icon type="ellipsis" /></Button>}
+                />
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} colon={false} label="箱货关联" >
+                <Input addonAfter={
+                  <Button
+                    type="primary"
+                    size="small"
+                    ghost
+                    onClick={this.showGoodsContModal}
+                  ><Icon type="ellipsis" /></Button>}
+                />
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} colon={false} label="危险货物" >
+                <Input addonAfter={<DangerGoodsPopover goodsId={data.id} />} />
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} colon={false} label="备用信息" >
+                <Input addonAfter={<StandbyPopover goodsId={data.id} />} />
+              </FormItem>
+            </Col>
+          </Row>
         </Form>
         <GoodsLicenceModal />
         <GoodsContModal />

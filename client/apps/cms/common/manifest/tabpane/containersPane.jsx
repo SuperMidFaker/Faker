@@ -6,10 +6,11 @@ import { Button, Input, Select, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import { CMS_CNTNR_SPEC_CUS, CMS_CNTNR_SPEC_CIQ } from 'common/constants';
 import DataPane from 'client/components/DataPane';
+import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
-const Option = Select.Option;
+const { Option } = Select;
 const formatMsg = format(messages);
 
 function ColumnInput(props) {
@@ -43,14 +44,14 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map(opt => <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
+          options.map(opt =>
+            <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
         }
       </Select>
     );
-  } else {
-    const option = options.find(item => item.value === record[field]);
-    return <span>{option ? option.text : ''}</span>;
   }
+  const option = options.find(item => item.value === record[field]);
+  return <span>{option ? option.text : ''}</span>;
 }
 ColumnSelect.proptypes = {
   inEdit: PropTypes.bool,
@@ -74,7 +75,6 @@ ColumnSelect.proptypes = {
 export default class ContainersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     containers: PropTypes.array,
     billHead: PropTypes.object,
   }
@@ -147,50 +147,69 @@ export default class ContainersPane extends React.Component {
       title: this.msg('containerId'),
       dataIndex: 'container_id',
       render: (o, record) =>
-        (<ColumnInput field="container_id" inEdit={!record.id} record={record}
+        (<ColumnInput
+          field="container_id"
+          inEdit={!record.id}
+          record={record}
           onChange={this.handleEditChange}
         />),
     }, {
       title: this.msg('containerSpec'),
       dataIndex: 'container_spec',
       render: (o, record) =>
-        (<ColumnSelect field="container_spec" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange} options={CMS_CNTNR_SPEC_CUS}
+        (<ColumnSelect
+          field="container_spec"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+          options={CMS_CNTNR_SPEC_CUS}
         />),
     }, {
       title: this.msg('containerSpecCiq'),
       dataIndex: 'container_spec_ciq',
       render: (o, record) =>
-        (<ColumnSelect field="container_spec_ciq" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange} options={CMS_CNTNR_SPEC_CIQ}
+        (<ColumnSelect
+          field="container_spec_ciq"
+          inEdit={!record.id}
+          record={record}
+          onChange={this.handleEditChange}
+          options={CMS_CNTNR_SPEC_CIQ}
         />),
     }, {
       title: this.msg('containerWt'),
       dataIndex: 'container_wt',
       render: (o, record) =>
-        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
+        (<ColumnInput
+          field="container_wt"
+          inEdit={!record.id}
+          record={record}
           onChange={this.handleEditChange}
         />),
     }, {
       width: 100,
       render: (o, record, index) => {
         if (record.id) {
-          return (<Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />);
-        } else {
           return (<span>
-            <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
-            <Button shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" style={{ marginLeft: 8 }} />
+            <RowAction shape="circle" danger confirm="确定删除?" onConfirm={() => this.handleDelete(record, index)} icon="delete" row={record} />
           </span>);
         }
+        return (<span>
+          <RowAction shape="circle" primary onClick={this.handleSave} icon="save" tooltip="保存" row={record} />
+          <RowAction shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" tooltip="取消" row={record} />
+        </span>);
       },
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={this.state.datas} rowKey="id"
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={this.state.datas}
+        rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
+          <Button type="primary" ghost onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
         </DataPane.Toolbar>
       </DataPane>
     );

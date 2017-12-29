@@ -1,6 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { CPD_LOAD_FAIL } from './corp-domain';
 import { ACC_LOAD_SUCCEED } from './account';
+
 const LOGIN = '@@qm-auth/auth/LOGIN';
 const LOGIN_SUCCEED = '@@qm-auth/auth/LOGIN_SUCCEED';
 const LOGIN_FAIL = '@@qm-auth/auth/LOGIN_FAIL';

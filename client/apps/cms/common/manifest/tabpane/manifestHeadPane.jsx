@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { loadSearchedParam, resetBillHead } from 'common/reducers/cmsManifest';
+import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
 import FormInput from '../../form/formInput';
+import FormDatePicker from '../../form/formDatePicker';
 import {
-  RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, DeclCustoms, Pieces, ContractNo, LicenseNo, TermConfirm,
+  RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, DeclCustoms,
+  Pieces, ContractNo, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
-import { loadSearchedParam, resetBillHead } from 'common/reducers/cmsManifest';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -77,7 +79,8 @@ export default class ManifestHeadPane extends React.Component {
   handleRelationSel = (codeField, custCodeField, nameField, value) => {
     let rels = this.props.formRequire[CODE_AS_STATE[codeField]].filter(rel => rel.code === value);
     if (rels.length === 0) {
-      rels = this.props.formRequire[CODE_AS_STATE[custCodeField]].filter(rel => rel.custcode === value);
+      rels = this.props.formRequire[CODE_AS_STATE[custCodeField]].filter(rel =>
+        rel.custcode === value);
     }
     if (rels.length > 0) {
       this.props.form.setFieldsValue({
@@ -104,6 +107,9 @@ export default class ManifestHeadPane extends React.Component {
     const {
       form, readonly, formData, formRequire, ietype, intl,
     } = this.props;
+    if (!formData.bill_seq_no) {
+      return null;
+    }
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -116,31 +122,63 @@ export default class ManifestHeadPane extends React.Component {
       disabled: readonly,
       formData,
     };
-    const tradesOpt = formRequire.trades.filter(data => data.customer_partner_id === formData.owner_cuspartner_id);
+    const tradesOpt = formRequire.trades.filter(data =>
+      data.customer_partner_id === formData.owner_cuspartner_id);
     return (
       <FormPane fullscreen={this.props.fullscreen} hideRequiredMark>
-        {
-            /*
-            !readonly &&
-          <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={billHeadFieldsChangeTimes === 0}>
-            {formatGlobalMsg(this.props.intl, 'save')}
-          </Button>
-          */}
-        {/*
-            !readonly &&
-          <Popconfirm title={'是否确认清空表头数据?'} onConfirm={this.handleBillHeadReset}>
-            <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
-          </Popconfirm>
-          */}
-
+        <Card hoverable={false}>
+          <Row>
+            <Col span="6">
+              <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} />
+            </Col>
+            {ietype === 'import' && (formData.traf_mode === '2' || formData.traf_mode === '5') &&
+            <Col span="6">
+              <FormDatePicker
+                field="act_arrival_date"
+                outercol={24}
+                col={8}
+                label={this.msg('实际到港日')}
+                {...entryFormProps}
+              />
+            </Col>}
+            {ietype === 'import' && formData.traf_mode === '2' &&
+            <Col span="6">
+              <FormDatePicker
+                field="exchange_bl_date"
+                outercol={24}
+                col={8}
+                label={this.msg('换单日')}
+                {...entryFormProps}
+              />
+            </Col>}
+            {ietype === 'import' && formData.traf_mode === '2' &&
+            <Col span="6">
+              <FormInput
+                field="delivery_order"
+                outercol={24}
+                col={8}
+                label={this.msg('提货单号')}
+                {...entryFormProps}
+              />
+            </Col>
+            }
+          </Row>
+        </Card>
         <Card hoverable={false}>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
-                codeField="trade_co" custCodeField="trade_custco" nameField="trade_name"
-                codeRules={[{ required: false }]} nameRules={[{ required: true }]}
-                onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                {...formProps} options={tradesOpt}
+              <RelationAutoCompSelect
+                label={this.msg('forwardName')}
+                intl={intl}
+                codeField="trade_co"
+                custCodeField="trade_custco"
+                nameField="trade_name"
+                codeRules={[{ required: false }]}
+                nameRules={[{ required: true }]}
+                onSelect={this.handleRelationSel}
+                onChange={this.handleRelationChange}
+                {...formProps}
+                options={tradesOpt}
               />
             </Col>
             <Col span="16">
@@ -157,23 +195,38 @@ export default class ManifestHeadPane extends React.Component {
           </Row>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={
+              <RelationAutoCompSelect
+                label={
                   ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
-                } codeField="owner_code" custCodeField="owner_custco" nameField="owner_name" intl={intl}
-                codeRules={[{ required: false }]} nameRules={[{ required: true }]}
-                onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                {...formProps} options={tradesOpt}
+                }
+                codeField="owner_code"
+                custCodeField="owner_custco"
+                nameField="owner_name"
+                intl={intl}
+                codeRules={[{ required: false }]}
+                nameRules={[{ required: true }]}
+                onSelect={this.handleRelationSel}
+                onChange={this.handleRelationChange}
+                {...formProps}
+                options={tradesOpt}
               />
             </Col>
             <Transport {...formProps} intl={intl} formRequire={formRequire} />
           </Row>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={this.msg('agentName')}
-                codeField="agent_code" custCodeField="agent_custco" nameField="agent_name" intl={intl}
-                codeRules={[{ required: false }]} nameRules={[{ required: true }]}
-                onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                {...formProps} options={formRequire.agents}
+              <RelationAutoCompSelect
+                label={this.msg('agentName')}
+                codeField="agent_code"
+                custCodeField="agent_custco"
+                nameField="agent_name"
+                intl={intl}
+                codeRules={[{ required: false }]}
+                nameRules={[{ required: true }]}
+                onSelect={this.handleRelationSel}
+                onChange={this.handleRelationChange}
+                {...formProps}
+                options={formRequire.agents}
               />
             </Col>
             <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
@@ -202,18 +255,24 @@ export default class ManifestHeadPane extends React.Component {
               <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
             </Col>
             <Col span={16}>
-              <FormInput field="cert_mark" outercol={24} col={3}
-                label={this.msg('certMark')} {...entryFormProps}
+              <FormInput
+                field="cert_mark"
+                outercol={24}
+                col={3}
+                label={this.msg('certMark')}
+                {...entryFormProps}
               />
             </Col>
           </Row>
           <Row>
-            <Col span="8">
-              <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} />
-            </Col>
+            <Col span="8" />
             <Col span={16}>
-              <FormInput field="note" outercol={24} col={3}
-                label={this.msg('markNotes')} {...entryFormProps}
+              <FormInput
+                field="note"
+                outercol={24}
+                col={3}
+                label={this.msg('markNotes')}
+                {...entryFormProps}
               />
             </Col>
           </Row>

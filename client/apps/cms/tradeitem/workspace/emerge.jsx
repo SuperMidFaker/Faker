@@ -37,13 +37,16 @@ export default class NewItemsList extends React.Component {
     filter: { status: 'emerge' },
   }
   componentDidMount() {
+    this.handleReload();
+  }
+  msg = formatMsg(this.props.intl)
+  handleReload =() => {
     this.props.loadWorkspaceItems({
       pageSize: this.props.workspaceItemList.pageSize,
       current: 1,
       filter: JSON.stringify(this.state.filter),
     });
   }
-  msg = formatMsg(this.props.intl)
   handleLocalAudit = () => {
     this.props.submitAudit({ auditor: 'local', status: 'emerge' }).then((result) => {
       if (!result.error) {
@@ -108,14 +111,17 @@ export default class NewItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <WsItemExportButton {...this.state.filter} />
+              <WsItemExportButton {...this.state.filter} onUploaded={this.handleReload} />
               {emergeStat.master && <Button type="primary" ghost icon="cloud-upload-o" loading={submitting} onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit} loading={submitting}>提交审核</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <EmergeItemTable loadEmergeItems={this.props.loadWorkspaceItems} emergeList={workspaceItemList}
-              listFilter={this.state.filter} withRepo
+            <EmergeItemTable
+              loadEmergeItems={this.props.loadWorkspaceItems}
+              emergeList={workspaceItemList}
+              listFilter={this.state.filter}
+              withRepo
             />
           </Content>
         </Layout>

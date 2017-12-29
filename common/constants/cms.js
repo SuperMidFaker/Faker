@@ -489,6 +489,51 @@ export const SPECIAL_COPNO_TERM = [
   { value: 'A', text: '特殊货号' },
 ];
 
+export const TRADE_ITEM_APPLY_CERTS = [
+  {
+    app_cert_code: '11', app_cert_name: '品质证书',
+  },
+  {
+    app_cert_code: '12', app_cert_name: '重量证书',
+  },
+  {
+    app_cert_code: '13', app_cert_name: '数量证书',
+  },
+  {
+    app_cert_code: '14', app_cert_name: '兽医卫生证书',
+  },
+  {
+    app_cert_code: '15', app_cert_name: '健康证书',
+  },
+  {
+    app_cert_code: '16', app_cert_name: '卫生证书',
+  },
+  {
+    app_cert_code: '17', app_cert_name: '动物卫生证书',
+  },
+  {
+    app_cert_code: '18', app_cert_name: '植物检疫证书',
+  },
+  {
+    app_cert_code: '19', app_cert_name: '熏蒸/消毒证书',
+  },
+  {
+    app_cert_code: '20', app_cert_name: '出境货物换证凭单',
+  },
+  {
+    app_cert_code: '21', app_cert_name: '入境货物检验检疫证明',
+  },
+  {
+    app_cert_code: '22', app_cert_name: '出境货物不合格通知单',
+  },
+  {
+    app_cert_code: '23', app_cert_name: '集装箱检验检疫结果单',
+  },
+  {
+    app_cert_code: '99', app_cert_name: '其他证书',
+  },
+];
+
 export const CIQ_IN_DECL_TYPE = [
   { value: 13, text: '入境检验检疫' },
   { value: 14, text: '入境流向' },
@@ -831,4 +876,12 @@ export const CIQ_GOODS_USE_TO = [
   { value: '28', text: '化妆品原料' },
   { value: '29', text: '肥料' },
   { value: '30', text: '保健品' },
+];
+
+export const CIQ_DECL_STATUS = [
+  { value: '0', text: '待报检' },
+  { value: '1', text: '报检受理' },
+  { value: '2', text: '施检查验' },
+  { value: '3', text: '通关放行' },
+  { value: '4', text: '签发证单' },
 ];

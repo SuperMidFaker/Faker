@@ -10,13 +10,13 @@ import { loadTradeItem, saveRepoItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import ItemMasterPane from './tabpane/itemMasterPane';
-import ItemDocuPane from './tabpane/itemDocuPane';
+import ItemPermitPane from './tabpane/itemPermitPane';
 import ItemHistoryPane from './tabpane/itemHistoryPane';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -43,7 +43,6 @@ function fetchData({ dispatch, params }) {
 export default class TradeItemEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     itemData: PropTypes.object,
   }
@@ -85,8 +84,8 @@ export default class TradeItemEdit extends Component {
     tabs.push(<TabPane tab="主数据" key="master">
       <ItemMasterPane action="edit" form={form} itemData={itemData} />
     </TabPane>);
-    tabs.push(<TabPane tab="相关资料" key="docu">
-      <ItemDocuPane fullscreen={this.state.fullscreen} />
+    tabs.push(<TabPane tab="涉证资料" key="permit">
+      <ItemPermitPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     tabs.push(<TabPane tab="历史版本" key="history">
       <ItemHistoryPane fullscreen={this.state.fullscreen} />
@@ -114,7 +113,11 @@ export default class TradeItemEdit extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard
+            bodyStyle={{ padding: 0 }}
+            hoverable={false}
+            onSizeChange={this.toggleFullscreen}
+          >
             <Tabs defaultActiveKey="master">
               {tabs}
             </Tabs>

@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   delegation: {
     id: 'cms.module.delegation',
-    defaultMessage: '委托管理',
+    defaultMessage: '委托制单',
   },
   customsDecl: {
     id: 'cms.module.customs.decl',
@@ -49,6 +49,30 @@ const messages = defineMessages({
     id: 'cms.module.export.decl.ciq',
     defaultMessage: '出境报检申报',
   },
+  compliance: {
+    id: 'cms.module.compliance',
+    defaultMessage: '合规管理',
+  },
+  tradeItem: {
+    id: 'cms.module.compliance.trade.item',
+    defaultMessage: '商品归类',
+  },
+  hscode: {
+    id: 'cms.module.compliance.hscode',
+    defaultMessage: 'HS编码查询',
+  },
+  specialCategory: {
+    id: 'cms.module.compliance.special.category',
+    defaultMessage: '特殊商品编码分类',
+  },
+  permit: {
+    id: 'cms.module.compliance.permit',
+    defaultMessage: '涉证资料',
+  },
+  manual: {
+    id: 'cms.module.compliance.ebook',
+    defaultMessage: '电子帐册',
+  },
   billing: {
     id: 'cms.module.billing',
     defaultMessage: '费收',
@@ -58,52 +82,24 @@ const messages = defineMessages({
     defaultMessage: '费用管理',
   },
   quote: {
-    id: 'cms.module.resources.quote',
+    id: 'cms.module.billing.quote',
     defaultMessage: '费率设置',
-  },
-  classification: {
-    id: 'cms.module.classification',
-    defaultMessage: '商品归类',
-  },
-  tradeItem: {
-    id: 'cms.module.classification.trade.item',
-    defaultMessage: '物料归类',
-  },
-  hscode: {
-    id: 'cms.module.classification.hscode',
-    defaultMessage: 'HS编码查询',
-  },
-  specialCategory: {
-    id: 'cms.module.classification.special.category',
-    defaultMessage: '特殊商品编码分类',
-  },
-  license: {
-    id: 'cms.module.license',
-    defaultMessage: '单证管理',
-  },
-  manual: {
-    id: 'cms.module.manual',
-    defaultMessage: '手册帐册',
   },
   analytics: {
     id: 'cms.module.analytics',
-    defaultMessage: '报表中心',
-  },
-  analyticsKPI: {
-    id: 'cms.module.analytics.kpi',
-    defaultMessage: 'KPI分析',
+    defaultMessage: '统计分析',
   },
   settings: {
     id: 'cms.module.settings',
     defaultMessage: '设置',
   },
-  resources: {
-    id: 'cms.module.settings.resources',
-    defaultMessage: '客户设置',
+  clients: {
+    id: 'cms.module.settings.clients',
+    defaultMessage: '委托方设置',
   },
   brokers: {
     id: 'cms.module.settings.brokers',
-    defaultMessage: '代理设置',
+    defaultMessage: '申报代理',
   },
   preferences: {
     id: 'cms.module.settings.preferences',

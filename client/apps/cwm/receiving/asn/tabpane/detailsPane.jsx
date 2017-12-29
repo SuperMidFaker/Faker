@@ -6,11 +6,11 @@ import { Button } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
+import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUploader from 'client/components/ExcelUploader';
-import messages from '../../message.i18n';
-import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 
@@ -29,7 +29,7 @@ const formatMsg = format(messages);
 export default class DetailsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldValue: PropTypes.func }).isRequired,
     editable: PropTypes.bool,
     detailEnable: PropTypes.bool.isRequired,
   }
@@ -37,7 +37,6 @@ export default class DetailsPane extends Component {
     selectedRowKeys: [],
     editRecord: {},
     edit: false,
-    currentPage: 1,
   };
   componentWillReceiveProps(nextProps) {
     const { asnBody } = nextProps;
@@ -68,7 +67,8 @@ export default class DetailsPane extends Component {
   handleBatchDelete = () => {
     const { selectedRowKeys } = this.state;
     const { temporaryDetails } = this.props;
-    const newTemporary = temporaryDetails.filter((temporary, index) => selectedRowKeys.findIndex(key => key === index) === -1);
+    const newTemporary = temporaryDetails.filter((temporary, index) =>
+      selectedRowKeys.findIndex(key => key === index) === -1);
     this.props.clearTemporary();
     this.props.addTemporary(newTemporary);
     this.setState({
@@ -118,7 +118,13 @@ export default class DetailsPane extends Component {
       title: '计量单位',
       dataIndex: 'unit',
       align: 'center',
-      render: o => ((o && units.length > 0) ? units.find(unit => unit.code === o).name : ''),
+      render: (un) => {
+        const unitParam = units.find(unit => unit.code === un);
+        if (unitParam) {
+          return unitParam.name;
+        }
+        return un;
+      },
     }, {
       title: '采购订单号',
       dataIndex: 'po_no',
@@ -183,11 +189,19 @@ export default class DetailsPane extends Component {
             {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
           </ExcelUploader>
           <Button icon="download" onClick={this.handleTemplateDownload}>模版下载</Button>
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
-        <AddDetailModal poNo={poNo} product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
+        <AddDetailModal
+          poNo={poNo}
+          product={this.state.editRecord}
+          edit={this.state.edit}
+          selectedOwner={this.props.selectedOwner}
+        />
       </DataPane>
     );
   }

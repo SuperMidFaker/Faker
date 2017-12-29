@@ -7,21 +7,21 @@ import { GOODSTYPES, WRAP_TYPE, SCOF_CONTAINER_TYPE, SCOF_ORDER_TRANSFER, SCOF_O
 import { setClientForm } from 'common/reducers/crmOrders';
 import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/crmCustomers';
+import { format } from 'client/common/i18n/helpers';
 // import Container from './container';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
 import CwmReceivingForm from './cwmReceivingForm';
 import CwmShippingForm from './cwmShippingForm';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const InputGroup = Input.Group;
-const Step = Steps.Step;
+const { Step } = Steps;
 
 const SeletableKeyNameMap = {};
 GOODSTYPES.forEach((gt) => { SeletableKeyNameMap[`goods-${gt.value}`] = gt.text; });
@@ -42,7 +42,12 @@ SCOF_ORDER_TRANSMODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.valu
     graphLoading: state.scofFlow.graphLoading,
   }),
   {
-    setClientForm, loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadOperators, loadCwmBizParams,
+    setClientForm,
+    loadPartnerFlowList,
+    loadFlowGraph,
+    loadCustomerCmsQuotes,
+    loadOperators,
+    loadCwmBizParams,
   }
 )
 export default class OrderForm extends Component {
@@ -51,8 +56,10 @@ export default class OrderForm extends Component {
     tenantId: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
-    formRequires: PropTypes.object.isRequired,
+    formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
+    formRequires: PropTypes.shape({
+      clients: PropTypes.shape({ partner_id: PropTypes.number }),
+    }).isRequired,
     setClientForm: PropTypes.func.isRequired,
     graphLoading: PropTypes.bool.isRequired,
   }
@@ -123,7 +130,7 @@ export default class OrderForm extends Component {
           }
         }
         levelNodes.forEach((lnodes, level) => {
-          lnodes.sort((na, nb) => na.id < nb.id ? -1 : 1);
+          lnodes.sort((na, nb) => (na.id < nb.id ? -1 : 1));
           lnodes.forEach((node) => {
             if (node.kind === 'tms') {
               subOrders.push({
@@ -133,6 +140,7 @@ export default class OrderForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
+                  multi_bizobj: node.multi_bizobj,
                   person_id: node.person_id,
                   person: node.person,
                   level,
@@ -155,6 +163,7 @@ export default class OrderForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
+                  multi_bizobj: node.multi_bizobj,
                   person_id: node.person_id,
                   person: node.person,
                   level,
@@ -173,6 +182,7 @@ export default class OrderForm extends Component {
                   name: node.name,
                   in_degree: node.in_degree,
                   out_degree: node.out_degree,
+                  multi_bizobj: node.multi_bizobj,
                   person_id: node.person_id,
                   person: node.person,
                   level,
@@ -207,10 +217,12 @@ export default class OrderForm extends Component {
   renderSteps = (subOrders, shipment) => {
     const { operation } = this.props;
     const steps = [];
-    // steps.push(<Step key={1} status="process" description={<StepNodeForm formData={formData.subOrders[0]} index={0} operation={operation} />} />);
+    // steps.push(<Step key={1} status="process"
+    // description={<StepNodeForm formData={formData.subOrders[0]} index={0}
+    // operation={operation} />} />);
     for (let i = 0; i < subOrders.length; i++) {
       const order = subOrders[i];
-      const node = order.node;
+      const { node } = order;
       if (node.kind === 'import' || node.kind === 'export') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<ClearanceForm formData={order} shipment={shipment} index={i} operation={operation} />} />);
       } else if (node.kind === 'tms') {
@@ -255,31 +267,40 @@ export default class OrderForm extends Component {
     );
     return (
       <Form layout="horizontal" className="order-flow-form form-layout-compact">
-        <Card title={<span>客户
-          <Select placeholder="请选择客户" showSearch allowClear optionFilterProp="children"
-            value={formData.customer_partner_id}
-            onChange={value => this.handleClientChange(value)}
-            style={{ width: '50%', marginLeft: 24 }}
-          >
-            {formRequires.clients.map(data => (
-              <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-          </Select>
-        </span>}
+        <Card
+          title={<span>客户
+            <Select
+              placeholder="请选择客户"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              value={formData.customer_partner_id}
+              onChange={value => this.handleClientChange(value)}
+              style={{ width: '50%', marginLeft: 24 }}
+            >
+              {formRequires.clients.map(data => (
+                <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+            </Select>
+          </span>}
           bodyStyle={{ padding: 16 }}
         >
           <Row gutter={16}>
             <Col sm={24} lg={8}>
-              <FormItem label={(
-                <span>
+              <FormItem
+                label={(
+                  <span>
                       订单类型&nbsp;
-                  <Popover content={cargoTransferHint} title="提示" trigger="hover">
-                    <Icon type="question-circle-o" />
-                  </Popover>
-                </span>
-                  )} {...formItemLayout} required
+                    <Popover content={cargoTransferHint} title="提示" trigger="hover">
+                      <Icon type="question-circle-o" />
+                    </Popover>
+                  </span>
+                  )}
+                {...formItemLayout}
+                required
               >
                 <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleKvChange('cust_shipmt_transfer', ev.target.value, 'transfer')}>
-                  {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value} key={sot.value}>{sot.text}</RadioButton>)}
+                  {SCOF_ORDER_TRANSFER.map(sot => (<RadioButton value={sot.value} key={sot.value}>
+                    {sot.text}</RadioButton>))}
                 </RadioGroup>
               </FormItem>
             </Col>
@@ -296,13 +317,19 @@ export default class OrderForm extends Component {
               {formData.cust_shipmt_transfer && formData.cust_shipmt_transfer !== 'DOM' && <FormItem label="国际运输方式" {...formItemLayout}>
                 <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleKvChange('cust_shipmt_trans_mode', ev.target.value, 'transmode')}>
                   { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
-                  <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
+                    <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}>
+                      <i className={SCOF_ORDER_TRANSMODES[0].icon} />
+                      {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
                     }
                   { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
-                  <RadioButton value={SCOF_ORDER_TRANSMODES[1].value}><i className={SCOF_ORDER_TRANSMODES[1].icon} /> {SCOF_ORDER_TRANSMODES[1].text}</RadioButton>
+                  <RadioButton value={SCOF_ORDER_TRANSMODES[1].value}>
+                    <i className={SCOF_ORDER_TRANSMODES[1].icon} />
+                    {SCOF_ORDER_TRANSMODES[1].text}</RadioButton>
                     }
                   { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
-                  <RadioButton value={SCOF_ORDER_TRANSMODES[3].value}><i className={SCOF_ORDER_TRANSMODES[3].icon} /> {SCOF_ORDER_TRANSMODES[3].text}</RadioButton>
+                  <RadioButton value={SCOF_ORDER_TRANSMODES[3].value}>
+                    <i className={SCOF_ORDER_TRANSMODES[3].icon} /> {SCOF_ORDER_TRANSMODES[3].text}
+                  </RadioButton>
                     }
                 </RadioGroup>
               </FormItem>}
@@ -310,7 +337,11 @@ export default class OrderForm extends Component {
             <Col sm={8}>
               { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
               <FormItem label="提单号" {...formItemLayout}>
-                <Input placeholder="格式：提单号*分提单号" value={formData.cust_shipmt_bill_lading} onChange={e => this.handleChange('cust_shipmt_bill_lading', e.target.value)} />
+                <Input
+                  placeholder="格式：提单号*分提单号"
+                  value={formData.cust_shipmt_bill_lading}
+                  onChange={e => this.handleChange('cust_shipmt_bill_lading', e.target.value)}
+                />
               </FormItem>
               }
               { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
@@ -365,9 +396,12 @@ export default class OrderForm extends Component {
             <Col sm={8}>
               <FormItem label="装箱类型" {...formItemLayout}>
                 <RadioGroup value={formData.cust_shipmt_is_container} onChange={ev => this.handleChange('cust_shipmt_is_container', ev.target.value)}>
-                  <RadioButton value={SCOF_CONTAINER_TYPE[0].value}>{SCOF_CONTAINER_TYPE[0].text}</RadioButton>
-                  <RadioButton value={SCOF_CONTAINER_TYPE[1].value}>{SCOF_CONTAINER_TYPE[1].text}</RadioButton>
-                  <RadioButton value={SCOF_CONTAINER_TYPE[2].value}>{SCOF_CONTAINER_TYPE[2].text}</RadioButton>
+                  <RadioButton value={SCOF_CONTAINER_TYPE[0].value}>
+                    {SCOF_CONTAINER_TYPE[0].text}</RadioButton>
+                  <RadioButton value={SCOF_CONTAINER_TYPE[1].value}>
+                    {SCOF_CONTAINER_TYPE[1].text}</RadioButton>
+                  <RadioButton value={SCOF_CONTAINER_TYPE[2].value}>
+                    {SCOF_CONTAINER_TYPE[2].text}</RadioButton>
                 </RadioGroup>
               </FormItem>
             </Col>
@@ -378,7 +412,8 @@ export default class OrderForm extends Component {
                   placement="rightBottom"
                   title="箱型箱号"
                   trigger="click"
-                  content={<Container value={formData.containers} onChange={value => this.handleChange('containers', value)} />}
+                  content={<Container value={formData.containers}
+                  onChange={value => this.handleChange('containers', value)} />}
                 > */}
                 <span>
                   <a><Icon type="edit" style={{ marginRight: 10 }} /></a>
@@ -394,29 +429,40 @@ export default class OrderForm extends Component {
             <Col sm={16} lg={8}>
               <FormItem label="件数/包装" {...formItemLayout} required>
                 <InputGroup compact>
-                  <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={(ev) => {
+                  <Input
+                    type="number"
+                    style={{ width: '50%' }}
+                    value={formData.cust_shipmt_pieces}
+                    onChange={(ev) => {
                     const pieces = parseFloat(ev.target.value);
-                    if (!isNaN(pieces)) {
+                    if (!Number.isNaN(Number(pieces))) {
                       this.handleChange('cust_shipmt_pieces', ev.target.value);
                     } else {
                       this.handleChange('cust_shipmt_pieces', null);
                     }
                   }}
                   />
-                  <Select style={{ width: '50%' }} placeholder="选择包装方式"
+                  <Select
+                    style={{ width: '50%' }}
+                    placeholder="选择包装方式"
                     onChange={value => this.handleKvChange('cust_shipmt_wrap_type', value, 'wrap')}
                     value={formData.cust_shipmt_wrap_type}
                   >
-                    {WRAP_TYPE.map(wt => <Option value={wt.value} key={wt.value}>{wt.text}</Option>)}
+                    {WRAP_TYPE.map(wt => (<Option value={wt.value} key={wt.value}>
+                      {wt.text}</Option>))}
                   </Select>
                 </InputGroup>
               </FormItem>
             </Col>
             <Col sm={16} lg={8}>
               <FormItem label="总毛重" {...formItemLayout} required>
-                <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={(ev) => {
+                <Input
+                  type="number"
+                  addonAfter="KG"
+                  value={formData.cust_shipmt_weight}
+                  onChange={(ev) => {
                   const weight = parseFloat(ev.target.value);
-                  if (!isNaN(weight)) {
+                  if (!Number.isNaN(weight)) {
                     this.handleChange('cust_shipmt_weight', weight);
                   } else {
                     this.handleChange('cust_shipmt_weight', null);
@@ -427,9 +473,13 @@ export default class OrderForm extends Component {
             </Col>
             <Col sm={16} lg={8}>
               <FormItem label={this.msg('totalVolume')} {...formItemLayout}>
-                <Input type="number" addonAfter={this.msg('cubicMeter')} value={formData.cust_shipmt_volume} onChange={(ev) => {
+                <Input
+                  type="number"
+                  addonAfter={this.msg('cubicMeter')}
+                  value={formData.cust_shipmt_volume}
+                  onChange={(ev) => {
                   const volume = parseFloat(ev.target.value);
-                  if (!isNaN(volume)) {
+                  if (!Number.isNaN(volume)) {
                     this.handleChange('cust_shipmt_volume', volume);
                   } else {
                     this.handleChange('cust_shipmt_volume', null);
@@ -474,13 +524,20 @@ export default class OrderForm extends Component {
             </Col>
           </Row>
         </Card>
-        <Card title={<span>流程
-          <Select placeholder="请选择流程规则" showSearch allowClear optionFilterProp="children"
-            value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
-          >
-            {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
-          </Select>
-        </span>}
+        <Card
+          title={<span>流程
+            <Select
+              placeholder="请选择流程规则"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              value={formData.flow_id}
+              onChange={this.handleFlowChange}
+              style={{ width: '50%', marginLeft: 24 }}
+            >
+              {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
+            </Select>
+          </span>}
           loading={this.props.graphLoading}
           bodyStyle={{ padding: 16 }}
         >

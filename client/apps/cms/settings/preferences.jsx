@@ -91,7 +91,7 @@ export default class Preferences extends Component {
         </Header>
         <Content className="main-content layout-fixed-width">
           <Card title="导航菜单">
-            <RadioGroup value={this.state.navOption} onChange={this.handleNavOptionChange}>
+            <RadioGroup value={this.state.navOption} onChange={this.handleNavOptionChange} disabled>
               <Radio style={radioStyle} value="CC">按报关、报检</Radio>
               <Radio style={radioStyle} value="IE">按进口、出口</Radio>
               <Radio style={radioStyle} value="ALL">同时显示</Radio>

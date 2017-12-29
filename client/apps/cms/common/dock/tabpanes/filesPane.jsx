@@ -1,78 +1,85 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Spin, Card, Table } from 'antd';
 import moment from 'moment';
-import { loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
-import { loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { loadCmsFiles } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import RowAction from 'client/components/RowAction';
-import CiqDispModal from '../ciqDispModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    ciqPanel: state.cmsDelgInfoHub.ciqPanel,
     tenantId: state.account.tenantId,
     tabKey: state.cmsDelgInfoHub.tabKey,
     ciqSpinning: state.cmsDelgInfoHub.ciqPanelLoading,
     delegation: state.cmsDelgInfoHub.previewer.delegation,
+    userMembers: state.account.userMembers,
   }),
-  { loadDeclCiqPanel, loadciqSups, setDispStatus }
+  { loadCmsFiles }
 )
 export default class FilesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    ciqPanel: PropTypes.shape({
-      ciq_name: PropTypes.string,
-      acpt_time: PropTypes.date,
-      source: PropTypes.number,
-      status: PropTypes.number,
-      recv_tenant_id: PropTypes.number,
-      ciqlist: PropTypes.arrayOf(PropTypes.shape({
-        pre_entry_seq_no: PropTypes.string,
-      })),
-    }),
+  }
+  state = {
+    records: [],
   }
   componentDidMount() {
-    this.props.loadDeclCiqPanel(this.props.delegation.delg_no, this.props.tenantId);
+    this.props.loadCmsFiles(this.props.delegation.delg_no).then((result) => {
+      if (!result.error) {
+        this.setState({
+          records: result.data,
+        });
+      }
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tabKey === 'ciqDecl' && nextProps.delegation.delg_no !== this.props.delegation.delg_no) {
-      this.props.loadDeclCiqPanel(nextProps.delegation.delg_no, this.props.tenantId);
+      this.props.loadCmsFiles(nextProps.delegation.delg_no).then((result) => {
+        if (!result.error) {
+          this.setState({
+            records: result.data,
+          });
+        }
+      });
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleCiqAssign = () => {
-    this.props.loadciqSups(this.props.tenantId, 'CIB');
-    this.props.setDispStatus({ ciqDispShow: true });
+  handlePreview = (row) => {
+    window.open(row.url);
+  }
+  handleDownload = (row) => {
+    const a = document.createElement('a');
+    a.href = row.url;
+    a.download = row.doc_name;
+    a.click();
   }
   render() {
-    const {
-      ciqPanel, ciqSpinning,
-    } = this.props;
+    const { ciqSpinning } = this.props;
+    const { records } = this.state;
     const columns = [{
       title: '文件名称',
-      dataIndex: 'file_name',
+      dataIndex: 'doc_name',
     }, {
       title: '类别',
-      dataIndex: 'file_doc_code',
+      dataIndex: 'doc_code',
       width: 150,
     }, {
       title: '编号',
-      dataIndex: 'file_doc_no',
+      dataIndex: 'doc_no',
       width: 200,
     }, {
       title: '上传人',
-      dataIndex: 'uploaded_by',
+      dataIndex: 'creater_login_id',
       width: 100,
+      render: o => this.props.userMembers.find(user => user.login_id === o) &&
+       this.props.userMembers.find(user => user.login_id === o).name,
     }, {
       title: '上传时间',
-      dataIndex: 'uploaded_date',
+      dataIndex: 'created_date',
       width: 150,
       render: date => (date ? moment(date).format('YYYY.MM.DD HH:mm') : '-'),
     }, {
@@ -87,10 +94,9 @@ export default class FilesPane extends React.Component {
       <div className="pane-content tab-pane">
         <Spin spinning={ciqSpinning}>
           <Card bodyStyle={{ padding: 0 }} hoverable={false}>
-            <Table size="middle" columns={columns} pagination={false} dataSource={ciqPanel.ciqlist} />
+            <Table size="middle" columns={columns} pagination={false} dataSource={records} />
           </Card>
         </Spin>
-        <CiqDispModal />
       </div>
     );
   }

@@ -239,7 +239,7 @@ export default class ConflictItemTable extends React.Component {
     const toolbarActions = (<span>
       {withRepo && <Select
         showSearch
-        placeholder="所属物料库"
+        placeholder="所属归类库"
         optionFilterProp="children"
         style={{ width: 160 }}
         dropdownMatchSelectWidth={false}

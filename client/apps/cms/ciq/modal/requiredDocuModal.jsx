@@ -38,8 +38,10 @@ export default class RequiredDocuModal extends Component {
         const applCopyQuans = nextProps.applCopyQuans.split(',');
         const documents = [...this.state.documents];
         for (let i = 0; i < selectedRowKeys.length; i++) {
-          documents.find(doc => doc.app_cert_code === selectedRowKeys[i]).appl_ori = applOris[i];
-          documents.find(doc => doc.app_cert_code === selectedRowKeys[i]).appl_copy_quan = applCopyQuans[i];
+          documents.find(doc =>
+            doc.app_cert_code === selectedRowKeys[i]).appl_ori = applOris[i];
+          documents.find(doc =>
+            doc.app_cert_code === selectedRowKeys[i]).appl_copy_quan = applCopyQuans[i];
         }
         this.setState({
           selectedRowKeys,
@@ -116,10 +118,6 @@ export default class RequiredDocuModal extends Component {
       },
     };
     const columns = [{
-      title: '序号',
-      render: (o, record, index) => index + 1,
-      width: 50,
-    }, {
       title: '证书代码',
       dataIndex: 'app_cert_code',
       width: 80,

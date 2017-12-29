@@ -2,73 +2,50 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { routerShape } from 'react-router';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
+import { Button, Tooltip, Card, Col, Row, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadOrderNodesTriggers, hideDock, getAsnFromFlow } from 'common/reducers/crmOrders';
+import { hideDock, getAsnFromFlow, manualEnterFlowInstance } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmReceive';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
-// import { Logixon } from 'client/components/FontIcon';
-
-const Step = Steps.Step;
+import NodeFooter from './nodeFooter';
+import NodeFooterAction from './nodeFooterAction';
 
 @connect(
   (state, props) => ({
     tenantId: state.account.tenantId,
-    asn: state.crmOrders.dockInstMap[props.uuid],
+    asn: state.crmOrders.dockInstMap[props.node.uuid],
   }),
   {
-    hideDock, showDock, loadOrderNodesTriggers, getAsnFromFlow,
+    hideDock, showDock, getAsnFromFlow, manualEnterFlowInstance,
   }
 )
 export default class CWMInboundNodeCard extends React.Component {
   static propTypes = {
-    children: PropTypes.any,
+    children: PropTypes.arrayOf(PropTypes.node),
   }
   static contextTypes = {
     router: routerShape.isRequired,
   }
-  state = {
-    is_editing: false,
-    trigger: -1,
-  }
   componentDidMount() {
-    const { uuid, kind, tenantId } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else if (result.data) {
-        this.setState({
-          trigger: this.triggerStepMap[result.data.trigger_name],
-        });
-      }
-    });
+    const { node: { uuid }, tenantId } = this.props;
     this.props.getAsnFromFlow(uuid, tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.uuid !== this.props.uuid) {
-      const { uuid, kind, tenantId } = nextProps;
-      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else if (result.data) {
-          this.setState({
-            trigger: this.triggerStepMap[result.data.trigger_name],
-          });
-        }
-      });
+    if (nextProps.node.uuid !== this.props.node.uuid) {
+      const { node: { uuid }, tenantId } = nextProps;
       this.props.getAsnFromFlow(uuid, tenantId);
     }
   }
   triggerStepMap = {
-    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[0].key]: 0,
-    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[1].key]: 1,
-    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[2].key]: 2,
-    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[3].key]: 3,
+    [NODE_BIZ_OBJECTS[this.props.node.kind][0].triggers[0].key]: 0,
+    [NODE_BIZ_OBJECTS[this.props.node.kind][0].triggers[1].key]: 1,
+    [NODE_BIZ_OBJECTS[this.props.node.kind][0].triggers[2].key]: 2,
+    [NODE_BIZ_OBJECTS[this.props.node.kind][0].triggers[3].key]: 3,
   }
   handlePreview = () => {
     const { asn } = this.props;
     if (!asn.asn_no) {
-      message.info('订单尚未创建');
+      message.info('收货通知尚未创建');
     } else {
       this.props.hideDock();
       this.props.showDock(asn.asn_no);
@@ -77,38 +54,56 @@ export default class CWMInboundNodeCard extends React.Component {
   handleInbound = () => {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.asn.inbound_no}`);
   }
+  handleNodeEnterTrigger = (ev) => {
+    ev.stopPropagation();
+    const { node: { uuid, kind } } = this.props;
+    this.props.manualEnterFlowInstance(uuid, kind);
+  }
   render() {
-    const { children, asn } = this.props;
+    const { children, asn, node } = this.props;
     if (!asn) {
-      return;
+      return null;
+    }
+    const extra = [];
+    if (asn.inbound_no) {
+      extra.push(<Tooltip title="进入详情" key="detail">
+        <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleInbound} />
+      </Tooltip>);
     }
     return (
-      <Card title={<span>{`ASN编号:${asn.asn_no || '尚未创建'}`}</span>} extra={asn.inbound_no &&
-        <Tooltip title="进入详情">
-          <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleInbound} />
-        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
-        onClick={this.handlePreview} disabled
+      <Card
+        title={<span>{`ASN编号:${asn.asn_no || '尚未创建'}`}</span>}
+        extra={extra}
+        bodyStyle={{ padding: 8, paddingBottom: 56 }}
+        onClick={this.handlePreview}
+        disabled
       >
         <Row>
           <Col span="8">
-            <InfoItem label="仓库"
+            <InfoItem
+              label="仓库"
               field={asn.whse_name}
             />
           </Col>
           <Col span="8">
-            <InfoItem label="货物属性"
+            <InfoItem
+              label="货物属性"
               field={asn.bonded ? '保税' : '非保税'}
             />
           </Col>
         </Row>
         {children}
+        <NodeFooterAction
+          node={node}
+          manualEnterFlowInstance={this.props.manualEnterFlowInstance}
+        />
         <div className="card-footer">
-          <Steps current={this.state.trigger} progressDot>
-            <Step title="通知接收" />
-            <Step title="入库操作" />
-            <Step title="部分收货" />
-            <Step title="收货完成" />
-          </Steps>
+          <NodeFooter
+            node={{ uuid: node.uuid, biz_no: node.biz_no }}
+            bizObjects={[NODE_BIZ_OBJECTS[node.kind][0].key]}
+            triggerMap={this.triggerStepMap}
+            stepDesc={['通知接收', '入库操作', '部分收货', '收货完成']}
+          />
         </div>
       </Card>
     );

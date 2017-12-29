@@ -2,21 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Button, Breadcrumb, Layout, Select } from 'antd';
+import { notification, Icon, Button, Breadcrumb, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
 import NavLink from 'client/components/NavLink';
-import { loadWorkspaceItems } from 'common/reducers/cmsTradeitem';
+import { loadWorkspaceItems, submitAudit } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import ModuleMenu from '../menu';
 import WsItemExportButton from './exportButton';
 import makeColumns from './commonCols';
-import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -37,12 +37,13 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
+    repos: state.cmsTradeitem.repos.filter(rep =>
+      rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
     workspaceLoading: state.cmsTradeitem.workspaceLoading,
     workspaceItemList: state.cmsTradeitem.workspaceItemList,
     invalidStat: state.cmsTradeitem.workspaceStat.invalid,
   }),
-  { loadWorkspaceItems }
+  { loadWorkspaceItems, submitAudit }
 )
 @connectNav({
   depth: 2,
@@ -57,14 +58,10 @@ export default class InvalidItemsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    filter: { repoId: '', status: 'invalid', name: '' },
+    filter: { repoId: null, status: 'invalid', name: '' },
   }
   componentDidMount() {
-    this.props.loadWorkspaceItems({
-      pageSize: this.props.workspaceItemList.pageSize,
-      current: 1,
-      filter: JSON.stringify(this.state.filter),
-    });
+    this.handleReload();
   }
   msg = formatMsg(this.props.intl)
   columns = makeColumns({
@@ -73,6 +70,7 @@ export default class InvalidItemsList extends React.Component {
     tradeCountries: this.props.tradeCountries,
     currencies: this.props.currencies,
     withRepo: true,
+    withRepoItem: true,
   }).concat([{
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -95,7 +93,7 @@ export default class InvalidItemsList extends React.Component {
     this.setState({ filter });
   }
   handleRepoSelect = (repoId) => {
-    const filter = { ...this.state.filer, repoId };
+    const filter = { ...this.state.filter, repoId };
     this.props.loadWorkspaceItems({
       pageSize: this.props.workspaceItemList.pageSize,
       current: 1,
@@ -103,8 +101,49 @@ export default class InvalidItemsList extends React.Component {
     });
     this.setState({ filter });
   }
+  handleReload = () => {
+    this.props.loadWorkspaceItems({
+      pageSize: this.props.workspaceItemList.pageSize,
+      current: 1,
+      filter: JSON.stringify(this.state.filter),
+    });
+  }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
+  }
+  handleLocalAudit = () => {
+    this.props.submitAudit({ auditor: 'local', status: 'invalid' }).then((result) => {
+      if (!result.error) {
+        if (result.data.feedback === 'submmitted') {
+          this.context.router.push('/clearance/tradeitem/workspace/pendings');
+        } else if (result.data.feedback === 'reload') {
+          this.props.loadWorkspaceItems({
+            pageSize: this.props.workspaceItemList.pageSize,
+            current: 1,
+            filter: JSON.stringify(this.state.filter),
+          });
+          notification.info({ title: '提示', description: '归类已提交审核' });
+        } else if (result.data.feedback === 'noop') {
+          notification.info({ title: '提示', description: '没有归类可提交审核' });
+        }
+      }
+    });
+  }
+  handleMasterAudit = () => {
+    this.props.submitAudit({ auditor: 'master', status: 'invalid' }).then((result) => {
+      if (!result.error) {
+        if (result.data.feedback === 'reload') {
+          this.props.loadWorkspaceItems({
+            pageSize: this.props.workspaceItemList.pageSize,
+            current: 1,
+            filter: JSON.stringify(this.state.filter),
+          });
+          notification.info({ title: '提示', description: '归类已提交审核' });
+        } else if (result.data.feedback === 'noop') {
+          notification.info({ title: '提示', description: '没有归类可提交主库审核' });
+        }
+      }
+    });
   }
   render() {
     const {
@@ -140,10 +179,17 @@ export default class InvalidItemsList extends React.Component {
       remotes: workspaceItemList,
     });
     const toolbarActions = (<span>
-      <Select showSearch placeholder="所属物料库" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
+      <Select
+        showSearch
+        placeholder="所属归类库"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+        onChange={this.handleRepoSelect}
       >
-        {repos.map(rep => <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
+        {repos.map(rep =>
+          <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={filter.name} />
     </span>);
@@ -171,15 +217,21 @@ export default class InvalidItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <WsItemExportButton {...this.state.filter} />
+              <WsItemExportButton {...this.state.filter} onUploaded={this.handleReload} />
               {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={workspaceLoading}
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={dataSource}
+              rowSelection={rowSelection}
+              rowKey="id"
+              loading={workspaceLoading}
               locale={{ emptyText: '当前没有失效的料件归类' }}
             />
           </Content>

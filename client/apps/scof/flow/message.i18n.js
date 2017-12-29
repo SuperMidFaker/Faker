@@ -206,6 +206,10 @@ const messages = defineMessages({
     id: 'scof.flow.biz.node.executor',
     defaultMessage: '执行者',
   },
+  multiBizInstance: {
+    id: 'scof.flow.biz.node.multi.instance',
+    defaultMessage: '多业务实例',
+  },
   bizProperties: {
     id: 'scof.flow.biz.properites',
     defaultMessage: '属性',

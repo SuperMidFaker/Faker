@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -18,6 +18,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import { format } from 'client/common/i18n/helpers';
+import { loadPartnersByTypes } from 'common/reducers/partner';
+import { CIQ_DECL_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import messages from './message.i18n';
 
@@ -25,6 +27,8 @@ const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 function ColumnSwitch(props) {
   const {
@@ -51,9 +55,10 @@ ColumnSwitch.propTypes = {
     ciqDeclList: state.cmsCiqDeclare.ciqDeclList,
     listFilter: state.cmsCiqDeclare.ciqListFilter,
     organizations: state.cmsCiqDeclare.ciqParams.organizations,
+    clients: state.partner.partners,
   }),
   {
-    loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams,
+    loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams, loadPartnersByTypes,
   }
 )
 @connectNav({
@@ -66,7 +71,10 @@ export default class CiqDeclList extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     ciqDeclList: PropTypes.shape({ pageSize: PropTypes.number }).isRequired,
-    listFilter: PropTypes.shape({ ieType: PropTypes.oneOf(['import', 'all', 'export']) }).isRequired,
+    listFilter: PropTypes.shape({
+      ieType: PropTypes.oneOf(['import', 'all', 'export']),
+      status: PropTypes.string,
+    }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -77,6 +85,10 @@ export default class CiqDeclList extends Component {
   componentDidMount() {
     this.handleTableLoad();
     this.props.loadCiqParams();
+    this.props.loadPartnersByTypes(
+      this.props.tenantId,
+      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance
+    );
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -84,7 +96,9 @@ export default class CiqDeclList extends Component {
     dataIndex: 'pre_entry_seq_no',
     width: 180,
     fixed: 'left',
-    render: (o, record) => (record.ciq_decl_no ? <span className="text-emphasis">{record.ciq_decl_no}</span> : <span className="text-normal">{o}</span>),
+    render: (o, record) => (record.ciq_decl_no ?
+      <span className="text-emphasis">{record.ciq_decl_no}</span> :
+      <span className="text-normal">{o}</span>),
   }, {
     title: <Tooltip title="申报项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -121,11 +135,18 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 120,
+    width: 150,
     render: (o, record) => (
-      <a onClick={ev => this.handlePreview(record, ev)}>
+      <a onClick={ev => this.showDelegationDock(record, ev)}>
         {o}
       </a>),
+  }, {
+    title: this.msg('client'),
+    dataIndex: 'i_e_type',
+    width: 180,
+    render: (o, record) => (o === 0 ?
+      <TrimSpan text={record.ciq_consignee_name_cn} maxLen={12} /> :
+      <TrimSpan text={record.ciq_consignor_name_cn} maxLen={12} />),
   }, {
     title: this.msg('custOrderNo'),
     width: 180,
@@ -138,7 +159,7 @@ export default class CiqDeclList extends Component {
     render: (o) => {
       switch (o) {
         case 0:
-          return <Badge status="default" text="已创建" />;
+          return <Badge status="default" text="待申报" />;
         case 1:
           return <Badge status="processing" text="报检受理" />;
         case 2:
@@ -152,40 +173,16 @@ export default class CiqDeclList extends Component {
       }
     },
   }, {
-    title: this.msg('consigneeCname'),
-    dataIndex: 'ciq_consignee_name_cn',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
-  }, {
-    title: this.msg('consignorCname'),
-    dataIndex: 'ciq_consignor_name_cn',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
-  }, {
     title: this.msg('orgCode'),
     dataIndex: 'ciq_org_code',
-    width: 100,
+    width: 150,
     render: o => this.props.organizations.find(org => org.org_code === o) &&
     this.props.organizations.find(org => org.org_code === o).org_name,
   }, {
     title: this.msg('ciqDeclDate'),
     dataIndex: 'ciq_decl_date',
     width: 120,
-    render: o => (o ? moment(0).format('MM.DD HH:mm') : '-'),
-  /*
-  }, {
-    title: this.msg('ciqQualityInsp'),
-    dataIndex: 'ciq_quality_inspect',
-    width: 80,
-    render: (o, record) =>
-      <ColumnSwitch field="pzcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
-  }, {
-    title: this.msg('ciqApInsp'),
-    dataIndex: 'ciq_ap_inspect',
-    width: 100,
-    render: (o, record) =>
-      <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
-  */
+    render: o => (o ? moment(o).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('declRegNo'),
     dataIndex: 'agent_name',
@@ -193,7 +190,7 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('报检人员'),
     dataIndex: 'agent_ciq_person',
-    width: 180,
+    width: 120,
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -202,7 +199,7 @@ export default class CiqDeclList extends Component {
     render: (o, record) => (
       <span>
         <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />
-        <RowAction onClick={this.exportCiqDecl} icon="file-excel" tooltip="九城商检导出" row={record} />
+        <RowAction onClick={this.handleExportNinetown} icon="file-excel" tooltip="九城商检导出" row={record} />
       </span>),
   }]
   dataSource = new DataTable.DataSource({
@@ -228,24 +225,6 @@ export default class CiqDeclList extends Component {
     },
     remotes: this.props.ciqDeclList,
   })
-  handlePreview = (record, ev) => {
-    ev.stopPropagation();
-    this.props.showPreviewer(record.delg_no, 'ciqDecl');
-  }
-  handleEditChange = (record, field, checked) => {
-    this.props.setInspect({
-      preEntrySeqNo: record.pre_entry_seq_no,
-      delgNo: record.delg_no,
-      field,
-      enabled: checked,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleTableLoad();
-      }
-    });
-  }
   handleTableLoad = (currentPage, filter) => {
     this.props.loadCiqDecls({
       tenantId: this.props.tenantId,
@@ -262,12 +241,6 @@ export default class CiqDeclList extends Component {
     const ioPart = row.i_e_type === 0 ? 'in' : 'out';
     const link = `/clearance/ciqdecl/${ioPart}/${row.pre_entry_seq_no}`;
     this.context.router.push(link);
-  }
-  handleCiqNoFill = (row) => {
-    this.props.openCiqModal({
-      entryHeadId: row.id,
-      delgNo: row.delg_no,
-    });
   }
   handleSearch = (searchVal) => {
     const newFilters = {};
@@ -288,8 +261,24 @@ export default class CiqDeclList extends Component {
     const newFilters = { ...listFilter, ieType: e.target.value };
     this.handleTableLoad(ciqDeclList.current, newFilters);
   }
-  exportCiqDecl = (row) => {
+  handleExportNinetown = (row) => {
     window.open(`${API_ROOTS.default}v1/cms/clearance/ciqdecl/${createFilename('ciqdecl')}.xlsx?preEntrySeqNo=${row.pre_entry_seq_no}`);
+  }
+  handleStatusChange = (value) => {
+    const filters = { ...this.props.listFilter, status: value };
+    this.handleTableLoad(this.props.ciqDeclList.current, filters);
+  }
+  handleClientSelectChange = (value) => {
+    const filters = { ...this.props.listFilter, clientPid: value };
+    this.handleTableLoad(this.props.ciqDeclList.current, filters);
+  }
+  handleDateRangeChange = (value, dateString) => {
+    const filters = { ...this.props.listFilter, startTime: dateString[0], endTime: dateString[1] };
+    this.handleTableLoad(this.props.ciqDeclList.current, filters);
+  }
+  showDelegationDock = (record, ev) => {
+    ev.stopPropagation();
+    this.props.showPreviewer(record.delg_no, 'shipment');
   }
   render() {
     const { ciqDeclList, listFilter } = this.props;
@@ -300,8 +289,43 @@ export default class CiqDeclList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const clients = [{
+      name: '全部委托单位',
+      partner_id: -1,
+    }].concat(this.props.clients);
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={listFilter.status}
+        onChange={this.handleStatusChange}
+      >
+        <Option value="all" key="all">全部状态</Option>
+        {CIQ_DECL_STATUS.map(item => (
+          <Option key={item.value} value={item.value}>
+            {item.text}
+          </Option>))}
+      </Select>
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
+        value={listFilter.clientPid}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+      >
+        {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}>
+          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+        </Option>))}
+      </Select>
+      <RangePicker
+        defaultValue={[listFilter.startTime, listFilter.endTime]}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+        format="YYYY/MM/DD"
+      />
     </span>);
     return (
       <Layout>

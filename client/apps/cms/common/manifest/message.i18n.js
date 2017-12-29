@@ -413,6 +413,10 @@ export default defineMessages({
     id: 'cms.manifest.modal.sort.principle',
     defaultMessage: '排序原则',
   },
+  docuTemplate: {
+    id: 'cms.manifest.modal.docu.template',
+    defaultMessage: '单据模板',
+  },
   conditionalMerge: {
     id: 'cms.manifest.modal.conditional.merge',
     defaultMessage: '条件归并:',

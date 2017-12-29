@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Col, Button, Popconfirm, Row, message, Layout } from 'antd';
+import { editDelegation } from 'common/reducers/cmsDelegation';
 import connectNav from 'client/common/decorators/connect-nav';
+import { format } from 'client/common/i18n/helpers';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
 import UploadGroup from './forms/attachmentUpload';
-import { editDelegation } from 'common/reducers/cmsDelegation';
-import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
-import { format } from 'client/common/i18n/helpers';
+
+
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
@@ -100,7 +102,7 @@ export default class EditDelegation extends Component {
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('delegationManagement')}
+              {this.msg('delgManifest')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('modifyDelegation')}

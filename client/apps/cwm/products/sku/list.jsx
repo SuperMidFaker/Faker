@@ -2,25 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Breadcrumb, Button, Collapse, Input, Layout, Select, message, Table } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import RowAction from 'client/components/RowAction';
+import PageHeader from 'client/components/PageHeader';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, delSku, openApplyPackingRuleModal } from 'common/reducers/cwmSku';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
-import PageHeader from 'client/components/PageHeader';
-import ImportDataPanel from 'client/components/ImportDataPanel';
 import { formatMsg } from '../message.i18n';
-import moment from 'moment';
 
 const { Content, Sider } = Layout;
-const Search = Input.Search;
-const Option = Select.Option;
-const Panel = Collapse.Panel;
+const { Search } = Input;
+const { Option } = Select;
+const { Panel } = Collapse;
 
 @injectIntl
 @connect(
@@ -37,7 +37,12 @@ const Panel = Collapse.Panel;
     loginId: state.account.loginId,
   }),
   {
-    setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal,
+    setCurrentOwner,
+    syncTradeItemSkus,
+    loadOwnerSkus,
+    switchDefaultWhse,
+    delSku,
+    openApplyPackingRuleModal,
   }
 )
 @connectNav({
@@ -197,7 +202,8 @@ export default class CWMSkuList extends React.Component {
   }
   handleOwnerSearch = (value) => {
     if (value) {
-      const towners = this.state.tableOwners.filter(to => to.partner_code.indexOf(value) > 0 || to.name.indexOf(value) > 0);
+      const towners = this.state.tableOwners.filter(to =>
+        to.partner_code.indexOf(value) > 0 || to.name.indexOf(value) > 0);
       this.setState({ tableOwners: towners });
       if (towners.length === 0) {
         this.props.setCurrentOwner({});
@@ -228,7 +234,7 @@ export default class CWMSkuList extends React.Component {
       .then((result) => {
         if (result.error) {
           if (result.error.message === 'NO_OWNER_REPO') {
-            message.error('该客户暂无企业物料库');
+            message.error('该客户暂无商品归类库');
           }
         } else {
           this.props.loadOwnerSkus({
@@ -303,8 +309,13 @@ export default class CWMSkuList extends React.Component {
               <Search placeholder={this.msg('ownerSearch')} onSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={this.ownerColumns} showHeader={false} dataSource={this.state.tableOwners} rowKey="id"
-                rowClassName={row => row.id === this.props.owner.id ? 'table-row-selected' : ''}
+              <Table
+                size="middle"
+                columns={this.ownerColumns}
+                showHeader={false}
+                dataSource={this.state.tableOwners}
+                rowKey="id"
+                rowClassName={row => (row.id === this.props.owner.id ? 'table-row-selected' : '')}
                 onRow={record => ({
                   onClick: () => { this.handleOwnerSelect(record); },
                 })}
@@ -340,9 +351,17 @@ export default class CWMSkuList extends React.Component {
             </PageHeader.Actions>}
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
-              scroll={{ x: 1400 }} loading={loading} toolbarActions={toolbarActions} bulkActions={bulkActions}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              columns={this.columns}
+              dataSource={this.dataSource}
+              rowSelection={rowSelection}
+              rowKey="id"
+              scroll={{ x: 1400 }}
+              loading={loading}
+              toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
             />
           </Content>
         </Layout>

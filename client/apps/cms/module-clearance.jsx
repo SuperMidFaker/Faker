@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
+import { format } from 'client/common/i18n/helpers';
+import { switchNavOption } from 'common/reducers/cmsPreferences';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import messages from './message.i18n';
-import { format } from 'client/common/i18n/helpers';
-import { switchNavOption } from 'common/reducers/cmsPreferences';
+
 
 const formatMsg = format(messages);
 
@@ -35,15 +36,15 @@ export default class Clearance extends React.Component {
   componentWillMount() {
     const { privileges, intl } = this.props;
     const linkMenus = [];
-    let navOption = 'CC';
+    let navOpt = 'CC';
     if (typeof window !== 'undefined' && window.localStorage) {
-      navOption = this.props.navOption;
+      navOpt = this.props.navOption;
       const navtopt = window.localStorage.getItem('cms-nav-option');
       if (navtopt === null) {
-        window.localStorage.setItem('cms-nav-option', navOption);
+        window.localStorage.setItem('cms-nav-option', navOpt);
       } else {
-        navOption = navtopt;
-        this.props.switchNavOption(navOption);
+        navOpt = navtopt;
+        this.props.switchNavOption(navOpt);
       }
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
@@ -64,7 +65,7 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'delegation'),
       });
     }
-    if (navOption === 'CC' || navOption === 'ALL') {
+    if (navOpt === 'CC' || navOpt === 'ALL') {
       linkMenus.push({
         single: true,
         key: 'cms-customs',
@@ -80,7 +81,7 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'ciqDecl'),
       });
     }
-    if (navOption === 'IE' || navOption === 'ALL') {
+    if (navOpt === 'IE' || navOpt === 'ALL') {
       linkMenus.push({
         single: false,
         key: 'cms-import',
@@ -116,30 +117,23 @@ export default class Clearance extends React.Component {
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
       linkMenus.push({
-        single: true,
-        key: 'cms-tradeitem',
+        single: false,
+        key: 'cms-compliance',
         icon: 'logixon icon-resource',
-        path: '/clearance/tradeitem',
-        text: formatMsg(intl, 'tradeItem'),
-      });
-    }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
-      linkMenus.push({
-        single: true,
-        key: 'cms-license',
-        disabled: true,
-        icon: 'logixon icon-license',
-        path: '/clearance/license',
-        text: formatMsg(intl, 'license'),
-      });
-    }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
-      linkMenus.push({
-        single: true,
-        key: 'cms-manual',
-        icon: 'logixon icon-manual',
-        path: '/clearance/manual',
-        text: formatMsg(intl, 'manual'),
+        text: formatMsg(intl, 'compliance'),
+        sublinks: [{
+          key: 'cms-compliance-0',
+          path: '/clearance/tradeitem',
+          text: formatMsg(intl, 'tradeItem'),
+        }, {
+          key: 'cms-compliance-2',
+          path: '/clearance/permit',
+          text: formatMsg(intl, 'permit'),
+        }, {
+          key: 'cms-compliance-3',
+          path: '/clearance/manual',
+          text: formatMsg(intl, 'manual'),
+        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
@@ -167,8 +161,8 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'settings'),
         sublinks: [{
           key: 'cms-settings-0',
-          path: '/clearance/settings/resources',
-          text: formatMsg(intl, 'resources'),
+          path: '/clearance/settings/clients',
+          text: formatMsg(intl, 'clients'),
         }, {
           key: 'cms-settings-1',
           path: '/clearance/settings/brokers',
@@ -332,7 +326,11 @@ export default class Clearance extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout
+        links={this.state.linkMenus}
+        childContent={this.props.children}
+        location={this.props.location}
+      />
     );
   }
 }

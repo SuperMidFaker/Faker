@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Layout, Input, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
+import { Avatar, Badge, Breadcrumb, Button, DatePicker, Layout, Input, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
+import UserAvatar from 'client/components/UserAvatar';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE,
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -34,7 +34,6 @@ const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
-const { OptGroup } = Select;
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 
@@ -43,6 +42,7 @@ const { Search } = Input;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    avatar: state.account.profile.avatar,
     loginName: state.account.username,
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
@@ -99,7 +99,6 @@ export default class DelegationList extends Component {
   }
   state = {
     selectedRowKeys: [],
-    rightSiderCollapsed: true,
     filterName: null,
   }
   componentDidMount() {
@@ -125,7 +124,7 @@ export default class DelegationList extends Component {
     if (nextProps.preStatus !== this.props.preStatus) {
       if (nextProps.preStatus === 'delgDispCancel') {
         const { delegation } = this.props;
-        this.handleDelgAssignRecall(delegation);
+        this.handleDelegationRecall(delegation);
       }
     }
   }
@@ -162,11 +161,11 @@ export default class DelegationList extends Component {
     width: 150,
     fixed: 'left',
     render: (o, record) => (
-      <a onClick={ev => this.handlePreview(o, record, ev)}>
+      <a onClick={ev => this.showDelegationDock(o, record, ev)}>
         {o}
       </a>),
   }, {
-    title: this.msg('customer'),
+    title: this.msg('client'),
     width: 180,
     dataIndex: 'send_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
@@ -273,29 +272,18 @@ export default class DelegationList extends Component {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('operatedBy'),
-    width: 80,
-    dataIndex: 'recv_login_name',
+    width: 120,
+    dataIndex: 'recv_login_id',
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
     title: this.msg('lastActTime'),
     dataIndex: 'last_act_time',
     render: (o, record) => (record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-'),
   }]
-  toggleRightSider = () => {
-    this.setState({
-      rightSiderCollapsed: !this.state.rightSiderCollapsed,
-    });
-  }
-  handleCreateBtnClick = () => {
+  handleCreate = () => {
     this.context.router.push('/clearance/delegation/create');
   }
-  handlePreview = (delgNo, record, ev) => {
-    ev.stopPropagation();
-    let tabKey = 'customsDecl';
-    if (record.status < 1) {
-      tabKey = 'basic';
-    }
-    this.props.showPreviewer(delgNo, tabKey);
-  }
+
   handleDelgListLoad = (currentPage, filter) => {
     const { listFilter, delegationlist: { pageSize, current } } = this.props;
     this.props.loadDelegationList({
@@ -308,25 +296,7 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleCiqListLoad = (currentPage, filter) => {
-    const {
-      tenantId, ietype, listFilter, loginId,
-      delegationlist: { pageSize, current },
-    } = this.props;
-    this.props.loadCiqTable({
-      ietype,
-      filter: JSON.stringify(filter || listFilter),
-      tenantId,
-      loginId,
-      pageSize,
-      currentPage: currentPage || current,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      }
-    });
-  }
-  handleDelegationFilter = (ev) => {
+  handleStatusFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
@@ -343,14 +313,6 @@ export default class DelegationList extends Component {
     this.handleDelgListLoad(1, filter);
     this.saveFilters({ ietype: ev.target.value });
   }
-  handleCiqFilter = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.setState({ selectedRowKeys: [] });
-    this.handleCiqListLoad(1, filter);
-  }
   handleManifestCreate = (row) => {
     const { loginId, loginName } = this.props;
     this.props.ensureManifestMeta({ delg_no: row.delg_no, loginId, loginName }).then((result) => {
@@ -363,6 +325,15 @@ export default class DelegationList extends Component {
         this.context.router.push(`${link}${seqno}`);
       }
     });
+  }
+  handleManifestDetail = (record) => {
+    if (record.status > CMS_DELEGATION_STATUS.accepted) {
+      if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
+        this.handleManifestMake(record);
+      } else {
+        this.handleManifestView(record);
+      }
+    }
   }
   handleManifestMake = (row) => {
     const clearType = row.i_e_type === 0 ? 'import' : 'export';
@@ -391,7 +362,7 @@ export default class DelegationList extends Component {
   handleDelegationAssign = (row) => {
     this.props.showDispModal(row.delg_no, this.props.tenantId);
   }
-  handleDelgAssignRecall = (row) => {
+  handleDelegationRecall = (row) => {
     this.props.delgAssignRecall(row.delg_no, this.props.tenantId).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -410,7 +381,7 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleDelgDel = (delgNo) => {
+  handleDelegationDelete = (delgNo) => {
     this.props.delDelg(delgNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -419,10 +390,8 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleViewChange = (value) => {
-    const filter = { ...this.props.listFilter, viewStatus: value };
-    this.handleDelgListLoad(1, filter);
-    this.saveFilters({ viewStatus: value });
+  handleSearchChange = (ev) => {
+    this.setState({ filterName: ev.target.value });
   }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] };
@@ -437,31 +406,30 @@ export default class DelegationList extends Component {
     const filter = { ...this.props.listFilter, clientView };
     this.handleDelgListLoad(1, filter);
   }
-  handleSearchChange = (ev) => {
-    this.setState({ filterName: ev.target.value });
-  }
-  handleSearch = (searchVal) => {
-    const filters = { ...this.props.listFilter, filterNo: searchVal };
-    this.handleDelgListLoad(1, filters);
-  }
-  handleDetail = (record) => {
-    if (record.status > CMS_DELEGATION_STATUS.accepted) {
-      if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
-        this.handleManifestMake(record);
-      } else {
-        this.handleManifestView(record);
-      }
-    }
-  }
-  handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [] });
+  handleExecutorChange = (value) => {
+    const filter = { ...this.props.listFilter, viewStatus: value };
+    this.handleDelgListLoad(1, filter);
+    this.saveFilters({ viewStatus: value });
   }
   handleDateRangeChange = (value, dateString) => {
     const filters = { ...this.props.listFilter, acptDate: dateString };
     this.handleDelgListLoad(1, filters);
   }
+  handleSearch = (searchVal) => {
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
+    this.handleDelgListLoad(1, filters);
+  }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
+  showDelegationDock = (delgNo, record, ev) => {
+    ev.stopPropagation();
+    this.props.showPreviewer(delgNo, 'shipment');
+  }
   render() {
-    const { delegationlist, listFilter, tenantId } = this.props;
+    const {
+      delegationlist, listFilter, tenantId, avatar, loginName,
+    } = this.props;
     const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadDelegationList(params),
@@ -504,7 +472,7 @@ export default class DelegationList extends Component {
       [clientPid] = listFilter.clientView.partnerIds;
     }
     const clients = [{
-      name: '全部客户',
+      name: '全部委托单位',
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
@@ -532,12 +500,10 @@ export default class DelegationList extends Component {
         value={listFilter.viewStatus}
         style={{ width: 160 }}
         showSearch={false}
-        onChange={this.handleViewChange}
+        onChange={this.handleExecutorChange}
       >
-        <OptGroup label="常用视图">
-          <Option value="all">全部委托</Option>
-          <Option value="my">我负责的委托</Option>
-        </OptGroup>
+        <Option value="all"><Avatar size="small" icon="team" /> 全部制单人员</Option>
+        <Option value="my">{avatar ? <Avatar size="small" src={avatar} /> : <Avatar size="small" icon="user" />} {loginName}</Option>
       </Select>
       <RangePicker
         value={dateVal}
@@ -568,7 +534,7 @@ export default class DelegationList extends Component {
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="delete">
-                  <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel(record.delg_no)}>
+                  <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelegationDelete(record.delg_no)}>
                     <a> <Icon type="delete" /> {this.msg('delete')}</a>
                   </Popconfirm>
                 </Menu.Item>
@@ -601,7 +567,7 @@ export default class DelegationList extends Component {
             extraOp = (
               <RowAction
                 confirm="你确定撤回分配吗?"
-                onConfirm={this.handleDelgAssignRecall}
+                onConfirm={this.handleDelegationRecall}
                 row={record}
                 label={<Icon type="rollback" />}
                 tooltip={this.msg('delgRecall')}
@@ -626,7 +592,7 @@ export default class DelegationList extends Component {
             dispatchOverlay = (
               <Menu>
                 <Menu.Item>
-                  <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)}>
+                  <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelegationRecall(record)}>
                     <a role="presentation"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
                   </Popconfirm>
                 </Menu.Item>
@@ -667,18 +633,18 @@ export default class DelegationList extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('delegationManagement')}
+                {this.msg('delgManifest')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter}>
               <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="import">{this.msg('import')}</RadioButton>
-              <RadioButton value="export">{this.msg('export')}</RadioButton>
+              <RadioButton value="import">{this.msg('filterImport')}</RadioButton>
+              <RadioButton value="export">{this.msg('filterExport')}</RadioButton>
             </RadioGroup>
             <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter}>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
               <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
@@ -687,8 +653,7 @@ export default class DelegationList extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <PageHint />
-            <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus">
+            <Button type="primary" onClick={this.handleCreate} icon="plus">
               {this.msg('createDelegation')}
             </Button>
           </PageHeader.Actions>
@@ -705,7 +670,7 @@ export default class DelegationList extends Component {
             loading={delegationlist.loading}
             onRow={record => ({
               onClick: () => {},
-              onDoubleClick: () => { this.handleDetail(record); },
+              onDoubleClick: () => { this.handleManifestDetail(record); },
               onContextMenu: () => {},
               onMouseEnter: () => {},
               onMouseLeave: () => {},

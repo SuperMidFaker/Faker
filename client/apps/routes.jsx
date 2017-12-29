@@ -52,17 +52,19 @@ import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
-import * as CMSManual from './cms/manual';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
+import * as CMSClients from './cms/settings/clients';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
 import * as CMSTradeItemRepo from './cms/tradeitem/repo';
 import * as CMSTradeItemRepoItem from './cms/tradeitem/repo/item';
 import * as CMSTradeItemTask from './cms/tradeitem/task';
 import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
+import * as CMSManual from './cms/manual';
+import * as CMSPermit from './cms/permit';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -90,9 +92,6 @@ import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbon
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
-import * as SCVCustomsDecl from './scv/clearance/customsdecl';
-import * as SCVDeclManifest from './scv/clearance/manifest';
-import * as SCVClassification from './scv/compliance/classification';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
@@ -333,6 +332,11 @@ export default(store) => {
               <IndexRoute component={CMSManual.List} />
               <Route path=":id" component={CMSManual.Detail} />
             </Route>
+            <Route path="permit">
+              <IndexRoute component={CMSPermit.List} />
+              <Route path="add" component={CMSPermit.Add} />
+              <Route path=":id" component={CMSPermit.Detail} />
+            </Route>
             <Route path="billing">
               <IndexRedirect to="/clearance/billing/expense" />
               <Route path="expense" component={CMSExpense.List} />
@@ -358,25 +362,26 @@ export default(store) => {
               </Route>
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/clearance/settings/resources" />
               <Route path="brokers" component={CMSBrokers.List} />
-              <Route path="preferences" component={CMSSettings.Preferences} />
-              <Route path="resources">
-                <IndexRoute component={CMSSettings.Resources} />
-                <Route path="templates/invoice/:id" component={CMSSettings.InvoiceTemplate} />
-                <Route path="templates/contract/:id" component={CMSSettings.ContractTemplate} />
-                <Route path="templates/packinglist/:id" component={CMSSettings.PackingListTemplate} />
+              <Route path="clients">
+                <IndexRoute component={CMSClients.List} />
+                <Route path="templates/invoice/:id" component={CMSClients.InvoiceTemplate} />
+                <Route path="templates/contract/:id" component={CMSClients.ContractTemplate} />
+                <Route path="templates/packinglist/:id" component={CMSClients.PackingListTemplate} />
               </Route>
+              <Route path="preferences" component={CMSSettings.Preferences} />
             </Route>
             <Route path="tradeitem">
               <IndexRedirect to="/clearance/tradeitem/repo" />
               <Route path="repo">
                 <IndexRoute component={CMSTradeItemRepo.List} />
-                <Route path=":repoId" component={CMSTradeItemRepo.Content} />
-                <Route path="item">
-                  <Route path="add" component={CMSTradeItemRepoItem.Add} />
-                  <Route path="edit/:id" component={CMSTradeItemRepoItem.Edit} />
-                  <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
+                <Route path=":repoId">
+                  <IndexRoute component={CMSTradeItemRepo.Content} />
+                  <Route path="item">
+                    <Route path="add" component={CMSTradeItemRepoItem.Add} />
+                    <Route path="edit/:id" component={CMSTradeItemRepoItem.Edit} />
+                    <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
+                  </Route>
                 </Route>
               </Route>
               <Route path="task">
@@ -400,19 +405,6 @@ export default(store) => {
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
-            <Route path="clearance">
-              <Route path="manifest" component={SCVDeclManifest.List} />
-              <Route path="decl" component={SCVCustomsDecl.List} />
-            </Route>
-            <Route path="compliance">
-              <Route path="classification">
-                <IndexRoute component={SCVClassification.List} />
-                <Route path="create" component={SCVClassification.Create} />
-                <Route path="edit/:id" component={SCVClassification.Edit} />
-                <Route path="master" component={SCVClassification.Master} />
-                <Route path="slave" component={SCVClassification.Slave} />
-              </Route>
-            </Route>
           </Route>
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
             <IndexRedirect to="/cwm/dashboard" />

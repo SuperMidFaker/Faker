@@ -1,56 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
+import { Card, Col, Row, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadOrderNodesTriggers, hideDock } from 'common/reducers/crmOrders';
+import { hideDock, manualEnterFlowInstance } from 'common/reducers/crmOrders';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
+import NodeFooter from './nodeFooter';
+import NodeFooterAction from './nodeFooterAction';
 
-const Step = Steps.Step;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
   }),
-  { loadOrderNodesTriggers, loadShipmtDetail, hideDock }
+  {
+    loadShipmtDetail, hideDock, manualEnterFlowInstance,
+  }
 )
 export default class TMSNodeCard extends React.Component {
   static propTypes = {
-    name: PropTypes.string.isRequired,
-    children: PropTypes.any,
-    consignerName: PropTypes.string,
-    consigneeName: PropTypes.string,
-    trsMode: PropTypes.string,
-    uuid: PropTypes.string,
-    in_degree: PropTypes.number.isRequired,
-    pod: PropTypes.bool.isRequired,
-  }
-  state = {
-    trigger: -1,
-  }
-  componentWillMount = () => {
-    const { uuid } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then((result) => {
-      if (!result.data) return;
-      this.setState({
-        trigger: this.triggerStepMap[result.data.trigger_name],
-      });
-    });
-  }
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.uuid !== this.props.uuid) {
-      this.props.loadOrderNodesTriggers(nextProps.uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then((result) => {
-        if (!result.data) {
-          this.setState({
-            trigger: -1,
-          });
-          return;
-        }
-        this.setState({
-          trigger: this.triggerStepMap[result.data.trigger_name],
-        });
-      });
-    }
+    children: PropTypes.arrayOf(PropTypes.node),
+    node: PropTypes.shape({
+      uuid: PropTypes.string,
+      name: PropTypes.string.isRequired,
+      consignee_name: PropTypes.string,
+      consigner_name: PropTypes.string,
+      trs_mode: PropTypes.string,
+      in_degree: PropTypes.number.isRequired,
+      pod: PropTypes.bool,
+    }),
   }
   triggerStepMap = {
     [NODE_BIZ_OBJECTS.tms[0].triggers[1].key]: 0,
@@ -60,33 +38,43 @@ export default class TMSNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS.tms[0].triggers[5].key]: 4,
   }
   handleShipmtPreview = (No) => {
-    this.props.loadShipmtDetail(No, this.props.tenantId, 'sr', 'order').then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      } else {
-        this.props.hideDock();
-      }
-    });
+    if (No) {
+      this.props.loadShipmtDetail(No, this.props.tenantId, 'sr', 'order').then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          this.props.hideDock();
+        }
+      });
+    }
+  }
+  handleNodeEnterTrigger = (ev) => {
+    ev.stopPropagation();
+    const { node: { uuid, kind } } = this.props;
+    this.props.manualEnterFlowInstance(uuid, kind);
   }
   render() {
     const {
-      name, children, consignerName, consigneeName, trsMode, in_degree: indegree, pod,
+      children, node: {
+        name, consigner_name: consignerName, consignee_name: consigneeName, trs_mode: trsMode, kind,
+        pod, uuid, biz_no: bizno,
+      },
     } = this.props;
-    const extra = indegree === 0 ?
-      (<Tooltip title="进入详情">
-        <Button size="small" shape="circle" icon="right" />
-      </Tooltip>) : null;
     const steps = [
-      <Step title="接单" key="accept" />,
-      <Step title="调度" key="dispatch" />,
-      <Step title="提货" key="pickup" />,
-      <Step title="送货" key="deliver" />,
+      '接单',
+      '调度',
+      '提货',
+      '送货',
     ];
     if (pod) {
-      steps.push(<Step title="回单" key="pod" />);
+      steps.push('回单');
     }
     return (
-      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handleShipmtPreview(this.props.uuid)}>
+      <Card
+        title={`${name}${bizno || ' 尚未进入节点'}`}
+        bodyStyle={{ padding: 8, paddingBottom: 56 }}
+        onClick={() => this.handleShipmtPreview(bizno)}
+      >
         <Row>
           <Col span="8">
             <InfoItem label="发货方" field={consignerName} />
@@ -99,10 +87,17 @@ export default class TMSNodeCard extends React.Component {
           </Col>
         </Row>
         {children}
+        <NodeFooterAction
+          node={this.props.node}
+          manualEnterFlowInstance={this.props.manualEnterFlowInstance}
+        />
         <div className="card-footer">
-          <Steps current={this.state.trigger} progressDot>
-            {steps}
-          </Steps>
+          <NodeFooter
+            node={{ uuid, biz_no: bizno }}
+            bizObjects={[NODE_BIZ_OBJECTS[kind][0].key]}
+            triggerMap={this.triggerStepMap}
+            stepDesc={steps}
+          />
         </div>
       </Card>
     );

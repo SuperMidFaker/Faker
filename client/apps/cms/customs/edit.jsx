@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsManifest';
-import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog } from 'common/reducers/cmsDeclare';
+import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog, uploadDecl } from 'common/reducers/cmsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { format } from 'client/common/i18n/helpers';
@@ -76,6 +76,7 @@ function fetchData({ dispatch, params, state }) {
     showPreviewer,
     toggleDeclMsgModal,
     showDeclLog,
+    uploadDecl,
   }
 )
 @connectFetch()(fetchData)
@@ -209,6 +210,8 @@ export default class CustomsDeclEditor extends React.Component {
       this.handleEpRecvXmlView(this.props.head.ep_receipt_filename);
     } else if (ev.key === 'log') {
       this.props.showDeclLog();
+    } else if (ev.key === 'file') {
+      window.open(this.props.head.ccd_file);
     }
   }
   handleEpSendXmlView = (filename) => {
@@ -240,12 +243,24 @@ export default class CustomsDeclEditor extends React.Component {
     }
   }
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(delgNo, 'customsDecl');
+    this.props.showPreviewer(delgNo, 'shipment');
+  }
+  handleUploaded = (data) => {
+    this.props.uploadDecl(data).then((result) => {
+      if (!result.error) {
+        this.props.loadEntry(
+          this.props.params.billseqno,
+          this.props.params.preEntrySeqNo,
+          this.props.tenantId,
+        );
+      }
+    });
   }
   render() {
     const {
       params, form, head, bodies, billMeta,
     } = this.props;
+    const me = this;
     let filterProducts = [];
     if (params.ietype === 'import') {
       filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
@@ -260,6 +275,26 @@ export default class CustomsDeclEditor extends React.Component {
         <Menu.Item key="skeleton">套打格式</Menu.Item>
       </Menu>
     );
+    const uploadProps = {
+      action: `${API_ROOTS.default}v1/upload/img/`,
+      multiple: false,
+      showUploadList: false,
+      withCredentials: true,
+      onChange(info) {
+        if (info.file.response && info.file.response.status === 200) {
+          me.handleUploaded({
+            delg_no: head.delg_no,
+            pre_entry_seq_no: head.pre_entry_seq_no,
+            doc_code: 'CCD',
+            doc_no: head.entry_id,
+            doc_name: info.file.name,
+            url: info.file.response.data,
+            doc_type: info.file.type,
+          });
+          message.success('上传成功');
+        }
+      },
+    };
     const moreMenu = (
       <Menu onClick={this.handleMoreMenuClick}>
         { head.status === CMS_DECL_STATUS.proposed.value &&
@@ -276,7 +311,11 @@ export default class CustomsDeclEditor extends React.Component {
         <Menu.Divider />
         { head.ccd_file ?
           <Menu.Item key="file"><Icon type="file" /> 查看报关单</Menu.Item> :
-          <Menu.Item key="upload"><Icon type="upload" /> 上传报关单</Menu.Item>
+          <Menu.Item key="upload">
+            <Upload {...uploadProps}>
+              <Icon type="upload" /> 上传报关单
+            </Upload>
+          </Menu.Item>
         }
         <Menu.Divider />
         <Menu.Item key="log"><Icon type="solution" /> 操作记录</Menu.Item>
@@ -303,7 +342,7 @@ export default class CustomsDeclEditor extends React.Component {
     tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
       <AttachedDocsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
-    tabs.push(<TabPane tab="申报商品明细" key="manifestDetails" head={head}>
+    tabs.push(<TabPane tab="申报清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     if (filterProducts.length > 0) {

@@ -6,13 +6,13 @@ const messages = defineMessages({
     id: 'cms.settings',
     defaultMessage: '设置',
   },
-  resources: {
-    id: 'cms.settings.resources',
-    defaultMessage: '客户设置',
+  clients: {
+    id: 'cms.settings.clients',
+    defaultMessage: '委托方设置',
   },
   brokers: {
     id: 'cms.settings.brokers',
-    defaultMessage: '代理设置',
+    defaultMessage: '申报代理',
   },
   preferences: {
     id: 'cms.settings.preferences',

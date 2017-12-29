@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'CLOSE_ORDER', 'CLOSE_ORDER_SUCCEED', 'CLOSE_ORDER_FAIL',
   'LOAD_FLOWASN', 'LOAD_FLOWASN_SUCCEED', 'LOAD_FLOWASN_FAIL',
   'LOAD_FLOWSO', 'LOAD_FLOWSO_SUCCEED', 'LOAD_FLOWSO_FAIL',
+  'MANUAL_ENTFI', 'MANUAL_ENTFI_SUCCEED', 'MANUAL_ENTFI_FAIL',
 ]);
 
 const initialState = {
@@ -76,7 +77,7 @@ const initialState = {
     data: [],
   },
   orderFilters: { progress: 'all', transfer: 'all', partnerId: '' },
-  kinds: [],
+  orderBizObjects: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -117,6 +118,7 @@ export default function reducer(state = initialState, action) {
           tabKey: action.tabKey,
           ...action.result.data,
         },
+        orderBizObjects: [],
       };
     }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
@@ -137,7 +139,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_NODES_SUCCEED: {
       const dockInstMap = {};
       action.result.data.forEach((inst) => { dockInstMap[inst.uuid] = {}; });
-      return { ...state, kinds: action.result.data, dockInstMap };
+      return { ...state, orderBizObjects: action.result.data, dockInstMap };
     }
     case actionTypes.LOAD_FLOWSO_SUCCEED:
     case actionTypes.LOAD_FLOWASN_SUCCEED:
@@ -399,7 +401,7 @@ export function loadOrderNodes(orderNo) {
   };
 }
 
-export function loadOrderNodesTriggers(uuid, bizObjects) {
+export function loadOrderNodesTriggers(uuid, bizObjects, bizno) {
   return {
     [CLIENT_API]: {
       types: [
@@ -409,7 +411,7 @@ export function loadOrderNodesTriggers(uuid, bizObjects) {
       ],
       endpoint: 'v1/scof/order/nodes/triggers/load',
       method: 'post',
-      data: { uuid, bizObjects },
+      data: { uuid, bizObjects, bizno },
     },
   };
 }
@@ -470,6 +472,21 @@ export function getSoFromFlow(uuid, tenantId) {
       endpoint: 'v1/cwm/get/flow/so',
       method: 'get',
       params: { uuid, tenantId },
+    },
+  };
+}
+
+export function manualEnterFlowInstance(uuid, kind) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MANUAL_ENTFI,
+        actionTypes.MANUAL_ENTFI_SUCCEED,
+        actionTypes.MANUAL_ENTFI_FAIL,
+      ],
+      endpoint: 'v1/sof/order/node/manual/enter',
+      method: 'post',
+      data: { uuid, kind },
     },
   };
 }

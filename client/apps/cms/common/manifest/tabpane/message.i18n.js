@@ -41,6 +41,46 @@ export default defineMessages({
     id: 'cms.manifest.tabpanes.cert.num',
     defaultMessage: '单证编号',
   },
+  invoiceNo: {
+    id: 'cms.manifest.tabpanes.invoice.no',
+    defaultMessage: '发票号',
+  },
+  invoiceDate: {
+    id: 'cms.manifest.tabpanes.invoice.date',
+    defaultMessage: '发票日期',
+  },
+  orderNo: {
+    id: 'cms.manifest.tabpanes.invoice.order.no',
+    defaultMessage: '订单号',
+  },
+  invoiceType: {
+    id: 'cms.manifest.tabpanes.invoice.type',
+    defaultMessage: '发票类型',
+  },
+  invoiceStatus: {
+    id: 'cms.manifest.tabpanes.invoice.status',
+    defaultMessage: '发票状态',
+  },
+  totalAmount: {
+    id: 'cms.manifest.tabpanes.invoice.total.amount',
+    defaultMessage: '总金额',
+  },
+  totalQuant: {
+    id: 'cms.manifest.tabpanes.invoice.total.quant',
+    defaultMessage: '总数量',
+  },
+  totalNetWt: {
+    id: 'cms.manifest.tabpanes.invoice.total.net.wt',
+    defaultMessage: '总净重',
+  },
+  pieces: {
+    id: 'cms.manifest.tabpanes.invoice.pieces',
+    defaultMessage: '件数',
+  },
+  grossWt: {
+    id: 'cms.manifest.tabpanes.invoice.gross.wt',
+    defaultMessage: '毛重',
+  },
   add: {
     id: 'cms.manifest.tabpanes.add',
     defaultMessage: '添加',

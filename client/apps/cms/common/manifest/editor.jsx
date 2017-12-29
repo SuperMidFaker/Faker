@@ -12,15 +12,14 @@ import { loadDocuDatas } from 'common/reducers/cmsInvoice';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
-import DocuPane from './tabpane/doctsPane';
-import MergeSplitModal from './modals/mergeSplitModal';
+import InvoicesPane from './tabpane/invoicesPane';
+import GenerateDeclModal from './modals/generateDeclModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
@@ -365,7 +364,7 @@ export default class ManifestEditor extends React.Component {
     this.props.loadBillMeta(this.props.billHead.bill_seq_no);
   }
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(delgNo, 'customsDecl');
+    this.props.showPreviewer(delgNo, 'shipment');
   }
   handleTabChange = (tabKey) => {
     if (tabKey === 'attachedDocs') {
@@ -458,9 +457,15 @@ export default class ManifestEditor extends React.Component {
     tabs.push(<TabPane tab="集装箱" key="containers">
       <ContainersPane fullscreen={this.state.fullscreen} />
     </TabPane>);
-    tabs.push(<TabPane tab="随附单据" key="attachedDocs" >
+    tabs.push(<TabPane tab="商业发票" key="invoices">
+      <InvoicesPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    /*
+      tabs.push(<TabPane tab="随附单据" key="attachedDocs" >
       <DocuPane billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
     </TabPane>);
+    */
+
     return (
       <Layout>
         <Layout>
@@ -468,7 +473,7 @@ export default class ManifestEditor extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <NavLink to={path}>{this.msg('declManifest')}</NavLink>
+                  {this.msg('declManifest')}
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
@@ -552,7 +557,7 @@ export default class ManifestEditor extends React.Component {
         </Layout>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
-        <MergeSplitModal />
+        <GenerateDeclModal />
         <SaveAsTemplateModal ietype={ietype} />
         <SendDeclsModal ietype={ietype} entries={billMeta.entries} reload={this.handleMetaLoad} />
       </Layout>
