@@ -72,7 +72,7 @@ export default class CMSNodeCard extends React.Component {
     }
     return (
       <Card
-        title={`${name}${bizno || ' 尚未进入节点'}`}
+        title={`${name} ${bizno || '尚未进入节点'}`}
         extra={extra}
         bodyStyle={{ padding: 8, paddingBottom: 56 }}
         onClick={() => this.handlePreview(bizno)}

@@ -35,7 +35,6 @@ export default class FlowPane extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    console.log(this.props.bizObjects, this.props.shipmtOrderNo);
     return (
       <div className="pane-content tab-pane">
         <Timeline>

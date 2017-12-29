@@ -71,7 +71,7 @@ export default class TMSNodeCard extends React.Component {
     }
     return (
       <Card
-        title={`${name}${bizno || ' 尚未进入节点'}`}
+        title={`${name} ${bizno || '尚未进入节点'}`}
         bodyStyle={{ padding: 8, paddingBottom: 56 }}
         onClick={() => this.handleShipmtPreview(bizno)}
       >
