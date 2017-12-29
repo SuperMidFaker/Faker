@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { intlShape, injectIntl } from 'react-intl';
-import { Spin, Badge, Button, Card, Col, Icon, Row, Table, Tag, Tooltip } from 'antd';
-import moment from 'moment';
+import { Spin, List } from 'antd';
 import { loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
 import { loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
-import InfoItem from 'client/components/InfoItem';
-import CiqDispModal from '../ciqDispModal';
+import CiqDeclCard from '../card/ciqDeclCard';
 
-@injectIntl
 @connect(
   state => ({
     ciqPanel: state.cmsDelgInfoHub.ciqPanel,
@@ -22,7 +18,6 @@ import CiqDispModal from '../ciqDispModal';
 )
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     delegation: PropTypes.object,
     ciqPanel: PropTypes.shape({
@@ -50,87 +45,21 @@ export default class CiqDeclPane extends React.Component {
   }
   render() {
     const {
-      ciqPanel, ciqSpinning, delegation, tenantId,
+      ciqPanel, ciqSpinning,
     } = this.props;
-    const columns = [{
-      title: '统一编号',
-      dataIndex: 'pre_entry_seq_no',
-      width: 120,
-    }, {
-      title: '海关编号',
-      dataIndex: 'entry_id',
-      width: 120,
-    }, {
-      title: '通关单号',
-      dataIndex: 'ciq_no',
-      width: 120,
-    }, {
-      title: '品质查验',
-      dataIndex: 'ciq_quality_inspect',
-      width: 60,
-      render: (o) => {
-        switch (o) {
-          case 2: return <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
-          case 1: return <Tag color="#F04134">是</Tag>;
-          case 0: return <Tag>否</Tag>;
-          default: return null;
-        }
-      },
-    }, {
-      title: '动检查验',
-      dataIndex: 'ciq_ap_inspect',
-      width: 60,
-      render: (o) => {
-        switch (o) {
-          case 2: return <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
-          case 1: return <Tag color="#F04134">是</Tag>;
-          case 0: return <Tag>否</Tag>;
-          default: return null;
-        }
-      },
-    }];
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={ciqSpinning}>
-          <Row gutter={16}>
-            <Col span={18}>
-              <Card bodyStyle={{ padding: 0 }} hoverable={false}>
-                <Table size="middle" columns={columns} pagination={false} dataSource={ciqPanel.ciqlist} scroll={{ x: 580 }} />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card bodyStyle={{ padding: 16, paddingBottom: 40 }} className="secondary-card">
-                <Row gutter={8}>
-                  <Col span="24">
-                    <InfoItem label="报检服务商" field={ciqPanel.ciq_name} />
-                  </Col>
-                  <Col span="24">
-                    <InfoItem label="受理日期" field={ciqPanel.acpt_time && moment(ciqPanel.acpt_time).format('YYYY.MM.DD HH:mm')} />
-                  </Col>
-                  <Col span="24">
-                    <InfoItem label="操作人" field={ciqPanel.recv_login_name} />
-                  </Col>
-                </Row>
-                <div className="card-footer">
-                  <Badge status="warning" text="报检待处理" />
-                  <div className="toolbar-right">
-                    {delegation.appointed_option === 0 && ciqPanel.ciq_tenant_id === tenantId &&
-                    <Tooltip title="分配报检供应商">
-                      <Button type="ghost" onClick={this.handleCiqAssign}><Icon type="share-alt" /> 分配</Button>
-                    </Tooltip>}
-                    {/*
-                    {(ciqPanel.type === 1 || ciqPanel.ciq_tenant_id === -1) &&
-                    <Tooltip title="指派执行者">
-                      <Button type="ghost" shape="circle" onClick={this.handleOperatorAssign}><Icon type="user" /></Button>
-                    </Tooltip>}
-                  */}
-                  </div>
-                </div>
-              </Card>
-            </Col>
-          </Row>
+          <List
+            itemLayout="horizontal"
+            dataSource={ciqPanel.ciqlist}
+            renderItem={item => (
+              <List.Item>
+                <CiqDeclCard ciqDecl={item} />
+              </List.Item>
+            )}
+          />
         </Spin>
-        <CiqDispModal />
       </div>
     );
   }

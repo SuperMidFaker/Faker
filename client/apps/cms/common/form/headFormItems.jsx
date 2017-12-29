@@ -219,7 +219,7 @@ export function DeclCustoms(props) {
   } = props;
   const declPortProps = {
     outercol: 24,
-    col: 5,
+    col: 8,
     field: 'decl_port',
     label: msg('declPort'),
     rules: [{ required }],

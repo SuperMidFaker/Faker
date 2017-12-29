@@ -19,7 +19,7 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import { format } from 'client/common/i18n/helpers';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import { CIQ_LIST_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { CIQ_DECL_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import messages from './message.i18n';
 
@@ -96,7 +96,9 @@ export default class CiqDeclList extends Component {
     dataIndex: 'pre_entry_seq_no',
     width: 180,
     fixed: 'left',
-    render: (o, record) => (record.ciq_decl_no ? <span className="text-emphasis">{record.ciq_decl_no}</span> : <span className="text-normal">{o}</span>),
+    render: (o, record) => (record.ciq_decl_no ?
+      <span className="text-emphasis">{record.ciq_decl_no}</span> :
+      <span className="text-normal">{o}</span>),
   }, {
     title: <Tooltip title="申报项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -135,7 +137,7 @@ export default class CiqDeclList extends Component {
     dataIndex: 'delg_no',
     width: 150,
     render: (o, record) => (
-      <a onClick={ev => this.handlePreview(record, ev)}>
+      <a onClick={ev => this.showDelegationDock(record, ev)}>
         {o}
       </a>),
   }, {
@@ -197,7 +199,7 @@ export default class CiqDeclList extends Component {
     render: (o, record) => (
       <span>
         <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />
-        <RowAction onClick={this.exportCiqDecl} icon="file-excel" tooltip="九城商检导出" row={record} />
+        <RowAction onClick={this.handleExportNinetown} icon="file-excel" tooltip="九城商检导出" row={record} />
       </span>),
   }]
   dataSource = new DataTable.DataSource({
@@ -223,24 +225,6 @@ export default class CiqDeclList extends Component {
     },
     remotes: this.props.ciqDeclList,
   })
-  handlePreview = (record, ev) => {
-    ev.stopPropagation();
-    this.props.showPreviewer(record.delg_no, 'ciqDecl');
-  }
-  handleEditChange = (record, field, checked) => {
-    this.props.setInspect({
-      preEntrySeqNo: record.pre_entry_seq_no,
-      delgNo: record.delg_no,
-      field,
-      enabled: checked,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleTableLoad();
-      }
-    });
-  }
   handleTableLoad = (currentPage, filter) => {
     this.props.loadCiqDecls({
       tenantId: this.props.tenantId,
@@ -257,12 +241,6 @@ export default class CiqDeclList extends Component {
     const ioPart = row.i_e_type === 0 ? 'in' : 'out';
     const link = `/clearance/ciqdecl/${ioPart}/${row.pre_entry_seq_no}`;
     this.context.router.push(link);
-  }
-  handleCiqNoFill = (row) => {
-    this.props.openCiqModal({
-      entryHeadId: row.id,
-      delgNo: row.delg_no,
-    });
   }
   handleSearch = (searchVal) => {
     const newFilters = {};
@@ -283,7 +261,7 @@ export default class CiqDeclList extends Component {
     const newFilters = { ...listFilter, ieType: e.target.value };
     this.handleTableLoad(ciqDeclList.current, newFilters);
   }
-  exportCiqDecl = (row) => {
+  handleExportNinetown = (row) => {
     window.open(`${API_ROOTS.default}v1/cms/clearance/ciqdecl/${createFilename('ciqdecl')}.xlsx?preEntrySeqNo=${row.pre_entry_seq_no}`);
   }
   handleStatusChange = (value) => {
@@ -294,9 +272,13 @@ export default class CiqDeclList extends Component {
     const filters = { ...this.props.listFilter, clientPid: value };
     this.handleTableLoad(this.props.ciqDeclList.current, filters);
   }
-  handleDateChange = (value, dateString) => {
+  handleDateRangeChange = (value, dateString) => {
     const filters = { ...this.props.listFilter, startTime: dateString[0], endTime: dateString[1] };
     this.handleTableLoad(this.props.ciqDeclList.current, filters);
+  }
+  showDelegationDock = (record, ev) => {
+    ev.stopPropagation();
+    this.props.showPreviewer(record.delg_no, 'shipment');
   }
   render() {
     const { ciqDeclList, listFilter } = this.props;
@@ -320,7 +302,7 @@ export default class CiqDeclList extends Component {
         onChange={this.handleStatusChange}
       >
         <Option value="all" key="all">全部状态</Option>
-        {CIQ_LIST_STATUS.map(item => (
+        {CIQ_DECL_STATUS.map(item => (
           <Option key={item.value} value={item.value}>
             {item.text}
           </Option>))}
@@ -338,7 +320,12 @@ export default class CiqDeclList extends Component {
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
         </Option>))}
       </Select>
-      <RangePicker defaultValue={[listFilter.startTime, listFilter.endTime]} onChange={this.handleDateChange} format="YYYY/MM/DD" />
+      <RangePicker
+        defaultValue={[listFilter.startTime, listFilter.endTime]}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+        format="YYYY/MM/DD"
+      />
     </span>);
     return (
       <Layout>

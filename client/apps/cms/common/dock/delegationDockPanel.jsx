@@ -11,11 +11,11 @@ import { loadOrderDetail } from 'common/reducers/crmOrders';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
-import CustomsDeclPane from './tabpanes/customsDeclPane';
-import CiqDeclPane from './tabpanes/ciqDeclPane';
+import ShipmentPane from './tabpanes/shipmentPane';
+// import CustomsDeclPane from './tabpanes/customsDeclPane';
+// import CiqDeclPane from './tabpanes/ciqDeclPane';
 import DutyTaxPane from './tabpanes/dutyTaxPane';
 import ExpensePane from './tabpanes/expensePane';
-import DelegationPane from './tabpanes/delegationPane';
 import FilesPane from './tabpanes/filesPane';
 import DelgDispModal from './delgDispModal';
 import messages from './message.i18n';
@@ -103,13 +103,15 @@ export default class DelegationDockPanel extends React.Component {
     const { delgDispatch, delegation } = previewer;
     const clearType = delegation.i_e_type === 0 ? 'import' : 'export';
     const tabs = [];
-    tabs.push(<TabPane tab="委托" key="activity"><DelegationPane /></TabPane>);
+    tabs.push(<TabPane tab="SHIPMENT" key="shipment"><ShipmentPane /></TabPane>);
+    /*
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
-      tabs.push(<TabPane tab="报关" key="customsDecl"><CustomsDeclPane /></TabPane>);
       if (delgDispatch.recv_services.indexOf('ciq') !== -1) {
         tabs.push(<TabPane tab="报检" key="ciqDecl"><CiqDeclPane /></TabPane>);
       }
+      tabs.push(<TabPane tab="报关" key="customsDecl"><CustomsDeclPane /></TabPane>);
     }
+    */
     if (delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND' && clearType === 'import' &&
       ((delgDispatch.status === CMS_DELEGATION_STATUS.processing &&
          delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) ||
@@ -139,7 +141,7 @@ export default class DelegationDockPanel extends React.Component {
     return (
       <Row>
         <Col span="8">
-          <InfoItem label="客户" field={delgDispatch.send_name} />
+          <InfoItem label={this.msg('client')} field={delgDispatch.send_name} />
         </Col>
         <Col span="6">
           <InfoItem label="提运单号" field={delegation.bl_wb_no} />

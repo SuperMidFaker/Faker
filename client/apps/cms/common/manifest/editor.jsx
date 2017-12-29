@@ -364,7 +364,7 @@ export default class ManifestEditor extends React.Component {
     this.props.loadBillMeta(this.props.billHead.bill_seq_no);
   }
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(delgNo, 'customsDecl');
+    this.props.showPreviewer(delgNo, 'shipment');
   }
   handleTabChange = (tabKey) => {
     if (tabKey === 'attachedDocs') {

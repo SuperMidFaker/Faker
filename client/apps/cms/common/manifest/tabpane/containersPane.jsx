@@ -209,7 +209,7 @@ export default class ContainersPane extends React.Component {
         rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
+          <Button type="primary" ghost onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
         </DataPane.Toolbar>
       </DataPane>
     );

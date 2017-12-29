@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Card, Layout, Table, Input, Breadcrumb, Tabs, Form } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { setResTabkey, setCustomer } from 'common/reducers/cmsResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Layout, Table, Input, Breadcrumb, Tabs, Form } from 'antd';
+import PageHeader from 'client/components/PageHeader';
 import TradersPane from './tabpane/tradersPane';
 import ManifestRulesPane from './tabpane/manifestRulesPane';
 import DocuTemplatesPane from './tabpane/docuTemplatesPane';
 import { formatMsg } from '../message.i18n';
 
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const { Search } = Input;
 const { TabPane } = Tabs;
 
@@ -132,15 +133,17 @@ export default class ClientsList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {customer.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </Header>
-          <Content className="main-content">
-            <div className="page-body tabbed">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {customer.name}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+          </PageHeader>
+          <Content className="page-content">
+            <Card bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.props.tabkey} onChange={this.handleTabChange}>
                 <TabPane tab="收发货人" key="traders">
                   <TradersPane />
@@ -152,7 +155,7 @@ export default class ClientsList extends Component {
                   <DocuTemplatesPane />
                 </TabPane>
               </Tabs>
-            </div>
+            </Card>
           </Content>
         </Layout>
       </Layout>

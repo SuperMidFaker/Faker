@@ -19,7 +19,7 @@ import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import { Logixon, Fontello } from 'client/components/FontIcon';
+import { Fontello } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
@@ -184,7 +184,7 @@ export default class CustomsList extends Component {
     dataIndex: 'delg_no',
     width: 150,
     render: (o, record) => (
-      <a onClick={ev => this.handlePreview(record, ev)}>
+      <a onClick={ev => this.showDelegationDock(record, ev)}>
         {o}
       </a>),
   }, {
@@ -205,17 +205,21 @@ export default class CustomsList extends Component {
     dataIndex: 'status',
     width: 100,
     render: (ost, record) => {
+      let extra;
       const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey =>
         CMS_DECL_STATUS[stkey].value === ost)[0];
       if (declkey) {
         const decl = CMS_DECL_STATUS[declkey];
-        if (record.status > CMS_DECL_STATUS.sent.value) {
-          return (<span><Badge status={decl.badge} text={decl.text} />
-            <DeclStatusPopover entryId={record.entry_id}><a role="presentation"><Logixon type="customs-o" /></a></DeclStatusPopover>
-          </span>);
+        let badgeStatus = decl.badge;
+        if (record.status === CMS_DECL_STATUS.sent.value &&
+         (Date.now() - new Date(record.epsend_date).getTime()) > 6 * 3600000) {
+          extra = <Popover content="超过6小时未接收到回执" placement="right"><Icon type="warning" style={{ color: '#f50' }} /></Popover>;
+          badgeStatus = 'warning';
         }
-
-        return <Badge status={decl.badge} text={decl.text} />;
+        if (record.status > CMS_DECL_STATUS.sent.value) {
+          extra = <DeclStatusPopover entryId={record.entry_id}><a role="presentation"><Icon type="info-circle-o" /></a></DeclStatusPopover>;
+        }
+        return <span><Badge status={badgeStatus} text={decl.text} /> {extra}</span>;
       }
       return null;
     },
@@ -254,7 +258,7 @@ export default class CustomsList extends Component {
   }, {
     title: '监管方式',
     dataIndex: 'trade_mode',
-    width: 100,
+    width: 120,
     render: (o) => {
       const tradeMd = this.props.tradeModes.filter(tm => tm.value === o)[0];
       let trade = '';
@@ -322,7 +326,7 @@ export default class CustomsList extends Component {
       const spanElems = [];
       if (record.status === CMS_DECL_STATUS.reviewed.value) {
         spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-          <RowAction onClick={this.handleShowSendDeclModal} icon="mail" tooltip={this.msg('sendDeclMsg')} row={record} />
+          <RowAction onClick={this.showSendDeclModal} icon="mail" tooltip={this.msg('sendDeclMsg')} row={record} />
         </PrivilegeCover>);
       }
       if (record.status === CMS_DECL_STATUS.sent.value) {
@@ -337,7 +341,7 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.entered.value) {
         spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
           <RowAction
-            onClick={this.handleShowDeclReleasedModal}
+            onClick={this.showDeclReleasedModal}
             row={record}
             icon="flag"
             tooltip={this.msg('markReleased')}
@@ -360,10 +364,6 @@ export default class CustomsList extends Component {
       </span>);
     },
   }]
-  showDeclMsgModal = ({ key }) => {
-    const [fileName, fileType] = key.split('|');
-    this.props.toggleDeclMsgModal(true, fileName, fileType);
-  }
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCustomsDecls(params),
     resolve: result => result.data,
@@ -404,10 +404,6 @@ export default class CustomsList extends Component {
       }
     });
   }
-  handlePreview = (record, ev) => {
-    ev.stopPropagation();
-    this.props.showPreviewer(record.delg_no, 'customsDecl');
-  }
   handleDeclNoFill = (row) => {
     this.props.openEfModal({
       entryHeadId: row.id,
@@ -415,24 +411,10 @@ export default class CustomsList extends Component {
       delgNo: row.delg_no,
     });
   }
-  handleSearchChange = (ev) => {
-    this.setState({ filterName: ev.target.value });
-  }
-  handleSearch = (searchVal) => {
-    const filters = { ...this.props.listFilter, filterNo: searchVal };
-    this.handleTableLoad(1, filters);
-  }
   handleDetail = (record) => {
-    // ev.preventDefault();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
     const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
     this.context.router.push(link);
-  }
-  handleOpenInWindow = (record, ev) => {
-    ev.stopPropagation();
-    const ietype = record.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
-    window.open(link);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [], selectedRows: [] });
@@ -453,6 +435,9 @@ export default class CustomsList extends Component {
     this.handleDeselectRows();
     this.handleTableLoad(1, filter);
   }
+  handleSearchChange = (ev) => {
+    this.setState({ filterName: ev.target.value });
+  }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] }; // FIXME should not use two ids
     if (value !== -1) {
@@ -466,6 +451,18 @@ export default class CustomsList extends Component {
     const filter = { ...this.props.listFilter, clientView };
     this.handleDeselectRows();
     this.handleTableLoad(1, filter);
+  }
+  handleExecutorChange = (value) => {
+    const filter = { ...this.props.listFilter, viewStatus: value, acptDate: [] };
+    this.handleTableLoad(1, filter);
+  }
+  handleDateRangeChange = (value, dateString) => {
+    const filters = { ...this.props.listFilter, filterDate: dateString, acptDate: [] };
+    this.handleTableLoad(1, filters);
+  }
+  handleSearch = (searchVal) => {
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
+    this.handleTableLoad(1, filters);
   }
   handleDelete = (declId, delgNo, billNo) => {
     this.props.deleteDecl(declId, delgNo, billNo).then((result) => {
@@ -518,7 +515,7 @@ export default class CustomsList extends Component {
       }
     });
   }
-  handleShowSendDeclModal = (record) => {
+  showSendDeclModal = (record) => {
     this.props.showSendDeclModal({
       defaultDecl: {
         channel: record.dec_channel,
@@ -532,32 +529,18 @@ export default class CustomsList extends Component {
       agentCustCo: record.agent_custco,
     });
   }
-  handleEpSendXmlView = (filename) => {
-    window.open(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`);
-  }
-  handleEpRecvXmlView = (filename) => {
-    window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
-  }
-  handleShowDeclReleasedModal = (row) => {
+  showDeclReleasedModal = (row) => {
     this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no, row.i_e_type);
   }
-  handleTradesSelectChange = (value) => {
-    let tradesView = {};
-    if (value !== 'all') {
-      tradesView = this.props.trades.find(data => data.id === value);
-    }
-    const filter = { ...this.props.listFilter, tradesView, acptDate: [] };
-    this.handleTableLoad(1, filter);
+  showDeclMsgModal = ({ key }) => {
+    const [fileName, fileType] = key.split('|');
+    this.props.toggleDeclMsgModal(true, fileName, fileType);
   }
-  handleViewChange = (value) => {
-    const filter = { ...this.props.listFilter, viewStatus: value, acptDate: [] };
-    this.handleTableLoad(1, filter);
+  showDelegationDock = (record, ev) => {
+    ev.stopPropagation();
+    this.props.showPreviewer(record.delg_no, 'shipment');
   }
-  handleDateRangeChange = (value, dateString) => {
-    const filters = { ...this.props.listFilter, filterDate: dateString, acptDate: [] };
-    this.handleTableLoad(1, filters);
-  }
-  toggleRightSider = () => {
+  showDeclMsgDock = () => {
     this.props.showDeclMsgDock();
   }
   render() {
@@ -639,7 +622,7 @@ export default class CustomsList extends Component {
         value={listFilter.viewStatus}
         style={{ width: 160 }}
         showSearch={false}
-        onChange={this.handleViewChange}
+        onChange={this.handleExecutorChange}
       >
         <Option value="all"><Avatar size="small" icon="team" /> 全部报关人员</Option>
         <Option value="my">{avatar ? <Avatar size="small" src={avatar} /> : <Avatar size="small" icon="user" />} {loginName}</Option>
@@ -680,7 +663,7 @@ export default class CustomsList extends Component {
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <Button icon="mail" onClick={this.toggleRightSider}>报文</Button>
+              <Button icon="mail" onClick={this.showDeclMsgDock}>报文</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

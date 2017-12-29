@@ -240,7 +240,7 @@ export default class CustomsDeclEditor extends React.Component {
     }
   }
   handlePreview = (delgNo) => {
-    this.props.showPreviewer(delgNo, 'customsDecl');
+    this.props.showPreviewer(delgNo, 'shipment');
   }
   handleUploaded = (data) => {
     this.props.uploadDecl(data).then((result) => {

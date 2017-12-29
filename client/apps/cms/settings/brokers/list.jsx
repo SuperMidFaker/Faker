@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Popconfirm, Tag } from 'antd';
+import { Breadcrumb, Button, Input, Layout, Popconfirm, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
-import SearchBar from 'client/components/SearchBar';
+import connectNav from 'client/common/decorators/connect-nav';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from './modal/brokerModal';
-import connectNav from 'client/common/decorators/connect-nav';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
+const { Search } = Input;
 
 function fetchData({ dispatch }) {
   return dispatch(loadCmsBrokers());
@@ -109,16 +109,15 @@ export default class BrokerList extends Component {
       if (this.state.searchText) {
         const reg = new RegExp(this.state.searchText);
         return reg.test(item.name) || reg.test(item.customs_code) || reg.test(item.comp_code);
-      } else {
-        return true;
       }
+      return true;
     });
     const columns = [
       {
         title: '企业名称',
         dataIndex: 'comp_name',
         key: 'name',
-        width: 240,
+        width: 300,
       }, {
         title: '统一社会信用代码',
         dataIndex: 'comp_code',
@@ -141,15 +140,14 @@ export default class BrokerList extends Component {
         render(o) {
           if (o > 0) {
             return <span>是</span>;
-          } else {
-            return <span>否</span>;
           }
+          return <span>否</span>;
         },
       }, {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
-        render: o => o === 1 ? <Tag color="green">已启用</Tag> : <Tag>已停用</Tag>,
+        render: o => (o === 1 ? <Tag color="green">已启用</Tag> : <Tag>已停用</Tag>),
       }, {
         title: '创建日期',
         dataIndex: 'created_date',
@@ -178,8 +176,10 @@ export default class BrokerList extends Component {
         ),
       },
     ];
-    const toolbarActions = (<SearchBar placeholder="搜索" onInputSearch={this.handleSearch}
-      value={this.state.searchText}
+    const toolbarActions = (<Search
+      style={{ width: 250 }}
+      placeholder="搜索"
+      onSearch={this.handleSearch}
     />);
     return (
       <QueueAnim type={['bottom', 'up']}>

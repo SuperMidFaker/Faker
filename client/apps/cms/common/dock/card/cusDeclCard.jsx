@@ -5,9 +5,9 @@ import { Badge, Card, Col, Row, Steps, Tag } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CMS_DECL_STATUS } from 'common/constants';
 
-const Step = Steps.Step;
+const { Step } = Steps;
 
-export default class CustomsDeclSheetCard extends React.Component {
+export default class CusDeclCard extends React.Component {
   static propTypes = {
     customsDecl: PropTypes.object.isRequired,
     manifest: PropTypes.object.isRequired,
@@ -23,13 +23,14 @@ export default class CustomsDeclSheetCard extends React.Component {
 
   render() {
     const { customsDecl } = this.props;
-    const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === customsDecl.status)[0];
+    const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey =>
+      CMS_DECL_STATUS[stkey].value === customsDecl.status)[0];
     const decl = declkey ? CMS_DECL_STATUS[declkey] : null;
     const declStatus = decl && <Badge status={decl.badge} text={decl.text} />;
     const sheetType = customsDecl.sheet_type === 'CDF' ? <Tag color="blue">报关单</Tag> : <Tag color="green">备案清单</Tag>;
     const declNo = (customsDecl.entry_id) ?
       <span>海关编号# {customsDecl.entry_id} {sheetType}</span> :
-      <span className="mdc-text-grey">统一编号# {customsDecl.pre_entry_seq_no} {sheetType}</span>;
+      <span className="mdc-text-grey">内部编号# {customsDecl.pre_entry_seq_no} {sheetType}</span>;
     let inspectFlag = <Tag>否</Tag>;
     if (customsDecl.customs_inspect === 1) {
       inspectFlag = <Tag color="#F04134">是</Tag>;
@@ -37,7 +38,12 @@ export default class CustomsDeclSheetCard extends React.Component {
       inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
     }
     return (
-      <Card title={<a onClick={() => this.handleView()}>{declNo}</a>} extra={declStatus} bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable>
+      <Card
+        title={<a onClick={() => this.handleView()}>{declNo}</a>}
+        extra={declStatus}
+        bodyStyle={{ padding: 16, paddingBottom: 56 }}
+        hoverable
+      >
         <Row gutter={16} className="info-group-underline">
           <Col span="12">
             <InfoItem label="收发货人" field={customsDecl.trade_name} />

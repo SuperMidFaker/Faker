@@ -253,9 +253,9 @@ export default class DutyTaxPane extends React.Component {
       }
     });
   }
-  renderValFixed = o => (o ? currencyFormatter.format(o, { code: 'CNY' }) : '')
+  renderValFixed = o => (o ? currencyFormatter.format(o, { code: 'CNY' }) : currencyFormatter.format(0, { code: 'CNY' }))
   render() {
-    const gridStyle = { width: `${1 / 5 * 100}%`, textAlign: 'center' };
+    const gridStyle = { width: '20%', textAlign: 'center' };
     const tax = this.state.sumval[0] || {};
     return (
       <div className="pane-content tab-pane">

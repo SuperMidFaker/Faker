@@ -79,7 +79,7 @@ export default defineMessages({
   },
   status: {
     id: 'cms.permit.status',
-    defaultMessage: '到期日期',
+    defaultMessage: '状态',
   },
   opCol: {
     id: 'cms.permit.op.col',

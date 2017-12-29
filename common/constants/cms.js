@@ -878,7 +878,7 @@ export const CIQ_GOODS_USE_TO = [
   { value: '30', text: '保健品' },
 ];
 
-export const CIQ_LIST_STATUS = [
+export const CIQ_DECL_STATUS = [
   { value: '0', text: '待报检' },
   { value: '1', text: '报检受理' },
   { value: '2', text: '施检查验' },
