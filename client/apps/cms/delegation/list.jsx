@@ -91,7 +91,6 @@ export default class DelegationList extends Component {
     delDelg: PropTypes.func.isRequired,
     reload: PropTypes.bool.isRequired,
     preStatus: PropTypes.string.isRequired,
-    loadCiqTable: PropTypes.func.isRequired,
     tabKey: PropTypes.string.isRequired,
   }
   static contextTypes = {
@@ -158,7 +157,7 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 150,
+    width: 160,
     fixed: 'left',
     render: (o, record) => (
       <a onClick={ev => this.showDelegationDock(o, record, ev)}>

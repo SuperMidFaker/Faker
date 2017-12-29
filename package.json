@@ -48,7 +48,7 @@
   "license": "MIT",
   "pre-commit": "lint-staged",
   "dependencies": {
-    "antd": "^3.0.3",
+    "antd": "^3.1.0",
     "babel-core": "^6.24.1",
     "babel-polyfill": "^6.22.0",
     "babel-runtime": "^6.23.0",
