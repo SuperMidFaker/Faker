@@ -154,8 +154,8 @@ export default class MergeSplitModal extends React.Component {
         splitOpt: {
           byHsCode: rule.split_hscode,
           tradeCurr: rule.split_curr,
-          byCiqDecl: rule.split_ciqdecl,
-          byApplCert: rule.split_applcert,
+          byCiqDecl: !!rule.split_ciqdecl,
+          byApplCert: !!rule.split_applcert,
           hsCategory: specialHsSortArr,
           perCount: rule.split_percount ? rule.split_percount.toString() : '20',
         },
