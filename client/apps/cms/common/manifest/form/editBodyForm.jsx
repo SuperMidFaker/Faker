@@ -244,7 +244,9 @@ export default class EditBodyForm extends Component {
                 initialValue: editBody.codes,
               })(<Select mode="combobox" optionFilterProp="search" onChange={this.handleSearch} style={{ width: '100%' }}>
                 {
-                  hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
+                  hscodes.data.map(data => (<Option
+                    value={data.hscode}
+                    key={data.hscode}
                     search={data.hscode}
                   >{data.hscode}
                   </Option>))}
@@ -338,7 +340,7 @@ export default class EditBodyForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
-            <FormItem {...formItemLayout} colon={false} label={this.msg('ecountry')}>
+            <FormItem {...formItemLayout} colon={false} label={this.msg('destCountry')}>
               {getFieldDecorator('dest_country', {
                 rules: [{ required: true, message: '目的国必填' }],
                 initialValue: editBody.dest_country,
@@ -352,7 +354,7 @@ export default class EditBodyForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
-            <FormItem {...formItemLayout} colon={false} label={this.msg('icountry')}>
+            <FormItem {...formItemLayout} colon={false} label={this.msg('origCountry')}>
               {getFieldDecorator('orig_country', {
                 initialValue: editBody.orig_country,
               })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>

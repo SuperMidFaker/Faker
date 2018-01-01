@@ -153,6 +153,15 @@ export default class Clearance extends React.Component {
         }],
       });
     }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'analytics' })) {
+      linkMenus.push({
+        single: true,
+        key: 'cms-analytics',
+        icon: 'logixon icon-report',
+        text: formatMsg(intl, 'analytics'),
+        path: '/clearance/analytics',
+      });
+    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: false,

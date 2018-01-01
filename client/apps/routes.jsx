@@ -65,6 +65,7 @@ import * as CMSTradeItemTask from './cms/tradeitem/task';
 import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
 import * as CMSManual from './cms/manual';
 import * as CMSPermit from './cms/permit';
+import * as CMSAnalytics from './cms/analytics';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -360,6 +361,10 @@ export default(store) => {
                 <Route path="view/:quoteno/:version" component={CMSQuote.View} />
                 <Route path="template" component={CMSQuote.Template} />
               </Route>
+            </Route>
+            <Route path="analytics">
+              <IndexRoute component={CMSAnalytics.List} />
+              <Route path="chart/:id" component={CMSAnalytics.Chart} />
             </Route>
             <Route path="settings">
               <Route path="brokers" component={CMSBrokers.List} />

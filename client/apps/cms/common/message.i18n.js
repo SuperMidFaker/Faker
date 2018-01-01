@@ -313,7 +313,7 @@ export default defineMessages({
     id: 'cms.forms.table.item.number',
     defaultMessage: '项号',
   },
-  seqNumber: {
+  seqNo: {
     id: 'cms.forms.table.seq.number',
     defaultMessage: '序号',
   },
@@ -327,7 +327,7 @@ export default defineMessages({
   },
   codeT: {
     id: 'cms.forms.table.codet',
-    defaultMessage: '商品编号',
+    defaultMessage: '商品编码',
   },
   codeS: {
     id: 'cms.forms.table.codes',
@@ -381,12 +381,12 @@ export default defineMessages({
     id: 'cms.forms.table.unit.pcs',
     defaultMessage: '单位(个数)',
   },
-  icountry: {
-    id: 'cms.forms.table.icountry',
+  origCountry: {
+    id: 'cms.forms.table.origCountry',
     defaultMessage: '原产国',
   },
-  ecountry: {
-    id: 'cms.forms.table.ecountry',
+  destCountry: {
+    id: 'cms.forms.table.destCountry',
     defaultMessage: '最终目的国',
   },
   decPrice: {

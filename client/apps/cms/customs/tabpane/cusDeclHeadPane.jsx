@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Form, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { CMS_DECL_STATUS } from 'common/constants';
+import { fillEntryId } from 'common/reducers/cmsManifest';
+import { updateMark } from 'common/reducers/cmsDeclare';
+import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import FormPane from 'client/components/FormPane';
 import EditableCell from 'client/components/EditableCell';
@@ -11,11 +15,8 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../common/form/headFormItems';
-import { fillEntryId } from 'common/reducers/cmsManifest';
-import { updateMark } from 'common/reducers/cmsDeclare';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CMS_DECL_STATUS } from 'common/constants';
+
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -71,13 +72,20 @@ export default class CusDeclHeadPane extends React.Component {
     const editable = formData.status < CMS_DECL_STATUS.sent.value;
     const header = (<Row>
       <Col span="6">
-        <InfoItem size="small" field={formData.pre_entry_id}
+        <InfoItem
+          size="small"
+          field={formData.pre_entry_id}
           addonBefore={this.msg('preEntryId')}
         />
       </Col>
       <Col span="6">
-        <InfoItem size="small" field={formData.entry_id} placeholder="点击回填"
-          addonBefore={this.msg('formEntryId')} editable={!formData.entry_id} onEdit={this.handleEntryFill}
+        <InfoItem
+          size="small"
+          field={formData.entry_id}
+          placeholder="点击回填"
+          addonBefore={this.msg('formEntryId')}
+          editable={!formData.entry_id}
+          onEdit={this.handleEntryFill}
         />
       </Col>
     </Row>);
@@ -86,10 +94,16 @@ export default class CusDeclHeadPane extends React.Component {
         <Card hoverable={false}>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
-                codeField="trade_co" nameField="trade_name" custCodeField="trade_custco"
-                codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-                {...formProps} options={formRequire.trades}
+              <RelationAutoCompSelect
+                label={this.msg('forwardName')}
+                intl={intl}
+                codeField="trade_co"
+                nameField="trade_name"
+                custCodeField="trade_custco"
+                codeRules={[{ required: true }]}
+                nameRules={[{ required: true }]}
+                {...formProps}
+                options={formRequire.trades}
               />
             </Col>
             <Col span="16">
@@ -106,26 +120,45 @@ export default class CusDeclHeadPane extends React.Component {
           </Row>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={
+              <RelationAutoCompSelect
+                label={
                   ietype === 'import' ? this.msg('ownerConsumeName') : this.msg('ownerProduceName')
-                } codeField="owner_code" custCodeField="owner_custco" nameField="owner_name" intl={intl}
-                codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-                {...formProps} options={formRequire.owners}
+                }
+                codeField="owner_code"
+                custCodeField="owner_custco"
+                nameField="owner_name"
+                intl={intl}
+                codeRules={[{ required: true }]}
+                nameRules={[{ required: true }]}
+                {...formProps}
+                options={formRequire.owners}
               />
             </Col>
             <Transport {...formProps} intl={intl} formRequire={formRequire} />
           </Row>
           <Row>
             <Col span="8">
-              <RelationAutoCompSelect label={this.msg('agentName')}
-                codeField="agent_code" custCodeField="agent_custco" nameField="agent_name" intl={intl}
-                codeRules={[{ required: true }]} nameRules={[{ required: true }]}
-                {...formProps} options={formRequire.agents}
+              <RelationAutoCompSelect
+                label={this.msg('agentName')}
+                codeField="agent_code"
+                custCodeField="agent_custco"
+                nameField="agent_name"
+                intl={intl}
+                codeRules={[{ required: true }]}
+                nameRules={[{ required: true }]}
+                {...formProps}
+                options={formRequire.agents}
               />
             </Col>
             <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
           </Row>
-          <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} onSearch={this.handlePortSearch} />
+          <CountryAttr
+            {...formProps}
+            intl={intl}
+            formRequire={formRequire}
+            ietype={ietype}
+            onSearch={this.handlePortSearch}
+          />
           <Row>
             <Col span="5">
               <LicenseNo {...formProps} intl={intl} formRequire={formRequire} />

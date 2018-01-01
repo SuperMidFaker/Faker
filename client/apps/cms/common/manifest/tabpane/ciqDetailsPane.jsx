@@ -38,7 +38,7 @@ export default class CiqDetailsPane extends React.Component {
   render() {
     const { filterProducts } = this.props;
     const columns = [{
-      title: this.msg('seqNumber'),
+      title: this.msg('seqNo'),
       dataIndex: 'g_no',
       fixed: 'left',
       align: 'center',
@@ -152,7 +152,7 @@ export default class CiqDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: this.msg('ecountry'),
+      title: this.msg('destCountry'),
       width: 120,
       dataIndex: 'dest_country',
       render: (o) => {
@@ -161,7 +161,7 @@ export default class CiqDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: this.msg('icountry'),
+      title: this.msg('origCountry'),
       width: 120,
       dataIndex: 'orig_country',
       render: (o) => {

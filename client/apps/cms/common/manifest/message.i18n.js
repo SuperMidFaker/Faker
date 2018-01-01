@@ -297,7 +297,7 @@ export default defineMessages({
     id: 'cms.manifest.form.mark.notes',
     defaultMessage: '唛码备注',
   },
-  seqNumber: {
+  seqNo: {
     id: 'cms.manifest.table.seq.number',
     defaultMessage: '序号',
   },
@@ -337,12 +337,12 @@ export default defineMessages({
     id: 'cms.manifest.table.unit',
     defaultMessage: '成交单位',
   },
-  icountry: {
-    id: 'cms.manifest.table.icountry',
+  origCountry: {
+    id: 'cms.manifest.table.origCountry',
     defaultMessage: '原产国',
   },
-  ecountry: {
-    id: 'cms.manifest.table.ecountry',
+  destCountry: {
+    id: 'cms.manifest.table.destCountry',
     defaultMessage: '最终目的国',
   },
   decPrice: {

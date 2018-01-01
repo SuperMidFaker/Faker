@@ -23,6 +23,7 @@ import CusDeclBodyPane from './tabpane/cusDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';
 import AttachedDocsPane from './tabpane/attachedDocsPane';
 import AttachedCertsPane from './tabpane/attachedCertsPane';
+import DutyTaxPane from './tabpane/dutyTaxPane';
 import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
@@ -341,6 +342,9 @@ export default class CustomsDeclEditor extends React.Component {
     </TabPane>);
     tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
       <AttachedDocsPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    tabs.push(<TabPane tab="预估税金" key="dutyTax" head={head}>
+      <DutyTaxPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     tabs.push(<TabPane tab="申报清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />

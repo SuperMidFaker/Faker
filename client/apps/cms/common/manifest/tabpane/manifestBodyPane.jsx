@@ -301,7 +301,7 @@ export default class ManifestBodyPane extends React.Component {
     const { editIndex, editBody } = this.state;
     // const totalCount = bodies.length;
     const columns = [{
-      title: this.msg('seqNumber'),
+      title: this.msg('seqNo'),
       dataIndex: 'g_no',
       align: 'center',
       width: 45,
@@ -540,7 +540,7 @@ export default class ManifestBodyPane extends React.Component {
           edit={editBody}
         />),
     }, {
-      title: this.msg('ecountry'),
+      title: this.msg('destCountry'),
       width: 120,
       render: (o, record, index) =>
         (<ColumnSelect
@@ -552,7 +552,7 @@ export default class ManifestBodyPane extends React.Component {
           edit={editBody}
         />),
     }, {
-      title: this.msg('icountry'),
+      title: this.msg('origCountry'),
       width: 120,
       render: (o, record, index) =>
         (<ColumnSelect

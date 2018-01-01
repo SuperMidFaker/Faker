@@ -59,7 +59,7 @@ export default class MergeSplitForm extends React.Component {
     label: this.msg('currency'),
     value: 'byCurr',
   }, {
-    label: this.msg('icountry'),
+    label: this.msg('origCountry'),
     value: 'byCountry',
   }, {
     label: this.msg('productCode'),

@@ -72,7 +72,7 @@ export default class ManifestDetailsPane extends React.Component {
     const { billDetails } = this.props;
     const { totGrossWt, totWetWt, totTrade } = this.state;
     const columns = [{
-      title: this.msg('seqNumber'),
+      title: this.msg('seqNo'),
       dataIndex: 'g_no',
       fixed: 'left',
       align: 'center',
@@ -176,7 +176,7 @@ export default class ManifestDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: this.msg('ecountry'),
+      title: this.msg('destCountry'),
       width: 120,
       dataIndex: 'dest_country',
       render: (o) => {
@@ -185,7 +185,7 @@ export default class ManifestDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: this.msg('icountry'),
+      title: this.msg('origCountry'),
       dataIndex: 'orig_country',
       render: (o) => {
         const country = this.props.countries.filter(cur => cur.value === o)[0];
