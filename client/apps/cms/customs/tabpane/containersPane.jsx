@@ -43,7 +43,6 @@ ColumnInput.propTypes = {
 export default class ContainersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     containers: PropTypes.array,
     billHead: PropTypes.object,
   }

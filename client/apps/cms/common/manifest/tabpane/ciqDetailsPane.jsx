@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import { buildTipItems } from 'client/common/customs';
 import DataPane from 'client/components/DataPane';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-import { buildTipItems } from 'client/common/customs';
+
 
 @injectIntl
 @connect(state => ({
