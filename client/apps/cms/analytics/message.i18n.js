@@ -14,6 +14,10 @@ const messages = defineMessages({
     id: 'cms.analytics.cusdecl',
     defaultMessage: '报关单统计',
   },
+  reportSetting: {
+    id: 'cms.analytics.report.setting',
+    defaultMessage: '报表设置',
+  },
 });
 export default messages;
 export const formatMsg = formati18n(messages);

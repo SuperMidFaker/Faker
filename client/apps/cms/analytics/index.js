@@ -1,2 +1,2 @@
 export List from './list';
-export Chart from './chart';
+export Report from './report';

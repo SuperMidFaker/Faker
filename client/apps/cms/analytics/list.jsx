@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Card, Collapse, Layout, List } from 'antd';
+import { Breadcrumb, Button, Card, Collapse, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { toggleReportSettingDock } from 'common/reducers/cmsAnalytics';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { MiniArea, MiniBar, Pie } from 'client/components/Charts';
 import PageHeader from 'client/components/PageHeader';
+import ReportSettingPanel from './panel/reportSettingPanel';
 import { formatMsg } from './message.i18n';
 
 
@@ -54,7 +56,7 @@ Chart.propTypes = {
     invTemplates: state.cmsInvoice.invTemplates,
     docuType: state.cmsInvoice.docuType,
   }),
-  { }
+  { toggleReportSettingDock }
 )
 @connectNav({
   depth: 2,
@@ -64,7 +66,6 @@ Chart.propTypes = {
 export default class AnalyticsList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -73,8 +74,11 @@ export default class AnalyticsList extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleChart = (id) => {
-    const link = `/clearance/analytics/chart/${id}`;
+    const link = `/clearance/analytics/report/${id}`;
     this.context.router.push(link);
+  }
+  showReportSettingDock = () => {
+    this.props.toggleReportSettingDock(true);
   }
   render() {
     const visitData = [];
@@ -239,6 +243,9 @@ export default class AnalyticsList extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
+          <PageHeader.Actions>
+            <Button icon="setting" onClick={this.showReportSettingDock}>{this.msg('reportSetting')}</Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-fixed-width layout-fixed-width-lg">
           <Collapse bordered={false} defaultActiveKey={['delgAnalytics', 'cusDeclAnalytics']}>
@@ -267,6 +274,7 @@ export default class AnalyticsList extends Component {
               />
             </Panel>
           </Collapse>
+          <ReportSettingPanel />
         </Content>
       </Layout>
     );

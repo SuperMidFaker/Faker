@@ -63,7 +63,6 @@ Chart.propTypes = {
 export default class AnalyticsChart extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,

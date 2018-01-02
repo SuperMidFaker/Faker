@@ -364,7 +364,7 @@ export default(store) => {
             </Route>
             <Route path="analytics">
               <IndexRoute component={CMSAnalytics.List} />
-              <Route path="chart/:id" component={CMSAnalytics.Chart} />
+              <Route path="report/:id" component={CMSAnalytics.Report} />
             </Route>
             <Route path="settings">
               <Route path="brokers" component={CMSBrokers.List} />
