@@ -18,6 +18,7 @@ import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import RowAction from 'client/components/RowAction';
+import ToolbarAction from 'client/components/ToolbarAction';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
 import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
@@ -1011,31 +1012,29 @@ export default class ManifestBodyPane extends React.Component {
       </Dropdown>);
     }
     return (<span>
-      <Button icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
-      <Button icon="upload" onClick={this.handleUnrelatedImport} style={{ marginLeft: 8 }}>{this.msg('unrelatedImport')}</Button>
+      <ToolbarAction icon="plus-circle-o" label="添加" onClick={this.handleAddBody} />
+      <ToolbarAction icon="upload" label={this.msg('unrelatedImport')} onClick={this.handleUnrelatedImport} />
       <Dropdown.Button
         onClick={this.handleRelatedImport}
         overlay={relatedImportMenu}
-        style={{ marginLeft: 8 }}
+        style={{ marginRight: 8 }}
       >
         <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
       </Dropdown.Button>
       { this.props.billHead.manual_no &&
-        <Button icon="book" onClick={this.handleManualBodyImport} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
-      <Button icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
+      <ToolbarAction icon="book" tooltip="手册账册关联导入" onClick={this.handleManualBodyImport} />}
+      <ToolbarAction icon="copy" tooltip="复制历史数据" onClick={this.handleDeclBodyImport} />
       <Dropdown overlay={dataToolsMenu}>
-        <Button style={{ marginLeft: 8 }}>
+        <Button style={{ marginRight: 8 }}>
           <Icon type="tool" /> <Icon type="down" />
         </Button>
       </Dropdown>
       <Dropdown overlay={exportMenu}>
-        <Button style={{ marginLeft: 8 }}>
+        <Button style={{ marginRight: 8 }}>
           <Icon type="export" /> 导出 <Icon type="down" />
         </Button>
       </Dropdown>
-      <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
-        <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
-      </Popconfirm>
+      <ToolbarAction danger icon="delete" tooltip="清空表体数据" confirm="确定清空表体数据?" onConfirm={this.handleBodyReset} />
     </span>);
   }
 
@@ -1086,7 +1085,7 @@ export default class ManifestBodyPane extends React.Component {
               </Button>
             </Popconfirm>
           </DataPane.BulkActions>
-          <DataPane.Actions>
+          <DataPane.Extra>
             <Summary>
               <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(2)}</Summary.Item>
               <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
@@ -1094,7 +1093,7 @@ export default class ManifestBodyPane extends React.Component {
               {Object.keys(tradeCurrGroup).map(curr => <Summary.Item label={`${curr}金额`} key={curr}>{tradeCurrGroup[curr].trade.toFixed(2)}</Summary.Item>)}
               <Summary.Item label="总个数">{totPcs}</Summary.Item>
             </Summary>
-          </DataPane.Actions>
+          </DataPane.Extra>
         </DataPane.Toolbar>
         <AmountModel />
         <RelateImportRuleModal />
