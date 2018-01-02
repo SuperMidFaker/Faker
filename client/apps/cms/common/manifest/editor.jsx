@@ -85,7 +85,10 @@ export default class ManifestEditor extends React.Component {
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
     }),
-    templates: PropTypes.array.isRequired,
+    templates: PropTypes.arrayOf({
+      id: PropTypes.number.isRequired,
+      template_name: PropTypes.string,
+    }).isRequired,
     templateValLoading: PropTypes.bool.isRequired,
     manifestSpinning: PropTypes.bool.isRequired,
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
@@ -154,7 +157,7 @@ export default class ManifestEditor extends React.Component {
             });
           }
           if (uqGnos.length > 0) {
-            const msg = `序号为 ${uqGnos.join(',')} 的法一法二申报单位相同,数量不一致`;
+            const msg = `序号为 ${uqGnos.join(',')} 的法一法二以及申报单位类型一致,数量不一致`;
             notification.error({
               message: '表体单位数量错误',
               duration: 0,
@@ -258,11 +261,11 @@ export default class ManifestEditor extends React.Component {
           message.error(result.error.message, 10);
         } else {
           const { formData } = result.data;
-          for (const key in formData) {
+          Object.keys(formData).forEach((key) => {
             if (!formData[key]) {
               delete formData[key];
             }
-          }
+          });
           const headData = { ...this.props.billHead, ...formData };
           this.setState({ headData });
           const rules = {
@@ -412,7 +415,6 @@ export default class ManifestEditor extends React.Component {
       sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed.value);
       revertable = revertable && (entry.status < CMS_DECL_STATUS.entered.value);
     });
-    const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;
     if (editable && billHead.locking_login_id && billHead.locking_login_id !== loginId) {
       editable = false;
@@ -496,7 +498,6 @@ export default class ManifestEditor extends React.Component {
               {editable && getFieldDecorator('model', modelProps)(<Select
                 placeholder="选择制单规则"
                 optionFilterProp="search"
-
                 onSelect={this.handleRuleReload}
                 onChange={this.handleRuleChange}
                 style={{ width: 200 }}
