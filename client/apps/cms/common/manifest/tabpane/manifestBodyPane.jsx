@@ -48,9 +48,9 @@ function ColumnInput(props) {
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
-  edit: PropTypes.object,
+  edit: PropTypes.shape({}),
   onChange: PropTypes.func,
   type: PropTypes.oneOf(['text', 'textarea']),
   autosize: PropTypes.bool,
@@ -80,13 +80,13 @@ function ColumnSelect(props) {
   return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   inEdit: PropTypes.bool,
-  edit: PropTypes.object,
-  record: PropTypes.object.isRequired,
+  edit: PropTypes.shape({}),
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({ search: PropTypes.string })).isRequired,
 };
 
 function ColumnSearchSelect(props) {
@@ -102,7 +102,8 @@ function ColumnSearchSelect(props) {
     return (
       <Select showSearch showArrow={false} mode="combobox" optionFilterProp="search" value={edit[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map(opt => <Option search={opt.search} value={opt.value} key={opt.value}>{opt.text}</Option>)
+          options.map(opt => (<Option search={opt.search} value={opt.value} key={opt.value}>
+            {opt.text}</Option>))
         }
       </Select>
     );
@@ -114,13 +115,10 @@ function ColumnSearchSelect(props) {
   return <span>{record[field] || ''}</span>;
 }
 
-ColumnSearchSelect.proptypes = {
+ColumnSearchSelect.propTypes = {
   inEdit: PropTypes.bool,
-  edit: PropTypes.object,
-  record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
-  options: PropTypes.array.isRequired,
 };
 
 function calculateTotal(bodies, currencies) {
@@ -220,17 +218,16 @@ export default class ManifestBodyPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    ietype: PropTypes.oneOf(['import', 'export']),
     readonly: PropTypes.bool,
-    data: PropTypes.array.isRequired,
+    data: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string })).isRequired,
     billSeqNo: PropTypes.string,
-    units: PropTypes.array,
-    countries: PropTypes.array,
-    currencies: PropTypes.array,
-    exemptions: PropTypes.array,
-    billHead: PropTypes.object,
-    headForm: PropTypes.object,
-    hscodes: PropTypes.object,
+    units: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string })),
+    countries: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string })),
+    currencies: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string })),
+    exemptions: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string })),
+    billHead: PropTypes.shape({ bill_seq_no: PropTypes.string }),
+    headForm: PropTypes.shape({ setFieldsValue: PropTypes.func }),
+    hscodes: PropTypes.shape({ pageSize: PropTypes.number }),
     billMeta: PropTypes.shape({
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
@@ -1036,11 +1033,9 @@ export default class ManifestBodyPane extends React.Component {
           <Icon type="export" /> 导出 <Icon type="down" />
         </Button>
       </Dropdown>
-      {/*
-          <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
-          <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
-        </Popconfirm>
-        */}
+      <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
+        <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
+      </Popconfirm>
     </span>);
   }
 
