@@ -44,7 +44,7 @@ export default class ItemHistoryPane extends React.Component {
   }, {
     title: this.msg('规范申报要素'),
     width: 300,
-    dataIndex: 'gmodel',
+    dataIndex: 'g_model',
   }, {
     title: this.msg('变更原因'),
     width: 200,
