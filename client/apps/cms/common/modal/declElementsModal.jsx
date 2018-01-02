@@ -98,21 +98,21 @@ export default class DeclElementsModal extends Component {
     const element = this.props.element ? this.props.element.split(';') : [];
     const gModel = this.props.gModel ? this.props.gModel.split('|') : [];
     return (
-      <div>
-        <Modal
-          maskClosable={false}
-          title="规格型号"
-          width={800}
-          visible={this.props.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-          <Form className="form-layout-compact">
-            <FormItem>
-              <TextArea value={model} disabled autosize />
-            </FormItem>
-            {!disabled && <Alert message="根据海关规定应填报以下要素" type="info" closable />}
-            {element.map((item, index) => {
+      <Modal
+        maskClosable={false}
+        title="规格型号"
+        width={800}
+        style={{ top: 24 }}
+        visible={this.props.visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+      >
+        <Form className="form-layout-compact">
+          <FormItem>
+            <TextArea value={model} disabled autosize />
+          </FormItem>
+          {!disabled && <Alert message="根据海关规定应填报以下要素" type="info" closable />}
+          {element.map((item, index) => {
               if (item && index === 0) {
                 return (
                   <FormItem {...formItemLayout} label={item} key={item}>
@@ -149,7 +149,7 @@ export default class DeclElementsModal extends Component {
                 return (
                   <FormItem {...formItemLayout} label={item} key={item}>
                     {getFieldDecorator(item, {
-                      initialValue: gModel[index - 1] || '',
+                      initialValue: gModel[index] || '',
                     })(<Input
                       disabled={disabled}
                       onChange={e => this.handleInputChange(e.target.value, item)}
@@ -159,12 +159,11 @@ export default class DeclElementsModal extends Component {
               }
               return '';
             })}
-            <FormItem {...formItemLayout} label="其他">
-              <Input value={others} disabled={disabled} onChange={this.handleOthersChange} />
-            </FormItem>
-          </Form>
-        </Modal>
-      </div>
+          <FormItem {...formItemLayout} label="其他">
+            <Input value={others} disabled={disabled} onChange={this.handleOthersChange} />
+          </FormItem>
+        </Form>
+      </Modal>
     );
   }
 }
