@@ -8,7 +8,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import DelegationDockPanel from '../dock/delegationDockPanel';
@@ -91,7 +91,7 @@ export default class ManifestList extends Component {
     title: <Tooltip title="表体记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
     width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
+    render: dc => (!isNaN(dc) ? dc : null),
   }, {
     title: '制单进度',
     width: 180,
@@ -321,18 +321,28 @@ export default class ManifestList extends Component {
                 <div className="toolbar">
                   <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
                   <span />
-                  <Select showSearch optionFilterProp="children" style={{ width: 160 }}
-                    onChange={this.handleClientSelectChange} defaultValue="all"
-                    dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+                  <Select
+                    showSearch
+                    optionFilterProp="children"
+                    style={{ width: 160 }}
+                    onChange={this.handleClientSelectChange}
+                    defaultValue="all"
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 360 }}
                   >
                     <Option value="all">全部客户</Option>
-                    {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                    {clients.map(data => (<Option
+                      key={data.partner_id}
+                      value={data.partner_id}
                       search={`${data.partner_code}${data.name}`}
                     >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
                     </Option>))}
                   </Select>
                   <span />
-                  <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+                  <Select
+                    value={listFilter.viewStatus}
+                    style={{ width: 160 }}
+                    showSearch={false}
                     onChange={this.handleViewChange}
                   >
                     <OptGroup label="常用视图">
@@ -350,8 +360,13 @@ export default class ManifestList extends Component {
                   </div>
                 </div>
                 <div className="panel-body table-panel table-fixed-layout">
-                  <Table rowSelection={rowSelection} columns={this.columns} rowKey="delg_no" dataSource={this.dataSource}
-                    loading={delgBillList.loading} scroll={{ x: 1800 }}
+                  <Table
+                    rowSelection={rowSelection}
+                    columns={this.columns}
+                    rowKey="delg_no"
+                    dataSource={this.dataSource}
+                    loading={delgBillList.loading}
+                    scroll={{ x: 1800 }}
                   />
                 </div>
               </div>

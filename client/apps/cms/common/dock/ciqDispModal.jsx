@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Select, Form, message } from 'antd';
 import { ciqDispSave, setDispStatus } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+
 const formatMsg = format(messages);
 
 const Option = Select.Option;
@@ -22,8 +23,8 @@ const formItemLayout = {
     tenantId: state.account.tenantId,
     ciqSups: state.cmsDelegation.assign.ciqSups,
     ciqDispShow: state.cmsDelegation.assign.ciqDispShow,
-    dispatch: state.cmsDelgInfoHub.previewer.delgDispatch,
-    tabKey: state.cmsDelgInfoHub.tabKey,
+    dispatch: state.cmsDelegationDock.previewer.delgDispatch,
+    tabKey: state.cmsDelegationDock.tabKey,
   }),
   {
     ciqDispSave, setDispStatus, showPreviewer, loadDeclCiqPanel,
@@ -76,8 +77,10 @@ export default class CiqDispModal extends Component {
             >
               {
                 ciqSups.map(pt => (
-                  <Option searched={`${pt.partner_code}${pt.name}`}
-                    value={pt.partner_id} key={pt.partner_id}
+                  <Option
+                    searched={`${pt.partner_code}${pt.name}`}
+                    value={pt.partner_id}
+                    key={pt.partner_id}
                   >
                     {pt.name}
                   </Option>))

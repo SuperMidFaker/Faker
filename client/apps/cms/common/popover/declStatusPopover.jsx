@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Timeline, Popover, Spin } from 'antd';
-import { loadClearanceResults, clearClearanceResults } from 'common/reducers/cmsDeclare';
+import { loadClearanceResults, clearClearanceResults } from 'common/reducers/cmsCustomsDeclare';
 
 const TimelineItem = Timeline.Item;
 
 @connect(
   state => ({
-    results: state.cmsDeclare.customsResults,
-    loading: state.cmsDeclare.customsResultsLoading,
+    results: state.cmsCustomsDeclare.customsResults,
+    loading: state.cmsCustomsDeclare.customsResultsLoading,
   }),
   { loadClearanceResults, clearClearanceResults }
 )

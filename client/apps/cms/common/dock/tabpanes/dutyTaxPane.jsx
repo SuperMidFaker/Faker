@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import currencyFormatter from 'currency-formatter';
 import { Card, Table, Tag, Popconfirm, message, Button } from 'antd';
-import { loadPaneTax, taxRecalculate } from 'common/reducers/cmsDelgInfoHub';
+import { loadPaneTax, taxRecalculate } from 'common/reducers/cmsDelegationDock';
 
 @injectIntl
 @connect(
   state => ({
-    delgNo: state.cmsDelgInfoHub.previewer.delegation.delg_no,
-    taxTots: state.cmsDelgInfoHub.taxTots,
-    taxMaps: state.cmsDelgInfoHub.taxMaps,
-    trxModes: state.cmsDelgInfoHub.params.trxModes.map(tm => ({
+    delgNo: state.cmsDelegationDock.previewer.delegation.delg_no,
+    taxTots: state.cmsDelegationDock.taxTots,
+    taxMaps: state.cmsDelegationDock.taxMaps,
+    trxModes: state.cmsDelegationDock.params.trxModes.map(tm => ({
       value: tm.trx_mode,
       text: `${tm.trx_spec}`,
     })),

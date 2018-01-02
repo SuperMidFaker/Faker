@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { Col, Modal, Select, Form, message, Switch, Radio } from 'antd';
 import { clearingOption } from 'common/constants';
 import { delgDispSave, setDispStatus, loadciqSups, reloadDelegationList } from 'common/reducers/cmsDelegation';
-import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -43,8 +43,8 @@ function getFieldInits(delgDisp, dispatch) {
     partners: state.cmsDelegation.assign.partners,
     ciqSups: state.cmsDelegation.assign.ciqSups,
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
-    previewer: state.cmsDelgInfoHub.previewer,
-    tabKey: state.cmsDelgInfoHub.tabKey,
+    previewer: state.cmsDelegationDock.previewer,
+    tabKey: state.cmsDelegationDock.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
   {
@@ -142,7 +142,8 @@ export default class DelgDispModal extends Component {
             >
               {
                 partners.map(pt => (
-                  <Option searched={`${pt.partner_code}${pt.name}`}
+                  <Option
+                    searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id}
                     key={pt.partner_id}
                   >
@@ -153,7 +154,8 @@ export default class DelgDispModal extends Component {
           </FormItem>
           <FormItem label="报检供应商" >
             <Col span={6}>
-              <Switch checked={appoint}
+              <Switch
+                checked={appoint}
                 onChange={this.handleOnChange}
                 checkedChildren="指定"
                 unCheckedChildren="不指定"
@@ -161,14 +163,16 @@ export default class DelgDispModal extends Component {
               />
             </Col>
             <Col span={18}>
-              {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(<Select showSearch
+              {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(<Select
+                showSearch
                 showArrow
                 optionFilterProp="searched"
                 placeholder={this.msg('dispatchMessage')}
               >
                 {
                   ciqSups.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
+                    <Option
+                      searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id}
                       key={pt.partner_id}
                     >

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Select, message, Table } from 'antd';
 import Expander from './expander';
-import { sendMutiDecl, closeBatchSendModal } from 'common/reducers/cmsDeclare';
+import { sendMutiDecl, closeBatchSendModal } from 'common/reducers/cmsCustomsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CMS_DECL_TYPE, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
@@ -43,9 +43,9 @@ ColumnSelect.proptypes = {
   state => ({
     tenantId: state.account.tenantId,
     subdomain: state.account.subdomain,
-    visible: state.cmsDeclare.batchSendModal.visible,
-    data: state.cmsDeclare.batchSendModal.data,
-    easilist: state.cmsDeclare.batchSendModal.easilist,
+    visible: state.cmsCustomsDeclare.batchSendModal.visible,
+    data: state.cmsCustomsDeclare.batchSendModal.data,
+    easilist: state.cmsCustomsDeclare.batchSendModal.easilist,
     agentCustCo: state.cmsManifest.sendDeclsModal.agentCustCo,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -158,8 +158,12 @@ export default class BatchSendModal extends React.Component {
       title: this.msg('declType'),
       width: 200,
       render: (o, record, index) =>
-        (<ColumnSelect field="declType"
-          onChange={this.handleEditChange} options={declList} record={record} index={index}
+        (<ColumnSelect
+          field="declType"
+          onChange={this.handleEditChange}
+          options={declList}
+          record={record}
+          index={index}
         />),
     }, {
       title: 'EDI',
@@ -173,16 +177,29 @@ export default class BatchSendModal extends React.Component {
           }));
         }
         return (
-          <ColumnSelect field="easipass"
-            onChange={this.handleEditChange} options={easipassOpt} record={record} index={index}
+          <ColumnSelect
+            field="easipass"
+            onChange={this.handleEditChange}
+            options={easipassOpt}
+            record={record}
+            index={index}
           />);
       },
     }];
     return (
-      <Modal maskClosable={false} title={this.msg('sendBatchDeclMsgs')} visible={visible} width={800}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('sendBatchDeclMsgs')}
+        visible={visible}
+        width={800}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
-        <Table size="middle" rowKey="agent_name" columns={columns} dataSource={this.state.bodies}
+        <Table
+          size="middle"
+          rowKey="agent_name"
+          columns={columns}
+          dataSource={this.state.bodies}
           expandedRowRender={this.handleExpandDetail}
         />
       </Modal>

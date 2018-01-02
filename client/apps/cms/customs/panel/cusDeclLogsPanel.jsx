@@ -6,7 +6,7 @@ import { List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import UserAvatar from 'client/components/UserAvatar';
-import { hideDeclLog, loadDeclLogs } from 'common/reducers/cmsDeclare';
+import { hideDeclLog, loadDeclLogs } from 'common/reducers/cmsCustomsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -24,7 +24,7 @@ function getBehavior(code) {
 @injectIntl
 @connect(
   state => ({
-    visible: state.cmsDeclare.declLogPanel.visible,
+    visible: state.cmsCustomsDeclare.declLogPanel.visible,
     userMembers: state.account.userMembers,
   }),
   { hideDeclLog, loadDeclLogs }

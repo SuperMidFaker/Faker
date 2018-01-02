@@ -9,7 +9,7 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead } from 'common/reducers/cmsManifest';
 import { loadDocuDatas } from 'common/reducers/cmsInvoice';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';

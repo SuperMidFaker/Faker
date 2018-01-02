@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message } from 'antd';
 import { closeEfModal } from 'common/reducers/cmsDelegation';
 import { fillEntryId } from 'common/reducers/cmsManifest';
-import { validateEntryId } from 'common/reducers/cmsDeclare';
+import { validateEntryId } from 'common/reducers/cmsCustomsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 

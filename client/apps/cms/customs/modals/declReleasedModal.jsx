@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Modal, Input, DatePicker, message } from 'antd';
-import { closeDeclReleasedModal, setDeclReleased, validateEntryId } from 'common/reducers/cmsDeclare';
+import { closeDeclReleasedModal, setDeclReleased, validateEntryId } from 'common/reducers/cmsCustomsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -14,8 +14,8 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    visible: state.cmsDeclare.visibleClearModal,
-    entry: state.cmsDeclare.clearFillModal,
+    visible: state.cmsCustomsDeclare.visibleClearModal,
+    entry: state.cmsCustomsDeclare.clearFillModal,
     loginName: state.account.username,
   }),
   { closeDeclReleasedModal, setDeclReleased, validateEntryId }

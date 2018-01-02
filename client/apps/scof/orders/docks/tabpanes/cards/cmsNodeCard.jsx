@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Col, Row } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { hideDock, manualEnterFlowInstance } from 'common/reducers/crmOrders';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { NODE_BIZ_OBJECTS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { MdIcon } from 'client/components/FontIcon';
 import NodeFooter from './nodeFooter';

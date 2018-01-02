@@ -37,7 +37,7 @@ ColumnSelect.proptypes = {
 
 @injectIntl
 @connect(state => ({
-  easilist: state.cmsDeclare.batchSendModal.easilist,
+  easilist: state.cmsCustomsDeclare.batchSendModal.easilist,
 }))
 export default class Expander extends Component {
   static propTypes = {
@@ -99,8 +99,12 @@ export default class Expander extends Component {
       title: this.msg('declType'),
       width: 180,
       render: (o, record, index) =>
-        (<ColumnSelect field="declType"
-          onChange={this.handleEditChange} options={this.props.declList} record={record} index={index}
+        (<ColumnSelect
+          field="declType"
+          onChange={this.handleEditChange}
+          options={this.props.declList}
+          record={record}
+          index={index}
         />),
     }, {
       title: 'EDI',
@@ -114,14 +118,22 @@ export default class Expander extends Component {
           }));
         }
         return (
-          <ColumnSelect field="easipass"
-            onChange={this.handleEditChange} options={easipassOpt} record={record} index={index}
+          <ColumnSelect
+            field="easipass"
+            onChange={this.handleEditChange}
+            options={easipassOpt}
+            record={record}
+            index={index}
           />);
       },
     }];
     return (
-      <Table columns={columns} dataSource={dataSource} pagination={false}
-        size="small" scroll={{ x: 300, y: 200 }}
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        pagination={false}
+        size="small"
+        scroll={{ x: 300, y: 200 }}
       />
     );
   }

@@ -7,7 +7,7 @@ import { injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import RowAction from 'client/components/RowAction';
 import { connect } from 'react-redux';
-import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsDeclare';
+import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 
 
@@ -18,9 +18,9 @@ const { TabPane } = Tabs;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    sendRecords: state.cmsDeclare.sendRecords,
-    returnRecords: state.cmsDeclare.returnRecords,
-    visible: state.cmsDeclare.declMsgDock.visible,
+    sendRecords: state.cmsCustomsDeclare.sendRecords,
+    returnRecords: state.cmsCustomsDeclare.returnRecords,
+    visible: state.cmsCustomsDeclare.declMsgDock.visible,
   }),
   {
     loadSendRecords,

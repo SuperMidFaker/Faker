@@ -26,7 +26,7 @@ const typeKeys = CMS_EXPENSE_TYPES.map(ec => ec.key);
   state => ({
     expensesLoading: state.cmsExpense.expensesLoading,
     expenses: state.cmsExpense.expenses,
-    delgNo: state.cmsDelgInfoHub.previewer.delegation.delg_no,
+    delgNo: state.cmsDelegationDock.previewer.delegation.delg_no,
     tenantId: state.account.tenantId,
   }),
   { loadPaneExp }
@@ -122,10 +122,9 @@ export default class ExpensePane extends React.Component {
           colSpan: 5,
         },
       };
-    } else {
-      const categ = EXPENSE_CATEGORIES.filter(ec => ec.key === row.fee_style)[0];
-      return <span>{text}{categ && <span className="ant-badge-status-dot" style={{ backgroundColor: categ.color }} />}</span>;
     }
+    const categ = EXPENSE_CATEGORIES.filter(ec => ec.key === row.fee_style)[0];
+    return <span>{text}{categ && <span className="ant-badge-status-dot" style={{ backgroundColor: categ.color }} />}</span>;
   }
   renderCostFeeColumn = (text, row) => {
     const col = { children: text, props: { } };
@@ -196,12 +195,17 @@ export default class ExpensePane extends React.Component {
         tagProps.style = { backgroundColor: ec.color };
       }
       return (
-        <CheckableTag key={ec.key} checked={checked} {...tagProps}
+        <CheckableTag
+          key={ec.key}
+          checked={checked}
+          {...tagProps}
           onChange={chked => this.handleCateTagChange(ec.key, chked)}
         >{ec.text}
         </CheckableTag>);
     }).concat(CMS_EXPENSE_TYPES.map(et => (
-      <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
+      <CheckableTag
+        key={et.key}
+        checked={checkedExpTypes.indexOf(et.key) !== -1}
         onChange={chked => this.handleTypeTagChange(et.key, chked)}
       >{et.text}
       </CheckableTag>)));
@@ -214,8 +218,12 @@ export default class ExpensePane extends React.Component {
           <Card bodyStyle={{ padding: 0 }} hoverable={false}>
             <Collapse defaultActiveKey={['revenue', 'cost']}>
               <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
-                <Table size="small" columns={this.columnFields} dataSource={revenueFees}
-                  rowKey="fee_name" pagination={false}
+                <Table
+                  size="small"
+                  columns={this.columnFields}
+                  dataSource={revenueFees}
+                  rowKey="fee_name"
+                  pagination={false}
                 />
               </Panel>
               <Panel header={this.msg('costDetail')} key="cost" className="table-panel">

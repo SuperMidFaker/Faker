@@ -5,7 +5,7 @@ import { Card, Form, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { fillEntryId } from 'common/reducers/cmsManifest';
-import { updateMark } from 'common/reducers/cmsDeclare';
+import { updateMark } from 'common/reducers/cmsCustomsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import FormPane from 'client/components/FormPane';

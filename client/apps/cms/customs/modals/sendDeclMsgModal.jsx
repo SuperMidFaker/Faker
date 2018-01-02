@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Modal, Form, Radio, Select, message } from 'antd';
 import DescriptionList from 'client/components/DescriptionList';
-import { showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl } from 'common/reducers/cmsDeclare';
+import { showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl } from 'common/reducers/cmsCustomsDeclare';
 import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -22,12 +22,12 @@ const { Description } = DescriptionList;
   state => ({
     tenantId: state.account.tenantId,
     subdomain: state.account.subdomain,
-    visible: state.cmsDeclare.sendDeclModal.visible,
-    defaultDecl: state.cmsDeclare.sendDeclModal.defaultDecl,
-    ietype: state.cmsDeclare.sendDeclModal.ietype,
-    preEntrySeqNo: state.cmsDeclare.sendDeclModal.preEntrySeqNo,
-    delgNo: state.cmsDeclare.sendDeclModal.delgNo,
-    agentCustCo: state.cmsDeclare.sendDeclModal.agentCustCo,
+    visible: state.cmsCustomsDeclare.sendDeclModal.visible,
+    defaultDecl: state.cmsCustomsDeclare.sendDeclModal.defaultDecl,
+    ietype: state.cmsCustomsDeclare.sendDeclModal.ietype,
+    preEntrySeqNo: state.cmsCustomsDeclare.sendDeclModal.preEntrySeqNo,
+    delgNo: state.cmsCustomsDeclare.sendDeclModal.delgNo,
+    agentCustCo: state.cmsCustomsDeclare.sendDeclModal.agentCustCo,
     loginName: state.account.username,
   }),
   {
