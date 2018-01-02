@@ -35,14 +35,20 @@ export default class PermitAdd extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    permit_file: '',
+  }
   msg = key => formatMsg(this.props.intl, key);
+  handleFileChange = (file) => {
+    this.setState({
+      permit_file: file,
+    });
+  }
   handleSave = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const data = { ...values };
-        if (data.permit_file) {
-          data.permit_file = data.permit_file.file.response.data;
-        }
+        data.permit_file = this.state.permit_file;
         this.props.addPermit(data).then((result) => {
           if (!result.error) {
             this.context.router.push('clearance/permit');
@@ -59,7 +65,7 @@ export default class PermitAdd extends Component {
     const { form } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab={this.msg('infoTab')} key="head">
-      <PermitHeadPane action="create" form={form} />
+      <PermitHeadPane action="create" form={form} onFileChange={this.handleFileChange} />
     </TabPane>);
     return (
       <Layout>
