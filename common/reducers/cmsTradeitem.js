@@ -14,16 +14,10 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
   'DELETE_ITEMS', 'DELETE_ITEMS_SUCCEED', 'DELETE_ITEMS_FAIL',
   'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
-  'LOAD_BODY_HSCODE', 'LOAD_BODY_HSCODE_SUCCEED', 'LOAD_BODY_HSCODE_FAIL',
-  'SET_COMPARE_VISIBLE',
-  'COMPARED_DATAS_SAVE', 'COMPARED_DATAS_SAVE_SUCCEED', 'COMPARED_DATAS_SAVE_FAIL',
-  'SET_ITEM_STATUS', 'SET_ITEM_STATUS_SUCCEED', 'SET_ITEM_STATUS_FAIL',
   'LOAD_REPO_USERS', 'LOAD_REPO_USERS_SUCCEED', 'LOAD_REPO_USERS_FAIL',
   'ADD_REPO_USER', 'ADD_REPO_USER_SUCCEED', 'ADD_REPO_USER_FAIL',
   'DELETE_REPO_USER', 'DELETE_REPO_USER_SUCCEED', 'DELETE_REPO_USER_FAIL',
-  'LOAD_TEMP_ITEMS', 'LOAD_TEMP_ITEMS_SUCCEED', 'LOAD_TEMP_ITEMS_FAIL',
-  'COMPARED_CANCEL', 'COMPARED_CANCEL_SUCCEED', 'COMPARED_CANCEL_FAIL',
-  'DELETE_TEMP_DATA', 'DELETE_TEMP_DATA_SUCCEED', 'DELETE_TEMP_DATA_FAIL',
+  'LOAD_TRDIHISTORY', 'LOAD_TRDIHISTORY_SUCCEED', 'LOAD_TRDIHISTORY_FAIL',
   'SHOW_LINKSLAVE',
   'LOAD_LINKEDSLAVES', 'LOAD_LINKEDSLAVES_SUCCEED', 'LOAD_LINKEDSLAVES_FAIL',
   'LOAD_OWNSLAVES', 'LOAD_OWNSLAVES_SUCCEED', 'LOAD_OWNSLAVES_FAIL',
@@ -65,12 +59,6 @@ const initialState = {
     searchText: '',
     data: [],
   },
-  tempItems: {
-    totalCount: 0,
-    current: 1,
-    pageSize: 20,
-    data: [],
-  },
   visibleAddModal: false,
   repos: [],
   reposLoaded: false,
@@ -81,12 +69,10 @@ const initialState = {
     tradeCountries: [],
   },
   itemData: {},
+  itemHistory: [],
   bodyItem: {},
-  bodyHscode: {},
-  hstabKey: 'declunit',
   repo: { id: null },
   repoLoading: false,
-  visibleCompareModal: false,
   linkSlaveModal: {
     visible: false,
     masterRepo: {},
@@ -155,20 +141,16 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
+    case actionTypes.LOAD_TRDIHISTORY_SUCCEED:
+      return { ...state, itemHistory: action.result.data };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return { ...state, params: action.result.data };
     case actionTypes.LOAD_ITEM_EDIT_SUCCEED:
       return { ...state, itemData: action.result.data.tradeitem };
     case actionTypes.LOAD_BODY_ITEM_SUCCEED:
       return { ...state, bodyItem: action.result.data };
-    case actionTypes.LOAD_BODY_HSCODE_SUCCEED:
-      return { ...state, bodyHscode: action.result.data };
-    case actionTypes.SET_COMPARE_VISIBLE:
-      return { ...state, visibleCompareModal: action.data };
     case actionTypes.LOAD_REPO_USERS_SUCCEED:
       return { ...state, repoUsers: action.result.data };
-    case actionTypes.LOAD_TEMP_ITEMS_SUCCEED:
-      return { ...state, tempItems: action.result.data };
     case actionTypes.SHOW_LINKSLAVE:
       return { ...state, linkSlaveModal: { ...state.linkSlaveModal, ...action.data } };
     case actionTypes.LOAD_OWNSLAVES_SUCCEED:
@@ -246,17 +228,103 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function saveComparedItemDatas(datas) {
+export function loadRepos() {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.COMPARED_DATAS_SAVE,
-        actionTypes.COMPARED_DATAS_SAVE_SUCCEED,
-        actionTypes.COMPARED_DATAS_SAVE_FAIL,
+        actionTypes.LOAD_REPOS,
+        actionTypes.LOAD_REPOS_SUCCEED,
+        actionTypes.LOAD_REPOS_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/compared/datas/save',
+      endpoint: 'v1/cms/tradeitem/repos/load',
+      method: 'get',
+    },
+  };
+}
+
+export function loadRepo(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_REPO,
+        actionTypes.LOAD_REPO_SUCCEED,
+        actionTypes.LOAD_REPO_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/load',
+      method: 'get',
+      params: { repoId },
+    },
+  };
+}
+
+export function openAddModal() {
+  return {
+    type: actionTypes.OPEN_ADD_MODEL,
+  };
+}
+
+export function closeAddModal() {
+  return {
+    type: actionTypes.CLOSE_ADD_MODEL,
+  };
+}
+
+export function createRepo(datas) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_REPO,
+        actionTypes.CREATE_REPO_SUCCEED,
+        actionTypes.CREATE_REPO_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/create',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function deleteRepo(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_REPO,
+        actionTypes.DELETE_REPO_SUCCEED,
+        actionTypes.DELETE_REPO_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/delete',
+      method: 'post',
+      data: { repoId },
+    },
+  };
+}
+
+export function loadTradeItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRADE_ITEMS,
+        actionTypes.LOAD_TRADE_ITEMS_SUCCEED,
+        actionTypes.LOAD_TRADE_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/items/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function deleteItems(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_ITEMS,
+        actionTypes.DELETE_ITEMS_SUCCEED,
+        actionTypes.DELETE_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/delete/items',
+      method: 'post',
+      data,
     },
   };
 }
@@ -305,21 +373,6 @@ export function loadTradeParams() {
   };
 }
 
-export function loadTradeItems(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_TRADE_ITEMS,
-        actionTypes.LOAD_TRADE_ITEMS_SUCCEED,
-        actionTypes.LOAD_TRADE_ITEMS_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/items/load',
-      method: 'get',
-      params,
-    },
-  };
-}
-
 export function createTradeItem(datas) {
   return {
     [CLIENT_API]: {
@@ -335,103 +388,17 @@ export function createTradeItem(datas) {
   };
 }
 
-export function loadRepos() {
+export function loadTradeItemHistory(repoId, copProdNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_REPOS,
-        actionTypes.LOAD_REPOS_SUCCEED,
-        actionTypes.LOAD_REPOS_FAIL,
+        actionTypes.LOAD_TRDIHISTORY,
+        actionTypes.LOAD_TRDIHISTORY_SUCCEED,
+        actionTypes.LOAD_TRDIHISTORY_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/repos/load',
+      endpoint: 'v1/cms/tradeitem/classify/history',
       method: 'get',
-    },
-  };
-}
-
-export function loadRepo(repoId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_REPO,
-        actionTypes.LOAD_REPO_SUCCEED,
-        actionTypes.LOAD_REPO_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/repo/load',
-      method: 'get',
-      params: { repoId },
-    },
-  };
-}
-
-export function loadTempItems(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_TEMP_ITEMS,
-        actionTypes.LOAD_TEMP_ITEMS_SUCCEED,
-        actionTypes.LOAD_TEMP_ITEMS_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/temp/items/load',
-      method: 'get',
-      params,
-    },
-  };
-}
-
-export function openAddModal() {
-  return {
-    type: actionTypes.OPEN_ADD_MODEL,
-  };
-}
-
-export function closeAddModal() {
-  return {
-    type: actionTypes.CLOSE_ADD_MODEL,
-  };
-}
-
-export function createRepo(datas) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CREATE_REPO,
-        actionTypes.CREATE_REPO_SUCCEED,
-        actionTypes.CREATE_REPO_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/repo/create',
-      method: 'post',
-      data: datas,
-    },
-  };
-}
-
-export function deleteRepo(repoId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_REPO,
-        actionTypes.DELETE_REPO_SUCCEED,
-        actionTypes.DELETE_REPO_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/repo/delete',
-      method: 'post',
-      data: { repoId },
-    },
-  };
-}
-
-export function deleteItems(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_ITEMS,
-        actionTypes.DELETE_ITEMS_SUCCEED,
-        actionTypes.DELETE_ITEMS_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/delete/items',
-      method: 'post',
-      data,
+      params: { repoId, copProdNo },
     },
   };
 }
@@ -463,13 +430,6 @@ export function getHscodeForBody(params) {
       method: 'get',
       params,
     },
-  };
-}
-
-export function setCompareVisible(val) {
-  return {
-    type: actionTypes.SET_COMPARE_VISIBLE,
-    data: val,
   };
 }
 
