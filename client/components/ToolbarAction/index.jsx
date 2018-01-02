@@ -5,7 +5,7 @@ import './index.less';
 
 export default class ToolbarAction extends Component {
   static propTypes = {
-    label: PropTypes.string,
+    label: PropTypes.node,
     icon: PropTypes.string,
     shape: PropTypes.string,
     disabled: PropTypes.bool,
@@ -15,8 +15,8 @@ export default class ToolbarAction extends Component {
     confirm: PropTypes.string,
     primary: PropTypes.bool,
     danger: PropTypes.bool,
-    overlay: PropTypes.node,
     popover: PropTypes.node,
+    dropdown: PropTypes.node,
   }
   handleClick = (ev) => {
     if (this.props.onClick) {
@@ -32,7 +32,7 @@ export default class ToolbarAction extends Component {
   }
   renderButton = () => {
     const {
-      label, primary, danger, overlay, icon, shape, disabled,
+      label, primary, danger, icon, shape, disabled, dropdown,
     } = this.props;
     let type = 'default';
     if (primary) {
@@ -40,27 +40,20 @@ export default class ToolbarAction extends Component {
     } else if (danger) {
       type = 'danger';
     }
-    return overlay ?
-      (<Dropdown overlay={overlay} placement="bottom">
-        <Button disabled={disabled} className="welo-toolbar-action">
-          <Icon type="export" />{label} <Icon type="down" />
-        </Button>
-      </Dropdown>)
-      :
-      (<Button
-        type={type}
-        shape={shape}
-        ghost={primary}
-        disabled={disabled}
-        icon={icon}
-        onClick={this.handleClick}
-        className="welo-toolbar-action"
-      >
-        {label}
-      </Button>);
+    return (<Button
+      type={type}
+      shape={shape}
+      ghost={primary}
+      disabled={disabled}
+      icon={icon}
+      onClick={this.handleClick}
+      className="welo-toolbar-action"
+    >
+      {label}{dropdown && <span> <Icon type="down" /></span>}
+    </Button>);
   }
   renderButtonWrapper = () => {
-    const { confirm, popover } = this.props;
+    const { confirm, popover, dropdown } = this.props;
     if (confirm) {
       return (<Popconfirm title={confirm} placement="bottom" onConfirm={this.handleConfirm} okText="是" cancelText="否">
         {this.renderButton()}
@@ -69,6 +62,11 @@ export default class ToolbarAction extends Component {
       return (<Popover trigger="click" content={popover} placement="bottom">
         {this.renderButton()}
       </Popover>);
+    } else if (dropdown) {
+      return (<Dropdown overlay={dropdown} placement="bottom">
+        {this.renderButton()}
+      </Dropdown>
+      );
     }
     return this.renderButton();
   }

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Modal, Form, Input } from 'antd';
+import { Alert, Modal, Form, Input, Select } from 'antd';
+import { CMS_HSCODE_BRAND_TYPE, CMS_HSCODE_EXPORT_PREFER } from 'common/constants';
 import { hideDeclElementsModal } from 'common/reducers/cmsManifest';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
+const { Option } = Select;
 
 @connect(
   state => ({
@@ -14,7 +16,6 @@ const { TextArea } = Input;
     gModel: state.cmsManifest.declElementsModal.gModel,
     disabled: state.cmsManifest.declElementsModal.disabled,
     id: state.cmsManifest.declElementsModal.id,
-    name: state.cmsManifest.declElementsModal.name,
   }),
   { hideDeclElementsModal }
 )
@@ -24,7 +25,6 @@ export default class DeclElementsModal extends Component {
     onOk: PropTypes.func,
   }
   state = {
-    visible: false,
     model: '',
     others: '',
   }
@@ -89,7 +89,7 @@ export default class DeclElementsModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, disabled, name } = this.props;
+    const { form: { getFieldDecorator }, disabled } = this.props;
     const { model, others } = this.state;
     const formItemLayout = {
       labelCol: { span: 8 },
@@ -99,7 +99,8 @@ export default class DeclElementsModal extends Component {
     const gModel = this.props.gModel ? this.props.gModel.split('|') : [];
     return (
       <div>
-        <Modal maskClosable={false}
+        <Modal
+          maskClosable={false}
           title="规格型号"
           width={800}
           visible={this.props.visible}
@@ -112,23 +113,51 @@ export default class DeclElementsModal extends Component {
             </FormItem>
             {!disabled && <Alert message="根据海关规定应填报以下要素" type="info" closable />}
             {element.map((item, index) => {
-              if (item && index >= 1) {
+              if (item && index === 0) {
+                return (
+                  <FormItem {...formItemLayout} label={item} key={item}>
+                    {getFieldDecorator(item, {
+                      initialValue: gModel[0] || '',
+                    })(<Select
+                      disabled={disabled}
+                      onChange={e => this.handleInputChange(e.target.value, item)}
+                    >
+                      {CMS_HSCODE_BRAND_TYPE.map(type => (
+                        <Option key={type.value} value={type.value}>
+                          {type.value} | {type.text}
+                        </Option>))}
+                    </Select>)}
+                  </FormItem>
+                );
+              } else if (item && index === 1) {
+                return (
+                  <FormItem {...formItemLayout} label={item} key={item}>
+                    {getFieldDecorator(item, {
+                      initialValue: gModel[1] || '',
+                    })(<Select
+                      disabled={disabled}
+                      onChange={e => this.handleInputChange(e.target.value, item)}
+                    >
+                      {CMS_HSCODE_EXPORT_PREFER.map(prefer => (
+                        <Option key={prefer.value} value={prefer.value}>
+                          {prefer.value} | {prefer.text}
+                        </Option>))}
+                    </Select>)}
+                  </FormItem>
+                );
+              } else if (item && index >= 2) {
                 return (
                   <FormItem {...formItemLayout} label={item} key={item}>
                     {getFieldDecorator(item, {
                       initialValue: gModel[index - 1] || '',
-                    })(<Input disabled={disabled} onChange={e => this.handleInputChange(e.target.value, item)} />)}
+                    })(<Input
+                      disabled={disabled}
+                      onChange={e => this.handleInputChange(e.target.value, item)}
+                    />)}
                   </FormItem>
                 );
-              } else if (item && index === 0) {
-                return (
-                  <FormItem {...formItemLayout} label={item} key={item}>
-                    <Input disabled value={name} />
-                  </FormItem>
-                );
-              } else {
-                return '';
               }
+              return '';
             })}
             <FormItem {...formItemLayout} label="其他">
               <Input value={others} disabled={disabled} onChange={this.handleOthersChange} />
