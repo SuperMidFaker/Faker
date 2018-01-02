@@ -10,6 +10,9 @@ const actionTypes = createActionTypes('@@welogix/cms/permit/', [
   'TOGGLE_PERMIT_ITEM_MODAL', 'TOGGLE_TRADE_ITEM_MODAL',
   'ADD_PERMIT_MODEL', 'ADD_PERMIT_MODEL_SUCCEED', 'ADD_PERMIT_MODEL_FAIL',
   'LOAD_PERMIT_MODELS', 'LOAD_PERMIT_MODELS_SUCCEED', 'LOAD_PERMIT_MODELS_FAIL',
+  'LOAD_TRADE_ITEMS', 'LOAD_TRADE_ITEMS_SUCCEED', 'LOAD_TRADE_ITEMS_FAIL',
+  'ADD_PERMIT_TRADE_ITEMS', 'ADD_PERMIT_TRADE_ITEMS_SUCCEED', 'ADD_PERMIT_TRADE_ITEMS_FAIL',
+  'AUTOMATIC_MATCH', 'AUTOMATIC_MATCH_SUCCESS', 'AUTOMATIC_MATCH_FAIL',
 ]);
 
 const initialState = {
@@ -19,6 +22,13 @@ const initialState = {
     pageSize: 20,
     data: [],
     loading: true,
+  },
+  tradeItemList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+    loading: false,
   },
   permitFilter: {
     status: 'all',
@@ -30,7 +40,9 @@ const initialState = {
   permitItems: [],
   tradeItemModal: {
     visible: false,
+    modelId: '',
   },
+  currentPermit: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -55,7 +67,22 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PERMIT_MODELS_SUCCEED:
       return { ...state, permitItems: action.result.data };
     case actionTypes.TOGGLE_TRADE_ITEM_MODAL:
-      return { ...state, tradeItemModal: { ...state.tradeItemModal, visible: action.visible } };
+      return {
+        ...state,
+        tradeItemModal: {
+          ...state.tradeItemModal,
+          visible: action.visible,
+          modelId: action.modelId,
+        },
+      };
+    case actionTypes.LOAD_PERMIT_SUCCEED:
+      return { ...state, currentPermit: action.result.data };
+    case actionTypes.LOAD_TRADE_ITEMS:
+      return { ...state, tradeItemList: { ...state.tradeItemList, loading: true } };
+    case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
+      return { ...state, tradeItemList: { ...action.result.data, loading: false } };
+    case actionTypes.LOAD_TRADE_ITEMS_FAIL:
+      return { ...state, tradeItemList: { ...state.tradeItemList, loading: false } };
     default:
       return state;
   }
@@ -172,9 +199,55 @@ export function loadPermitModels(permitId) {
   };
 }
 
-export function toggleTradeItemModal(visible) {
+export function toggleTradeItemModal(visible, modelId) {
   return {
     type: actionTypes.TOGGLE_TRADE_ITEM_MODAL,
     visible,
+    modelId,
+  };
+}
+
+export function loadTradeItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRADE_ITEMS,
+        actionTypes.LOAD_TRADE_ITEMS_SUCCEED,
+        actionTypes.LOAD_TRADE_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/trade/items/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function addPermitTradeItem(modelId, tradeItems) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_PERMIT_TRADE_ITEMS,
+        actionTypes.ADD_PERMIT_TRADE_ITEMS_SUCCEED,
+        actionTypes.ADD_PERMIT_TRADE_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/permit/trade/items/add',
+      method: 'post',
+      data: { modelId, tradeItems },
+    },
+  };
+}
+
+export function automaticMatch(modelId, model, ownerPartnerId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.AUTOMATIC_MATCH,
+        actionTypes.AUTOMATIC_MATCH_SUCCESS,
+        actionTypes.AUTOMATIC_MATCH_FAIL,
+      ],
+      endpoint: 'v1/cms/permit/automatic/match',
+      method: 'post',
+      data: { modelId, model, ownerPartnerId },
+    },
   };
 }
