@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { notification, Icon, Button, Breadcrumb, Layout, Select } from 'antd';
+import { notification, Button, Breadcrumb, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
-import NavLink from 'client/components/NavLink';
+import RowAction from 'client/components/RowAction';
 import { loadWorkspaceItems, submitAudit } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
@@ -76,13 +76,14 @@ export default class InvalidItemsList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (_, record) => {
-      const itemUrl = '/clearance/tradeitem/workspace/item';
-      return (<span>
-        <NavLink to={`${itemUrl}/${record.id}`}><Icon type="edit" /></NavLink>
-      </span>);
-    },
+    render: (_, record) => (<span>
+      <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
+    </span>),
   }])
+  handleItemEdit = (record) => {
+    const link = `/clearance/tradeitem/workspace/item/${record.id}`;
+    this.context.router.push(link);
+  }
   handleSearch = (value) => {
     const filter = { ...this.state.filter, name: value };
     this.props.loadWorkspaceItems({

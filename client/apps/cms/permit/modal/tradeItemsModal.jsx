@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Input } from 'antd';
+import { Button, Modal, Input } from 'antd';
 import { connect } from 'react-redux';
 import { toggleTradeItemModal, loadTradeItems, addPermitTradeItem } from 'common/reducers/cmsPermit';
 import DataTable from 'client/components/DataTable';
@@ -26,13 +26,23 @@ export default class PermitItemModal extends Component {
   }
   columns = [{
     title: '序号',
+    width: 45,
     render: (o, record, index) => index + 1,
   }, {
-    title: '货号',
+    title: '商品货号',
     dataIndex: 'cop_product_no',
   }, {
-    title: '名称',
+    title: 'HS编码',
+    dataIndex: 'hscode',
+  }, {
+    title: '中文品名',
     dataIndex: 'g_name',
+  }, {
+    title: '海关监管条件',
+    dataIndex: 'customs_control',
+  }, {
+    title: '检验检疫条件',
+    dataIndex: 'inspection_quarantine',
   }]
   handleCancel = () => {
     this.props.toggleTradeItemModal(false);
@@ -97,13 +107,27 @@ export default class PermitItemModal extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
+    const title = (<div>
+      <span>关联商品</span>
+      <div className="toolbar-right">
+        <Button onClick={this.handleCancel}>取消</Button>
+        <Button type="primary" onClick={this.handleOk}>保存</Button>
+      </div>
+    </div>);
     return (
-      <Modal width={800} title="tradeItems" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleOk} >
+      <Modal
+        title={title}
+        width="100%"
+        visible={this.props.visible}
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+      >
         <DataTable
           size="middle"
+          colFixed
           columns={this.columns}
           dataSource={this.dataSource}
-          scrollOffset="240"
           rowkey="cop_product_no"
           loading={this.props.loading}
           rowSelection={rowSelection}
@@ -114,7 +138,7 @@ export default class PermitItemModal extends Component {
               onChange={this.handleChange}
               onSearch={this.handleSearch}
             />
-            }
+          }
         />
       </Modal>
     );

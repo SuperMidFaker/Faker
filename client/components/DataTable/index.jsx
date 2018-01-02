@@ -53,6 +53,7 @@ class DataTable extends React.Component {
     selectedRowKeys: PropTypes.array,
     handleDeselectRows: PropTypes.func,
     noBorder: PropTypes.bool,
+    colFixed: PropTypes.bool,
     total: PropTypes.node,
   }
   static contextTypes = {
@@ -250,7 +251,7 @@ class DataTable extends React.Component {
     this.setState({ popoverColumns });
   }
   render() {
-    const { baseCls, noBorder } = this.props;
+    const { baseCls, noBorder, colFixed } = this.props;
     let { dataSource } = this.props;
     let { pagination } = this.props;
     if (dataSource && !isLocalDataSource(dataSource)) {
@@ -294,7 +295,7 @@ class DataTable extends React.Component {
           {this.props.toolbarActions}
           <div className={`${baseCls}-toolbar-right`}>
             {this.props.total}
-            <Popover
+            {!colFixed && <Popover
               placement="leftTop"
               trigger="click"
               title="选择、排序显示字段"
@@ -305,7 +306,7 @@ class DataTable extends React.Component {
               <Tooltip title="表头设置">
                 <Button shape="circle" icon="table" />
               </Tooltip>
-            </Popover>
+            </Popover>}
           </div>
           {this.props.selectedRowKeys &&
           <div className={`${baseCls}-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

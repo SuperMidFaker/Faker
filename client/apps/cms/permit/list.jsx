@@ -143,6 +143,7 @@ export default class PermitList extends Component {
   }, {
     title: this.msg('opCol'),
     width: 100,
+    fixed: 'right',
     render: (o, record) => (
       <span>
         <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />

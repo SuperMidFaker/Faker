@@ -53,7 +53,7 @@ export default class PermitItemModal extends Component {
     return (
       <Modal title="添加单证型号" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <FromItem label="型号" {...formItemLayout}>
-          <Input value={model} onChange={this.handleChange} />
+          <Input value={model} placeholder="MODEL-1234XXX (X代表字母、数字或空白)" onChange={this.handleChange} />
         </FromItem>
       </Modal>
     );
