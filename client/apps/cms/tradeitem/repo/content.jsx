@@ -8,7 +8,7 @@ import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Sel
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams } from 'common/reducers/cmsTradeitem';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -55,6 +55,7 @@ const { Option } = Select;
     replicaMasterSlave,
     getElementByHscode,
     showDeclElementsModal,
+    toggleHistoryItemsDecl,
   }
 )
 @connectNav({
@@ -294,6 +295,15 @@ export default class RepoContent extends Component {
             </span>
           );
         }
+        if (record.decl_status === 0) {
+          return (
+            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="check" label="启用" row={record} />
+          );
+        } else if (record.decl_status === 1) {
+          return (
+            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="close" label="禁用" row={record} />
+          );
+        }
         return (
           <RowAction confirm="确定删除?" onConfirm={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
         );
@@ -390,12 +400,23 @@ export default class RepoContent extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleFilterChange = (ev) => {
-    this.setState({ selectedRowKeys: [] });
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
+    if (filter.status === 'history') {
+      filter.decl_status = 'all';
+    }
     this.handleItemListLoad(1, filter);
+    this.handleDeselectRows();
+  }
+  handleHistoryFilterChange = (ev) => {
+    if (ev.target.value === this.props.listFilter.decl_status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, decl_status: ev.target.value };
+    this.handleItemListLoad(1, filter);
+    this.handleDeselectRows();
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -403,6 +424,15 @@ export default class RepoContent extends Component {
   handleSearch = (value) => {
     this.setState({ searchVal: value });
     this.handleItemListLoad(1, null, value);
+  }
+  handleHistoryToggle = (itemIds, action) => {
+    const { params } = this.props;
+    this.props.toggleHistoryItemsDecl(params.repoId, itemIds, action).then((result) => {
+      if (!result.error) {
+        this.handleItemListLoad();
+        this.handleDeselectRows();
+      }
+    });
   }
   handleExportSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -447,18 +477,35 @@ export default class RepoContent extends Component {
     };
     let bulkActions = null;
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
-      bulkActions = (<span>
-        <Button icon="export" onClick={this.handleExportSelected} >
-            批量导出
-        </Button>
+      bulkActions = [
         <Popconfirm title="是否删除所有选择项？" onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" icon="delete">
               批量删除
           </Button>
-        </Popconfirm></span>);
+        </Popconfirm>,
+      ];
+      if (listFilter.status === 'history') {
+        if (listFilter.decl_status === 'versioned') {
+          bulkActions.push(<Button key="version" icon="close" onClick={() => this.handleHistoryToggle(selectedRows, 'disable')}>批量禁用</Button>);
+        } else if (listFilter.decl_status === 'disabled') {
+          bulkActions.push(<Button key="disabled" icon="check" onClick={() => this.handleHistoryToggle(selectedRows, 'enable')}>批量启用</Button>);
+        }
+      }
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={searchVal} />);
+    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={searchVal} key="searchbar" />];
+    if (listFilter.status === 'history') {
+      toolbarActions.push(<RadioGroup value={listFilter.decl_status} onChange={this.handleHistoryFilterChange} key="history" style={{ marginLeft: 8, marginRight: 8 }}>
+        <RadioButton value="all"> {this.msg('tradeItemHistoryAll')}</RadioButton>
+        <RadioButton value="versioned"><Icon type="check-circle-o" /> {this.msg('tradeItemHistoryVersioned')}</RadioButton>
+        <RadioButton value="disabled"><Icon type="close-circle-o" /> {this.msg('tradeItemHistoryDisabled')}</RadioButton>
+      </RadioGroup>);
+      if (listFilter.decl_status === 'versioned') {
+        toolbarActions.push(<Button key="version" icon="close" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
+      } else if (listFilter.decl_status === 'disabled') {
+        toolbarActions.push(<Button key="disabled" icon="check" onClick={() => this.handleHistoryToggle(null, 'enable')}>全部启用</Button>);
+      }
+    }
     let repoName = repo.owner_name;
     if (tenantId === repo.owner_tenant_id) {
       repoName = repo.creator_name;
@@ -477,6 +524,13 @@ export default class RepoContent extends Component {
             <RadioGroup value={listFilter.status} onChange={this.handleFilterChange} >
               <RadioButton value="master"><Icon type="check-circle-o" /> {this.msg('tradeItemMaster')}</RadioButton>
               <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
+            </RadioGroup>
+            <RadioGroup
+              value={listFilter.status}
+              onChange={this.handleFilterChange}
+              style={{ marginLeft: 8 }}
+            >
+              <RadioButton value="history"><Icon type="minus-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>

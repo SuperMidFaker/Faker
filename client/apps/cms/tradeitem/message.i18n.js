@@ -78,6 +78,22 @@ const messages = defineMessages({
     id: 'cms.tradeitem.branch',
     defaultMessage: '分支数据',
   },
+  tradeItemHistory: {
+    id: 'cms.tradeitem.history',
+    defaultMessage: '历史数据',
+  },
+  tradeItemHistoryAll: {
+    id: 'cms.tradeitem.history',
+    defaultMessage: '全部',
+  },
+  tradeItemHistoryVersioned: {
+    id: 'cms.tradeitem.history.versioned',
+    defaultMessage: '可用',
+  },
+  tradeItemHistoryDisabled: {
+    id: 'cms.tradeitem.history.disabled',
+    defaultMessage: '禁用',
+  },
   addItem: {
     id: 'cms.classificagtion.tradeitem.add.item',
     defaultMessage: '新增商品归类',
