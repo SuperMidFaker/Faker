@@ -35,6 +35,7 @@ export default class DeclElementsModal extends Component {
         model: nextProps.gModel,
         others,
       });
+      nextProps.form.resetFields();
     }
   }
   handleOk = () => {
