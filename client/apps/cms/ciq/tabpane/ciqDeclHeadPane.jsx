@@ -112,7 +112,7 @@ export default class CiqDeclHeadPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ioType: PropTypes.string.isRequired,
-    form: PropTypes.object.shape({
+    form: PropTypes.shape({
       getFieldDecorator: PropTypes.func,
     }).isRequired,
   }
