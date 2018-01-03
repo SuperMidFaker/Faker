@@ -107,23 +107,33 @@ export default class RepoContent extends Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
+    dataIndex: 'mark',
+    width: 40,
+    fixed: 'left',
+    align: 'center',
+    render: (o, record) => {
+      if (record.decl_status === 0) {
+        return (<Popover content="已禁用的归类历史数据" placement="right">
+          <Icon type="clock-circle-o" className="text-normal" />
+        </Popover>);
+      } else if (record.decl_status === 1) {
+        return (<Popover content="可用于保税库存出库申报的归类历史数据" placement="right">
+          <Icon type="clock-circle-o" className="text-info" />
+        </Popover>);
+      }
+      return (record.cop_product_no === record.src_product_no || !record.src_product_no ?
+        <Popover content="归类主数据" placement="right">
+          <Icon type="check-circle-o" className="text-success" />
+        </Popover> :
+        <Popover content={`${record.cop_product_no}的归类分支数据(仅对保税库存出库申报有效)`} placement="right">
+          <Icon type="exclamation-circle-o" className="text-warning" />
+        </Popover>);
+    },
+  }, {
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
-    width: 150,
-    fixed: 'left',
-    render: (o, record) => (o === record.src_product_no || !record.src_product_no ?
-      <Popover content="归类主数据" placement="right">
-        <Icon type="check-circle-o" className="text-success" /> {o}
-      </Popover> :
-      <Popover content={`${o}的归类分支数据(仅对保税库存出库申报有效)`} placement="right">
-        <Icon type="exclamation-circle-o" className="text-warning" /> {record.src_product_no}
-      </Popover>),
-  /*
-  }, {
-    title: this.msg('srcProductNo'),
-    dataIndex: 'src_product_no',
     width: 200,
-  */
+    fixed: 'left',
   }, {
     title: this.msg('itemType'),
     dataIndex: 'item_type',
@@ -297,11 +307,11 @@ export default class RepoContent extends Component {
         }
         if (record.decl_status === 0) {
           return (
-            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="check" label="启用" row={record} />
+            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="play-circle-o" label="启用" row={record} />
           );
         } else if (record.decl_status === 1) {
           return (
-            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="close" label="禁用" row={record} />
+            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="pause-circle-o" label="禁用" row={record} />
           );
         }
         return (
@@ -486,9 +496,9 @@ export default class RepoContent extends Component {
       ];
       if (listFilter.status === 'history') {
         if (listFilter.decl_status === 'versioned') {
-          bulkActions.push(<Button key="version" icon="close" onClick={() => this.handleHistoryToggle(selectedRows, 'disable')}>批量禁用</Button>);
+          bulkActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(selectedRows, 'disable')}>批量禁用</Button>);
         } else if (listFilter.decl_status === 'disabled') {
-          bulkActions.push(<Button key="disabled" icon="check" onClick={() => this.handleHistoryToggle(selectedRows, 'enable')}>批量启用</Button>);
+          bulkActions.push(<Button key="disabled" icon="play-circle-o" onClick={() => this.handleHistoryToggle(selectedRows, 'enable')}>批量启用</Button>);
         }
       }
     }
@@ -497,13 +507,13 @@ export default class RepoContent extends Component {
     if (listFilter.status === 'history') {
       toolbarActions.push(<RadioGroup value={listFilter.decl_status} onChange={this.handleHistoryFilterChange} key="history" style={{ marginLeft: 8, marginRight: 8 }}>
         <RadioButton value="all"> {this.msg('tradeItemHistoryAll')}</RadioButton>
-        <RadioButton value="versioned"><Icon type="check-circle-o" /> {this.msg('tradeItemHistoryVersioned')}</RadioButton>
-        <RadioButton value="disabled"><Icon type="close-circle-o" /> {this.msg('tradeItemHistoryDisabled')}</RadioButton>
+        <RadioButton value="versioned">{this.msg('tradeItemHistoryVersioned')}</RadioButton>
+        <RadioButton value="disabled">{this.msg('tradeItemHistoryDisabled')}</RadioButton>
       </RadioGroup>);
       if (listFilter.decl_status === 'versioned') {
-        toolbarActions.push(<Button key="version" icon="close" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
+        toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
       } else if (listFilter.decl_status === 'disabled') {
-        toolbarActions.push(<Button key="disabled" icon="check" onClick={() => this.handleHistoryToggle(null, 'enable')}>全部启用</Button>);
+        toolbarActions.push(<Button key="disabled" icon="play-circle-o" onClick={() => this.handleHistoryToggle(null, 'enable')}>全部启用</Button>);
       }
     }
     let repoName = repo.owner_name;
@@ -521,16 +531,19 @@ export default class RepoContent extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleFilterChange} >
+            <RadioGroup
+              value={listFilter.status}
+              onChange={this.handleFilterChange}
+            >
               <RadioButton value="master"><Icon type="check-circle-o" /> {this.msg('tradeItemMaster')}</RadioButton>
-              <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
             </RadioGroup>
             <RadioGroup
               value={listFilter.status}
               onChange={this.handleFilterChange}
               style={{ marginLeft: 8 }}
             >
-              <RadioButton value="history"><Icon type="minus-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
+              <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
+              <RadioButton value="history"><Icon type="clock-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
@@ -578,7 +591,6 @@ export default class RepoContent extends Component {
             rowKey="id"
             columns={this.columns}
             dataSource={this.dataSource}
-            bordered
           />
           <DeclElementsModal onOk={null} />
         </Content>
