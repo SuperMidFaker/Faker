@@ -90,7 +90,7 @@ export default class HeadCard extends Component {
     } = this.props;
     const { bonded } = this.state;
     return (
-      <Card bodyStyle={{ paddingBottom: 8 }} hoverable={false}>
+      <Card bodyStyle={{ paddingBottom: 8 }} >
         <Row gutter={24}>
           <Col sm={24} lg={6}>
             <FormItem label="货主">

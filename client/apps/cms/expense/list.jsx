@@ -11,7 +11,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import moment from 'moment';

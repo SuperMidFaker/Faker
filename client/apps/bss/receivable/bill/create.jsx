@@ -75,7 +75,7 @@ export default class ReceivableBillDetail extends Component {
           </PageHeader.Title>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+          <Card bodyStyle={{ padding: 16 }} >
             <DescriptionList col={4}>
               <Description term="货主">{summary.owner_name}</Description>
               <Description term="ASN编号">{summary.asn_no}</Description>
@@ -86,7 +86,7 @@ export default class ReceivableBillDetail extends Component {
               <Description term="入库时间">{summary.completed_date && moment(summary.completed_date).format('YYYY.MM.DD HH:mm')}</Description>
             </DescriptionList>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="应收明细" key="receiveDetails" />
               <TabPane tab="应付明细" key="putawayDetails" />

@@ -7,9 +7,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsManifest';
-import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog, uploadDecl } from 'common/reducers/cmsDeclare';
+import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog, uploadDecl } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/NavLink';
@@ -23,6 +23,7 @@ import CusDeclBodyPane from './tabpane/cusDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';
 import AttachedDocsPane from './tabpane/attachedDocsPane';
 import AttachedCertsPane from './tabpane/attachedCertsPane';
+import DutyTaxPane from './tabpane/dutyTaxPane';
 import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
@@ -342,6 +343,9 @@ export default class CustomsDeclEditor extends React.Component {
     tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
       <AttachedDocsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
+    tabs.push(<TabPane tab="预估税金" key="dutyTax" head={head}>
+      <DutyTaxPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
     tabs.push(<TabPane tab="申报清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
@@ -402,7 +406,7 @@ export default class CustomsDeclEditor extends React.Component {
         <Content className="page-content layout-min-width layout-min-width-large readonly">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            hoverable={false}
+
             loading={this.props.declSpinning}
             onSizeChange={this.toggleFullscreen}
           >

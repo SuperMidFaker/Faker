@@ -46,13 +46,18 @@ export default class StatsCard extends Component {
     const { statsCard } = this.props;
     const datePicker = (
       <div>
-        <RangePicker onChange={this.onDateChange} defaultValue={[moment(new Date(), 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
-          ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }} allowClear={false}
+        <RangePicker
+          onChange={this.onDateChange}
+          defaultValue={[moment(new Date(), 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
+          ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+          allowClear={false}
         />
       </div>);
     return (
-      <Card title={this.msg('stats')}
-        extra={datePicker} hoverable={false} bodyStyle={{ padding: 0 }}
+      <Card
+        title={this.msg('stats')}
+        extra={datePicker}
+        bodyStyle={{ padding: 0 }}
       >
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">

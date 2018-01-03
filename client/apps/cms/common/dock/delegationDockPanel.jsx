@@ -6,7 +6,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants';
 import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
-import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelgInfoHub';
+import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelegationDock';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
@@ -28,14 +28,14 @@ const { TabPane } = Tabs;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.cmsDelgInfoHub.previewer.visible,
-    previewLoading: state.cmsDelgInfoHub.basicPreviewLoading,
-    previewer: state.cmsDelgInfoHub.previewer,
-    tabKey: state.cmsDelgInfoHub.tabKey,
-    previewKey: state.cmsDelgInfoHub.previewKey,
+    visible: state.cmsDelegationDock.previewer.visible,
+    previewLoading: state.cmsDelegationDock.basicPreviewLoading,
+    previewer: state.cmsDelegationDock.previewer,
+    tabKey: state.cmsDelegationDock.tabKey,
+    previewKey: state.cmsDelegationDock.previewKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
     operators: state.crmCustomers.operators,
-    partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
+    partnerId: state.cmsDelegationDock.previewer.delgDispatch.send_partner_id,
   }),
   {
     hideDock,

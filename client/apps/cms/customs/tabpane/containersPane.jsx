@@ -43,7 +43,6 @@ ColumnInput.propTypes = {
 export default class ContainersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     containers: PropTypes.array,
     billHead: PropTypes.object,
   }
@@ -107,28 +106,41 @@ export default class ContainersPane extends React.Component {
       title: this.msg('containerId'),
       dataIndex: 'container_id',
       render: (o, record) =>
-        (<ColumnInput field="container_id" inEdit={!record.id} record={record}
+        (<ColumnInput
+          field="container_id"
+          inEdit={!record.id}
+          record={record}
           onChange={this.handleEditChange}
         />),
     }, {
       title: this.msg('containerSpec'),
       dataIndex: 'container_spec',
       render: (o, record) =>
-        (<ColumnInput field="container_spec" inEdit={!record.id} record={record}
+        (<ColumnInput
+          field="container_spec"
+          inEdit={!record.id}
+          record={record}
           onChange={this.handleEditChange}
         />),
     }, {
       title: this.msg('containerWt'),
       dataIndex: 'container_wt',
       render: (o, record) =>
-        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
+        (<ColumnInput
+          field="container_wt"
+          inEdit={!record.id}
+          record={record}
           onChange={this.handleEditChange}
         />),
     }];
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312}
-        dataSource={this.state.datas} rowKey="id"
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={columns}
+        bordered
+        scrollOffset={312}
+        dataSource={this.state.datas}
+        rowKey="id"
       />
     );
   }

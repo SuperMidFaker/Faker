@@ -162,23 +162,35 @@ export default class StatsCard extends Component {
           <RadioButton value="USD">USD</RadioButton>
           <RadioButton value="CNY">CNY</RadioButton>
         </RadioGroup>
-        <Select showSearch optionFilterProp="children" style={{ width: 160, marginLeft: 8 }}
-          onChange={this.handleClientSelectChange} defaultValue={-1}
-          dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+        <Select
+          showSearch
+          optionFilterProp="children"
+          style={{ width: 160, marginLeft: 8 }}
+          onChange={this.handleClientSelectChange}
+          defaultValue={-1}
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ width: 360 }}
         >
-          {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+          {clients.map(data => (<Option
+            key={data.partner_id}
+            value={data.partner_id}
             search={`${data.partner_code}${data.name}`}
           >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
           </Option>))}
         </Select>
-        <RangePicker style={{ marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
+        <RangePicker
+          style={{ marginLeft: 8 }}
+          value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-          onChange={this.onDateChange} allowClear={false}
+          onChange={this.onDateChange}
+          allowClear={false}
         />
       </div>);
     return (
-      <Card title={this.msg('stats')}
-        extra={datePicker} hoverable={false} bodyStyle={{ padding: 0 }}
+      <Card
+        title={this.msg('stats')}
+        extra={datePicker}
+        bodyStyle={{ padding: 0 }}
       >
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">

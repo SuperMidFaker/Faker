@@ -13,8 +13,8 @@ export default defineMessages({
     id: 'cms.settings.split.currency',
     defaultMessage: '币制',
   },
-  icountry: {
-    id: 'cms.settings.split.icountry',
+  origCountry: {
+    id: 'cms.settings.split.origCountry',
     defaultMessage: '原产国',
   },
   productCode: {

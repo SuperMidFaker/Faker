@@ -52,27 +52,33 @@ export default class TransitionModal extends React.Component {
       </div>
     </div>);
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        visible={visible} footer={null}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        visible={visible}
+        footer={null}
       >
         <Spin spinning={loading}>
           <Form>
             <Row gutter={24}>
               <Col span={12}>
-                <Card title="属性调整" hoverable={false}>
+                <Card title="属性调整" >
                   <TransitPane form={form} />
                 </Card>
               </Col>
               <Col span={6}>
-                <Card title="数量调整" hoverable={false}>
+                <Card title="数量调整" >
                   <AdjustPane />
                 </Card>
-                <Card title="状态调整" hoverable={false}>
+                <Card title="状态调整" >
                   <FreezePane />
                 </Card>
               </Col>
               <Col span={6}>
-                <Card title="库存事务记录" hoverable={false}>
+                <Card title="库存事务记录" >
                   <LogsPane traceId={this.props.detail.trace_id} />
                 </Card>
               </Col>

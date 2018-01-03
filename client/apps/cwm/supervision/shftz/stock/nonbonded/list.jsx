@@ -259,11 +259,18 @@ export default class SHFTZNonBondedStockList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <Card hoverable={false} bodyStyle={{ paddingBottom: 8 }}>
+            <Card bodyStyle={{ paddingBottom: 8 }}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
             </Card>
-            <DataTable toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-              columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              scrollOffset={390}
+              loading={this.props.loading}
+              columns={columns}
+              dataSource={this.props.stockDatas}
+              rowSelection={rowSelection}
+              rowKey="id"
             />
           </Content>
         </Layout>

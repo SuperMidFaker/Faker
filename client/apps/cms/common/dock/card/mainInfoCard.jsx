@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Menu, Col, Card } from 'antd';
-import { saveBaseInfo } from 'common/reducers/cmsDelgInfoHub';
+import { saveBaseInfo } from 'common/reducers/cmsDelegationDock';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
@@ -15,7 +15,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    delegation: state.cmsDelgInfoHub.previewer.delegation,
+    delegation: state.cmsDelegationDock.previewer.delegation,
 
   }),
   { saveBaseInfo }
@@ -54,7 +54,7 @@ export default class MainInfoCard extends React.Component {
       }
     }
     return (
-      <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+      <Card bodyStyle={{ padding: 16 }} >
         <Row gutter={16} className="info-group-underline">
           <Col span="8">
             <InfoItem

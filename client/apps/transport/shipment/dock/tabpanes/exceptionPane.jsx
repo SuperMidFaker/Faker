@@ -10,6 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../..//message.i18n';
 import ResolveExceptionModal from '../../../tracking/land/modals/resolveExceptionModal';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
+
 const formatMsg = format(messages);
 
 @injectIntl
@@ -156,7 +157,7 @@ export default class ExceptionPane extends React.Component {
 
     return (
       <div className="pane-content tab-pane table-list">
-        <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16 }} >
           <Table size="middle" showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
           <ResolveExceptionModal />
         </Card>

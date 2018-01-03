@@ -28,8 +28,8 @@ import transportBilling from './transportBilling';
 import transportKpi from './transportKpi';
 import cmsDashboard from './cmsDashboard';
 import cmsDelegation from './cmsDelegation';
-import cmsDelgInfoHub from './cmsDelgInfoHub';
-import cmsDeclare from './cmsDeclare';
+import cmsDelegationDock from './cmsDelegationDock';
+import cmsCustomsDeclare from './cmsCustomsDeclare';
 import cmsManifest from './cmsManifest';
 import cmsManifestImport from './cmsManifestImport';
 import cmsInvoice from './cmsInvoice';
@@ -37,7 +37,7 @@ import cmsQuote from './cmsQuote';
 import cmsResources from './cmsResources';
 import cmsBrokers from './cmsBrokers';
 import cmsTradeManual from './cmsTradeManual';
-import cmsTradePermit from './cmsTradePermit';
+import cmsAnalytics from './cmsAnalytics';
 import cmsPreferences from './cmsPreferences';
 import scofFlow from './scofFlow';
 import sofVendors from './sofVendors';
@@ -103,8 +103,8 @@ export default combineReducers({
   transportKpi,
   cmsDashboard,
   cmsDelegation,
-  cmsDelgInfoHub,
-  cmsDeclare,
+  cmsDelegationDock,
+  cmsCustomsDeclare,
   cmsManifest,
   cmsManifestImport,
   cmsInvoice,
@@ -117,7 +117,7 @@ export default combineReducers({
   cmsHsCode,
   cmsBrokers,
   cmsTradeManual,
-  cmsTradePermit,
+  cmsAnalytics,
   scofFlow,
   sofVendors,
   scvInboundShipments,

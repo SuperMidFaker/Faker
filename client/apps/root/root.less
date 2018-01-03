@@ -161,6 +161,17 @@ img {
 .ant-layout-header {
   background: transparent;
 }
+.ant-list {
+  .ant-spin-container {
+    overflow: visible;
+  }
+  .ant-card {
+    margin-bottom: 0;
+  }
+}
+.ant-list-grid .ant-list-item {
+  margin-bottom: 0;
+}
 .ant-menu-root {
   font-size: 14px;
 }
@@ -478,6 +489,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
+  .ant-collapse-borderless {
+    background-color: transparent;
+  }
   &.layout-fixed-width-lg {
     max-width: 1200px;
   }

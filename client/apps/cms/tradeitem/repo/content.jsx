@@ -287,13 +287,13 @@ export default class RepoContent extends Component {
         if (this.props.listFilter.status === 'master') {
           if (this.props.repo.mode === 'slave') {
             return (
-              <RowAction onClick={this.handleItemFork} icon="fork" label={this.msg('fork')} row={record} />
+              <RowAction onClick={this.handleItemFork} icon="fork" label={this.msg('forkItem')} row={record} />
             );
           }
           return (
             <span>
               <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
-              <RowAction onClick={this.handleItemFork} icon="fork" tooltip={this.msg('fork')} row={record} />
+              <RowAction onClick={this.handleItemFork} icon="fork" tooltip={this.msg('forkItem')} row={record} />
             </span>
           );
         }

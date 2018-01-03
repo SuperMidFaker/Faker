@@ -204,7 +204,7 @@ export default class ItemMasterPane extends React.Component {
 
     return (
       <FormPane fullscreen={this.props.fullscreen}>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('copProductNo')}>
@@ -254,7 +254,7 @@ export default class ItemMasterPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('hscode')}>

@@ -12,9 +12,9 @@ import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
-  openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsDeclare';
+  openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
-import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -47,11 +47,11 @@ const { Search } = Input;
     loginId: state.account.loginId,
     avatar: state.account.profile.avatar,
     loginName: state.account.username,
-    customslist: state.cmsDeclare.customslist,
-    listFilter: state.cmsDeclare.listFilter,
+    customslist: state.cmsCustomsDeclare.customslist,
+    listFilter: state.cmsCustomsDeclare.listFilter,
     clients: state.partner.partners,
-    customs: state.cmsDeclare.listRequire.customs,
-    tradeModes: state.cmsDeclare.listRequire.tradeModes,
+    customs: state.cmsCustomsDeclare.listRequire.customs,
+    tradeModes: state.cmsCustomsDeclare.listRequire.tradeModes,
   }),
   {
     loadCustomsDecls,

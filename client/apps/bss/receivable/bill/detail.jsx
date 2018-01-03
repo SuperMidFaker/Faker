@@ -87,7 +87,7 @@ export default class ReceivableBillDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+          <Card bodyStyle={{ padding: 16 }} >
             <Row type="flex">
               <Col span={16}>
                 <DescriptionList col={4}>
@@ -112,7 +112,7 @@ export default class ReceivableBillDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="orderList" onChange={this.handleTabChange}>
               <TabPane tab="结算订单" key="orderList" >
                 <OrderListPane />

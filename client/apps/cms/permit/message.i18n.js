@@ -31,7 +31,7 @@ export default defineMessages({
   },
   addPermit: {
     id: 'cms.permit.add',
-    defaultMessage: '添加证件',
+    defaultMessage: '添加证书',
   },
   permitOwner: {
     id: 'cms.permit.owner',

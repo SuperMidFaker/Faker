@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, message } from 'antd';
-import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelgInfoHub';
-import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
+import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelegationDock';
+import { loadDeclHead, setInspect } from 'common/reducers/cmsCustomsDeclare';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import MainInfoCard from '../card/mainInfoCard';
 
 @connect(state => ({
   tenantId: state.account.tenantId,
-  previewer: state.cmsDelgInfoHub.previewer,
-  tabKey: state.cmsDelgInfoHub.tabKey,
-  declHeadsPane: state.cmsDeclare.decl_heads,
+  previewer: state.cmsDelegationDock.previewer,
+  tabKey: state.cmsDelegationDock.tabKey,
+  declHeadsPane: state.cmsCustomsDeclare.decl_heads,
 }), {
   exchangeBlNo,
   loadDeclHead,

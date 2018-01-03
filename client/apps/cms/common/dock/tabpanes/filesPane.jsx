@@ -13,9 +13,9 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    tabKey: state.cmsDelgInfoHub.tabKey,
-    ciqSpinning: state.cmsDelgInfoHub.ciqPanelLoading,
-    delegation: state.cmsDelgInfoHub.previewer.delegation,
+    tabKey: state.cmsDelegationDock.tabKey,
+    ciqSpinning: state.cmsDelegationDock.ciqPanelLoading,
+    delegation: state.cmsDelegationDock.previewer.delegation,
     userMembers: state.account.userMembers,
   }),
   { loadCmsFiles }
@@ -93,7 +93,7 @@ export default class FilesPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={ciqSpinning}>
-          <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+          <Card bodyStyle={{ padding: 0 }} >
             <Table size="middle" columns={columns} pagination={false} dataSource={records} />
           </Card>
         </Spin>

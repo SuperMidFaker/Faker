@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
+import { loadWorkspaceItem, saveWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import ItemMasterPane from '../repo/item/tabpane/itemMasterPane';
-import { loadWorkspaceItem, saveWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -82,6 +82,9 @@ export default class WorkItemPage extends Component {
                 {this.msg('workspace')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
+                {itemData.repo_owner_name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
                 {this.msg('editItem')}
               </Breadcrumb.Item>
             </Breadcrumb>
@@ -96,7 +99,10 @@ export default class WorkItemPage extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard
+            bodyStyle={{ padding: 0 }}
+            onSizeChange={this.toggleFullscreen}
+          >
             <Tabs defaultActiveKey="master">
               <TabPane tab="主数据" key="master">
                 <ItemMasterPane action="edit" form={form} itemData={itemData} />

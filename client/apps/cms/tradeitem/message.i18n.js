@@ -80,11 +80,11 @@ const messages = defineMessages({
   },
   addItem: {
     id: 'cms.classificagtion.tradeitem.add.item',
-    defaultMessage: '新增料件',
+    defaultMessage: '新增料件归类',
   },
   editItem: {
     id: 'cms.classificagtion.tradeitem.edit.item',
-    defaultMessage: '修改料件',
+    defaultMessage: '修改料件归类',
   },
   searchRepoPlaceholder: {
     id: 'cms.tradeitem.searchRepoPlaceholder',
@@ -120,7 +120,7 @@ const messages = defineMessages({
   },
   srcProductNo: {
     id: 'cms.tradeitem.col.src.product.no',
-    defaultMessage: '源标识',
+    defaultMessage: '分支标识',
   },
   itemType: {
     id: 'cms.tradeitem.col.item.type',
@@ -302,9 +302,9 @@ const messages = defineMessages({
     id: 'cms.tradeitem.op.modify',
     defaultMessage: '修改',
   },
-  fork: {
+  forkItem: {
     id: 'cms.tradeitem.op.fork',
-    defaultMessage: '分支',
+    defaultMessage: '建立归类分支',
   },
   delete: {
     id: 'cms.tradeitem.op.delete',

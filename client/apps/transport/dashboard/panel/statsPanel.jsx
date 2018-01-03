@@ -57,16 +57,22 @@ export default class StatsPanel extends Component {
     const datePicker = (
       <div>
         <CustomerSelect onChange={this.handleCustomerChange} />
-        <RangePicker style={{ marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
+        <RangePicker
+          style={{ marginLeft: 8 }}
+          value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-          onChange={this.onDateChange} allowClear={false}
+          onChange={this.onDateChange}
+          allowClear={false}
         />
       </div>);
     return (
-      <Card title={<span>运输统计<Tooltip title="以计划提货时间为基准，一段时间内运单的总票数=未起运的数量+在途的数量+已送达的数量">
-        <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
-      </Tooltip>
-      </span>} extra={datePicker} hoverable={false} bodyStyle={{ padding: 0 }}
+      <Card
+        title={<span>运输统计<Tooltip title="以计划提货时间为基准，一段时间内运单的总票数=未起运的数量+在途的数量+已送达的数量">
+          <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
+        </Tooltip>
+        </span>}
+        extra={datePicker}
+        bodyStyle={{ padding: 0 }}
       >
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">

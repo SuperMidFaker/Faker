@@ -6,7 +6,7 @@ import { Button, Tag } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { togglePermitItemModal, loadPermitModels, toggleTradeItemModal } from 'common/reducers/cmsPermit';
+import { togglePermitItemModal, loadPermitModels, toggleTradeItemModal, automaticMatch } from 'common/reducers/cmsPermit';
 import PermitItemModal from '../modal/permitItemModal';
 import TradeItemsModal from '../modal/tradeItemsModal';
 import messages from '../message.i18n';
@@ -18,7 +18,10 @@ const formatMsg = format(messages);
   tenantId: state.account.tenantId,
   loginId: state.account.loginId,
   permitItems: state.cmsPermit.permitItems,
-}), { togglePermitItemModal, loadPermitModels, toggleTradeItemModal })
+  currentPermit: state.cmsPermit.currentPermit,
+}), {
+  togglePermitItemModal, loadPermitModels, toggleTradeItemModal, automaticMatch,
+})
 export default class PermitItemsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -56,7 +59,7 @@ export default class PermitItemsPane extends React.Component {
     width: 200,
   }, {
     title: this.msg('关联商品货号'),
-    dataIndex: 'rel_product_nos',
+    dataIndex: 'product_no',
   }, {
     title: this.msg('opCol'),
     dataIndex: 'OP_COL',
@@ -64,11 +67,11 @@ export default class PermitItemsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.permit_model === '*') {
-        return <RowAction onClick={this.handleRowClick} icon="plus-circle-o" label="添加关联货号" row={record} />;
+        return <RowAction onClick={this.handMatch} icon="plus-circle-o" label="添加关联货号" row={record} />;
       }
       return (<span>
-        <RowAction onClick={this.handleRowClick} icon="rocket" label="自动匹配" row={record} />
-        <RowAction onClick={this.handleRowClick} icon="plus-circle-o" tooltip="手动关联货号" row={record} />
+        <RowAction onClick={this.automaticMatch} icon="rocket" label="自动匹配" row={record} />
+        <RowAction onClick={this.handMatch} icon="plus-circle-o" tooltip="手动关联货号" row={record} />
       </span>);
     },
   }];
@@ -89,8 +92,19 @@ export default class PermitItemsPane extends React.Component {
       },
     });
   }
-  handleRowClick = () => {
-    this.props.toggleTradeItemModal(true);
+  automaticMatch = (row) => {
+    const { currentPermit } = this.props;
+    this.props.automaticMatch(
+      row.id, row.permit_model,
+      currentPermit.owner_partner_id
+    ).then((result) => {
+      if (!result.error) {
+        this.props.loadPermitModels(this.context.router.params.id);
+      }
+    });
+  }
+  handMatch = (row) => {
+    this.props.toggleTradeItemModal(true, row.id);
   }
   handelAdd = () => {
     this.props.togglePermitItemModal(true);
@@ -102,7 +116,7 @@ export default class PermitItemsPane extends React.Component {
         columns={this.columns}
         bordered
         scrollOffset={312}
-        dataSource={this.mockData}
+        dataSource={this.props.permitItems}
         rowKey="id"
         loading={this.state.loading}
       >

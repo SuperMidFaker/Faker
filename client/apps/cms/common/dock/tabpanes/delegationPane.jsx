@@ -5,8 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Button, Card, Checkbox, Col, Row, Collapse, Dropdown, Form, Icon, Menu, Popover, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelgInfoHub';
-import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
+import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelegationDock';
+import { loadDeclHead, setInspect } from 'common/reducers/cmsCustomsDeclare';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import { CERTS, INSPECT_STATUS } from 'common/constants';
 import MainInfoCard from '../card/mainInfoCard';
@@ -34,9 +34,9 @@ const ACTIVITY_DESC_MAP = {
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
-  previewer: state.cmsDelgInfoHub.previewer,
-  tabKey: state.cmsDelgInfoHub.tabKey,
-  declHeadsPane: state.cmsDeclare.decl_heads,
+  previewer: state.cmsDelegationDock.previewer,
+  tabKey: state.cmsDelegationDock.tabKey,
+  declHeadsPane: state.cmsCustomsDeclare.decl_heads,
 }), {
   exchangeBlNo,
   loadDeclHead,

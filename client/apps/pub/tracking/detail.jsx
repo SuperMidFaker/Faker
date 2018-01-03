@@ -256,14 +256,20 @@ export default class TrackingDetail extends React.Component {
     if (shipmt.status < 4) {
       statusPos = 0;
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
-        <Step key="1" status="wait" title="未起运"
+        <Step
+          key="1"
+          status="wait"
+          title="未起运"
           description={<span>
             <p>{Location.renderConsignLocation(shipmt, 'consigner')}</p>
             <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
         <Step key="2" status="wait" title="待运输" description="" />
-        <Step key="3" status="wait" title="未到达"
+        <Step
+          key="3"
+          status="wait"
+          title="未到达"
           description={<span>
             <p>{Location.renderConsignLocation(shipmt, 'consignee')}</p>
             <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
@@ -273,20 +279,29 @@ export default class TrackingDetail extends React.Component {
     } else if (shipmt.status === 4) {
       statusPos = 1;
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
-        <Step key="1" status="finish" title="已起运"
+        <Step
+          key="1"
+          status="finish"
+          title="已起运"
           description={<span>
             <p>{Location.renderConsignLocation(shipmt, 'consigner')}</p>
             <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
             <p>实际:{shipmt.pickup_act_date ? moment(shipmt.pickup_act_date).format('YYYY-MM-DD') : ''}</p>
           </span>}
         />
-        <Step key="2" status="process" title="运输中"
+        <Step
+          key="2"
+          status="process"
+          title="运输中"
           description={<span>
             <p>最新位置: {Location.renderLoc(latestPoint) || ''} {latestPoint.address || ''}</p>
             <p>{ latestPoint.location_time || latestPoint.created_date ? moment(latestPoint.location_time || latestPoint.created_date).format('YYYY-MM-DD HH:mm') : ''}</p>
           </span>}
         />
-        <Step key="3" status="wait" title="未到达"
+        <Step
+          key="3"
+          status="wait"
+          title="未到达"
           description={<span>
             <p>{Location.renderConsignLocation(shipmt, 'consignee')}</p>
             <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
@@ -296,7 +311,10 @@ export default class TrackingDetail extends React.Component {
     } else if (shipmt.status > 4) {
       statusPos = 2;
       return (<Steps direction={this.state.stepsDirection} current={statusPos}>
-        <Step key="1" status="finish" title="已起运"
+        <Step
+          key="1"
+          status="finish"
+          title="已起运"
           description={<span>
             <p>{Location.renderConsignLocation(shipmt, 'consigner')}</p>
             <p>计划:{shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : ''}</p>
@@ -304,7 +322,10 @@ export default class TrackingDetail extends React.Component {
           </span>}
         />
         <Step key="2" status="finish" title="运输完成" description="" />
-        <Step key="3" status="finish" title="已到达"
+        <Step
+          key="3"
+          status="finish"
+          title="已到达"
           description={<span>
             <p>{Location.renderConsignLocation(shipmt, 'consignee')}</p>
             <p>预计:{shipmt.deliver_prm_date ? moment(shipmt.deliver_prm_date).format('YYYY-MM-DD') : ''}</p>
@@ -336,7 +357,7 @@ export default class TrackingDetail extends React.Component {
         <Row>
           <Col lg={15} sm={24}>
             <Content className="main-content">
-              <Card title="运输进度" style={{ width: '100%' }} hoverable={false}>
+              <Card title="运输进度" style={{ width: '100%' }} >
                 {this.renderSteps()}
                 {deliverDelayException &&
                   <Alert
@@ -348,7 +369,7 @@ export default class TrackingDetail extends React.Component {
               </Card>
               <Row>
                 <Col lg={12} sm={24}>
-                  <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+                  <Card bodyStyle={{ padding: 0 }} >
                     <Collapse defaultActiveKey={['1', '2', '3']}>
                       <Panel header="发货方" key="1">
                         <p><strong>{shipmt.consigner_name || ''}</strong></p>
@@ -369,7 +390,7 @@ export default class TrackingDetail extends React.Component {
                   </Card>
                 </Col>
                 <Col lg={12} sm={24}>
-                  <Card id="tracing-timeline" title="追踪详情" hoverable={false}>
+                  <Card id="tracing-timeline" title="追踪详情" >
                     <TrackingTimeline points={tracking.points} />
                   </Card>
                 </Col>

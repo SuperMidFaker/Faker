@@ -169,7 +169,7 @@ export default class CreateShippingOrder extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <HeadCard soHead={soHead} form={form} editable={this.state.editable} handleOwnerChange={this.handleOwnerChange} />
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false}>
+            <MagicCard bodyStyle={{ padding: 0 }} >
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
                   <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} fullscreen={this.state.fullscreen} />

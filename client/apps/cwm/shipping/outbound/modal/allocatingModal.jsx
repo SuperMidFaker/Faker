@@ -652,7 +652,7 @@ export default class AllocatingModal extends Component {
         visible={this.props.visible}
         footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} hoverable={false}>
+        <Card bodyStyle={{ paddingBottom: 16 }} >
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
               商品货号：<Select style={{ width: 200 }} value={outboundProduct.product_no} onChange={this.handleSeqNoChange}>
@@ -676,7 +676,7 @@ export default class AllocatingModal extends Component {
             </Col>}
           </Row>
         </Card>
-        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
             <Table
               size="middle"
@@ -688,7 +688,7 @@ export default class AllocatingModal extends Component {
             />
           </div>
         </Card>
-        <Card title="分配明细" bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card title="分配明细" bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
             <Table
               size="middle"

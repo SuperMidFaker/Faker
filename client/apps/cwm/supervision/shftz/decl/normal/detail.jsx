@@ -274,7 +274,7 @@ export default class NormalDeclDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} hoverable={false}>
+            <Card bodyStyle={{ paddingBottom: 56 }} >
               <DescriptionList col={6}>
                 <Description term="提货单位">{normalDecl.owner_name}</Description>
                 <Description term="报关代理">{normalDecl.customs_name}</Description>
@@ -289,15 +289,20 @@ export default class NormalDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
                 </TabPane>
                 <TabPane tab="出库报关明细" key="details">
-                  <DataPane fullscreen={this.state.fullscreen}
-                    columns={this.columns} rowSelection={rowSelection} indentSize={0}
-                    dataSource={details} rowKey="id" loading={this.state.loading}
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.columns}
+                    rowSelection={rowSelection}
+                    indentSize={0}
+                    dataSource={details}
+                    rowKey="id"
+                    loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
                       <Row type="flex">

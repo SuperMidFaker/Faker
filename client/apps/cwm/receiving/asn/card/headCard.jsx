@@ -80,7 +80,7 @@ export default class HeadCard extends Component {
       form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse,
     } = this.props;
     return (
-      <Card bodyStyle={{ paddingBottom: 8 }} hoverable={false}>
+      <Card bodyStyle={{ paddingBottom: 8 }} >
         <Row gutter={24}>
           <Col sm={24} lg={6}>
             <FormItem label="货主">
@@ -106,7 +106,12 @@ export default class HeadCard extends Component {
             <FormItem label="供货商">
               {getFieldDecorator('supplier_name', {
                 initialValue: asnHead && asnHead.supplier_name,
-              })(<Select allowClear showSearch showArrow optionFilterProp="searchText" disabled={!this.props.form.getFieldValue('owner_partner_id')}
+              })(<Select
+                allowClear
+                showSearch
+                showArrow
+                optionFilterProp="searchText"
+                disabled={!this.props.form.getFieldValue('owner_partner_id')}
                 notFoundContent={<a onClick={() => this.props.toggleSupplierModal(true)}>+ 添加供货商</a>}
               >
                 {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}

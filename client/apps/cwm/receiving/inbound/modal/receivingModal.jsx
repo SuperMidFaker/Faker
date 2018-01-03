@@ -207,7 +207,10 @@ export default class ReceivingModal extends Component {
     }
     const notificationkey = 'unexpect-receive';
     const btn = (
-      <Button type="primary" size="small" onClick={() => {
+      <Button
+        type="primary"
+        size="small"
+        onClick={() => {
         notification.close(notificationkey);
         this.handleConfirmReceive();
       }}
@@ -310,7 +313,7 @@ export default class ReceivingModal extends Component {
     title: '库存状态',
     dataIndex: 'avail',
     width: 70,
-    render: avail => avail ? '可用' : '冻结',
+    render: avail => (avail ? '可用' : '冻结'),
   }]
 
   manualColumns = [{
@@ -328,7 +331,9 @@ export default class ReceivingModal extends Component {
     dataIndex: 'convey_no',
     width: 180,
     render: (convey, row) => (
-      <Input value={convey} onChange={ev => this.handleConveyChange(row.index, ev.target.value)}
+      <Input
+        value={convey}
+        onChange={ev => this.handleConveyChange(row.index, ev.target.value)}
         disabled={!!row.trace_id}
       />),
   }, {
@@ -336,15 +341,21 @@ export default class ReceivingModal extends Component {
     dataIndex: 'inbound_qty',
     width: 220,
     render: (o, record) => (
-      <QuantityInput packQty={record.inbound_pack_qty} pcsQty={o}
-        onChange={e => this.handleProductReceive(record.index, e.target.value)} disabled={!!record.trace_id}
+      <QuantityInput
+        packQty={record.inbound_pack_qty}
+        pcsQty={o}
+        onChange={e => this.handleProductReceive(record.index, e.target.value)}
+        disabled={!!record.trace_id}
       />),
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
     width: 100,
     render: (o, record) => (
-      <Select value={o} onChange={value => this.handleDamageLevelChange(record.index, value)} style={{ width: 90 }}
+      <Select
+        value={o}
+        onChange={value => this.handleDamageLevelChange(record.index, value)}
+        style={{ width: 90 }}
         disabled={!!record.trace_id}
       >
         <Option value={CWM_DAMAGE_LEVEL[0].value}>{CWM_DAMAGE_LEVEL[0].text}</Option>
@@ -358,8 +369,13 @@ export default class ReceivingModal extends Component {
     dataIndex: 'location',
     width: 150,
     render: (o, record) => (
-      <LocationPopover value={o} style={{ width: 140 }} productNo={this.props.inboundProduct.product_no}
-        whseCode={this.props.defaultWhse.code} disabled={!!record.trace_id} index={record.index}
+      <LocationPopover
+        value={o}
+        style={{ width: 140 }}
+        productNo={this.props.inboundProduct.product_no}
+        whseCode={this.props.defaultWhse.code}
+        disabled={!!record.trace_id}
+        index={record.index}
         onChange={this.handleProductPutAway}
       />),
   }, {
@@ -368,7 +384,10 @@ export default class ReceivingModal extends Component {
     width: 70,
     render: (avail, row) => {
       const availStatus = avail ? 'avail' : 'frozen';
-      return (<Select value={availStatus} onChange={value => this.handleAvailChange(row.index, value)} style={{ width: 60 }}
+      return (<Select
+        value={availStatus}
+        onChange={value => this.handleAvailChange(row.index, value)}
+        style={{ width: 60 }}
         disabled={!!row.trace_id}
       >
         <Option value="avail">可用</Option>
@@ -400,7 +419,9 @@ export default class ReceivingModal extends Component {
     dataIndex: 'received_by',
     width: 120,
     render: (o, row, index) => (
-      <Input value={o} onChange={ev => this.handleReceiverChange(index, ev.target.value)}
+      <Input
+        value={o}
+        onChange={ev => this.handleReceiverChange(index, ev.target.value)}
         disabled={!!row.trace_id}
       />),
   }, {
@@ -430,10 +451,16 @@ export default class ReceivingModal extends Component {
       </div>
     </div>);
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        visible={this.props.visible} footer={null}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        visible={this.props.visible}
+        footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} hoverable={false}>
+        <Card bodyStyle={{ paddingBottom: 16 }} >
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
               <InfoItem label="商品货号" field={inboundProduct.product_no} />
@@ -448,17 +475,27 @@ export default class ReceivingModal extends Component {
               <InfoItem label="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem label="收货时间" field={<DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
-                value={receivedDate ? moment(receivedDate) : null} onChange={this.handleReceivedDateChange}
-              />}
+              <InfoItem
+                label="收货时间"
+                field={<DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  value={receivedDate ? moment(receivedDate) : null}
+                  onChange={this.handleReceivedDateChange}
+                />}
               />
             </Col>
           </Row>
         </Card>
-        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
-          <Table size="middle" columns={columns}
-            dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
-            loading={this.state.loading} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
+        <Card bodyStyle={{ padding: 0 }} >
+          <Table
+            size="middle"
+            columns={columns}
+            dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))}
+            rowKey="index"
+            footer={footer}
+            loading={this.state.loading}
+            scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
           />
         </Card>
       </Modal>

@@ -9,6 +9,7 @@ import SubmitPODForm from './form/submitPodForm';
 import AuditPODForm from './form/auditPodForm';
 import { SHIPMENT_POD_STATUS } from 'common/constants';
 import messages from '../../message.i18n';
+
 const formatMsg = format(messages);
 
 
@@ -50,9 +51,8 @@ export default class PodPanel extends React.Component {
           {pod.photos.split(',').map(item => (<div key={item}><img style={{ width: '100%' }} src={item} alt="照片加载中..." /></div>))}
         </Carousel>
       );
-    } else {
-      return (<div>未上传回单照片</div>);
     }
+    return (<div>未上传回单照片</div>);
   }
   render() {
     const { disp } = this.props;
@@ -104,7 +104,7 @@ export default class PodPanel extends React.Component {
           showIcon
         />
         }
-        <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16 }} >
           {(disp.pod_status === '' || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || rejectedByClient) &&
           <SubmitPODForm rejected={rejectedByClient} />
           }

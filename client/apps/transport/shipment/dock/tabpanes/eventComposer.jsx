@@ -297,7 +297,7 @@ export default class EventComposer extends React.Component {
     let statusDesc = TMS_SHIPMENT_STATUS_DESC;
     if (disp.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
     return (
-      <Card bodyStyle={{ padding: 8, paddingBottom: 56 }} hoverable={false}>
+      <Card bodyStyle={{ padding: 8, paddingBottom: 56 }} >
         {this.renderTabs()}
         <div className="card-footer">
           <Steps progressDot current={disp.status - 2}>

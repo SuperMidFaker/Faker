@@ -379,7 +379,7 @@ export default class BatchDeclDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} hoverable={false}>
+            <Card bodyStyle={{ paddingBottom: 56 }} >
               <DescriptionList col={4}>
                 <Description term="货主">{batchDecl.owner_name}</Description>
                 <Description term="收货单位">{batchDecl.receiver_name}</Description>
@@ -395,15 +395,20 @@ export default class BatchDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
                 </TabPane>
                 <TabPane tab="集中报关明细" key="details">
-                  <DataPane fullscreen={this.state.fullscreen}
-                    columns={this.relColumns} rowSelection={rowSelection} indentSize={0}
-                    dataSource={details} rowKey="id" loading={this.state.loading}
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.relColumns}
+                    rowSelection={rowSelection}
+                    indentSize={0}
+                    dataSource={details}
+                    rowKey="id"
+                    loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
                       <Row type="flex">
@@ -417,9 +422,14 @@ export default class BatchDeclDetail extends Component {
                 </TabPane>
                 {batchApplies.map(reg => (
                   <TabPane tab={`申请单${reg.ftz_apply_no || reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
-                    <DataPane fullscreen={this.state.fullscreen}
-                      columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                      dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                    <DataPane
+                      fullscreen={this.state.fullscreen}
+                      columns={this.columns}
+                      rowSelection={rowSelection}
+                      indentSize={8}
+                      dataSource={reg.details}
+                      rowKey="id"
+                      loading={this.state.loading}
                     >
                       <DataPane.Toolbar>
                         <Row type="flex">

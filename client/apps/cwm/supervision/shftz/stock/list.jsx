@@ -236,11 +236,10 @@ export default class SHFTZStockList extends React.Component {
       const view = new Uint8Array(buf);
       for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
       return buf;
-    } else {
-      const buf = new Array(s.length);
-      for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
     }
+    const buf = new Array(s.length);
+    for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+    return buf;
   }
 
   handleExportExcel = () => {
@@ -300,23 +299,37 @@ export default class SHFTZStockList extends React.Component {
               </Button>
               <Badge dot style={{ backgroundColor: '#87d068' }}>
                 <ButtonToggle
-                  iconOn="hourglass" iconOff="hourglass"
+                  iconOn="hourglass"
+                  iconOff="hourglass"
                   onClick={this.toggleRightSider}
                 />
               </Badge>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <Card hoverable={false} bodyStyle={{ paddingBottom: 8 }}>
+            <Card bodyStyle={{ paddingBottom: 8 }}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
             </Card>
-            <DataTable toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-              columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              scrollOffset={390}
+              loading={this.props.loading}
+              columns={columns}
+              dataSource={this.props.stockDatas}
+              rowSelection={rowSelection}
+              rowKey="id"
             />
           </Content>
         </Layout>
-        <Sider trigger={null} defaultCollapsed collapsible collapsed={this.state.rightSiderCollapsed}
-          width={480} collapsedWidth={0} className="right-sider"
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSiderCollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
         >
           <div className="right-sider-panel">
             <div className="welo-page-header">

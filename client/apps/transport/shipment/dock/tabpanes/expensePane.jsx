@@ -8,6 +8,7 @@ import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transp
 import { loadShipmtCharges } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+
 const formatMsg = format(messages);
 // const Column = Table.Column;
 const Panel = Collapse.Panel;
@@ -67,7 +68,7 @@ export default class ExpensePanel extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   currency = (number) => {
     if (typeof number === 'string') return number;
-    else return number.toFixed(2);
+    return number.toFixed(2);
   }
   feeColumns = [{
     title: this.msg('name'),
@@ -80,9 +81,8 @@ export default class ExpensePanel extends React.Component {
         return (<Badge status="warning" text={col} />);
       } else if (record.type === 'specialCharge') {
         return (<Badge status="error" text={col} />);
-      } else {
-        return col;
       }
+      return col;
     },
   }, {
     title: this.msg('feeRemark'),
@@ -107,15 +107,15 @@ export default class ExpensePanel extends React.Component {
   paramColumns = [{
     title: this.msg('distance'),
     dataIndex: 'distance',
-    render: col => col ? `${col} 公里` : '',
+    render: col => (col ? `${col} 公里` : ''),
   }, {
     title: this.msg('totalWeight'),
     dataIndex: 'total_weight',
-    render: col => col ? `${col} ${this.msg('kilogram')}` : '',
+    render: col => (col ? `${col} ${this.msg('kilogram')}` : ''),
   }, {
     title: this.msg('totalVolume'),
     dataIndex: 'total_volume',
-    render: col => col ? `${col} ${this.msg('cubicMeter')}` : '',
+    render: col => (col ? `${col} ${this.msg('cubicMeter')}` : ''),
   }]
   handleRevenueMenuClick = (e) => {
     const { shipmt, previewer: { dispatch, upstream, downstream } } = this.props;
@@ -336,12 +336,17 @@ export default class ExpensePanel extends React.Component {
         tagProps.style = { backgroundColor: ec.color };
       }
       return (
-        <CheckableTag key={ec.key} checked={checked} {...tagProps}
+        <CheckableTag
+          key={ec.key}
+          checked={checked}
+          {...tagProps}
           onChange={chked => this.handleCateTagChange(ec.key, chked)}
         >{ec.text}
         </CheckableTag>);
     }).concat(TMS_EXPENSE_TYPES.map(et => (
-      <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
+      <CheckableTag
+        key={et.key}
+        checked={checkedExpTypes.indexOf(et.key) !== -1}
         onChange={chked => this.handleTypeTagChange(et.key, chked)}
       >{et.text}
       </CheckableTag>)));
@@ -350,7 +355,7 @@ export default class ExpensePanel extends React.Component {
     }];
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16 }} >
           <Row>
             <Col span="8">
               <h5>收入</h5>
@@ -403,7 +408,7 @@ export default class ExpensePanel extends React.Component {
             </Dropdown>
           </div>}
         </div>
-        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 0 }} >
           <Collapse bordered={false} defaultActiveKey={['revenue', 'cost']}>
             <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
               <Table size="small" columns={this.feeColumns} pagination={false} dataSource={revenueds} />

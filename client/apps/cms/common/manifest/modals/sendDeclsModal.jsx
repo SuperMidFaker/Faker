@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Select, message, Table } from 'antd';
-import { getEasipassList, sendMutiDecl } from 'common/reducers/cmsDeclare';
+import { getEasipassList, sendMutiDecl } from 'common/reducers/cmsCustomsDeclare';
 import { showSendDeclsModal } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
+
 const formatMsg = format(messages);
 const Option = Select.Option;
 
@@ -136,19 +137,32 @@ export default class SendDeclsModal extends React.Component {
     }, {
       title: this.msg('declType'),
       render: (o, record, index) =>
-        (<ColumnSelect field="declType"
-          onChange={this.handleEditChange} options={declList} record={record} index={index}
+        (<ColumnSelect
+          field="declType"
+          onChange={this.handleEditChange}
+          options={declList}
+          record={record}
+          index={index}
         />),
     }, {
       title: 'EDI',
       render: (o, record, index) =>
-        (<ColumnSelect field="easipass"
-          onChange={this.handleEditChange} options={easipassOpt} record={record} index={index}
+        (<ColumnSelect
+          field="easipass"
+          onChange={this.handleEditChange}
+          options={easipassOpt}
+          record={record}
+          index={index}
         />),
     }];
     return (
-      <Modal maskClosable={false} title={this.msg('sendAllPackets')} visible={visible} width={800}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('sendAllPackets')}
+        visible={visible}
+        width={800}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Table size="middle" rowKey="id" columns={columns} dataSource={this.state.bodies} />
       </Modal>

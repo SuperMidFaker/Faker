@@ -25,6 +25,7 @@ const { Option } = Select;
     tenantId: state.account.tenantId,
     clients: state.partner.partners,
     certParams: state.cmsPermit.certParams,
+    currentPermit: state.cmsPermit.currentPermit,
   }),
   { loadPermit }
 )
@@ -36,24 +37,29 @@ const { Option } = Select;
 export default class PermitHeadPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    onFileChange: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     permitCategory: 'customs',
-    formData: {},
     usageControl: '',
     expiryControl: '',
+    usageEnable: false,
+    expiryEnable: false,
+    permit_file: '',
   }
   componentDidMount() {
     if (this.props.action === 'edit') {
       this.props.loadPermit(this.context.router.params.id).then((result) => {
         if (!result.error) {
           this.setState({
-            formData: result.data,
             usageControl: !!result.data.usage_control,
             expiryControl: !!result.data.expiry_control,
+            usageEnable: !!result.data.usage_control,
+            expiryEnable: !!result.data.expiry_control,
+            permit_file: result.data.permit_file,
           });
         }
       });
@@ -68,20 +74,38 @@ export default class PermitHeadPane extends Component {
   handleUsageChange = (checked) => {
     this.setState({
       usageControl: checked,
+      usageEnable: checked,
     });
+    if (!checked) {
+      this.props.form.setFieldsValue({
+        max_usage: '',
+        ava_usage: '',
+      });
+    }
   }
   handleExpiryChange = (checked) => {
     this.setState({
       expiryControl: checked,
+      expiryEnable: checked,
     });
+    if (!checked) {
+      this.props.form.setFieldsValue({
+        start_date: '',
+        stop_date: '',
+      });
+    }
+  }
+  handleView = () => {
+    window.open(this.state.permit_file);
   }
   render() {
     const {
-      form: { getFieldDecorator }, action, clients, certParams,
+      form: { getFieldDecorator }, action, clients, certParams, currentPermit,
     } = this.props;
     const {
-      permitCategory, formData, usageControl, expiryControl,
+      permitCategory, usageControl, expiryControl, usageEnable, expiryEnable,
     } = this.state;
+    const me = this;
     const colSpan = {
       span: 8,
     };
@@ -115,18 +139,22 @@ export default class PermitHeadPane extends Component {
       onChange(info) {
         if (info.file.response && info.file.response.status === 200) {
           message.success('上传成功');
+          me.props.onFileChange(info.file.response.data);
+          me.setState({
+            permit_file: info.file.response.data,
+          });
         }
       },
     };
     return (
       <FormPane fullscreen={this.props.fullscreen}>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col span={16}>
               <FormItem {...formItemSpan2Layout} label={this.msg('permitOwner')}>
                 {getFieldDecorator('owner_partner_id', {
                     rules: [{ required: true, message: '所属企业必选' }],
-                    initialValue: action === 'edit' && formData.owner_partner_id,
+                    initialValue: action === 'edit' && currentPermit.owner_partner_id,
                   })(<Select
                     showSearch
                     placeholder="选择关联货主"
@@ -141,24 +169,32 @@ export default class PermitHeadPane extends Component {
               </FormItem>
             </Col>
             <Col {...colSpan}>
-              <FormItem {...formItemLayout} label={this.msg('permitFile')}>
-                {getFieldDecorator('permit_file', {
-                  initialValue: action === 'edit' && formData.permit_file,
-                  })(<Upload {...props}>
+              {this.state.permit_file ?
+              (
+                <FormItem {...formItemLayout} label={this.msg('permitFile')}>
+                  <Button onClick={this.handleView}>
+                    <Icon type="eye-o" /> 查看
+                  </Button>
+                </FormItem>
+              ) :
+              (
+                <FormItem {...formItemLayout} label={this.msg('permitFile')}>
+                  <Upload {...props}>
                     <Button>
                       <Icon type="upload" /> 上传
                     </Button>
-                  </Upload>)}
-              </FormItem>
+                  </Upload>
+                </FormItem>
+              )}
             </Col>
           </Row>
         </Card>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('permitCategory')}>
                 {getFieldDecorator('permit_category', {
-                    initialValue: action === 'edit' ? formData.permit_category : permitCategory,
+                    initialValue: action === 'edit' ? currentPermit.permit_category : permitCategory,
                     })(<RadioGroup disabled={action !== 'create'} onChange={this.handleCategoryChange}>
                       <RadioButton value="customs"><Logixon type="customs" /> 海关标准</RadioButton>
                       <RadioButton value="ciq"><Logixon type="ciq" /> 国检标准</RadioButton>
@@ -169,7 +205,7 @@ export default class PermitHeadPane extends Component {
               {permitCategory === 'customs' ?
               (<FormItem {...formItemLayout} label={this.msg('permitType')}>
                 {getFieldDecorator('permit_code', {
-                  initialValue: action === 'edit' && formData.permit_code,
+                  initialValue: action === 'edit' ? currentPermit.permit_code : '',
                   })(<Select disabled={action !== 'create'} style={{ width: '100%' }}>
                     {
                     certParams.map(cert => <Option value={cert.cert_code} key={cert.cert_code}>{`${cert.cert_code} | ${cert.cert_spec}`}</Option>)
@@ -178,7 +214,7 @@ export default class PermitHeadPane extends Component {
               </FormItem>) :
               (<FormItem {...formItemLayout} label={this.msg('permitType')}>
                 {getFieldDecorator('permit_code', {
-                  initialValue: action === 'edit' && formData.permit_code,
+                  initialValue: action === 'edit' ? currentPermit.permit_code : '',
                   })(<Select disabled={action !== 'create'} style={{ width: '100%' }}>
                     {
                     CIQ_LICENCE_TYPE.map(type => <Option value={type.value} key={type.text}>{`${type.value} | ${type.text}`}</Option>)
@@ -189,7 +225,7 @@ export default class PermitHeadPane extends Component {
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('permitNo')}>
                 {getFieldDecorator('permit_no', {
-                  initialValue: action === 'edit' && formData.permit_no,
+                  initialValue: action === 'edit' ? currentPermit.permit_no : '',
                   rules: [{ required: true, message: '证书编号必填' }],
                   })(<Input disabled={action !== 'create'} />)}
               </FormItem>
@@ -203,15 +239,15 @@ export default class PermitHeadPane extends Component {
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('maxUsage')}>
                 {getFieldDecorator('max_usage', {
-                  initialValue: action === 'edit' && formData.max_usage,
-                  })(<Input />)}
+                  initialValue: action === 'edit' ? currentPermit.max_usage : '',
+                  })(<Input disabled={!usageEnable} />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('availUsage')}>
                 {getFieldDecorator('ava_usage', {
-                  initialValue: action === 'edit' && formData.ava_usage,
-                  })(<Input />)}
+                  initialValue: action === 'edit' ? currentPermit.ava_usage : '',
+                  })(<Input disabled={!usageEnable} />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>
@@ -223,15 +259,15 @@ export default class PermitHeadPane extends Component {
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('startDate')}>
                 {getFieldDecorator('start_date', {
-                  initialValue: action === 'edit' && moment(formData.start_date),
-                  })(<DatePicker format="YYYY/MM/DD" style={{ width: '100%' }} />)}
+                  initialValue: action === 'edit' && currentPermit.start_date ? moment(currentPermit.start_date) : '',
+                  })(<DatePicker format="YYYY/MM/DD" style={{ width: '100%' }} disabled={!expiryEnable} />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('stopDate')}>
                 {getFieldDecorator('stop_date', {
-                  initialValue: action === 'edit' && moment(formData.stop_date),
-                  })(<DatePicker format="YYYY/MM/DD" style={{ width: '100%' }} />)}
+                  initialValue: action === 'edit' && currentPermit.stop_date ? moment(currentPermit.stop_date) : '',
+                  })(<DatePicker format="YYYY/MM/DD" style={{ width: '100%' }} disabled={!expiryEnable} />)}
               </FormItem>
             </Col>
           </Row>

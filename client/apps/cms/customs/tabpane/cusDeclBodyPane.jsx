@@ -353,7 +353,7 @@ export default class CusDeclBodyPane extends React.Component {
           options={exemptions}
         />),
     }, {
-      title: this.msg('ecountry'),
+      title: this.msg('destCountry'),
       width: 120,
       render: (o, record) =>
         (<ColumnSelect
@@ -362,7 +362,7 @@ export default class CusDeclBodyPane extends React.Component {
           options={countries}
         />),
     }, {
-      title: this.msg('icountry'),
+      title: this.msg('origCountry'),
       width: 120,
       render: (o, record) =>
         (<ColumnSelect

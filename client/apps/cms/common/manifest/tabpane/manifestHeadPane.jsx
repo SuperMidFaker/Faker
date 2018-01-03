@@ -126,7 +126,7 @@ export default class ManifestHeadPane extends React.Component {
       data.customer_partner_id === formData.owner_cuspartner_id);
     return (
       <FormPane fullscreen={this.props.fullscreen} hideRequiredMark>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <Col span="6">
               <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} />
@@ -164,7 +164,7 @@ export default class ManifestHeadPane extends React.Component {
             }
           </Row>
         </Card>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <Col span="8">
               <RelationAutoCompSelect
@@ -277,7 +277,7 @@ export default class ManifestHeadPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
           </Row>

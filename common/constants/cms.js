@@ -885,3 +885,18 @@ export const CIQ_DECL_STATUS = [
   { value: '3', text: '通关放行' },
   { value: '4', text: '签发证单' },
 ];
+
+export const CMS_HSCODE_BRAND_TYPE = [
+  { value: '0', text: '无品牌' },
+  { value: '1', text: '境内自主品牌' },
+  { value: '2', text: '境内收购品牌' },
+  { value: '3', text: '境外品牌（贴牌生产）' },
+  { value: '4', text: '境外品牌（其他）' },
+];
+
+export const CMS_HSCODE_EXPORT_PREFER = [
+  { value: '0', text: '出口货物在最终目的国（地区）不享受优惠关税' },
+  { value: '1', text: '出口货物在最终目的国（地区）享受优惠关税' },
+  { value: '2', text: '出口货物不能确定在最终目的国（地区）享受优惠关税' },
+  { value: '3', text: '不适用于进口报关单' },
+];

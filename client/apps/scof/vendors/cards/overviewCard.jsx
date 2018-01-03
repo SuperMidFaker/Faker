@@ -24,7 +24,7 @@ export default class OverviewCard extends React.Component {
   render() {
     const { vendor } = this.props;
     return (
-      <Card hoverable={false}>
+      <Card >
         <Avatar shape="square" icon="global" />
         <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{vendor.name}</h2>
         <div className="pull-right">

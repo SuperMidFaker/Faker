@@ -39,17 +39,19 @@ export default class PermitDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    permit_file: '',
+  }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const data = { ...values };
-        if (data.permit_file && typeof data.permit_file === 'object') {
-          data.permit_file = data.permit_file.file.response.data;
-        }
+        data.permit_file = this.state.permit_file;
         this.props.updatePermit({ ...data, id: this.context.router.params.id }).then((result) => {
           if (!result.error) {
             message.info('更新成功');
+            this.context.router.push('clearance/permit');
           }
         });
       }
@@ -58,12 +60,16 @@ export default class PermitDetail extends Component {
   handleCancel = () => {
     this.context.router.goBack();
   }
-
+  handleFileChange = (file) => {
+    this.setState({
+      permit_file: file,
+    });
+  }
   render() {
     const { form } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab={this.msg('infoTab')} key="head">
-      <PermitHeadPane action="edit" form={form} />
+      <PermitHeadPane action="edit" form={form} onFileChange={this.handleFileChange} />
     </TabPane>);
     tabs.push(<TabPane tab={this.msg('itemsTab')} key="items">
       <PermitItemsPane />
@@ -96,7 +102,7 @@ export default class PermitDetail extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            hoverable={false}
+
             onSizeChange={this.toggleFullscreen}
           >
             <Tabs defaultActiveKey="head">

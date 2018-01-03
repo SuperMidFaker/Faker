@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Spin, List } from 'antd';
 import { loadciqSups, setDispStatus } from 'common/reducers/cmsDelegation';
-import { loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import CiqDeclCard from '../card/ciqDeclCard';
 
 @connect(
   state => ({
-    ciqPanel: state.cmsDelgInfoHub.ciqPanel,
+    ciqPanel: state.cmsDelegationDock.ciqPanel,
     tenantId: state.account.tenantId,
-    tabKey: state.cmsDelgInfoHub.tabKey,
-    ciqSpinning: state.cmsDelgInfoHub.ciqPanelLoading,
-    delegation: state.cmsDelgInfoHub.previewer.delegation,
+    tabKey: state.cmsDelegationDock.tabKey,
+    ciqSpinning: state.cmsDelegationDock.ciqPanelLoading,
+    delegation: state.cmsDelegationDock.previewer.delegation,
   }),
   { loadDeclCiqPanel, loadciqSups, setDispStatus }
 )

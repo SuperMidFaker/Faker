@@ -362,7 +362,7 @@ export default class SHFTZTransferSelfDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
               <DescriptionList col={4}>
                 <Description term="收货单位海关编码">
                   <EditableCell
@@ -402,7 +402,7 @@ export default class SHFTZTransferSelfDetail extends Component {
             </Card>
             <MagicCard
               bodyStyle={{ padding: 0 }}
-              hoverable={false}
+
               onSizeChange={this.toggleFullscreen}
             >
               <Tabs defaultActiveKey="transitDetails">

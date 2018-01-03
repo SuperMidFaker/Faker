@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Input, Select, message } from 'antd';
+import { Menu, Input, Select, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import { CMS_CNTNR_SPEC_CUS, CMS_CNTNR_SPEC_CIQ } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
+import ToolbarAction from 'client/components/ToolbarAction';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -209,7 +210,7 @@ export default class ContainersPane extends React.Component {
         rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" ghost onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
+          <ToolbarAction primary onClick={this.handleAdd} icon="plus" label={this.msg('add')} />
         </DataPane.Toolbar>
       </DataPane>
     );

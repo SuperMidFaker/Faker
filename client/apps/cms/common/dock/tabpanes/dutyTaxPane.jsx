@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import currencyFormatter from 'currency-formatter';
 import { Card, Table, Tag, Popconfirm, message, Button } from 'antd';
-import { loadPaneTax, taxRecalculate } from 'common/reducers/cmsDelgInfoHub';
+import { loadPaneTax, taxRecalculate } from 'common/reducers/cmsDelegationDock';
 
 @injectIntl
 @connect(
   state => ({
-    delgNo: state.cmsDelgInfoHub.previewer.delegation.delg_no,
-    taxTots: state.cmsDelgInfoHub.taxTots,
-    taxMaps: state.cmsDelgInfoHub.taxMaps,
-    trxModes: state.cmsDelgInfoHub.params.trxModes.map(tm => ({
+    delgNo: state.cmsDelegationDock.previewer.delegation.delg_no,
+    taxTots: state.cmsDelegationDock.taxTots,
+    taxMaps: state.cmsDelegationDock.taxMaps,
+    trxModes: state.cmsDelegationDock.params.trxModes.map(tm => ({
       value: tm.trx_mode,
       text: `${tm.trx_spec}`,
     })),
@@ -259,7 +259,7 @@ export default class DutyTaxPane extends React.Component {
     const tax = this.state.sumval[0] || {};
     return (
       <div className="pane-content tab-pane">
-        <Card hoverable={false} bodyStyle={{ padding: 0 }}>
+        <Card bodyStyle={{ padding: 0 }}>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>完税价格</h3>
@@ -294,7 +294,7 @@ export default class DutyTaxPane extends React.Component {
         <Card
           title="缴税明细"
           bodyStyle={{ padding: 0 }}
-          hoverable={false}
+
           extra={<Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
             <Button icon="calculator" loading={this.state.recalLoading}>估算</Button>
           </Popconfirm>}

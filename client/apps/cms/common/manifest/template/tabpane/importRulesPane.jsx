@@ -56,7 +56,7 @@ export default class ImportRulesPane extends Component {
       <FormPane fullscreen={this.props.fullscreen}>
         <FormItem>{getFieldDecorator('set_special_code')(<Switch checked={specialCode} onChange={this.handleOnChange} checkedChildren="启用" unCheckedChildren="关闭" />)}
         </FormItem>
-        <Card hoverable={false}>
+        <Card >
           <Row gutter={20}>
             <Col sm={24} lg={12}>
               <FormItem label="商品名称" {...formItemLayout} >

@@ -41,12 +41,12 @@ export default class MergeSplitRulesPane extends React.Component {
         </FormItem>
         <Row gutter={16}>
           <Col sm={24} lg={14}>
-            <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+            <Card bodyStyle={{ padding: 0 }} >
               <MergeSplitForm form={form} formData={formData} />
             </Card>
           </Col>
           <Col sm={24} lg={10}>
-            <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+            <Card bodyStyle={{ padding: 16 }} >
               <FormItem>
                 {getFieldDecorator('gen_invoice', { initialValue: !!formData.gen_invoice })(<Checkbox defaultChecked={formData.gen_invoice}>{this.msg('生成发票')}</Checkbox>)
                 }

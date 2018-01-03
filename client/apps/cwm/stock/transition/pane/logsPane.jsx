@@ -44,9 +44,14 @@ export default class LogsPane extends React.Component {
     this.columns[0].fixed = 'left';
     return (
       <div>
-        <Card hoverable={false} bodyStyle={{ padding: 0 }} >
+        <Card bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" dataSource={transactions} loading={loading} rowKey="id" columns={this.columns}
+            <Table
+              size="middle"
+              dataSource={transactions}
+              loading={loading}
+              rowKey="id"
+              columns={this.columns}
               scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
             />
           </div>

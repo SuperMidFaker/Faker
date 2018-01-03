@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { intlShape, injectIntl } from 'react-intl';
-import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Card, Form, Radio, Layout } from 'antd';
-import withPrivilege from 'client/common/decorators/withPrivilege';
+import { intlShape, injectIntl } from 'react-intl';
 import { switchNavOption } from 'common/reducers/cmsPreferences';
 import { CMS_DECL_CHANNEL } from 'common/constants';
+import connectNav from 'client/common/decorators/connect-nav';
+import withPrivilege from 'client/common/decorators/withPrivilege';
+import PageHeader from 'client/components/PageHeader';
 
-const { Header, Content } = Layout;
+
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
@@ -79,17 +81,19 @@ export default class Preferences extends Component {
     };
     return (
       <Layout>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
               设置
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
               参数设定
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </Header>
-        <Content className="main-content layout-fixed-width">
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+        </PageHeader>
+        <Content className="page-content layout-fixed-width">
           <Card title="导航菜单">
             <RadioGroup value={this.state.navOption} onChange={this.handleNavOptionChange} disabled>
               <Radio style={radioStyle} value="CC">按报关、报检</Radio>

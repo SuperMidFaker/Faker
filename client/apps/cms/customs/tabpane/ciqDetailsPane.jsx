@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../common/message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import { buildTipItems } from 'client/common/customs';
 import DataPane from 'client/components/DataPane';
+import messages from '../../common/message.i18n';
 
 const formatMsg = format(messages);
-import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 @connect(state => ({
@@ -38,7 +38,7 @@ export default class CiqDetailsPane extends React.Component {
   render() {
     const { filterProducts } = this.props;
     const columns = [{
-      title: this.msg('seqNumber'),
+      title: this.msg('seqNo'),
       dataIndex: 'g_no',
       fixed: 'left',
       align: 'center',
@@ -152,7 +152,7 @@ export default class CiqDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: this.msg('ecountry'),
+      title: this.msg('destCountry'),
       width: 120,
       dataIndex: 'dest_country',
       render: (o) => {
@@ -161,7 +161,7 @@ export default class CiqDetailsPane extends React.Component {
         return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
-      title: this.msg('icountry'),
+      title: this.msg('origCountry'),
       dataIndex: 'orig_country',
       render: (o) => {
         const country = this.props.countries.filter(cur => cur.value === o)[0];

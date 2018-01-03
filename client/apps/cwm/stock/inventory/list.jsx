@@ -316,7 +316,7 @@ export default class StockInventoryList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
+          <Card bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable

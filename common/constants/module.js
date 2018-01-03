@@ -183,8 +183,8 @@ const MODULE_CLEARANCE = {
       ],
     },
     {
-      id: 'import',
-      text: 'featClearanceImport',
+      id: 'permit',
+      text: 'featClearancePermit',
       actions: [
         {
           id: 'view',
@@ -202,8 +202,8 @@ const MODULE_CLEARANCE = {
       ],
     },
     {
-      id: 'export',
-      text: 'featClearanceExport',
+      id: 'analytics',
+      text: 'featClearanceAnalytics',
       actions: [
         {
           id: 'view',

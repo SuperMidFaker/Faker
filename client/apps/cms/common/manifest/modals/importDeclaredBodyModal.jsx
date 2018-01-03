@@ -176,14 +176,14 @@ export default class ImportDeclaredBodyModal extends Component {
       if (!result.error) {
         const cusDeclNo = row.entry_id;
         const entryDetails = this.state.entryDetails.filter(reg => reg.pre_entry_seq_no !== row.pre_entry_seq_no).concat(result.data.map(dt => ({ ...dt, entry_id: cusDeclNo, pre_entry_seq_no: row.pre_entry_seq_no })));
-        const declEntries = this.state.declEntries.map(pr => pr.entry_id === cusDeclNo ? { ...pr, added: true } : pr);
+        const declEntries = this.state.declEntries.map(pr => (pr.entry_id === cusDeclNo ? { ...pr, added: true } : pr));
         this.setState({ entryDetails, declEntries });
       }
     });
   }
   handleDelDetail = (detail) => {
     const entryDetails = this.state.entryDetails.filter(reg => reg.id !== detail.id);
-    const declEntries = this.state.declEntries.map(pr => pr.pre_entry_seq_no === detail.pre_entry_seq_no ? { ...pr, added: false } : pr);
+    const declEntries = this.state.declEntries.map(pr => (pr.pre_entry_seq_no === detail.pre_entry_seq_no ? { ...pr, added: false } : pr));
     this.setState({ entryDetails, declEntries });
   }
   handleDetailBatchDel = () => {
@@ -193,9 +193,8 @@ export default class ImportDeclaredBodyModal extends Component {
       declEntries: declEntries.map((dce) => {
         if (delEntryNos.find(den => den === dce.entry_id)) {
           return { ...dce, added: false };
-        } else {
-          return dce;
         }
+        return dce;
       }),
       entryDetails: entryDetails.filter(entd => !selectedRows.find(sr => sr.id === entd.id)),
       selectedRowKeys: [],
@@ -284,9 +283,8 @@ export default class ImportDeclaredBodyModal extends Component {
       if (this.state.addedEntryId) {
         const reg = new RegExp(this.state.addedEntryId);
         return reg.test(item.entry_id);
-      } else {
-        return true;
       }
+      return true;
     });
     const title = (<div>
       <span>复制历史数据</span>
@@ -301,11 +299,17 @@ export default class ImportDeclaredBodyModal extends Component {
     // const mode = this.props.trxModes.filter(cur => cur.value === head.trxn_mode)[0];
     // const trxnMode = mode && `${mode.value}| ${mode.text}`;
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        footer={null} visible={this.props.visible}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+        visible={this.props.visible}
       >
         {/*
-        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact" layout="inline">
             <Row gutter={16}>
               <Col span={5}>
@@ -330,7 +334,7 @@ export default class ImportDeclaredBodyModal extends Component {
         <Form layout="inline">
           <Row gutter={16}>
             <Col span={12}>
-              <Card title="来源报关单" bodyStyle={{ padding: 0 }} hoverable={false}>
+              <Card title="来源报关单" bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <FormItem>
@@ -348,24 +352,37 @@ export default class ImportDeclaredBodyModal extends Component {
                     </FormItem>
                     <Button type="primary" ghost onClick={this.handleCusDeclQuery}>查找</Button>
                   </div>
-                  <Table columns={this.entryColumns} dataSource={this.state.declEntries} rowKey="id"
+                  <Table
+                    columns={this.entryColumns}
+                    dataSource={this.state.declEntries}
+                    rowKey="id"
                     scroll={{ x: this.entryColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} hoverable={false}>
+              <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search placeholder="报关单号" style={{ width: 200 }} onChange={this.handleAddedEntryNoChange}
-                      onSearch={this.handleSearch} value={this.state.addedEntryId}
+                    <Search
+                      placeholder="报关单号"
+                      style={{ width: 200 }}
+                      onChange={this.handleAddedEntryNoChange}
+                      onSearch={this.handleSearch}
+                      value={this.state.addedEntryId}
                     />
                     {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.handleDetailBatchDel}>批量删除</Button>}
                     <div className="toolbar-right">
                       <FormItem label="征免方式">
-                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode}
-                          onChange={this.handleDutyModeChange} style={{ width: 100 }} allowClear
+                        <Select
+                          showSearch
+                          showArrow
+                          optionFilterProp="search"
+                          value={dutyMode}
+                          onChange={this.handleDutyModeChange}
+                          style={{ width: 100 }}
+                          allowClear
                         >
                           {
                             exemptions.map(data => (
@@ -375,8 +392,14 @@ export default class ImportDeclaredBodyModal extends Component {
                         </Select>
                       </FormItem>
                       <FormItem label="最终目的国">
-                        <Select showSearch showArrow optionFilterProp="search" value={destCountry}
-                          onChange={this.handleDestCountryChange} style={{ width: 100 }} allowClear
+                        <Select
+                          showSearch
+                          showArrow
+                          optionFilterProp="search"
+                          value={destCountry}
+                          onChange={this.handleDestCountryChange}
+                          style={{ width: 100 }}
+                          allowClear
                         >
                           {
                             tradeCountries.map(data => (
@@ -387,13 +410,18 @@ export default class ImportDeclaredBodyModal extends Component {
                       </FormItem>
                     </div>
                   </div>
-                  <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={{
+                  <Table
+                    columns={this.regDetailColumns}
+                    dataSource={dataSource}
+                    rowKey="id"
+                    rowSelection={{
                     selectedRowKeys: this.state.selectedRowKeys,
                     selectedRows: this.state.selectedRows,
                     onChange: (selectedRowKeys, selectedRows) => {
                       this.setState({ selectedRowKeys, selectedRows });
                     },
-                  }} scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  }}
+                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
               </Card>

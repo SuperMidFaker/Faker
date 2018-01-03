@@ -31,7 +31,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
-    tenantId: state.account.tenantId,
+    repo: state.cmsTradeitem.repo,
   }),
   { saveRepoItem }
 )
@@ -43,8 +43,8 @@ function fetchData({ dispatch, params }) {
 export default class TradeItemEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    itemData: PropTypes.object,
+    form: PropTypes.shape({ validateFields: PropTypes.func }).isRequired,
+    itemData: PropTypes.shape({ id: PropTypes.number.isRequired }),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -79,7 +79,9 @@ export default class TradeItemEdit extends Component {
   }
 
   render() {
-    const { form, submitting, itemData } = this.props;
+    const {
+      form, submitting, itemData, params, repo,
+    } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab="主数据" key="master">
       <ItemMasterPane action="edit" form={form} itemData={itemData} />
@@ -88,13 +90,20 @@ export default class TradeItemEdit extends Component {
       <ItemPermitPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     tabs.push(<TabPane tab="历史版本" key="history">
-      <ItemHistoryPane fullscreen={this.state.fullscreen} />
+      <ItemHistoryPane
+        fullscreen={this.state.fullscreen}
+        repoId={params.repoId}
+        copProdNo={itemData.cop_product_no}
+      />
     </TabPane>);
     return (
       <Layout>
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
+              <Breadcrumb.Item>
+                {repo.owner_name}
+              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
@@ -115,7 +124,7 @@ export default class TradeItemEdit extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            hoverable={false}
+
             onSizeChange={this.toggleFullscreen}
           >
             <Tabs defaultActiveKey="master">

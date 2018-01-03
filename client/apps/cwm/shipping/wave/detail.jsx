@@ -82,7 +82,7 @@ export default class WaveDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+          <Card bodyStyle={{ padding: 16 }} >
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={6}>
                 <InfoItem label="波次号" field={this.props.params.waveNo} />
@@ -94,18 +94,22 @@ export default class WaveDetail extends Component {
                 <InfoItem label="总订单明细数" field={waveHead.detailCount} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
+                <InfoItem
+                  label="创建时间"
+                  addonBefore={<Icon type="clock-circle-o" />}
                   field={waveHead.created_date && moment(waveHead.created_date).format('YYYY.MM.DD HH:mm')}
                 />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="出库时间" addonBefore={<Icon type="clock-circle-o" />}
+                <InfoItem
+                  label="出库时间"
+                  addonBefore={<Icon type="clock-circle-o" />}
                   field={waveHead.completed_date && moment(waveHead.completed_date).format('YYYY.MM.DD HH:mm')}
                 />
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="orderDetails">
               <TabPane tab="发货明细" key="orderDetails">
                 <OrderDetailsPane waveNo={this.props.params.waveNo} fullscreen={this.state.fullscreen} />

@@ -17,14 +17,6 @@ export default defineMessages({
     id: 'cms.customs.decl.search.placeholder',
     defaultMessage: '报关单号/委托编号/客户单号',
   },
-  importOperation: {
-    id: 'cms.customs.decl.import.operation',
-    defaultMessage: '进口申报',
-  },
-  exportOperation: {
-    id: 'cms.customs.decl.export.operation',
-    defaultMessage: '出口申报',
-  },
   declCDF: {
     id: 'cms.customs.decl.decl.cdf',
     defaultMessage: '报关单',
@@ -94,7 +86,7 @@ export default defineMessages({
     defaultMessage: '状态',
   },
   opColumn: {
-    id: 'cms.customs.decl.opColumn',
+    id: 'cms.customs.decl.op.col',
     defaultMessage: '操作',
   },
   entryNoFillModalTitle: {
@@ -213,8 +205,8 @@ export default defineMessages({
     id: 'cms.customs.decl.form.mark.notes',
     defaultMessage: '唛码备注：',
   },
-  seqNumber: {
-    id: 'cms.customs.decl.table.seq.number',
+  seqNo: {
+    id: 'cms.customs.decl.table.seq.no',
     defaultMessage: '序号',
   },
   copGNo: {
@@ -224,6 +216,10 @@ export default defineMessages({
   emGNo: {
     id: 'cms.customs.decl.table.em.gno',
     defaultMessage: '项号',
+  },
+  hscode: {
+    id: 'cms.customs.decl.table.hscode',
+    defaultMessage: 'HS编码',
   },
   codeT: {
     id: 'cms.customs.decl.table.codet',
@@ -253,21 +249,21 @@ export default defineMessages({
     id: 'cms.customs.decl.table.unit',
     defaultMessage: '成交单位',
   },
-  icountry: {
-    id: 'cms.customs.decl.table.icountry',
+  origCountry: {
+    id: 'cms.customs.decl.table.origCountry',
     defaultMessage: '原产国',
   },
-  ecountry: {
-    id: 'cms.customs.decl.table.ecountry',
+  destCountry: {
+    id: 'cms.customs.decl.table.destCountry',
     defaultMessage: '最终目的国',
   },
   decPrice: {
     id: 'cms.customs.decl.table.dec.price',
-    defaultMessage: '单价',
+    defaultMessage: '申报单价',
   },
   decTotal: {
     id: 'cms.customs.decl.table.dec.total',
-    defaultMessage: '总价',
+    defaultMessage: '申报总价',
   },
   currency: {
     id: 'cms.customs.decl.table.currency',
@@ -328,6 +324,10 @@ export default defineMessages({
   certNum: {
     id: 'cms.customs.decl.tabpanes.cert.num',
     defaultMessage: '单证编号',
+  },
+  exchangeRate: {
+    id: 'cms.customs.decl.tabpanes.tax.exchange.rate',
+    defaultMessage: '汇率',
   },
   viewDetail: {
     id: 'cms.customs.decl.op.view.detail',

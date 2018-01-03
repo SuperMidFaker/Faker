@@ -173,7 +173,9 @@ export default class ReceiveInbound extends Component {
               </Button>
             </Dropdown>
             }
-            <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange}
+            <RadioGroup
+              value={inboundHead.rec_mode}
+              onChange={this.handleReceivingModeChange}
               disabled={currentStatus === CWM_INBOUND_STATUS.COMPLETED.step}
             >
               <Tooltip title="扫码入库操作模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
@@ -191,14 +193,15 @@ export default class ReceiveInbound extends Component {
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
             <DescriptionList col={4}>
               <Description term="货主">{inboundHead.owner_name}</Description>
               <Description term="ASN编号">{inboundHead.asn_no}</Description>
               <Description term="总预期数量">{inboundHead.total_expect_qty}</Description>
               <Description term="总实收数量">{inboundHead.total_received_qty}</Description>
               <Description term="总立方数">
-                <EditableCell value={inboundHead.total_received_vol}
+                <EditableCell
+                  value={inboundHead.total_received_vol}
                   editable={currentStatus < CWM_INBOUND_STATUS.COMPLETED.value}
                   onSave={this.handleTotalRecVolChange}
                 />
@@ -215,7 +218,7 @@ export default class ReceiveInbound extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
                 <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} fullscreen={this.state.fullscreen} />

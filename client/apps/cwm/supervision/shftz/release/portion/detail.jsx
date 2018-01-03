@@ -504,38 +504,46 @@ export default class SHFTZRelDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
               <DescriptionList col={4}>
                 <Description term="分拨出库单号">
-                  <EditableCell value={reg.ftz_rel_no} editable={relEditable}
+                  <EditableCell
+                    value={reg.ftz_rel_no}
+                    editable={relEditable}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                   />
                 </Description>
                 <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
                 <Description term="运输单位">{reg.carrier_name}</Description>
                 <Description term="是否需加封">
-                  <EditableCell type="select" value={reg.need_seal}
+                  <EditableCell
+                    type="select"
+                    value={reg.need_seal}
                     options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'need_seal', value)}
                   />
                 </Description>
                 <Description term="封志">
-                  <EditableCell value={reg.seal_no}
+                  <EditableCell
+                    value={reg.seal_no}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
                   />
                 </Description>
                 <Description term="唛头">
-                  <EditableCell value={reg.marks}
+                  <EditableCell
+                    value={reg.marks}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
                   />
                 </Description>
                 <Description term="发票号">
-                  <EditableCell value={reg.invoice_no}
+                  <EditableCell
+                    value={reg.invoice_no}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
                   />
                 </Description>
                 <Description term="凭单号">
-                  <EditableCell value={reg.voucher_no}
+                  <EditableCell
+                    value={reg.voucher_no}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'voucher_no', value)}
                   />
                 </Description>
@@ -550,12 +558,17 @@ export default class SHFTZRelDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="regDetails">
                 <TabPane tab="备案明细" key="regDetails">
-                  <DataPane fullscreen={this.state.fullscreen}
-                    columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                    dataSource={filingDetails} rowKey="id" loading={this.state.loading}
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.columns}
+                    rowSelection={rowSelection}
+                    indentSize={8}
+                    dataSource={filingDetails}
+                    rowKey="id"
+                    loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
@@ -574,9 +587,12 @@ export default class SHFTZRelDetail extends Component {
                 </TabPane>
                 {regStatus >= CWM_SHFTZ_APIREG_STATUS.completed &&
                   <TabPane tab="集中报关" key="batchDecl">
-                    <DataPane fullscreen={this.state.fullscreen}
+                    <DataPane
+                      fullscreen={this.state.fullscreen}
                       columns={this.declColumns}
-                      dataSource={decl} rowKey="id" loading={this.state.loading}
+                      dataSource={decl}
+                      rowKey="id"
+                      loading={this.state.loading}
                     />
                   </TabPane>
                 }

@@ -144,7 +144,7 @@ export default class TaskDetail extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content">
-            <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+            <Card bodyStyle={{ padding: 0 }} >
               <Tabs defaultActiveKey="emerge">
                 <TabPane tab="新物料区" key="emerge">
                   <EmergeItemTable

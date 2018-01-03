@@ -20,7 +20,7 @@ import RowAction from 'client/components/RowAction';
 import { Logixon, MdIcon, Fontello } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal, loadFormRequire } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
+import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import messages from './message.i18n';
@@ -47,10 +47,10 @@ const { Search } = Input;
     delegationlist: state.cmsDelegation.delegationlist,
     listFilter: state.cmsDelegation.listFilter,
     reload: state.cmsDelegation.delegationsReload,
-    preStatus: state.cmsDelgInfoHub.preStatus,
-    previewer: state.cmsDelgInfoHub.previewer,
-    delegation: state.cmsDelgInfoHub.previewer.delegation,
-    tabKey: state.cmsDelgInfoHub.tabKey,
+    preStatus: state.cmsDelegationDock.preStatus,
+    previewer: state.cmsDelegationDock.previewer,
+    delegation: state.cmsDelegationDock.previewer.delegation,
+    tabKey: state.cmsDelegationDock.tabKey,
     clients: state.partner.partners,
     customs: state.cmsDelegation.formRequire.customs.map(cus => ({
       value: cus.customs_code,

@@ -405,49 +405,59 @@ export default class DetailPane extends React.Component {
     const shipmtModeExtra = (<span>时效: {shipmt.transit_time}{this.msg('day')}/里程: {charges.revenue.miles}公里</span>);
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 0 }} >
           <Collapse bordered={false} defaultActiveKey={['main', 'mode', 'cargo']}>
             <Panel header={<span>{this.msg('shipmtSchedule')} {shipmtModeExtra}<span className="pull-right">{changeDropdown}</span></span>} key="main">
               <div className="trans_schedule">
                 <div className="schedule">
                   <Steps direction="vertical">
-                    <Step key={0} title={shipmt.consigner_name || (<div style={{ height: 26 }} />)} status="process"
+                    <Step
+                      key={0}
+                      title={shipmt.consigner_name || (<div style={{ height: 26 }} />)}
+                      status="process"
                       icon={<div className="icon">始</div>}
                       description={
                         <Row gutter={16} className="info-group-underline">
                           <Col span={12}>
-                            <InfoItem label={this.msg('pickupEstDate')}
-                              type="date" editable
+                            <InfoItem
+                              label={this.msg('pickupEstDate')}
+                              type="date"
+                              editable
                               field={shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : null}
                               onEdit={value => this.handleSaveShipment('pickup_est_date', value && new Date(value), 'timeInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
-                            <InfoItem label={this.msg('pickupActDate')}
+                            <InfoItem
+                              label={this.msg('pickupActDate')}
                               field={upstream.pickup_act_date && moment(upstream.pickup_act_date).format('YYYY.MM.DD')}
                             />
                           </Col>
                           <Col span={24}>
-                            <InfoItem label="发货地"
+                            <InfoItem
+                              label="发货地"
                               field={shipmt.consigner_byname || Location.renderLoc(shipmt, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')}
                             />
                           </Col>
                           <Col span={24}>
-                            <InfoItem label="详细地址"
+                            <InfoItem
+                              label="详细地址"
                               editable={editable}
                               field={shipmt.consigner_addr}
                               onEdit={value => this.handleSaveShipment('consigner_addr', value, 'consignerInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
-                            <InfoItem label="联系人"
+                            <InfoItem
+                              label="联系人"
                               field={shipmt.consigner_contact}
                               editable={editable}
                               onEdit={value => this.handleSaveShipment('consigner_contact', value, 'consignerInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
-                            <InfoItem label="电话"
+                            <InfoItem
+                              label="电话"
                               field={shipmt.consigner_mobile}
                               editable={editable}
                               onEdit={value => this.handleSaveShipment('consigner_mobile', value, 'consignerInfoChanged')}
@@ -459,43 +469,53 @@ export default class DetailPane extends React.Component {
                 </div>
                 <div className="schedule">
                   <Steps direction="vertical">
-                    <Step key={0} title={shipmt.consignee_name || (<div style={{ height: 26 }} />)} status="process"
+                    <Step
+                      key={0}
+                      title={shipmt.consignee_name || (<div style={{ height: 26 }} />)}
+                      status="process"
                       icon={<div className="icon">终</div>}
                       description={
                         <Row gutter={16} className="info-group-underline">
                           <Col span={12}>
-                            <InfoItem label={this.msg('deliveryEstDate')}
-                              type="date" editable
+                            <InfoItem
+                              label={this.msg('deliveryEstDate')}
+                              type="date"
+                              editable
                               field={shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : null}
                               onEdit={value => this.handleSaveShipment('deliver_est_date', value && new Date(value), 'timeInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
-                            <InfoItem label={this.msg('deliverActDate')}
+                            <InfoItem
+                              label={this.msg('deliverActDate')}
                               field={upstream.deliver_act_date && moment(upstream.deliver_act_date).format('YYYY.MM.DD')}
                             />
                           </Col>
                           <Col span={24}>
-                            <InfoItem label="收货地"
+                            <InfoItem
+                              label="收货地"
                               field={shipmt.consignee_byname || Location.renderLoc(shipmt, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')}
                             />
                           </Col>
                           <Col span={24}>
-                            <InfoItem label="详细地址"
+                            <InfoItem
+                              label="详细地址"
                               editable={editable}
                               field={shipmt.consignee_addr}
                               onEdit={value => this.handleSaveShipment('consignee_addr', value, 'consigneeInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
-                            <InfoItem label="联系人"
+                            <InfoItem
+                              label="联系人"
                               field={shipmt.consignee_contact}
                               editable={editable}
                               onEdit={value => this.handleSaveShipment('consignee_contact', value, 'consigneeInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
-                            <InfoItem label="电话"
+                            <InfoItem
+                              label="电话"
                               field={shipmt.consignee_mobile}
                               editable={editable}
                               onEdit={value => this.handleSaveShipment('consignee_mobile', value, 'consigneeInfoChanged')}
@@ -510,7 +530,8 @@ export default class DetailPane extends React.Component {
             <Panel header={this.msg('transitModeInfo')} key="mode">
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
-                  <InfoItem label={this.msg('transitModeInfo')}
+                  <InfoItem
+                    label={this.msg('transitModeInfo')}
                     field={shipmt.transport_mode}
                     editable={editable}
                     type="dropdown"
@@ -521,7 +542,8 @@ export default class DetailPane extends React.Component {
                 </Col>
                 {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
                 <Col span="8">
-                  <InfoItem label={this.msg('vehicleType')}
+                  <InfoItem
+                    label={this.msg('vehicleType')}
                     field={vehicleType ? vehicleType.text : ''}
                     editable={editable}
                     type="dropdown"
@@ -533,8 +555,10 @@ export default class DetailPane extends React.Component {
                 }
                 {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
                 <Col span="8">
-                  <InfoItem label={this.msg('vehicleLength')}
-                    field={vehicleLength ? vehicleLength.text : ''} addonAfter="米"
+                  <InfoItem
+                    label={this.msg('vehicleLength')}
+                    field={vehicleLength ? vehicleLength.text : ''}
+                    addonAfter="米"
                     editable={editable}
                     type="dropdown"
                     overlay={<Menu onClick={e => this.handleSaveVehicleLength(e.key, 'transitModeChanged')}>
@@ -545,7 +569,8 @@ export default class DetailPane extends React.Component {
                 }
                 {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
                 <Col span="8">
-                  <InfoItem label={this.msg('container')}
+                  <InfoItem
+                    label={this.msg('container')}
                     field={shipmt.container}
                     editable={editable}
                     type="dropdown"
@@ -557,7 +582,8 @@ export default class DetailPane extends React.Component {
                 }
                 {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
                 <Col span="8">
-                  <InfoItem label={this.msg('containerNo')}
+                  <InfoItem
+                    label={this.msg('containerNo')}
                     field={shipmt.container_no}
                     editable={editable}
                     onEdit={value => this.handleSaveShipment('container_no', value, 'transitModeChanged')}
@@ -566,7 +592,8 @@ export default class DetailPane extends React.Component {
                 }
                 {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
                 <Col span="8">
-                  <InfoItem label={this.msg('courierCompany')}
+                  <InfoItem
+                    label={this.msg('courierCompany')}
                     field={shipmt.courier}
                     editable={editable}
                     type="dropdown"
@@ -578,7 +605,8 @@ export default class DetailPane extends React.Component {
                 }
                 {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
                 <Col span="8">
-                  <InfoItem label={this.msg('courierNo')}
+                  <InfoItem
+                    label={this.msg('courierNo')}
                     field={shipmt.courier_no}
                     editable={editable}
                     onEdit={value => this.handleSaveShipment('courier_no', value, 'transitModeChanged')}
@@ -590,8 +618,10 @@ export default class DetailPane extends React.Component {
             <Panel header="货物信息" key="cargo">
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
-                  <InfoItem label={this.msg('goodsType')}
-                    field={goodsType ? goodsType.text : shipmt.goods_type} editable={editable}
+                  <InfoItem
+                    label={this.msg('goodsType')}
+                    field={goodsType ? goodsType.text : shipmt.goods_type}
+                    editable={editable}
                     type="dropdown"
                     overlay={<Menu onClick={e => this.handleSaveShipment('goods_type', e.key, 'goodsInfoChanged')}>
                       {goodsTypes.map(c => (<Menu.Item key={c.value}>{c.text}</Menu.Item>))}
@@ -599,8 +629,10 @@ export default class DetailPane extends React.Component {
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label={this.msg('goodsPackage')}
-                    field={pckg ? pckg.package_name : shipmt.package} editable={editable}
+                  <InfoItem
+                    label={this.msg('goodsPackage')}
+                    field={pckg ? pckg.package_name : shipmt.package}
+                    editable={editable}
                     type="dropdown"
                     overlay={<Menu onClick={e => this.handleSaveShipment('package', e.key, 'goodsInfoChanged')}>
                       {packagings.map(c => (<Menu.Item key={c.package_code}>{c.package_name}</Menu.Item>))}
@@ -608,57 +640,80 @@ export default class DetailPane extends React.Component {
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label={this.msg('insuranceValue')}
-                    field={shipmt.insure_value} addonAfter="元" editable={editable}
+                  <InfoItem
+                    label={this.msg('insuranceValue')}
+                    field={shipmt.insure_value}
+                    addonAfter="元"
+                    editable={editable}
                     onEdit={value => this.handleSaveShipment('insure_value', value, 'goodsInfoChanged')}
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label={this.msg('totalCount')}
-                    field={shipmt.total_count} addonAfter="件" editable={editable}
+                  <InfoItem
+                    label={this.msg('totalCount')}
+                    field={shipmt.total_count}
+                    addonAfter="件"
+                    editable={editable}
                     onEdit={value => this.handleSaveShipment('total_count', value, 'goodsInfoChanged')}
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label={this.msg('totalWeight')}
-                    field={shipmt.total_weight} addonAfter={this.msg('kilogram')} editable={editable}
+                  <InfoItem
+                    label={this.msg('totalWeight')}
+                    field={shipmt.total_weight}
+                    addonAfter={this.msg('kilogram')}
+                    editable={editable}
                     onEdit={value => this.handleSaveShipment('total_weight', value, 'goodsInfoChanged')}
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label={this.msg('totalVolume')}
-                    field={shipmt.total_volume} addonAfter={this.msg('cubicMeter')} editable={editable}
+                  <InfoItem
+                    label={this.msg('totalVolume')}
+                    field={shipmt.total_volume}
+                    addonAfter={this.msg('cubicMeter')}
+                    editable={editable}
                     onEdit={value => this.handleSaveShipment('total_volume', value, 'goodsInfoChanged')}
                   />
                 </Col>
               </Row>
-              <Table size="middle" columns={this.columns} pagination={false}
+              <Table
+                size="middle"
+                columns={this.columns}
+                pagination={false}
                 dataSource={shipmt.goodslist}
               />
             </Panel>
             <Panel header="客户信息" key="customer">
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
-                  <InfoItem label={this.msg('refExternalNo')}
-                    field={shipmt.ref_external_no} editable
+                  <InfoItem
+                    label={this.msg('refExternalNo')}
+                    field={shipmt.ref_external_no}
+                    editable
                     onEdit={value => this.handleSaveShipment('ref_external_no', value, 'correlInfoChanged')}
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label={this.msg('refWaybillNo')}
-                    field={shipmt.ref_waybill_no} editable
+                  <InfoItem
+                    label={this.msg('refWaybillNo')}
+                    field={shipmt.ref_waybill_no}
+                    editable
                     onEdit={value => this.handleSaveShipment('ref_waybill_no', value, 'correlInfoChanged')}
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label={this.msg('refEntryNo')}
-                    field={shipmt.ref_entry_no} editable
+                  <InfoItem
+                    label={this.msg('refEntryNo')}
+                    field={shipmt.ref_entry_no}
+                    editable
                     onEdit={value => this.handleSaveShipment('ref_entry_no', value, 'correlInfoChanged')}
                   />
                 </Col>
                 <Col span="24">
-                  <InfoItem label={this.msg('remark')}
-                    field={shipmt.remark} editable
+                  <InfoItem
+                    label={this.msg('remark')}
+                    field={shipmt.remark}
+                    editable
                     onEdit={value => this.handleSaveShipment('remark', value, 'remarkChanged')}
                   />
                 </Col>
@@ -667,7 +722,7 @@ export default class DetailPane extends React.Component {
           </Collapse>
           {/* <Card
           bodyStyle={{ padding: 16 }}
-          title="运单" hoverable={false}
+          title="运单"
           extra={<span>
             <Button icon="environment-o"
               onClick={() => this.context.router.push(`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`)}

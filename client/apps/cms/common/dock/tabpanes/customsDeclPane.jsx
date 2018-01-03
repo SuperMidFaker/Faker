@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Spin, Button, Card, Col, Icon, Progress, Row, List, message } from 'antd';
 import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
-import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
+import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelegationDock';
 import { loadOperators } from 'common/reducers/crmCustomers';
 import MemberSelect from 'client/components/MemberSelect';
 import InfoItem from 'client/components/InfoItem';
@@ -16,13 +16,13 @@ import CusDeclCard from '../card/cusDeclCard';
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    delgNo: state.cmsDelgInfoHub.previewer.delegation.delg_no,
-    customsPanel: state.cmsDelgInfoHub.customsPanel,
-    tabKey: state.cmsDelgInfoHub.tabKey,
-    customsSpinning: state.cmsDelgInfoHub.customsPanelLoading,
+    delgNo: state.cmsDelegationDock.previewer.delegation.delg_no,
+    customsPanel: state.cmsDelegationDock.customsPanel,
+    tabKey: state.cmsDelegationDock.tabKey,
+    customsSpinning: state.cmsDelegationDock.customsPanelLoading,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
+    partnerId: state.cmsDelegationDock.previewer.delgDispatch.send_partner_id,
     userMembers: state.account.userMembers,
   }),
   {
@@ -129,7 +129,7 @@ export default class CustomsDeclPane extends React.Component {
             title={manifestProgress}
             extra={this.renderManifestAction()}
             bodyStyle={{ padding: 16 }}
-            hoverable={false}
+
           >
             <Row gutter={16} className="info-group-underline">
               <Col span="6">

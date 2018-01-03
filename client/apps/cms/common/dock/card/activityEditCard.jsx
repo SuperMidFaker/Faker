@@ -43,12 +43,16 @@ export default class ActivityEditCard extends React.Component {
       title, leftLabel, leftValue, rightLabel, rightValue, createdDate,
     } = this.props;
     return (
-      <Card title={<span>{title} <small className="timestamp">{moment(createdDate).format('YYYY-MM-DD HH:mm')}</small></span>} hoverable={false} extra={
-        <Popover trigger="click"
-          content={<div><a onClick={this.handleEdit}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.handleDel}>删除</a></div>}
-        >
-          <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-        </Popover>} bodyStyle={{ padding: 8 }}
+      <Card
+        title={<span>{title} <small className="timestamp">{moment(createdDate).format('YYYY-MM-DD HH:mm')}</small></span>}
+        extra={
+          <Popover
+            trigger="click"
+            content={<div><a onClick={this.handleEdit}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.handleDel}>删除</a></div>}
+          >
+            <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
+          </Popover>}
+        bodyStyle={{ padding: 8 }}
       >
         <Row>
           <Col span={12}>
