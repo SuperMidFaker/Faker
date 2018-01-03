@@ -14,7 +14,8 @@ export default class DataPane extends React.Component {
     scrollOffset: 470,
   }
   static propTypes = {
-    children: PropTypes.any,
+    baseCls: PropTypes.string,
+    children: PropTypes.node,
     header: PropTypes.string,
     fullscreen: PropTypes.bool,
     scrollOffset: PropTypes.number,
@@ -48,9 +49,18 @@ export default class DataPane extends React.Component {
       <div className={baseCls}>
         {header ? <div className={`${baseCls}-header`}>{header}</div> : null}
         {children}
-        <Table size="middle" {...this.props}
-          pagination={{ defaultPageSize: 20, showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+        <Table
+          size="middle"
+          {...this.props}
+          pagination={{
+            defaultPageSize: 20,
+            showSizeChanger: true,
+            showTotal: total => `共 ${total} 条`,
+          }}
+          scroll={{
+            x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0),
+            y: this.state.scrollY,
+          }}
         />
       </div>
     );

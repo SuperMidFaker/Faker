@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 )
 export default class StandbyPopover extends Component {
   static propTypes = {
-    goodsId: PropTypes.string.isRequired,
+    goodsId: PropTypes.number.isRequired,
   }
   state = {
     visible: false,

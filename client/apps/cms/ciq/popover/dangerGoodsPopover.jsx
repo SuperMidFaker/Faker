@@ -15,7 +15,7 @@ const { Option } = Select;
 )
 export default class GoodsLicencePopover extends Component {
   static propTypes = {
-    goodsId: PropTypes.string.isRequired,
+    goodsId: PropTypes.number.isRequired,
   }
   state = {
     visible: false,

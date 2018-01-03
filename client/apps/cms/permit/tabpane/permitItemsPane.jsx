@@ -47,11 +47,11 @@ export default class PermitItemsPane extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   columns = [{
-    title: this.msg('序号'),
     dataIndex: 's_no',
     fixed: 'left',
     width: 45,
     align: 'center',
+    className: 'table-col-seq',
     render: (o, record, index) => index + 1,
   }, {
     title: this.msg('型号系列'),

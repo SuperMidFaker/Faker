@@ -142,7 +142,7 @@ export default class GoodsLicenceModal extends Component {
       render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
     }];
     return (
-      <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
+      <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel} destroyOnClose>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
           <Row>
             <Col span={8}>
