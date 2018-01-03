@@ -326,10 +326,12 @@ export default class SHFTZTransferOutDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
               <DescriptionList col={4}>
                 <Description term="海关出库单号">
-                  <EditableCell value={relReg.ftz_rel_no} editable={relEditable}
+                  <EditableCell
+                    value={relReg.ftz_rel_no}
+                    editable={relEditable}
                     onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_no', value)}
                   />
                 </Description>
@@ -337,24 +339,34 @@ export default class SHFTZTransferOutDetail extends Component {
                 <Description term="发货单位">{relReg.owner_name}</Description>
                 <Description term="发货仓库号">{relReg && relReg.sender_ftz_whse_code}</Description>
                 <Description term="海关入库单号">
-                  <EditableCell value={relReg.ftz_ent_no} editable={relEditable}
+                  <EditableCell
+                    value={relReg.ftz_ent_no}
+                    editable={relEditable}
                     onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_ent_no', value)}
                   />
                 </Description>
                 <Description term="收货单位海关编码">{relReg && relReg.receiver_cus_code}</Description>
                 <Description term="收货单位">
-                  <EditableCell type="select" value={receiver && receiver.code} options={recvOpts} editable={relEditable}
+                  <EditableCell
+                    type="select"
+                    value={receiver && receiver.code}
+                    options={recvOpts}
+                    editable={relEditable}
                     onSave={value => this.handleReceiverChange(relReg.pre_entry_seq_no, value)}
                   />
                 </Description>
                 <Description term="收货仓库号">{relReg && relReg.receiver_ftz_whse_code}</Description>
                 <Description term="出库日期">
-                  <EditableCell type="date" value={relReg && relReg.ftz_rel_date && moment(relReg.ftz_rel_date).format('YYYY-MM-DD')}
+                  <EditableCell
+                    type="date"
+                    value={relReg && relReg.ftz_rel_date && moment(relReg.ftz_rel_date).format('YYYY-MM-DD')}
                     onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
                   />
                 </Description>
                 <Description term="转出完成时间">
-                  <EditableCell type="date" value={relReg && relReg.ftz_reg_date && moment(relReg.ftz_reg_date).format('YYYY-MM-DD')}
+                  <EditableCell
+                    type="date"
+                    value={relReg && relReg.ftz_reg_date && moment(relReg.ftz_reg_date).format('YYYY-MM-DD')}
                     onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_reg_date', new Date(value))}
                   />
                 </Description>
@@ -367,7 +379,7 @@ export default class SHFTZTransferOutDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
@@ -388,9 +400,14 @@ export default class SHFTZTransferOutDetail extends Component {
                   );
                   return (
                     <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
-                      <DataPane fullscreen={this.state.fullscreen}
-                        columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                      <DataPane
+                        fullscreen={this.state.fullscreen}
+                        columns={this.columns}
+                        rowSelection={rowSelection}
+                        indentSize={8}
+                        dataSource={reg.details}
+                        rowKey="id"
+                        loading={this.state.loading}
                       >
                         <DataPane.Toolbar>
                           <Row type="flex">

@@ -370,7 +370,7 @@ export default class SFExpressModal extends Component {
       >
         <Row gutter={24}>
           <Col span={16}>
-            <Card title="订单信息" hoverable={false}>
+            <Card title="订单信息" >
               <Row className="form-row">
                 <Col span={12}>
                   <FormItem label="快递类型" {...formItemLayout} required>
@@ -573,7 +573,7 @@ export default class SFExpressModal extends Component {
             <Card
               title="快递单号"
               extra={<Button type="primary" onClick={this.orderExpress} loading={this.state.mailnoLoading}>获取单号</Button>}
-              hoverable={false}
+
             >
               <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" pagination={false} />
               <br />

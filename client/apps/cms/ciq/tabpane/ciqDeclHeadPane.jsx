@@ -300,7 +300,7 @@ export default class CiqDeclHeadPane extends React.Component {
     </Row>);
     return (
       <FormPane header={header} fullscreen={this.props.fullscreen} hideRequiredMark>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <Col span="6">
               {ioType === 'in' && <FormItem {...formItemLayout} label="报检类别" required >
@@ -518,7 +518,7 @@ export default class CiqDeclHeadPane extends React.Component {
             </Col>
           </Row>}
         </Card>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <Col span="6">
               <FormItem {...formItemLayout} label="运输方式" required >

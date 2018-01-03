@@ -259,7 +259,7 @@ export default class DutyTaxPane extends React.Component {
     const tax = this.state.sumval[0] || {};
     return (
       <div className="pane-content tab-pane">
-        <Card hoverable={false} bodyStyle={{ padding: 0 }}>
+        <Card bodyStyle={{ padding: 0 }}>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>完税价格</h3>
@@ -294,7 +294,7 @@ export default class DutyTaxPane extends React.Component {
         <Card
           title="缴税明细"
           bodyStyle={{ padding: 0 }}
-          hoverable={false}
+
           extra={<Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
             <Button icon="calculator" loading={this.state.recalLoading}>估算</Button>
           </Popconfirm>}

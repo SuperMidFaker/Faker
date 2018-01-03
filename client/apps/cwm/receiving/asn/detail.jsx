@@ -140,7 +140,7 @@ export default class ReceivingASNDetail extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <HeadCard asnHead={asnHead} form={form} editable={this.state.editable} />
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false}>
+            <MagicCard bodyStyle={{ padding: 0 }} >
               <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
                 <TabPane tab="ASN明细" key="asnDetails">
                   <DetailsPane asnBody={asnBody} detailEnable selectedOwner={asnHead.owner_partner_id} form={form} editable={this.state.editable} fullscreen={this.state.fullscreen} />

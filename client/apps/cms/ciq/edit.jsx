@@ -119,7 +119,7 @@ export default class CiqDeclEdit extends React.Component {
         <Content className="page-content layout-min-width layout-min-width-large">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            hoverable={false}
+
             loading={this.props.declSpinning}
             onSizeChange={this.toggleFullscreen}
           >

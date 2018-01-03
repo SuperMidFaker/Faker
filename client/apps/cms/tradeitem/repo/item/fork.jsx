@@ -30,6 +30,7 @@ function fetchData({ dispatch, params }) {
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
     tenantId: state.account.tenantId,
+    repo: state.cmsTradeitem.repo,
   }),
   { saveRepoForkItem }
 )
@@ -76,7 +77,9 @@ export default class TradeItemFork extends Component {
   }
 
   render() {
-    const { form, submitting, itemData } = this.props;
+    const {
+      form, submitting, itemData, repo,
+    } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab="主数据" key="master">
       <ItemMasterPane action="fork" form={form} itemData={itemData} />
@@ -86,6 +89,9 @@ export default class TradeItemFork extends Component {
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
+              <Breadcrumb.Item>
+                {repo.owner_name}
+              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
@@ -104,7 +110,7 @@ export default class TradeItemFork extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="master">
               {tabs}
             </Tabs>

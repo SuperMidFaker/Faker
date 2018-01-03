@@ -546,7 +546,7 @@ export default class ManifestEditor extends React.Component {
           <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
             <MagicCard
               bodyStyle={{ padding: 0 }}
-              hoverable={false}
+
               loading={this.props.manifestSpinning}
               onSizeChange={this.toggleFullscreen}
             >

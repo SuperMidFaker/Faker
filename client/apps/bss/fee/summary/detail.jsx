@@ -94,12 +94,11 @@ export default class FeeSummaryDetail extends Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      } else {
-        return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
-          <span className="ant-divider" />
-          <RowAction onClick={this.handleDetail} label="排除" row={record} />
-        </span>);
       }
+      return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
+        <span className="ant-divider" />
+        <RowAction onClick={this.handleDetail} label="排除" row={record} />
+      </span>);
     },
   }]
   payColumns = [{
@@ -149,12 +148,11 @@ export default class FeeSummaryDetail extends Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      } else {
-        return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
-          <span className="ant-divider" />
-          <RowAction onClick={this.handleDetail} label="排除" row={record} />
-        </span>);
       }
+      return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
+        <span className="ant-divider" />
+        <RowAction onClick={this.handleDetail} label="排除" row={record} />
+      </span>);
     },
   }]
   toggleFullscreen = (fullscreen) => {
@@ -202,7 +200,7 @@ export default class FeeSummaryDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+          <Card bodyStyle={{ padding: 16 }} >
             <Row type="flex">
               <Col span={14}>
                 <DescriptionList col={2}>
@@ -232,12 +230,15 @@ export default class FeeSummaryDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="receiveDetails">
               <TabPane tab="应收明细" key="receiveDetails" >
-                <DataPane fullscreen={this.state.fullscreen}
+                <DataPane
+                  fullscreen={this.state.fullscreen}
                   columns={this.recColumns}
-                  dataSource={mockData} rowKey="id" loading={this.state.loading}
+                  dataSource={mockData}
+                  rowKey="id"
+                  loading={this.state.loading}
                 >
                   <DataPane.Toolbar>
                     <Button icon="plus-square-o" onClick={this.handleCreateASN}>
@@ -247,9 +248,12 @@ export default class FeeSummaryDetail extends Component {
                 </DataPane>
               </TabPane>
               <TabPane tab="应付明细" key="putawayDetails" >
-                <DataPane fullscreen={this.state.fullscreen}
+                <DataPane
+                  fullscreen={this.state.fullscreen}
                   columns={this.payColumns}
-                  dataSource={mockData} rowKey="id" loading={this.state.loading}
+                  dataSource={mockData}
+                  rowKey="id"
+                  loading={this.state.loading}
                 >
                   <DataPane.Toolbar>
                     <Button icon="plus-square-o" onClick={this.handleCreateASN}>

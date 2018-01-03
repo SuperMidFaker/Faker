@@ -18,7 +18,9 @@ const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
-  () => ({}),
+  state => ({
+    repo: state.cmsTradeitem.repo,
+  }),
   { createTradeItem }
 )
 @connectNav({
@@ -57,7 +59,7 @@ export default class TradeItemAdd extends Component {
   }
 
   render() {
-    const { form } = this.props;
+    const { form, repo } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab="主数据" key="master">
       <ItemMasterPane action="create" form={form} itemData={{}} />
@@ -67,6 +69,9 @@ export default class TradeItemAdd extends Component {
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
+              <Breadcrumb.Item>
+                {repo.owner_name}
+              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
@@ -87,7 +92,7 @@ export default class TradeItemAdd extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            hoverable={false}
+
             onSizeChange={this.toggleFullscreen}
           >
             <Tabs defaultActiveKey="master">

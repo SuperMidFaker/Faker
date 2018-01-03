@@ -31,6 +31,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
+    repo: state.cmsTradeitem.repo,
   }),
   { saveRepoItem }
 )
@@ -79,7 +80,7 @@ export default class TradeItemEdit extends Component {
 
   render() {
     const {
-      form, submitting, itemData, params,
+      form, submitting, itemData, params, repo,
     } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab="主数据" key="master">
@@ -101,6 +102,9 @@ export default class TradeItemEdit extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
+                {repo.owner_name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
                 {this.msg('tradeItemMaster')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
@@ -120,7 +124,7 @@ export default class TradeItemEdit extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            hoverable={false}
+
             onSizeChange={this.toggleFullscreen}
           >
             <Tabs defaultActiveKey="master">

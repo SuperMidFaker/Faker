@@ -129,7 +129,7 @@ export default class CustomsDeclPane extends React.Component {
             title={manifestProgress}
             extra={this.renderManifestAction()}
             bodyStyle={{ padding: 16 }}
-            hoverable={false}
+
           >
             <Row gutter={16} className="info-group-underline">
               <Col span="6">

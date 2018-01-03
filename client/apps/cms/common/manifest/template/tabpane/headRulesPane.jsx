@@ -94,7 +94,7 @@ export default class HeadRulesPane extends React.Component {
       <FormPane fullscreen={this.props.fullscreen}>
         <Card
           bodyStyle={{ padding: 16 }}
-          hoverable={false}
+
         >
           <Row>
             <Col span="8">
@@ -223,7 +223,7 @@ export default class HeadRulesPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
           </Row>

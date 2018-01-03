@@ -102,7 +102,7 @@ export default class PermitDetail extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            hoverable={false}
+
             onSizeChange={this.toggleFullscreen}
           >
             <Tabs defaultActiveKey="head">

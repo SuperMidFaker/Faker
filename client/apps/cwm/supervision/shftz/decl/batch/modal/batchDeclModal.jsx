@@ -499,7 +499,7 @@ export default class BatchDeclModal extends Component {
         footer={null}
         visible={this.props.visible}
       >
-        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact">
             <Row gutter={16}>
               <Col span={4}>
@@ -580,7 +580,7 @@ export default class BatchDeclModal extends Component {
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} hoverable={false}>
+              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Input placeholder="出库单号" value={relNo} onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
@@ -605,7 +605,7 @@ export default class BatchDeclModal extends Component {
               </Card>
             </Col>
             <Col sm={24} md={16} lg={14}>
-              <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} hoverable={false}>
+              <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search

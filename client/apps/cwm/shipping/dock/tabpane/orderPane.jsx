@@ -107,7 +107,7 @@ export default class SOPane extends React.Component {
     const contactNumber = `${soHead.receiver_phone || ''} ${soHead.receiver_number || ''}`;
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 0 }} >
           <Collapse bordered={false} defaultActiveKey={['main', 'receiver', 'carrier']}>
             <Panel header="主信息" key="main">
               <Row gutter={16} className="info-group-underline">

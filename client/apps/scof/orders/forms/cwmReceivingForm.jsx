@@ -76,11 +76,15 @@ export default class CwmReceivingForm extends Component {
     const whseCode = node.t_whse_code || (node.whse_code ? `${node.wh_ent_tenant_id}-${node.whse_code}` : '');
     // todo required
     return (
-      <Card title={<Logixon type="receiving" />} hoverable={false} bodyStyle={{ padding: 16 }}>
+      <Card title={<Logixon type="receiving" />} bodyStyle={{ padding: 16 }}>
         <Row gutter={16}>
           <Col sm={24} lg={8}>
             <FormItem label="仓库" {...formItemLayout} required>
-              <Select showSearch allowClear optionFilterProp="children" value={whseCode}
+              <Select
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                value={whseCode}
                 onChange={value => this.handleCommonFieldChange('t_whse_code', value)}
               >
                 {recParams.whses.map(wh =>
@@ -111,7 +115,8 @@ export default class CwmReceivingForm extends Component {
           {node.bonded &&
             <Col sm={24} lg={8}>
               <FormItem label="保税监管方式" {...formItemLayout}>
-                <Select value={node.bonded_reg_type}
+                <Select
+                  value={node.bonded_reg_type}
                   onChange={value => this.handleCommonFieldChange('bonded_reg_type', value)}
                 >
                   {CWM_ASN_BONDED_REGTYPES.map(cabr => <Option value={cabr.value} key={cabr.value}>{cabr.ftztext}</Option>)}
@@ -122,7 +127,10 @@ export default class CwmReceivingForm extends Component {
           {node.bonded_reg_type === CWM_ASN_BONDED_REGTYPES[0].value &&
           <Col sm={24} lg={8}>
             <FormItem label="预期收货日期" {...formItemLayout}>
-              <Input addonBefore="晚于申报日期" addonAfter="天" value={node.rec_after_decl_days}
+              <Input
+                addonBefore="晚于申报日期"
+                addonAfter="天"
+                value={node.rec_after_decl_days}
                 onChange={ev => this.handleCommonFieldChange('rec_after_decl_days', ev.target.value)}
               />
             </FormItem>
@@ -130,7 +138,9 @@ export default class CwmReceivingForm extends Component {
           {node.bonded_reg_type !== CWM_ASN_BONDED_REGTYPES[0].value &&
           <Col sm={24} lg={8}>
             <FormItem label="预期收货日期" {...formItemLayout}>
-              <DatePicker format="YYYY/MM/DD" style={{ width: '100%' }}
+              <DatePicker
+                format="YYYY/MM/DD"
+                style={{ width: '100%' }}
                 value={node.expect_receive_date && moment(node.expect_receive_date)}
                 onChange={expectDate => this.handleCommonFieldChange('expect_receive_date', expectDate && expectDate.valueOf())}
               />

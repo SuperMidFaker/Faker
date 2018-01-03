@@ -91,7 +91,7 @@ export default class CusDeclHeadPane extends React.Component {
     </Row>);
     return (
       <FormPane header={header} fullscreen={this.props.fullscreen} hideRequiredMark>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <Col span="8">
               <RelationAutoCompSelect
@@ -199,7 +199,7 @@ export default class CusDeclHeadPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <Card hoverable={false}>
+        <Card >
           <Row>
             <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
           </Row>

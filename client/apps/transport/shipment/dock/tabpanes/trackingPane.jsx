@@ -9,6 +9,7 @@ import { removeShipmtPoint } from 'common/reducers/shipment';
 import { SHIPMENT_LOG_CATEGORY, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
 const timeFormat = 'YYYY-MM-DD HH:mm';
@@ -98,15 +99,14 @@ export default class TrackingPane extends React.Component {
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
         </Timeline.Item>
       );
-    } else {
-      return (
-        <Timeline.Item key={index} color="blue">
-          <p>{this.msg(log.type)} {log.content}</p>
-          <p>{`${log.tenant_name} ${log.login_name}`}</p>
-          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
-        </Timeline.Item>
-      );
     }
+    return (
+      <Timeline.Item key={index} color="blue">
+        <p>{this.msg(log.type)} {log.content}</p>
+        <p>{`${log.tenant_name} ${log.login_name}`}</p>
+        <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
+      </Timeline.Item>
+    );
   }
   render() {
     const { logs, sourceType } = this.props;
@@ -145,7 +145,7 @@ export default class TrackingPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <EventComposer sourceType={sourceType} />
-        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 0 }} >
           <Collapse bordered={false} defaultActiveKey={['timeline']}>
             <Panel header={timelineHeader} key="timeline">
               <Timeline>

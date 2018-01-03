@@ -545,7 +545,7 @@ export default class NormalDeclModal extends Component {
         footer={null}
         visible={this.props.visible}
       >
-        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact">
             <Row gutter={16}>
               <Col span={4}>
@@ -624,7 +624,7 @@ export default class NormalDeclModal extends Component {
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title="出区提货单" bodyStyle={{ padding: 0 }} hoverable={false}>
+              <Card title="出区提货单" bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Input value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
@@ -650,7 +650,7 @@ export default class NormalDeclModal extends Component {
               </Card>
             </Col>
             <Col sm={24} md={16} lg={14}>
-              <Card title="出库报关明细" bodyStyle={{ padding: 0 }} hoverable={false}>
+              <Card title="出库报关明细" bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} />

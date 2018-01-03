@@ -257,7 +257,7 @@ export default class ManifestTemplate extends Component {
           <Content className="main-content layout-min-width layout-min-width-large">
             <MagicCard
               bodyStyle={{ padding: 0 }}
-              hoverable={false}
+
               loading={this.props.manifestSpinning}
               onSizeChange={this.toggleFullscreen}
             >

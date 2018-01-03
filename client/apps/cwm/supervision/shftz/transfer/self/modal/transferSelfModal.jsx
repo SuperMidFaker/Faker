@@ -186,14 +186,14 @@ export default class TransferSelfModal extends Component {
       if (!result.error) {
         const entNo = row.ftz_ent_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(result.data.map(dt => ({ ...dt, ftz_ent_no: entNo })));
-        const transRegs = this.state.transRegs.map(pr => pr.ftz_ent_no === entNo ? { ...pr, added: true } : pr);
+        const transRegs = this.state.transRegs.map(pr => (pr.ftz_ent_no === entNo ? { ...pr, added: true } : pr));
         this.setState({ regDetails, transRegs });
       }
     });
   }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
-    const transRegs = this.state.transRegs.map(pr => pr.ftz_ent_no === detail.ftz_ent_no ? { ...pr, added: false } : pr);
+    const transRegs = this.state.transRegs.map(pr => (pr.ftz_ent_no === detail.ftz_ent_no ? { ...pr, added: false } : pr));
     this.setState({ regDetails, transRegs });
   }
   handleCancel = () => {
@@ -298,19 +298,33 @@ export default class TransferSelfModal extends Component {
       </Summary>
     );
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        footer={null} visible={this.props.visible}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+        visible={this.props.visible}
       >
-        <Card title="入库单" extra={extraForm} bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card title="入库单" extra={extraForm} bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.entryRegColumns} dataSource={transRegs} rowKey="ftz_ent_no"
+            <Table
+              size="middle"
+              columns={this.entryRegColumns}
+              dataSource={transRegs}
+              rowKey="ftz_ent_no"
               scroll={{ x: this.entryRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>
         </Card>
-        <Card title="入库单明细" extra={detailStatForm} bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card title="入库单明细" extra={detailStatForm} bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.regDetailColumns} dataSource={regDetails} rowKey="id"
+            <Table
+              size="middle"
+              columns={this.regDetailColumns}
+              dataSource={regDetails}
+              rowKey="id"
               scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>

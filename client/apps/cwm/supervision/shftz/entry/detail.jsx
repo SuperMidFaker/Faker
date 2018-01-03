@@ -613,7 +613,7 @@ export default class SHFTZEntryDetail extends Component {
         <Content className="page-content">
           {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
               <DescriptionList col={3}>
                 <Description term="进区凭单号">
                   <EditableCell
@@ -642,7 +642,7 @@ export default class SHFTZEntryDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <DataPane
                 header="备案明细"
                 fullscreen={this.state.fullscreen}

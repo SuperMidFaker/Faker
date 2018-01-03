@@ -158,7 +158,7 @@ export default class InboundPane extends React.Component {
     const { pickDetails, packDetails, shipDetails } = this.props;
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 0 }} >
           <Collapse bordered={false} defaultActiveKey="pickDetails" accordion>
             <Panel header="拣货明细" key="pickDetails" >
               <div className="table-panel table-fixed-layout">

@@ -246,9 +246,8 @@ export default class NewTransfOutModal extends Component {
       if (relDetailFilter) {
         const reg = new RegExp(relDetailFilter);
         return reg.test(item.ftz_ent_no);
-      } else {
-        return true;
       }
+      return true;
     });
     const relDetailRowSelection = {
       selectedRowKeys: selRelDetailKeys,
@@ -264,10 +263,16 @@ export default class NewTransfOutModal extends Component {
       </div>
     </div>);
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        footer={null} visible={this.props.visible}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+        visible={this.props.visible}
       >
-        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }}>
           <Form layout="inline" className="form-layout-compact">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} value={ownerCusCode} allowClear style={{ width: 200 }}>
@@ -287,12 +292,19 @@ export default class NewTransfOutModal extends Component {
               <Card title="出库单" bodyStyle={{ padding: 0 }}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户单号"
-                      onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+                    <Input
+                      key="ftz_ent_no"
+                      value={srcFilter.bill_no}
+                      placeholder="客户单号"
+                      onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)}
+                      style={{ width: 200 }}
                     />
                     <Button icon="search" onClick={this.handleRegSrcQuery} style={{ marginLeft: 8 }} />
                   </div>
-                  <Table columns={this.soSrcColumns} dataSource={this.state.transferSource} rowKey="id"
+                  <Table
+                    columns={this.soSrcColumns}
+                    dataSource={this.state.transferSource}
+                    rowKey="id"
                     scroll={{ x: this.soSrcColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
@@ -308,7 +320,11 @@ export default class NewTransfOutModal extends Component {
                       {selRelDetailKeys.length !== 0 && <Button onClick={this.handleRelBatchDelete}>批量删除</Button>}
                     </div>
                   </div>
-                  <Table columns={this.relDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={relDetailRowSelection}
+                  <Table
+                    columns={this.relDetailColumns}
+                    dataSource={dataSource}
+                    rowKey="id"
+                    rowSelection={relDetailRowSelection}
                     scroll={{ x: this.relDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                   />
                 </div>

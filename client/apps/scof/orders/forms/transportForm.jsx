@@ -590,7 +590,7 @@ export default class TransportForm extends Component {
       );
     }
     return (
-      <Card title={<MdIcon type="truck" />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} hoverable={false}>
+      <Card title={<MdIcon type="truck" />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} >
         {
           !this.state.isLineIntariff && <Row>
             <Alert message={<div>发货/收货地址不在报价协议的线路里 <a onClick={this.handleShowAddLineModal}>添加到报价协议</a></div>} type="warning" showIcon />
@@ -636,8 +636,11 @@ export default class TransportForm extends Component {
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
-                <Select style={{ width: '50%' }} placeholder="选择包装方式"
-                  value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}
+                <Select
+                  style={{ width: '50%' }}
+                  placeholder="选择包装方式"
+                  value={node.package}
+                  onChange={value => this.handleCommonFieldChange('package', value)}
                 >
                   {packagings.map(pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>)}
                 </Select>
@@ -646,14 +649,20 @@ export default class TransportForm extends Component {
           </Col>
           <Col sm={24} md={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={node.gross_wt} addonAfter="千克" type="number"
+              <Input
+                value={node.gross_wt}
+                addonAfter="千克"
+                type="number"
                 onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
               />
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
             <FormItem label={this.msg('goodsVolume')} {...formItemLayout}>
-              <Input value={node.volume} addonAfter={this.msg('cubicMeter')} type="number"
+              <Input
+                value={node.volume}
+                addonAfter={this.msg('cubicMeter')}
+                type="number"
                 onChange={e => this.handleCommonFieldChange('volume', e.target.value)}
               />
             </FormItem>
@@ -663,7 +672,11 @@ export default class TransportForm extends Component {
           <Col sm={12}>
             <FormItem label="发货方" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
               <Row style={{ paddingRight: 8 }}>
-                <Select allowClear showArrow value={node.consigner_id} optionLabelProp="name"
+                <Select
+                  allowClear
+                  showArrow
+                  value={node.consigner_id}
+                  optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                   onSelect={value => this.handleConsignSelect('consigner_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -684,7 +697,9 @@ export default class TransportForm extends Component {
                     <Input value={consignerLocation} />
                   </Col>
                   <Col span="12">
-                    <Input prefix={<Icon type="environment-o" />} value={node.consigner_addr}
+                    <Input
+                      prefix={<Icon type="environment-o" />}
+                      value={node.consigner_addr}
                       onChange={e => this.handleChange('consigner_addr', e.target.value)}
                       placeholder="详细地址"
                     />
@@ -693,15 +708,26 @@ export default class TransportForm extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <InputGroup >
-                  <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consigner_contact}
+                  <Input
+                    style={{ width: '33.33%' }}
+                    prefix={<Icon type="user" />}
+                    value={node.consigner_contact}
                     onChange={e => this.handleChange('consigner_contact', e.target.value)}
                     placeholder="联系人"
                   />
-                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mobile" />} value={node.consigner_mobile} type="tel"
+                  <Input
+                    style={{ width: '33.33%' }}
+                    prefix={<Icon type="mobile" />}
+                    value={node.consigner_mobile}
+                    type="tel"
                     onChange={e => this.handleChange('consigner_mobile', e.target.value)}
                     placeholder="电话"
                   />
-                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mail" />} value={node.consigner_email} type="email"
+                  <Input
+                    style={{ width: '33.33%' }}
+                    prefix={<Icon type="mail" />}
+                    value={node.consigner_email}
+                    type="email"
                     onChange={e => this.handleChange('consigner_email', e.target.value)}
                     placeholder="邮箱"
                   />
@@ -712,7 +738,11 @@ export default class TransportForm extends Component {
           <Col sm={12}>
             <FormItem label="收货方" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
               <Row style={{ paddingRight: 8 }}>
-                <Select allowClear showArrow value={node.consignee_id} optionLabelProp="name"
+                <Select
+                  allowClear
+                  showArrow
+                  value={node.consignee_id}
+                  optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                   onSelect={value => this.handleConsignSelect('consignee_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -733,7 +763,9 @@ export default class TransportForm extends Component {
                     <Input value={consigneeLocation} />
                   </Col>
                   <Col span="12">
-                    <Input prefix={<Icon type="environment-o" />} value={node.consignee_addr}
+                    <Input
+                      prefix={<Icon type="environment-o" />}
+                      value={node.consignee_addr}
                       onChange={e => this.handleChange('consignee_addr', e.target.value)}
                       placeholder="详细地址"
                     />
@@ -742,15 +774,26 @@ export default class TransportForm extends Component {
               </Row>
               <Row style={{ marginTop: 10 }}>
                 <InputGroup >
-                  <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consignee_contact}
+                  <Input
+                    style={{ width: '33.33%' }}
+                    prefix={<Icon type="user" />}
+                    value={node.consignee_contact}
                     onChange={e => this.handleChange('consignee_contact', e.target.value)}
                     placeholder="联系人"
                   />
-                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mobile" />} value={node.consignee_mobile} type="tel"
+                  <Input
+                    style={{ width: '33.33%' }}
+                    prefix={<Icon type="mobile" />}
+                    value={node.consignee_mobile}
+                    type="tel"
                     onChange={e => this.handleChange('consignee_mobile', e.target.value)}
                     placeholder="电话"
                   />
-                  <Input style={{ width: '33.33%' }} prefix={<Icon type="mail" />} value={node.consignee_email} type="email"
+                  <Input
+                    style={{ width: '33.33%' }}
+                    prefix={<Icon type="mail" />}
+                    value={node.consignee_email}
+                    type="email"
                     onChange={e => this.handleChange('consignee_email', e.target.value)}
                     placeholder="邮箱"
                   />
@@ -762,21 +805,28 @@ export default class TransportForm extends Component {
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <FormItem label={this.msg('pickupEstDate')} {...formItemLayout}>
-              <DatePicker style={{ width: '100%' }} value={node.pickup_est_date && moment(new Date(node.pickup_est_date), 'YYYY-MM-DD')}
+              <DatePicker
+                style={{ width: '100%' }}
+                value={node.pickup_est_date && moment(new Date(node.pickup_est_date), 'YYYY-MM-DD')}
                 onChange={this.handlePickupChange}
               />
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
             <FormItem label={this.msg('shipmtTransit')} {...formItemLayout}>
-              <InputNumber style={{ width: '100%' }} min={0} value={node.transit_time}
+              <InputNumber
+                style={{ width: '100%' }}
+                min={0}
+                value={node.transit_time}
                 onChange={this.handleTransitChange}
               />
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
             <FormItem label={this.msg('deliveryEstDate')} {...formItemLayout}>
-              <DatePicker style={{ width: '100%' }} value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
+              <DatePicker
+                style={{ width: '100%' }}
+                value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
                 onChange={this.handleDeliveryChange}
               />
             </FormItem>

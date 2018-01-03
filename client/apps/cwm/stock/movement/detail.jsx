@@ -104,7 +104,7 @@ export default class MovementDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ paddingBottom: 48 }} hoverable={false}>
+          <Card bodyStyle={{ paddingBottom: 48 }} >
             <Row>
               <Col sm={24} lg={6}>
                 <InfoItem addonBefore="货主" field={movementHead.owner_name} />
@@ -129,7 +129,7 @@ export default class MovementDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
                 <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} movementHead={movementHead} fullscreen={this.state.fullscreen} />

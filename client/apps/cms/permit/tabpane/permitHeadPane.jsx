@@ -148,7 +148,7 @@ export default class PermitHeadPane extends Component {
     };
     return (
       <FormPane fullscreen={this.props.fullscreen}>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col span={16}>
               <FormItem {...formItemSpan2Layout} label={this.msg('permitOwner')}>
@@ -189,7 +189,7 @@ export default class PermitHeadPane extends Component {
             </Col>
           </Row>
         </Card>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('permitCategory')}>

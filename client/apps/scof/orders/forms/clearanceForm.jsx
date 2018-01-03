@@ -104,7 +104,7 @@ export default class ClearanceForm extends Component {
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     const iconType = node.kind === 'export' ? 'logout' : 'login';
     return (
-      <Card title={<Ikons type={iconType} />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} hoverable={false}>
+      <Card title={<Ikons type={iconType} />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} >
         <Row style={{ marginBottom: 8 }}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
@@ -174,7 +174,8 @@ export default class ClearanceForm extends Component {
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
-                <Select style={{ width: '50%' }}
+                <Select
+                  style={{ width: '50%' }}
                   placeholder="选择包装方式"
                   onChange={value => this.handleChange('wrap_type', value)}
                   value={node.wrap_type}
@@ -189,7 +190,8 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={node.gross_wt}
+              <Input
+                value={node.gross_wt}
                 addonAfter="千克"
                 type="number"
                 onChange={ev => this.handleChange('gross_wt', ev.target.value)}

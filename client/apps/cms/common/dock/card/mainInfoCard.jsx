@@ -54,7 +54,7 @@ export default class MainInfoCard extends React.Component {
       }
     }
     return (
-      <Card bodyStyle={{ padding: 16 }} hoverable={false}>
+      <Card bodyStyle={{ padding: 16 }} >
         <Row gutter={16} className="info-group-underline">
           <Col span="8">
             <InfoItem
