@@ -234,7 +234,7 @@ export default class PendingItemsList extends React.Component {
               rowSelection={rowSelection}
               rowKey="id"
               loading={workspaceLoading}
-              locale={{ emptyText: '当前没有待审核的料件' }}
+              locale={{ emptyText: '当前没有待审核的归类' }}
             />
           </Content>
         </Layout>

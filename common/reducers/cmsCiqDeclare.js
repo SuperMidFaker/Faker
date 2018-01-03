@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'GOODS_CONT_LOAD', 'GOODS_CONT_LOAD_SUCCEED', 'GOODS_CONT_LOAD_FAIL',
   'DELETE_GOODS_CONT', 'DELETE_GOODS_CONT_SUCCEED', 'DELETE_GOODS_CONT_FAIL',
   'GET_CIQCODE_BY_HSCODE', 'GET_CIQCODE_BY_HSCODE_SUCCEED', 'GET_CIQCODE_BY_HSCODE_FAIL',
+  'GET_LICENCE_NOS', 'GET_LICENCE_NOS_SUCCEED', 'GET_LICENCE_NOS_FAIL',
 ]);
 
 const initialState = {
@@ -619,7 +620,7 @@ export function toggleGoodsLicenceModal(visible, goodsData = {}) {
   };
 }
 
-export function addGoodsLicence(preEntrySeqNo, id, data) {
+export function addGoodsLicence(preEntrySeqNo, id, data, permitId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -629,12 +630,14 @@ export function addGoodsLicence(preEntrySeqNo, id, data) {
       ],
       endpoint: 'v1/cms/ciq/goods/licence/add',
       method: 'post',
-      data: { preEntrySeqNo, id, data },
+      data: {
+        preEntrySeqNo, id, data, permitId,
+      },
     },
   };
 }
 
-export function deleteGoodsLicences(ids) {
+export function deleteGoodsLicences(id, wrtofQty, wrtofLeft, permitId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -644,7 +647,9 @@ export function deleteGoodsLicences(ids) {
       ],
       endpoint: 'v1/cms/ciq/goods/licences/delete',
       method: 'post',
-      data: { ids },
+      data: {
+        id, wrtofQty, wrtofLeft, permitId,
+      },
     },
   };
 }
@@ -788,6 +793,21 @@ export function getCiqCodeByHscode(hscode) {
       endpoint: 'v1/cms/ciqcode/get/by/hscode',
       method: 'get',
       params: { hscode },
+    },
+  };
+}
+
+export function loadLicenceNo(licType, ownerPartnerId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_LICENCE_NOS,
+        actionTypes.GET_LICENCE_NOS_SUCCEED,
+        actionTypes.GET_LICENCE_NOS_FAIL,
+      ],
+      endpoint: 'v1/cms/licence/nos/load',
+      method: 'get',
+      params: { licType, ownerPartnerId },
     },
   };
 }

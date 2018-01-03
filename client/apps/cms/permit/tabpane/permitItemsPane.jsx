@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Tag } from 'antd';
+import { Button } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
@@ -47,11 +47,11 @@ export default class PermitItemsPane extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   columns = [{
-    title: this.msg('序号'),
     dataIndex: 's_no',
     fixed: 'left',
     width: 45,
     align: 'center',
+    className: 'table-col-seq',
     render: (o, record, index) => index + 1,
   }, {
     title: this.msg('型号系列'),
@@ -74,15 +74,6 @@ export default class PermitItemsPane extends React.Component {
         <RowAction onClick={this.handMatch} icon="plus-circle-o" tooltip="手动关联货号" row={record} />
       </span>);
     },
-  }];
-  mockData = [{
-    s_no: '1',
-    permit_model: '*',
-    rel_product_nos: <span><Tag>ABCD</Tag><Tag>XYZ</Tag><Tag>1234</Tag></span>,
-  }, {
-    s_no: '2',
-    permit_model: 'CP5XX-XXX',
-    rel_product_nos: <span><Tag>CP501-123</Tag></span>,
   }];
   handlePageChange = (current) => {
     this.setState({

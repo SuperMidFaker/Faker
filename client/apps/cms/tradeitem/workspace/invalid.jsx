@@ -235,7 +235,7 @@ export default class InvalidItemsList extends React.Component {
               rowSelection={rowSelection}
               rowKey="id"
               loading={workspaceLoading}
-              locale={{ emptyText: '当前没有失效的料件归类' }}
+              locale={{ emptyText: '当前没有失效的商品归类' }}
             />
           </Content>
         </Layout>

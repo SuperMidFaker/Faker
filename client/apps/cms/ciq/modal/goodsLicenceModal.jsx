@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Col, Form, Row, Input, Select, Modal, Table, Button } from 'antd';
-import { toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences } from 'common/reducers/cmsCiqDeclare';
+import { toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences, loadLicenceNo } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
 import RowAction from 'client/components/RowAction';
 
@@ -12,15 +12,18 @@ const { Option } = Select;
   state => ({
     visible: state.cmsCiqDeclare.goodsLicenceModal.visible,
     goodsData: state.cmsCiqDeclare.goodsLicenceModal.goodsData,
+    ciqDeclHead: state.cmsCiqDeclare.ciqDeclHead.head,
   }),
   {
-    toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences,
+    toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences, loadLicenceNo,
   }
 )
 @Form.create()
 export default class GoodsLicenceModal extends Component {
   state = {
     dataSource: [],
+    licenceNos: [],
+    licence: {},
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.goodsData.id && nextProps.goodsData.id !== this.props.goodsData.id) {
@@ -41,9 +44,10 @@ export default class GoodsLicenceModal extends Component {
   }
   handleSave = () => {
     const { preEntrySeqNo, id } = this.props.goodsData;
+    const { licence } = this.state;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.addGoodsLicence(preEntrySeqNo, id, values).then((result) => {
+        this.props.addGoodsLicence(preEntrySeqNo, id, values, licence.id).then((result) => {
           this.props.form.resetFields();
           if (!result.error) {
             this.loadDataSource(id);
@@ -54,15 +58,58 @@ export default class GoodsLicenceModal extends Component {
   }
   handleDelete = (row) => {
     const { id } = this.props.goodsData;
-    this.props.deleteGoodsLicences([row.id]).then((result) => {
+    this.props.deleteGoodsLicences(
+      row.id, row.lic_wrtof_qty,
+      row.lic_wrtof_left, row.permit_id
+    ).then((result) => {
       if (!result.error) {
         this.loadDataSource(id);
+        this.props.form.setFieldsValue({
+          lic_type_code: '',
+          licence_no: '',
+          lic_detail_left: '',
+          lic_wrtof_left: '',
+          lic_wrtof_qty: '',
+        });
       }
+    });
+  }
+  handleChange = (value) => {
+    this.props.loadLicenceNo(value, this.props.ciqDeclHead.owner_cuspartner_id).then((result) => {
+      if (!result.error) {
+        this.setState({
+          licenceNos: result.data,
+        });
+        this.props.form.setFieldsValue({
+          licence_no: '',
+          lic_detail_left: '',
+          lic_wrtof_left: '',
+          lic_wrtof_qty: '',
+        });
+      }
+    });
+  }
+  handleLicenceNoChange = (value) => {
+    const { licenceNos } = this.state;
+    const licence = licenceNos.find(lic => lic.permit_no === value);
+    this.props.form.setFieldsValue({
+      lic_detail_left: licence.ava_usage,
+      lic_wrtof_left: '',
+      lic_wrtof_qty: '',
+    });
+    this.setState({
+      licence,
+    });
+  }
+  handleQtyChange = (e) => {
+    const left = this.props.form.getFieldValue('lic_detail_left');
+    this.props.form.setFieldsValue({
+      lic_wrtof_left: left - e.target.value,
     });
   }
   render() {
     const { visible, form: { getFieldDecorator }, goodsData } = this.props;
-    const { dataSource } = this.state;
+    const { dataSource, licenceNos } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -102,7 +149,7 @@ export default class GoodsLicenceModal extends Component {
       render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
     }];
     return (
-      <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
+      <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel} destroyOnClose>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
           <Row>
             <Col span={8}>
@@ -124,10 +171,10 @@ export default class GoodsLicenceModal extends Component {
               <FormItem {...formItemLayout} colon={false} label="许可证类别" >
                 {getFieldDecorator('lic_type_code', {
                 required: true,
-              })(<Select showSearch optionFilterProp="children" style={{ width: '100%' }}>
+              })(<Select showSearch optionFilterProp="children" onChange={this.handleChange}>
                 {CIQ_LICENCE_TYPE.map(type =>
                   (<Option key={type.value} value={type.value}>
-                    {type.text}
+                    {type.value}|{type.text}
                   </Option>))}
               </Select>)}
               </FormItem>
@@ -136,7 +183,12 @@ export default class GoodsLicenceModal extends Component {
               <FormItem {...formItemLayout} colon={false} label="许可证编号" >
                 {getFieldDecorator('licence_no', {
                 required: true,
-              })(<Input />)}
+              })(<Select showSearch optionFilterProp="children" onChange={this.handleLicenceNoChange}>
+                {licenceNos.map(lic =>
+                  (<Option key={lic.permit_no} value={lic.permit_no}>
+                    {lic.permit_no}
+                  </Option>))}
+              </Select>)}
               </FormItem>
             </Col>
             <Col span={8}>
@@ -154,7 +206,7 @@ export default class GoodsLicenceModal extends Component {
             <Col span={8}>
               <FormItem {...formItemLayout} colon={false} label="核销数量" >
                 {getFieldDecorator('lic_wrtof_qty', {
-              })(<Input />)}
+              })(<Input onChange={this.handleQtyChange} />)}
               </FormItem>
             </Col>
             <Col span={8}>

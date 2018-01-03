@@ -28,7 +28,8 @@ export default class AttachedDocuModal extends Component {
       this.props.loadAttDocuments(nextProps.preEntrySeqNo).then((result) => {
         if (!result.error) {
           if (result.data.length > 0) {
-            const newDocuments = result.data.concat(CIQ_ATT_DOCUMENTS).map((doc, index) => ({ ...doc, index }));
+            const newDocuments = result.data.concat(CIQ_ATT_DOCUMENTS).map((doc, index) =>
+              ({ ...doc, index }));
             const selectedRowKeys = [];
             for (let i = 0; i < result.data.length; i++) {
               selectedRowKeys.push(i);
@@ -92,12 +93,15 @@ export default class AttachedDocuModal extends Component {
       },
     };
     const columns = [{
-      title: '序号',
+      key: 'sno',
+      width: 35,
+      align: 'center',
+      className: 'table-col-seq',
       render: (o, record, index) => index + 1,
-      width: 45,
     }, {
       title: '类别代码',
       dataIndex: 'att_doc_type_code',
+      align: 'center',
       width: 80,
     }, {
       title: '随附单据名称',

@@ -83,11 +83,11 @@ export default class TradeItemEdit extends Component {
       form, submitting, itemData, params, repo,
     } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab="主数据" key="master">
+    tabs.push(<TabPane tab="归类信息" key="master">
       <ItemMasterPane action="edit" form={form} itemData={itemData} />
     </TabPane>);
     tabs.push(<TabPane tab="涉证资料" key="permit">
-      <ItemPermitPane fullscreen={this.state.fullscreen} />
+      <ItemPermitPane fullscreen={this.state.fullscreen} repoId={params.repoId} />
     </TabPane>);
     tabs.push(<TabPane tab="历史版本" key="history">
       <ItemHistoryPane

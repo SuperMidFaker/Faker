@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'ITEM_EDITED_SAVE', 'ITEM_EDITED_SAVE_SUCCEED', 'ITEM_EDITED_SAVE_FAIL',
   'DELETE_ITEMS', 'DELETE_ITEMS_SUCCEED', 'DELETE_ITEMS_FAIL',
   'LOAD_BODY_ITEM', 'LOAD_BODY_ITEM_SUCCEED', 'LOAD_BODY_ITEM_FAIL',
+  'TOGGLE_HISTITEM', 'TOGGLE_HISTITEM_SUCCEED', 'TOGGLE_HISTITEM_FAIL',
   'LOAD_REPO_USERS', 'LOAD_REPO_USERS_SUCCEED', 'LOAD_REPO_USERS_FAIL',
   'ADD_REPO_USER', 'ADD_REPO_USER_SUCCEED', 'ADD_REPO_USER_FAIL',
   'DELETE_REPO_USER', 'DELETE_REPO_USER_SUCCEED', 'DELETE_REPO_USER_FAIL',
@@ -41,6 +42,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
   'TOGGLE_APPLY_CERTS_MODAL',
+  'UPDATE_ITEM_APP_CERT', 'UPDATE_ITEM_APP_CERT_SUCCEED', 'UPDATE_ITEM_APP_CERT_FAIL',
+  'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
 ]);
 
 const initialState = {
@@ -440,17 +443,17 @@ export function getHscodeForBody(params) {
   };
 }
 
-export function setItemStatus(datas) {
+export function toggleHistoryItemsDecl(repoId, itemIds, action) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SET_ITEM_STATUS,
-        actionTypes.SET_ITEM_STATUS_SUCCEED,
-        actionTypes.SET_ITEM_STATUS_FAIL,
+        actionTypes.TOGGLE_HISTITEM,
+        actionTypes.TOGGLE_HISTITEM_SUCCEED,
+        actionTypes.TOGGLE_HISTITEM_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/status/set',
+      endpoint: 'v1/cms/tradeitem/history/decl/toggle',
       method: 'post',
-      data: datas,
+      data: { itemIds, action, repoId },
     },
   };
 }
@@ -861,3 +864,32 @@ export function toggleApplyCertsModal(visible, data = {}) {
   };
 }
 
+export function updateItemAppCert(code, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_ITEM_APP_CERT,
+        actionTypes.UPDATE_ITEM_APP_CERT_SUCCEED,
+        actionTypes.UPDATE_ITEM_APP_CERT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/app/cert/update',
+      method: 'post',
+      data: { code, id },
+    },
+  };
+}
+
+export function loadPermits(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PERMITS,
+        actionTypes.LOAD_PERMITS_SUCCEED,
+        actionTypes.LOAD_PERMITS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/permits/load',
+      method: 'get',
+      params: { repoId },
+    },
+  };
+}

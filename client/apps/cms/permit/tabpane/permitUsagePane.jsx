@@ -36,6 +36,12 @@ export default class PermitUsagePane extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   columns = [{
+    key: 'sno',
+    width: 45,
+    align: 'center',
+    className: 'table-col-seq',
+    render: (o, record, index) => index + 1,
+  }, {
     title: this.msg('型号系列'),
     dataIndex: 'permit_model',
     width: 200,
@@ -70,7 +76,6 @@ export default class PermitUsagePane extends React.Component {
       <DataPane
         fullscreen={this.props.fullscreen}
         columns={this.columns}
-        bordered
         scrollOffset={312}
         dataSource={permitItems}
         rowKey="id"

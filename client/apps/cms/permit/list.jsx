@@ -12,7 +12,7 @@ import { Logixon } from 'client/components/FontIcon';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadPermits, loadCertParams } from 'common/reducers/cmsPermit';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CIQ_LICENCE_TYPE } from 'common/constants';
 import SearchBar from 'client/components/SearchBar';
 import messages from './message.i18n';
 
@@ -80,8 +80,11 @@ export default class PermitList extends Component {
     title: this.msg('permitType'),
     width: 200,
     dataIndex: 'permit_code',
-    render: o => this.props.certParams.find(cert => cert.cert_code === o) &&
-    this.props.certParams.find(cert => cert.cert_code === o).cert_spec,
+    render: (o, record) => (record.permit_category === 'customs' ?
+      this.props.certParams.find(cert => cert.cert_code === o) &&
+    this.props.certParams.find(cert => cert.cert_code === o).cert_spec :
+      CIQ_LICENCE_TYPE.find(type => type.value === o) &&
+    CIQ_LICENCE_TYPE.find(type => type.value === o).text),
   }, {
     title: this.msg('permitNo'),
     dataIndex: 'permit_no',
