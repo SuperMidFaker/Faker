@@ -369,7 +369,7 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.HIDE_DECL_ELEMENTS_MODAL:
-      return { ...state, declElementsModal: { ...state.declElementsModal, visible: false } };
+      return { ...state, declElementsModal: initialState.declElementsModal };
     case actionTypes.SHOW_MANIFEST_RULES_CLONE_MODAL:
       return {
         ...state,
