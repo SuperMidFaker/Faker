@@ -60,6 +60,7 @@ export default class PermitHeadPane extends Component {
             usageEnable: !!result.data.usage_control,
             expiryEnable: !!result.data.expiry_control,
             permit_file: result.data.permit_file,
+            permitCategory: result.data.permit_category,
           });
         }
       });
