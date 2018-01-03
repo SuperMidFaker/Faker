@@ -64,6 +64,13 @@ export default class GoodsLicenceModal extends Component {
     ).then((result) => {
       if (!result.error) {
         this.loadDataSource(id);
+        this.props.form.setFieldsValue({
+          lic_type_code: '',
+          licence_no: '',
+          lic_detail_left: '',
+          lic_wrtof_left: '',
+          lic_wrtof_qty: '',
+        });
       }
     });
   }
