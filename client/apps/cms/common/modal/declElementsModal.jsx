@@ -38,16 +38,17 @@ export default class DeclElementsModal extends Component {
     }
   }
   handleOk = () => {
-    const { id, disabled } = this.props;
-    const { model } = this.state;
+    const { id, disabled, form } = this.props;
     if (!disabled) {
-      this.props.onOk(model, id);
+      const data = form.getFieldsValue();
+      const parts = [];
+      Object.keys(data).forEach((key) => {
+        parts.push(data[key]);
+      });
+      parts.push(this.state.others);
+      this.props.onOk(parts.join('|'), id);
     }
-    this.props.hideDeclElementsModal();
-    this.props.form.resetFields();
-    this.setState({
-      model: '',
-    });
+    this.handleCancel();
   }
   handleCancel = () => {
     this.props.hideDeclElementsModal();
@@ -58,13 +59,14 @@ export default class DeclElementsModal extends Component {
   }
   handleInputChange = (value, item) => {
     const data = this.props.form.getFieldsValue();
-    data[item] = value;
     const values = [];
-    for (const key in data) {
-      if (key) {
+    Object.keys(data).forEach((key) => {
+      if (key === item) {
+        values.push(value);
+      } else {
         values.push(data[key]);
       }
-    }
+    });
     values.push(this.state.others);
     const model = values.join('|');
     this.setState({ model });
@@ -95,7 +97,7 @@ export default class DeclElementsModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
-    const element = this.props.element ? this.props.element.split(';') : [];
+    const element = this.props.element ? this.props.element.split(';').filter(elem => elem) : [];
     const gModel = this.props.gModel ? this.props.gModel.split('|') : [];
     return (
       <Modal
@@ -120,7 +122,7 @@ export default class DeclElementsModal extends Component {
                       initialValue: gModel[0] || '',
                     })(<Select
                       disabled={disabled}
-                      onChange={e => this.handleInputChange(e.target.value, item)}
+                      onChange={value => this.handleInputChange(value, item)}
                     >
                       {CMS_HSCODE_BRAND_TYPE.map(type => (
                         <Option key={type.value} value={type.value}>
@@ -136,7 +138,7 @@ export default class DeclElementsModal extends Component {
                       initialValue: gModel[1] || '',
                     })(<Select
                       disabled={disabled}
-                      onChange={e => this.handleInputChange(e.target.value, item)}
+                      onChange={value => this.handleInputChange(value, item)}
                     >
                       {CMS_HSCODE_EXPORT_PREFER.map(prefer => (
                         <Option key={prefer.value} value={prefer.value}>
