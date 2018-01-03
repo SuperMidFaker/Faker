@@ -41,6 +41,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
   'TOGGLE_APPLY_CERTS_MODAL',
+  'UPDATE_ITEM_APP_CERT', 'UPDATE_ITEM_APP_CERT_SUCCEED', 'UPDATE_ITEM_APP_CERT_FAIL',
 ]);
 
 const initialState = {
@@ -858,6 +859,21 @@ export function toggleApplyCertsModal(visible, data = {}) {
     type: actionTypes.TOGGLE_APPLY_CERTS_MODAL,
     visible,
     data,
+  };
+}
+
+export function updateItemAppCert(code, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_ITEM_APP_CERT,
+        actionTypes.UPDATE_ITEM_APP_CERT_SUCCEED,
+        actionTypes.UPDATE_ITEM_APP_CERT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/app/cert/update',
+      method: 'post',
+      data: { code, id },
+    },
   };
 }
 

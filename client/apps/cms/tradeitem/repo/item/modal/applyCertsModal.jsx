@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Modal, Table } from 'antd';
-import { toggleApplyCertsModal } from 'common/reducers/cmsTradeitem';
+import { toggleApplyCertsModal, updateItemAppCert, loadTradeItem } from 'common/reducers/cmsTradeitem';
 import { TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 
 @connect(
   state => ({
     visible: state.cmsTradeitem.applyCertsModal.visible,
   }),
-  { toggleApplyCertsModal }
+  { toggleApplyCertsModal, updateItemAppCert, loadTradeItem }
 )
 export default class ApplyCertsModal extends Component {
   static propTypes = {
-
     selectedRowKeys: PropTypes.string,
+    itemId: PropTypes.number.isRequired,
   }
   state = {
     documents: [],
@@ -44,23 +44,21 @@ export default class ApplyCertsModal extends Component {
   }
   handleOk = () => {
     const { selectedRows } = this.state;
-    const data = {
-      app_cert_code: '',
-      app_cert_name: '',
-    };
+    let code = '';
     for (let i = 0; i < selectedRows.length; i++) {
       const row = selectedRows[i];
-      if (!data.app_cert_code) {
-        data.app_cert_code += `${row.app_cert_code}`;
+      if (!code) {
+        code += `${row.app_cert_code}`;
       } else {
-        data.app_cert_code += `,${row.app_cert_code}`;
-      }
-      if (!data.app_cert_name) {
-        data.app_cert_name += `${row.app_cert_name}`;
-      } else {
-        data.app_cert_name += `,${row.app_cert_name}`;
+        code += `,${row.app_cert_code}`;
       }
     }
+    this.props.updateItemAppCert(code, this.props.itemId).then((result) => {
+      if (!result.error) {
+        this.props.loadTradeItem(this.props.itemId);
+        this.handleCancel();
+      }
+    });
   }
   render() {
     const { visible } = this.props;
