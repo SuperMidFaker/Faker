@@ -176,7 +176,7 @@ export default class EmergeItemTable extends React.Component {
         dataSource={this.emergeDataSource}
         rowSelection={emergeSelRows}
         rowKey="id"
-        locale={{ emptyText: '当前没有新的料件' }}
+        locale={{ emptyText: '当前没有新的商品货号' }}
         toolbarActions={toolbarActions}
         noBorder={noBorder}
       />

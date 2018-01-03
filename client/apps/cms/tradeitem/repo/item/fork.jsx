@@ -4,17 +4,17 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import { loadTradeItem, saveRepoForkItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import ItemMasterPane from './tabpane/itemMasterPane';
 import messages from '../../message.i18n';
-import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -54,12 +54,16 @@ export default class TradeItemFork extends Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const value = this.props.form.getFieldsValue();
-        if (value.hscode === this.props.itemData.hscode && value.g_name === this.props.itemData.g_name) {
+        if (value.hscode === this.props.itemData.hscode &&
+          value.g_name === this.props.itemData.g_name) {
           return message.error('请修改商品编码或中文品名', 5);
         }
         const specialMark = value.specialMark.join('/');
         const item = {
-          ...this.props.itemData, ...value, special_mark: specialMark, created_tenant_id: this.props.tenantId,
+          ...this.props.itemData,
+          ...value,
+          special_mark: specialMark,
+          created_tenant_id: this.props.tenantId,
         };
         this.props.saveRepoForkItem({ item }).then((result) => {
           if (result.error) {
@@ -81,7 +85,7 @@ export default class TradeItemFork extends Component {
       form, submitting, itemData, repo,
     } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab="主数据" key="master">
+    tabs.push(<TabPane tab="归类信息" key="master">
       <ItemMasterPane action="fork" form={form} itemData={itemData} />
     </TabPane>);
     return (

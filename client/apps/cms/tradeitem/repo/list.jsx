@@ -86,7 +86,7 @@ export default class RepoList extends React.Component {
       return (<Tag>只读</Tag>);
     },
   }, {
-    title: this.msg('料件数量'),
+    title: this.msg('商品数量'),
     dataIndex: 'classified_num',
     width: 150,
   }, {

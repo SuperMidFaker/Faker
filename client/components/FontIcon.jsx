@@ -67,7 +67,7 @@ Ikons.propTypes = {
 
 export function Logixon(props) {
   const { type, tagWrapped } = props;
-  const icon = (<i className={`icon logixon icon-${type}`} />);
+  const icon = (<i className={`icon logixon icon-${type}`} {...props} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 

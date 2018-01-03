@@ -29,24 +29,17 @@ const { TabPane } = Tabs;
 export default class WorkItemPage extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     itemData: PropTypes.object,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    fullscreen: true,
-  }
   componentDidMount() {
     const itemId = parseInt(this.props.params.id, 10);
     this.props.loadWorkspaceItem(itemId);
   }
   msg = formatMsg(this.props.intl)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -104,7 +97,7 @@ export default class WorkItemPage extends Component {
             onSizeChange={this.toggleFullscreen}
           >
             <Tabs defaultActiveKey="master">
-              <TabPane tab="主数据" key="master">
+              <TabPane tab="归类信息" key="master">
                 <ItemMasterPane action="edit" form={form} itemData={itemData} />
               </TabPane>
             </Tabs>

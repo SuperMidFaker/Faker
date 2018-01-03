@@ -35,15 +35,14 @@ export default class ItemHistoryPane extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('HS编码'),
-    width: 150,
+    width: 120,
     dataIndex: 'decl_hscode',
   }, {
     title: this.msg('品名'),
-    width: 200,
+    width: 300,
     dataIndex: 'decl_gname',
   }, {
     title: this.msg('规范申报要素'),
-    width: 300,
     dataIndex: 'g_model',
   }, {
     title: this.msg('变更原因'),
@@ -51,16 +50,16 @@ export default class ItemHistoryPane extends React.Component {
     dataIndex: 'reason',
   }, {
     title: this.msg('变更时间'),
-    width: 150,
+    width: 120,
     dataIndex: 'modify_date',
     render: modyDate => modyDate && moment(modyDate).format('YYYY-MM-DD'),
   }, {
     title: this.msg('归类人员'),
-    width: 150,
+    width: 120,
     dataIndex: 'classified_by',
   }, {
     title: this.msg('审核人员'),
-    width: 150,
+    width: 120,
     dataIndex: 'reviewed_by',
   }]
   render() {

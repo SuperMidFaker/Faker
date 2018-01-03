@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Popover, Tooltip, Tag } from 'antd';
-import { Fontello } from 'client/components/FontIcon';
+import { Logixon, Fontello } from 'client/components/FontIcon';
 
 export default function makeColumns({
   msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit,
@@ -15,7 +15,7 @@ export default function makeColumns({
       if (status === 0) {
         if (item.classified) {
           return (<Popover content="已完成归类" placement="right">
-            <Icon type="plus-square-o" style={{ fontSize: 16, color: '#52c41a' }} />
+            <span><Logixon type="new" style={{ fontSize: 16, color: '#52c41a' }} /></span>
           </Popover>);
         }
         let content;
@@ -25,7 +25,7 @@ export default function makeColumns({
           content = '填写规格型号与规范申报要素项数不一致';
         }
         return (<Popover content={content} placement="right">
-          <Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} />
+          <span><Logixon type="new" style={{ fontSize: 16, color: '#f5222d' }} /></span>
         </Popover>);
       } else if (status === 1) {
         const content = [];

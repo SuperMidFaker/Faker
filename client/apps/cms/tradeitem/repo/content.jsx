@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
+import connectNav from 'client/common/decorators/connect-nav';
+import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, message } from 'antd';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams } from 'common/reducers/cmsTradeitem';
-import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -111,7 +111,12 @@ export default class RepoContent extends Component {
     width: 150,
     fixed: 'left',
     render: (o, record) => (o === record.src_product_no || !record.src_product_no ?
-      o : <span>{record.src_product_no}</span>),
+      <Popover content="归类主数据" placement="right">
+        <Icon type="check-circle-o" className="text-success" /> {o}
+      </Popover> :
+      <Popover content={`${o}的归类分支数据(仅对保税库存出库申报有效)`} placement="right">
+        <Icon type="exclamation-circle-o" className="text-warning" /> {record.src_product_no}
+      </Popover>),
   /*
   }, {
     title: this.msg('srcProductNo'),
@@ -135,14 +140,6 @@ export default class RepoContent extends Component {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
     width: 120,
-    render: (o, record) => {
-      switch (record.status) {
-        case TRADE_ITEM_STATUS.classified:
-          return <span>{o} <Icon type="check-circle-o" className="text-success" /></span>;
-        default:
-          return o;
-      }
-    },
   }, {
     title: this.msg('gName'),
     dataIndex: 'g_name',
@@ -298,7 +295,7 @@ export default class RepoContent extends Component {
           );
         }
         return (
-          <RowAction onClick={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
+          <RowAction confirm="确定删除?" onConfirm={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
         );
       }
       return <span />;

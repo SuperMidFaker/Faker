@@ -264,7 +264,7 @@ export default class ConflictItemTable extends React.Component {
         dataSource={this.conflictDataSource}
         rowSelection={conflictSelRows}
         rowKey="id"
-        locale={{ emptyText: '当前没有冲突的料件归类' }}
+        locale={{ emptyText: '当前没有冲突的商品归类' }}
         toolbarActions={toolbarActions}
         bulkActions={bulkActions}
         noBorder={noBorder}
