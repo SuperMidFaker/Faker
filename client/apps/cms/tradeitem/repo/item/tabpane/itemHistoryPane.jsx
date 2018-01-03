@@ -4,8 +4,9 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 // import { Card, DatePicker, Form, Input, Select, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadTradeItemHistory } from 'common/reducers/cmsTradeitem';
+import { loadTradeItemHistory, toggleHistoryItemsDecl } from 'common/reducers/cmsTradeitem';
 import DataPane from 'client/components/DataPane';
+import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
 
@@ -16,7 +17,7 @@ const formatMsg = format(messages);
   state => ({
     history: state.cmsTradeitem.itemHistory,
   }),
-  { loadTradeItemHistory }
+  { loadTradeItemHistory, toggleHistoryItemsDecl }
 )
 export default class ItemHistoryPane extends React.Component {
   static propTypes = {
@@ -62,12 +63,35 @@ export default class ItemHistoryPane extends React.Component {
   }, {
     title: this.msg('归类人员'),
     width: 120,
-    dataIndex: 'classified_by',
+    dataIndex: 'created_by',
   }, {
     title: this.msg('审核人员'),
     width: 120,
-    dataIndex: 'reviewed_by',
+    dataIndex: 'modify_id',
+  }, {
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => {
+      if (record.decl_status === 0) {
+        return (
+          <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="check" label="启用" row={record} />
+        );
+      } else if (record.decl_status === 1) {
+        return (
+          <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="close" label="禁用" row={record} />
+        );
+      }
+      return null;
+    },
   }]
+  handleHistoryToggle = (itemIds, action) => {
+    const { repoId, copProdNo } = this.props;
+    this.props.toggleHistoryItemsDecl(repoId, itemIds, action).then((result) => {
+      if (!result.error) {
+        this.props.loadTradeItemHistory(repoId, copProdNo);
+      }
+    });
+  }
   render() {
     const { history, fullscreen } = this.props;
     return (
