@@ -31,21 +31,58 @@ const { Option } = Select;
 const { TextArea } = Input;
 const ButtonGroup = Button.Group;
 
+function unique(arr) {
+  const hash = {};
+  const newArr = arr.reduce((item, next) => {
+    // hash[next.value] ? '' : hash[next.value] = true && item.push(next);
+    if (!hash[next.value]) {
+      hash[next.value] = true;
+      item.push(next);
+    }
+    return item;
+  }, []);
+  return newArr;
+}
+
 @injectIntl
 @connect(
   state => ({
-    organizations: state.cmsCiqDeclare.ciqParams.organizations,
+    organizations: state.cmsCiqDeclare.ciqParams.organizations.map(org => ({
+      value: org.org_code,
+      text: `${org.org_code} | ${org.org_name}`,
+      search: `${org.org_code}${org.org_name}`,
+    })),
     currencies: state.cmsCiqDeclare.ciqParams.currencies,
-    worldPorts: state.cmsCiqDeclare.ciqParams.worldPorts,
-    chinaPorts: state.cmsCiqDeclare.ciqParams.chinaPorts,
-    countries: state.cmsCiqDeclare.ciqParams.countries,
+    worldPorts: state.cmsCiqDeclare.ciqParams.worldPorts.map(port => ({
+      value: port.port_code,
+      text: `${port.port_code} | ${port.port_cname}`,
+      search: `${port.port_code}${port.port_cname}`,
+    })),
+    chinaPorts: state.cmsCiqDeclare.ciqParams.chinaPorts.map(port => ({
+      value: port.port_code,
+      text: `${port.port_code} | ${port.port_cname}`,
+      search: `${port.port_code}${port.port_cname}`,
+    })),
+    countries: state.cmsCiqDeclare.ciqParams.countries.map(coun => ({
+      value: coun.country_code,
+      text: `${coun.country_code} | ${coun.country_cn_name}`,
+      search: `${coun.country_code}${coun.country_cn_name}`,
+    })),
     units: state.cmsCiqDeclare.ciqParams.units,
     customs: state.cmsCiqDeclare.ciqParams.customs,
     ciqDeclHead: state.cmsCiqDeclare.ciqDeclHead.head,
     brokers: state.cmsBrokers.brokers,
     businessUnits: state.cmsResources.businessUnits,
-    fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries,
-    fixedOrganizations: state.cmsCiqDeclare.ciqParams.fixedOrganizations,
+    fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries.map(coun => ({
+      value: coun.country_code,
+      text: `${coun.country_code} | ${coun.country_cn_name}`,
+      search: `${coun.country_code}${coun.country_cn_name}`,
+    })),
+    fixedOrganizations: state.cmsCiqDeclare.ciqParams.fixedOrganizations.map(org => ({
+      value: org.org_code,
+      text: `${org.org_code} | ${org.org_name}`,
+      search: `${org.org_code}${org.org_name}`,
+    })),
     fixedWorldPorts: state.cmsCiqDeclare.ciqParams.fixedWorldPorts,
     entQualifs: state.cmsCiqDeclare.entQualifs,
   }),
@@ -70,11 +107,14 @@ const ButtonGroup = Button.Group;
     toggleAttDocuModal,
   }
 )
+
 export default class CiqDeclHeadPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ioType: PropTypes.string.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({
+      getFieldDecorator: PropTypes.func,
+    }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -174,24 +214,24 @@ export default class CiqDeclHeadPane extends React.Component {
   }
   handleCountrySelect = (value) => {
     const { fixedCountries, countries } = this.props;
-    const country = countries.find(coun => coun.country_code === value);
-    if (!(fixedCountries.find(coun => coun.country_code === country.country_code))) {
+    const country = countries.find(coun => coun.value === value);
+    if (!(fixedCountries.find(coun => coun.value === country.value))) {
       fixedCountries.push(country);
     }
     this.props.setFixedCountry(fixedCountries);
   }
   handleOrganizationSelect = (value) => {
     const { fixedOrganizations, organizations } = this.props;
-    const organization = organizations.find(org => org.org_code === value);
-    if (!(fixedOrganizations.find(org => org.org_code === organization.org_code))) {
+    const organization = organizations.find(org => org.value === value);
+    if (!(fixedOrganizations.find(org => org.value === organization.value))) {
       fixedOrganizations.push(organization);
     }
     this.props.setFixedOrganizations(fixedOrganizations);
   }
   handleWorldPortsSelect = (value) => {
     const { fixedWorldPorts, worldPorts } = this.props;
-    const port = worldPorts.find(po => po.port_code === value);
-    if (!(fixedWorldPorts.find(po => po.port_code === port.port_code))) {
+    const port = worldPorts.find(po => po.value === value);
+    if (!(fixedWorldPorts.find(po => po.value === port.value))) {
       fixedWorldPorts.push(port);
     }
     this.props.setFixedWorldPorts(fixedWorldPorts);
@@ -214,7 +254,7 @@ export default class CiqDeclHeadPane extends React.Component {
     const { entQualifs } = this.props;
     const { entQualif } = this.state;
     if (entQualifs.length > 1) {
-      let index = entQualifs.findIndex(qualif =>
+      const index = entQualifs.findIndex(qualif =>
         qualif.ent_qualif_type_code === entQualif.ent_qualif_type_code);
       if (type) {
         if (index === entQualifs.length - 1) {
@@ -223,7 +263,7 @@ export default class CiqDeclHeadPane extends React.Component {
           });
         } else {
           this.setState({
-            entQualif: entQualifs[++index],
+            entQualif: entQualifs[index + 1],
           });
         }
       } else if (index === 0) {
@@ -232,7 +272,7 @@ export default class CiqDeclHeadPane extends React.Component {
         });
       } else {
         this.setState({
-          entQualif: entQualifs[--index],
+          entQualif: entQualifs[index - 1],
         });
       }
     }
@@ -249,6 +289,9 @@ export default class CiqDeclHeadPane extends React.Component {
       form: { getFieldDecorator }, brokers, intl, businessUnits, customs,
     } = this.props;
     const { entQualif } = this.state;
+    const uniqueCout = unique(countries);
+    const uniqueOrg = unique(organizations);
+    const uniquePorts = unique(worldPorts);
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -328,11 +371,7 @@ export default class CiqDeclHeadPane extends React.Component {
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
               required
-              options={organizations.map(org => ({
-                value: org.org_code,
-                text: `${org.org_code} | ${org.org_name}`,
-                search: `${org.org_code}${org.org_name}`,
-              }))}
+              options={uniqueOrg}
               onSearch={this.handleSearchOrg}
               onSelect={this.handleOrganizationSelect}
             />
@@ -344,11 +383,7 @@ export default class CiqDeclHeadPane extends React.Component {
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
               required
-              options={organizations.map(org => ({
-                value: org.org_code,
-                text: `${org.org_code} | ${org.org_name}`,
-                search: `${org.org_code}${org.org_name}`,
-              }))}
+              options={uniqueOrg}
               onSearch={this.handleSearchOrg}
               onSelect={this.handleOrganizationSelect}
             />
@@ -590,11 +625,7 @@ export default class CiqDeclHeadPane extends React.Component {
               field="ciq_trade_country"
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
-              options={countries.map(coun => ({
-                value: coun.country_code,
-                text: `${coun.country_code} | ${coun.country_cn_name}`,
-                search: `${coun.country_code}${coun.country_cn_name}`,
-              }))}
+              options={uniqueCout}
               onSearch={this.handleSearchCountries}
               onSelect={this.handleCountrySelect}
             />}
@@ -606,11 +637,7 @@ export default class CiqDeclHeadPane extends React.Component {
               field="ciq_desp_dest_port"
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
-              options={worldPorts.map(port => ({
-                value: port.port_code,
-                text: `${port.port_code} | ${port.port_cname}`,
-                search: `${port.port_code}${port.port_cname}`,
-              }))}
+              options={uniquePorts}
               onSearch={this.handleSearchWorldPorts}
               onSelect={this.handleWorldPortsSelect}
             />}
@@ -622,11 +649,7 @@ export default class CiqDeclHeadPane extends React.Component {
               field="ciq_desp_dest_country"
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
-              options={countries.map(coun => ({
-                value: coun.country_code,
-                text: `${coun.country_code} | ${coun.country_cn_name}`,
-                search: `${coun.country_code}${coun.country_cn_name}`,
-              }))}
+              options={uniqueCout}
               onSearch={this.handleSearchCountries}
               onSelect={this.handleCountrySelect}
             />}
@@ -638,11 +661,7 @@ export default class CiqDeclHeadPane extends React.Component {
               field="ciq_insp_orgcode"
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
-              options={organizations.map(org => ({
-                value: org.org_code,
-                text: `${org.org_code} | ${org.org_name}`,
-                search: `${org.org_code}${org.org_name}`,
-              }))}
+              options={uniqueOrg}
               onSearch={this.handleSearchOrg}
               onSelect={this.handleOrganizationSelect}
             />}
@@ -654,11 +673,7 @@ export default class CiqDeclHeadPane extends React.Component {
                 field="ciq_desp_dest_country"
                 getFieldDecorator={form.getFieldDecorator}
                 formData={ciqDeclHead}
-                options={countries.map(coun => ({
-                  value: coun.country_code,
-                  text: `${coun.country_code} | ${coun.country_cn_name}`,
-                  search: `${coun.country_code}${coun.country_cn_name}`,
-                }))}
+                options={uniqueCout}
                 onSearch={this.handleSearchCountries}
                 onSelect={this.handleCountrySelect}
               />}
@@ -670,11 +685,7 @@ export default class CiqDeclHeadPane extends React.Component {
               field="ciq_stop_port"
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
-              options={worldPorts.map(port => ({
-                value: port.port_code,
-                text: `${port.port_code} | ${port.port_cname}`,
-                search: `${port.port_code}${port.port_cname}`,
-              }))}
+              options={uniquePorts}
               onSearch={this.handleSearchWorldPorts}
               onSelect={this.handleWorldPortsSelect}
             />}
@@ -685,11 +696,7 @@ export default class CiqDeclHeadPane extends React.Component {
               field="ciq_entry_exit_port"
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
-              options={chinaPorts.map(port => ({
-                value: port.port_code,
-                text: `${port.port_code} | ${port.port_cname}`,
-                search: `${port.port_code}${port.port_cname}`,
-              }))}
+              options={chinaPorts}
               onSearch={this.handleSearchChinaPorts}
             />
             {ioType === 'in' &&
@@ -700,11 +707,7 @@ export default class CiqDeclHeadPane extends React.Component {
                 field="dest_code"
                 getFieldDecorator={form.getFieldDecorator}
                 formData={ciqDeclHead}
-                options={countries.map(coun => ({
-                  value: coun.country_code,
-                  text: `${coun.country_code} | ${coun.country_cn_name}`,
-                  search: `${coun.country_code}${coun.country_cn_name}`,
-                }))}
+                options={uniqueCout}
                 onSearch={this.handleSearchCountries}
                 onSelect={this.handleCountrySelect}
               />}
@@ -717,11 +720,7 @@ export default class CiqDeclHeadPane extends React.Component {
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
               required
-              options={organizations.map(org => ({
-                value: org.org_code,
-                text: `${org.org_code} | ${org.org_name}`,
-                search: `${org.org_code}${org.org_name}`,
-              }))}
+              options={uniqueOrg}
               onSearch={this.handleSearchOrg}
               onSelect={this.handleOrganizationSelect}
             />}
@@ -733,11 +732,7 @@ export default class CiqDeclHeadPane extends React.Component {
               field="ciq_desp_dest_port"
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
-              options={worldPorts.map(port => ({
-                value: port.port_code,
-                text: `${port.port_code} | ${port.port_cname}`,
-                search: `${port.port_code}${port.port_cname}`,
-              }))}
+              options={uniquePorts}
               onSearch={this.handleSearchWorldPorts}
               onSelect={this.handleWorldPortsSelect}
             />}
@@ -756,11 +751,7 @@ export default class CiqDeclHeadPane extends React.Component {
               getFieldDecorator={form.getFieldDecorator}
               formData={ciqDeclHead}
               required
-              options={organizations.map(org => ({
-                value: org.org_code,
-                text: `${org.org_code} | ${org.org_name}`,
-                search: `${org.org_code}${org.org_name}`,
-              }))}
+              options={uniqueOrg}
               onSearch={this.handleSearchOrg}
               onSelect={this.handleOrganizationSelect}
             />
