@@ -41,6 +41,7 @@ const { Option } = Select;
       rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
     workspaceLoading: state.cmsTradeitem.workspaceLoading,
     workspaceItemList: state.cmsTradeitem.workspaceItemList,
+    listFilter: state.cmsTradeitem.workspaceListFilter,
     invalidStat: state.cmsTradeitem.workspaceStat.invalid,
   }),
   { loadWorkspaceItems, submitAudit }
@@ -58,10 +59,9 @@ export default class InvalidItemsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    filter: { repoId: null, status: 'invalid', name: '' },
   }
   componentDidMount() {
-    this.handleReload();
+    this.handleReload(null, null, { status: 'invalid' });
   }
   msg = formatMsg(this.props.intl)
   columns = makeColumns({
@@ -85,28 +85,30 @@ export default class InvalidItemsList extends React.Component {
     this.context.router.push(link);
   }
   handleSearch = (value) => {
-    const filter = { ...this.state.filter, name: value };
+    const filter = { ...this.props.listFilter, name: value };
     this.props.loadWorkspaceItems({
       pageSize: this.props.workspaceItemList.pageSize,
       current: 1,
       filter: JSON.stringify(filter),
     });
-    this.setState({ filter });
   }
   handleRepoSelect = (repoId) => {
-    const filter = { ...this.state.filter, repoId };
+    const filter = { ...this.props.listFilter, repoId };
     this.props.loadWorkspaceItems({
       pageSize: this.props.workspaceItemList.pageSize,
       current: 1,
       filter: JSON.stringify(filter),
     });
-    this.setState({ filter });
   }
-  handleReload = () => {
+  handleReload = (pageSize, current, filter) => {
+    let newfilter = this.props.listFilter;
+    if (filter) {
+      newfilter = { ...newfilter, ...filter };
+    }
     this.props.loadWorkspaceItems({
-      pageSize: this.props.workspaceItemList.pageSize,
-      current: 1,
-      filter: JSON.stringify(this.state.filter),
+      pageSize: pageSize || this.props.workspaceItemList.pageSize,
+      current: current || this.props.workspaceItemList.current,
+      filter: JSON.stringify(newfilter),
     });
   }
   handleDeselectRows = () => {
@@ -121,7 +123,7 @@ export default class InvalidItemsList extends React.Component {
           this.props.loadWorkspaceItems({
             pageSize: this.props.workspaceItemList.pageSize,
             current: 1,
-            filter: JSON.stringify(this.state.filter),
+            filter: JSON.stringify(this.props.listFilter),
           });
           notification.info({ title: '提示', description: '归类已提交审核' });
         } else if (result.data.feedback === 'noop') {
@@ -137,7 +139,7 @@ export default class InvalidItemsList extends React.Component {
           this.props.loadWorkspaceItems({
             pageSize: this.props.workspaceItemList.pageSize,
             current: 1,
-            filter: JSON.stringify(this.state.filter),
+            filter: JSON.stringify(this.props.listFilter),
           });
           notification.info({ title: '提示', description: '归类已提交审核' });
         } else if (result.data.feedback === 'noop') {
@@ -148,9 +150,8 @@ export default class InvalidItemsList extends React.Component {
   }
   render() {
     const {
-      workspaceLoading, workspaceItemList, repos, invalidStat,
+      workspaceLoading, workspaceItemList, repos, invalidStat, listFilter,
     } = this.props;
-    const { filter } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -169,7 +170,7 @@ export default class InvalidItemsList extends React.Component {
         showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, tblfilters) => {
-        const newfilters = { ...filter, ...tblfilters[0] };
+        const newfilters = { ...listFilter, ...tblfilters[0] };
         const params = {
           pageSize: pagination.pageSize,
           current: pagination.current,
@@ -183,16 +184,17 @@ export default class InvalidItemsList extends React.Component {
       <Select
         showSearch
         placeholder="所属归类库"
-        optionFilterProp="children"
         style={{ width: 160 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}
+        allowClear
+        value={listFilter.repoId && String(listFilter.repoId)}
       >
         {repos.map(rep =>
           <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
-      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={filter.name} />
+      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={listFilter.name} />
     </span>);
     return (
       <Layout>
@@ -218,7 +220,7 @@ export default class InvalidItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <WsItemExportButton {...this.state.filter} onUploaded={this.handleReload} />
+              <WsItemExportButton {...listFilter} onUploaded={this.handleReload} />
               {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>

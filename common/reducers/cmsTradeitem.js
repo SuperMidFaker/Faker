@@ -103,6 +103,7 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  workspaceListFilter: { repoId: null, status: '', name: '' },
   workspaceItem: {},
   applyCertsModal: {
     visible: false,
@@ -165,20 +166,26 @@ export default function reducer(state = initialState, action) {
       return { ...state, workspaceStat: action.result.data, wsStatReload: false };
     case actionTypes.LOAD_WSTASKLIST:
     case actionTypes.LOAD_WSTASK:
-    case actionTypes.LOAD_WSLITEMS:
     case actionTypes.DEL_WSTASK:
       return { ...state, workspaceLoading: true };
-    case actionTypes.LOAD_WSLITEMS_FAIL:
-    case actionTypes.LOAD_WSTASK_FAIL:
     case actionTypes.LOAD_WSTASKLIST_FAIL:
+    case actionTypes.LOAD_WSTASK_FAIL:
     case actionTypes.DEL_WSTASK_FAIL:
       return { ...state, workspaceLoading: false };
+    case actionTypes.LOAD_WSLITEMS:
+      return {
+        ...state,
+        workspaceLoading: true,
+        workspaceListFilter: action.params.filter && JSON.parse(action.params.filter),
+      };
+    case actionTypes.LOAD_WSLITEMS_FAIL:
+      return { ...state, workspaceLoading: false };
+    case actionTypes.LOAD_WSLITEMS_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceItemList: action.result.data };
     case actionTypes.LOAD_WSTASKLIST_SUCCEED:
       return { ...state, workspaceLoading: false, workspaceTaskList: action.result.data };
     case actionTypes.LOAD_WSTASK_SUCCEED:
       return { ...state, workspaceLoading: false, workspaceTask: action.result.data };
-    case actionTypes.LOAD_WSLITEMS_SUCCEED:
-      return { ...state, workspaceLoading: false, workspaceItemList: action.result.data };
     case actionTypes.LOAD_WSITEM_SUCCEED:
       return { ...state, workspaceItem: action.result.data };
     case actionTypes.DEL_WSTASK_SUCCEED: {
