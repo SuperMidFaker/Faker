@@ -118,8 +118,15 @@ export default class RequiredDocuModal extends Component {
       },
     };
     const columns = [{
+      key: 'sno',
+      width: 35,
+      align: 'center',
+      className: 'table-col-seq',
+      render: (o, record, index) => index + 1,
+    }, {
       title: '证书代码',
       dataIndex: 'app_cert_code',
+      align: 'center',
       width: 80,
     }, {
       title: '证书名称',

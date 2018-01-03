@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
@@ -47,18 +46,25 @@ export default class ItemPermitPane extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
+    key: 'sno',
+    width: 45,
+    align: 'center',
+    className: 'table-col-seq',
+    render: (o, record, index) => index + 1,
+  }, {
     title: '进出口标识',
     dataIndex: 'ie_type',
     width: 100,
     align: 'center',
   }, {
     title: this.msg('涉证标准'),
-    width: 150,
+    width: 100,
     dataIndex: 'permit_category',
+    align: 'center',
     render: o => <Logixon type={o} />,
   }, {
     title: this.msg('证书类型'),
-    width: 180,
+    width: 250,
     dataIndex: 'permit_code',
     render: (o, record) => (record.permit_category === 'customs' ?
       this.props.certParams.find(cert => cert.cert_code === o) &&
@@ -94,11 +100,7 @@ export default class ItemPermitPane extends React.Component {
         columns={this.columns}
         rowKey="id"
         dataSource={permits}
-      >
-        <DataPane.Toolbar>
-          <Button type="primary" icon="plus-circle-o" onClick={this.handleEntrybodyExport}>添加</Button>
-        </DataPane.Toolbar>
-      </DataPane>
+      />
     );
   }
 }

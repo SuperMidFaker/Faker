@@ -34,6 +34,12 @@ export default class ItemHistoryPane extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
+    key: 'sno',
+    width: 45,
+    align: 'center',
+    className: 'table-col-seq',
+    render: (o, record, index) => index + 1,
+  }, {
     title: this.msg('HS编码'),
     width: 120,
     dataIndex: 'decl_hscode',
