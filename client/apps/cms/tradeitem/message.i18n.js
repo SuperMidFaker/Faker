@@ -76,11 +76,11 @@ const messages = defineMessages({
   },
   tradeItemBranch: {
     id: 'cms.tradeitem.branch',
-    defaultMessage: '分支数据',
+    defaultMessage: '分支版本',
   },
   tradeItemHistory: {
     id: 'cms.tradeitem.history',
-    defaultMessage: '历史数据',
+    defaultMessage: '历史版本',
   },
   tradeItemHistoryAll: {
     id: 'cms.tradeitem.history',

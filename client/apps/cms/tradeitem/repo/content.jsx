@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, message } from 'antd';
+import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, message } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
@@ -138,15 +138,21 @@ export default class RepoContent extends Component {
     title: this.msg('itemType'),
     dataIndex: 'item_type',
     width: 60,
-    render: o => (o === 'FP' ? '成品' : '料件'),
+    render: o => (o === 'FP' ? <Tag>成品</Tag> : <Tag>料件</Tag>),
   }, {
     title: this.msg('enName'),
     dataIndex: 'en_name',
     width: 200,
   }, {
-    title: this.msg('copUOM'),
-    dataIndex: 'cop_uom',
-    width: 120,
+    title: <Icon type="exclamation-circle-o" />,
+    dataIndex: 'branch_count',
+    width: 40,
+    render: o => o && o > 0 && <a onClick={this.handleViewBranch}>{o}</a>,
+  }, {
+    title: <Icon type="clock-circle-o" />,
+    dataIndex: 'history_count',
+    width: 40,
+    render: o => o && o > 0 && <a onClick={this.handleViewHistory}>{o}</a>,
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',

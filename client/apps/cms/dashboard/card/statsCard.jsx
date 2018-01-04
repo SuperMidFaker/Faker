@@ -7,15 +7,15 @@ import moment from 'moment';
 import { Link } from 'react-router';
 import currencyFormatter from 'currency-formatter';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadCmsStatistics } from 'common/reducers/cmsDashboard';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const RangePicker = DatePicker.RangePicker;
-const Option = Select.Option;
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -28,7 +28,11 @@ function fetchData({ state, dispatch }) {
   const promises = [dispatch(loadCmsStatistics({
     tenantId: state.account.tenantId, startDate, endDate, clientView,
   })),
-  dispatch(loadPartnersByTypes(state.account.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance))];
+  dispatch(loadPartnersByTypes(
+    state.account.tenantId,
+    [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
+    PARTNER_BUSINESSE_TYPES.clearance,
+  ))];
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
@@ -87,7 +91,7 @@ export default class StatsCard extends Component {
     }
   }
   onDateChange = (value, dateString) => {
-    const clientView = this.props.statistics.clientView;
+    const { clientView } = this.props.statistics;
     this.props.loadCmsStatistics({
       tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView,
     });
@@ -147,7 +151,8 @@ export default class StatsCard extends Component {
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const {
-      startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected, declcount,
+      startDate, endDate, total, sumImport, sumExport, processing,
+      declared, released, inspected, declcount,
     } = this.props.statistics;
     const {
       totalValue, sumImportValue, sumExportValue, currency,
@@ -179,7 +184,7 @@ export default class StatsCard extends Component {
           </Option>))}
         </Select>
         <RangePicker
-          style={{ marginLeft: 8 }}
+          style={{ width: 256, marginLeft: 8 }}
           value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
           onChange={this.onDateChange}
@@ -267,7 +272,7 @@ export default class StatsCard extends Component {
                 <Link to="/clearance/cusdecl?status='inspect'" onClick={() => this.handleLinkClick('inspected')}>{inspected}</Link>
               </div>
               <div className="data-extra">
-                {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%
+                {declcount > 0 ? ((inspected / declcount) * 100).toFixed(2) : 0}%
                 <div>{this.msg('inspectedRate')}</div>
               </div>
             </div>

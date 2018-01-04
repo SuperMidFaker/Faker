@@ -508,6 +508,7 @@ export default class DelegationList extends Component {
         value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
+        style={{ width: 256 }}
       />
     </span>);
 
