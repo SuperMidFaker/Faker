@@ -42,7 +42,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
   'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL', 'TOGGLE_CONFIRM_CHANGES_MODAL',
-  'UPDATE_ITEM_APP_CERT', 'UPDATE_ITEM_APP_CERT_SUCCEED', 'UPDATE_ITEM_APP_CERT_FAIL',
+  'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
   'CHANGE_ITEM_MASTER',
 ]);
@@ -920,32 +920,17 @@ export function changeItemMaster(values) {
   };
 }
 
-export function updateItemAppCert(code, id) {
+export function updateItemApplCert(cert, id) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_ITEM_APP_CERT,
-        actionTypes.UPDATE_ITEM_APP_CERT_SUCCEED,
-        actionTypes.UPDATE_ITEM_APP_CERT_FAIL,
+        actionTypes.UPDATE_ITEM_APPL_CERT,
+        actionTypes.UPDATE_ITEM_APPL_CERT_SUCCEED,
+        actionTypes.UPDATE_ITEM_APPL_CERT_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/app/cert/update',
+      endpoint: 'v1/cms/tradeitem/appl/cert/update',
       method: 'post',
-      data: { code, id },
-    },
-  };
-}
-
-export function loadPermits(repoId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_PERMITS,
-        actionTypes.LOAD_PERMITS_SUCCEED,
-        actionTypes.LOAD_PERMITS_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/permits/load',
-      method: 'get',
-      params: { repoId },
+      data: { cert: JSON.stringify(cert), id },
     },
   };
 }

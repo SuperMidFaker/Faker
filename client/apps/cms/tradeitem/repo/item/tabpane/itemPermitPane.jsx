@@ -5,9 +5,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
-import { loadPermits } from 'common/reducers/cmsTradeitem';
 import { Logixon } from 'client/components/FontIcon';
-import { loadCertParams } from 'common/reducers/cmsPermit';
+import { loadCertParams, loadPermitsByTradeItem } from 'common/reducers/cmsPermit';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
 import messages from '../../../message.i18n';
 
@@ -20,26 +19,28 @@ const formatMsg = format(messages);
     certParams: state.cmsPermit.certParams,
   }),
   {
-    loadPermits, loadCertParams,
+    loadPermitsByTradeItem, loadCertParams,
   }
 )
 export default class ItemPermitPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    repoId: PropTypes.number.isRequired,
+    itemId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     permits: [],
+    loading: true,
   }
   componentDidMount() {
     this.props.loadCertParams();
-    this.props.loadPermits(this.props.repoId).then((result) => {
+    this.props.loadPermitsByTradeItem(this.props.itemId).then((result) => {
       if (!result.error) {
         this.setState({
           permits: result.data,
+          loading: false,
         });
       }
     });
@@ -93,13 +94,14 @@ export default class ItemPermitPane extends React.Component {
     dataIndex: 'avail_usage',
   }]
   render() {
-    const { permits } = this.state;
+    const { permits, loading } = this.state;
     return (
       <DataPane
         fullscreen={this.props.fullscreen}
         columns={this.columns}
         rowKey="id"
         dataSource={permits}
+        loading={loading}
       />
     );
   }
