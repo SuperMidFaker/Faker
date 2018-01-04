@@ -78,7 +78,6 @@ export default class RepoContent extends Component {
   state = {
     selectedRowKeys: [],
     linkedSlaves: [],
-    searchVal: '',
     masterReplica: {
       source: '',
       slave: null,
@@ -123,7 +122,7 @@ export default class RepoContent extends Component {
           <Icon type="clock-circle-o" className="text-info" />
         </Popover>);
       }
-      return (record.cop_product_no === record.src_product_no || !record.src_product_no ?
+      return (!record.stage ?
         <Popover content="归类主数据" placement="right">
           <Icon type="check-circle-o" className="text-success" />
         </Popover> :
@@ -149,12 +148,26 @@ export default class RepoContent extends Component {
     title: <Icon type="exclamation-circle-o" />,
     dataIndex: 'branch_count',
     width: 40,
-    render: o => o && o > 0 && <a onClick={this.handleViewBranch}>{o}</a>,
+    render: (branch, row) => {
+      if (branch === 0) {
+        return 0;
+      } else if (branch > 0) {
+        return <a onClick={() => this.handleViewBranch(row.cop_product_no)}>{branch}</a>;
+      }
+      return null;
+    },
   }, {
     title: <Icon type="clock-circle-o" />,
     dataIndex: 'history_count',
     width: 40,
-    render: o => o && o > 0 && <a onClick={this.handleViewHistory}>{o}</a>,
+    render: (history, row) => {
+      if (history === 0) {
+        return 0;
+      } else if (history > 0) {
+        return <a onClick={() => this.handleViewHistory(row.cop_product_no)}>{history}</a>;
+      }
+      return null;
+    },
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
@@ -354,7 +367,6 @@ export default class RepoContent extends Component {
         repoId: this.props.params.repoId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
-        searchText: this.props.tradeItemlist.searchText,
       };
       const filter = this.props.listFilter;
       params.filter = JSON.stringify(filter);
@@ -362,6 +374,16 @@ export default class RepoContent extends Component {
     },
     remotes: this.props.tradeItemlist,
   })
+  handleViewBranch = (productNo) => {
+    const filter = { ...this.props.listFilter, status: 'branch', search: productNo };
+    this.handleItemListLoad(1, filter);
+  }
+  handleViewHistory = (productNo) => {
+    const filter = {
+      ...this.props.listFilter, status: 'history', decl_status: 'all', search: productNo,
+    };
+    this.handleItemListLoad(1, filter);
+  }
   handleItemAdd = () => {
     const { params: { repoId } } = this.props;
     const link = `/clearance/tradeitem/repo/${repoId}/item/add`;
@@ -389,14 +411,13 @@ export default class RepoContent extends Component {
   handleItemDiff = (record) => {
     this.props.toggleItemDiffModal(true, record);
   }
-  handleItemListLoad = (currentPage, filter, search) => {
-    const { listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
+  handleItemListLoad = (currentPage, filter) => {
+    const { listFilter, tradeItemlist: { pageSize, current } } = this.props;
     this.props.loadTradeItems({
       repoId: this.props.params.repoId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
-      searchText: search !== undefined ? search : searchText,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -452,8 +473,8 @@ export default class RepoContent extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (value) => {
-    this.setState({ searchVal: value });
-    this.handleItemListLoad(1, null, value);
+    const filter = { ...this.props.listFilter, search: value };
+    this.handleItemListLoad(1, filter);
   }
   handleHistoryToggle = (itemIds, action) => {
     const { params } = this.props;
@@ -497,7 +518,7 @@ export default class RepoContent extends Component {
     const {
       tradeItemlist, repo, listFilter, submitting, tenantId,
     } = this.props;
-    const { linkedSlaves, searchVal } = this.state;
+    const { linkedSlaves } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -523,7 +544,7 @@ export default class RepoContent extends Component {
       }
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={searchVal} key="searchbar" />];
+    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={listFilter.search} key="searchbar" />];
     if (listFilter.status === 'history') {
       toolbarActions.push(<RadioGroup value={listFilter.decl_status} onChange={this.handleHistoryFilterChange} key="history" style={{ marginLeft: 8, marginRight: 8 }}>
         <RadioButton value="all"> {this.msg('tradeItemHistoryAll')}</RadioButton>
@@ -535,6 +556,10 @@ export default class RepoContent extends Component {
       } else if (listFilter.decl_status === 'disabled') {
         toolbarActions.push(<Button key="disabled" icon="play-circle-o" onClick={() => this.handleHistoryToggle(null, 'enable')}>全部启用</Button>);
       }
+    }
+    let { columns } = this;
+    if (listFilter.status !== 'master') {
+      columns = columns.filter(col => !(col.dataIndex === 'branch_count' || col.dataIndex === 'history_count'));
     }
     let repoName = repo.owner_name;
     if (tenantId === repo.owner_tenant_id) {
@@ -609,7 +634,7 @@ export default class RepoContent extends Component {
             handleDeselectRows={this.handleDeselectRows}
             loading={this.props.tradeItemsLoading}
             rowKey="id"
-            columns={this.columns}
+            columns={columns}
             dataSource={this.dataSource}
           />
           <DeclElementsModal onOk={null} />

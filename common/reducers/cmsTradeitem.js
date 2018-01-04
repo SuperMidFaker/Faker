@@ -51,6 +51,7 @@ const initialState = {
   tradeItemsLoading: false,
   listFilter: {
     status: 'master',
+    search: undefined,
     sortField: '',
     sortOrder: '',
   },
@@ -58,7 +59,6 @@ const initialState = {
     totalCount: 0,
     current: 1,
     pageSize: 20,
-    searchText: '',
     data: [],
   },
   visibleAddModal: false,
