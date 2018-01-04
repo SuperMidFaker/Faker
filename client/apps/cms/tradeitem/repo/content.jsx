@@ -148,10 +148,9 @@ export default class RepoContent extends Component {
     title: <Icon type="exclamation-circle-o" />,
     dataIndex: 'branch_count',
     width: 40,
+    align: 'center',
     render: (branch, row) => {
-      if (branch === 0) {
-        return 0;
-      } else if (branch > 0) {
+      if (branch > 0) {
         return <a onClick={() => this.handleViewBranch(row.cop_product_no)}>{branch}</a>;
       }
       return null;
@@ -160,10 +159,9 @@ export default class RepoContent extends Component {
     title: <Icon type="clock-circle-o" />,
     dataIndex: 'history_count',
     width: 40,
+    align: 'center',
     render: (history, row) => {
-      if (history === 0) {
-        return 0;
-      } else if (history > 0) {
+      if (history > 0) {
         return <a onClick={() => this.handleViewHistory(row.cop_product_no)}>{history}</a>;
       }
       return null;
@@ -186,6 +184,7 @@ export default class RepoContent extends Component {
     title: this.msg('gUnit1'),
     dataIndex: 'g_unit_1',
     width: 100,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -195,6 +194,7 @@ export default class RepoContent extends Component {
     title: this.msg('gUnit2'),
     dataIndex: 'g_unit_2',
     width: 100,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -204,6 +204,7 @@ export default class RepoContent extends Component {
     title: this.msg('gUnit3'),
     dataIndex: 'g_unit_3',
     width: 100,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -213,6 +214,7 @@ export default class RepoContent extends Component {
     title: this.msg('unit1'),
     dataIndex: 'unit_1',
     width: 130,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -222,6 +224,7 @@ export default class RepoContent extends Component {
     title: this.msg('unit2'),
     dataIndex: 'unit_2',
     width: 130,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -235,6 +238,7 @@ export default class RepoContent extends Component {
     title: this.msg('fixedUnit'),
     dataIndex: 'fixed_unit',
     width: 130,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -457,6 +461,9 @@ export default class RepoContent extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
+    if (filter.status === 'master') {
+      filter.search = '';
+    }
     if (filter.status === 'history') {
       filter.decl_status = 'all';
     }

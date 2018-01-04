@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import { Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
@@ -79,19 +80,33 @@ export default class ItemPermitPane extends React.Component {
   }, {
     title: this.msg('发证日期'),
     dataIndex: 'start_date',
+    width: 120,
     render: (o, record) => (record.start_date ? moment(record.start_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('到期日期'),
     dataIndex: 'stop_date',
+    width: 120,
     render: (o, record) => (record.stop_date ? moment(record.stop_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('总使用次数'),
     width: 120,
+    align: 'right',
     dataIndex: 'max_usage',
   }, {
     title: this.msg('剩余使用次数'),
     width: 120,
-    dataIndex: 'avail_usage',
+    align: 'right',
+    dataIndex: 'ava_usage',
+  }, {
+    title: this.msg('permitFile'),
+    dataIndex: 'permit_file',
+    align: 'center',
+    render: (o) => {
+      if (o && o !== '') {
+        return <a href={o} target="_blank"><Icon type="file-pdf" /></a>;
+      }
+      return <span />;
+    },
   }]
   render() {
     const { permits, loading } = this.state;

@@ -146,6 +146,18 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.cop.uom',
     defaultMessage: '企业计量单位',
   },
+  processingMethod: {
+    id: 'cms.tradeitem.col.processing.method',
+    defaultMessage: '工艺',
+  },
+  materialIngredient: {
+    id: 'cms.tradeitem.col.material.ingredient',
+    defaultMessage: '材质/成分',
+  },
+  use: {
+    id: 'cms.tradeitem.col.cop.use',
+    defaultMessage: '用途',
+  },
   markPass: {
     id: 'cms.tradeitem.form.mark.pass',
     defaultMessage: '标记直接通过',
@@ -157,6 +169,10 @@ const messages = defineMessages({
   gName: {
     id: 'cms.tradeitem.col.g.name',
     defaultMessage: '中文品名',
+  },
+  confidence: {
+    id: 'cms.tradeitem.col.confidence',
+    defaultMessage: '归类确信度',
   },
   enName: {
     id: 'cms.tradeitem.col.en.description',

@@ -121,6 +121,7 @@ const initialState = {
     visible: false,
     data: {},
   },
+  itemMasterChanged: false,
   itemMasterChanges: [],
 };
 
@@ -264,6 +265,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_ITEM_MASTER:
       return {
         ...state,
+        itemMasterChanged: action.changed,
         itemMasterChanges: action.data,
       };
     default:
@@ -913,9 +915,10 @@ export function toggleConfirmChangesModal(visible, data = {}) {
   };
 }
 
-export function changeItemMaster(values) {
+export function changeItemMaster(changed, values) {
   return {
     type: actionTypes.CHANGE_ITEM_MASTER,
+    changed,
     data: values,
   };
 }

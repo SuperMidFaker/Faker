@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Checkbox, Modal, Table } from 'antd';
+import { Checkbox, Form, Input, Modal, Table } from 'antd';
 import { toggleConfirmChangesModal } from 'common/reducers/cmsTradeitem';
+
+const FormItem = Form.Item;
+const { TextArea } = Input;
 
 @connect(
   state => ({
@@ -45,8 +48,13 @@ export default class ConfirmChangesModal extends Component {
         onCancel={this.handleCancel}
         onOk={this.handleOk}
       >
-        <Table size="middle" columns={columns} dataSource={changes} rowKey="field" pagination={false} />
-        <Checkbox>启用历史版本(仅用于保税库存出库申报)</Checkbox>
+        <Table size="small" columns={columns} dataSource={changes} rowKey="field" pagination={false} style={{ marginBottom: 24 }} />
+        <FormItem>
+          <TextArea placeholder="变更原因" autosize />
+        </FormItem>
+        <FormItem>
+          <Checkbox>保留历史版本(仅用于保税库存出库申报)</Checkbox>
+        </FormItem>
       </Modal>
     );
   }

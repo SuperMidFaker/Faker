@@ -32,6 +32,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
+    itemMasterChanged: state.cmsTradeitem.itemMasterChanged,
     itemMasterChanges: state.cmsTradeitem.itemMasterChanges,
     repo: state.cmsTradeitem.repo,
   }),
@@ -41,7 +42,7 @@ function fetchData({ dispatch, params }) {
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create()
+@Form.create({ onValuesChange: (props, values) => props.changeItemMaster(true, values) })
 export default class TradeItemEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -86,7 +87,7 @@ export default class TradeItemEdit extends Component {
     if (changes.length === 0) {
       this.handleSave();
     } else {
-      this.props.changeItemMaster(changes);
+      this.props.changeItemMaster(true, changes);
       this.props.toggleConfirmChangesModal(true);
     }
   }
@@ -101,7 +102,7 @@ export default class TradeItemEdit extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
-            this.props.changeItemMaster([]);
+            this.props.changeItemMaster(false, []);
             this.context.router.goBack();
             // this.context.router.push('/clearance/classification/tradeitem');
           }
@@ -110,13 +111,13 @@ export default class TradeItemEdit extends Component {
     });
   }
   handleCancel = () => {
-    this.props.changeItemMaster([]);
+    this.props.changeItemMaster(false, []);
     this.context.router.goBack();
   }
 
   render() {
     const {
-      form, submitting, itemData, params, repo,
+      form, submitting, itemData, params, repo, itemMasterChanged,
     } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab="归类信息" key="master">
@@ -152,7 +153,7 @@ export default class TradeItemEdit extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting}>
+            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting} disabled={!itemMasterChanged}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

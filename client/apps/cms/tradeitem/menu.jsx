@@ -51,7 +51,7 @@ export default class ModuleMenu extends React.Component {
               <Badge count={workspaceStat.task.count} className="menu-badge" style={{ backgroundColor: '#1890ff' }} />
             </NavLink>
           </Menu.Item>
-          <Menu.SubMenu key="g_workspace" title={<span><Icon type="schedule" /> {this.msg('workspace')}</span>}>
+          <Menu.SubMenu key="g_workspace" title={<span><Icon type="laptop" /> {this.msg('workspace')}</span>}>
             <Menu.Item key="emerge">
               <NavLink to="/clearance/tradeitem/workspace/emerges">
                 {this.msg('taskNew')}

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Button, Card, DatePicker, Form, Icon, Input, Select, Switch, Row, Col, message } from 'antd';
+import { Button, Card, DatePicker, Form, Icon, Input, Select, Rate, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
@@ -143,7 +143,13 @@ export default class ItemMasterPane extends React.Component {
     const { fieldInits } = this.state;
     this.props.getElementByHscode(form.getFieldValue('hscode')).then((result) => {
       if (!result.error) {
-        this.props.showDeclElementsModal(result.data.declared_elements, fieldInits.id, form.getFieldValue('g_model'), false, form.getFieldValue('g_name'));
+        this.props.showDeclElementsModal(
+          result.data.declared_elements,
+          fieldInits.id,
+          form.getFieldValue('g_model'),
+          false,
+          form.getFieldValue('g_name')
+        );
       }
     });
   }
@@ -214,6 +220,13 @@ export default class ItemMasterPane extends React.Component {
                 })(<Input disabled={action !== 'create'} onChange={this.handleCopNoChange} />)}
               </FormItem>
             </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('enName')}>
+                {getFieldDecorator('en_name', {
+                  initialValue: fieldInits.en_name,
+                })(<Input />)}
+              </FormItem>
+            </Col>
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('itemType')}>
                 {getFieldDecorator('item_type', {
@@ -224,20 +237,15 @@ export default class ItemMasterPane extends React.Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col span={12}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('enName')}>
-                {getFieldDecorator('en_name', {
-                  initialValue: fieldInits.en_name,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
+            {/*
+              <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('srcProductNo')}>
                 {getFieldDecorator('src_product_no', {
                   initialValue: fieldInits.src_product_no,
                 })(<Input disabled={action !== 'fork'} onChange={this.handleSrcNoChange} />)}
               </FormItem>
             </Col>
+              */}
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('copUOM')}>
                 {getFieldDecorator('cop_uom', {
@@ -246,12 +254,35 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('processingMethod')}>
+                {getFieldDecorator('proc_method', {
+                  initialValue: fieldInits.proc_method,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('materialIngredient')}>
+                {getFieldDecorator('material_ingred', {
+                  initialValue: fieldInits.ingredient,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('use')}>
+                {getFieldDecorator('use', {
+                  initialValue: fieldInits.use,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            {/*
+              <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('markPass')}>
                 {getFieldDecorator('pass', {
                   initialValue: fieldInits.pass === 'Y',
                 })(<Switch />)}
               </FormItem>
             </Col>
+              */}
           </Row>
         </Card>
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
@@ -277,6 +308,13 @@ export default class ItemMasterPane extends React.Component {
                   initialValue: fieldInits.g_name,
                   rules: [{ required: true, message: '中文品名必填' }],
                 })(<Input onChange={this.handleGNameChange} />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('confidence')}>
+                {getFieldDecorator('confidence', {
+                  initialValue: fieldInits.confidence,
+                })(<Rate allowHalf />)}
               </FormItem>
             </Col>
             <Col span={24}>
