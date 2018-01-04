@@ -6,9 +6,10 @@ import { Button, Select, notification } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
-import { delWorkspaceItem, resolveWorkspaceItem } from 'common/reducers/cmsTradeitem';
+import { delWorkspaceItem, resolveWorkspaceItem, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
 import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
+import ItemDiffModal from './modal/itemDiffModal';
 import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
@@ -32,7 +33,7 @@ const { Option } = Select;
     repos: state.cmsTradeitem.repos.filter(rep =>
       rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
   }),
-  { delWorkspaceItem, resolveWorkspaceItem }
+  { delWorkspaceItem, resolveWorkspaceItem, toggleItemDiffModal }
 )
 export default class ConflictItemTable extends React.Component {
   static propTypes = {
@@ -106,16 +107,13 @@ export default class ConflictItemTable extends React.Component {
   }).concat([{
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 140,
+    width: 160,
     fixed: 'right',
     render: (_, record) => {
       const standard = record.classified && record.status === 2;
       const staged = record.classified && record.status === 4;
       return (<span>
-        {/*
-        <RowAction onClick={this.handleItemEdit} icon="edit"
-        label={this.msg('modify')} row={record} />
-        */}
+        <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
         <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="pushpin-o" row={record} tooltip="设为标准值" disabled={standard} />
         <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="保留为分支" disabled={staged} />
         <RowAction confirm={this.msg('deleteConfirm')} onConfirm={this.handleItemDel} icon="delete" row={record} />
@@ -138,6 +136,9 @@ export default class ConflictItemTable extends React.Component {
         notification.error({ title: 'Error', description: result.error.message });
       }
     });
+  }
+  handleItemDiff = (record) => {
+    this.props.toggleItemDiffModal(true, record);
   }
   handleConflictResolve = (item, index, props) => {
     this.props.resolveWorkspaceItem([item.id], props.action).then((result) => {
@@ -256,19 +257,22 @@ export default class ConflictItemTable extends React.Component {
       <Button icon="fork" onClick={this.handleBatchMakeStage}>批量保留为分支</Button>
     </span>);
     return (
-      <DataTable
-        selectedRowKeys={conflictSelRowKeys}
-        handleDeselectRows={this.handleRowDeselect}
-        loading={loading}
-        columns={this.conflictColumns}
-        dataSource={this.conflictDataSource}
-        rowSelection={conflictSelRows}
-        rowKey="id"
-        locale={{ emptyText: '当前没有冲突的商品归类' }}
-        toolbarActions={toolbarActions}
-        bulkActions={bulkActions}
-        noBorder={noBorder}
-      />
+      <div>
+        <DataTable
+          selectedRowKeys={conflictSelRowKeys}
+          handleDeselectRows={this.handleRowDeselect}
+          loading={loading}
+          columns={this.conflictColumns}
+          dataSource={this.conflictDataSource}
+          rowSelection={conflictSelRows}
+          rowKey="id"
+          locale={{ emptyText: '当前没有冲突的商品归类' }}
+          toolbarActions={toolbarActions}
+          bulkActions={bulkActions}
+          noBorder={noBorder}
+        />
+        <ItemDiffModal />
+      </div>
     );
   }
 }

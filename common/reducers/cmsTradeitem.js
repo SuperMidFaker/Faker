@@ -41,7 +41,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
-  'TOGGLE_APPLY_CERTS_MODAL',
+  'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL',
   'UPDATE_ITEM_APP_CERT', 'UPDATE_ITEM_APP_CERT_SUCCEED', 'UPDATE_ITEM_APP_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
 ]);
@@ -109,6 +109,10 @@ const initialState = {
   workspaceListFilter: { repoId: null, status: '', name: '' },
   workspaceItem: {},
   applyCertsModal: {
+    visible: false,
+    data: {},
+  },
+  itemDiffModal: {
     visible: false,
     data: {},
   },
@@ -229,6 +233,15 @@ export default function reducer(state = initialState, action) {
         ...state,
         applyCertsModal: {
           ...state.applyCertsModal,
+          visible: action.visible,
+          data: action.data,
+        },
+      };
+    case actionTypes.TOGGLE_ITEM_DIFF_MODAL:
+      return {
+        ...state,
+        itemDiffModal: {
+          ...state.itemDiffModal,
           visible: action.visible,
           data: action.data,
         },
@@ -859,6 +872,14 @@ export function auditItems(itemIds, auditMethod) {
 export function toggleApplyCertsModal(visible, data = {}) {
   return {
     type: actionTypes.TOGGLE_APPLY_CERTS_MODAL,
+    visible,
+    data,
+  };
+}
+
+export function toggleItemDiffModal(visible, data = {}) {
+  return {
+    type: actionTypes.TOGGLE_ITEM_DIFF_MODAL,
     visible,
     data,
   };

@@ -8,13 +8,14 @@ import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Sel
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl } from 'common/reducers/cmsTradeitem';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
+import ItemDiffModal from '../workspace/modal/itemDiffModal';
 
 import { formatMsg } from '../message.i18n';
 
@@ -56,6 +57,7 @@ const { Option } = Select;
     getElementByHscode,
     showDeclElementsModal,
     toggleHistoryItemsDecl,
+    toggleItemDiffModal,
   }
 )
 @connectNav({
@@ -313,15 +315,24 @@ export default class RepoContent extends Component {
         }
         if (record.decl_status === 0) {
           return (
-            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="play-circle-o" label="启用" row={record} />
+            <span>
+              <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
+              <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="play-circle-o" tooltip="启用" row={record} />
+            </span>
           );
         } else if (record.decl_status === 1) {
           return (
-            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="pause-circle-o" label="禁用" row={record} />
+            <span>
+              <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
+              <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="pause-circle-o" tooltip="禁用" row={record} />
+            </span>
           );
         }
         return (
-          <RowAction confirm="确定删除?" onConfirm={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
+          <span>
+            <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
+            <RowAction confirm="确定删除?" onConfirm={this.handleItemDelete} icon="delete" tooltip={this.msg('delete')} row={record} />
+          </span>
         );
       }
       return <span />;
@@ -374,6 +385,9 @@ export default class RepoContent extends Component {
         this.handleItemListLoad();
       }
     });
+  }
+  handleItemDiff = (record) => {
+    this.props.toggleItemDiffModal(true, record);
   }
   handleItemListLoad = (currentPage, filter, search) => {
     const { listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
@@ -599,6 +613,7 @@ export default class RepoContent extends Component {
             dataSource={this.dataSource}
           />
           <DeclElementsModal onOk={null} />
+          <ItemDiffModal />
         </Content>
       </Layout>
     );
