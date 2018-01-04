@@ -41,9 +41,10 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
-  'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL',
+  'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL', 'TOGGLE_CONFIRM_CHANGES_MODAL',
   'UPDATE_ITEM_APP_CERT', 'UPDATE_ITEM_APP_CERT_SUCCEED', 'UPDATE_ITEM_APP_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
+  'CHANGE_ITEM_MASTER',
 ]);
 
 const initialState = {
@@ -116,6 +117,11 @@ const initialState = {
     visible: false,
     data: {},
   },
+  confirmChangesModal: {
+    visible: false,
+    data: {},
+  },
+  itemMasterChanges: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -245,6 +251,20 @@ export default function reducer(state = initialState, action) {
           visible: action.visible,
           data: action.data,
         },
+      };
+    case actionTypes.TOGGLE_CONFIRM_CHANGES_MODAL:
+      return {
+        ...state,
+        confirmChangesModal: {
+          ...state.confirmChangesModal,
+          visible: action.visible,
+          data: action.data,
+        },
+      };
+    case actionTypes.CHANGE_ITEM_MASTER:
+      return {
+        ...state,
+        itemMasterChanges: action.data,
       };
     default:
       return state;
@@ -882,6 +902,21 @@ export function toggleItemDiffModal(visible, data = {}) {
     type: actionTypes.TOGGLE_ITEM_DIFF_MODAL,
     visible,
     data,
+  };
+}
+
+export function toggleConfirmChangesModal(visible, data = {}) {
+  return {
+    type: actionTypes.TOGGLE_CONFIRM_CHANGES_MODAL,
+    visible,
+    data,
+  };
+}
+
+export function changeItemMaster(values) {
+  return {
+    type: actionTypes.CHANGE_ITEM_MASTER,
+    data: values,
   };
 }
 

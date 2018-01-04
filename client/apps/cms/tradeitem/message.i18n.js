@@ -318,6 +318,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.op.modify',
     defaultMessage: '修改',
   },
+  diff: {
+    id: 'cms.tradeitem.op.diff',
+    defaultMessage: '对比',
+  },
   forkItem: {
     id: 'cms.tradeitem.op.fork',
     defaultMessage: '建立归类分支',

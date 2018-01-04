@@ -405,7 +405,9 @@ export default class RepoContent extends Component {
   }
   handleShowDeclElementModal = (record) => {
     this.props.getElementByHscode(record.hscode).then((result) => {
-      if (!result.error) {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
         this.props.showDeclElementsModal(
           result.data.declared_elements,
           record.id, record.g_model,

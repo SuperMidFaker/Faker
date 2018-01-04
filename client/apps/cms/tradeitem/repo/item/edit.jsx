@@ -6,12 +6,13 @@ import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import { loadTradeItem, saveRepoItem } from 'common/reducers/cmsTradeitem';
+import { loadTradeItem, saveRepoItem, toggleConfirmChangesModal, changeItemMaster } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import ItemMasterPane from './tabpane/itemMasterPane';
 import ItemPermitPane from './tabpane/itemPermitPane';
 import ItemHistoryPane from './tabpane/itemHistoryPane';
+import ConfirmChangesModal from './modal/confirmChangesModal';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
@@ -31,9 +32,10 @@ function fetchData({ dispatch, params }) {
   state => ({
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
+    itemMasterChanges: state.cmsTradeitem.itemMasterChanges,
     repo: state.cmsTradeitem.repo,
   }),
-  { saveRepoItem }
+  { saveRepoItem, toggleConfirmChangesModal, changeItemMaster }
 )
 @connectNav({
   depth: 3,
@@ -56,6 +58,38 @@ export default class TradeItemEdit extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
+  handleConfirm = () => {
+    const { itemData, form } = this.props;
+    const values = form.getFieldsValue();
+    const changes = [];
+    if (itemData.hscode !== values.hscode) {
+      changes.push({
+        field: 'hscode',
+        before: itemData.hscode,
+        after: values.hscode,
+      });
+    }
+    if (itemData.g_name !== values.g_name) {
+      changes.push({
+        field: 'g_name',
+        before: itemData.g_name,
+        after: values.g_name,
+      });
+    }
+    if (itemData.g_model !== values.g_model) {
+      changes.push({
+        field: 'g_model',
+        before: itemData.g_model,
+        after: values.g_model,
+      });
+    }
+    if (changes.length === 0) {
+      this.handleSave();
+    } else {
+      this.props.changeItemMaster(changes);
+      this.props.toggleConfirmChangesModal(true);
+    }
+  }
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -67,6 +101,7 @@ export default class TradeItemEdit extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
+            this.props.changeItemMaster([]);
             this.context.router.goBack();
             // this.context.router.push('/clearance/classification/tradeitem');
           }
@@ -75,6 +110,7 @@ export default class TradeItemEdit extends Component {
     });
   }
   handleCancel = () => {
+    this.props.changeItemMaster([]);
     this.context.router.goBack();
   }
 
@@ -116,7 +152,7 @@ export default class TradeItemEdit extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting}>
+            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>
@@ -132,6 +168,7 @@ export default class TradeItemEdit extends Component {
             </Tabs>
           </MagicCard>
         </Content>
+        <ConfirmChangesModal onSave={this.handleSave} />
       </Layout>
     );
   }

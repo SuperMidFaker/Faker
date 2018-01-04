@@ -276,7 +276,7 @@ export default class ItemMasterPane extends React.Component {
                 {getFieldDecorator('g_name', {
                   initialValue: fieldInits.g_name,
                   rules: [{ required: true, message: '中文品名必填' }],
-                })(<Input />)}
+                })(<Input onChange={this.handleGNameChange} />)}
               </FormItem>
             </Col>
             <Col span={24}>
