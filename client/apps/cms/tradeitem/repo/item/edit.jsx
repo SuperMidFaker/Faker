@@ -87,7 +87,7 @@ export default class TradeItemEdit extends Component {
       <ItemMasterPane action="edit" form={form} itemData={itemData} />
     </TabPane>);
     tabs.push(<TabPane tab="涉证资料" key="permit">
-      <ItemPermitPane fullscreen={this.state.fullscreen} repoId={params.repoId} />
+      <ItemPermitPane fullscreen={this.state.fullscreen} itemId={params.id} />
     </TabPane>);
     tabs.push(<TabPane tab="历史版本" key="history">
       <ItemHistoryPane

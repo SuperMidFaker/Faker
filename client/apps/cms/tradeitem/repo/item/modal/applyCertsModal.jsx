@@ -31,9 +31,12 @@ export default class ApplyCertsModal extends Component {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
       if (nextProps.selectedRowKeys) {
         const selectedRowKeys = nextProps.selectedRowKeys.split(',');
+        const selectedRows =
+        TRADE_ITEM_APPLY_CERTS.filter(cert => selectedRowKeys.includes(cert.app_cert_code));
         const documents = [...this.state.documents];
         this.setState({
           selectedRowKeys,
+          selectedRows,
           documents,
         });
       }
@@ -44,16 +47,24 @@ export default class ApplyCertsModal extends Component {
   }
   handleOk = () => {
     const { selectedRows } = this.state;
-    let code = '';
+    const data = {
+      code: '',
+      name: '',
+    };
     for (let i = 0; i < selectedRows.length; i++) {
       const row = selectedRows[i];
-      if (!code) {
-        code += `${row.app_cert_code}`;
+      if (!data.code) {
+        data.code += `${row.app_cert_code}`;
       } else {
-        code += `,${row.app_cert_code}`;
+        data.code += `,${row.app_cert_code}`;
+      }
+      if (!data.name) {
+        data.name += `${row.app_cert_name}`;
+      } else {
+        data.name += `,${row.app_cert_name}`;
       }
     }
-    this.props.updateItemAppCert(code, this.props.itemId).then((result) => {
+    this.props.updateItemAppCert(data, this.props.itemId).then((result) => {
       if (!result.error) {
         this.props.loadTradeItem(this.props.itemId);
         this.handleCancel();
