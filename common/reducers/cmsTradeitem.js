@@ -43,7 +43,6 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
   'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL',
   'UPDATE_ITEM_APP_CERT', 'UPDATE_ITEM_APP_CERT_SUCCEED', 'UPDATE_ITEM_APP_CERT_FAIL',
-  'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
 ]);
 
 const initialState = {
@@ -885,7 +884,7 @@ export function toggleItemDiffModal(visible, data = {}) {
   };
 }
 
-export function updateItemAppCert(code, id) {
+export function updateItemAppCert(cert, id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -895,22 +894,7 @@ export function updateItemAppCert(code, id) {
       ],
       endpoint: 'v1/cms/tradeitem/app/cert/update',
       method: 'post',
-      data: { code, id },
-    },
-  };
-}
-
-export function loadPermits(repoId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_PERMITS,
-        actionTypes.LOAD_PERMITS_SUCCEED,
-        actionTypes.LOAD_PERMITS_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/permits/load',
-      method: 'get',
-      params: { repoId },
+      data: { cert: JSON.stringify(cert), id },
     },
   };
 }

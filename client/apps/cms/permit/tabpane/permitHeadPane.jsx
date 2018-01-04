@@ -99,6 +99,32 @@ export default class PermitHeadPane extends Component {
   handleView = () => {
     window.open(this.state.permit_file);
   }
+  handleAvaUsageChange = (e) => {
+    const maxUsage = this.props.form.getFieldValue('max_usage');
+    if (!maxUsage) {
+      message.info('请先填写总次数');
+      return false;
+    }
+    if (Number(e.target.value) > Number(maxUsage)) {
+      message.info('剩余次数不能大于总次数');
+      return false;
+    }
+
+    return true;
+  }
+  handleAva = (e) => {
+    new Promise((resolve) => {
+      if (!this.handleAvaUsageChange(e)) {
+        resolve(false);
+      }
+    }).then((result) => {
+      if (!result) {
+        this.props.form.setFieldsValue({
+          ava_usage: '',
+        });
+      }
+    });
+  }
   render() {
     const {
       form: { getFieldDecorator }, action, clients, certParams, currentPermit,
@@ -241,14 +267,14 @@ export default class PermitHeadPane extends Component {
               <FormItem {...formItemLayout} label={this.msg('maxUsage')}>
                 {getFieldDecorator('max_usage', {
                   initialValue: action === 'edit' ? currentPermit.max_usage : '',
-                  })(<Input disabled={!usageEnable} />)}
+                  })(<Input disabled={!usageEnable} type="number" />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('availUsage')}>
                 {getFieldDecorator('ava_usage', {
                   initialValue: action === 'edit' ? currentPermit.ava_usage : '',
-                  })(<Input disabled={!usageEnable} />)}
+                  })(<Input disabled={!usageEnable} onChange={this.handleAva} type="number" />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>

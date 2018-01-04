@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Modal, Input } from 'antd';
 import { connect } from 'react-redux';
-import { toggleTradeItemModal, loadTradeItems, addPermitTradeItem } from 'common/reducers/cmsPermit';
+import { toggleTradeItemModal, loadTradeItems, addPermitTradeItem, loadPermitModels } from 'common/reducers/cmsPermit';
 import DataTable from 'client/components/DataTable';
 
 const { Search } = Input;
@@ -16,7 +16,9 @@ const { Search } = Input;
     currentPage: state.cmsPermit.tradeItemList.current,
     loading: state.cmsPermit.tradeItemList.loading,
   }),
-  { toggleTradeItemModal, loadTradeItems, addPermitTradeItem }
+  {
+    toggleTradeItemModal, loadTradeItems, addPermitTradeItem, loadPermitModels,
+  }
 )
 export default class PermitItemModal extends Component {
   state = {
@@ -74,6 +76,7 @@ export default class PermitItemModal extends Component {
           selectedRows: [],
         });
         this.handleCancel();
+        this.props.loadPermitModels(this.props.permitId);
       }
     });
   }

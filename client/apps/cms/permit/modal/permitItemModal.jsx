@@ -21,6 +21,9 @@ export default class PermitItemModal extends Component {
   }
   handleCancel = () => {
     this.props.togglePermitItemModal(false);
+    this.setState({
+      model: '',
+    });
   }
   handleChange = (e) => {
     this.setState({
