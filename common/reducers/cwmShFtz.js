@@ -72,6 +72,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_NONBONDED_STOCKS', 'LOAD_NONBONDED_STOCKS_SUCCEED', 'LOAD_NONBONDED_STOCKS_FAIL',
   'LOAD_ASNENT', 'LOAD_ASNENT_SUCCEED', 'LOAD_ASNENT_FAIL',
   'EXPORT_NEBREL', 'EXPORT_NEBREL_SUCCEED', 'EXPORT_NEBREL_FAIL',
+  'CLEAR_NMREL', 'CLEAR_NMREL_SUCCEED', 'CLEAR_NMREL_FAIL',
 ]);
 
 const initialState = {
@@ -271,6 +272,16 @@ export default function reducer(state = initialState, action) {
         rel_regs: state.rel_regs.map((rr) => {
           if (rr.pre_entry_seq_no === action.data.pre_entry_seq_no) {
             return { ...rr, [action.data.field]: action.data.value };
+          }
+          return rr;
+        }),
+      };
+    case actionTypes.CLEAR_NMREL_SUCCEED:
+      return {
+        ...state,
+        rel_regs: state.rel_regs.map((rr) => {
+          if (rr.pre_entry_seq_no === action.data.preEntrySeqNo) {
+            return { ...rr, cus_decl_no: action.data.cusDeclNo };
           }
           return rr;
         }),
@@ -1479,3 +1490,19 @@ export function exportNormalExitByRel(relno) {
     },
   };
 }
+
+export function clearNormalRel(preEntrySeqNo, cusDeclNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CLEAR_NMREL,
+        actionTypes.CLEAR_NMREL_SUCCEED,
+        actionTypes.CLEAR_NMREL_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/release/clear',
+      method: 'post',
+      data: { preEntrySeqNo, cusDeclNo },
+    },
+  };
+}
+
