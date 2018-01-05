@@ -62,7 +62,7 @@ export default class PermitList extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleDetail = (row) => {
-    this.context.router.push(`clearance/permit/${row.id}`);
+    this.context.router.push(`/clearance/permit/${row.id}`);
   }
   columns = [{
     title: this.msg('permitOwner'),

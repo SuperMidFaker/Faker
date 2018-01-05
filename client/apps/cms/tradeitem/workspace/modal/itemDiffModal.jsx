@@ -22,6 +22,8 @@ const { Option } = Select;
 export default class ItemDiffModal extends Component {
   static propTypes = {
     onOk: PropTypes.func,
+    baselineTitle: PropTypes.string,
+    currentTitle: PropTypes.string,
   }
   state = {
     others: '',
@@ -53,7 +55,9 @@ export default class ItemDiffModal extends Component {
   }
 
   render() {
-    const { form: { getFieldDecorator }, disabled } = this.props;
+    const {
+      baselineTitle, currentTitle, form: { getFieldDecorator }, disabled,
+    } = this.props;
     const { others } = this.state;
     const formItemLayout = {
       labelCol: { span: 8 },
@@ -62,7 +66,7 @@ export default class ItemDiffModal extends Component {
     const element = this.props.element ? this.props.element.split(';').filter(elem => elem) : [];
     const gModel = this.props.gModel ? this.props.gModel.split('|') : [];
     const title = (<div>
-      <span>归类对比</span>
+      <span>商品归类数据对比</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>关闭</Button>
       </div>
@@ -79,7 +83,7 @@ export default class ItemDiffModal extends Component {
       >
         <Row gutter={24}>
           <Col span={12}>
-            <Card title="主数据">
+            <Card title={baselineTitle || '基准数据'}>
               <Form className="form-layout-compact">
                 <FormItem {...formItemLayout} label="HS编码">
                   <Input />
@@ -141,7 +145,7 @@ export default class ItemDiffModal extends Component {
             </Card>
           </Col>
           <Col span={12}>
-            <Card title="分支/历史版本">
+            <Card title={currentTitle || '当前数据'}>
               <Form className="form-layout-compact">
                 <FormItem {...formItemLayout} label="HS编码">
                   <Input />

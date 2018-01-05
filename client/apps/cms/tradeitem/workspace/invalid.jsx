@@ -146,9 +146,9 @@ export default class InvalidItemsList extends React.Component {
             current: 1,
             filter: JSON.stringify(this.props.listFilter),
           });
-          notification.info({ title: '提示', description: '归类已提交审核' });
+          notification.success({ message: '操作成功', description: '已提交至待审核' });
         } else if (result.data.feedback === 'noop') {
-          notification.info({ title: '提示', description: '没有归类可提交主库审核' });
+          notification.info({ message: '提示', description: '暂无已解决的失效归类项目可提交' });
         }
       }
     });
@@ -189,7 +189,7 @@ export default class InvalidItemsList extends React.Component {
       <Select
         showSearch
         placeholder="所属归类库"
-        style={{ width: 160 }}
+        style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}

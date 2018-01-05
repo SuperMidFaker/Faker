@@ -54,9 +54,6 @@ export default class DeclElementsModal extends Component {
   handleCancel = () => {
     this.props.hideDeclElementsModal();
     this.props.form.resetFields();
-    this.setState({
-      model: '',
-    });
   }
   handleInputChange = (value, item) => {
     const data = this.props.form.getFieldsValue();
@@ -109,6 +106,7 @@ export default class DeclElementsModal extends Component {
         visible={this.props.visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
+        destroyOnClose
       >
         <Form className="form-layout-compact">
           <FormItem>

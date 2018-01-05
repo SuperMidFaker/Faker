@@ -36,11 +36,8 @@ export default class ItemManageModal extends Component {
       });
     }
   }
-  handleCancel = () => {
+  handleClose = () => {
     this.props.toggleItemManageModal(false);
-  }
-  handleOk = () => {
-    this.handleCancel();
   }
   handleDelete = (row) => {
     this.props.deleteModelItem(this.props.modelId, row.cop_product_no).then((result) => {
@@ -62,15 +59,12 @@ export default class ItemManageModal extends Component {
     this.props.toggleTradeItemModal(true, this.props.modelId);
   }
   columns = [{
-    title: '序号',
-    width: 45,
-    render: (o, record, index) => index + 1,
-  }, {
     title: '商品货号',
     dataIndex: 'cop_product_no',
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
+    width: 120,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -87,9 +81,6 @@ export default class ItemManageModal extends Component {
   }]
   render() {
     const { visible, loading } = this.props;
-    const toolbarActions = (<span>
-      <Button onClick={this.toggleTradeItemModal}>手动关联商品</Button>
-    </span>);
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadModelItems(params),
       resolve: result => result.data,
@@ -112,9 +103,26 @@ export default class ItemManageModal extends Component {
       },
       remotes: this.props.modelItems,
     });
+    const title = (<div>
+      <span>关联商品货号管理</span>
+      <div className="toolbar-right">
+        <Button onClick={this.handleClose}>关闭</Button>
+      </div>
+    </div>);
+    const toolbarActions = (<span>
+      <Button type="primary" icon="plus-circle-o" onClick={this.toggleTradeItemModal}>添加</Button>
+    </span>);
     return (
-      <Modal width="100%" title="料件管理" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal
+        width="100%"
+        title={title}
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+        visible={visible}
+      >
         <DataTable
+          colFixed
           columns={this.columns}
           dataSource={dataSource}
           loading={loading}

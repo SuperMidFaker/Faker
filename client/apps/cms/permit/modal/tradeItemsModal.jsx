@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Input } from 'antd';
+import { Modal, Input } from 'antd';
 import { connect } from 'react-redux';
 import { toggleTradeItemModal, loadTradeItems, addPermitTradeItem, loadPermitModels } from 'common/reducers/cmsPermit';
 import DataTable from 'client/components/DataTable';
@@ -39,12 +39,6 @@ export default class PermitItemModal extends Component {
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
-  }, {
-    title: '海关监管条件',
-    dataIndex: 'customs_control',
-  }, {
-    title: '检验检疫条件',
-    dataIndex: 'inspection_quarantine',
   }]
   handleCancel = () => {
     this.props.toggleTradeItemModal(false);
@@ -88,6 +82,7 @@ export default class PermitItemModal extends Component {
       current: resolve(result.totalCount, result.current, result.pageSize),
       showSizeChanger: true,
       showQuickJumper: false,
+      hideOnSinglePage: true,
       pageSize: result.pageSize,
       showTotal: total => `共 ${total} 条`,
     }),
@@ -110,21 +105,14 @@ export default class PermitItemModal extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
-    const title = (<div>
-      <span>关联商品</span>
-      <div className="toolbar-right">
-        <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" onClick={this.handleOk}>保存</Button>
-      </div>
-    </div>);
     return (
       <Modal
-        title={title}
-        width="100%"
+        title="关联商品货号"
+        width={800}
         visible={this.props.visible}
-        wrapClassName="fullscreen-modal"
-        closable={false}
-        footer={null}
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
+        destroyOnClose
       >
         <DataTable
           size="middle"

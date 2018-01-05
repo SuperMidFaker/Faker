@@ -60,9 +60,9 @@ export default class ConflictItemsList extends React.Component {
             filter: JSON.stringify(this.state.filter),
           });
           this.setState({ filter });
-          notification.info({ title: '提示', description: '归类已提交审核' });
+          notification.success({ message: '操作成功', description: '已提交至本库待审核' });
         } else if (result.data.feedback === 'noop') {
-          notification.info({ title: '提示', description: '没有冲突归类可提交审核' });
+          notification.info({ message: '提示', description: '暂无已解决的归类冲突项目可提交' });
         }
       }
     });
@@ -78,9 +78,9 @@ export default class ConflictItemsList extends React.Component {
             filter: JSON.stringify(this.state.filter),
           });
           this.setState({ filter });
-          notification.info({ title: '提示', description: '归类已提交审核' });
+          notification.success({ message: '操作成功', description: '已提交至主库待审核' });
         } else if (result.data.feedback === 'noop') {
-          notification.info({ title: '提示', description: '没有冲突归类可提交主库审核' });
+          notification.info({ message: '提示', description: '暂无已解决的归类冲突项目可提交' });
         }
       }
     });

@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
+import { Breadcrumb, Form, Layout, Button, Tabs, message, notification } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { createTradeItem } from 'common/reducers/cmsTradeitem';
+import { createTradeItem, toggleItemMasterEnabled } from 'common/reducers/cmsTradeitem';
 import ItemMasterPane from './tabpane/itemMasterPane';
 import messages from '../../message.i18n';
 
@@ -20,14 +20,16 @@ const { TabPane } = Tabs;
 @connect(
   state => ({
     repo: state.cmsTradeitem.repo,
+    submitting: state.cmsTradeitem.submitting,
+    itemMasterEnabled: state.cmsTradeitem.itemMasterEnabled,
   }),
-  { createTradeItem }
+  { createTradeItem, toggleItemMasterEnabled }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create()
+@Form.create({ onValuesChange: props => props.toggleItemMasterEnabled(true) })
 export default class TradeItemAdd extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -47,7 +49,11 @@ export default class TradeItemAdd extends Component {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
-            message.success('保存成功');
+            notification.success({
+              message: '保存成功',
+              description: '已提交至归类工作区待审核.',
+            });
+            this.props.toggleItemMasterEnabled(false);
             this.context.router.goBack();
           }
         });
@@ -55,11 +61,14 @@ export default class TradeItemAdd extends Component {
     });
   }
   handleCancel = () => {
+    this.props.toggleItemMasterEnabled(false);
     this.context.router.goBack();
   }
 
   render() {
-    const { form, repo } = this.props;
+    const {
+      form, repo, submitting, itemMasterEnabled,
+    } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab={this.msg('tabClassification')} key="master">
       <ItemMasterPane action="create" form={form} itemData={{}} />
@@ -84,7 +93,7 @@ export default class TradeItemAdd extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleSave}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting} disabled={!itemMasterEnabled}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

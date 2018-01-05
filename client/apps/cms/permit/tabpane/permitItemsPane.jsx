@@ -68,11 +68,11 @@ export default class PermitItemsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.permit_model === '*') {
-        return <RowAction onClick={this.handMatch} icon="plus-circle-o" label="料件管理" row={record} />;
+        return <RowAction onClick={this.handMatch} icon="tags-o" label="关联管理" row={record} />;
       }
       return (<span>
         <RowAction onClick={this.automaticMatch} icon="rocket" label="自动匹配" row={record} />
-        <RowAction onClick={this.handMatch} icon="plus-circle-o" tooltip="料件管理" row={record} />
+        <RowAction onClick={this.handMatch} icon="tags-o" tooltip="关联管理" row={record} />
       </span>);
     },
   }];

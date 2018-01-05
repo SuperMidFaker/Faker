@@ -296,7 +296,6 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('unit1')}>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
-                  rules: [{ required: true, message: '法一计量单位必填' }],
                 })(<Select disabled>
                   {
                     units.map(gt =>

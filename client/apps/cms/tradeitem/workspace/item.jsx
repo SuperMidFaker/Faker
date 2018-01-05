@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
-import { loadWorkspaceItem, saveWorkspaceItem } from 'common/reducers/cmsTradeitem';
+import { loadWorkspaceItem, saveWorkspaceItem, toggleItemMasterEnabled } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
@@ -18,19 +18,20 @@ const { TabPane } = Tabs;
   state => ({
     itemData: state.cmsTradeitem.workspaceItem,
     submitting: state.cmsTradeitem.submitting,
+    itemMasterEnabled: state.cmsTradeitem.itemMasterEnabled,
   }),
-  { saveWorkspaceItem, loadWorkspaceItem }
+  { saveWorkspaceItem, loadWorkspaceItem, toggleItemMasterEnabled }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create()
+@Form.create({ onValuesChange: props => props.toggleItemMasterEnabled(true) })
 export default class WorkItemPage extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    itemData: PropTypes.object,
+    form: PropTypes.shape({ validateFields: PropTypes.func }).isRequired,
+    itemData: PropTypes.shape({ id: PropTypes.number }),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -54,6 +55,7 @@ export default class WorkItemPage extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
+            this.props.toggleItemMasterEnabled(false);
             this.context.router.goBack();
           }
         });
@@ -61,11 +63,14 @@ export default class WorkItemPage extends Component {
     });
   }
   handleCancel = () => {
+    this.props.toggleItemMasterEnabled(false);
     this.context.router.goBack();
   }
 
   render() {
-    const { form, submitting, itemData } = this.props;
+    const {
+      form, submitting, itemData, itemMasterEnabled,
+    } = this.props;
     return (
       <Layout>
         <PageHeader>
@@ -86,7 +91,7 @@ export default class WorkItemPage extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting} disabled={!itemMasterEnabled}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

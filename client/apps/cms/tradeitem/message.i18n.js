@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   taskNew: {
     id: 'cms.tradeitem.workspace.new',
-    defaultMessage: '新商品货号',
+    defaultMessage: '新商品归类',
   },
   taskConflict: {
     id: 'cms.tradeitem.workspace.conflict',
