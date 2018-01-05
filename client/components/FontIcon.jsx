@@ -3,31 +3,19 @@ import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 
 export function MdIcon(props) {
-  const { mode, type, tagWrapped } = props;
-  let icon = '';
-  switch (mode) {
-    case 'ikons':
-      icon = (<i className={`icon icon-ikons-${type}`} />);
-      break;
-    case 'fontello':
-      icon = (<i className={`icon icon-fontello-${type}`} />);
-      break;
-    default:
-      icon = (<i className={`zmdi zmdi-${type}`} />);
-      break;
-  }
+  const { type, tagWrapped } = props;
+  const icon = (<i className={`zmdi zmdi-${type}`} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 
 MdIcon.propTypes = {
   type: PropTypes.string.isRequired,
-  mode: PropTypes.string,
   tagWrapped: PropTypes.bool,
 };
 
 export function Logixon(props) {
   const { type, tagWrapped, color } = props;
-  let colorString;
+  let colorString = null;
   switch (color) {
     case 'blue':
       colorString = '#108ee9';
@@ -45,9 +33,10 @@ export function Logixon(props) {
       colorString = '#d9d9d9';
       break;
     default:
-      colorString = 'rgba(0,0,0,.65)';
+      break;
   }
-  const icon = (<i className={`icon logixon icon-${type}`} style={{ color: colorString }} />);
+  const style = colorString ? { ...props.style, color: colorString } : { ...props.style };
+  const icon = (<i className={`icon logixon icon-${type}`} style={style} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 

@@ -61,7 +61,7 @@ export default class RepoList extends React.Component {
   }, {
     title: this.msg('库模式'),
     dataIndex: 'mode',
-    width: 150,
+    width: 100,
     render: (o, record) => {
       if (o === 'slave') {
         return (<Tag color="#2db7f5">从库 {record.master_repo_id ? <Icon type="link" /> : <Icon type="disconnect" />}</Tag>);
@@ -75,8 +75,10 @@ export default class RepoList extends React.Component {
   }, {
     title: <Tooltip title="启用保留HS编码或名称修改历史版本,用于出库申报"><Icon type="clock-circle-o" /></Tooltip>,
     dataIndex: 'keep_version',
-    width: 70,
+    width: 100,
+    align: 'center',
     render: (keep, repo) => (<Switch
+      size="small"
       checked={keep}
       disabled={repo.master_repo_id}
       onChange={checked => this.handleVersionKeepChange(repo.id, checked)}

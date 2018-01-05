@@ -76,7 +76,7 @@ export default class ItemManageModal extends Component {
     dataIndex: 'inspection_quarantine',
   }, {
     dataIndex: 'OPS_COL',
-    width: 45,
+    width: 60,
     render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
   }]
   render() {

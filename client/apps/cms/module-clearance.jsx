@@ -115,11 +115,11 @@ export default class Clearance extends React.Component {
         }],
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'compliance' })) {
       linkMenus.push({
         single: false,
         key: 'cms-compliance',
-        icon: 'logixon icon-resource',
+        icon: 'logixon icon-compliance',
         text: formatMsg(intl, 'compliance'),
         sublinks: [{
           key: 'cms-compliance-0',

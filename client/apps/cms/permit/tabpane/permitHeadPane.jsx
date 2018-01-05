@@ -147,17 +147,6 @@ export default class PermitHeadPane extends Component {
       },
       colon: false,
     };
-    const formItemSpan2Layout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
-      },
-      colon: false,
-    };
     const props = {
       action: `${API_ROOTS.default}v1/upload/img/`,
       multiple: false,
@@ -177,8 +166,8 @@ export default class PermitHeadPane extends Component {
       <FormPane fullscreen={this.props.fullscreen}>
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
-            <Col span={16}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('permitOwner')}>
+            <Col {...colSpan}>
+              <FormItem {...formItemLayout} label={this.msg('permitOwner')}>
                 {getFieldDecorator('owner_partner_id', {
                     rules: [{ required: true, message: '所属企业必选' }],
                     initialValue: action === 'edit' && currentPermit.owner_partner_id,
