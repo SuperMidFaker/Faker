@@ -15,6 +15,7 @@ export default class ApplyCertsModal extends Component {
   static propTypes = {
     selectedRowKeys: PropTypes.string,
     itemId: PropTypes.number.isRequired,
+    onOk: PropTypes.func,
   }
   state = {
     documents: [],
@@ -70,6 +71,7 @@ export default class ApplyCertsModal extends Component {
         this.handleCancel();
       }
     });
+    this.props.onOk(data.name);
   }
   render() {
     const { visible } = this.props;

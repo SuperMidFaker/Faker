@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, message } from 'antd';
+import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, Tooltip, message } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
@@ -151,7 +151,7 @@ export default class RepoContent extends Component {
     align: 'center',
     render: (branch, row) => {
       if (branch > 0) {
-        return <a onClick={() => this.handleViewBranch(row.cop_product_no)}>{branch}</a>;
+        return <Tooltip title="查看分支版本"><a onClick={() => this.handleViewBranch(row.cop_product_no)}>{branch}</a></Tooltip>;
       }
       return null;
     },
@@ -162,7 +162,7 @@ export default class RepoContent extends Component {
     align: 'center',
     render: (history, row) => {
       if (history > 0) {
-        return <a onClick={() => this.handleViewHistory(row.cop_product_no)}>{history}</a>;
+        return <Tooltip title="查看保留版本"><a onClick={() => this.handleViewHistory(row.cop_product_no)}>{history}</a></Tooltip>;
       }
       return null;
     },

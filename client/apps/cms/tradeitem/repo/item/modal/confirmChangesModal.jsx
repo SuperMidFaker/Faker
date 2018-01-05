@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Checkbox, Form, Input, Modal, Table } from 'antd';
+import { format } from 'client/common/i18n/helpers';
 import { toggleConfirmChangesModal } from 'common/reducers/cmsTradeitem';
+import messages from '../../../message.i18n';
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
@@ -19,7 +22,7 @@ export default class ConfirmChangesModal extends Component {
     onSave: PropTypes.func,
     form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
   }
-
+  msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
     this.props.toggleConfirmChangesModal(false);
   }

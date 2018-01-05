@@ -141,6 +141,9 @@ export default class ItemMasterPane extends React.Component {
   handleModalChange = (model) => {
     this.props.form.setFieldsValue({ g_model: model });
   }
+  handleApplCertChange = (cert) => {
+    this.props.form.setFieldsValue({ appl_cert_name: cert });
+  }
   render() {
     const {
       form: { getFieldDecorator }, currencies, units, tradeCountries, hscodes, action,
@@ -219,15 +222,6 @@ export default class ItemMasterPane extends React.Component {
                 </Select>)}
               </FormItem>
             </Col>
-            {/*
-              <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('srcProductNo')}>
-                {getFieldDecorator('src_product_no', {
-                  initialValue: fieldInits.src_product_no,
-                })(<Input disabled={action !== 'fork'} onChange={this.handleSrcNoChange} />)}
-              </FormItem>
-            </Col>
-              */}
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('copUOM')}>
                 {getFieldDecorator('cop_uom', {
@@ -256,15 +250,6 @@ export default class ItemMasterPane extends React.Component {
                 })(<Input />)}
               </FormItem>
             </Col>
-            {/*
-              <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('markPass')}>
-                {getFieldDecorator('pass', {
-                  initialValue: fieldInits.pass === 'Y',
-                })(<Switch />)}
-              </FormItem>
-            </Col>
-              */}
           </Row>
         </Card>
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
@@ -493,6 +478,7 @@ export default class ItemMasterPane extends React.Component {
         <ApplyCertsModal
           itemId={this.props.itemData.id}
           selectedRowKeys={fieldInits.appl_cert_code}
+          onOk={this.handleApplCertChange}
         />
       </FormPane>
     );

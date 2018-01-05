@@ -63,14 +63,14 @@ export default class TradeItemFork extends Component {
     const changes = [];
     if (itemData.hscode !== values.hscode) {
       changes.push({
-        field: 'hscode',
+        field: this.msg('hscode'),
         before: itemData.hscode,
         after: values.hscode,
       });
     }
     if (itemData.g_name !== values.g_name) {
       changes.push({
-        field: 'g_name',
+        field: this.msg('gName'),
         before: itemData.g_name,
         after: values.g_name,
       });

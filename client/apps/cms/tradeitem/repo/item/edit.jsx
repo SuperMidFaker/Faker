@@ -69,21 +69,21 @@ export default class TradeItemEdit extends Component {
     const changes = [];
     if (itemData.hscode !== values.hscode) {
       changes.push({
-        field: 'hscode',
+        field: this.msg('hscode'),
         before: itemData.hscode,
         after: values.hscode,
       });
     }
     if (itemData.g_name !== values.g_name) {
       changes.push({
-        field: 'g_name',
+        field: this.msg('gName'),
         before: itemData.g_name,
         after: values.g_name,
       });
     }
     if (itemData.g_model !== values.g_model) {
       changes.push({
-        field: 'g_model',
+        field: this.msg('gModel'),
         before: itemData.g_model,
         after: values.g_model,
       });
