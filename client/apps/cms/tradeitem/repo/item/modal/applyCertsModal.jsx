@@ -49,7 +49,6 @@ export default class ApplyCertsModal extends Component {
     const { selectedRows } = this.state;
     const data = {
       code: '',
-      name: '',
     };
     for (let i = 0; i < selectedRows.length; i++) {
       const row = selectedRows[i];
@@ -57,11 +56,6 @@ export default class ApplyCertsModal extends Component {
         data.code += `${row.app_cert_code}`;
       } else {
         data.code += `,${row.app_cert_code}`;
-      }
-      if (!data.name) {
-        data.name += `${row.app_cert_name}`;
-      } else {
-        data.name += `,${row.app_cert_name}`;
       }
     }
     this.props.updateItemApplCert(data, this.props.itemId).then((result) => {
