@@ -27,7 +27,7 @@ MdIcon.propTypes = {
 
 export function Logixon(props) {
   const { type, tagWrapped, color } = props;
-  let colorString = '#000';
+  let colorString;
   switch (color) {
     case 'blue':
       colorString = '#108ee9';
@@ -41,8 +41,11 @@ export function Logixon(props) {
     case 'red':
       colorString = '#f04134';
       break;
-    default:
+    case 'gray':
       colorString = '#d9d9d9';
+      break;
+    default:
+      colorString = 'rgba(0,0,0,.65)';
   }
   const icon = (<i className={`icon logixon icon-${type}`} style={{ color: colorString }} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
