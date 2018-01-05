@@ -23,7 +23,7 @@ function getFieldInits(formData) {
   if (formData) {
     ['cop_product_no', 'src_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'g_unit_1', 'g_unit_2', 'g_unit_3',
       'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
-      'currency', 'pre_classify_no', 'remark',
+      'currency', 'pre_classify_no', 'remark', 'appl_cert_code',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
