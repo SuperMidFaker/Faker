@@ -25,7 +25,7 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const Step = Steps.Step;
+const { Step } = Steps;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -59,7 +59,13 @@ function fetchData({ dispatch, params }) {
     submitting: state.cwmShFtz.submitting,
   }),
   {
-    loadEntryDetails, updateEntryReg, refreshEntryRegFtzCargos, splitCustomEntryDetails, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus,
+    loadEntryDetails,
+    updateEntryReg,
+    refreshEntryRegFtzCargos,
+    splitCustomEntryDetails,
+    fileEntryRegs,
+    queryEntryRegInfos,
+    checkEntryRegStatus,
   }
 )
 @connectNav({
@@ -86,7 +92,6 @@ export default class SHFTZEntryDetail extends Component {
     tabKey: '',
     nonCargono: false,
     filingDetails: [],
-    merged: [],
     splitNum: 2,
   }
   componentWillReceiveProps(nextProps) {
@@ -94,11 +99,15 @@ export default class SHFTZEntryDetail extends Component {
       const queryable = nextProps.primaryEntryReg.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
       let regDetailExist = true;
-      nextProps.entryRegs.forEach((entReg) => { regDetailExist = regDetailExist && entReg.details.length > 0; });
-      let sendable = nextProps.primaryEntryReg.inbound_no && regDetailExist && nextProps.primaryEntryReg.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-      let unsentReason = !nextProps.primaryEntryReg.inbound_no ? '收货通知ASN尚未释放' : '';
+      nextProps.entryRegs.forEach((entReg) => {
+        regDetailExist = regDetailExist && entReg.details.length > 0;
+      });
+      let sendable = nextProps.primaryEntryReg.inbound_no && regDetailExist &&
+        nextProps.primaryEntryReg.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+      let unsentReason = !nextProps.primaryEntryReg.inbound_no ? `收货通知${nextProps.primaryEntryReg.asn_no}尚未释放` : '';
       if (sendable) {
-        if (nextProps.primaryEntryReg.cus_decl_no && nextProps.primaryEntryReg.ie_date && nextProps.primaryEntryReg.ftz_ent_date) {
+        if (nextProps.primaryEntryReg.cus_decl_no && nextProps.primaryEntryReg.ie_date &&
+          nextProps.primaryEntryReg.ftz_ent_date) {
           sendable = true;
           nextProps.entryRegs.forEach((er) => {
             const invalidDets = [];
@@ -124,14 +133,15 @@ export default class SHFTZEntryDetail extends Component {
       }
       if (nextProps.primaryEntryReg.portion_enabled) {
         for (let i = 0; i < nextProps.entryRegs.length; i++) {
-          const nonCargono = nextProps.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
+          const nonCargono = nextProps.entryRegs[i].details.filter(det =>
+            !det.ftz_cargo_no).length !== 0;
           if (nonCargono) {
             newState.nonCargono = true;
             break;
           }
         }
       }
-      newState.reg = nextProps.entryRegs[0];
+      [newState.reg] = nextProps.entryRegs;
       newState.filingDetails = newState.reg.details;
       newState.view = 'splitted';
       this.setState(newState);
@@ -139,7 +149,7 @@ export default class SHFTZEntryDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleRefreshFtzCargo = () => {
-    const preEntrySeqNo = this.props.params.preEntrySeqNo;
+    const { preEntrySeqNo } = this.props.params;
     const asnNo = this.props.primaryEntryReg.asn_no;
     this.props.refreshEntryRegFtzCargos(asnNo, preEntrySeqNo).then((result) => {
       if (!result.error) {
@@ -179,11 +189,14 @@ export default class SHFTZEntryDetail extends Component {
     if (close) {
       notification.close('confirm-cargono');
     }
-    const primaryEntryReg = this.props.primaryEntryReg;
-    const preEntrySeqNo = this.props.params.preEntrySeqNo;
-    this.props.fileEntryRegs(primaryEntryReg.asn_no, preEntrySeqNo, this.props.whse.code).then((result) => {
+    const { primaryEntryReg, params: { preEntrySeqNo } } = this.props;
+    this.props.fileEntryRegs(
+      primaryEntryReg.asn_no, preEntrySeqNo,
+      this.props.whse.code
+    ).then((result) => {
       if (!result.error) {
-        const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === primaryEntryReg.ftz_ent_type)[0];
+        const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype =>
+          regtype.value === primaryEntryReg.ftz_ent_type)[0];
         this.props.loadEntryDetails({ preEntrySeqNo });
         if (result.data.errorMsg) {
           notification.warn({
@@ -261,13 +274,11 @@ export default class SHFTZEntryDetail extends Component {
       }));
       wb.Sheets[er.pre_ftz_ent_no] = XLSX.utils.json_to_sheet(csvData);
     });
-    const primaryEntryReg = this.props.primaryEntryReg;
+    const { primaryEntryReg } = this.props;
     FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), `进区凭单_${primaryEntryReg.cus_decl_no}.xlsx`);
   }
   handleQuery = () => {
-    const preEntrySeqNo = this.props.params.preEntrySeqNo;
-    const primaryEntryReg = this.props.primaryEntryReg;
-    const asnNo = primaryEntryReg.asn_no;
+    const { params: { preEntrySeqNo }, primaryEntryReg: { asn_no: asnNo } } = this.props;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     this.props.queryEntryRegInfos(asnNo, preEntrySeqNo, whseCode, ftzWhseCode).then((result) => {
@@ -300,8 +311,11 @@ export default class SHFTZEntryDetail extends Component {
     });
   }
   handleCancelReg = () => {
-    const preEntrySeqNo = this.props.params.preEntrySeqNo;
-    this.props.checkEntryRegStatus(preEntrySeqNo, CWM_SHFTZ_APIREG_STATUS.pending).then((result) => {
+    const { preEntrySeqNo } = this.props.params;
+    this.props.checkEntryRegStatus(
+      preEntrySeqNo,
+      CWM_SHFTZ_APIREG_STATUS.pending
+    ).then((result) => {
       if (result.error) {
         notification.error({
           message: '操作失败',
@@ -393,8 +407,8 @@ export default class SHFTZEntryDetail extends Component {
     this.setState({ splitNum: value });
   }
   handleRegSequenceSplit = () => {
-    const splitNum = this.state.splitNum;
-    const preEntrySeqNo = this.props.params.preEntrySeqNo;
+    const { splitNum } = this.state;
+    const { preEntrySeqNo } = this.props.params;
     this.props.splitCustomEntryDetails({ preEntrySeqNo, splitNum }).then((result) => {
       if (!result.error) {
         this.props.loadEntryDetails({ preEntrySeqNo });
@@ -531,11 +545,13 @@ export default class SHFTZEntryDetail extends Component {
     const {
       reg, alertInfo, splitNum, filingDetails,
     } = this.state;
-    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === primaryEntryReg.ftz_ent_type)[0];
+    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype =>
+      regtype.value === primaryEntryReg.ftz_ent_type)[0];
     const entryEditable = primaryEntryReg.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
-    const inbStatus = primaryEntryReg.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === primaryEntryReg.inbound_status)[0];
+    const inbStatus = primaryEntryReg.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status =>
+      status.value === primaryEntryReg.inbound_status)[0];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -543,7 +559,10 @@ export default class SHFTZEntryDetail extends Component {
       },
     };
     const tabList = [];
-    entryRegs.forEach((r, index) => tabList.push({ tab: r.ftz_ent_no || r.pre_ftz_ent_no, key: index }));
+    entryRegs.forEach((r, index) => tabList.push({
+      tab: r.ftz_ent_no || r.pre_ftz_ent_no,
+      key: index,
+    }));
     const stat = filingDetails && filingDetails.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,
@@ -553,12 +572,6 @@ export default class SHFTZEntryDetail extends Component {
       total_amount: 0,
       total_net_wt: 0,
     });
-    // const qtySplitPopover = (<span><InputNumber min={2} max={5} defaultValue={2} /><Button type="primary" style={{ marginLeft: 8 }}>确定</Button></span>);
-    // const movePopover = (<span>
-    //   <Select style={{ width: 240 }} value={reg.pre_entry_seq_no}>
-    //     {entryRegs.map(opt => <Option key={opt.pre_entry_seq_no}>{opt.ftz_ent_no || opt.pre_entry_seq_no}</Option>)}
-    //   </Select>
-    // </span>);
     return (
       <div>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
@@ -591,18 +604,24 @@ export default class SHFTZEntryDetail extends Component {
               <Button icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
             {this.state.nonCargono &&
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
-            { entryRegs.length === 1 && primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
-            <Popover
-              placement="bottom"
-              title="拆分数量"
-              content={<span>
-                <InputNumber min={2} max={entryRegs[0].details.length} value={splitNum} onChange={this.handleSplitNumber} />
-                <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
-              </span>}
-              trigger="click"
-            >
-              <Button disabled={entryRegs[0].details.length === 1}>拆分进区凭单</Button>
-            </Popover>}
+            { entryRegs.length === 1 &&
+                  primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
+                  <Popover
+                    placement="bottom"
+                    title="拆分数量"
+                    content={<span>
+                      <InputNumber
+                        min={2}
+                        max={entryRegs[0].details.length}
+                        value={splitNum}
+                        onChange={this.handleSplitNumber}
+                      />
+                      <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
+                    </span>}
+                    trigger="click"
+                  >
+                    <Button disabled={entryRegs[0].details.length === 1}>拆分进区凭单</Button>
+                  </Popover>}
             {primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单</Button>}
             {entryEditable && entryRegs.length === 1 &&
