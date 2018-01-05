@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Menu, Layout, Icon } from 'antd';
 import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
-import { MdIcon, Ikons } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
 import NavLink from 'client/components/NavLink';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
@@ -44,21 +44,21 @@ export default class CorpPack extends React.Component {
     if (hasPermission(privileges, { module: 'corp', feature: 'info' })) {
       corpMenu.push(<MenuItem key="corpsetting-1">
         <NavLink to="/corp/info">
-          <MdIcon mode="fontello" type="building" />{formatMsg(intl, 'corpInfo')}
+          <Logixon type="corp-o" />{formatMsg(intl, 'corpInfo')}
         </NavLink>
       </MenuItem>);
     }
     if (hasPermission(privileges, { module: 'corp', feature: 'personnel' })) {
       corpMenu.push(<MenuItem key="corpsetting-2">
         <NavLink to="/corp/members">
-          <Ikons type="users" />{formatMsg(intl, 'personnelUser')}
+          <Logixon type="group" />{formatMsg(intl, 'personnelUser')}
         </NavLink>
       </MenuItem>);
     }
     if (hasPermission(privileges, { module: 'corp', feature: 'role' })) {
       corpMenu.push(<MenuItem key="corpsetting-4">
         <NavLink to="/corp/role">
-          <MdIcon type="shield-check" />{formatMsg(intl, 'roleTitle')}
+          <Logixon type="security-o" />{formatMsg(intl, 'roleTitle')}
         </NavLink>
       </MenuItem>);
     }
@@ -82,7 +82,7 @@ export default class CorpPack extends React.Component {
             <Menu defaultSelectedKeys={['corpsetting-0']} defaultOpenKeys={['corpMenu', 'dataMenu']} mode="inline">
               <MenuItem key="corpsetting-0">
                 <NavLink to="/corp/overview">
-                  <MdIcon mode="fontello" type="gauge" />{formatMsg(intl, 'corpOverview')}
+                  <Logixon type="dashboard" />{formatMsg(intl, 'corpOverview')}
                 </NavLink>
               </MenuItem>
               <MenuItemGroup key="corpMenu" title="企业设置">

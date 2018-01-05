@@ -17,7 +17,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
-import { Logixon, MdIcon, Fontello } from 'client/components/FontIcon';
+import { Logixon, MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal, loadFormRequire } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
@@ -148,11 +148,11 @@ export default class DelegationList extends Component {
     fixed: 'left',
     render: (o, record) => {
       if (record.status === 0) {
-        return <Fontello type="circle" color="blue" />;
+        return <Logixon type="circle" color="blue" />;
       } else if (record.status === 1) {
-        return <Fontello type="circle" color="green" />;
+        return <Logixon type="circle" color="green" />;
       }
-      return <Fontello type="circle" color="gray" />;
+      return <Logixon type="circle" color="gray" />;
     },
   }, {
     title: this.msg('delgNo'),

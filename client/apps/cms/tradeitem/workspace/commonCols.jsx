@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Popover, Tooltip, Tag } from 'antd';
-import { Logixon, Fontello } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 
 export default function makeColumns({
   msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit,
@@ -253,9 +253,9 @@ export default function makeColumns({
       width: 80,
       render: (pass) => {
         if (pass === 'Y') {
-          return <Tooltip title="提交直接通过"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+          return <Tooltip title="提交直接通过"><span><Logixon type="circle" color="green" /></span></Tooltip>;
         }
-        return <Tooltip title="需人工审核"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        return <Tooltip title="需人工审核"><span><Logixon type="circle" color="gray" /></span></Tooltip>;
       },
     }, {
       title: '主库审核',
@@ -267,9 +267,9 @@ export default function makeColumns({
           master = false;
         }
         if (master) {
-          return <Tooltip title="可提交主库审核"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+          return <Tooltip title="可提交主库审核"><span><Logixon type="circle" color="green" /></span></Tooltip>;
         }
-        return <Tooltip title="只可提交本库"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        return <Tooltip title="只可提交本库"><span><Logixon type="circle" color="gray" /></span></Tooltip>;
       },
     });
   }

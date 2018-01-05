@@ -25,8 +25,8 @@ MdIcon.propTypes = {
   tagWrapped: PropTypes.bool,
 };
 
-export function Fontello(props) {
-  const { type, color, tagWrapped } = props;
+export function Logixon(props) {
+  const { type, tagWrapped, color } = props;
   let colorString = '#000';
   switch (color) {
     case 'blue':
@@ -44,34 +44,12 @@ export function Fontello(props) {
     default:
       colorString = '#d9d9d9';
   }
-  const icon = (<i className={`icon icon-fontello-${type}`} style={{ color: colorString }} />);
-  return tagWrapped ? <Tag>{icon}</Tag> : icon;
-}
-
-Fontello.propTypes = {
-  type: PropTypes.string.isRequired,
-  color: PropTypes.oneOf(['blue', 'green', 'orange', 'red', 'gray']),
-  tagWrapped: PropTypes.bool,
-};
-
-export function Ikons(props) {
-  const { type, tagWrapped } = props;
-  const icon = (<i className={`icon icon-ikons-${type}`} />);
-  return tagWrapped ? <Tag>{icon}</Tag> : icon;
-}
-
-Ikons.propTypes = {
-  type: PropTypes.string.isRequired,
-  tagWrapped: PropTypes.bool,
-};
-
-export function Logixon(props) {
-  const { type, tagWrapped } = props;
-  const icon = (<i className={`icon logixon icon-${type}`} {...props} />);
+  const icon = (<i className={`icon logixon icon-${type}`} style={{ color: colorString }} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 
 Logixon.propTypes = {
   type: PropTypes.string.isRequired,
+  color: PropTypes.oneOf(['blue', 'green', 'orange', 'red', 'gray']),
   tagWrapped: PropTypes.bool,
 };

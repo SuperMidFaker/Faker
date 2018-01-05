@@ -19,7 +19,7 @@ import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import { Fontello } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
@@ -231,11 +231,11 @@ export default class CustomsList extends Component {
     render: (o, record) => {
       if (record.status > CMS_DECL_STATUS.sent.value) {
         if (record.customs_inspect === 1) {
-          return <Tooltip title="报关单查验"><span><Fontello type="circle" color="red" /></span></Tooltip>;
+          return <Tooltip title="报关单查验"><span><Logixon type="circle" color="red" /></span></Tooltip>;
         } else if (record.customs_inspect === 2) {
-          return <Tooltip title="查验放行"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+          return <Tooltip title="查验放行"><span><Logixon type="circle" color="green" /></span></Tooltip>;
         }
-        return <Tooltip title="未查验"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        return <Tooltip title="未查验"><span><Logixon type="circle" color="gray" /></span></Tooltip>;
       }
       return null;
     },
