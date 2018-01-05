@@ -9,7 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { toggleApplyCertsModal } from 'common/reducers/cmsTradeitem';
-import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE } from 'common/constants';
+import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE, TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import ApplyCertsModal from '../modal/applyCertsModal';
 import messages from '../../../message.i18n';
@@ -23,7 +23,7 @@ function getFieldInits(formData) {
   if (formData) {
     ['cop_product_no', 'src_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'g_unit_1', 'g_unit_2', 'g_unit_3',
       'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
-      'currency', 'pre_classify_no', 'remark', 'appl_cert_code', 'appl_cert_name',
+      'currency', 'pre_classify_no', 'remark',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
@@ -37,6 +37,19 @@ function getFieldInits(formData) {
     ['pre_classify_no', 'remark'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
+    if (formData.appl_cert_code) {
+      const codes = formData.appl_cert_code.split(',');
+      let names = '';
+      codes.forEach((code) => {
+        const cert = TRADE_ITEM_APPLY_CERTS.find(ce => ce.app_cert_code === code);
+        if (!names) {
+          names += cert.app_cert_name;
+        } else {
+          names += `,${cert.app_cert_name}`;
+        }
+      });
+      init.appl_cert_name = names;
+    }
   }
   return init;
 }
