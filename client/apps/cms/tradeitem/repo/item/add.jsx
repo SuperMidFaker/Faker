@@ -61,7 +61,7 @@ export default class TradeItemAdd extends Component {
   render() {
     const { form, repo } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab="归类信息" key="master">
+    tabs.push(<TabPane tab={this.msg('tabClassification')} key="master">
       <ItemMasterPane action="create" form={form} itemData={{}} />
     </TabPane>);
     return (

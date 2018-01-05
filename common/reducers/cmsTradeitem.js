@@ -42,9 +42,10 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
   'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL', 'TOGGLE_CONFIRM_CHANGES_MODAL',
+  'TOGGLE_CONFIRM_FORK_MODAL',
   'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
-  'CHANGE_ITEM_MASTER',
+  'CHANGE_ITEM_MASTER', 'TOGGLE_ITEM_MASTER_ENABLED',
 ]);
 
 const initialState = {
@@ -121,7 +122,11 @@ const initialState = {
     visible: false,
     data: {},
   },
-  itemMasterChanged: false,
+  confirmForkModal: {
+    visible: false,
+    data: {},
+  },
+  itemMasterEnabled: false,
   itemMasterChanges: [],
 };
 
@@ -262,11 +267,24 @@ export default function reducer(state = initialState, action) {
           data: action.data,
         },
       };
+    case actionTypes.TOGGLE_CONFIRM_FORK_MODAL:
+      return {
+        ...state,
+        confirmForkModal: {
+          ...state.confirmForkModal,
+          visible: action.visible,
+          data: action.data,
+        },
+      };
     case actionTypes.CHANGE_ITEM_MASTER:
       return {
         ...state,
-        itemMasterChanged: action.changed,
-        itemMasterChanges: action.data,
+        itemMasterChanges: action.changes,
+      };
+    case actionTypes.TOGGLE_ITEM_MASTER_ENABLED:
+      return {
+        ...state,
+        itemMasterEnabled: action.enabled,
       };
     default:
       return state;
@@ -915,11 +933,25 @@ export function toggleConfirmChangesModal(visible, data = {}) {
   };
 }
 
-export function changeItemMaster(changed, values) {
+export function toggleConfirmForkModal(visible, data = {}) {
+  return {
+    type: actionTypes.TOGGLE_CONFIRM_FORK_MODAL,
+    visible,
+    data,
+  };
+}
+
+export function changeItemMaster(changes) {
   return {
     type: actionTypes.CHANGE_ITEM_MASTER,
-    changed,
-    data: values,
+    changes,
+  };
+}
+
+export function toggleItemMasterEnabled(enabled) {
+  return {
+    type: actionTypes.TOGGLE_ITEM_MASTER_ENABLED,
+    enabled,
   };
 }
 

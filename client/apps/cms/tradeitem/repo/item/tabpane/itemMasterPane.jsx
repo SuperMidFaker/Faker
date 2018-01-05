@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Button, Card, DatePicker, Form, Icon, Input, Select, Rate, Row, Col, message } from 'antd';
+import { Button, Card, DatePicker, Form, Icon, Input, Select, Rate, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
@@ -31,17 +31,6 @@ function getFieldInits(formData) {
       init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
     init.specialMark = formData.special_mark ? formData.special_mark.split('/') : [];
-    if (formData.srcNos && formData.srcNos.length > 0) {
-      init.src_product_no = `${formData.cop_product_no}_${formData.srcNos.length}`;
-      let num = 0;
-      for (let i = 0; i < formData.srcNos.length; i++) {
-        if (formData.srcNos[i] === init.src_product_no) {
-          num += 1;
-          init.src_product_no = `${formData.cop_product_no}_${formData.srcNos.length + num}`;
-          i = 0;
-        }
-      }
-    }
     ['pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
       init[fd] = !formData[fd] ? null : moment(formData[fd]);
     });
@@ -130,13 +119,6 @@ export default class ItemMasterPane extends React.Component {
   }
   handleCopNoChange = (e) => {
     this.props.form.setFieldsValue({ src_product_no: e.target.value });
-  }
-  handleSrcNoChange = (e) => {
-    this.props.itemData.srcNos.forEach((no) => {
-      if (no === e.target.value) {
-        message.error('该源标记号已存在', 5);
-      }
-    });
   }
   handleShowDeclElementModal = () => {
     const { form } = this.props;

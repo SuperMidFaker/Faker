@@ -118,9 +118,17 @@ const messages = defineMessages({
     id: 'cms.tradeitem.filter.classified',
     defaultMessage: '已归类',
   },
-  stageClassified: {
-    id: 'cms.tradeitem.stage.classified',
-    defaultMessage: '新来源归类区',
+  tabClassification: {
+    id: 'cms.tradeitem.tab.classification',
+    defaultMessage: '归类信息',
+  },
+  tabPermit: {
+    id: 'cms.tradeitem.tab.permit',
+    defaultMessage: '涉证资料',
+  },
+  tabHistory: {
+    id: 'cms.tradeitem.tab.history',
+    defaultMessage: '历史记录',
   },
   linkSlave: {
     id: 'cms.tradeitem.model.slave.link',

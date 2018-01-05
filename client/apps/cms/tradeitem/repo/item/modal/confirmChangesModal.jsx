@@ -17,6 +17,7 @@ const { TextArea } = Input;
 export default class ConfirmChangesModal extends Component {
   static propTypes = {
     onSave: PropTypes.func,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
   }
 
   handleCancel = () => {
@@ -27,7 +28,7 @@ export default class ConfirmChangesModal extends Component {
     this.props.toggleConfirmChangesModal(false);
   }
   render() {
-    const { visible, changes } = this.props;
+    const { visible, changes, form: { getFieldDecorator } } = this.props;
     const columns = [{
       title: '字段',
       dataIndex: 'field',
@@ -49,11 +50,13 @@ export default class ConfirmChangesModal extends Component {
         onOk={this.handleOk}
       >
         <Table size="small" columns={columns} dataSource={changes} rowKey="field" pagination={false} style={{ marginBottom: 24 }} />
-        <FormItem>
-          <TextArea placeholder="变更原因" autosize />
+        <FormItem label="备注">
+          {getFieldDecorator('remark', {
+          })(<TextArea placeholder="说明此次变更的原因" autosize={{ minRows: 1, maxRows: 4 }} />)}
         </FormItem>
         <FormItem>
-          <Checkbox>保留历史版本(仅用于保税库存出库申报)</Checkbox>
+          {getFieldDecorator('reserved', {
+          })(<Checkbox>保留历史版本(仅用于保税库存出库申报)</Checkbox>)}
         </FormItem>
       </Modal>
     );

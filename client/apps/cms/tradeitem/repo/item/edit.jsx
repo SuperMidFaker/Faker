@@ -6,7 +6,7 @@ import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import { loadTradeItem, saveRepoItem, toggleConfirmChangesModal, changeItemMaster } from 'common/reducers/cmsTradeitem';
+import { loadTradeItem, saveRepoItem, toggleConfirmChangesModal, changeItemMaster, toggleItemMasterEnabled } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import ItemMasterPane from './tabpane/itemMasterPane';
@@ -32,22 +32,26 @@ function fetchData({ dispatch, params }) {
   state => ({
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
-    itemMasterChanged: state.cmsTradeitem.itemMasterChanged,
-    itemMasterChanges: state.cmsTradeitem.itemMasterChanges,
+    itemMasterEnabled: state.cmsTradeitem.itemMasterEnabled,
     repo: state.cmsTradeitem.repo,
   }),
-  { saveRepoItem, toggleConfirmChangesModal, changeItemMaster }
+  {
+    saveRepoItem,
+    toggleConfirmChangesModal,
+    changeItemMaster,
+    toggleItemMasterEnabled,
+  }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create({ onValuesChange: (props, values) => props.changeItemMaster(true, values) })
+@Form.create({ onValuesChange: props => props.toggleItemMasterEnabled(true) })
 export default class TradeItemEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ validateFields: PropTypes.func }).isRequired,
-    itemData: PropTypes.shape({ id: PropTypes.number.isRequired }),
+    itemData: PropTypes.shape({ id: PropTypes.number }),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -87,7 +91,7 @@ export default class TradeItemEdit extends Component {
     if (changes.length === 0) {
       this.handleSave();
     } else {
-      this.props.changeItemMaster(true, changes);
+      this.props.changeItemMaster(changes);
       this.props.toggleConfirmChangesModal(true);
     }
   }
@@ -102,7 +106,7 @@ export default class TradeItemEdit extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
-            this.props.changeItemMaster(false, []);
+            this.props.toggleItemMasterEnabled(false);
             this.context.router.goBack();
             // this.context.router.push('/clearance/classification/tradeitem');
           }
@@ -111,22 +115,22 @@ export default class TradeItemEdit extends Component {
     });
   }
   handleCancel = () => {
-    this.props.changeItemMaster(false, []);
+    this.props.toggleItemMasterEnabled(false);
     this.context.router.goBack();
   }
 
   render() {
     const {
-      form, submitting, itemData, params, repo, itemMasterChanged,
+      form, submitting, itemData, params, repo, itemMasterEnabled,
     } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab="归类信息" key="master">
+    tabs.push(<TabPane tab={this.msg('tabClassification')} key="master">
       <ItemMasterPane action="edit" form={form} itemData={itemData} />
     </TabPane>);
-    tabs.push(<TabPane tab="涉证资料" key="permit">
+    tabs.push(<TabPane tab={this.msg('tabPermit')} key="permit">
       <ItemPermitPane fullscreen={this.state.fullscreen} itemId={params.id} />
     </TabPane>);
-    tabs.push(<TabPane tab="历史版本" key="history">
+    tabs.push(<TabPane tab={this.msg('tabHistory')} key="history">
       <ItemHistoryPane
         fullscreen={this.state.fullscreen}
         repoId={params.repoId}
@@ -153,7 +157,7 @@ export default class TradeItemEdit extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting} disabled={!itemMasterChanged}>
+            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting} disabled={!itemMasterEnabled}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>
@@ -161,7 +165,6 @@ export default class TradeItemEdit extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-
             onSizeChange={this.toggleFullscreen}
           >
             <Tabs defaultActiveKey="master">
@@ -169,7 +172,7 @@ export default class TradeItemEdit extends Component {
             </Tabs>
           </MagicCard>
         </Content>
-        <ConfirmChangesModal onSave={this.handleSave} />
+        <ConfirmChangesModal form={form} onSave={this.handleSave} />
       </Layout>
     );
   }

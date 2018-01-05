@@ -126,7 +126,7 @@ export default class RepoContent extends Component {
         <Popover content="归类主数据" placement="right">
           <Icon type="check-circle-o" className="text-success" />
         </Popover> :
-        <Popover content={`${record.cop_product_no}的归类分支数据(仅对保税库存出库申报有效)`} placement="right">
+        <Popover content={`分支标识:${record.src_product_no}`} placement="right">
           <Icon type="exclamation-circle-o" className="text-warning" />
         </Popover>);
     },
