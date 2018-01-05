@@ -113,11 +113,7 @@ export default class RepoContent extends Component {
     fixed: 'left',
     align: 'center',
     render: (o, record) => {
-      if (record.decl_status === 0) {
-        return (<Popover content="已禁用的归类历史数据" placement="right">
-          <Icon type="clock-circle-o" className="text-normal" />
-        </Popover>);
-      } else if (record.decl_status === 1) {
+      if (record.decl_status === 1) {
         return (<Popover content="可用于保税库存出库申报的归类历史数据" placement="right">
           <Icon type="clock-circle-o" className="text-info" />
         </Popover>);
@@ -157,12 +153,12 @@ export default class RepoContent extends Component {
     },
   }, {
     title: <Icon type="clock-circle-o" />,
-    dataIndex: 'history_count',
+    dataIndex: 'versioned_count',
     width: 40,
     align: 'center',
-    render: (history, row) => {
-      if (history > 0) {
-        return <Tooltip title="查看保留版本"><a onClick={() => this.handleViewHistory(row.cop_product_no)}>{history}</a></Tooltip>;
+    render: (versioned, row) => {
+      if (versioned > 0) {
+        return <Tooltip title="查看保留版本"><a onClick={() => this.handleViewVersions(row.cop_product_no)}>{versioned}</a></Tooltip>;
       }
       return null;
     },
@@ -330,14 +326,7 @@ export default class RepoContent extends Component {
             </span>
           );
         }
-        if (record.decl_status === 0) {
-          return (
-            <span>
-              <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
-              <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="play-circle-o" tooltip="启用" row={record} />
-            </span>
-          );
-        } else if (record.decl_status === 1) {
+        if (record.decl_status === 1) {
           return (
             <span>
               <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
@@ -382,9 +371,9 @@ export default class RepoContent extends Component {
     const filter = { ...this.props.listFilter, status: 'branch', search: productNo };
     this.handleItemListLoad(1, filter);
   }
-  handleViewHistory = (productNo) => {
+  handleViewVersions = (productNo) => {
     const filter = {
-      ...this.props.listFilter, status: 'history', decl_status: 'all', search: productNo,
+      ...this.props.listFilter, status: 'versioned', search: productNo,
     };
     this.handleItemListLoad(1, filter);
   }
@@ -464,17 +453,6 @@ export default class RepoContent extends Component {
     if (filter.status === 'master') {
       filter.search = '';
     }
-    if (filter.status === 'history') {
-      filter.decl_status = 'all';
-    }
-    this.handleItemListLoad(1, filter);
-    this.handleDeselectRows();
-  }
-  handleHistoryFilterChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.decl_status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, decl_status: ev.target.value };
     this.handleItemListLoad(1, filter);
     this.handleDeselectRows();
   }
@@ -544,31 +522,18 @@ export default class RepoContent extends Component {
           </Button>
         </Popconfirm>,
       ];
-      if (listFilter.status === 'history') {
-        if (listFilter.decl_status === 'versioned') {
-          bulkActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(selectedRows, 'disable')}>批量禁用</Button>);
-        } else if (listFilter.decl_status === 'disabled') {
-          bulkActions.push(<Button key="disabled" icon="play-circle-o" onClick={() => this.handleHistoryToggle(selectedRows, 'enable')}>批量启用</Button>);
-        }
+      if (listFilter.status === 'versioned') {
+        bulkActions.push(<Button key="version" icon="pause-circle-o" style={{ marginLeft: 8 }} onClick={() => this.handleHistoryToggle(selectedRows, 'disable')}>批量禁用</Button>);
       }
     }
     this.dataSource.remotes = tradeItemlist;
     const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={listFilter.search} key="searchbar" />];
-    if (listFilter.status === 'history') {
-      toolbarActions.push(<RadioGroup value={listFilter.decl_status} onChange={this.handleHistoryFilterChange} key="history" style={{ marginLeft: 8, marginRight: 8 }}>
-        <RadioButton value="all"> {this.msg('tradeItemHistoryAll')}</RadioButton>
-        <RadioButton value="versioned">{this.msg('tradeItemHistoryVersioned')}</RadioButton>
-        <RadioButton value="disabled">{this.msg('tradeItemHistoryDisabled')}</RadioButton>
-      </RadioGroup>);
-      if (listFilter.decl_status === 'versioned') {
-        toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
-      } else if (listFilter.decl_status === 'disabled') {
-        toolbarActions.push(<Button key="disabled" icon="play-circle-o" onClick={() => this.handleHistoryToggle(null, 'enable')}>全部启用</Button>);
-      }
+    if (listFilter.status === 'versioned') {
+      toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
     }
     let { columns } = this;
     if (listFilter.status !== 'master') {
-      columns = columns.filter(col => !(col.dataIndex === 'branch_count' || col.dataIndex === 'history_count'));
+      columns = columns.filter(col => !(col.dataIndex === 'branch_count' || col.dataIndex === 'versioned_count'));
     }
     let repoName = repo.owner_name;
     if (tenantId === repo.owner_tenant_id) {
@@ -597,7 +562,7 @@ export default class RepoContent extends Component {
               style={{ marginLeft: 8 }}
             >
               <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
-              <RadioButton value="history"><Icon type="clock-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
+              <RadioButton value="versioned"><Icon type="clock-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>

@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SAVE_REPOITM', 'SAVE_REPOITM_SUCCEED', 'SAVE_REPOITM_FAIL',
   'SAVE_REPOFKITM', 'SAVE_REPOFKITM_SUCCEED', 'SAVE_REPOFKITM_FAIL',
   'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'SWITCH_REPVK', 'SWITCH_REPVK_SUCCEED', 'SWITCH_REPVK_FAIL',
   'REPLICA_MASTERSLAVE', 'REPLICA_MASTERSLAVE_SUCCEED', 'REPLICA_MASTERSLAVE_FAIL',
   'LOAD_WSSTAT', 'LOAD_WSSTAT_SUCCEED', 'LOAD_WSSTAT_FAIL',
   'LOAD_WSTASKLIST', 'LOAD_WSTASKLIST_SUCCEED', 'LOAD_WSTASKLIST_FAIL',
@@ -180,6 +181,12 @@ export default function reducer(state = initialState, action) {
         ...state,
         repos: state.repos.map(rep =>
           (rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep)),
+      };
+    case actionTypes.SWITCH_REPVK_SUCCEED:
+      return {
+        ...state,
+        repos: state.repos.map(rep =>
+          (rep.id === action.data.repoId ? { ...rep, keep_version: action.data.keep } : rep)),
       };
     case actionTypes.LOAD_WSSTAT_SUCCEED:
       return { ...state, workspaceStat: action.result.data, wsStatReload: false };
@@ -573,21 +580,6 @@ export function comparedCancel(datas) {
   };
 }
 
-export function deleteTempData(id) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_TEMP_DATA,
-        actionTypes.DELETE_TEMP_DATA_SUCCEED,
-        actionTypes.DELETE_TEMP_DATA_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/compared/del',
-      method: 'post',
-      data: { id },
-    },
-  };
-}
-
 export function showLinkSlaveModal({ visible, masterRepo, slaves }) {
   return {
     type: actionTypes.SHOW_LINKSLAVE,
@@ -711,6 +703,21 @@ export function switchRepoMode(repoId) {
       endpoint: 'v1/cms/tradeitem/switch/repomode',
       method: 'post',
       data: { repoId },
+    },
+  };
+}
+
+export function switchRepoVersionKeep(repoId, keep) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SWITCH_REPVK,
+        actionTypes.SWITCH_REPVK_SUCCEED,
+        actionTypes.SWITCH_REPVK_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/switch/versionkeep',
+      method: 'post',
+      data: { repoId, keep },
     },
   };
 }
