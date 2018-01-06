@@ -14,7 +14,7 @@ import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { loadBusinessUnits } from 'common/reducers/cmsResources';
 import { format } from 'client/common/i18n/helpers';
 import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG,
-  CIQ_TRANSPORTS_TYPE, CIQ_TRADE_MODE, CIQ_ENT_QUALIFY_TYPE } from 'common/constants';
+  CIQ_TRANSPORTS_TYPE, CIQ_TRADE_MODE, CIQ_ENT_QUALIFY_TYPE, TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import { CiqCodeAutoCompSelect } from '../../common/form/headFormItems';
 import EntQualifyModal from '../modal/entQualifyModal';
@@ -288,6 +288,19 @@ export default class CiqDeclHeadPane extends React.Component {
       ioType, organizations, countries, worldPorts, chinaPorts, ciqDeclHead, form,
       form: { getFieldDecorator }, brokers, intl, businessUnits, customs,
     } = this.props;
+    if (ciqDeclHead.app_cert_code) {
+      const codes = ciqDeclHead.app_cert_code.split(',');
+      let names = '';
+      codes.forEach((code) => {
+        const cert = TRADE_ITEM_APPLY_CERTS.find(ce => ce.app_cert_code === code);
+        if (!names) {
+          names += cert.app_cert_name;
+        } else {
+          names += `,${cert.app_cert_name}`;
+        }
+      });
+      ciqDeclHead.app_cert_name = names;
+    }
     const { entQualif } = this.state;
     const uniqueCout = unique(countries);
     const uniqueOrg = unique(organizations);

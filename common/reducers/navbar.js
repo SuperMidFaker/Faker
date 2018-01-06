@@ -1,4 +1,5 @@
 import { createActionTypes } from 'client/common/redux-actions';
+
 const actionTypes = createActionTypes('@@welogix/navbar/', [
   'NAVB_SET_TITLE', 'NAVB_GOBACK',
 ]);
@@ -20,7 +21,7 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.NAVB_SET_TITLE: {
-      let stack = state.navTitle.stack;
+      let { stack } = state.navTitle;
       if (state.navTitle.depth === 3 && action.navInfo.depth === 3) {
         if (!state.backed) {
           stack++; // 页面回退时stack不变
@@ -31,7 +32,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, navTitle: { ...state.navTitle, ...action.navInfo, stack }, backed: false };
     }
     case actionTypes.NAVB_GOBACK: {
-      return { ...state, navTitle: { ...state.navTitle, stack: state.navTitle.stack - 1 }, backed: true };
+      return {
+        ...state,
+        navTitle: { ...state.navTitle, stack: state.navTitle.stack - 1 },
+        backed: true,
+      };
     }
     default:
       return state;

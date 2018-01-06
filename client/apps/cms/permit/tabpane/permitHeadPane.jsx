@@ -99,6 +99,32 @@ export default class PermitHeadPane extends Component {
   handleView = () => {
     window.open(this.state.permit_file);
   }
+  handleAvaUsageChange = (e) => {
+    const maxUsage = this.props.form.getFieldValue('max_usage');
+    if (!maxUsage) {
+      message.info('请先填写总次数');
+      return false;
+    }
+    if (Number(e.target.value) > Number(maxUsage)) {
+      message.info('剩余次数不能大于总次数');
+      return false;
+    }
+
+    return true;
+  }
+  handleAva = (e) => {
+    new Promise((resolve) => {
+      if (!this.handleAvaUsageChange(e)) {
+        resolve(false);
+      }
+    }).then((result) => {
+      if (!result) {
+        this.props.form.setFieldsValue({
+          ava_usage: '',
+        });
+      }
+    });
+  }
   render() {
     const {
       form: { getFieldDecorator }, action, clients, certParams, currentPermit,
@@ -121,17 +147,6 @@ export default class PermitHeadPane extends Component {
       },
       colon: false,
     };
-    const formItemSpan2Layout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
-      },
-      colon: false,
-    };
     const props = {
       action: `${API_ROOTS.default}v1/upload/img/`,
       multiple: false,
@@ -151,8 +166,8 @@ export default class PermitHeadPane extends Component {
       <FormPane fullscreen={this.props.fullscreen}>
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
-            <Col span={16}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('permitOwner')}>
+            <Col {...colSpan}>
+              <FormItem {...formItemLayout} label={this.msg('permitOwner')}>
                 {getFieldDecorator('owner_partner_id', {
                     rules: [{ required: true, message: '所属企业必选' }],
                     initialValue: action === 'edit' && currentPermit.owner_partner_id,
@@ -241,14 +256,14 @@ export default class PermitHeadPane extends Component {
               <FormItem {...formItemLayout} label={this.msg('maxUsage')}>
                 {getFieldDecorator('max_usage', {
                   initialValue: action === 'edit' ? currentPermit.max_usage : '',
-                  })(<Input disabled={!usageEnable} />)}
+                  })(<Input disabled={!usageEnable} type="number" />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('availUsage')}>
                 {getFieldDecorator('ava_usage', {
                   initialValue: action === 'edit' ? currentPermit.ava_usage : '',
-                  })(<Input disabled={!usageEnable} />)}
+                  })(<Input disabled={!usageEnable} onChange={this.handleAva} type="number" />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>

@@ -72,18 +72,13 @@ export default class ItemHistoryPane extends React.Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      if (record.decl_status === 0) {
-        return (
-          <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="check" label="启用" row={record} />
-        );
-      } else if (record.decl_status === 1) {
-        return (
-          <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="close" label="禁用" row={record} />
-        );
+      if (!record.item_id) {
+        return (<RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="check" label="保留" row={record} />);
       }
       return null;
     },
   }]
+  /*
   handleHistoryToggle = (itemIds, action) => {
     const { repoId, copProdNo } = this.props;
     this.props.toggleHistoryItemsDecl(repoId, itemIds, action).then((result) => {
@@ -91,7 +86,7 @@ export default class ItemHistoryPane extends React.Component {
         this.props.loadTradeItemHistory(repoId, copProdNo);
       }
     });
-  }
+  } */
   render() {
     const { history, fullscreen } = this.props;
     return (

@@ -183,8 +183,8 @@ const MODULE_CLEARANCE = {
       ],
     },
     {
-      id: 'permit',
-      text: 'featClearancePermit',
+      id: 'compliance',
+      text: 'featClearanceCompliance',
       actions: [
         {
           id: 'view',
@@ -204,25 +204,6 @@ const MODULE_CLEARANCE = {
     {
       id: 'analytics',
       text: 'featClearanceAnalytics',
-      actions: [
-        {
-          id: 'view',
-          text: 'featActionView',
-        }, {
-          id: 'edit',
-          text: 'featActionEdit',
-        }, {
-          id: 'create',
-          text: 'featActionCreate',
-        }, {
-          id: 'delete',
-          text: 'featActionDelete',
-        },
-      ],
-    },
-    {
-      id: 'classification',
-      text: 'featClearanceClassification',
       actions: [
         {
           id: 'view',

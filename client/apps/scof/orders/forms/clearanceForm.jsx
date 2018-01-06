@@ -6,13 +6,13 @@ import { TRANS_MODE, WRAP_TYPE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constant
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { Ikons } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const InputGroup = Input.Group;
 
 @injectIntl
@@ -100,11 +100,11 @@ export default class ClearanceForm extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
     };
-    const node = formData.node;
+    const { node } = formData;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
-    const iconType = node.kind === 'export' ? 'logout' : 'login';
+    // const iconType = node.kind === 'export' ? 'logout' : 'login';
     return (
-      <Card title={<Ikons type={iconType} />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} >
+      <Card title={<Logixon type={node.kind} />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} >
         <Row style={{ marginBottom: 8 }}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
@@ -117,7 +117,8 @@ export default class ClearanceForm extends Component {
             <FormItem label={this.msg('declCustoms')} {...formItemLayout}>
               <Select showSearch value={node.decl_port} onChange={value => this.handleChange('decl_port', value)}>
                 {
-                  formRequires.declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
+                  formRequires.declPorts.map(dp =>
+                    <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
                 }
               </Select>
             </FormItem>
@@ -126,7 +127,8 @@ export default class ClearanceForm extends Component {
             <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
               <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
                 {
-                  cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
+                  cmsQuotes.map(cq =>
+                    <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
                 }
               </Select>
             </FormItem>

@@ -7,10 +7,11 @@ import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import { loadWorkspaceItems, submitAudit } from 'common/reducers/cmsTradeitem';
+import { loadWorkspaceItems, submitAudit, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import ModuleMenu from '../menu';
+import ItemDiffModal from './modal/itemDiffModal';
 import WsItemExportButton from './exportButton';
 import makeColumns from './commonCols';
 import { formatMsg } from '../message.i18n';
@@ -44,7 +45,7 @@ const { Option } = Select;
     listFilter: state.cmsTradeitem.workspaceListFilter,
     invalidStat: state.cmsTradeitem.workspaceStat.invalid,
   }),
-  { loadWorkspaceItems, submitAudit }
+  { loadWorkspaceItems, submitAudit, toggleItemDiffModal }
 )
 @connectNav({
   depth: 2,
@@ -74,15 +75,19 @@ export default class InvalidItemsList extends React.Component {
   }).concat([{
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 140,
     fixed: 'right',
     render: (_, record) => (<span>
       <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
+      <RowAction onClick={this.handleItemDiff} icon="swap" tooltip={this.msg('diff')} row={record} />
     </span>),
   }])
   handleItemEdit = (record) => {
     const link = `/clearance/tradeitem/workspace/item/${record.id}`;
     this.context.router.push(link);
+  }
+  handleItemDiff = (record) => {
+    this.props.toggleItemDiffModal(true, record);
   }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, name: value };
@@ -141,9 +146,9 @@ export default class InvalidItemsList extends React.Component {
             current: 1,
             filter: JSON.stringify(this.props.listFilter),
           });
-          notification.info({ title: '提示', description: '归类已提交审核' });
+          notification.success({ message: '操作成功', description: '已提交至待审核' });
         } else if (result.data.feedback === 'noop') {
-          notification.info({ title: '提示', description: '没有归类可提交主库审核' });
+          notification.info({ message: '提示', description: '暂无已解决的失效归类项目可提交' });
         }
       }
     });
@@ -184,7 +189,7 @@ export default class InvalidItemsList extends React.Component {
       <Select
         showSearch
         placeholder="所属归类库"
-        style={{ width: 160 }}
+        style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}
@@ -238,6 +243,7 @@ export default class InvalidItemsList extends React.Component {
               locale={{ emptyText: '当前没有失效的商品归类' }}
             />
           </Content>
+          <ItemDiffModal />
         </Layout>
       </Layout>
     );

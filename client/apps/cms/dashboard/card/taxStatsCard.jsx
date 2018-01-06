@@ -6,13 +6,13 @@ import { Card, DatePicker, Select } from 'antd';
 import moment from 'moment';
 import currencyFormatter from 'currency-formatter';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadCmsTaxStats } from 'common/reducers/cmsDashboard';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const RangePicker = DatePicker.RangePicker;
-const Option = Select.Option;
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   const firstDay = new Date();
@@ -42,7 +42,7 @@ export default class TaxStatsCard extends Component {
     taxStats: PropTypes.object.isRequired,
   }
   onDateChange = (value, dateString) => {
-    const clientView = this.props.taxStats.clientView;
+    const { clientView } = this.props.taxStats;
     this.props.loadCmsTaxStats({
       tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView,
     });
@@ -73,18 +73,28 @@ export default class TaxStatsCard extends Component {
     }].concat(this.props.clients);
     const datePicker = (
       <div>
-        <Select showSearch optionFilterProp="children" style={{ width: 160 }}
-          onChange={this.handleClientSelectChange} defaultValue={-1}
-          dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+        <Select
+          showSearch
+          optionFilterProp="children"
+          style={{ width: 160 }}
+          onChange={this.handleClientSelectChange}
+          defaultValue={-1}
+          dropdownMatchSelectWidth={false}
+          dropdownStyle={{ width: 360 }}
         >
-          {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+          {clients.map(data => (<Option
+            key={data.partner_id}
+            value={data.partner_id}
             search={`${data.partner_code}${data.name}`}
           >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
           </Option>))}
         </Select>
-        <RangePicker style={{ marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
+        <RangePicker
+          style={{ width: 256, marginLeft: 8 }}
+          value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-          onChange={this.onDateChange} allowClear={false}
+          onChange={this.onDateChange}
+          allowClear={false}
         />
       </div>);
     return (

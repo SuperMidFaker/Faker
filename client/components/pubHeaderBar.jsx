@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
 import { Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { logout } from 'common/reducers/account';
+import { goBackNav } from 'common/reducers/navbar';
+import { format } from 'client/common/i18n/helpers';
 import NavLink from './NavLink';
 import { MdIcon } from './FontIcon';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from '../../common/reducers/preference';
 import { showActivitiesDock } from '../../common/reducers/activities';
-import { logout } from 'common/reducers/account';
-import { goBackNav } from 'common/reducers/navbar';
-import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import './HeaderNavBar/index.less';
 
@@ -29,32 +29,16 @@ const formatMsg = format(messages);
 )
 export default class PubHeaderBar extends React.Component {
   static propTypes = {
-    compact: PropTypes.bool,
     intl: intlShape.isRequired,
     navTitle: PropTypes.shape({
       depth: PropTypes.number.isRequired,
       stack: PropTypes.number.isRequired,
       moduleName: PropTypes.string,
     }).isRequired,
-    avatar: PropTypes.string,
-    name: PropTypes.string,
-    loginId: PropTypes.number.isRequired,
-    locale: PropTypes.oneOf(['en', 'zh']),
-    changeUserLocale: PropTypes.func.isRequired,
-    loadTranslation: PropTypes.func.isRequired,
-    logout: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: routerShape.isRequired,
   }
-  static defaultProps = {
-    compact: false,
-  }
-  state = {
-    visible: false,
-    userPopoverVisible: false,
-  }
-
   handleGoDepth2 = () => {
     this.context.router.go(-this.props.navTitle.stack);
   }
@@ -68,9 +52,7 @@ export default class PubHeaderBar extends React.Component {
     const { corpLogo, corpName, navTitle } = this.props;
 
     let brandNav = (<NavLink to="/" className="navbar-brand" />);
-    if (navTitle.depth === 1) {
-
-    } else if (navTitle.depth === 2) {
+    if (navTitle.depth === 2) {
       brandNav = (
         <NavLink to="/" className="navbar-toggle">
           <MdIcon type="home" />

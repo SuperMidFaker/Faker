@@ -11,7 +11,7 @@ import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGrap
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
 import AddTriggerModal from './panel/compose/addTriggerModal';
-import { MdIcon, Ikons, Logixon } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -121,7 +121,11 @@ export default class FlowDesigner extends React.Component {
               text: item.get('model').name,
             }));
           return (
-            <EditableCell type="select" options={nodes} value={node} placeholder="选择节点"
+            <EditableCell
+              type="select"
+              options={nodes}
+              value={node}
+              placeholder="选择节点"
               onSave={nodeId => this.handleTrackNodeChange(nodeId, row.field)}
             />);
         }
@@ -157,9 +161,9 @@ export default class FlowDesigner extends React.Component {
       terminal: 'black',
     };
     this.graph.node().label('name', name => name);
-    this.graph.node().size('kind', kind => kind === 'terminal' ? 20 : [100, 50]);
+    this.graph.node().size('kind', kind => (kind === 'terminal' ? 20 : [100, 50]));
     this.graph.node().color('kind', kind => nodeColorMap[kind]);
-    this.graph.node().shape('kind', kind => kind === 'terminal' ? 'circle' : 'rect');
+    this.graph.node().shape('kind', kind => (kind === 'terminal' ? 'circle' : 'rect'));
     this.graph.edge().shape('', () => 'smoothArrow');
     const data = {
       nodes: this.props.flowGraph.nodes.map(node => ({ ...node, actions: [] })),
@@ -215,9 +219,8 @@ export default class FlowDesigner extends React.Component {
           const dataSource = this.state.trackDataSource.map((ds) => {
             if (ds.module === fieldType) {
               return { ...ds, node: nodeId };
-            } else {
-              return ds;
             }
+            return ds;
           });
           this.setState({ trackDataSource: dataSource });
         }
@@ -525,12 +528,12 @@ export default class FlowDesigner extends React.Component {
   }
   renderGraphToolbar() {
     return (<RadioGroup onChange={this.handleAddToolbarNode}>
-      <RadioButton value="nodeimport"><Tooltip title={`添加${this.msg('flowNodeImport')}节点`}><span><Ikons type="login" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodeexport"><Tooltip title={`添加${this.msg('flowNodeExport')}节点`}><span><Ikons type="logout" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodetms"><Tooltip title={`添加${this.msg('flowNodeTMS')}节点`}><span><MdIcon type="truck" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeimport"><Tooltip title={`添加${this.msg('flowNodeImport')}节点`}><span><Logixon type="import" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeexport"><Tooltip title={`添加${this.msg('flowNodeExport')}节点`}><span><Logixon type="export" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodetms"><Tooltip title={`添加${this.msg('flowNodeTMS')}节点`}><span><Logixon type="truck" /></span></Tooltip></RadioButton>
       <RadioButton value="nodecwmrec"><Tooltip title={`添加${this.msg('flowNodeCWMRec')}节点`}><span><Logixon type="receiving" /></span></Tooltip></RadioButton>
       <RadioButton value="nodecwmship"><Tooltip title={`添加${this.msg('flowNodeCWMShip')}节点`}><span><Logixon type="shipping" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodeterminal"><Tooltip title={`添加${this.msg('flowNodeTerminal')}节点`}><span><MdIcon type="dot-circle" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodeterminal"><Tooltip title={`添加${this.msg('flowNodeTerminal')}节点`}><span><Logixon type="end" /></span></Tooltip></RadioButton>
     </RadioGroup>
     );
   }
@@ -551,7 +554,8 @@ export default class FlowDesigner extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>}
             <ButtonToggle
-              iconOn="menu-fold" iconOff="menu-unfold"
+              iconOn="menu-fold"
+              iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />
@@ -560,14 +564,17 @@ export default class FlowDesigner extends React.Component {
                 {this.msg('saveFlow')}
               </Button>
               <ButtonToggle
-                iconOn="setting" iconOff="setting"
+                iconOn="setting"
+                iconOff="setting"
                 onClick={this.toggleRightSider}
               />
             </div>
           </Header>
           <Content className="main-content">
             <Spin spinning={this.props.graphLoading}>
-              <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }}
+              <Card
+                title={this.msg('flowRelationGraph')}
+                bodyStyle={{ padding: 0, height: 240 }}
                 extra={<div className="toolbar-right">
                   {this.renderGraphToolbar()}
                   <Button icon="swap-right" onClick={this.handleAddEdge}>
@@ -585,26 +592,42 @@ export default class FlowDesigner extends React.Component {
                 ]}
                 >
                   {NodePanel && activeItem.get('type') === 'node' &&
-                  <NodePanel onFormInit={this.handlePanelForm} node={activeItem} graph={this.graph}
+                  <NodePanel
+                    onFormInit={this.handlePanelForm}
+                    node={activeItem}
+                    graph={this.graph}
                     key={activeItem.get('model').kind}
                   />
                 }
                   {activeItem.get('type') === 'edge' &&
-                  <FlowEdgePanel model={activeItem.get('model')} source={activeItem.get('source').get('model')}
-                    target={activeItem.get('target').get('model')} onAdd={this.handleCondAdd} onUpdate={this.handleCondUpdate}
-                    onDel={this.handleCondDel} key="edge"
+                  <FlowEdgePanel
+                    model={activeItem.get('model')}
+                    source={activeItem.get('source').get('model')}
+                    target={activeItem.get('target').get('model')}
+                    onAdd={this.handleCondAdd}
+                    onUpdate={this.handleCondUpdate}
+                    onDel={this.handleCondDel}
+                    key="edge"
                   />
                 }
                 </QueueAnim>
               }
-              <AddTriggerModal onModalOK={this.handleTriggerModalChange} kind={activeItem && activeItem.get('model').kind}
+              <AddTriggerModal
+                onModalOK={this.handleTriggerModalChange}
+                kind={activeItem && activeItem.get('model').kind}
                 model={activeItem && activeItem.get('model')}
               />
             </Spin>
           </Content>
         </Layout>
-        <Sider trigger={null} defaultCollapsed collapsible collapsed={this.state.rightSidercollapsed}
-          width={480} collapsedWidth={0} className="right-sider"
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSidercollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
         >
           <div className="right-sider-panel">
             <div className="panel-header">
@@ -618,8 +641,12 @@ export default class FlowDesigner extends React.Component {
                       <Option key={data.id} value={data.id}>{data.name}</Option>))}
                   </Select>
                 </FormItem>
-                <Table columns={this.trackingColumns} bordered={false} dataSource={this.state.trackDataSource}
-                  rowKey="field" scroll={{ y: 400 }}
+                <Table
+                  columns={this.trackingColumns}
+                  bordered={false}
+                  dataSource={this.state.trackDataSource}
+                  rowKey="field"
+                  scroll={{ y: 400 }}
                 />
               </Panel>
               <Panel header="更多" key="more">

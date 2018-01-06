@@ -5,24 +5,25 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Breadcrumb, Layout, Select, Icon, Tooltip, message } from 'antd';
-import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
+import { CWM_MOVEMENT_TYPE } from 'common/constants';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Fontello } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 import { openMovementModal, loadMovements, cancelMovement } from 'common/reducers/cwmMovement';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import MovementModal from './modal/movementModal';
-import PageHeader from 'client/components/PageHeader';
 import messages from '../message.i18n';
-import { CWM_MOVEMENT_TYPE } from 'common/constants';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   dispatch(loadMovements({
@@ -62,7 +63,6 @@ export default class MovementList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
@@ -94,9 +94,9 @@ export default class MovementList extends React.Component {
     width: 200,
     render: (o, record) => {
       if (record.isdone === 1) {
-        return <Fontello type="circle" color="green" />;
+        return <Logixon type="circle" color="green" />;
       }
-      return <Fontello type="circle" color="gray" />;
+      return <Logixon type="circle" color="gray" />;
     },
   }, {
     title: '操作模式',
@@ -249,7 +249,10 @@ export default class MovementList extends React.Component {
               <Breadcrumb.Item>
                 <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                    whses.map(warehouse => (<Option
+                      value={warehouse.code}
+                      key={warehouse.code}
+                    >{warehouse.name}</Option>))
                   }
                 </Select>
               </Breadcrumb.Item>

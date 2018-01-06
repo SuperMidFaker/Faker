@@ -4,17 +4,18 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, message } from 'antd';
+import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, Tooltip, message } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl } from 'common/reducers/cmsTradeitem';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
+import ItemDiffModal from '../workspace/modal/itemDiffModal';
 
 import { formatMsg } from '../message.i18n';
 
@@ -56,6 +57,7 @@ const { Option } = Select;
     getElementByHscode,
     showDeclElementsModal,
     toggleHistoryItemsDecl,
+    toggleItemDiffModal,
   }
 )
 @connectNav({
@@ -76,7 +78,6 @@ export default class RepoContent extends Component {
   state = {
     selectedRowKeys: [],
     linkedSlaves: [],
-    searchVal: '',
     masterReplica: {
       source: '',
       slave: null,
@@ -112,20 +113,16 @@ export default class RepoContent extends Component {
     fixed: 'left',
     align: 'center',
     render: (o, record) => {
-      if (record.decl_status === 0) {
-        return (<Popover content="已禁用的归类历史数据" placement="right">
-          <Icon type="clock-circle-o" className="text-normal" />
-        </Popover>);
-      } else if (record.decl_status === 1) {
+      if (record.decl_status === 1) {
         return (<Popover content="可用于保税库存出库申报的归类历史数据" placement="right">
           <Icon type="clock-circle-o" className="text-info" />
         </Popover>);
       }
-      return (record.cop_product_no === record.src_product_no || !record.src_product_no ?
+      return (!record.stage ?
         <Popover content="归类主数据" placement="right">
           <Icon type="check-circle-o" className="text-success" />
         </Popover> :
-        <Popover content={`${record.cop_product_no}的归类分支数据(仅对保税库存出库申报有效)`} placement="right">
+        <Popover content={`分支标识:${record.src_product_no}`} placement="right">
           <Icon type="exclamation-circle-o" className="text-warning" />
         </Popover>);
     },
@@ -138,15 +135,33 @@ export default class RepoContent extends Component {
     title: this.msg('itemType'),
     dataIndex: 'item_type',
     width: 60,
-    render: o => (o === 'FP' ? '成品' : '料件'),
+    render: o => (o === 'FP' ? <Tag>成品</Tag> : <Tag>料件</Tag>),
   }, {
     title: this.msg('enName'),
     dataIndex: 'en_name',
     width: 200,
   }, {
-    title: this.msg('copUOM'),
-    dataIndex: 'cop_uom',
-    width: 120,
+    title: <Icon type="exclamation-circle-o" />,
+    dataIndex: 'branch_count',
+    width: 40,
+    align: 'center',
+    render: (branch, row) => {
+      if (branch > 0) {
+        return <Tooltip title="查看分支版本"><a onClick={() => this.handleViewBranch(row.cop_product_no)}>{branch}</a></Tooltip>;
+      }
+      return null;
+    },
+  }, {
+    title: <Icon type="clock-circle-o" />,
+    dataIndex: 'versioned_count',
+    width: 40,
+    align: 'center',
+    render: (versioned, row) => {
+      if (versioned > 0) {
+        return <Tooltip title="查看保留版本"><a onClick={() => this.handleViewVersions(row.cop_product_no)}>{versioned}</a></Tooltip>;
+      }
+      return null;
+    },
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
@@ -165,6 +180,7 @@ export default class RepoContent extends Component {
     title: this.msg('gUnit1'),
     dataIndex: 'g_unit_1',
     width: 100,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -174,6 +190,7 @@ export default class RepoContent extends Component {
     title: this.msg('gUnit2'),
     dataIndex: 'g_unit_2',
     width: 100,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -183,6 +200,7 @@ export default class RepoContent extends Component {
     title: this.msg('gUnit3'),
     dataIndex: 'g_unit_3',
     width: 100,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -192,6 +210,7 @@ export default class RepoContent extends Component {
     title: this.msg('unit1'),
     dataIndex: 'unit_1',
     width: 130,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -201,6 +220,7 @@ export default class RepoContent extends Component {
     title: this.msg('unit2'),
     dataIndex: 'unit_2',
     width: 130,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -214,6 +234,7 @@ export default class RepoContent extends Component {
     title: this.msg('fixedUnit'),
     dataIndex: 'fixed_unit',
     width: 130,
+    align: 'center',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
@@ -305,17 +326,19 @@ export default class RepoContent extends Component {
             </span>
           );
         }
-        if (record.decl_status === 0) {
+        if (record.decl_status === 1) {
           return (
-            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'enable')} icon="play-circle-o" label="启用" row={record} />
-          );
-        } else if (record.decl_status === 1) {
-          return (
-            <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="pause-circle-o" label="禁用" row={record} />
+            <span>
+              <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
+              <RowAction onClick={() => this.handleHistoryToggle([record.id], 'disable')} icon="pause-circle-o" tooltip="禁用" row={record} />
+            </span>
           );
         }
         return (
-          <RowAction confirm="确定删除?" onConfirm={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
+          <span>
+            <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
+            <RowAction confirm="确定删除?" onConfirm={this.handleItemDelete} icon="delete" tooltip={this.msg('delete')} row={record} />
+          </span>
         );
       }
       return <span />;
@@ -337,7 +360,6 @@ export default class RepoContent extends Component {
         repoId: this.props.params.repoId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
-        searchText: this.props.tradeItemlist.searchText,
       };
       const filter = this.props.listFilter;
       params.filter = JSON.stringify(filter);
@@ -345,6 +367,16 @@ export default class RepoContent extends Component {
     },
     remotes: this.props.tradeItemlist,
   })
+  handleViewBranch = (productNo) => {
+    const filter = { ...this.props.listFilter, status: 'branch', search: productNo };
+    this.handleItemListLoad(1, filter);
+  }
+  handleViewVersions = (productNo) => {
+    const filter = {
+      ...this.props.listFilter, status: 'versioned', search: productNo,
+    };
+    this.handleItemListLoad(1, filter);
+  }
   handleItemAdd = () => {
     const { params: { repoId } } = this.props;
     const link = `/clearance/tradeitem/repo/${repoId}/item/add`;
@@ -369,14 +401,16 @@ export default class RepoContent extends Component {
       }
     });
   }
-  handleItemListLoad = (currentPage, filter, search) => {
-    const { listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
+  handleItemDiff = (record) => {
+    this.props.toggleItemDiffModal(true, record);
+  }
+  handleItemListLoad = (currentPage, filter) => {
+    const { listFilter, tradeItemlist: { pageSize, current } } = this.props;
     this.props.loadTradeItems({
       repoId: this.props.params.repoId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
-      searchText: search !== undefined ? search : searchText,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -385,7 +419,9 @@ export default class RepoContent extends Component {
   }
   handleShowDeclElementModal = (record) => {
     this.props.getElementByHscode(record.hscode).then((result) => {
-      if (!result.error) {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
         this.props.showDeclElementsModal(
           result.data.declared_elements,
           record.id, record.g_model,
@@ -414,17 +450,9 @@ export default class RepoContent extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    if (filter.status === 'history') {
-      filter.decl_status = 'all';
+    if (filter.status === 'master') {
+      filter.search = '';
     }
-    this.handleItemListLoad(1, filter);
-    this.handleDeselectRows();
-  }
-  handleHistoryFilterChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.decl_status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, decl_status: ev.target.value };
     this.handleItemListLoad(1, filter);
     this.handleDeselectRows();
   }
@@ -432,8 +460,8 @@ export default class RepoContent extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (value) => {
-    this.setState({ searchVal: value });
-    this.handleItemListLoad(1, null, value);
+    const filter = { ...this.props.listFilter, search: value };
+    this.handleItemListLoad(1, filter);
   }
   handleHistoryToggle = (itemIds, action) => {
     const { params } = this.props;
@@ -477,7 +505,7 @@ export default class RepoContent extends Component {
     const {
       tradeItemlist, repo, listFilter, submitting, tenantId,
     } = this.props;
-    const { linkedSlaves, searchVal } = this.state;
+    const { linkedSlaves } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -494,27 +522,18 @@ export default class RepoContent extends Component {
           </Button>
         </Popconfirm>,
       ];
-      if (listFilter.status === 'history') {
-        if (listFilter.decl_status === 'versioned') {
-          bulkActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(selectedRows, 'disable')}>批量禁用</Button>);
-        } else if (listFilter.decl_status === 'disabled') {
-          bulkActions.push(<Button key="disabled" icon="play-circle-o" onClick={() => this.handleHistoryToggle(selectedRows, 'enable')}>批量启用</Button>);
-        }
+      if (listFilter.status === 'versioned') {
+        bulkActions.push(<Button key="version" icon="pause-circle-o" style={{ marginLeft: 8 }} onClick={() => this.handleHistoryToggle(selectedRows, 'disable')}>批量禁用</Button>);
       }
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={searchVal} key="searchbar" />];
-    if (listFilter.status === 'history') {
-      toolbarActions.push(<RadioGroup value={listFilter.decl_status} onChange={this.handleHistoryFilterChange} key="history" style={{ marginLeft: 8, marginRight: 8 }}>
-        <RadioButton value="all"> {this.msg('tradeItemHistoryAll')}</RadioButton>
-        <RadioButton value="versioned">{this.msg('tradeItemHistoryVersioned')}</RadioButton>
-        <RadioButton value="disabled">{this.msg('tradeItemHistoryDisabled')}</RadioButton>
-      </RadioGroup>);
-      if (listFilter.decl_status === 'versioned') {
-        toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
-      } else if (listFilter.decl_status === 'disabled') {
-        toolbarActions.push(<Button key="disabled" icon="play-circle-o" onClick={() => this.handleHistoryToggle(null, 'enable')}>全部启用</Button>);
-      }
+    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={listFilter.search} key="searchbar" />];
+    if (listFilter.status === 'versioned') {
+      toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
+    }
+    let { columns } = this;
+    if (listFilter.status !== 'master') {
+      columns = columns.filter(col => !(col.dataIndex === 'branch_count' || col.dataIndex === 'versioned_count'));
     }
     let repoName = repo.owner_name;
     if (tenantId === repo.owner_tenant_id) {
@@ -543,7 +562,7 @@ export default class RepoContent extends Component {
               style={{ marginLeft: 8 }}
             >
               <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
-              <RadioButton value="history"><Icon type="clock-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
+              <RadioButton value="versioned"><Icon type="clock-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
@@ -589,10 +608,11 @@ export default class RepoContent extends Component {
             handleDeselectRows={this.handleDeselectRows}
             loading={this.props.tradeItemsLoading}
             rowKey="id"
-            columns={this.columns}
+            columns={columns}
             dataSource={this.dataSource}
           />
           <DeclElementsModal onOk={null} />
+          <ItemDiffModal />
         </Content>
       </Layout>
     );

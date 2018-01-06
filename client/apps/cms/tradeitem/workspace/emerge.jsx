@@ -60,9 +60,9 @@ export default class NewItemsList extends React.Component {
             filter: JSON.stringify(this.state.filter),
           });
           this.setState({ filter });
-          notification.info({ title: '提示', description: '归类已提交审核' });
+          notification.success({ message: '操作成功', description: '已提交至本库待审核' });
         } else if (result.data.feedback === 'noop') {
-          notification.info({ title: '提示', description: '没有归类可提交审核' });
+          notification.info({ message: '提示', description: '暂无已完成归类的新商品归类可提交' });
         }
       }
     });
@@ -78,9 +78,9 @@ export default class NewItemsList extends React.Component {
             filter: JSON.stringify(this.state.filter),
           });
           this.setState({ filter });
-          notification.info({ title: '提示', description: '归类已提交审核' });
+          notification.success({ message: '操作成功', description: '已提交至主库待审核' });
         } else if (result.data.feedback === 'noop') {
-          notification.info({ title: '提示', description: '没有归类可提交主库审核' });
+          notification.info({ message: '提示', description: '暂无已完成归类的新商品归类可提交' });
         }
       }
     });

@@ -3,31 +3,19 @@ import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 
 export function MdIcon(props) {
-  const { mode, type, tagWrapped } = props;
-  let icon = '';
-  switch (mode) {
-    case 'ikons':
-      icon = (<i className={`icon icon-ikons-${type}`} />);
-      break;
-    case 'fontello':
-      icon = (<i className={`icon icon-fontello-${type}`} />);
-      break;
-    default:
-      icon = (<i className={`zmdi zmdi-${type}`} />);
-      break;
-  }
+  const { type, tagWrapped } = props;
+  const icon = (<i className={`zmdi zmdi-${type}`} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 
 MdIcon.propTypes = {
   type: PropTypes.string.isRequired,
-  mode: PropTypes.string,
   tagWrapped: PropTypes.bool,
 };
 
-export function Fontello(props) {
-  const { type, color, tagWrapped } = props;
-  let colorString = '#000';
+export function Logixon(props) {
+  const { type, tagWrapped, color } = props;
+  let colorString = null;
   switch (color) {
     case 'blue':
       colorString = '#108ee9';
@@ -41,37 +29,19 @@ export function Fontello(props) {
     case 'red':
       colorString = '#f04134';
       break;
-    default:
+    case 'gray':
       colorString = '#d9d9d9';
+      break;
+    default:
+      break;
   }
-  const icon = (<i className={`icon icon-fontello-${type}`} style={{ color: colorString }} />);
-  return tagWrapped ? <Tag>{icon}</Tag> : icon;
-}
-
-Fontello.propTypes = {
-  type: PropTypes.string.isRequired,
-  color: PropTypes.oneOf(['blue', 'green', 'orange', 'red', 'gray']),
-  tagWrapped: PropTypes.bool,
-};
-
-export function Ikons(props) {
-  const { type, tagWrapped } = props;
-  const icon = (<i className={`icon icon-ikons-${type}`} />);
-  return tagWrapped ? <Tag>{icon}</Tag> : icon;
-}
-
-Ikons.propTypes = {
-  type: PropTypes.string.isRequired,
-  tagWrapped: PropTypes.bool,
-};
-
-export function Logixon(props) {
-  const { type, tagWrapped } = props;
-  const icon = (<i className={`icon logixon icon-${type}`} {...props} />);
+  const style = colorString ? { ...props.style, color: colorString } : { ...props.style };
+  const icon = (<i className={`icon logixon icon-${type}`} style={style} />);
   return tagWrapped ? <Tag>{icon}</Tag> : icon;
 }
 
 Logixon.propTypes = {
   type: PropTypes.string.isRequired,
+  color: PropTypes.oneOf(['blue', 'green', 'orange', 'red', 'gray']),
   tagWrapped: PropTypes.bool,
 };

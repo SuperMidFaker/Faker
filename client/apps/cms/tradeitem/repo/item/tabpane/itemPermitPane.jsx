@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import { Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
-import { loadPermits } from 'common/reducers/cmsTradeitem';
 import { Logixon } from 'client/components/FontIcon';
-import { loadCertParams } from 'common/reducers/cmsPermit';
+import { loadCertParams, loadPermitsByTradeItem } from 'common/reducers/cmsPermit';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
 import messages from '../../../message.i18n';
 
@@ -20,26 +20,28 @@ const formatMsg = format(messages);
     certParams: state.cmsPermit.certParams,
   }),
   {
-    loadPermits, loadCertParams,
+    loadPermitsByTradeItem, loadCertParams,
   }
 )
 export default class ItemPermitPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    repoId: PropTypes.number.isRequired,
+    itemId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     permits: [],
+    loading: true,
   }
   componentDidMount() {
     this.props.loadCertParams();
-    this.props.loadPermits(this.props.repoId).then((result) => {
+    this.props.loadPermitsByTradeItem(this.props.itemId).then((result) => {
       if (!result.error) {
         this.setState({
           permits: result.data,
+          loading: false,
         });
       }
     });
@@ -78,28 +80,43 @@ export default class ItemPermitPane extends React.Component {
   }, {
     title: this.msg('发证日期'),
     dataIndex: 'start_date',
+    width: 120,
     render: (o, record) => (record.start_date ? moment(record.start_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('到期日期'),
     dataIndex: 'stop_date',
+    width: 120,
     render: (o, record) => (record.stop_date ? moment(record.stop_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: this.msg('总使用次数'),
     width: 120,
+    align: 'right',
     dataIndex: 'max_usage',
   }, {
     title: this.msg('剩余使用次数'),
     width: 120,
-    dataIndex: 'avail_usage',
+    align: 'right',
+    dataIndex: 'ava_usage',
+  }, {
+    title: this.msg('permitFile'),
+    dataIndex: 'permit_file',
+    align: 'center',
+    render: (o) => {
+      if (o && o !== '') {
+        return <a href={o} target="_blank"><Icon type="file-pdf" /></a>;
+      }
+      return <span />;
+    },
   }]
   render() {
-    const { permits } = this.state;
+    const { permits, loading } = this.state;
     return (
       <DataPane
         fullscreen={this.props.fullscreen}
         columns={this.columns}
         rowKey="id"
         dataSource={permits}
+        loading={loading}
       />
     );
   }

@@ -5,13 +5,13 @@ import { connect } from 'react-redux';
 import { Form, Select, Input, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -47,12 +47,30 @@ export default class EditBodyForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    editBody: PropTypes.object,
-    form: PropTypes.object.isRequired,
-    currencies: PropTypes.array,
-    units: PropTypes.array,
-    tradeCountries: PropTypes.array,
-    hscodes: PropTypes.object,
+    editBody: PropTypes.shape({
+      codes: PropTypes.string,
+      g_name: PropTypes.string,
+    }),
+    form: PropTypes.shape({
+      getFieldDecorator: PropTypes.func,
+      setFieldsValue: PropTypes.func,
+    }).isRequired,
+    currencies: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.string,
+      text: PropTypes.string,
+    })),
+    units: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.string,
+      text: PropTypes.string,
+    })),
+    tradeCountries: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.string,
+      text: PropTypes.string,
+    })),
+    hscodes: PropTypes.shape({
+      pageSize: PropTypes.number,
+      current: PropTypes.number,
+    }),
     billSeqNo: PropTypes.string,
   }
   componentWillReceiveProps(nextProps) {
@@ -63,7 +81,8 @@ export default class EditBodyForm extends Component {
         const unit1Val = unit1 ? unit1.value : '';
         const unit2 = this.props.units.filter(unit => unit.value === item.unit_2)[0];
         const unit2Val = unit2 ? unit2.value : '';
-        const unitg = this.props.units.filter(unit => unit.value === item.g_unit || unit.text === item.g_unit)[0];
+        const unitg = this.props.units.filter(unit =>
+          unit.value === item.g_unit || unit.text === item.g_unit)[0];
         const gunitVal = unitg ? unitg.value : '';
         this.props.form.setFieldsValue({
           codes: item.hscode,
@@ -75,8 +94,6 @@ export default class EditBodyForm extends Component {
           unit_2: unit2Val,
           trade_curr: item.trade_curr,
           orig_country: item.orig_country,
-          fixed_unit: item.fixed_unit,
-          fixed_qty: item.fixed_qty,
         });
       } else {
         this.props.form.setFieldsValue({
@@ -164,14 +181,14 @@ export default class EditBodyForm extends Component {
   }
   handleTradeTotChange = (ev) => {
     const qty = this.props.form.getFieldValue('g_qty');
-    if (!isNaN(qty) && qty > 0) {
+    if (!isNaN(qty) && qty > 0) { // eslint-disable-line
       const decPrice = Number(ev.target.value / qty);
       this.props.form.setFieldsValue({ dec_price: decPrice });
     }
   }
   handleDecPriceChange = (ev) => {
     const qty = this.props.form.getFieldValue('g_qty');
-    if (!isNaN(qty)) {
+    if (!isNaN(qty)) { // eslint-disable-line
       const digits = ev.target.value.toString().split('.')[1];
       const decimal = digits ? digits.length : 0;
       const tradeTot = Number(ev.target.value * qty).toFixed(decimal);

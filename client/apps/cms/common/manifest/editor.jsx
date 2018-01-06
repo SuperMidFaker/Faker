@@ -525,10 +525,12 @@ export default class ManifestEditor extends React.Component {
             }
               {sendable &&
               <Button type="primary" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>}
-              {editable &&
+              {/*
+                editable &&
                 <Popconfirm title="是否确认清空表头数据?" onConfirm={this.handleBillHeadReset}>
                   <Button type="danger" icon="delete" />
-                </Popconfirm>}
+                </Popconfirm>
+              */}
               {editable &&
               (<Button
                 type="primary"

@@ -7,25 +7,26 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
+import PageHeader from 'client/components/PageHeader';
 import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Fontello } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 import { loadOutbounds } from 'common/reducers/cwmOutbound';
-import ShippingDockPanel from '../dock/shippingDockPanel';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import ShippingDockPanel from '../dock/shippingDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
-import PageHeader from 'client/components/PageHeader';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -64,10 +65,10 @@ export default class OutboundList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || !nextProps.outbound.loaded && !nextProps.outbound.loading) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code ||
+       !nextProps.outbound.loaded && !nextProps.outbound.loading) {
       const filters = { ...this.props.filters };
       const whseCode = nextProps.defaultWhse.code;
       this.props.loadOutbounds({
@@ -87,7 +88,9 @@ export default class OutboundList extends React.Component {
     title: 'SO/波次编号',
     dataIndex: 'so_no',
     width: 180,
-    render: (soNo, record) => (soNo ? <a onClick={() => this.handlePreview(soNo, record.outbound_no)}>{soNo}</a> :
+    render: (soNo, record) => (soNo ? <a onClick={() =>
+       this.handlePreview(soNo, record.outbound_no)}
+    >{soNo}</a> :
     <span>{record.wave_no}</span>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
@@ -103,22 +106,24 @@ export default class OutboundList extends React.Component {
     align: 'center',
     render: (o, record) => {
       if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
-        return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
-        return <Fontello type="circle" color="green" />;
+        return <Logixon type="circle" color="blue" />;
+      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value &&
+        record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
+        return <Logixon type="circle" color="green" />;
       }
-      return <Fontello type="circle" color="gray" />;
+      return <Logixon type="circle" color="gray" />;
     },
   }, {
     title: '拣货',
     align: 'center',
     render: (o, record) => {
       if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value) {
-        return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_PICKED.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
-        return <Fontello type="circle" color="green" />;
+        return <Logixon type="circle" color="blue" />;
+      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_PICKED.value &&
+        record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
+        return <Logixon type="circle" color="green" />;
       }
-      return <Fontello type="circle" color="gray" />;
+      return <Logixon type="circle" color="gray" />;
     },
   }, {
     title: '复核装箱',
@@ -127,11 +132,11 @@ export default class OutboundList extends React.Component {
     render: (o) => {
       switch (o) {
         case 0:
-          return <Fontello type="circle" color="gray" />;
+          return <Logixon type="circle" color="gray" />;
         case 1:
-          return <Fontello type="circle" color="blue" />;
+          return <Logixon type="circle" color="blue" />;
         case 2:
-          return <Fontello type="circle" color="green" />;
+          return <Logixon type="circle" color="green" />;
         default:
           return <span />;
       }
@@ -141,11 +146,11 @@ export default class OutboundList extends React.Component {
     align: 'center',
     render: (o, record) => {
       if (record.status === CWM_OUTBOUND_STATUS.SHIPPING.value) {
-        return <Fontello type="circle" color="blue" />;
+        return <Logixon type="circle" color="blue" />;
       } else if (record.status === CWM_OUTBOUND_STATUS.COMPLETED.value) {
-        return <Fontello type="circle" color="green" />;
+        return <Logixon type="circle" color="green" />;
       }
-      return <Fontello type="circle" color="gray" />;
+      return <Logixon type="circle" color="gray" />;
     },
   }, {
     title: '操作模式',
@@ -286,7 +291,11 @@ export default class OutboundList extends React.Component {
               <Breadcrumb.Item>
                 <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                    whses.map(warehouse =>
+                       (<Option
+                         value={warehouse.code}
+                         key={warehouse.code}
+                       >{warehouse.name}</Option>))
                   }
                 </Select>
               </Breadcrumb.Item>

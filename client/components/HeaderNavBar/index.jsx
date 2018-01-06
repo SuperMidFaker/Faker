@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
 import { Avatar, Menu, Radio, Modal, Popover, Icon, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from '../NavLink';
-import { MdIcon } from '../FontIcon';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from 'common/reducers/preference';
 import { showActivitiesDock } from 'common/reducers/activities';
 import { logout } from 'common/reducers/account';
 import { goBackNav } from 'common/reducers/navbar';
-import NotifyPopover from './notifyPopover';
-import HelpPopover from './helpPopover';
 import ModuleMenu from 'client/components/ModuleMenu';
 import { format } from 'client/common/i18n/helpers';
+import NotifyPopover from './notifyPopover';
+import HelpPopover from './helpPopover';
+import NavLink from '../NavLink';
+import { MdIcon } from '../FontIcon';
 import messages from '../message.i18n';
 import './index.less';
 
@@ -139,7 +139,7 @@ export default class HeaderNavBar extends React.Component {
     );
     const helpcenterContent = (<HelpPopover />);
 
-    let moduleName = navTitle.moduleName;
+    let { moduleName } = navTitle;
     let navMenu = null;
     let brandNav = (<NavLink to="/" className="navbar-brand" />);
     if (navTitle.depth === 1) {
@@ -187,8 +187,12 @@ export default class HeaderNavBar extends React.Component {
               </Popover>
             </MenuItem>}
             <MenuItem>
-              <Popover content={userPopoverContent} placement="bottomRight" trigger="click"
-                visible={this.state.userPopoverVisible} onVisibleChange={this.handleVisibleChange}
+              <Popover
+                content={userPopoverContent}
+                placement="bottomRight"
+                trigger="click"
+                visible={this.state.userPopoverVisible}
+                onVisibleChange={this.handleVisibleChange}
               >
                 <div>
                   {avatar ? <Avatar src={avatar} /> : <Avatar >{name}</Avatar>}
@@ -201,8 +205,12 @@ export default class HeaderNavBar extends React.Component {
         <div className="navbar-search">
           <input type="search" placeholder={this.msg('search')} />
         </div>
-        <Modal maskClosable={false} visible={this.state.visible} footer={[]}
-          title={formatMsg(intl, 'userLanguage')} onCancel={this.handleCancel}
+        <Modal
+          maskClosable={false}
+          visible={this.state.visible}
+          footer={[]}
+          title={formatMsg(intl, 'userLanguage')}
+          onCancel={this.handleCancel}
         >
           <div style={{ textAlign: 'center' }}>
             <RadioGroup onChange={this.handleLocaleChange} value={locale}>

@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SAVE_REPOITM', 'SAVE_REPOITM_SUCCEED', 'SAVE_REPOITM_FAIL',
   'SAVE_REPOFKITM', 'SAVE_REPOFKITM_SUCCEED', 'SAVE_REPOFKITM_FAIL',
   'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'SWITCH_REPVK', 'SWITCH_REPVK_SUCCEED', 'SWITCH_REPVK_FAIL',
   'REPLICA_MASTERSLAVE', 'REPLICA_MASTERSLAVE_SUCCEED', 'REPLICA_MASTERSLAVE_FAIL',
   'LOAD_WSSTAT', 'LOAD_WSSTAT_SUCCEED', 'LOAD_WSSTAT_FAIL',
   'LOAD_WSTASKLIST', 'LOAD_WSTASKLIST_SUCCEED', 'LOAD_WSTASKLIST_FAIL',
@@ -41,9 +42,11 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
-  'TOGGLE_APPLY_CERTS_MODAL',
-  'UPDATE_ITEM_APP_CERT', 'UPDATE_ITEM_APP_CERT_SUCCEED', 'UPDATE_ITEM_APP_CERT_FAIL',
+  'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL', 'TOGGLE_CONFIRM_CHANGES_MODAL',
+  'TOGGLE_CONFIRM_FORK_MODAL',
+  'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
+  'CHANGE_ITEM_MASTER', 'NOTIFY_FORM_CHANGED',
 ]);
 
 const initialState = {
@@ -52,6 +55,7 @@ const initialState = {
   tradeItemsLoading: false,
   listFilter: {
     status: 'master',
+    search: undefined,
     sortField: '',
     sortOrder: '',
   },
@@ -59,7 +63,6 @@ const initialState = {
     totalCount: 0,
     current: 1,
     pageSize: 20,
-    searchText: '',
     data: [],
   },
   visibleAddModal: false,
@@ -112,6 +115,20 @@ const initialState = {
     visible: false,
     data: {},
   },
+  itemDiffModal: {
+    visible: false,
+    data: {},
+  },
+  confirmChangesModal: {
+    visible: false,
+    data: {},
+  },
+  confirmForkModal: {
+    visible: false,
+    data: {},
+  },
+  formChanged: false,
+  itemMasterChanges: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -164,6 +181,12 @@ export default function reducer(state = initialState, action) {
         ...state,
         repos: state.repos.map(rep =>
           (rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep)),
+      };
+    case actionTypes.SWITCH_REPVK_SUCCEED:
+      return {
+        ...state,
+        repos: state.repos.map(rep =>
+          (rep.id === action.data.repoId ? { ...rep, keep_version: action.data.keep } : rep)),
       };
     case actionTypes.LOAD_WSSTAT_SUCCEED:
       return { ...state, workspaceStat: action.result.data, wsStatReload: false };
@@ -232,6 +255,43 @@ export default function reducer(state = initialState, action) {
           visible: action.visible,
           data: action.data,
         },
+      };
+    case actionTypes.TOGGLE_ITEM_DIFF_MODAL:
+      return {
+        ...state,
+        itemDiffModal: {
+          ...state.itemDiffModal,
+          visible: action.visible,
+          data: action.data,
+        },
+      };
+    case actionTypes.TOGGLE_CONFIRM_CHANGES_MODAL:
+      return {
+        ...state,
+        confirmChangesModal: {
+          ...state.confirmChangesModal,
+          visible: action.visible,
+          data: action.data,
+        },
+      };
+    case actionTypes.TOGGLE_CONFIRM_FORK_MODAL:
+      return {
+        ...state,
+        confirmForkModal: {
+          ...state.confirmForkModal,
+          visible: action.visible,
+          data: action.data,
+        },
+      };
+    case actionTypes.CHANGE_ITEM_MASTER:
+      return {
+        ...state,
+        itemMasterChanges: action.changes,
+      };
+    case actionTypes.NOTIFY_FORM_CHANGED:
+      return {
+        ...state,
+        formChanged: action.changed,
       };
     default:
       return state;
@@ -520,21 +580,6 @@ export function comparedCancel(datas) {
   };
 }
 
-export function deleteTempData(id) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.DELETE_TEMP_DATA,
-        actionTypes.DELETE_TEMP_DATA_SUCCEED,
-        actionTypes.DELETE_TEMP_DATA_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/compared/del',
-      method: 'post',
-      data: { id },
-    },
-  };
-}
-
 export function showLinkSlaveModal({ visible, masterRepo, slaves }) {
   return {
     type: actionTypes.SHOW_LINKSLAVE,
@@ -658,6 +703,21 @@ export function switchRepoMode(repoId) {
       endpoint: 'v1/cms/tradeitem/switch/repomode',
       method: 'post',
       data: { repoId },
+    },
+  };
+}
+
+export function switchRepoVersionKeep(repoId, keep) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SWITCH_REPVK,
+        actionTypes.SWITCH_REPVK_SUCCEED,
+        actionTypes.SWITCH_REPVK_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/switch/versionkeep',
+      method: 'post',
+      data: { repoId, keep },
     },
   };
 }
@@ -864,32 +924,55 @@ export function toggleApplyCertsModal(visible, data = {}) {
   };
 }
 
-export function updateItemAppCert(code, id) {
+export function toggleItemDiffModal(visible, data = {}) {
   return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_ITEM_APP_CERT,
-        actionTypes.UPDATE_ITEM_APP_CERT_SUCCEED,
-        actionTypes.UPDATE_ITEM_APP_CERT_FAIL,
-      ],
-      endpoint: 'v1/cms/tradeitem/app/cert/update',
-      method: 'post',
-      data: { code, id },
-    },
+    type: actionTypes.TOGGLE_ITEM_DIFF_MODAL,
+    visible,
+    data,
   };
 }
 
-export function loadPermits(repoId) {
+export function toggleConfirmChangesModal(visible, data = {}) {
+  return {
+    type: actionTypes.TOGGLE_CONFIRM_CHANGES_MODAL,
+    visible,
+    data,
+  };
+}
+
+export function toggleConfirmForkModal(visible, data = {}) {
+  return {
+    type: actionTypes.TOGGLE_CONFIRM_FORK_MODAL,
+    visible,
+    data,
+  };
+}
+
+export function changeItemMaster(changes) {
+  return {
+    type: actionTypes.CHANGE_ITEM_MASTER,
+    changes,
+  };
+}
+
+export function notifyFormChanged(changed) {
+  return {
+    type: actionTypes.NOTIFY_FORM_CHANGED,
+    changed,
+  };
+}
+
+export function updateItemApplCert(cert, id) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_PERMITS,
-        actionTypes.LOAD_PERMITS_SUCCEED,
-        actionTypes.LOAD_PERMITS_FAIL,
+        actionTypes.UPDATE_ITEM_APPL_CERT,
+        actionTypes.UPDATE_ITEM_APPL_CERT_SUCCEED,
+        actionTypes.UPDATE_ITEM_APPL_CERT_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/permits/load',
-      method: 'get',
-      params: { repoId },
+      endpoint: 'v1/cms/tradeitem/appl/cert/update',
+      method: 'post',
+      data: { cert: JSON.stringify(cert), id },
     },
   };
 }

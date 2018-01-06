@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Icon, Menu, Modal, Layout, Input, Tag } from 'antd';
+import { Switch, Breadcrumb, Button, Icon, Menu, Modal, Layout, Input, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
+import { loadRepos, openAddModal, switchRepoMode, switchRepoVersionKeep, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -31,6 +31,7 @@ const { Search } = Input;
     loadRepos,
     openAddModal,
     switchRepoMode,
+    switchRepoVersionKeep,
     showLinkSlaveModal,
     unlinkMasterSlave,
     loadCustomers,
@@ -60,7 +61,7 @@ export default class RepoList extends React.Component {
   }, {
     title: this.msg('库模式'),
     dataIndex: 'mode',
-    width: 150,
+    width: 100,
     render: (o, record) => {
       if (o === 'slave') {
         return (<Tag color="#2db7f5">从库 {record.master_repo_id ? <Icon type="link" /> : <Icon type="disconnect" />}</Tag>);
@@ -71,6 +72,17 @@ export default class RepoList extends React.Component {
       }
       return null;
     },
+  }, {
+    title: <Tooltip title="启用保留HS编码或名称修改历史版本,用于出库申报"><Icon type="clock-circle-o" /></Tooltip>,
+    dataIndex: 'keep_version',
+    width: 100,
+    align: 'center',
+    render: (keep, repo) => (<Switch
+      size="small"
+      checked={keep}
+      disabled={repo.master_repo_id}
+      onChange={checked => this.handleVersionKeepChange(repo.id, checked)}
+    />),
   }, {
     title: this.msg('repoCreator'),
     dataIndex: 'creator_name',
@@ -162,6 +174,9 @@ export default class RepoList extends React.Component {
       onCancel() {
       },
     });
+  }
+  handleVersionKeepChange = (repoId, keep) => {
+    this.props.switchRepoVersionKeep(repoId, keep);
   }
   handleAddRepo = () => {
     this.props.loadCustomers();

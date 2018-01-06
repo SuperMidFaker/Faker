@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Button, Card, DatePicker, Form, Icon, Input, Select, Switch, Row, Col, message } from 'antd';
+import { Button, Card, DatePicker, Form, Icon, Input, Select, Rate, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { toggleApplyCertsModal } from 'common/reducers/cmsTradeitem';
-import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE } from 'common/constants';
+import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE, TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import ApplyCertsModal from '../modal/applyCertsModal';
 import messages from '../../../message.i18n';
@@ -31,23 +31,25 @@ function getFieldInits(formData) {
       init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
     init.specialMark = formData.special_mark ? formData.special_mark.split('/') : [];
-    if (formData.srcNos && formData.srcNos.length > 0) {
-      init.src_product_no = `${formData.cop_product_no}_${formData.srcNos.length}`;
-      let num = 0;
-      for (let i = 0; i < formData.srcNos.length; i++) {
-        if (formData.srcNos[i] === init.src_product_no) {
-          num += 1;
-          init.src_product_no = `${formData.cop_product_no}_${formData.srcNos.length + num}`;
-          i = 0;
-        }
-      }
-    }
     ['pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
       init[fd] = !formData[fd] ? null : moment(formData[fd]);
     });
     ['pre_classify_no', 'remark'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
+    if (formData.appl_cert_code) {
+      const codes = formData.appl_cert_code.split(',');
+      let names = '';
+      codes.forEach((code) => {
+        const cert = TRADE_ITEM_APPLY_CERTS.find(ce => ce.app_cert_code === code);
+        if (!names) {
+          names += cert.app_cert_name;
+        } else {
+          names += `,${cert.app_cert_name}`;
+        }
+      });
+      init.appl_cert_name = names;
+    }
   }
   return init;
 }
@@ -131,19 +133,18 @@ export default class ItemMasterPane extends React.Component {
   handleCopNoChange = (e) => {
     this.props.form.setFieldsValue({ src_product_no: e.target.value });
   }
-  handleSrcNoChange = (e) => {
-    this.props.itemData.srcNos.forEach((no) => {
-      if (no === e.target.value) {
-        message.error('该源标记号已存在', 5);
-      }
-    });
-  }
   handleShowDeclElementModal = () => {
     const { form } = this.props;
     const { fieldInits } = this.state;
     this.props.getElementByHscode(form.getFieldValue('hscode')).then((result) => {
       if (!result.error) {
-        this.props.showDeclElementsModal(result.data.declared_elements, fieldInits.id, form.getFieldValue('g_model'), false, form.getFieldValue('g_name'));
+        this.props.showDeclElementsModal(
+          result.data.declared_elements,
+          fieldInits.id,
+          form.getFieldValue('g_model'),
+          false,
+          form.getFieldValue('g_name')
+        );
       }
     });
   }
@@ -152,6 +153,9 @@ export default class ItemMasterPane extends React.Component {
   }
   handleModalChange = (model) => {
     this.props.form.setFieldsValue({ g_model: model });
+  }
+  handleApplCertChange = (cert) => {
+    this.props.form.setFieldsValue({ appl_cert_name: cert });
   }
   render() {
     const {
@@ -214,6 +218,13 @@ export default class ItemMasterPane extends React.Component {
                 })(<Input disabled={action !== 'create'} onChange={this.handleCopNoChange} />)}
               </FormItem>
             </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('enName')}>
+                {getFieldDecorator('en_name', {
+                  initialValue: fieldInits.en_name,
+                })(<Input />)}
+              </FormItem>
+            </Col>
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('itemType')}>
                 {getFieldDecorator('item_type', {
@@ -224,20 +235,6 @@ export default class ItemMasterPane extends React.Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col span={12}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('enName')}>
-                {getFieldDecorator('en_name', {
-                  initialValue: fieldInits.en_name,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('srcProductNo')}>
-                {getFieldDecorator('src_product_no', {
-                  initialValue: fieldInits.src_product_no,
-                })(<Input disabled={action !== 'fork'} onChange={this.handleSrcNoChange} />)}
-              </FormItem>
-            </Col>
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('copUOM')}>
                 {getFieldDecorator('cop_uom', {
@@ -246,10 +243,24 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('markPass')}>
-                {getFieldDecorator('pass', {
-                  initialValue: fieldInits.pass === 'Y',
-                })(<Switch />)}
+              <FormItem {...formItemLayout} label={this.msg('processingMethod')}>
+                {getFieldDecorator('proc_method', {
+                  initialValue: fieldInits.proc_method,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('materialIngredient')}>
+                {getFieldDecorator('material_ingred', {
+                  initialValue: fieldInits.ingredient,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('use')}>
+                {getFieldDecorator('use', {
+                  initialValue: fieldInits.use,
+                })(<Input />)}
               </FormItem>
             </Col>
           </Row>
@@ -276,7 +287,14 @@ export default class ItemMasterPane extends React.Component {
                 {getFieldDecorator('g_name', {
                   initialValue: fieldInits.g_name,
                   rules: [{ required: true, message: '中文品名必填' }],
-                })(<Input />)}
+                })(<Input onChange={this.handleGNameChange} />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('confidence')}>
+                {getFieldDecorator('confidence', {
+                  initialValue: fieldInits.confidence,
+                })(<Rate allowHalf />)}
               </FormItem>
             </Col>
             <Col span={24}>
@@ -291,7 +309,6 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('unit1')}>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
-                  rules: [{ required: true, message: '法一计量单位必填' }],
                 })(<Select disabled>
                   {
                     units.map(gt =>
@@ -434,8 +451,8 @@ export default class ItemMasterPane extends React.Component {
             </Col>
             <Col span={12}>
               <FormItem {...formItemSpan2Layout} label={this.msg('applCertCode')}>
-                {getFieldDecorator('appl_cert_code', {
-                  initialValue: fieldInits.appl_cert_code,
+                {getFieldDecorator('appl_cert_name', {
+                  initialValue: fieldInits.appl_cert_name,
                 })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
               </FormItem>
             </Col>
@@ -473,6 +490,7 @@ export default class ItemMasterPane extends React.Component {
         <ApplyCertsModal
           itemId={this.props.itemData.id}
           selectedRowKeys={fieldInits.appl_cert_code}
+          onOk={this.handleApplCertChange}
         />
       </FormPane>
     );

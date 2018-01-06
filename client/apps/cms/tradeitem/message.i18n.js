@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   taskNew: {
     id: 'cms.tradeitem.workspace.new',
-    defaultMessage: '新商品货号',
+    defaultMessage: '新商品归类',
   },
   taskConflict: {
     id: 'cms.tradeitem.workspace.conflict',
@@ -76,11 +76,11 @@ const messages = defineMessages({
   },
   tradeItemBranch: {
     id: 'cms.tradeitem.branch',
-    defaultMessage: '分支数据',
+    defaultMessage: '分支版本',
   },
   tradeItemHistory: {
     id: 'cms.tradeitem.history',
-    defaultMessage: '历史数据',
+    defaultMessage: '历史版本',
   },
   tradeItemHistoryAll: {
     id: 'cms.tradeitem.history',
@@ -118,9 +118,17 @@ const messages = defineMessages({
     id: 'cms.tradeitem.filter.classified',
     defaultMessage: '已归类',
   },
-  stageClassified: {
-    id: 'cms.tradeitem.stage.classified',
-    defaultMessage: '新来源归类区',
+  tabClassification: {
+    id: 'cms.tradeitem.tab.classification',
+    defaultMessage: '归类信息',
+  },
+  tabPermit: {
+    id: 'cms.tradeitem.tab.permit',
+    defaultMessage: '涉证资料',
+  },
+  tabHistory: {
+    id: 'cms.tradeitem.tab.history',
+    defaultMessage: '历史记录',
   },
   linkSlave: {
     id: 'cms.tradeitem.model.slave.link',
@@ -146,6 +154,18 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.cop.uom',
     defaultMessage: '企业计量单位',
   },
+  processingMethod: {
+    id: 'cms.tradeitem.col.processing.method',
+    defaultMessage: '工艺',
+  },
+  materialIngredient: {
+    id: 'cms.tradeitem.col.material.ingredient',
+    defaultMessage: '材质/成分',
+  },
+  use: {
+    id: 'cms.tradeitem.col.cop.use',
+    defaultMessage: '用途',
+  },
   markPass: {
     id: 'cms.tradeitem.form.mark.pass',
     defaultMessage: '标记直接通过',
@@ -158,6 +178,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.g.name',
     defaultMessage: '中文品名',
   },
+  confidence: {
+    id: 'cms.tradeitem.col.confidence',
+    defaultMessage: '归类确信度',
+  },
   enName: {
     id: 'cms.tradeitem.col.en.description',
     defaultMessage: '英文描述',
@@ -169,6 +193,10 @@ const messages = defineMessages({
   preHscode: {
     id: 'cms.tradeitem.col.prehscode',
     defaultMessage: '原商品编码',
+  },
+  preGName: {
+    id: 'cms.tradeitem.col.pregname',
+    defaultMessage: '原中文品名',
   },
   preGModel: {
     id: 'cms.tradeitem.col.pregmodel',
@@ -317,6 +345,10 @@ const messages = defineMessages({
   modify: {
     id: 'cms.tradeitem.op.modify',
     defaultMessage: '修改',
+  },
+  diff: {
+    id: 'cms.tradeitem.op.diff',
+    defaultMessage: '对比',
   },
   forkItem: {
     id: 'cms.tradeitem.op.fork',

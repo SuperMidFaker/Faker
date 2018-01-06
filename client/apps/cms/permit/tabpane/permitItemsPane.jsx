@@ -6,9 +6,10 @@ import { Button } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { togglePermitItemModal, loadPermitModels, toggleTradeItemModal, automaticMatch } from 'common/reducers/cmsPermit';
+import { togglePermitItemModal, loadPermitModels, automaticMatch, toggleItemManageModal } from 'common/reducers/cmsPermit';
 import PermitItemModal from '../modal/permitItemModal';
 import TradeItemsModal from '../modal/tradeItemsModal';
+import ItemManageModal from '../modal/itemManageModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -20,7 +21,7 @@ const formatMsg = format(messages);
   permitItems: state.cmsPermit.permitItems,
   currentPermit: state.cmsPermit.currentPermit,
 }), {
-  togglePermitItemModal, loadPermitModels, toggleTradeItemModal, automaticMatch,
+  togglePermitItemModal, loadPermitModels, automaticMatch, toggleItemManageModal,
 })
 export default class PermitItemsPane extends React.Component {
   static propTypes = {
@@ -67,11 +68,11 @@ export default class PermitItemsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.permit_model === '*') {
-        return <RowAction onClick={this.handMatch} icon="plus-circle-o" label="添加关联货号" row={record} />;
+        return <RowAction onClick={this.handMatch} icon="tags-o" label="关联管理" row={record} />;
       }
       return (<span>
         <RowAction onClick={this.automaticMatch} icon="rocket" label="自动匹配" row={record} />
-        <RowAction onClick={this.handMatch} icon="plus-circle-o" tooltip="手动关联货号" row={record} />
+        <RowAction onClick={this.handMatch} icon="tags-o" tooltip="关联管理" row={record} />
       </span>);
     },
   }];
@@ -95,7 +96,7 @@ export default class PermitItemsPane extends React.Component {
     });
   }
   handMatch = (row) => {
-    this.props.toggleTradeItemModal(true, row.id);
+    this.props.toggleItemManageModal(true, row.product_no, row.id);
   }
   handelAdd = () => {
     this.props.togglePermitItemModal(true);
@@ -115,7 +116,8 @@ export default class PermitItemsPane extends React.Component {
           <Button type="primary" ghost icon="plus" onClick={this.handelAdd}>新增型号系列</Button>
         </DataPane.Toolbar>
         <PermitItemModal permitId={this.context.router.params.id} />
-        <TradeItemsModal />
+        <TradeItemsModal permitId={this.context.router.params.id} />
+        <ItemManageModal permitId={this.context.router.params.id} />
       </DataPane>
     );
   }

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Icon, Popover, Tooltip, Tag } from 'antd';
-import { Logixon, Fontello } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 
 export default function makeColumns({
-  msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit,
+  msg, withRepo, withRepoItem, audit,
 }) {
   const columns = [{
     title: msg('标记'),
@@ -106,16 +106,6 @@ export default function makeColumns({
       return <span>{pn}</span>;
     },
   }, {
-    title: msg('gName'),
-    dataIndex: 'g_name',
-    width: 200,
-    render: (gname) => {
-      if (!gname) {
-        return <Tag color="red" />;
-      }
-      return gname;
-    },
-  }, {
     title: msg('enName'),
     dataIndex: 'en_name',
     width: 200,
@@ -139,6 +129,21 @@ export default function makeColumns({
     width: 120,
     render: (itemhscode, record) => (itemhscode === record.hscode ? <span>{itemhscode}</span> : <Tag color="red">{itemhscode}</Tag>),
   }] : []).concat([{
+    title: msg('gName'),
+    dataIndex: 'g_name',
+    width: 200,
+    render: (gname) => {
+      if (!gname) {
+        return <Tag color="red" />;
+      }
+      return gname;
+    },
+  }].concat(withRepoItem ? [{
+    title: msg('preGName'),
+    dataIndex: 'item_g_name',
+    width: 200,
+    render: (pregname, record) => (pregname === record.g_name ? <span>{pregname}</span> : <Tag color="red">{pregname}</Tag>),
+  }] : []).concat([{
     title: msg('gModel'),
     dataIndex: 'g_model',
     width: 400,
@@ -151,9 +156,11 @@ export default function makeColumns({
   }].concat(withRepoItem ? [{
     title: msg('preGModel'),
     dataIndex: 'item_g_model',
-    width: 300,
+    width: 400,
     render: (pregmodel, record) => (pregmodel === record.g_model ? <span>{pregmodel}</span> : <Tag color="red">{pregmodel}</Tag>),
-  }] : []).concat([{
+  }] : [])
+    /*
+    [{
     title: msg('gUnit1'),
     dataIndex: 'g_unit_1',
     width: 100,
@@ -241,11 +248,13 @@ export default function makeColumns({
     title: msg('remark'),
     dataIndex: 'remark',
     width: 180,
-  }]).concat(withRepo ? [{
-    title: msg('repoCreator'),
-    dataIndex: 'contribute_tenant_name',
-    width: 200,
-  }] : []));
+  }]
+  */
+    .concat(withRepo ? [{
+      title: msg('repoCreator'),
+      dataIndex: 'contribute_tenant_name',
+      width: 200,
+    }] : [])));
   if (!audit) {
     columns.push({
       title: '本库审核',
@@ -253,9 +262,9 @@ export default function makeColumns({
       width: 80,
       render: (pass) => {
         if (pass === 'Y') {
-          return <Tooltip title="提交直接通过"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+          return <Tooltip title="提交直接通过"><span><Logixon type="circle" color="green" /></span></Tooltip>;
         }
-        return <Tooltip title="需人工审核"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        return <Tooltip title="需人工审核"><span><Logixon type="circle" color="gray" /></span></Tooltip>;
       },
     }, {
       title: '主库审核',
@@ -267,9 +276,9 @@ export default function makeColumns({
           master = false;
         }
         if (master) {
-          return <Tooltip title="可提交主库审核"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+          return <Tooltip title="可提交主库审核"><span><Logixon type="circle" color="green" /></span></Tooltip>;
         }
-        return <Tooltip title="只可提交本库"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        return <Tooltip title="只可提交本库"><span><Logixon type="circle" color="gray" /></span></Tooltip>;
       },
     });
   }
