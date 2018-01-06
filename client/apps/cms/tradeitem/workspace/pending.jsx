@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { notification, Button, Breadcrumb, Layout, Input, Select } from 'antd';
+import { Button, Breadcrumb, Layout, Input, Select, message, notification } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { loadWorkspaceItems, auditItems } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -80,7 +80,6 @@ export default class PendingItemsList extends React.Component {
       <span>
         <RowAction onClick={this.handleItemPass} icon="check-circle-o" label={this.msg('pass')} row={record} />
         <RowAction
-          danger
           popover={<div>
             <Input onChange={this.handleRefuseReason} value={this.state.refuseReason} placeholder="原因" style={{ width: 150 }} />
             <Button type="primary" style={{ marginLeft: 8 }} onClick={() => this.handleItemRefused(record)}>确定</Button>
@@ -93,9 +92,10 @@ export default class PendingItemsList extends React.Component {
   handleItemPass = (row) => {
     this.props.auditItems([row.id], { action: 'pass' }).then((result) => {
       if (result.error) {
-        notification.error({ title: 'Error', description: result.error.message });
+        notification.error({ message: 'Error', description: result.error.message });
         return;
       }
+      message.success('已加入归类库');
       this.handleReload(1);
     });
   }
@@ -105,7 +105,7 @@ export default class PendingItemsList extends React.Component {
   handleItemRefused = (row) => {
     this.props.auditItems([row.id], { action: 'refuse', reason: this.state.refuseReason }).then((result) => {
       if (result.error) {
-        notification.error({ title: 'Error', description: result.error.message });
+        notification.error({ message: 'Error', description: result.error.message });
         return;
       }
       this.handleReload(1);
@@ -115,16 +115,17 @@ export default class PendingItemsList extends React.Component {
   handleBatchPass = () => {
     this.props.auditItems(null, { action: 'pass' }).then((result) => {
       if (result.error) {
-        notification.error({ title: 'Error', description: result.error.message });
+        notification.error({ message: 'Error', description: result.error.message });
         return;
       }
+      message.success('已加入归类库');
       this.handleReload(1);
     });
   }
   handleBatchRefuse = () => {
     this.props.auditItems(null, { action: 'refuse' }).then((result) => {
       if (result.error) {
-        notification.error({ title: 'Error', description: result.error.message });
+        notification.error({ message: 'Error', description: result.error.message });
         return;
       }
       this.handleReload(1);
@@ -220,8 +221,8 @@ export default class PendingItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button type="danger" icon="close-circle-o" onClick={this.handleBatchRefuse}>全部拒绝</Button>
-              <Button type="primary" icon="check-circle-o" onClick={this.handleBatchPass}>全部通过</Button>
+              <Button icon="close-circle-o" onClick={this.handleBatchRefuse}>全部拒绝</Button>
+              <Button icon="check-circle-o" onClick={this.handleBatchPass}>全部通过</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

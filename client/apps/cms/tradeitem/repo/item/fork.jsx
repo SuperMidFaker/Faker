@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import { loadTradeItem, saveRepoForkItem, toggleConfirmForkModal, changeItemMaster, toggleItemMasterEnabled } from 'common/reducers/cmsTradeitem';
+import { loadTradeItem, saveRepoForkItem, toggleConfirmForkModal, changeItemMaster, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import ItemMasterPane from './tabpane/itemMasterPane';
 import ConfirmForkModal from './modal/confirmForkModal';
@@ -31,21 +31,21 @@ function fetchData({ dispatch, params }) {
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
     tenantId: state.account.tenantId,
-    itemMasterEnabled: state.cmsTradeitem.itemMasterEnabled,
+    formChanged: state.cmsTradeitem.formChanged,
     repo: state.cmsTradeitem.repo,
   }),
   {
     saveRepoForkItem,
     toggleConfirmForkModal,
     changeItemMaster,
-    toggleItemMasterEnabled,
+    notifyFormChanged,
   }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create({ onValuesChange: props => props.toggleItemMasterEnabled(true) })
+@Form.create({ onValuesChange: props => props.notifyFormChanged(true) })
 export default class TradeItemFork extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -102,7 +102,7 @@ export default class TradeItemFork extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
-            this.props.toggleItemMasterEnabled(false);
+            this.props.notifyFormChanged(false);
             this.context.router.goBack();
           }
         });
@@ -110,13 +110,13 @@ export default class TradeItemFork extends Component {
     });
   }
   handleCancel = () => {
-    this.props.toggleItemMasterEnabled(false);
+    this.props.notifyFormChanged(false);
     this.context.router.goBack();
   }
 
   render() {
     const {
-      form, submitting, itemData, repo, itemMasterEnabled,
+      form, submitting, itemData, repo, formChanged,
     } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab={this.msg('tabClassification')} key="master">
@@ -142,7 +142,7 @@ export default class TradeItemFork extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting} disabled={!itemMasterEnabled}>
+            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting} disabled={!formChanged}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

@@ -46,7 +46,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'TOGGLE_CONFIRM_FORK_MODAL',
   'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
-  'CHANGE_ITEM_MASTER', 'TOGGLE_ITEM_MASTER_ENABLED',
+  'CHANGE_ITEM_MASTER', 'NOTIFY_FORM_CHANGED',
 ]);
 
 const initialState = {
@@ -127,7 +127,7 @@ const initialState = {
     visible: false,
     data: {},
   },
-  itemMasterEnabled: false,
+  formChanged: false,
   itemMasterChanges: [],
 };
 
@@ -288,10 +288,10 @@ export default function reducer(state = initialState, action) {
         ...state,
         itemMasterChanges: action.changes,
       };
-    case actionTypes.TOGGLE_ITEM_MASTER_ENABLED:
+    case actionTypes.NOTIFY_FORM_CHANGED:
       return {
         ...state,
-        itemMasterEnabled: action.enabled,
+        formChanged: action.changed,
       };
     default:
       return state;
@@ -955,10 +955,10 @@ export function changeItemMaster(changes) {
   };
 }
 
-export function toggleItemMasterEnabled(enabled) {
+export function notifyFormChanged(changed) {
   return {
-    type: actionTypes.TOGGLE_ITEM_MASTER_ENABLED,
-    enabled,
+    type: actionTypes.NOTIFY_FORM_CHANGED,
+    changed,
   };
 }
 

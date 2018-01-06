@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
-import { loadWorkspaceItem, saveWorkspaceItem, toggleItemMasterEnabled } from 'common/reducers/cmsTradeitem';
+import { loadWorkspaceItem, saveWorkspaceItem, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
@@ -18,15 +18,15 @@ const { TabPane } = Tabs;
   state => ({
     itemData: state.cmsTradeitem.workspaceItem,
     submitting: state.cmsTradeitem.submitting,
-    itemMasterEnabled: state.cmsTradeitem.itemMasterEnabled,
+    formChanged: state.cmsTradeitem.formChanged,
   }),
-  { saveWorkspaceItem, loadWorkspaceItem, toggleItemMasterEnabled }
+  { saveWorkspaceItem, loadWorkspaceItem, notifyFormChanged }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create({ onValuesChange: props => props.toggleItemMasterEnabled(true) })
+@Form.create({ onValuesChange: props => props.notifyFormChanged(true) })
 export default class WorkItemPage extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -55,7 +55,7 @@ export default class WorkItemPage extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
-            this.props.toggleItemMasterEnabled(false);
+            this.props.notifyFormChanged(false);
             this.context.router.goBack();
           }
         });
@@ -63,13 +63,13 @@ export default class WorkItemPage extends Component {
     });
   }
   handleCancel = () => {
-    this.props.toggleItemMasterEnabled(false);
+    this.props.notifyFormChanged(false);
     this.context.router.goBack();
   }
 
   render() {
     const {
-      form, submitting, itemData, itemMasterEnabled,
+      form, submitting, itemData, formChanged,
     } = this.props;
     return (
       <Layout>
@@ -91,7 +91,7 @@ export default class WorkItemPage extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting} disabled={!itemMasterEnabled}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting} disabled={!formChanged}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

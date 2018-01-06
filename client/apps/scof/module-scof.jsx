@@ -23,23 +23,12 @@ export default class ModuleSCOF extends React.Component {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
     children: PropTypes.node,
-    trackings: PropTypes.array.isRequired,
   };
   state = {
     linkMenus: [],
   }
   componentWillMount() {
     this.props.loadTrackings(this.props.tenantId);
-  }
-  componentWillReceiveProps(nextProps) {
-    let trackingSublinks = [];
-    if (nextProps.trackings.length > 0) {
-      trackingSublinks = nextProps.trackings.map((item, index) => ({
-        key: `scof-tracking-${index}`,
-        path: `/scof/tracking/${item.id}`,
-        text: item.name,
-      }));
-    }
     const { intl } = this.props;
     const linkMenus = [];
     linkMenus.push({
@@ -54,12 +43,12 @@ export default class ModuleSCOF extends React.Component {
       key: 'scof-tracking',
       icon: 'logixon icon-monitor',
       text: formatMsg(intl, 'tracking'),
-      sublinks: trackingSublinks.concat([{
+      sublinks: [{
         key: 'scof-tracking-999',
         icon: 'zmdi zmdi-wrench',
         path: '/scof/tracking/customize',
         text: formatMsg(intl, 'customizeTracking'),
-      }]),
+      }],
     });
     linkMenus.push({
       single: true,
@@ -83,6 +72,33 @@ export default class ModuleSCOF extends React.Component {
       text: formatMsg(intl, 'vendors'),
     });
     this.setState({ linkMenus });
+  }
+  componentWillReceiveProps(nextProps) {
+    let trackingSublinks = [];
+    if (nextProps.trackings.length > 0) {
+      trackingSublinks = nextProps.trackings.map((item, index) => ({
+        key: `scof-tracking-${index}`,
+        path: `/scof/tracking/${item.id}`,
+        text: item.name,
+      }));
+    }
+    if (trackingSublinks.length > 0) {
+      const { intl } = this.props;
+      const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'scof-tracking');
+      linkMenus.splice(1, 0, {
+        single: false,
+        key: 'scof-tracking',
+        icon: 'logixon icon-monitor',
+        text: formatMsg(intl, 'tracking'),
+        sublinks: trackingSublinks.concat([{
+          key: 'scof-tracking-999',
+          icon: 'zmdi zmdi-wrench',
+          path: '/scof/tracking/customize',
+          text: formatMsg(intl, 'customizeTracking'),
+        }]),
+      });
+      this.setState({ linkMenus });
+    }
   }
   render() {
     return (

@@ -194,6 +194,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.prehscode',
     defaultMessage: '原商品编码',
   },
+  preGName: {
+    id: 'cms.tradeitem.col.pregname',
+    defaultMessage: '原中文品名',
+  },
   preGModel: {
     id: 'cms.tradeitem.col.pregmodel',
     defaultMessage: '原规范申报要素',

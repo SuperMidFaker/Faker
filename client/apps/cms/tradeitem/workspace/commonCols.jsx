@@ -3,7 +3,7 @@ import { Icon, Popover, Tooltip, Tag } from 'antd';
 import { Logixon } from 'client/components/FontIcon';
 
 export default function makeColumns({
-  msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit,
+  msg, withRepo, withRepoItem, audit,
 }) {
   const columns = [{
     title: msg('标记'),
@@ -106,16 +106,6 @@ export default function makeColumns({
       return <span>{pn}</span>;
     },
   }, {
-    title: msg('gName'),
-    dataIndex: 'g_name',
-    width: 200,
-    render: (gname) => {
-      if (!gname) {
-        return <Tag color="red" />;
-      }
-      return gname;
-    },
-  }, {
     title: msg('enName'),
     dataIndex: 'en_name',
     width: 200,
@@ -139,6 +129,21 @@ export default function makeColumns({
     width: 120,
     render: (itemhscode, record) => (itemhscode === record.hscode ? <span>{itemhscode}</span> : <Tag color="red">{itemhscode}</Tag>),
   }] : []).concat([{
+    title: msg('gName'),
+    dataIndex: 'g_name',
+    width: 200,
+    render: (gname) => {
+      if (!gname) {
+        return <Tag color="red" />;
+      }
+      return gname;
+    },
+  }].concat(withRepoItem ? [{
+    title: msg('preGName'),
+    dataIndex: 'item_g_name',
+    width: 200,
+    render: (pregname, record) => (pregname === record.g_name ? <span>{pregname}</span> : <Tag color="red">{pregname}</Tag>),
+  }] : []).concat([{
     title: msg('gModel'),
     dataIndex: 'g_model',
     width: 400,
@@ -151,9 +156,11 @@ export default function makeColumns({
   }].concat(withRepoItem ? [{
     title: msg('preGModel'),
     dataIndex: 'item_g_model',
-    width: 300,
+    width: 400,
     render: (pregmodel, record) => (pregmodel === record.g_model ? <span>{pregmodel}</span> : <Tag color="red">{pregmodel}</Tag>),
-  }] : []).concat([{
+  }] : [])
+    /*
+    [{
     title: msg('gUnit1'),
     dataIndex: 'g_unit_1',
     width: 100,
@@ -241,11 +248,13 @@ export default function makeColumns({
     title: msg('remark'),
     dataIndex: 'remark',
     width: 180,
-  }]).concat(withRepo ? [{
-    title: msg('repoCreator'),
-    dataIndex: 'contribute_tenant_name',
-    width: 200,
-  }] : []));
+  }]
+  */
+    .concat(withRepo ? [{
+      title: msg('repoCreator'),
+      dataIndex: 'contribute_tenant_name',
+      width: 200,
+    }] : [])));
   if (!audit) {
     columns.push({
       title: '本库审核',

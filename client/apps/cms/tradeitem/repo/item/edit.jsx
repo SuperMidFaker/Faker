@@ -6,7 +6,7 @@ import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import { loadTradeItem, saveRepoItem, toggleConfirmChangesModal, changeItemMaster, toggleItemMasterEnabled } from 'common/reducers/cmsTradeitem';
+import { loadTradeItem, saveRepoItem, toggleConfirmChangesModal, changeItemMaster, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import ItemMasterPane from './tabpane/itemMasterPane';
@@ -32,21 +32,21 @@ function fetchData({ dispatch, params }) {
   state => ({
     submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
-    itemMasterEnabled: state.cmsTradeitem.itemMasterEnabled,
+    formChanged: state.cmsTradeitem.formChanged,
     repo: state.cmsTradeitem.repo,
   }),
   {
     saveRepoItem,
     toggleConfirmChangesModal,
     changeItemMaster,
-    toggleItemMasterEnabled,
+    notifyFormChanged,
   }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create({ onValuesChange: props => props.toggleItemMasterEnabled(true) })
+@Form.create({ onValuesChange: props => props.notifyFormChanged(true) })
 export default class TradeItemEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -106,7 +106,7 @@ export default class TradeItemEdit extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
-            this.props.toggleItemMasterEnabled(false);
+            this.props.notifyFormChanged(false);
             this.context.router.goBack();
             // this.context.router.push('/clearance/classification/tradeitem');
           }
@@ -115,13 +115,13 @@ export default class TradeItemEdit extends Component {
     });
   }
   handleCancel = () => {
-    this.props.toggleItemMasterEnabled(false);
+    this.props.notifyFormChanged(false);
     this.context.router.goBack();
   }
 
   render() {
     const {
-      form, submitting, itemData, params, repo, itemMasterEnabled,
+      form, submitting, itemData, params, repo, formChanged,
     } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab={this.msg('tabClassification')} key="master">
@@ -157,7 +157,7 @@ export default class TradeItemEdit extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting} disabled={!itemMasterEnabled}>
+            <Button type="primary" icon="save" onClick={this.handleConfirm} loading={submitting} disabled={!formChanged}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

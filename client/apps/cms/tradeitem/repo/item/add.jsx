@@ -7,7 +7,7 @@ import { format } from 'client/common/i18n/helpers';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { createTradeItem, toggleItemMasterEnabled } from 'common/reducers/cmsTradeitem';
+import { createTradeItem, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import ItemMasterPane from './tabpane/itemMasterPane';
 import messages from '../../message.i18n';
 
@@ -21,15 +21,15 @@ const { TabPane } = Tabs;
   state => ({
     repo: state.cmsTradeitem.repo,
     submitting: state.cmsTradeitem.submitting,
-    itemMasterEnabled: state.cmsTradeitem.itemMasterEnabled,
+    formChanged: state.cmsTradeitem.formChanged,
   }),
-  { createTradeItem, toggleItemMasterEnabled }
+  { createTradeItem, notifyFormChanged }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
-@Form.create({ onValuesChange: props => props.toggleItemMasterEnabled(true) })
+@Form.create({ onValuesChange: props => props.notifyFormChanged(true) })
 export default class TradeItemAdd extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -53,7 +53,7 @@ export default class TradeItemAdd extends Component {
               message: '保存成功',
               description: '已提交至归类工作区待审核.',
             });
-            this.props.toggleItemMasterEnabled(false);
+            this.props.notifyFormChanged(false);
             this.context.router.goBack();
           }
         });
@@ -61,13 +61,13 @@ export default class TradeItemAdd extends Component {
     });
   }
   handleCancel = () => {
-    this.props.toggleItemMasterEnabled(false);
+    this.props.notifyFormChanged(false);
     this.context.router.goBack();
   }
 
   render() {
     const {
-      form, repo, submitting, itemMasterEnabled,
+      form, repo, submitting, formChanged,
     } = this.props;
     const tabs = [];
     tabs.push(<TabPane tab={this.msg('tabClassification')} key="master">
@@ -93,7 +93,7 @@ export default class TradeItemAdd extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting} disabled={!itemMasterEnabled}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting} disabled={!formChanged}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>
