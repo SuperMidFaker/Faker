@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { notification, Button, Breadcrumb, Layout, Select } from 'antd';
+import { Button, Breadcrumb, Icon, Layout, Popover, Select, Tag, Tooltip, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
@@ -13,7 +13,6 @@ import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import ModuleMenu from '../menu';
 import ItemDiffModal from './modal/itemDiffModal';
 import WsItemExportButton from './exportButton';
-import makeColumns from './commonCols';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
@@ -65,14 +64,101 @@ export default class InvalidItemsList extends React.Component {
     this.handleReload(null, null, { status: 'invalid' });
   }
   msg = formatMsg(this.props.intl)
-  columns = makeColumns({
-    msg: this.msg,
-    units: this.props.units,
-    tradeCountries: this.props.tradeCountries,
-    currencies: this.props.currencies,
-    withRepo: true,
-    withRepoItem: true,
-  }).concat([{
+  columns = [{
+    title: this.msg('标记'),
+    dataIndex: 'status',
+    width: 45,
+    align: 'center',
+    fixed: 'left',
+    render: (status, item) => {
+      let tooltip = '';
+      if (status === -1 || status === -2) {
+        tooltip = '税则已删除商品编码';
+      } else if (status === -3 || status === -4) {
+        tooltip = '税则已变更申报要素';
+      }
+      let iconInfo = { type: 'disconnect', color: '#f5222d' };
+      if (item.classified) {
+        iconInfo = { type: 'link', color: '#52c41a' };
+      }
+      return (<Popover content={tooltip} placement="right">
+        <Icon type={iconInfo.type} style={{ fontSize: 16, color: iconInfo.color }} />
+      </Popover>);
+    },
+  }, {
+    title: this.msg('repoOwner'),
+    dataIndex: 'repo_owner_name',
+    width: 200,
+  }, {
+    title: this.msg('copProductNo'),
+    dataIndex: 'cop_product_no',
+    width: 150,
+    render: (o, record) => {
+      const pn = o === record.src_product_no ? o :
+      <Popover content={record.src_product_no}>{o}</Popover>;
+      if (record.rejected) {
+        let reason = '';
+        if (record.reason) {
+          reason = `: ${record.reason}`;
+        }
+        return (
+          <Tooltip title={`审核拒绝${reason}`}>
+            <Tag color="grey">{pn}</Tag>
+          </Tooltip>);
+      }
+      return <span>{pn}</span>;
+    },
+  }, {
+    title: this.msg('gName'),
+    dataIndex: 'g_name',
+    width: 200,
+    render: (gname) => {
+      if (!gname) {
+        return <Tag color="red" />;
+      }
+      return gname;
+    },
+  }, {
+    title: this.msg('hscode'),
+    dataIndex: 'hscode',
+    width: 120,
+    render: (hscode) => {
+      if (!hscode) {
+        return (
+          <Tooltip title="错误的商品编码">
+            <Tag color="red">{hscode}</Tag>
+          </Tooltip>
+        );
+      }
+      return <span>{hscode}</span>;
+    },
+  }, {
+    title: this.msg('preHscode'),
+    dataIndex: 'item_hscode',
+    width: 120,
+    render: (itemhscode, record) => (record.status === -1 || record.status === -2 ?
+      <Tooltip title="最新税则已删除该税号"><Tag color="red"><span className="text-line-through">{itemhscode}</span></Tag></Tooltip> : <span>{itemhscode}</span>),
+  }, {
+    title: this.msg('gModel'),
+    dataIndex: 'g_model',
+    width: 400,
+    render: (model) => {
+      if (!model) {
+        return <Tag color="red" />;
+      }
+      return model;
+    },
+  }, {
+    title: this.msg('preGModel'),
+    dataIndex: 'item_g_model',
+    width: 400,
+    render: (pregmodel, record) => (record.status === -3 || record.status === -4 ?
+      <Tooltip title="最新税则已修改此税号的申报要素"><Tag color="red">{pregmodel}</Tag></Tooltip> : <span>{pregmodel}</span>),
+  }, {
+    title: this.msg('repoCreator'),
+    dataIndex: 'contribute_tenant_name',
+    width: 200,
+  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 140,
@@ -81,7 +167,7 @@ export default class InvalidItemsList extends React.Component {
       <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
       <RowAction onClick={this.handleItemDiff} icon="swap" tooltip={this.msg('diff')} row={record} />
     </span>),
-  }])
+  }]
   handleItemEdit = (record) => {
     const link = `/clearance/tradeitem/workspace/item/${record.id}`;
     this.context.router.push(link);

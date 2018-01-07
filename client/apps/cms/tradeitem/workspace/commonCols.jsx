@@ -14,15 +14,15 @@ export default function makeColumns({
     render: (status, item) => {
       if (status === 0) {
         if (item.classified) {
-          return (<Popover content="已完成归类" placement="right">
+          return (<Popover content="新商品货号已完成归类" placement="right">
             <span><Logixon type="new" style={{ fontSize: 16, color: '#52c41a' }} /></span>
           </Popover>);
         }
         let content;
         if (!(item.hscode && item.g_name && item.g_model)) {
-          content = '申报商品编码或品名或规范要素未完整';
+          content = '商品编码、中文品名或规范申报要素尚未填写完整';
         } else {
-          content = '填写规格型号与规范申报要素项数不一致';
+          content = '规格申报要素未按海关要求规范填写';
         }
         return (<Popover content={content} placement="right">
           <span><Logixon type="new" style={{ fontSize: 16, color: '#f5222d' }} /></span>
@@ -30,7 +30,7 @@ export default function makeColumns({
       } else if (status === 1) {
         const content = [];
         if (item.hscode !== item.item_hscode) {
-          content.push('HS编码不一致 ');
+          content.push('商品编码不一致 ');
         }
         if (item.g_name !== item.item_g_name) {
           content.push('中文品名不一致 ');
@@ -42,25 +42,21 @@ export default function makeColumns({
           <Icon type="exclamation-circle-o" style={{ fontSize: 16, color: '#f5222d' }} />
         </Popover>);
       } else if (status === 2) {
-        return (<Popover content="已设为标准值" placement="right">
+        return (<Popover content="已设为主数据" placement="right">
           <Icon type="pushpin" style={{ fontSize: 16, color: '#52c41a' }} />
         </Popover>);
       } else if (status === 3) {
         return '忽略';
       } else if (status === 4) {
-        return (<Popover content="已保留为分支" placement="right">
+        return (<Popover content="已保留为分支版本" placement="right">
           <Icon type="fork" style={{ fontSize: 16, color: '#52c41a' }} />
         </Popover>);
       } else if (status === -1 || status === -2 || status === -3 || status === -4) {
         let tooltip = '';
-        if (status === -1) {
-          tooltip = '当前归类HS编码失效';
-        } else if (status === -2) {
-          tooltip = '历史归类HS编码失效';
-        } else if (status === -3) {
-          tooltip = '当前归类HS编码对应规范申报要素变更';
-        } else if (status === -4) {
-          tooltip = '历史归类HS编码对应规范申报要素变更';
+        if (status === -1 || status === -2) {
+          tooltip = '税则已删除商品编码';
+        } else if (status === -3 || status === -4) {
+          tooltip = '税则已变更申报要素';
         }
         let iconInfo = { type: 'disconnect', color: '#f5222d' };
         if (item.classified) {
@@ -159,97 +155,6 @@ export default function makeColumns({
     width: 400,
     render: (pregmodel, record) => (pregmodel === record.g_model ? <span>{pregmodel}</span> : <Tag color="red">{pregmodel}</Tag>),
   }] : [])
-    /*
-    [{
-    title: msg('gUnit1'),
-    dataIndex: 'g_unit_1',
-    width: 100,
-    render: (o) => {
-      const unit = units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('gUnit2'),
-    dataIndex: 'g_unit_2',
-    width: 100,
-    render: (o) => {
-      const unit = units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('gUnit3'),
-    dataIndex: 'g_unit_3',
-    width: 100,
-    render: (o) => {
-      const unit = units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('unit1'),
-    dataIndex: 'unit_1',
-    width: 130,
-    render: (o) => {
-      const unit = units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('unit2'),
-    dataIndex: 'unit_2',
-    width: 130,
-    render: (o) => {
-      const unit = units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('fixedQty'),
-    dataIndex: 'fixed_qty',
-    width: 120,
-  }, {
-    title: msg('fixedUnit'),
-    dataIndex: 'fixed_unit',
-    width: 130,
-    render: (o) => {
-      const unit = units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('origCountry'),
-    dataIndex: 'origin_country',
-    width: 120,
-    render: (o) => {
-      const country = tradeCountries.filter(cur => cur.value === o)[0];
-      const text = country ? `${country.value}| ${country.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('unitNetWt'),
-    dataIndex: 'unit_net_wt',
-    width: 120,
-  }, {
-    title: msg('unitPrice'),
-    dataIndex: 'unit_price',
-    width: 120,
-  }, {
-    title: msg('currency'),
-    dataIndex: 'currency',
-    width: 120,
-    render: (o) => {
-      const currency = currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
-      return text;
-    },
-  }, {
-    title: msg('remark'),
-    dataIndex: 'remark',
-    width: 180,
-  }]
-  */
     .concat(withRepo ? [{
       title: msg('repoCreator'),
       dataIndex: 'contribute_tenant_name',
