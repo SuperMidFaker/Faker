@@ -116,7 +116,7 @@ export default class PermitItemModal extends Component {
       >
         <DataTable
           size="middle"
-          colFixed
+          noSetting
           columns={this.columns}
           dataSource={this.dataSource}
           rowkey="cop_product_no"

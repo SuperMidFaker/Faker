@@ -83,7 +83,7 @@ const messages = defineMessages({
     defaultMessage: '历史版本',
   },
   tradeItemHistoryAll: {
-    id: 'cms.tradeitem.history',
+    id: 'cms.tradeitem.history.all',
     defaultMessage: '全部',
   },
   tradeItemHistoryVersioned: {

@@ -114,8 +114,8 @@ export default class ConflictItemTable extends React.Component {
       const staged = record.classified && record.status === 4;
       return (<span>
         <RowAction onClick={this.handleItemDiff} icon="swap" label={this.msg('diff')} row={record} />
-        <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="pushpin-o" row={record} tooltip="设为标准值" disabled={standard} />
-        <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="保留为分支" disabled={staged} />
+        <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="pushpin-o" row={record} tooltip="设为主数据" disabled={standard} />
+        <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="保留为分支版本" disabled={staged} />
         <RowAction confirm={this.msg('deleteConfirm')} onConfirm={this.handleItemDel} icon="delete" row={record} />
       </span>);
     },

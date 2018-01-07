@@ -122,7 +122,7 @@ export default class ItemManageModal extends Component {
         visible={visible}
       >
         <DataTable
-          colFixed
+          noSetting
           columns={this.columns}
           dataSource={dataSource}
           loading={loading}

@@ -77,12 +77,17 @@ export default class RepoList extends React.Component {
     dataIndex: 'keep_version',
     width: 100,
     align: 'center',
-    render: (keep, repo) => (<Switch
-      size="small"
-      checked={keep}
-      disabled={repo.master_repo_id}
-      onChange={checked => this.handleVersionKeepChange(repo.id, checked)}
-    />),
+    render: (keep, repo) => {
+      if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
+        return (<Switch
+          size="small"
+          checked={keep}
+          disabled={repo.master_repo_id}
+          onChange={checked => this.handleVersionKeepChange(repo.id, checked)}
+        />);
+      }
+      return null;
+    },
   }, {
     title: this.msg('repoCreator'),
     dataIndex: 'creator_name',
