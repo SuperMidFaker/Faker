@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'VALIDATE_ENTRY_ID', 'VALIDATE_ENTRY_ID_SUCCEED', 'VALIDATE_ENTRY_ID_FAIL',
   'LOAD_DECL_LOGS', 'LOAD_DECL_LOGS_SUCCEED', 'LOAD_DECL_LOGS_FAIL',
   'UPLOAD_DECL', 'UPLOAD_DECL_SUCCEED', 'UPLOAD_DECL_FAIL',
+  'GET_DECL_TAX', 'GET_DECL_TAX_SUCCEED', 'GET_DECL_TAX_FAIL',
 ]);
 
 const initialState = {
@@ -527,6 +528,21 @@ export function uploadDecl(data) {
       endpoint: 'v1/cms/decl/upload',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function getDeclTax(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_DECL_TAX,
+        actionTypes.GET_DECL_TAX_SUCCEED,
+        actionTypes.GET_DECL_TAX_FAIL,
+      ],
+      endpoint: 'v1/cms/decl/tax/get',
+      method: 'get',
+      params: { preEntrySeqNo },
     },
   };
 }

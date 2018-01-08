@@ -9,7 +9,7 @@ import FormPane from 'client/components/FormPane';
 import { loadCiqDeclHead, searchOrganizations, searchWorldPorts, searchChinaPorts, searchCountries,
   setFixedCountry, setFixedOrganizations, setFixedWorldPorts, updateCiqHeadField, loadCiqParams,
   searchCustoms, toggleEntQualifiModal, loadEntQualif, ciqHeadChange, toggleReqDocuModal,
-  toggleAttDocuModal } from 'common/reducers/cmsCiqDeclare';
+  toggleAttDocuModal, searchCnCities } from 'common/reducers/cmsCiqDeclare';
 import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { loadBusinessUnits } from 'common/reducers/cmsResources';
 import { format } from 'client/common/i18n/helpers';
@@ -34,7 +34,6 @@ const ButtonGroup = Button.Group;
 function unique(arr) {
   const hash = {};
   const newArr = arr.reduce((item, next) => {
-    // hash[next.value] ? '' : hash[next.value] = true && item.push(next);
     if (!hash[next.value]) {
       hash[next.value] = true;
       item.push(next);
@@ -85,6 +84,11 @@ function unique(arr) {
     })),
     fixedWorldPorts: state.cmsCiqDeclare.ciqParams.fixedWorldPorts,
     entQualifs: state.cmsCiqDeclare.entQualifs,
+    cnCities: state.cmsCiqDeclare.ciqParams.cnCities.map(city => ({
+      value: city.code,
+      text: `${city.code} | ${city.cn_name}`,
+      search: `${city.code}${city.cn_name}`,
+    })),
   }),
   {
     loadCiqDeclHead,
@@ -105,6 +109,7 @@ function unique(arr) {
     ciqHeadChange,
     toggleReqDocuModal,
     toggleAttDocuModal,
+    searchCnCities,
   }
 )
 
@@ -178,6 +183,11 @@ export default class CiqDeclHeadPane extends React.Component {
   handleSearchCountries = (field, value) => {
     if (value) {
       this.props.searchCountries(value);
+    }
+  }
+  handleSearchCnCities = (field, value) => {
+    if (value) {
+      this.props.searchCnCities(value);
     }
   }
   handleSearchCus = (field, value) => {
@@ -285,7 +295,7 @@ export default class CiqDeclHeadPane extends React.Component {
   }
   render() {
     const {
-      ioType, organizations, countries, worldPorts, chinaPorts, ciqDeclHead, form,
+      ioType, organizations, countries, worldPorts, chinaPorts, ciqDeclHead, form, cnCities,
       form: { getFieldDecorator }, brokers, intl, businessUnits, customs,
     } = this.props;
     if (ciqDeclHead.app_cert_code) {
@@ -720,9 +730,8 @@ export default class CiqDeclHeadPane extends React.Component {
                 field="dest_code"
                 getFieldDecorator={form.getFieldDecorator}
                 formData={ciqDeclHead}
-                options={uniqueCout}
-                onSearch={this.handleSearchCountries}
-                onSelect={this.handleCountrySelect}
+                options={cnCities}
+                onSearch={this.handleSearchCnCities}
               />}
             {ioType === 'in' &&
             <FormRemoteSearchSelect
