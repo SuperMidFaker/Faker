@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Badge, Input, Layout, Tooltip, Table } from 'antd';
-import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow } from 'common/reducers/scofFlow';
+import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openSubFlowAuthModal, openFlow, reloadFlowList, editFlow } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
@@ -11,12 +11,11 @@ import CreateFlowModal from './modal/createFlowModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
 
-const Sider = Layout.Sider;
-const Search = Input.Search;
+const { Sider } = Layout;
+const { Search } = Input;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadFlowList({
-    tenantId: state.account.tenantId,
     filter: JSON.stringify({ ...state.scofFlow.listFilter, name: '' }),
     pageSize: state.scofFlow.flowList.pageSize,
     current: state.scofFlow.flowList.current,
@@ -27,7 +26,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     reload: state.scofFlow.reloadFlowList,
     loading: state.scofFlow.flowListLoading,
     thisFlow: state.scofFlow.currentFlow,
@@ -36,7 +34,13 @@ function fetchData({ state, dispatch }) {
     listCollapsed: state.scofFlow.listCollapsed,
   }),
   {
-    openCreateFlowModal, loadFlowList, loadFlowTrackingFields, openFlow, reloadFlowList, editFlow,
+    openCreateFlowModal,
+    loadFlowList,
+    loadFlowTrackingFields,
+    openFlow,
+    reloadFlowList,
+    editFlow,
+    openSubFlowAuthModal,
   }
 )
 @connectNav({
@@ -44,28 +48,20 @@ function fetchData({ state, dispatch }) {
   moduleName: 'scof',
 })
 export default class FlowList extends React.Component {
-  static defaultProps ={
-    listCollapsed: false,
-  }
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
-  }
-  state = {
-    selectedRowKeys: [],
   }
   componentWillMount() {
     this.props.loadFlowTrackingFields();
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.reload && nextProps.reload) {
-      let current = nextProps.flowList.current;
+      let { current } = nextProps.flowList;
       if (nextProps.flowList.pageSize * current === nextProps.flowList.totalCount) {
         current += 1;
       }
       this.props.reloadFlowList({
-        tenantId: nextProps.tenantId,
         filter: JSON.stringify(nextProps.listFilter),
         pageSize: nextProps.flowList.pageSize,
         current,
@@ -75,14 +71,22 @@ export default class FlowList extends React.Component {
   msg = formatMsg(this.props.intl)
 
   columns = [{
+    dataIndex: 'name',
     render: (o, record) => (<div>
-      <EditableCell value={record.name} cellTrigger={false} onSave={name => this.handleFlowNameChange(record.id, name)} />
+      <EditableCell
+        value={record.name}
+        cellTrigger={false}
+        onSave={name => this.handleFlowNameChange(record.id, name)}
+      />
+      {record.customer_tenant_id &&
       <div className="mdc-text-grey">
         {record.customer_tenant_id === -1 ?
           <Tooltip title="线下企业" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
           <Tooltip title="线上租户" placement="left"><Badge status="processing" />{record.customer}</Tooltip>}
-      </div>
+      </div>}
     </div>),
+  }, {
+    render: (/* o, record WHY unshown Button */) => <span />,
   }]
   handleTableChange = (pagination, filters, sorter) => {
     const params = {
@@ -94,7 +98,6 @@ export default class FlowList extends React.Component {
       },
     };
     this.props.loadFlowList({
-      tenantId: this.props.tenantId,
       filter: JSON.stringify(this.props.listFilter),
       pageSize: params.pageSize,
       current: params.current,
@@ -103,7 +106,6 @@ export default class FlowList extends React.Component {
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, name: value };
     this.props.loadFlowList({
-      tenantId: this.props.tenantId,
       filter: JSON.stringify(filter),
       pageSize: this.props.flowList.pageSize,
       current: 1,
@@ -119,12 +121,11 @@ export default class FlowList extends React.Component {
     this.props.editFlow(flowid, { name });
   }
   handleDelReload = () => {
-    let current = this.props.flowList.current;
+    let { current } = this.props.flowList;
     if (this.props.flowList.data.length === 1 && this.props.flowList.current > 1) {
       current -= 1;
     }
     this.props.loadFlowList({
-      tenantId: this.props.tenantId,
       filter: JSON.stringify(this.props.listFilter),
       pageSize: this.props.flowList.pageSize,
       current,
@@ -136,8 +137,14 @@ export default class FlowList extends React.Component {
     } = this.props;
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
-          collapsible collapsed={listCollapsed} collapsedWidth={0}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
+          collapsible
+          collapsed={listCollapsed}
+          collapsedWidth={0}
         >
           <div className="page-header">
             <Breadcrumb>
@@ -156,10 +163,20 @@ export default class FlowList extends React.Component {
               <Search onSearch={this.handleSearch} />
             </div>
             <div className="list-body">
-              <Table showHeader={false} size="middle" dataSource={flowList.data} columns={this.columns}
-                rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
-                rowKey="id" onChange={this.handleTableChange}
-                pagination={{ current: flowList.current, pageSize: flowList.pageSize, total: flowList.totalCount }}
+              <Table
+                showHeader={false}
+                size="middle"
+                dataSource={flowList.data}
+                columns={this.columns}
+                rowClassName={record => (thisFlow && record.id === thisFlow.id ? 'table-row-selected' : '')}
+                loading={loading}
+                rowKey="id"
+                onChange={this.handleTableChange}
+                pagination={{
+ current: flowList.current,
+pageSize: flowList.pageSize,
+                  total: flowList.totalCount,
+}}
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}

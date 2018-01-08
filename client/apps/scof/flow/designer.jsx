@@ -485,6 +485,9 @@ export default class FlowDesigner extends React.Component {
     });
   }
   handlePanelForm = (form) => { this.formhoc = form; }
+  handleSubFlowAuth = (flow) => {
+    this.props.openSubFlowAuthModal(flow.id);
+  }
   handleSave = () => {
     const activeItem = this.state.activeItem;
     if (activeItem && this.formhoc) {
@@ -563,6 +566,9 @@ export default class FlowDesigner extends React.Component {
               <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
                 {this.msg('saveFlow')}
               </Button>
+              <Tooltip placement="bottom" title="授权子流程提供方">
+                <Button icon="plus-square-o" onClick={this.handleSubFlowAuth} />
+              </Tooltip>
               <ButtonToggle
                 iconOn="setting"
                 iconOff="setting"

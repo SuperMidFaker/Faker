@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { Collapse, Form, Col, Row, Switch, Select, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
-import FlowTriggerTable from '../compose/flowTriggerTable';
 import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
 import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import * as Location from 'client/util/location';
+import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -85,7 +85,7 @@ export default class TMSShipmentPane extends Component {
     const { partnerId } = this.props;
     const { transitModeCode, goodsType } = this.state;
     this.props.loadTariffsByTransportInfo(partnerId, transitModeCode, goodsType).then((result) => {
-      this.setState({ tariffs: result.data });
+      this.setState({ tariffs: result.data || [] });
     });
   }
   handleTransitModeSelect = (value) => {
@@ -282,7 +282,8 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('consigner')}>
                 {getFieldDecorator('consigner_id', {
                   initialValue: model.consigner_id,
-                })(<Select allowClear
+                })(<Select
+                  allowClear
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
@@ -302,7 +303,8 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('consignee')}>
                 {getFieldDecorator('consignee_id', {
                   initialValue: model.consignee_id,
-                })(<Select allowClear
+                })(<Select
+                  allowClear
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 400 }}
                   optionFilterProp="children"
