@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Tabs } from 'antd';
+import { Card, Form, Row, Col, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FlowNodePanel from './compose/flowNodePanel';
 import ShipmentPane from './bizpane/tmsShipmentPane';
 import { formatMsg } from '../message.i18n';
 
-const TabPane = Tabs.TabPane;
+const {TabPane} = Tabs;
 
 @injectIntl
 @connect(state => ({
@@ -17,7 +17,7 @@ const TabPane = Tabs.TabPane;
 export default class FlowTmsNodePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
     onFormInit: PropTypes.func.isRequired,
   }
   componentDidMount() {

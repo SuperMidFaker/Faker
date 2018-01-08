@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Tabs } from 'antd';
+import { Card, Form, Row, Col, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadCwmBizParams } from 'common/reducers/scofFlow';
 import FlowNodePanel from './compose/flowNodePanel';
 import ReceivingPane from './bizpane/cwmReceivingPane';
 import { formatMsg } from '../message.i18n';
 
-const TabPane = Tabs.TabPane;
+const {TabPane} = Tabs;
 
 @injectIntl
 @connect(
@@ -22,7 +22,7 @@ const TabPane = Tabs.TabPane;
 export default class FlowCwmRecPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
     onFormInit: PropTypes.func.isRequired,
   }
   componentDidMount() {

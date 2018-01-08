@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Badge, Input, Layout, Tooltip, Table } from 'antd';
+import moment from 'moment';
+import { Breadcrumb, Button, Badge, Input, Modal, Layout, Tooltip, Tag } from 'antd';
 import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
 import DockPanel from 'client/components/DockPanel';
 import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
 import CreateFlowModal from './modal/createFlowModal';
 import FlowDesigner from './designer';
@@ -64,9 +66,6 @@ export default class FlowList extends React.Component {
   componentWillMount() {
     this.props.loadFlowTrackingFields();
   }
-  componentWillReceiveProps(nextProps) {
-
-  }
   msg = formatMsg(this.props.intl)
   flowDataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadFlowList(params),
@@ -105,7 +104,39 @@ export default class FlowList extends React.Component {
     render: (o, record) => (record.customer_tenant_id === -1 ?
       <Tooltip title="线下企业" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
       <Tooltip title="线上租户" placement="left"><Badge status="processing" />{record.customer}</Tooltip>),
-  }]
+  }, {
+    title: '状态',
+    dataIndex: 'status',
+    key: 'status',
+    width: 100,
+    render: o => (o === 1 ? <Tag color="green">已启用</Tag> : <Tag>已停用</Tag>),
+  }, {
+    title: '最后更新时间',
+    dataIndex: 'last_updated_date',
+    key: 'last_updated_date',
+    width: 140,
+    render(o) {
+      return moment(o).format('YYYY/MM/DD HH:mm');
+    },
+  }, {
+    title: '更新者',
+    dataIndex: 'last_updated_by',
+    key: 'last_updated_by',
+    width: 120,
+  }, {
+    title: '操作',
+    key: 'OP_COL',
+    width: 160,
+    render: (_, record) => (<span>
+      <RowAction onClick={this.handleDesignFlow} icon="form" label={this.msg('design')} row={record} />
+      {record.status === 1 ? <RowAction onClick={this.handleDisableFlow} icon="pause-circle" tooltip={this.msg('disable')} row={record} /> :
+      <RowAction onClick={this.handleEnableFlow} icon="play-circle" tooltip={this.msg('enable')} row={record} />
+      }
+      <RowAction onClick={this.handleConfigFlow} icon="setting" tooltip={this.msg('config')} row={record} />
+    </span>
+    ),
+  },
+  ]
   handleTableChange = (pagination, filters, sorter) => {
     const params = {
       pageSize: pagination.pageSize,
@@ -131,7 +162,7 @@ export default class FlowList extends React.Component {
       current: 1,
     });
   }
-  handleRowClick = (row) => {
+  handleDesignFlow = (row) => {
     this.props.toggleFlowDesigner(true);
     this.props.openFlow(row);
   }
@@ -182,14 +213,22 @@ export default class FlowList extends React.Component {
             loading={loading}
             rowKey="id"
             onRow={record => ({
-              onDoubleClick: () => { this.handleRowClick(record); },
+              onDoubleClick: () => { this.handleDesignFlow(record); },
             })}
           />
         </Content>
         <CreateFlowModal />
-        <DockPanel title={thisFlow && thisFlow.name} size="large" visible={designerVisible} onClose={() => this.props.toggleFlowDesigner(false)}>
+        <Modal
+          maskClosable={false}
+          title={thisFlow && thisFlow.name}
+          width="100%"
+          visible={designerVisible}
+          onCancel={() => this.props.toggleFlowDesigner(false)}
+          footer={null}
+          wrapClassName="fullscreen-modal"
+        >
           <FlowDesigner currentFlow={thisFlow} reloadOnDel={this.handleDelReload} />
-        </DockPanel>
+        </Modal>
       </Layout>
     );
   }

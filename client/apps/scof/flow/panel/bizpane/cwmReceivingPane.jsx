@@ -35,7 +35,7 @@ export default class CWMReceivingPane extends Component {
     const { form: { getFieldDecorator, getFieldValue }, model, recParams } = this.props;
     model.t_whse_code = model.t_whse_code || (model.whse_code && `${model.wh_ent_tenant_id}-${model.whse_code}`);
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={8}>

@@ -36,7 +36,7 @@ export default class CWMShippingPane extends Component {
     model.t_whse_code = model.t_whse_code || (model.whse_code && `${model.wh_ent_tenant_id}-${model.whse_code}`);
     // todo wh !bonded -> 只选非保
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={8}>

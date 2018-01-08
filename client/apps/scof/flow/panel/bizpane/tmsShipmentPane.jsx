@@ -247,7 +247,7 @@ export default class TMSShipmentPane extends Component {
     } = this.props;
     const { quoteNoField } = this.state;
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={8}>

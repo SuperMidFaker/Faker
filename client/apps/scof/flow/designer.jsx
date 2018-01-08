@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Modal, Button, Card, Collapse, Form, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
+import { Alert, Button, Collapse, Form, Popconfirm, Select, Table, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions,
   loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
@@ -13,6 +13,7 @@ import { uuidWithoutDash } from 'client/common/uuid';
 import { Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import ButtonToggle from 'client/components/ButtonToggle';
+import MagicCard from 'client/components/MagicCard';
 import AddTriggerModal from './panel/compose/addTriggerModal';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -21,7 +22,6 @@ import BizObjCWMRecPanel from './panel/bizObjCWMRecPanel';
 import BizObjCWMShipPanel from './panel/bizObjCWMShipPanel';
 import { formatMsg } from './message.i18n';
 
-const { Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Panel } = Collapse;
@@ -70,8 +70,6 @@ export default class FlowDesigner extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     submitting: PropTypes.bool,
-    graphLoading: PropTypes.bool.isRequired,
-    listCollapsed: PropTypes.bool.isRequired,
     reloadOnDel: PropTypes.func.isRequired,
     trackingFields: PropTypes.arrayOf(PropTypes.shape({
       field: PropTypes.string,
@@ -131,6 +129,7 @@ export default class FlowDesigner extends React.Component {
               onSave={nodeId => this.handleTrackNodeChange(nodeId, row.field)}
             />);
         }
+        return null;
       },
     }];
   }
@@ -553,34 +552,24 @@ export default class FlowDesigner extends React.Component {
     const { submitting } = this.props;
     const { activeItem } = this.state;
     const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
-    const title = (<div>
-      <span>商品归类数据对比</span>
-      <div className="toolbar-right">
-        <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
-          {this.msg('saveFlow')}
-        </Button>
-        <ButtonToggle
-          iconOn="setting"
-          iconOff="setting"
-          onClick={this.toggleRightSider}
-        />
-      </div>
-    </div>);
     return (
       <div>
-        <Card
-          title={this.msg('flowRelationGraph')}
-          bodyStyle={{ padding: 0, height: 240 }}
-          extra={<div className="toolbar-right">
+        <MagicCard
+          title={<div>
             {this.renderGraphToolbar()}
-            <Button icon="swap-right" onClick={this.handleAddEdge}>
+            <Button icon="swap-right" onClick={this.handleAddEdge} style={{ marginLeft: 8 }}>
               {this.msg('addFlowEdge')}
             </Button>
-            <Button icon="delete" onClick={this.handleRemoveItem} />
+            <Button icon="delete" onClick={this.handleRemoveItem} style={{ marginLeft: 8 }} />
+            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave} style={{ marginLeft: 8 }}>
+              {this.msg('saveFlow')}
+            </Button>
           </div>}
+          bodyStyle={{ padding: 0, height: 240 }}
+
         >
           <div id="flowchart" />
-        </Card>
+        </MagicCard>
         {activeItem &&
         <QueueAnim animConfig={[
                   { opacity: [1, 0], translateY: [0, 50] },

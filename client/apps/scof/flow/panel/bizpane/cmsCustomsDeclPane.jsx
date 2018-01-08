@@ -35,7 +35,7 @@ export default class CMSCustomsDeclPane extends Component {
       cmsDeclTypes = CMS_EXPORT_DECL_TYPE;
     }
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={12}>

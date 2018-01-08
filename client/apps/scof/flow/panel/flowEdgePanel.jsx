@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Card, Col, Select, Row, Input } from 'antd';
+import { Card, Form, Col, Select, Row, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import ConditionTable from './compose/conditionTable';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
+import ConditionTable from './compose/conditionTable';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const {Option} = Select;
 
 
 @injectIntl
