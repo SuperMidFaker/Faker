@@ -1,22 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
+import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadPartners } from 'common/reducers/partner';
+import { emptyFlows } from 'common/reducers/scofFlow';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
-import { loadPartners } from 'common/reducers/partner';
-import { emptyFlows } from 'common/reducers/scofFlow';
-import moment from 'moment';
 import OrderDockPanel from './docks/orderDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
@@ -25,14 +26,13 @@ import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
-import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
 import CreatorSelect from './creatorSelect';
 
 const { Content } = Layout;
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
+const { Option } = Select;
 
 // 暂时由 CreatorSelect 触发获取list
 function fetchData({ state, dispatch }) {
@@ -74,9 +74,8 @@ export default class OrderList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     username: PropTypes.string.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    orders: PropTypes.object.isRequired,
-    filters: PropTypes.object.isRequired,
+    orders: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
+    filters: PropTypes.shape({ progress: PropTypes.string, transfer: PropTypes.string }).isRequired,
     loadOrders: PropTypes.func.isRequired,
     removeOrder: PropTypes.func.isRequired,
     setClientForm: PropTypes.func.isRequired,
@@ -88,20 +87,19 @@ export default class OrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    starting: false,
   }
   componentWillMount() {
     this.props.hideDock();
   }
   componentDidMount() {
-    const query = this.props.location.query;
+    const { query } = this.props.location;
     if (query.shipmt_order_no) {
       this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
     }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
-      const query = this.props.location.query;
+      const { query } = this.props.location;
       const nextQuery = nextProps.location.query;
       if (query.shipmt_order_no !== nextQuery.shipmt_order_no) {
         this.props.loadOrderDetail(nextQuery.shipmt_order_no, this.props.tenantId);
@@ -128,7 +126,6 @@ export default class OrderList extends React.Component {
     });
   }
   handleStart = (row) => {
-    this.setState({ starting: true });
     const { loginId, username } = this.props;
     const shipmtOrderNo = row.shipmt_order_no;
     this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
@@ -138,7 +135,6 @@ export default class OrderList extends React.Component {
         message.info('订单流程已启动');
         this.handleTableLoad();
       }
-      this.setState({ starting: false });
     });
   }
   handleTableLoad = () => {
@@ -194,6 +190,9 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { loading, filters, partners } = this.props;
     const rowSelection = {
@@ -212,7 +211,8 @@ export default class OrderList extends React.Component {
       dataIndex: 'order_status',
       width: 160,
       render: (o, record) => {
-        const percent = record.flow_node_num ? Number((record.finish_num / record.flow_node_num * 100).toFixed(1)) : 0;
+        const percent = record.flow_node_num ?
+          Number(((record.finish_num / record.flow_node_num) * 100).toFixed(1)) : 0;
         return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={50} />
           <div className="mdc-text-grey table-font-small">
             <Tooltip title={`创建于${moment(record.created_date).format('YYYY.MM.DD HH:mm')}`} placement="bottom">
@@ -264,14 +264,13 @@ export default class OrderList extends React.Component {
               />
             </div>
           );
-        } else {
-          return (
-            <div />
-          );
         }
+        return (
+          <div />
+        );
       },
     }];
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadOrders(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -294,6 +293,25 @@ export default class OrderList extends React.Component {
       },
       remotes: this.props.orders,
     });
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={filters.order_no} />
+      <span />
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
+        value={filters.partnerId ? filters.partnerId : 'all'}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all">全部客户</Option>
+        {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+      </Select>
+      <span />
+      <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
+    </span>
+    );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>
@@ -313,9 +331,15 @@ export default class OrderList extends React.Component {
             <span />
             <RadioGroup onChange={this.handleTransferChange} value={filters.transfer}>
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value={SCOF_ORDER_TRANSFER[0].value}><Icon type={SCOF_ORDER_TRANSFER[0].icon} /> {SCOF_ORDER_TRANSFER[0].text}</RadioButton>
-              <RadioButton value={SCOF_ORDER_TRANSFER[1].value}><Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}</RadioButton>
-              <RadioButton value={SCOF_ORDER_TRANSFER[2].value}><Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}</RadioButton>
+              <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>
+                <Icon type={SCOF_ORDER_TRANSFER[0].icon} /> {SCOF_ORDER_TRANSFER[0].text}
+              </RadioButton>
+              <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>
+                <Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}
+              </RadioButton>
+              <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>
+                <Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}
+              </RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
@@ -325,27 +349,17 @@ export default class OrderList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={filters.order_no} />
-              <span />
-              <Select showSearch optionFilterProp="children" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} value={filters.partnerId ? filters.partnerId : 'all'}
-                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all">全部客户</Option>
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-              </Select>
-              <span />
-              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1500 }} />
-            </div>
-          </div>
+          <DataTable
+            noSetting
+            toolbarActions={toolbarActions}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            dataSource={dataSource}
+            columns={columns}
+            rowKey="id"
+            loading={loading}
+          />
         </Content>
         <OrderDockPanel reload={this.handleTableLoad} />
         <DelegationDockPanel />
