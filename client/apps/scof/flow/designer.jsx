@@ -12,7 +12,6 @@ import { loadFormRequires } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
-import ButtonToggle from 'client/components/ButtonToggle';
 import MagicCard from 'client/components/MagicCard';
 import AddTriggerModal from './panel/compose/addTriggerModal';
 import FlowEdgePanel from './panel/flowEdgePanel';
@@ -87,7 +86,6 @@ export default class FlowDesigner extends React.Component {
   constructor(...args) {
     super(...args);
     this.state = {
-      rightSidercollapsed: true,
       activeItem: null,
       trackDataSource: this.props.trackingFields.map(tf => ({
         title: tf.title, field: tf.field, module: tf.module, node: null,
@@ -372,15 +370,6 @@ export default class FlowDesigner extends React.Component {
     this.setState({ activeItem: null });
   }
   msg = formatMsg(this.props.intl)
-
-  toggle = () => {
-    this.props.toggleFlowList();
-  }
-  toggleRightSider = () => {
-    this.setState({
-      rightSidercollapsed: !this.state.rightSidercollapsed,
-    });
-  }
   handleActiveValidated = (item) => {
     const { activeItem } = this.state;
     if (activeItem && this.formhoc) {
@@ -552,29 +541,27 @@ export default class FlowDesigner extends React.Component {
     const { submitting } = this.props;
     const { activeItem } = this.state;
     const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
+    const title = (<div>
+      {this.renderGraphToolbar()}
+      <Button icon="swap-right" onClick={this.handleAddEdge} style={{ marginLeft: 8 }}>
+        {this.msg('addFlowEdge')}
+      </Button>
+      <Button icon="delete" onClick={this.handleRemoveItem} style={{ marginLeft: 8 }} />
+      <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave} style={{ marginLeft: 8 }}>
+        {this.msg('saveFlow')}
+      </Button>
+    </div>);
     return (
       <div>
-        <MagicCard
-          title={<div>
-            {this.renderGraphToolbar()}
-            <Button icon="swap-right" onClick={this.handleAddEdge} style={{ marginLeft: 8 }}>
-              {this.msg('addFlowEdge')}
-            </Button>
-            <Button icon="delete" onClick={this.handleRemoveItem} style={{ marginLeft: 8 }} />
-            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave} style={{ marginLeft: 8 }}>
-              {this.msg('saveFlow')}
-            </Button>
-          </div>}
-          bodyStyle={{ padding: 0, height: 240 }}
-
-        >
+        <MagicCard title={title} bodyStyle={{ padding: 0, height: 240 }}>
           <div id="flowchart" />
         </MagicCard>
         {activeItem &&
-        <QueueAnim animConfig={[
-                  { opacity: [1, 0], translateY: [0, 50] },
-                  { opacity: [1, 0], translateY: [0, -50] },
-                ]}
+        <QueueAnim
+          animConfig={[
+            { opacity: [1, 0], translateY: [0, 50] },
+            { opacity: [1, 0], translateY: [0, -50] },
+          ]}
         >
           {NodePanel && activeItem.get('type') === 'node' &&
           <NodePanel
@@ -582,8 +569,7 @@ export default class FlowDesigner extends React.Component {
             node={activeItem}
             graph={this.graph}
             key={activeItem.get('model').kind}
-          />
-                }
+          />}
           {activeItem.get('type') === 'edge' &&
           <FlowEdgePanel
             model={activeItem.get('model')}
@@ -593,10 +579,8 @@ export default class FlowDesigner extends React.Component {
             onUpdate={this.handleCondUpdate}
             onDel={this.handleCondDel}
             key="edge"
-          />
-                }
-        </QueueAnim>
-              }
+          />}
+        </QueueAnim>}
         <AddTriggerModal
           onModalOK={this.handleTriggerModalChange}
           kind={activeItem && activeItem.get('model').kind}

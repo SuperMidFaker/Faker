@@ -3,24 +3,24 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Collapse, Form, Input, Radio, Col, Row, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FlowTriggerTable from '../compose/flowTriggerTable';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
-const Panel = Collapse.Panel;
-const Option = Select.Option;
+const { Panel } = Collapse;
+const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(state => ({
   recParams: state.scofFlow.cwmParams,
-}), )
+}))
 export default class CWMReceivingPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   handleBondedChange = (ev) => {
@@ -41,7 +41,8 @@ export default class CWMReceivingPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('cwmWarehouse')}>
                 {getFieldDecorator('t_whse_code', {
-                  initialValue: model.t_whse_code, // clear still t_whse_code undefined, this still exist
+                  initialValue: model.t_whse_code,
+                  // clear still t_whse_code undefined, this still exist
                   rules: [{ required: true }],
                 })(<Select showSearch allowClear optionFilterProp="children">
                   {recParams.whses.map(wh =>
@@ -61,7 +62,8 @@ export default class CWMReceivingPane extends Component {
                 {getFieldDecorator('asn_type', {
                   initialValue: model.asn_type,
                 })(<Select placeholder="ASN类型">
-                  {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+                  {CWM_ASN_TYPES.map(cat =>
+                    <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>
@@ -83,7 +85,10 @@ export default class CWMReceivingPane extends Component {
                   {getFieldDecorator('bonded_reg_type', {
                     initialValue: model.bonded_reg_type,
                   })(<RadioGroup>
-                    {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                    {CWM_ASN_BONDED_REGTYPES.map(cabr =>
+                      (<RadioButton value={cabr.value} key={cabr.value}>
+                        {cabr.ftztext}
+                      </RadioButton>))}
                   </RadioGroup>)}
                 </FormItem>
               </Col>

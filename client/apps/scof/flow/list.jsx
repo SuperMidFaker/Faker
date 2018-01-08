@@ -1,27 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Badge, Input, Modal, Layout, Tooltip, Tag } from 'antd';
-import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
+import { Breadcrumb, Button, Badge, Input, Modal, Layout, Select, Tooltip, Tag } from 'antd';
+import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openSubFlowAuthModal,
+  openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
-import DockPanel from 'client/components/DockPanel';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
 import CreateFlowModal from './modal/createFlowModal';
+// import SubFlowAuthModal from './modal/subFlowAuthModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Search } = Input;
+const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadFlowList({
-    tenantId: state.account.tenantId,
     filter: JSON.stringify({ ...state.scofFlow.listFilter, name: '' }),
     pageSize: state.scofFlow.flowList.pageSize,
     current: state.scofFlow.flowList.current,
@@ -32,7 +32,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     reload: state.scofFlow.reloadFlowList,
     loading: state.scofFlow.flowListLoading,
     thisFlow: state.scofFlow.currentFlow,
@@ -40,6 +39,7 @@ function fetchData({ state, dispatch }) {
     flowList: state.scofFlow.flowList,
     listCollapsed: state.scofFlow.listCollapsed,
     designerVisible: state.scofFlow.flowDesigner.visible,
+    partners: state.partner.partners,
   }),
   {
     openCreateFlowModal,
@@ -49,6 +49,7 @@ function fetchData({ state, dispatch }) {
     reloadFlowList,
     editFlow,
     toggleFlowDesigner,
+    openSubFlowAuthModal,
   }
 )
 @connectNav({
@@ -58,10 +59,6 @@ function fetchData({ state, dispatch }) {
 export default class FlowList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-  }
-  state = {
-    selectedRowKeys: [],
   }
   componentWillMount() {
     this.props.loadFlowTrackingFields();
@@ -81,7 +78,6 @@ export default class FlowList extends React.Component {
     getParams: (pagination, tblfilters) => {
       const newfilters = { ...this.state.flowFilter, ...tblfilters[0] };
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         current: pagination.current,
         filter: JSON.stringify(newfilters),
@@ -132,7 +128,7 @@ export default class FlowList extends React.Component {
       {record.status === 1 ? <RowAction onClick={this.handleDisableFlow} icon="pause-circle" tooltip={this.msg('disable')} row={record} /> :
       <RowAction onClick={this.handleEnableFlow} icon="play-circle" tooltip={this.msg('enable')} row={record} />
       }
-      <RowAction onClick={this.handleConfigFlow} icon="setting" tooltip={this.msg('config')} row={record} />
+      <RowAction onClick={this.handleSubFlowAuth} icon="setting" tooltip={this.msg('config')} row={record} />
     </span>
     ),
   },
@@ -147,7 +143,6 @@ export default class FlowList extends React.Component {
       },
     };
     this.props.loadFlowList({
-      tenantId: this.props.tenantId,
       filter: JSON.stringify(this.props.listFilter),
       pageSize: params.pageSize,
       current: params.current,
@@ -156,7 +151,6 @@ export default class FlowList extends React.Component {
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, name: value };
     this.props.loadFlowList({
-      tenantId: this.props.tenantId,
       filter: JSON.stringify(filter),
       pageSize: this.props.flowList.pageSize,
       current: 1,
@@ -173,23 +167,38 @@ export default class FlowList extends React.Component {
     this.props.editFlow(flowid, { name });
   }
   handleDelReload = () => {
-    let current = this.props.flowList.current;
+    let { current } = this.props.flowList;
     if (this.props.flowList.data.length === 1 && this.props.flowList.current > 1) {
       current -= 1;
     }
     this.props.loadFlowList({
-      tenantId: this.props.tenantId,
       filter: JSON.stringify(this.props.listFilter),
       pageSize: this.props.flowList.pageSize,
       current,
     });
   }
+  handleSubFlowAuth = (flow) => {
+    this.props.openSubFlowAuthModal(flow.id);
+  }
   render() {
     const {
-      thisFlow, flowList, loading, designerVisible,
+      thisFlow, flowList, loading, designerVisible, partners, listFilter,
     } = this.props;
     this.flowDataSource.remotes = flowList;
-    const toolbarActions = (<Search onSearch={this.handleSearch} style={{ width: 200 }} />);
+    const toolbarActions = (<span>
+      <Search onSearch={this.handleSearch} style={{ width: 200 }} />
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 200 }}
+        onChange={this.handleClientSelectChange}
+        value={listFilter.partnerId}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+      >
+        {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+      </Select>
+    </span>);
     return (
       <Layout>
         <PageHeader>

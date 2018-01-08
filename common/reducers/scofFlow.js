@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'TOGGLE_FLOW_LIST',
   'OPEN_CREATE_FLOW_MODAL', 'CLOSE_CREATE_FLOW_MODAL',
+  'OPEN_SUBFLOW_AUTHMODAL', 'CLOSE_SUBFLOW_AUTHMODAL',
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
@@ -50,6 +51,9 @@ const initialState = {
     current: 1,
     data: [],
   },
+  subFlowAuthModal: {
+    visible: false,
+  },
   flowListLoading: false,
   reloadFlowList: false,
   submitting: false,
@@ -95,6 +99,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleFlowModal: true };
     case actionTypes.CLOSE_CREATE_FLOW_MODAL:
       return { ...state, visibleFlowModal: false };
+    case actionTypes.OPEN_SUBFLOW_AUTHMODAL:
+      return { ...state, subFlowAuthModal: { ...state.subFlowAuthModal, visible: true } };
+    case actionTypes.CLOSE_SUBFLOW_AUTHMODAL:
+      return { ...state, subFlowAuthModal: initialState.subFlowAuthModal };
     case actionTypes.SAVE_FLOW:
       return { ...state, submitting: true };
     case actionTypes.SAVE_FLOW_FAIL:
@@ -160,7 +168,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EMPTY_FLOWS:
       return { ...state, partnerFlows: [], cmsQuotes: [] };
     case actionTypes.EDIT_FLOW_SUCCEED:
-      return { ...state, currentFlow: state.currentFlow && { ...state.currentFlow, ...action.data.flow } };
+      return {
+        ...state,
+        currentFlow: state.currentFlow &&
+        { ...state.currentFlow, ...action.data.flow },
+      };
     case actionTypes.LOAD_FLTRACK_SUCCEED:
       return { ...state, trackingFields: action.result.data };
     case actionTypes.TOGGLE_ADD_LINE_MODAL:
@@ -238,6 +250,18 @@ export function openCreateFlowModal() {
 export function closeCreateFlowModal() {
   return {
     type: actionTypes.CLOSE_CREATE_FLOW_MODAL,
+  };
+}
+
+export function openSubFlowAuthModal() {
+  return {
+    type: actionTypes.OPEN_SUBFLOW_AUTHMODAL,
+  };
+}
+
+export function closeSubFlowAuthModal() {
+  return {
+    type: actionTypes.CLOSE_SUBFLOW_AUTHMODAL,
   };
 }
 

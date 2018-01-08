@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Collapse, Form, Col, Row, Radio, Select, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import FlowTriggerTable from '../compose/flowTriggerTable';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
-const Panel = Collapse.Panel;
-const Option = Select.Option;
+const { Panel } = Collapse;
+const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -20,7 +20,7 @@ const RadioGroup = Radio.Group;
 export default class CWMShippingPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   handleBondedChange = (ev) => {
@@ -54,7 +54,8 @@ export default class CWMShippingPane extends Component {
                 {getFieldDecorator('so_type', {
                   initialValue: model.so_type,
                 })(<Select placeholder="SO类型" allowClear>
-                  {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+                  {CWM_SO_TYPES.map(cat =>
+                    <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>
@@ -76,7 +77,10 @@ export default class CWMShippingPane extends Component {
                   {getFieldDecorator('bonded_reg_type', {
                     initialValue: model.bonded_reg_type,
                   })(<RadioGroup>
-                    {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                    {CWM_SO_BONDED_REGTYPES.map(cabr =>
+                      (<RadioButton value={cabr.value} key={cabr.value}>
+                        {cabr.ftztext}
+                      </RadioButton>))}
                   </RadioGroup>)}
                 </FormItem>
               </Col>

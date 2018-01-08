@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { Collapse, Form, Col, Row, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { loadEpList } from 'common/reducers/scofFlow';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
-import { loadEpList } from 'common/reducers/scofFlow';
+
 
 const FormItem = Form.Item;
-const Panel = Collapse.Panel;
-const Option = Select.Option;
+const { Panel } = Collapse;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -24,14 +25,22 @@ const Option = Select.Option;
 export default class CMSDelegationPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
   }
   componentWillMount() {
-    this.queryEpList(this.props.tenantId, this.props.model.customs_partner_id, this.props.bizDelegation.customsBrokers);
+    this.queryEpList(
+      this.props.tenantId,
+      this.props.model.customs_partner_id,
+      this.props.bizDelegation.customsBrokers
+    );
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.bizDelegation !== this.props.bizDelegation) {
-      this.queryEpList(nextProps.tenantId, nextProps.model.customs_partner_id, nextProps.bizDelegation.customsBrokers);
+      this.queryEpList(
+        nextProps.tenantId,
+        nextProps.model.customs_partner_id,
+        nextProps.bizDelegation.customsBrokers
+      );
     }
   }
   msg = formatMsg(this.props.intl)
@@ -58,7 +67,8 @@ export default class CMSDelegationPane extends Component {
                   initialValue: model.decl_port,
                 })(<Select allowClear showSearch optionFilterProp="children">
                   {
-                    declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
+                    declPorts.map(dp =>
+                      <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -96,7 +106,9 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     customsBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>)
+                      (<Option value={cb.partner_id} key={cb.partner_id}>
+                        {cb.customs_code}|{cb.name}
+                      </Option>))
                   }
                 </Select>)}
               </FormItem>
@@ -108,7 +120,9 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     ciqBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>)
+                      (<Option value={cb.partner_id} key={cb.partner_id}>
+                        {cb.customs_code}|{cb.name}
+                      </Option>))
                   }
                 </Select>)}
               </FormItem>
@@ -118,7 +132,8 @@ export default class CMSDelegationPane extends Component {
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
                 })(<Select allowClear>
-                  {cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)}
+                  {cmsQuotes.map(cq =>
+                    <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>
