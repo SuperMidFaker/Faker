@@ -42,7 +42,7 @@ export default class FlowNodePanel extends Component {
     const { form: { getFieldDecorator }, node, serviceTeam } = this.props;
     const model = node.get('model');
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']} style={{ marginTop: 2 }} >
         <Panel header={this.msg('bizProperties')} key="properties">
           <FormItem label={this.msg('nodeName')}>
             {getFieldDecorator('name', {

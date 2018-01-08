@@ -7,9 +7,9 @@ import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'co
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -21,7 +21,7 @@ const RadioButton = Radio.Button;
 export default class CMSCustomsDeclPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   render() {
@@ -35,7 +35,7 @@ export default class CMSCustomsDeclPane extends Component {
       cmsDeclTypes = CMS_EXPORT_DECL_TYPE;
     }
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={12}>
@@ -43,7 +43,8 @@ export default class CMSCustomsDeclPane extends Component {
                 {getFieldDecorator('ep_dec_type', {
                   initialValue: model.ep_dec_type,
                 })(<Select allowClear>
-                  {cmsDeclTypes.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
+                  {cmsDeclTypes.map(item =>
+                    (<Option key={item.value} value={item.value}>{item.text}</Option>))}
                 </Select>)}
               </FormItem>
             </Col>
@@ -54,7 +55,11 @@ export default class CMSCustomsDeclPane extends Component {
                 })(<RadioGroup>
                   {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
                       const channel = CMS_DECL_CHANNEL[declChannel];
-                      return <RadioButton value={channel.value} key={channel.value} disabled={channel.disabled}>{channel.text}</RadioButton>;
+                      return (<RadioButton
+                        value={channel.value}
+                        key={channel.value}
+                        disabled={channel.disabled}
+                      >{channel.text}</RadioButton>);
                     })}
                 </RadioGroup>)}
               </FormItem>
@@ -65,7 +70,8 @@ export default class CMSCustomsDeclPane extends Component {
                   initialValue: model.ep_app_uuid,
                 })(<Select allowClear>
                   {
-                    eplist.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
+                    eplist.map(item =>
+                      (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
                   }
                 </Select>)}
               </FormItem>
@@ -77,7 +83,8 @@ export default class CMSCustomsDeclPane extends Component {
                   initialValue: model.ep_app_uuid,
                 })(<Select allowClear>
                   {
-                    qplist.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
+                    qplist.map(item =>
+                      (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
                   }
                 </Select>)}
               </FormItem>

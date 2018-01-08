@@ -7,8 +7,8 @@ import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
-const Panel = Collapse.Panel;
-const Option = Select.Option;
+const { Panel } = Collapse;
+const { Option } = Select;
 
 @injectIntl
 @connect(state => ({
@@ -17,13 +17,13 @@ const Option = Select.Option;
 export default class CMSDeclManifestPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, model, bizManifest: { templates } } = this.props;
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={8}>

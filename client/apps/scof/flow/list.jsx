@@ -1,18 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Badge, Input, Layout, Tooltip, Table } from 'antd';
-import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openSubFlowAuthModal, openFlow, reloadFlowList, editFlow } from 'common/reducers/scofFlow';
+import moment from 'moment';
+import { Breadcrumb, Button, Badge, Input, Modal, Layout, Select, Tooltip, Tag } from 'antd';
+import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openSubFlowAuthModal,
+  openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
 import CreateFlowModal from './modal/createFlowModal';
+// import SubFlowAuthModal from './modal/subFlowAuthModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
 
-const { Sider } = Layout;
+const { Content } = Layout;
 const { Search } = Input;
+const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadFlowList({
@@ -32,6 +38,8 @@ function fetchData({ state, dispatch }) {
     listFilter: state.scofFlow.listFilter,
     flowList: state.scofFlow.flowList,
     listCollapsed: state.scofFlow.listCollapsed,
+    designerVisible: state.scofFlow.flowDesigner.visible,
+    partners: state.partner.partners,
   }),
   {
     openCreateFlowModal,
@@ -40,6 +48,7 @@ function fetchData({ state, dispatch }) {
     openFlow,
     reloadFlowList,
     editFlow,
+    toggleFlowDesigner,
     openSubFlowAuthModal,
   }
 )
@@ -50,44 +59,80 @@ function fetchData({ state, dispatch }) {
 export default class FlowList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    listCollapsed: PropTypes.bool.isRequired,
   }
   componentWillMount() {
     this.props.loadFlowTrackingFields();
   }
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.reload && nextProps.reload) {
-      let { current } = nextProps.flowList;
-      if (nextProps.flowList.pageSize * current === nextProps.flowList.totalCount) {
-        current += 1;
-      }
-      this.props.reloadFlowList({
-        filter: JSON.stringify(nextProps.listFilter),
-        pageSize: nextProps.flowList.pageSize,
-        current,
-      });
-    }
-  }
   msg = formatMsg(this.props.intl)
-
+  flowDataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadFlowList(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination, tblfilters) => {
+      const newfilters = { ...this.props.listFilter, ...tblfilters[0] };
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        filter: JSON.stringify(newfilters),
+      };
+      return params;
+    },
+    remotes: this.props.flowList,
+  })
   columns = [{
+    title: this.msg('流程名称'),
     dataIndex: 'name',
-    render: (o, record) => (<div>
-      <EditableCell
-        value={record.name}
-        cellTrigger={false}
-        onSave={name => this.handleFlowNameChange(record.id, name)}
-      />
-      {record.customer_tenant_id &&
-      <div className="mdc-text-grey">
-        {record.customer_tenant_id === -1 ?
-          <Tooltip title="线下企业" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
-          <Tooltip title="线上租户" placement="left"><Badge status="processing" />{record.customer}</Tooltip>}
-      </div>}
-    </div>),
+    render: (o, record) => (<EditableCell
+      value={record.name}
+      cellTrigger={false}
+      onSave={name => this.handleFlowNameChange(record.id, name)}
+    />),
   }, {
-    render: (/* o, record WHY unshown Button */) => <span />,
-  }]
+    title: this.msg('关联客户'),
+    dataIndex: 'customer',
+    render: (o, record) => (record.customer_tenant_id === -1 ?
+      <Tooltip title="线下企业" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
+      <Tooltip title="线上租户" placement="left"><Badge status="processing" />{record.customer}</Tooltip>),
+  }, {
+    title: '状态',
+    dataIndex: 'status',
+    key: 'status',
+    width: 100,
+    render: o => (o === 1 ? <Tag color="green">已启用</Tag> : <Tag>已停用</Tag>),
+  }, {
+    title: '最后更新时间',
+    dataIndex: 'last_updated_date',
+    key: 'last_updated_date',
+    width: 140,
+    render(o) {
+      return moment(o).format('YYYY/MM/DD HH:mm');
+    },
+  }, {
+    title: '更新者',
+    dataIndex: 'last_updated_by',
+    key: 'last_updated_by',
+    width: 120,
+  }, {
+    title: '操作',
+    key: 'OP_COL',
+    width: 160,
+    render: (_, record) => (<span>
+      <RowAction onClick={this.handleDesignFlow} icon="form" label={this.msg('design')} row={record} />
+      {record.status === 1 ? <RowAction onClick={this.handleDisableFlow} icon="pause-circle" tooltip={this.msg('disable')} row={record} /> :
+      <RowAction onClick={this.handleEnableFlow} icon="play-circle" tooltip={this.msg('enable')} row={record} />
+      }
+      <RowAction onClick={this.handleSubFlowAuth} icon="setting" tooltip={this.msg('config')} row={record} />
+    </span>
+    ),
+  },
+  ]
   handleTableChange = (pagination, filters, sorter) => {
     const params = {
       pageSize: pagination.pageSize,
@@ -111,7 +156,8 @@ export default class FlowList extends React.Component {
       current: 1,
     });
   }
-  handleRowClick = (row) => {
+  handleDesignFlow = (row) => {
+    this.props.toggleFlowDesigner(true);
     this.props.openFlow(row);
   }
   handleCreateFlow = () => {
@@ -131,63 +177,67 @@ export default class FlowList extends React.Component {
       current,
     });
   }
+  handleSubFlowAuth = (flow) => {
+    this.props.openSubFlowAuthModal(flow.id);
+  }
   render() {
     const {
-      thisFlow, flowList, loading, listCollapsed,
+      thisFlow, flowList, loading, designerVisible, partners, listFilter,
     } = this.props;
+    this.flowDataSource.remotes = flowList;
+    const toolbarActions = (<span>
+      <Search onSearch={this.handleSearch} style={{ width: 200 }} />
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 200 }}
+        onChange={this.handleClientSelectChange}
+        value={listFilter.partnerId}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+      >
+        {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+      </Select>
+    </span>);
     return (
       <Layout>
-        <Sider
-          width={320}
-          className="menu-sider"
-          key="sider"
-          trigger={null}
-          collapsible
-          collapsed={listCollapsed}
-          collapsedWidth={0}
-        >
-          <div className="page-header">
+        <PageHeader>
+          <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('flowName')}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="pull-right">
-              <Tooltip placement="bottom" title={this.msg('createFlow')}>
-                <Button type="primary" shape="circle" icon="plus" onClick={this.handleCreateFlow} />
-              </Tooltip>
-            </div>
-          </div>
-          <div className="left-sider-panel">
-            <div className="toolbar">
-              <Search onSearch={this.handleSearch} />
-            </div>
-            <div className="list-body">
-              <Table
-                showHeader={false}
-                size="middle"
-                dataSource={flowList.data}
-                columns={this.columns}
-                rowClassName={record => (thisFlow && record.id === thisFlow.id ? 'table-row-selected' : '')}
-                loading={loading}
-                rowKey="id"
-                onChange={this.handleTableChange}
-                pagination={{
- current: flowList.current,
-pageSize: flowList.pageSize,
-                  total: flowList.totalCount,
-}}
-                onRow={record => ({
-                  onClick: () => { this.handleRowClick(record); },
-                })}
-              />
-            </div>
-          </div>
-        </Sider>
+          </PageHeader.Title>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateFlow} >{this.msg('createFlow')}</Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content">
+          <DataTable
+            toolbarActions={toolbarActions}
+            dataSource={this.flowDataSource}
+            columns={this.columns}
+            rowClassName={record => (thisFlow && record.id === thisFlow.id ? 'table-row-selected' : '')}
+            loading={loading}
+            rowKey="id"
+            onRow={record => ({
+              onDoubleClick: () => { this.handleDesignFlow(record); },
+            })}
+          />
+        </Content>
         <CreateFlowModal />
-        {thisFlow &&
-        <FlowDesigner currentFlow={thisFlow} reloadOnDel={this.handleDelReload} />
-        }
+        <Modal
+          maskClosable={false}
+          title={thisFlow && thisFlow.name}
+          width="100%"
+          visible={designerVisible}
+          onCancel={() => this.props.toggleFlowDesigner(false)}
+          footer={null}
+          wrapClassName="fullscreen-modal"
+        >
+          <FlowDesigner currentFlow={thisFlow} reloadOnDel={this.handleDelReload} />
+        </Modal>
       </Layout>
     );
   }
