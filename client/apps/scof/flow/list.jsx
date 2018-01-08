@@ -76,7 +76,7 @@ export default class FlowList extends React.Component {
       showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination, tblfilters) => {
-      const newfilters = { ...this.state.flowFilter, ...tblfilters[0] };
+      const newfilters = { ...this.props.listFilter, ...tblfilters[0] };
       const params = {
         pageSize: pagination.pageSize,
         current: pagination.current,
