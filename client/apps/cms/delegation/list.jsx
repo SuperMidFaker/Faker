@@ -542,10 +542,10 @@ export default class DelegationList extends Component {
           }
           return (
             <span>
-              <PrivilegeCover module="clearance" feature={clearType} action="edit">
+              <PrivilegeCover module="clearance" feature="delegation" action="edit">
                 <OperatorPopover partenrId={record.partnerId} record={record} handleAccept={this.handleDelegationAccept} module="clearance" />
               </PrivilegeCover>
-              {editOverlay && <PrivilegeCover module="clearance" feature={clearType} action="edit">
+              {editOverlay && <PrivilegeCover module="clearance" feature="delegation" action="edit">
                 <Dropdown overlay={editOverlay}>
                   <a role="presentation"><Icon type="down" /></a>
                 </Dropdown>
@@ -611,7 +611,7 @@ export default class DelegationList extends Component {
           }
           return (
             <span>
-              <PrivilegeCover module="clearance" feature={clearType} action="create">
+              <PrivilegeCover module="clearance" feature="delegation" action="create">
                 {manifestOp}
               </PrivilegeCover>
               {dispatchOverlay && <RowAction overlay={dispatchOverlay} />}
@@ -619,7 +619,7 @@ export default class DelegationList extends Component {
         } else if (record.status === CMS_DELEGATION_STATUS.declaring || // 4. 申报
                       record.status === CMS_DELEGATION_STATUS.released) { // 5. 放行
           return (
-            <PrivilegeCover module="clearance" feature={clearType} action="create">
+            <PrivilegeCover module="clearance" feature="delegation" action="create">
               <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
             </PrivilegeCover>);
         }
