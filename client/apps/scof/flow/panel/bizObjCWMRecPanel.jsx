@@ -35,13 +35,13 @@ export default class FlowCwmRecPanel extends Component {
     const model = node.get('model');
     return (
       <Form layout="vertical" className="form-layout-compact">
-        <Row gutter={16}>
-          <Col sm={24} md={8}>
+        <Row gutter={8}>
+          <Col sm={24} md={6}>
             <Card title={this.msg('flowNodeCWMRec')} bodyStyle={{ padding: 0 }}>
               <FlowNodePanel form={form} node={node} graph={graph} />
             </Card>
           </Col>
-          <Col sm={24} md={16}>
+          <Col sm={24} md={18}>
             <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="cwmReceiving">
                 <TabPane tab={this.msg('cwmRecAsn')} key="cwmReceiving">

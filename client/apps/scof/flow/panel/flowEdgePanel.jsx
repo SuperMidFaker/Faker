@@ -28,7 +28,7 @@ export default class FlowEdgePanel extends Component {
     return (
       <Form layout="vertical" className="form-layout-compact">
         <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
-          <Row gutter={16}>
+          <Row gutter={8}>
             <Col sm={24} md={8}>
               <Col sm={24}>
                 <FormItem label={this.msg('sourceNode')}>
@@ -53,8 +53,12 @@ export default class FlowEdgePanel extends Component {
                 条件
               </span>}
               >
-                <ConditionTable conditions={model.conditions} bizObjects={NODE_BIZ_OBJECTS[source.kind]}
-                  onAdd={onAdd} onUpdate={onUpdate} onDel={onDel}
+                <ConditionTable
+                  conditions={model.conditions}
+                  bizObjects={NODE_BIZ_OBJECTS[source.kind]}
+                  onAdd={onAdd}
+                  onUpdate={onUpdate}
+                  onDel={onDel}
                 />
               </FormItem>
             </Col>

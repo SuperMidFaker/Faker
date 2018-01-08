@@ -52,13 +52,13 @@ export default class FlowCmsNodePanel extends Component {
     const title = model.kind === 'export' ? this.msg('flowNodeExport') : this.msg('flowNodeImport');
     return (
       <Form layout="vertical" className="form-layout-compact">
-        <Row gutter={16}>
-          <Col sm={24} md={8}>
+        <Row gutter={8}>
+          <Col sm={24} md={6}>
             <Card title={title} bodyStyle={{ padding: 0 }}>
               <FlowNodePanel form={form} node={node} graph={graph} />
             </Card>
           </Col>
-          <Col sm={24} md={16}>
+          <Col sm={24} md={18}>
             <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="objDelegation">
                 <TabPane tab={this.msg('cmsDelegation')} key="objDelegation">
