@@ -24,6 +24,18 @@ const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const { Option } = Select;
 
+function unique(arr) {
+  const hash = {};
+  const newArr = arr.reduce((item, next) => {
+    if (!hash[next.country_code]) {
+      hash[next.country_code] = true;
+      item.push(next);
+    }
+    return item;
+  }, []);
+  return newArr;
+}
+
 @connect(
   state => ({
     visible: state.cmsCiqDeclare.goodsModal.visible,
@@ -132,6 +144,7 @@ export default class GoodsModal extends Component {
     const {
       visible, ioType, data, units, countries, currencies, form, form: { getFieldDecorator },
     } = this.props;
+    const uniqueCoun = unique(countries);
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -342,7 +355,7 @@ export default class GoodsModal extends Component {
               field="orig_country"
               getFieldDecorator={form.getFieldDecorator}
               formData={data}
-              options={countries.map(coun => ({
+              options={uniqueCoun.map(coun => ({
                     value: coun.country_code,
                     text: `${coun.country_code} | ${coun.country_cn_name}`,
                     search: `${coun.country_code}${coun.country_cn_name}`,

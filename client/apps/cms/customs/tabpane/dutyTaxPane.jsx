@@ -109,7 +109,7 @@ export default class DutyTaxPane extends React.Component {
       width: 150,
       align: 'right',
       render(o) {
-        return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
+        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '';
       },
     }, {
       title: '关税率',
@@ -126,7 +126,7 @@ export default class DutyTaxPane extends React.Component {
       width: 150,
       align: 'right',
       render(o) {
-        return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
+        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '';
       },
     }, {
       title: '增值税率',
@@ -143,7 +143,7 @@ export default class DutyTaxPane extends React.Component {
       width: 150,
       align: 'right',
       render(o) {
-        return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
+        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '';
       },
     }, {
       title: '消费税率',
@@ -177,9 +177,9 @@ export default class DutyTaxPane extends React.Component {
           </Popconfirm>
           <DataPane.Extra>
             <Summary>
-              <Summary.Item label="关税">{currencyFormatter.format(this.state.total.dutyTax, { code: 'CNY' })}</Summary.Item>
-              <Summary.Item label="增值税">{currencyFormatter.format(this.state.total.vatTax, { code: 'CNY' })}</Summary.Item>
-              <Summary.Item label="消费税">{currencyFormatter.format(this.state.total.exciseTax, { code: 'CNY' })}</Summary.Item>
+              <Summary.Item label="关税">{currencyFormatter.format(this.state.total.dutyTax, { code: 'CNY', precision: 4 })}</Summary.Item>
+              <Summary.Item label="增值税">{currencyFormatter.format(this.state.total.vatTax, { code: 'CNY', precision: 4 })}</Summary.Item>
+              <Summary.Item label="消费税">{currencyFormatter.format(this.state.total.exciseTax, { code: 'CNY', precision: 4 })}</Summary.Item>
             </Summary>
           </DataPane.Extra>
         </DataPane.Toolbar>
