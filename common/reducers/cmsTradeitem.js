@@ -47,6 +47,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
   'CHANGE_ITEM_MASTER', 'NOTIFY_FORM_CHANGED',
+  'GET_TRADE_ITEM', 'GET_TRADE_ITEM_SUCCEED', 'GET_TRADE_ITEM_FAIL',
 ]);
 
 const initialState = {
@@ -117,6 +118,7 @@ const initialState = {
   },
   itemDiffModal: {
     visible: false,
+    master: {},
     data: {},
   },
   confirmChangesModal: {
@@ -262,6 +264,7 @@ export default function reducer(state = initialState, action) {
         itemDiffModal: {
           ...state.itemDiffModal,
           visible: action.visible,
+          master: action.master,
           data: action.data,
         },
       };
@@ -924,10 +927,11 @@ export function toggleApplyCertsModal(visible, data = {}) {
   };
 }
 
-export function toggleItemDiffModal(visible, data = {}) {
+export function toggleItemDiffModal(visible, master = {}, data = {}) {
   return {
     type: actionTypes.TOGGLE_ITEM_DIFF_MODAL,
     visible,
+    master,
     data,
   };
 }
@@ -973,6 +977,21 @@ export function updateItemApplCert(cert, id) {
       endpoint: 'v1/cms/tradeitem/appl/cert/update',
       method: 'post',
       data: { cert: JSON.stringify(cert), id },
+    },
+  };
+}
+
+export function getTradeItem(repoId, copProdNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_TRADE_ITEM,
+        actionTypes.GET_TRADE_ITEM_SUCCEED,
+        actionTypes.GET_TRADE_ITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/get',
+      method: 'get',
+      params: { repoId, copProdNo },
     },
   };
 }
