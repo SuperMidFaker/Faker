@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Breadcrumb, Button, Badge, Input, Modal, Layout, Select, Tooltip, Tag } from 'antd';
-import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openSubFlowAuthModal,
-  openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
+import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -49,7 +48,6 @@ function fetchData({ state, dispatch }) {
     reloadFlowList,
     editFlow,
     toggleFlowDesigner,
-    openSubFlowAuthModal,
   }
 )
 @connectNav({
