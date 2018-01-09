@@ -173,7 +173,10 @@ export default class InvalidItemsList extends React.Component {
     this.context.router.push(link);
   }
   handleItemDiff = (record) => {
-    this.props.toggleItemDiffModal(true, record);
+    this.props.toggleItemDiffModal(true, {
+      hscode: record.item_hscode,
+      g_name: record.item_g_name,
+    }, record);
   }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, name: value };
