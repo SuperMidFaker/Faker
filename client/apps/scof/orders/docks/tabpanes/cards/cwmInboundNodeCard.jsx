@@ -67,7 +67,7 @@ export default class CWMInboundNodeCard extends React.Component {
     const extra = [];
     if (asn.inbound_no) {
       extra.push(<Tooltip title="进入详情" key="detail">
-        <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleInbound} />
+        <Button type="primary" shape="circle" icon="right" onClick={this.handleInbound} />
       </Tooltip>);
     }
     return (

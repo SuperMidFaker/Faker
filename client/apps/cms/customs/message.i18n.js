@@ -101,10 +101,6 @@ export default defineMessages({
     id: 'cms.customs.decl.modal.successful.operation',
     defaultMessage: '操作成功',
   },
-  save: {
-    id: 'cms.customs.decl.save',
-    defaultMessage: '保存',
-  },
   processDate: {
     id: 'cms.customs.decl.process.date',
     defaultMessage: '更新时间',
@@ -332,5 +328,13 @@ export default defineMessages({
   viewDetail: {
     id: 'cms.customs.decl.op.view.detail',
     defaultMessage: '详情',
+  },
+  save: {
+    id: 'cms.customs.decl.save',
+    defaultMessage: '保存',
+  },
+  estimate: {
+    id: 'cms.customs.decl.estimate',
+    defaultMessage: '估算',
   },
 });

@@ -67,7 +67,7 @@ export default class CMSNodeCard extends React.Component {
     const extra = [];
     if (bizno) {
       extra.push(<Tooltip title="进入详情" key="detail">
-        <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleManifest} />
+        <Button type="primary" shape="circle" icon="right" onClick={this.handleManifest} />
       </Tooltip>);
     }
     return (
