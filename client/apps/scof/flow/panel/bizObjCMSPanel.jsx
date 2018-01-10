@@ -10,7 +10,7 @@ import DeclManifestPane from './bizpane/cmsDeclManifestPane';
 import CustomsDeclPane from './bizpane/cmsCustomsDeclPane';
 import { formatMsg } from '../message.i18n';
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(

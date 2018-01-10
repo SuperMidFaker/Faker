@@ -12,6 +12,7 @@ const { Option } = Select;
 
 @injectIntl
 @connect(state => ({
+  tenantId: state.account.tenantId,
   bizManifest: state.scofFlow.cmsParams.bizManifest,
 }))
 export default class CMSDeclManifestPane extends Component {
@@ -21,7 +22,10 @@ export default class CMSDeclManifestPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, model, bizManifest: { templates } } = this.props;
+    const {
+      form: { getFieldDecorator }, model, tenantId, bizManifest: { templates },
+    } = this.props;
+    const provider = model.provider_tenant_id === tenantId;
     return (
       <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -30,7 +34,7 @@ export default class CMSDeclManifestPane extends Component {
               <FormItem label={this.msg('manifestTemplate')}>
                 {getFieldDecorator('manifest_template', {
                   initialValue: model.manifest_template,
-                })(<Select allowClear>
+                })(<Select allowClear disabled={!provider}>
                   {
                       templates.map(tmp => <Option value={tmp.id} key={tmp.id}>{tmp.name}</Option>)
                     }
@@ -42,7 +46,7 @@ export default class CMSDeclManifestPane extends Component {
                 {getFieldDecorator('correl', {
                   valuePropName: 'checked',
                   initialValue: model.correl,
-                })(<Switch />)}
+                })(<Switch disabled={!provider} />)}
               </FormItem>
             </Col>
           </Row>

@@ -21,6 +21,7 @@ const { Option } = Select;
     customerPartners: state.partner.partners,
     vendorTenants: state.scofFlow.vendorTenants,
     providerFlows: state.scofFlow.flowGraph.providerFlows,
+    mainFlow: !state.scofFlow.currentFlow.main_flow_id,
   }),
   { loadOperators }
 )
@@ -45,20 +46,36 @@ export default class FlowNodePanel extends Component {
   render() {
     const {
       form: { getFieldDecorator }, customerPartners, node, serviceTeam, tenantId, tenantName,
-      vendorTenants, providerFlows,
+      vendorTenants, providerFlows, mainFlow,
     } = this.props;
     const model = node.get('model');
-    let demanderName;
-    const demander = customerPartners.filter(cusp => cusp.id === node.demander_partner_id)[0];
-    if (!demander) {
-      demanderName = tenantName;
-    } else {
-      demanderName = demander.partner_name;
+    const flowDemandProvider = [];
+    if (mainFlow) {
+      let demanderName;
+      const demander = customerPartners.filter(cusp => cusp.id === node.demander_partner_id)[0];
+      if (!demander) {
+        demanderName = tenantName;
+      } else {
+        demanderName = demander.partner_name;
+      }
+      const providers = providerFlows.map(pf => ({
+        id: pf.tenant_id,
+        name: vendorTenants.filter(vt => vt.partner_tenant_id === pf.tenant_id)[0].name,
+      })).concat({ id: tenantId, name: tenantName });
+      flowDemandProvider.push(
+        <FormItem label={this.msg('nodeDemander')} key="demander">
+          <Input readOnly defaultValue={demanderName} />
+        </FormItem>,
+        <FormItem label={this.msg('nodeProvider')} key="provider">
+          {getFieldDecorator('provider_tenant_id', {
+              initialValue: model.provider_tenant_id,
+            })(<Select allowClear showSearch>
+              {providers.map(st => <Option key={st.id} value={st.id}>{st.name}</Option>)}
+            </Select>)}
+        </FormItem>
+      );
     }
-    const providers = providerFlows.map(pf => ({
-      id: pf.tenant_id,
-      name: vendorTenants.filter(vt => vt.partner_tenant_id === pf.tenant_id)[0].name,
-    })).concat({ id: tenantId, name: tenantName });
+    const provider = model.provider_tenant_id === tenantId;
     return (
       <Collapse accordion bordered={false} defaultActiveKey={['properties']} style={{ marginTop: 2 }} >
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -68,20 +85,16 @@ export default class FlowNodePanel extends Component {
               rules: [{ required: true, message: '名称必填' }],
             })(<Input />)}
           </FormItem>
-          <FormItem label={this.msg('demander')}>
-            {demanderName}
-          </FormItem>
-          <FormItem label={this.msg('provider')}>
-            {getFieldDecorator('provider_tenant_id', {
-              initialValue: model.provider_tenant_id,
-            })(<Select allowClear showSearch>
-              {providers.map(st => <Option key={st.id} value={st.id}>{st.name}</Option>)}
-            </Select>)}
-          </FormItem>
+          {flowDemandProvider}
           <FormItem label={this.msg('nodeExecutor')}>
             {getFieldDecorator('person_id', {
               initialValue: model.person_id,
-            })(<Select onChange={this.handleResponsiblerSelect} allowClear showSearch>
+            })(<Select
+              onChange={this.handleResponsiblerSelect}
+              allowClear
+              showSearch
+              disabled={!provider}
+            >
               {serviceTeam.map(st => <Option key={st.lid} value={st.lid}>{st.name}</Option>)}
             </Select>)}
           </FormItem>

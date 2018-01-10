@@ -206,6 +206,14 @@ const messages = defineMessages({
     id: 'scof.flow.biz.node.name',
     defaultMessage: '节点名称',
   },
+  nodeDemander: {
+    id: 'scof.flow.biz.node.demander',
+    defaultMessage: '需求方',
+  },
+  nodeProvider: {
+    id: 'scof.flow.biz.node.provider',
+    defaultMessage: '业务提供方',
+  },
   nodeExecutor: {
     id: 'scof.flow.biz.node.executor',
     defaultMessage: '执行者',

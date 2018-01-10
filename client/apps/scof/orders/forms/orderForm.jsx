@@ -132,17 +132,23 @@ export default class OrderForm extends Component {
         levelNodes.forEach((lnodes, level) => {
           lnodes.sort((na, nb) => (na.id < nb.id ? -1 : 1));
           lnodes.forEach((node) => {
+            const nodeAttr = {
+              node_uuid: node.id,
+              kind: node.kind,
+              name: node.name,
+              in_degree: node.in_degree,
+              out_degree: node.out_degree,
+              multi_bizobj: node.multi_bizobj,
+              demander_tenant_id: node.demander_tenant_id,
+              demander_partner_id: node.demander_partner_id,
+              provider_tenant_id: node.provider_tenant_id,
+              person_id: node.person_id,
+              person: node.person,
+            };
             if (node.kind === 'tms') {
               subOrders.push({
                 node: {
-                  node_uuid: node.id,
-                  kind: node.kind,
-                  name: node.name,
-                  in_degree: node.in_degree,
-                  out_degree: node.out_degree,
-                  multi_bizobj: node.multi_bizobj,
-                  person_id: node.person_id,
-                  person: node.person,
+                  ...nodeAttr,
                   level,
                   consigner_id: null,
                   consignee_id: null,
@@ -158,14 +164,7 @@ export default class OrderForm extends Component {
             } else if (node.kind === 'import' || node.kind === 'export') {
               subOrders.push({
                 node: {
-                  node_uuid: node.id,
-                  kind: node.kind,
-                  name: node.name,
-                  in_degree: node.in_degree,
-                  out_degree: node.out_degree,
-                  multi_bizobj: node.multi_bizobj,
-                  person_id: node.person_id,
-                  person: node.person,
+                  ...nodeAttr,
                   level,
                   pack_count: null,
                   gross_wt: null,
@@ -177,14 +176,7 @@ export default class OrderForm extends Component {
             } else if (node.kind === 'cwmrec' || node.kind === 'cwmship') {
               subOrders.push({
                 node: {
-                  node_uuid: node.id,
-                  kind: node.kind,
-                  name: node.name,
-                  in_degree: node.in_degree,
-                  out_degree: node.out_degree,
-                  multi_bizobj: node.multi_bizobj,
-                  person_id: node.person_id,
-                  person: node.person,
+                  ...nodeAttr,
                   level,
                 },
               });

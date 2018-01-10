@@ -193,6 +193,12 @@ export default class FlowDesigner extends React.Component {
         return;
       }
       const { item } = ev;
+      const { tenantId } = this.props;
+      if (item && item.get('type') === 'node' && item.get('model').tenant_id !== tenantId
+        && item.get('model').provider_tenant_id !== tenantId) {
+        this.setState({ activeItem: null });
+        return;
+      }
       if (this.state.activeItem) {
         if (item && this.state.activeItem.get('id') === item.get('id')) {
           return;

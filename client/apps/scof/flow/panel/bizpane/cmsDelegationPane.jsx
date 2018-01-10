@@ -53,10 +53,11 @@ export default class CMSDelegationPane extends Component {
   }
   render() {
     const {
-      form: { getFieldDecorator }, model,
+      form: { getFieldDecorator }, model, tenantId,
       bizDelegation: { declPorts, customsBrokers, ciqBrokers }, cmsQuotes,
     } = this.props;
     const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
+    const provider = model.provider_tenant_id === tenantId;
     return (
       <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -103,7 +104,7 @@ export default class CMSDelegationPane extends Component {
                 {getFieldDecorator('customs_partner_id', {
                   initialValue: model.customs_partner_id,
                   onChange: this.handleCustomsChange,
-                })(<Select allowClear>
+                })(<Select allowClear disabled={!provider}>
                   {
                     customsBrokers.map(cb =>
                       (<Option value={cb.partner_id} key={cb.partner_id}>
@@ -117,7 +118,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('ciqBroker')}>
                 {getFieldDecorator('ciq_partner_id', {
                   initialValue: model.ciq_partner_id,
-                })(<Select allowClear>
+                })(<Select allowClear disabled={!provider}>
                   {
                     ciqBrokers.map(cb =>
                       (<Option value={cb.partner_id} key={cb.partner_id}>
@@ -131,7 +132,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('quoteNo')}>
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
-                })(<Select allowClear>
+                })(<Select allowClear disabled={!provider}>
                   {cmsQuotes.map(cq =>
                     <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)}
                 </Select>)}
