@@ -9,7 +9,7 @@ import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave,
-  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getTradeItem } from 'common/reducers/cmsTradeitem';
+  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getMasterTradeItem } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -59,7 +59,7 @@ const { Option } = Select;
     showDeclElementsModal,
     toggleHistoryItemsDecl,
     toggleItemDiffModal,
-    getTradeItem,
+    getMasterTradeItem,
   }
 )
 @connectNav({
@@ -406,7 +406,7 @@ export default class RepoContent extends Component {
   handleItemDiff = (record) => {
     const { params: { repoId } } = this.props;
     let master = null;
-    this.props.getTradeItem(repoId, record.cop_product_no).then((result) => {
+    this.props.getMasterTradeItem(repoId, record.cop_product_no).then((result) => {
       if (!result.error) {
         master = result.data;
         this.props.toggleItemDiffModal(true, master, record);

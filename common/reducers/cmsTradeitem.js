@@ -47,7 +47,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
   'CHANGE_ITEM_MASTER', 'NOTIFY_FORM_CHANGED',
-  'GET_TRADE_ITEM', 'GET_TRADE_ITEM_SUCCEED', 'GET_TRADE_ITEM_FAIL',
+  'GET_MASTER_TRADE_ITEM', 'GET_MASTER_TRADE_ITEM_SUCCEED', 'GET_MASTER_TRADE_ITEM_FAIL',
 ]);
 
 const initialState = {
@@ -981,15 +981,15 @@ export function updateItemApplCert(cert, id) {
   };
 }
 
-export function getTradeItem(repoId, copProdNo) {
+export function getMasterTradeItem(repoId, copProdNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_TRADE_ITEM,
-        actionTypes.GET_TRADE_ITEM_SUCCEED,
-        actionTypes.GET_TRADE_ITEM_FAIL,
+        actionTypes.GET_MASTER_TRADE_ITEM,
+        actionTypes.GET_MASTER_TRADE_ITEM_SUCCEED,
+        actionTypes.GET_MASTER_TRADE_ITEM_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/get',
+      endpoint: 'v1/cms/master/tradeitem/get',
       method: 'get',
       params: { repoId, copProdNo },
     },
