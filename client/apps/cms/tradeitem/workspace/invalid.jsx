@@ -176,6 +176,8 @@ export default class InvalidItemsList extends React.Component {
     this.props.toggleItemDiffModal(true, {
       hscode: record.item_hscode,
       g_name: record.item_g_name,
+      element: record.item_element,
+      g_model: record.item_g_model,
     }, record);
   }
   handleSearch = (value) => {
