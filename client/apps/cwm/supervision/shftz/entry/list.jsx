@@ -88,7 +88,7 @@ export default class SHFTZEntryList extends React.Component {
     render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_ftz_ent_no}</span>,
   }, {
     title: '监管类型',
-    width: 80,
+    width: 100,
     dataIndex: 'ftz_ent_type',
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];

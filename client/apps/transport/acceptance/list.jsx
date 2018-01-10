@@ -166,7 +166,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
-    width: 150,
+    width: 160,
     fixed: 'left',
     render: (o, record) => {
       let style;

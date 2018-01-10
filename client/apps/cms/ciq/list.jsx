@@ -106,7 +106,7 @@ export default class CiqDeclList extends Component {
     render: dc => (!Number.isNaN(Number(dc)) ? dc : null),
   }, {
     title: this.msg('ciqDeclCode'),
-    width: 100,
+    width: 120,
     dataIndex: 'ciq_decl_type',
     render: (o) => {
       switch (Number(o)) {

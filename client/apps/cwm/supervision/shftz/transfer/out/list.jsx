@@ -87,7 +87,7 @@ export default class SHFTZTransferOutList extends React.Component {
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
-    width: 80,
+    width: 100,
     render: (reltype) => {
       const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
       if (regtype) {

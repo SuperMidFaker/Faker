@@ -130,7 +130,7 @@ export default class ExpenseList extends Component {
     {
       title: this.msg('delgNo'),
       dataIndex: 'delg_no',
-      width: 120,
+      width: 160,
       fixed: 'left',
       render: o => (
         <a onClick={() => this.handlePreview(o)}>

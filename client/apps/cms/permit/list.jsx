@@ -155,9 +155,6 @@ export default class PermitList extends Component {
   handleAdd = () => {
     this.context.router.push('/clearance/permit/add');
   }
-  handlePreview = (manualNo) => {
-    this.context.router.push(`/clearance/manual/${manualNo}`);
-  }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }

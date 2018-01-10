@@ -242,7 +242,7 @@ export default class DispatchList extends React.Component {
       title: t,
       dataIndex: 'shipmt_no',
       fixed: fixedLeft,
-      width: 150,
+      width: 160,
       render: (o, record) => {
         if (!sub) {
           return (

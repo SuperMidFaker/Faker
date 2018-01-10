@@ -51,7 +51,7 @@ export default class PermitAdd extends Component {
         data.permit_file = this.state.permit_file;
         this.props.addPermit(data).then((result) => {
           if (!result.error) {
-            this.context.router.push('clearance/permit');
+            this.context.router.push('/clearance/permit');
           }
         });
       }

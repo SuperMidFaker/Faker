@@ -148,7 +148,7 @@ export default class CustomsList extends Component {
   }, {
     title: '类型',
     dataIndex: 'sheet_type',
-    width: 80,
+    width: 100,
     render: (o, record) => {
       let child = <span />;
       if (record.i_e_type === 0) {

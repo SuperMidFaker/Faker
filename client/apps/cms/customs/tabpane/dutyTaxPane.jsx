@@ -89,7 +89,9 @@ export default class DutyTaxPane extends React.Component {
     }, {
       title: this.msg('gName'),
       dataIndex: 'g_name',
-      width: 200,
+    }, {
+      title: this.msg('origCountry'),
+      width: 120,
     }, {
       title: this.msg('decTotal'),
       dataIndex: 'trade_tot',

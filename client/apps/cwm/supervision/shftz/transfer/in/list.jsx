@@ -85,7 +85,7 @@ export default class SHFTZTransferInList extends React.Component {
   }, {
     title: '监管类型',
     dataIndex: 'ftz_ent_type',
-    width: 80,
+    width: 100,
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
       return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;

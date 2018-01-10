@@ -51,7 +51,7 @@ export default class PermitDetail extends Component {
         this.props.updatePermit({ ...data, id: this.context.router.params.id }).then((result) => {
           if (!result.error) {
             message.info('更新成功');
-            this.context.router.push('clearance/permit');
+            this.context.router.push('/clearance/permit');
           }
         });
       }
