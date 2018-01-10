@@ -138,7 +138,10 @@ export default class ConflictItemTable extends React.Component {
     });
   }
   handleItemDiff = (record) => {
-    this.props.toggleItemDiffModal(true, record);
+    this.props.toggleItemDiffModal(true, {
+      hscode: record.item_hscode,
+      g_name: record.item_g_name,
+    }, record);
   }
   handleConflictResolve = (item, index, props) => {
     this.props.resolveWorkspaceItem([item.id], props.action).then((result) => {

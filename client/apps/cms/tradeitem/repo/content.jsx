@@ -8,7 +8,8 @@ import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Sel
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave,
+  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getTradeItem } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -58,6 +59,7 @@ const { Option } = Select;
     showDeclElementsModal,
     toggleHistoryItemsDecl,
     toggleItemDiffModal,
+    getTradeItem,
   }
 )
 @connectNav({
@@ -402,7 +404,14 @@ export default class RepoContent extends Component {
     });
   }
   handleItemDiff = (record) => {
-    this.props.toggleItemDiffModal(true, record);
+    const { params: { repoId } } = this.props;
+    let master = null;
+    this.props.getTradeItem(repoId, record.cop_product_no).then((result) => {
+      if (!result.error) {
+        master = result.data;
+        this.props.toggleItemDiffModal(true, master, record);
+      }
+    });
   }
   handleItemListLoad = (currentPage, filter) => {
     const { listFilter, tradeItemlist: { pageSize, current } } = this.props;

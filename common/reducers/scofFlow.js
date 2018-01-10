@@ -3,8 +3,11 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'TOGGLE_FLOW_LIST',
+  'LOAD_ESTABVENDORS', 'LOAD_ESTABVENDORS_SUCCEED', 'LOAD_ESTABVENDORS_FAIL',
   'OPEN_CREATE_FLOW_MODAL', 'CLOSE_CREATE_FLOW_MODAL',
   'OPEN_SUBFLOW_AUTHMODAL', 'CLOSE_SUBFLOW_AUTHMODAL',
+  'CREATE_SUBFLOW', 'CREATE_SUBFLOW_SUCCEED', 'CREATE_SUBFLOW_FAIL',
+  'DEL_SUBFLOW', 'DEL_SUBFLOW_SUCCEED', 'DEL_SUBFLOW_FAIL',
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
@@ -51,8 +54,9 @@ const initialState = {
     current: 1,
     data: [],
   },
-  subFlowAuthModal: {
+  flowProviderModal: {
     visible: false,
+    flow: {},
   },
   flowListLoading: false,
   reloadFlowList: false,
@@ -60,7 +64,10 @@ const initialState = {
   listFilter: { name: '' },
   trackingFields: [],
   currentFlow: null,
-  flowGraph: { nodes: [], edges: [], tracking: {} },
+  flowGraph: {
+    providerFlows: [], nodes: [], edges: [], tracking: {},
+  },
+  vendorTenants: [],
   nodeActions: [],
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
@@ -95,22 +102,45 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TOGGLE_FLOW_LIST:
       return { ...state, listCollapsed: !state.listCollapsed };
+    case actionTypes.LOAD_ESTABVENDORS_SUCCEED:
+      return { ...state, vendorTenants: action.result.data };
     case actionTypes.OPEN_CREATE_FLOW_MODAL:
       return { ...state, visibleFlowModal: true };
     case actionTypes.CLOSE_CREATE_FLOW_MODAL:
       return { ...state, visibleFlowModal: false };
     case actionTypes.OPEN_SUBFLOW_AUTHMODAL:
-      return { ...state, subFlowAuthModal: { ...state.subFlowAuthModal, visible: true } };
+      return {
+        ...state,
+        flowProviderModal: {
+          ...state.flowProviderModal,
+          flow: action.data,
+          visible: true,
+        },
+      };
     case actionTypes.CLOSE_SUBFLOW_AUTHMODAL:
-      return { ...state, subFlowAuthModal: initialState.subFlowAuthModal };
+      return { ...state, flowProviderModal: initialState.flowProviderModal };
+    case actionTypes.CREATE_SUBFLOW:
+    case actionTypes.DEL_SUBFLOW:
     case actionTypes.SAVE_FLOW:
       return { ...state, submitting: true };
+    case actionTypes.CREATE_SUBFLOW_FAIL:
+    case actionTypes.DEL_SUBFLOW_FAIL:
     case actionTypes.SAVE_FLOW_FAIL:
       return { ...state, submitting: false };
     case actionTypes.SAVE_FLOW_SUCCEED:
       return {
         ...state, reloadFlowList: true, submitting: false, currentFlow: action.result.data,
       };
+    case actionTypes.CREATE_SUBFLOW_SUCCEED: {
+      const providerFlows = [...state.flowGraph.providerFlows];
+      providerFlows.push({ id: action.result.data.id, tenant_id: action.result.data.tenant_id });
+      return { ...state, submitting: false, flowGraph: { ...state.flowGraph, providerFlows } };
+    }
+    case actionTypes.DEL_SUBFLOW_SUCCEED: {
+      const providerFlows = state.flowGraph.providerFlows.filter(pf =>
+        pf.id !== action.result.data.id);
+      return { ...state, submitting: false, flowGraph: { ...state.flowGraph, providerFlows } };
+    }
     case actionTypes.OPEN_ADD_TRIGGER_MODAL:
       return { ...state, visibleTriggerModal: true, triggerModal: action.data };
     case actionTypes.CLOSE_ADD_TRIGGER_MODAL:
@@ -241,6 +271,20 @@ export function toggleFlowList() {
   };
 }
 
+export function loadVendorTenants() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ESTABVENDORS,
+        actionTypes.LOAD_ESTABVENDORS_SUCCEED,
+        actionTypes.LOAD_ESTABVENDORS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partner/vendor/tenants',
+      method: 'get',
+    },
+  };
+}
+
 export function openCreateFlowModal() {
   return {
     type: actionTypes.OPEN_CREATE_FLOW_MODAL,
@@ -253,15 +297,46 @@ export function closeCreateFlowModal() {
   };
 }
 
-export function openSubFlowAuthModal() {
+export function openSubFlowAuthModal(flow) {
   return {
     type: actionTypes.OPEN_SUBFLOW_AUTHMODAL,
+    data: flow,
   };
 }
 
 export function closeSubFlowAuthModal() {
   return {
     type: actionTypes.CLOSE_SUBFLOW_AUTHMODAL,
+  };
+}
+
+export function createProviderFlow(flowId, providerTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_SUBFLOW,
+        actionTypes.CREATE_SUBFLOW_SUCCEED,
+        actionTypes.CREATE_SUBFLOW_FAIL,
+      ],
+      endpoint: 'v1/scof/create/provider/flow',
+      method: 'post',
+      data: { flowId, providerTenantId },
+    },
+  };
+}
+
+export function deleteProviderFlow(subFlowId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_SUBFLOW,
+        actionTypes.DEL_SUBFLOW_SUCCEED,
+        actionTypes.DEL_SUBFLOW_FAIL,
+      ],
+      endpoint: 'v1/scof/del/provider/flow',
+      method: 'post',
+      data: { subFlowId },
+    },
   };
 }
 
@@ -406,7 +481,7 @@ export function loadCwmBizParams(tenantId, ownerPid) {
   };
 }
 
-export function loadFlowGraph(flowid) {
+export function loadFlowGraph(flowid, mainFlowId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -416,7 +491,7 @@ export function loadFlowGraph(flowid) {
       ],
       endpoint: 'v1/scof/flow/graph',
       method: 'get',
-      params: { flow: flowid },
+      params: { id: flowid, main_flow_id: mainFlowId },
     },
   };
 }

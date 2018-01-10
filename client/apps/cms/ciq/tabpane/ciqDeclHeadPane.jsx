@@ -82,7 +82,11 @@ function unique(arr) {
       text: `${org.org_code} | ${org.org_name}`,
       search: `${org.org_code}${org.org_name}`,
     })),
-    fixedWorldPorts: state.cmsCiqDeclare.ciqParams.fixedWorldPorts,
+    fixedWorldPorts: state.cmsCiqDeclare.ciqParams.fixedWorldPorts.map(port => ({
+      value: port.port_code,
+      text: `${port.port_code} | ${port.port_cname}`,
+      search: `${port.port_code}${port.port_cname}`,
+    })),
     entQualifs: state.cmsCiqDeclare.entQualifs,
     cnCities: state.cmsCiqDeclare.ciqParams.cnCities.map(city => ({
       value: city.code,
@@ -228,7 +232,10 @@ export default class CiqDeclHeadPane extends React.Component {
     if (!(fixedCountries.find(coun => coun.value === country.value))) {
       fixedCountries.push(country);
     }
-    this.props.setFixedCountry(fixedCountries);
+    this.props.setFixedCountry(fixedCountries.map(coun => ({
+      country_code: coun.value,
+      country_cn_name: coun.text.split(' | ')[1],
+    })));
   }
   handleOrganizationSelect = (value) => {
     const { fixedOrganizations, organizations } = this.props;
@@ -236,7 +243,10 @@ export default class CiqDeclHeadPane extends React.Component {
     if (!(fixedOrganizations.find(org => org.value === organization.value))) {
       fixedOrganizations.push(organization);
     }
-    this.props.setFixedOrganizations(fixedOrganizations);
+    this.props.setFixedOrganizations(fixedOrganizations.map(org => ({
+      org_code: org.value,
+      org_name: org.text.split(' | ')[1],
+    })));
   }
   handleWorldPortsSelect = (value) => {
     const { fixedWorldPorts, worldPorts } = this.props;
@@ -244,7 +254,10 @@ export default class CiqDeclHeadPane extends React.Component {
     if (!(fixedWorldPorts.find(po => po.value === port.value))) {
       fixedWorldPorts.push(port);
     }
-    this.props.setFixedWorldPorts(fixedWorldPorts);
+    this.props.setFixedWorldPorts(fixedWorldPorts.map(po => ({
+      port_code: po.value,
+      port_cname: po.text.split(' | ')[1],
+    })));
   }
   handleEdit = (field, value) => {
     if (field === 'ciq_decl_no' && value.length !== 15) {
