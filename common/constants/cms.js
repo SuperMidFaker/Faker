@@ -900,3 +900,12 @@ export const CMS_HSCODE_EXPORT_PREFER = [
   { value: '2', text: '出口货物不能确定在最终目的国（地区）享受优惠关税' },
   { value: '3', text: '不适用于进口报关单' },
 ];
+
+export const CMS_DOC_TYPE = [
+  { value: 'CUS_CERT', text: '海关随附单证' },
+  { value: 'CUS_DOCU', text: '海关随附单据' },
+  { value: 'CIQ_CERT', text: '国检企业、产品资质证书' },
+  { value: 'CIQ_DOCU', text: '国检随附单据' },
+  { value: 'CCD', text: '报关单' },
+  { value: 'CID', text: '报检单' },
+];

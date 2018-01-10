@@ -6,6 +6,7 @@ import moment from 'moment';
 import { loadCmsFiles } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import RowAction from 'client/components/RowAction';
+import { CMS_DOC_TYPE } from 'common/constants';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -67,6 +68,8 @@ export default class FilesPane extends React.Component {
       title: '类别',
       dataIndex: 'doc_code',
       width: 150,
+      render: o => CMS_DOC_TYPE.find(type => type.value === o) &&
+       CMS_DOC_TYPE.find(type => type.value === o).text,
     }, {
       title: '编号',
       dataIndex: 'doc_no',
