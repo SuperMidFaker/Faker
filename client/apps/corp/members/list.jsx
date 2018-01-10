@@ -352,7 +352,8 @@ export default class MemberDepartmentView extends React.Component {
                 <div className="nav-sider-head">
                   <Search placeholder="搜索用户" onSearch={this.handleSearch} />
                 </div>
-                <Menu defaultOpenKeys={['deptMenu']}
+                <Menu
+                  defaultOpenKeys={['deptMenu']}
                   mode="inline"
                   selectedKeys={selectMenuKeys}
                   onClick={this.handleMenuClick}
