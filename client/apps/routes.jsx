@@ -16,7 +16,6 @@ import Password from './account/password';
 import Corp from './corp/pack-corp';
 import * as CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
-import * as Organization from './corp/organization';
 import * as CorpMembers from './corp/members';
 import * as CorpRole from './corp/role';
 import * as CorpLogs from './corp/logs';
@@ -209,11 +208,6 @@ export default(store) => {
           <IndexRedirect to="/corp/overview" />
           <Route path="overview" component={CorpOverview.Index} />
           <Route path="info" component={CorpInfo} />
-          <Route path="organization" component={Organization.Wrapper}>
-            <IndexRoute component={Organization.List} />
-            <Route path="new" component={Organization.Edit} />
-            <Route path="edit/:id" component={Organization.Edit} />
-          </Route>
           <Route path="members">
             <IndexRoute component={CorpMembers.List} />
             <Route path="new" component={CorpMembers.Edit} />

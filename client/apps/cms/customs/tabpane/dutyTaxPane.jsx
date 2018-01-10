@@ -101,18 +101,13 @@ export default class DutyTaxPane extends React.Component {
       title: this.msg('gName'),
       dataIndex: 'g_name',
     }, {
-      title: this.msg('origCountry'),
-      width: 120,
-    }, {
       title: '原产国',
       dataIndex: 'orig_country',
       width: 100,
       render: (o) => {
         const { countries } = this.props;
         const country = countries.find(coun => coun.value === o);
-        return (
-          <Tag>{`${o}|${country.text}`}</Tag>
-        );
+        return country && <Tag>{`${o}|${country.text}`}</Tag>;
       },
     }, {
       title: this.msg('decTotal'),
@@ -126,9 +121,7 @@ export default class DutyTaxPane extends React.Component {
       render: (o) => {
         const { currencies } = this.props;
         const currency = currencies.find(curr => curr.value === o);
-        return (
-          <Tag>{`${o}|${currency.text}`}</Tag>
-        );
+        return currency && <Tag>{`${o}|${currency.text}`}</Tag>;
       },
     }, {
       title: this.msg('exchangeRate'),
@@ -139,8 +132,8 @@ export default class DutyTaxPane extends React.Component {
       dataIndex: 'duty_paid',
       width: 150,
       align: 'right',
-      render(o, record) {
-        return record.trade_total ? currencyFormatter.format(record.trade_total * record.exchange_rate, { code: 'CNY', precision: 4 }) : '';
+      render(o) {
+        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '-';
       },
     }, {
       title: '关税率',
@@ -149,7 +142,7 @@ export default class DutyTaxPane extends React.Component {
       align: 'right',
       render(o) {
         const val = o ? o * 100 : 0;
-        return val ? `${val.toFixed(2)}%` : '';
+        return val ? `${val.toFixed(1)}%` : '-';
       },
     }, {
       title: '关税',
@@ -157,7 +150,7 @@ export default class DutyTaxPane extends React.Component {
       width: 150,
       align: 'right',
       render(o) {
-        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '';
+        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '-';
       },
     }, {
       title: '增值税率',
@@ -166,7 +159,7 @@ export default class DutyTaxPane extends React.Component {
       width: 100,
       render(o) {
         const val = o ? o * 100 : 0;
-        return val ? `${val.toFixed(2)}%` : '';
+        return val ? `${val.toFixed(1)}%` : '-';
       },
     }, {
       title: '增值税',
@@ -174,7 +167,7 @@ export default class DutyTaxPane extends React.Component {
       width: 150,
       align: 'right',
       render(o) {
-        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '';
+        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '-';
       },
     }, {
       title: '消费税率',
@@ -183,7 +176,7 @@ export default class DutyTaxPane extends React.Component {
       width: 100,
       render(o) {
         const val = o ? o * 100 : 0;
-        return val ? `${val.toFixed(2)}%` : '';
+        return val ? `${val.toFixed(1)}%` : '-';
       },
     }, {
       title: '消费税',
@@ -191,7 +184,7 @@ export default class DutyTaxPane extends React.Component {
       width: 150,
       align: 'right',
       render(o) {
-        return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
+        return o ? currencyFormatter.format(o, { code: 'CNY' }) : '-';
       },
     }];
     return (

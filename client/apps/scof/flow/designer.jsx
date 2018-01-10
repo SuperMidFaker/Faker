@@ -13,6 +13,7 @@ import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
+import PageHeader from 'client/components/PageHeader';
 import { PARTNER_ROLES } from 'common/constants';
 import FlowProviderModal from './modal/flowProviderModal';
 import AddTriggerModal from './panel/compose/addTriggerModal';
@@ -23,7 +24,7 @@ import BizObjCWMRecPanel from './panel/bizObjCWMRecPanel';
 import BizObjCWMShipPanel from './panel/bizObjCWMShipPanel';
 import { formatMsg } from './message.i18n';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Panel } = Collapse;
@@ -76,7 +77,6 @@ export default class FlowDesigner extends React.Component {
     intl: intlShape.isRequired,
     submitting: PropTypes.bool,
     graphLoading: PropTypes.bool.isRequired,
-    listCollapsed: PropTypes.bool.isRequired,
     reloadOnDel: PropTypes.func.isRequired,
     trackingFields: PropTypes.arrayOf(PropTypes.shape({
       field: PropTypes.string,
@@ -158,7 +158,7 @@ export default class FlowDesigner extends React.Component {
     }
     this.graph = new window.G6.Graph({
       id: 'flowchart', // 容器ID
-      width: window.innerWidth - 370, // 画布宽
+      width: window.innerWidth - 100, // 画布宽
       height: 240, // 画布高
       grid: {
         forceAlign: true, // 是否支持网格对齐
@@ -566,43 +566,37 @@ export default class FlowDesigner extends React.Component {
     );
   }
   render() {
-    const { submitting, listCollapsed, currentFlow } = this.props;
+    const { submitting, currentFlow } = this.props;
     const { activeItem } = this.state;
     const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
     return (
       <Layout>
-        <Layout>
-          <Header className="page-header">
-            {listCollapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('flowName')}
-              </Breadcrumb.Item>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
               <Breadcrumb.Item>
                 {currentFlow.name}
               </Breadcrumb.Item>
-            </Breadcrumb>}
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
+            {!currentFlow.main_flow_id &&
+            <Tooltip placement="bottom" title="流程授权">
+              <Button icon="key" onClick={this.handleSubFlowAuth} />
+            </Tooltip>}
+            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
+              {this.msg('saveFlow')}
+            </Button>
             <ButtonToggle
-              iconOn="menu-fold"
-              iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
+              iconOn="setting"
+              iconOff="setting"
+              onClick={this.toggleRightSider}
             />
-            <div className="page-header-tools">
-              <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
-                {this.msg('saveFlow')}
-              </Button>
-              {!currentFlow.main_flow_id &&
-              <Tooltip placement="bottom" title="流程授权">
-                <Button icon="usb" onClick={this.handleSubFlowAuth} />
-              </Tooltip>}
-              <ButtonToggle
-                iconOn="setting"
-                iconOff="setting"
-                onClick={this.toggleRightSider}
-              />
-            </div>
-          </Header>
-          <Content className="main-content">
+          </PageHeader.Actions>
+        </PageHeader>
+        <Layout>
+
+          <Content className="page-content">
             <Spin spinning={this.props.graphLoading}>
               <Card
                 title={this.msg('flowRelationGraph')}
@@ -652,45 +646,46 @@ export default class FlowDesigner extends React.Component {
               <FlowProviderModal />
             </Spin>
           </Content>
-        </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSidercollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="panel-header">
-              <h3>流程设置</h3>
+          <Sider
+            trigger={null}
+            defaultCollapsed
+            collapsible
+            collapsed={this.state.rightSidercollapsed}
+            width={480}
+            collapsedWidth={0}
+            className="right-sider"
+          >
+            <div className="right-sider-panel">
+              <div className="panel-header">
+                <h3>流程设置</h3>
+              </div>
+              <Collapse accordion defaultActiveKey="tracking">
+                <Panel header="追踪节点" key="tracking">
+                  <FormItem label="追踪表" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }}>
+                    <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
+                      {this.state.trackings.map(data => (
+                        <Option key={data.id} value={data.id}>{data.name}</Option>))}
+                    </Select>
+                  </FormItem>
+                  <Table
+                    columns={this.trackingColumns}
+                    bordered={false}
+                    dataSource={this.state.trackDataSource}
+                    rowKey="field"
+                    scroll={{ y: 400 }}
+                  />
+                </Panel>
+                <Panel header="更多" key="more">
+                  <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
+                  <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteFlow}>
+                    <Button type="danger" icon="delete">删除流程</Button>
+                  </Popconfirm>
+                </Panel>
+              </Collapse>
             </div>
-            <Collapse accordion defaultActiveKey="tracking">
-              <Panel header="追踪节点" key="tracking">
-                <FormItem label="追踪表" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }}>
-                  <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
-                    {this.state.trackings.map(data => (
-                      <Option key={data.id} value={data.id}>{data.name}</Option>))}
-                  </Select>
-                </FormItem>
-                <Table
-                  columns={this.trackingColumns}
-                  bordered={false}
-                  dataSource={this.state.trackDataSource}
-                  rowKey="field"
-                  scroll={{ y: 400 }}
-                />
-              </Panel>
-              <Panel header="更多" key="more">
-                <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
-                <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteFlow}>
-                  <Button type="danger" icon="delete">删除流程</Button>
-                </Popconfirm>
-              </Panel>
-            </Collapse>
-          </div>
-        </Sider>
+          </Sider>
+        </Layout>
+
       </Layout>
     );
   }

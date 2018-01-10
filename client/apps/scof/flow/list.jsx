@@ -227,7 +227,7 @@ export default class FlowList extends React.Component {
         <CreateFlowModal />
         <Modal
           maskClosable={false}
-          title={thisFlow && thisFlow.name}
+          title={this.msg('flowDesigner')}
           width="100%"
           visible={designerVisible}
           onCancel={() => this.props.toggleFlowDesigner(false)}

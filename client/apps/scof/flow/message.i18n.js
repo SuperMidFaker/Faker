@@ -6,6 +6,10 @@ const messages = defineMessages({
     id: 'scof.flow.name',
     defaultMessage: '流程',
   },
+  flowDesigner: {
+    id: 'scof.flow.designer',
+    defaultMessage: '流程设计器',
+  },
   createFlow: {
     id: 'scof.flow.create',
     defaultMessage: '创建流程',

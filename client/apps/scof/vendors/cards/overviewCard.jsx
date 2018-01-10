@@ -33,7 +33,7 @@ export default class OverviewCard extends React.Component {
         <Row gutter={16} className="info-group-underline">
           <Col sm={24} lg={8}>
             <InfoItem
-              label="客户代码"
+              label="供应商代码"
               field={vendor.partner_code}
             />
           </Col>

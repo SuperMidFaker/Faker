@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Icon, Menu, Input, Popover, message, Layout } from 'antd';
+import { Breadcrumb, Button, Card, Icon, Menu, Input, Popover, message, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { MdIcon } from 'client/components/FontIcon';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';
@@ -133,7 +133,7 @@ export default class MemberDepartmentView extends React.Component {
     },
   }, {
     title: formatContainerMsg(this.props.intl, 'opColumn'),
-    width: 80,
+    width: 120,
     render: (text, record, index) => {
       if (record.role === PRESET_TENANT_ROLE.owner.name) {
         return (
@@ -179,7 +179,7 @@ export default class MemberDepartmentView extends React.Component {
       return <span />;
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadMembers(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -346,7 +346,7 @@ export default class MemberDepartmentView extends React.Component {
           </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
+          <Card bodyStyle={{ padding: 0 }}>
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <div className="nav-sider-head">
@@ -365,7 +365,8 @@ export default class MemberDepartmentView extends React.Component {
                   </SubMenu>
                 </Menu>
                 <div className="nav-sider-footer">
-                  <Popover content={departmentPopover}
+                  <Popover
+                    content={departmentPopover}
                     placement="bottom"
                     title="创建部门"
                     trigger="click"
@@ -377,15 +378,17 @@ export default class MemberDepartmentView extends React.Component {
                 </div>
               </Sider>
               <Content className="nav-content">
-                <div className="nav-content-head">
-                  {contentHeadAction}
-                </div>
-                <div className="panel-body table-panel table-fixed-layout">
-                  <Table rowSelection={this.rowSelection} columns={this.columns} loading={loading} dataSource={this.dataSource} useFixedHeader />
-                </div>
+                <DataTable
+                  noBorder
+                  toolbarActions={contentHeadAction}
+                  rowSelection={this.rowSelection}
+                  columns={this.columns}
+                  loading={loading}
+                  dataSource={this.dataSource}
+                />
               </Content>
             </Layout>
-          </div>
+          </Card>
           <AddMemberModal reload={this.handleDepartMembersLoad} />
         </Content>
       </QueueAnim>
