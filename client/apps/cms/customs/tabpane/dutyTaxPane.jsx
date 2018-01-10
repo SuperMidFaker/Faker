@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Popconfirm } from 'antd';
+import { Button, Popconfirm, Tag } from 'antd';
 import currencyFormatter from 'currency-formatter';
 import { getDeclTax } from 'common/reducers/cmsCustomsDeclare';
 import { taxRecalculate } from 'common/reducers/cmsDelegationDock';
@@ -18,6 +18,17 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
+    })),
+    currencies: state.cmsManifest.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+      search: `${cr.curr_code}${cr.curr_symb}${cr.curr_name}`,
+      rate_cny: cr.rate_CNY,
+    })),
   }),
   { getDeclTax, taxRecalculate }
 )
@@ -93,14 +104,32 @@ export default class DutyTaxPane extends React.Component {
       title: this.msg('origCountry'),
       width: 120,
     }, {
+      title: '原产国',
+      dataIndex: 'orig_country',
+      width: 100,
+      render: (o) => {
+        const { countries } = this.props;
+        const country = countries.find(coun => coun.value === o);
+        return (
+          <Tag>{`${o}|${country.text}`}</Tag>
+        );
+      },
+    }, {
       title: this.msg('decTotal'),
-      dataIndex: 'trade_tot',
+      dataIndex: 'trade_total',
       width: 150,
       align: 'right',
     }, {
       title: this.msg('currency'),
       dataIndex: 'currency',
       width: 100,
+      render: (o) => {
+        const { currencies } = this.props;
+        const currency = currencies.find(curr => curr.value === o);
+        return (
+          <Tag>{`${o}|${currency.text}`}</Tag>
+        );
+      },
     }, {
       title: this.msg('exchangeRate'),
       dataIndex: 'exchange_rate',
@@ -110,8 +139,8 @@ export default class DutyTaxPane extends React.Component {
       dataIndex: 'duty_paid',
       width: 150,
       align: 'right',
-      render(o) {
-        return o ? currencyFormatter.format(o, { code: 'CNY', precision: 4 }) : '';
+      render(o, record) {
+        return record.trade_total ? currencyFormatter.format(record.trade_total * record.exchange_rate, { code: 'CNY', precision: 4 }) : '';
       },
     }, {
       title: '关税率',
