@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Input, Select, message, DatePicker } from 'antd';
-import { loadInvoices, addInvoice, deleteInvoice } from 'common/reducers/cmsManifest';
+import { loadInvoices, addInvoice, deleteInvoice, updateInvoice } from 'common/reducers/cmsManifest';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
@@ -77,7 +77,9 @@ ColumnSelect.propTypes = {
     billHead: state.cmsManifest.billHead,
     invoices: state.cmsManifest.invoices,
   }),
-  { loadInvoices, addInvoice, deleteInvoice }
+  {
+    loadInvoices, addInvoice, deleteInvoice, updateInvoice,
+  }
 )
 export default class InvoicesPane extends React.Component {
   static propTypes = {
@@ -120,6 +122,7 @@ export default class InvoicesPane extends React.Component {
     const addOne = {
       delg_no: billHead.delg_no,
       bill_seq_no: billHead.bill_seq_no,
+      edit: true,
     };
     const data = this.state.datas;
     data.push(addOne);
@@ -151,7 +154,25 @@ export default class InvoicesPane extends React.Component {
     datas.splice(index, 1);
     this.setState({ datas });
   }
-
+  handleEdit = (index) => {
+    const datas = [...this.state.datas];
+    datas[index].edit = true;
+    this.setState({
+      datas,
+    });
+  }
+  handleUpdate = (record, index) => {
+    this.props.updateInvoice(record).then((result) => {
+      if (!result.error) {
+        message.info('保存成功', 5);
+        const datas = [...this.state.datas];
+        datas[index].edit = false;
+        this.setState({
+          datas,
+        });
+      }
+    });
+  }
   render() {
     const columns = [{
       title: this.msg('invoiceNo'),
@@ -159,7 +180,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="invoice_no"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -168,7 +189,7 @@ export default class InvoicesPane extends React.Component {
       dataIndex: 'invoice_date',
       render: (o, record) => (<DatePicker
         defaultValue={record.invoice_date ? moment(record.invoice_date, 'YYYY-MM-DD') : ''}
-        disabled={!!record.id}
+        disabled={!record.edit}
         onChange={(data, dataString) => this.handleDateChange(data, dataString, record)}
       />),
     }, {
@@ -177,7 +198,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="order_no"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -187,7 +208,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="invoice_type"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -197,7 +218,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="invoice_status"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -207,7 +228,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="total_amount"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -217,7 +238,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="total_quant"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -227,7 +248,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="total_net_wt"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -237,7 +258,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="pieces"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -247,7 +268,7 @@ export default class InvoicesPane extends React.Component {
       render: (o, record) =>
         (<ColumnInput
           field="gross_wt"
-          inEdit={!record.id}
+          inEdit={record.edit}
           record={record}
           onChange={this.handleEditChange}
         />),
@@ -258,6 +279,11 @@ export default class InvoicesPane extends React.Component {
         if (record.id) {
           return (<span>
             <RowAction shape="circle" danger confirm="确定删除?" onConfirm={() => this.handleDelete(record, index)} icon="delete" row={record} />
+            {record.edit ? (
+              <RowAction shape="circle" primary onClick={() => this.handleUpdate(record, index)} icon="save" tooltip="保存" row={record} />
+            ) : (
+              <RowAction shape="circle" onClick={() => this.handleEdit(index)} icon="edit" row={record} />
+            )}
           </span>);
         }
         return (<span>
