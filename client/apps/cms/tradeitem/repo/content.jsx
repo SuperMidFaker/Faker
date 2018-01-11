@@ -9,7 +9,7 @@ import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave,
-  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getMasterTradeItem } from 'common/reducers/cmsTradeitem';
+  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getMasterTradeItem, toggleExportModal } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -17,6 +17,7 @@ import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
 import ItemDiffModal from '../workspace/modal/itemDiffModal';
+import ExportModal from './modal/exportModal';
 
 import { formatMsg } from '../message.i18n';
 
@@ -60,6 +61,7 @@ const { Option } = Select;
     toggleHistoryItemsDecl,
     toggleItemDiffModal,
     getMasterTradeItem,
+    toggleExportModal,
   }
 )
 @connectNav({
@@ -510,6 +512,9 @@ export default class RepoContent extends Component {
       }
     });
   }
+  toggleExportModal = () => {
+    this.props.toggleExportModal(true);
+  }
   render() {
     const {
       tradeItemlist, repo, listFilter, submitting, tenantId,
@@ -575,6 +580,9 @@ export default class RepoContent extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
+            <Button icon="export" onClick={this.toggleExportModal}>
+              {this.msg('export')}
+            </Button>
             { repo.mode === 'master' &&
             <Popover
               placement="left"
@@ -622,6 +630,7 @@ export default class RepoContent extends Component {
           />
           <DeclElementsModal onOk={null} />
           <ItemDiffModal />
+          <ExportModal repoId={this.props.params.repoId} />
         </Content>
       </Layout>
     );

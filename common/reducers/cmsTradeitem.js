@@ -43,7 +43,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
   'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL', 'TOGGLE_CONFIRM_CHANGES_MODAL',
-  'TOGGLE_CONFIRM_FORK_MODAL',
+  'TOGGLE_CONFIRM_FORK_MODAL', 'TOGGLE_EXPORT_MODAL',
   'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
   'CHANGE_ITEM_MASTER', 'NOTIFY_FORM_CHANGED',
@@ -131,6 +131,9 @@ const initialState = {
   },
   formChanged: false,
   itemMasterChanges: [],
+  exportModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -295,6 +298,14 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         formChanged: action.changed,
+      };
+    case actionTypes.TOGGLE_EXPORT_MODAL:
+      return {
+        ...state,
+        exportModal: {
+          ...state.exportModal,
+          visible: action.visible,
+        },
       };
     default:
       return state;
@@ -993,5 +1004,12 @@ export function getMasterTradeItem(repoId, copProdNo) {
       method: 'get',
       params: { repoId, copProdNo },
     },
+  };
+}
+
+export function toggleExportModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_EXPORT_MODAL,
+    visible,
   };
 }
