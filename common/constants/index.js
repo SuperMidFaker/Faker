@@ -50,40 +50,6 @@ export const PARTNER_BUSINESSE_TYPES = {
 
 export const KPI_CHART_COLORS = ['#CB809A', '#26B68E', '#109FDE', '#FFCE3B', '#8AC9D2', '#CB809A'];
 
-const WRAP_TYPE = [{
-  text: '木箱',
-  value: '1',
-}, {
-  text: '纸箱',
-  value: '2',
-}, {
-  text: '桶装',
-  value: '3',
-}, {
-  text: '散装',
-  value: '4',
-}, {
-  text: '托盘',
-  value: '5',
-}, {
-  text: '包',
-  value: '6',
-}, {
-  text: '其它',
-  value: '7',
-}];
-
-const GOODSTYPES = [{
-  value: 0,
-  text: '普通货',
-}, {
-  value: 1,
-  text: '冷冻品',
-}, {
-  value: 2,
-  text: '危化品',
-}];
-
 const CHINA_CODE = 'CN';
 const MAX_STANDARD_TENANT = 10;
 
@@ -96,8 +62,6 @@ export {
   PARTNER_TENANT_TYPE,
   CHINA_CODE,
   ACCOUNT_STATUS,
-  WRAP_TYPE,
-  GOODSTYPES,
 };
 
 export const PROMPT_TYPES = {

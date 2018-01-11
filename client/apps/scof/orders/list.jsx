@@ -15,6 +15,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
+import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -204,12 +205,12 @@ export default class OrderList extends React.Component {
 
     const columns = [{
       title: '订单',
-      width: 240,
+      width: 260,
       fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
       dataIndex: 'order_status',
-      width: 160,
+      width: 100,
       render: (o, record) => {
         const percent = record.flow_node_num ?
           Number(((record.finish_num / record.flow_node_num) * 100).toFixed(1)) : 0;
@@ -223,21 +224,22 @@ export default class OrderList extends React.Component {
       },
     }, {
       dataIndex: 'cust_shipmt_transfer',
-      width: 40,
+      width: 30,
       render: (o) => {
         const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === o)[0];
         return transfer && <Tooltip title={transfer.text} ><Icon type={transfer.icon} /></Tooltip>;
       },
     }, {
-      width: 200,
+      width: 250,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
       title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
-      title: '创建人员',
-      dataindex: 'created_by',
-      width: 100,
+      title: '执行者',
+      dataindex: 'executed_by',
+      width: 120,
+      render: lid => <UserAvatar size="small" loginId={lid} showName />,
     }, {
       title: '操作',
       width: 120,
