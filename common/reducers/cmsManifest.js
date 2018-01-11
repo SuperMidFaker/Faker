@@ -65,6 +65,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'ADD_INVOICE', 'ADD_INVOICE_SUCCEED', 'ADD_INVOICE_FAIL',
   'LOAD_INVOICES', 'LOAD_INVOICES_SUCCEED', 'LOAD_INVOICES_FAIL',
   'DELETE_INVOICE', 'DELETE_INVOICE_SUCCEED', 'DELETE_INVOICE_FAIL',
+  'UPDATE_INVOICE', 'UPDATE_INVOICE_SUCCEED', 'UPDATE_INVOICE_FAIL',
 ]);
 
 const initialState = {
@@ -1322,6 +1323,21 @@ export function deleteInvoice(id) {
       endpoint: 'v1/cms/manifest/invoice/delete',
       method: 'post',
       data: { id },
+    },
+  };
+}
+
+export function updateInvoice(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INVOICE,
+        actionTypes.UPDATE_INVOICE_SUCCEED,
+        actionTypes.UPDATE_INVOICE_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/invoice/update',
+      method: 'post',
+      data,
     },
   };
 }
