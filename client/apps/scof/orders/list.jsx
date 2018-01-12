@@ -255,7 +255,7 @@ export default class OrderList extends React.Component {
               <RowAction overlay={(
                 <Menu onClick={this.handleMenuClick}>
                   <Menu.Item key="edit">
-                    <Link to={`/scof/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}><Icon type="edit" />修改</Link>
+                    <Link to={`/scof/orders/edit/${record.shipmt_order_no}`}><Icon type="edit" />修改</Link>
                   </Menu.Item>
                   <Menu.Item key="delete">
                     <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(record.shipmt_order_no)}>

@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
-import OrderForm from './forms/orderForm';
 import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/crmOrders';
 import { format } from 'client/common/i18n/helpers';
+import OrderForm from './forms/orderForm';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -21,10 +21,10 @@ const VALIDATE_MSG = {
   cust_order_no_exist: '客户订单号已存在',
 };
 
-function fetchData({ state, location, dispatch }) {
+function fetchData({ state, params, dispatch }) {
   const proms = [
     dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
-    dispatch(loadOrder(location.query.shipmtOrderNo)),
+    dispatch(loadOrder(params.orderNo)),
   ];
   return Promise.all(proms);
 }
@@ -47,7 +47,7 @@ export default class EditOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
+    formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     editOrder: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -96,7 +96,7 @@ export default class EditOrder extends Component {
         notification.error({
           message: '错误信息',
           description: result.error.message,
-        }, );
+        });
       } else {
         message.success('保存成功');
         this.context.router.push('/scof/orders');

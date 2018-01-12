@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Checkbox, Collapse, Form, Row, Col, Card, Input, Select, Steps, Tag, Table, Tabs } from 'antd';
+import { Collapse, Form, Row, Col, Card, Input, Select, Steps, Tag, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/crmOrders';
@@ -9,12 +9,13 @@ import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadCwmBizPa
 import { loadOperators } from 'common/reducers/crmCustomers';
 import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
-import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import CMSDelegateForm from './cmsDelegateForm';
 import TMSConsignForm from './tmsConsignForm';
 import CwmReceivingForm from './cwmReceivingForm';
 import CwmShippingForm from './cwmShippingForm';
+import ContainerForm from './containerForm';
+import InvoiceForm from './invoiceForm';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -78,34 +79,6 @@ export default class OrderForm extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  containerColumns = [{
-    title: '集装箱号',
-    dataIndex: 'cntnr_no',
-  }, {
-    title: '集装箱规格',
-    dataIndex: 'cntnr_spec',
-  }, {
-    title: '是否拼箱',
-    dataIndex: 'is_consolidated',
-  }, {
-    dataIndex: 'OPS_COL',
-    width: 45,
-    render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
-  }];
-  invoiceColumns = [{
-    title: '发票号',
-    dataIndex: 'invoice_no',
-  }, {
-    title: '订单号',
-    dataIndex: 'order_no',
-  }, {
-    title: '合同号',
-    dataIndex: 'contract_no',
-  }, {
-    dataIndex: 'OPS_COL',
-    width: 45,
-    render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
-  }];
   handleClientChange = (value) => {
     const selPartnerId = Number(value);
     const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
@@ -313,7 +286,7 @@ export default class OrderForm extends Component {
     const shipmentDisabled = !formData.cust_shipmt_transfer || formData.cust_shipmt_transfer === 'DOM';
     const shipmentActiveKey = shipmentDisabled ? [] : ['shipment'];
     return (
-      <Form layout="horizontal" className="order-flow-form form-layout-compact">
+      <div>
         <Card bodyStyle={{ padding: 0 }}>
           <Tabs defaultActiveKey="main">
             <TabPane tab="基本信息" key="main">
@@ -329,6 +302,8 @@ export default class OrderForm extends Component {
                           optionFilterProp="children"
                           value={formData.customer_partner_id}
                           onChange={value => this.handleClientChange(value)}
+                          dropdownMatchSelectWidth={false}
+                          dropdownStyle={{ width: 360 }}
                           style={{ width: '100%' }}
                         >
                           {formRequires.clients.map(data => (
@@ -584,58 +559,10 @@ export default class OrderForm extends Component {
               </FormPane>
             </TabPane>
             <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
-              <FormPane>
-                <Row>
-                  <Col span={6}>
-                    <FormItem label="集装箱号" {...formItemLayout}>
-                      <Input />
-                    </FormItem>
-                  </Col>
-                  <Col span={6}>
-                    <FormItem label="集装箱规格" {...formItemLayout}>
-                      <Select />
-                    </FormItem>
-                  </Col>
-                  <Col span={6}>
-                    <FormItem label="是否拼箱" {...formItemLayout}>
-                      <Checkbox />
-                    </FormItem>
-                  </Col>
-                  <Col span={4} offset={2}>
-                    <Button type="primary" ghost icon="plus-circle-o">添加</Button>
-                  </Col>
-                </Row>
-                <Card bodyStyle={{ padding: 0 }}>
-                  <Table size="small" columns={this.containerColumns} />
-                </Card>
-              </FormPane>
+              <ContainerForm />
             </TabPane>
             <TabPane tab="发票合同" key="invoice">
-              <FormPane>
-                <Row>
-                  <Col span={6}>
-                    <FormItem label="发票号" {...formItemLayout}>
-                      <Input />
-                    </FormItem>
-                  </Col>
-                  <Col span={6}>
-                    <FormItem label="合同号" {...formItemLayout}>
-                      <Input />
-                    </FormItem>
-                  </Col>
-                  <Col span={6}>
-                    <FormItem label="订单号" {...formItemLayout}>
-                      <Input />
-                    </FormItem>
-                  </Col>
-                  <Col span={4} offset={2}>
-                    <Button type="primary" ghost icon="plus-circle-o">添加</Button>
-                  </Col>
-                </Row>
-                <Card bodyStyle={{ padding: 0 }}>
-                  <Table size="small" columns={this.invoiceColumns} />
-                </Card>
-              </FormPane>
+              <InvoiceForm />
             </TabPane>
           </Tabs>
         </Card>
@@ -660,7 +587,7 @@ export default class OrderForm extends Component {
             {this.renderSteps(formData.subOrders, orderShipment)}
           </Steps>
         </Card>
-      </Form>
+      </div>
     );
   }
 }

@@ -584,7 +584,7 @@ export default class TMSConsignForm extends Component {
         }
           <Row>
             <Col span={8}>
-              <FormItem label="起运地" {...formItemLayout}>
+              <FormItem label="起运地" {...formItemLayout} required>
                 <Select
                   allowClear
                   showArrow
@@ -608,7 +608,7 @@ export default class TMSConsignForm extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem label="目的地" {...formItemLayout}>
+              <FormItem label="目的地" {...formItemLayout} required>
                 <Select
                   allowClear
                   showArrow
@@ -639,6 +639,13 @@ export default class TMSConsignForm extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
+              <FormItem label="运输模式" {...formItemLayout} required>
+                <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
+                  {transitModes.map(tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>)}
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span={8}>
               <FormItem label={this.msg('pickupEstDate')} {...formItemLayout}>
                 <DatePicker
                   style={{ width: '100%' }}
@@ -654,13 +661,6 @@ export default class TMSConsignForm extends Component {
                   value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
                   onChange={this.handleDeliveryChange}
                 />
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label="运输模式" required {...formItemLayout}>
-                <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
-                  {transitModes.map(tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>)}
-                </Select>
               </FormItem>
             </Col>
             <Col span={8}>
