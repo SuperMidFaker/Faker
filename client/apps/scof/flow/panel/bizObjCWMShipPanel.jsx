@@ -8,7 +8,7 @@ import FlowNodePanel from './compose/flowNodePanel';
 import ShippingPane from './bizpane/cwmShippingPane';
 import { formatMsg } from '../message.i18n';
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -36,13 +36,13 @@ export default class FlowCwmShippingPanel extends Component {
     return (
       <Form layout="vertical" className="form-layout-compact">
         <Row gutter={8}>
-          <Col sm={24} md={6}>
+          <Col sm={24} md={8}>
             <Card title={this.msg('flowNodeCWMShip')} bodyStyle={{ padding: 0 }}>
               <FlowNodePanel form={form} node={node} graph={graph} />
             </Card>
           </Col>
-          <Col sm={24} md={18}>
-            <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
+          <Col sm={24} md={16}>
+            <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="cwmShipping">
                 <TabPane tab={this.msg('cwmShippingOrder')} key="cwmShipping">
                   <ShippingPane form={form} model={model} />

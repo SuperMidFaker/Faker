@@ -7,7 +7,7 @@ import ConditionTable from './compose/conditionTable';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-const {Option} = Select;
+const { Option } = Select;
 
 
 @injectIntl
@@ -28,7 +28,7 @@ export default class FlowEdgePanel extends Component {
     return (
       <Form layout="vertical" className="form-layout-compact">
         <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
-          <Row gutter={8}>
+          <Row gutter={16}>
             <Col sm={24} md={8}>
               <Col sm={24}>
                 <FormItem label={this.msg('sourceNode')}>
@@ -46,7 +46,7 @@ export default class FlowEdgePanel extends Component {
             <Col sm={24} md={16}>
               <FormItem label={<span>
                 {this.msg('edgeCondition')}:&nbsp;满足以下
-                <Select defaultValue="all" style={{ width: 60 }} >
+                <Select size="small" defaultValue="all" style={{ width: 80 }} >
                   <Option value="all">所有</Option>
                   <Option value="any">任一</Option>
                 </Select>

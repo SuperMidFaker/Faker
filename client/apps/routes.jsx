@@ -507,7 +507,6 @@ export default(store) => {
             <Route path="orders" >
               <IndexRoute component={SCOFOrders.List} />
               <Route path="create" component={SCOFOrders.Create} />
-              <Route path="view/:orderNo" component={SCOFOrders.View} />
               <Route path="edit/:orderNo" component={SCOFOrders.Edit} />
             </Route>
             <Route path="tracking">

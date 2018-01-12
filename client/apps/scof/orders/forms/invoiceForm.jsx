@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Row, Col, Card, Input, Table } from 'antd';
+import { Button, DatePicker, Form, Row, Col, Card, Input, Table } from 'antd';
 import { setClientForm } from 'common/reducers/crmOrders';
 
 import FormPane from 'client/components/FormPane';
@@ -33,11 +33,11 @@ export default class InvoiceForm extends Component {
     title: '发票号',
     dataIndex: 'invoice_no',
   }, {
+    title: '发票日期',
+    dataIndex: 'invoice_date',
+  }, {
     title: '订单号',
     dataIndex: 'order_no',
-  }, {
-    title: '合同号',
-    dataIndex: 'contract_no',
   }, {
     dataIndex: 'OPS_COL',
     width: 45,
@@ -66,8 +66,8 @@ export default class InvoiceForm extends Component {
             </FormItem>
           </Col>
           <Col span={6}>
-            <FormItem label="合同号" {...formItemLayout}>
-              <Input />
+            <FormItem label="发票日期" {...formItemLayout}>
+              <DatePicker format="YYYY/MM/DD" style={{ width: '100%' }} />
             </FormItem>
           </Col>
           <Col span={6}>

@@ -48,6 +48,17 @@ export default class FlowNodePanel extends Component {
       form: { getFieldDecorator }, customerPartners, node, serviceTeam, tenantId, tenantName,
       vendorTenants, providerFlows, mainFlow,
     } = this.props;
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+      colon: false,
+    };
     const model = node.get('model');
     const flowDemandProvider = [];
     if (mainFlow) {
@@ -63,10 +74,10 @@ export default class FlowNodePanel extends Component {
         name: vendorTenants.filter(vt => vt.partner_tenant_id === pf.tenant_id)[0].name,
       })).concat({ id: tenantId, name: tenantName });
       flowDemandProvider.push(
-        <FormItem label={this.msg('nodeDemander')} key="demander">
+        <FormItem label={this.msg('nodeDemander')} key="demander" {...formItemLayout}>
           <Input readOnly defaultValue={demanderName} />
         </FormItem>,
-        <FormItem label={this.msg('nodeProvider')} key="provider">
+        <FormItem label={this.msg('nodeProvider')} key="provider" {...formItemLayout}>
           {getFieldDecorator('provider_tenant_id', {
               initialValue: model.provider_tenant_id,
             })(<Select allowClear showSearch>
@@ -78,15 +89,15 @@ export default class FlowNodePanel extends Component {
     const provider = model.provider_tenant_id === tenantId;
     return (
       <Collapse accordion bordered={false} defaultActiveKey={['properties']} style={{ marginTop: 2 }} >
-        <Panel header={this.msg('bizProperties')} key="properties">
-          <FormItem label={this.msg('nodeName')}>
+        <Panel header={this.msg('nodeProperties')} key="properties">
+          <FormItem label={this.msg('nodeName')} {...formItemLayout}>
             {getFieldDecorator('name', {
               initialValue: model.name,
               rules: [{ required: true, message: '名称必填' }],
             })(<Input />)}
           </FormItem>
           {flowDemandProvider}
-          <FormItem label={this.msg('nodeExecutor')}>
+          <FormItem label={this.msg('nodeExecutor')} {...formItemLayout}>
             {getFieldDecorator('person_id', {
               initialValue: model.person_id,
             })(<Select
@@ -98,7 +109,7 @@ export default class FlowNodePanel extends Component {
               {serviceTeam.map(st => <Option key={st.lid} value={st.lid}>{st.name}</Option>)}
             </Select>)}
           </FormItem>
-          <FormItem label={this.msg('multiBizInstance')}>
+          <FormItem label={this.msg('multiBizInstance')} {...formItemLayout}>
             {getFieldDecorator('multi_bizobj', {
               initialValue: model.multi_bizobj,
               valuePropName: 'checked',

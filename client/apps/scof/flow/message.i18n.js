@@ -224,7 +224,11 @@ const messages = defineMessages({
   },
   bizProperties: {
     id: 'scof.flow.biz.properites',
-    defaultMessage: '属性',
+    defaultMessage: '业务属性',
+  },
+  nodeProperties: {
+    id: 'scof.flow.node.properites',
+    defaultMessage: '节点属性',
   },
   nodeEvents: {
     id: 'scof.flow.node.events',
@@ -425,6 +429,10 @@ const messages = defineMessages({
   deleteConfirm: {
     id: 'scof.flow.trigger.action.confirm.delete',
     defaultMessage: '确定删除该动作',
+  },
+  design: {
+    id: 'scof.flow.list.action.design',
+    defaultMessage: '设计',
   },
 });
 

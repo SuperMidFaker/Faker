@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Button, Card, Collapse, Form, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
+import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadVendorTenants, openSubFlowAuthModal, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { loadFormRequires } from 'common/reducers/crmOrders';
@@ -29,7 +29,6 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Panel } = Collapse;
 const { Option } = Select;
-const FormItem = Form.Item;
 
 const NodeKindPanelMap = {
   import: BizObjCMSPanel,
@@ -159,7 +158,7 @@ export default class FlowDesigner extends React.Component {
     this.graph = new window.G6.Graph({
       id: 'flowchart', // 容器ID
       width: window.innerWidth - 100, // 画布宽
-      height: 240, // 画布高
+      height: 180, // 画布高
       grid: {
         forceAlign: true, // 是否支持网格对齐
         cell: 10, // 网格大小
@@ -601,12 +600,12 @@ export default class FlowDesigner extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
-
-          <Content className="page-content">
+          <Content style={{ padding: 8 }} >
             <Spin spinning={this.props.graphLoading}>
               <Card
                 title={this.msg('flowRelationGraph')}
-                bodyStyle={{ padding: 0, height: 240 }}
+                bodyStyle={{ padding: 0, height: 180 }}
+                style={{ marginBottom: 8 }}
                 extra={<div className="toolbar-right">
                   {this.renderGraphToolbar()}
                   <Button icon="swap-right" onClick={this.handleAddEdge}>
@@ -657,23 +656,19 @@ export default class FlowDesigner extends React.Component {
             defaultCollapsed
             collapsible
             collapsed={this.state.rightSidercollapsed}
-            width={480}
+            width={380}
             collapsedWidth={0}
             className="right-sider"
           >
             <div className="right-sider-panel">
-              <div className="panel-header">
-                <h3>流程设置</h3>
-              </div>
               <Collapse accordion defaultActiveKey="tracking">
                 <Panel header="追踪节点" key="tracking">
-                  <FormItem label="追踪表" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }}>
-                    <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
-                      {this.state.trackings.map(data => (
-                        <Option key={data.id} value={data.id}>{data.name}</Option>))}
-                    </Select>
-                  </FormItem>
+                  <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
+                    {this.state.trackings.map(data => (
+                      <Option key={data.id} value={data.id}>{data.name}</Option>))}
+                  </Select>
                   <Table
+                    size="middle"
                     columns={this.trackingColumns}
                     bordered={false}
                     dataSource={this.state.trackDataSource}

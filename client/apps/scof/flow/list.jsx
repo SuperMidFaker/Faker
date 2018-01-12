@@ -120,13 +120,12 @@ export default class FlowList extends React.Component {
   }, {
     title: '操作',
     key: 'OP_COL',
-    width: 160,
+    width: 140,
     render: (_, record) => (<span>
       <RowAction onClick={this.handleDesignFlow} icon="form" label={this.msg('design')} row={record} />
       {record.status === 1 ? <RowAction onClick={this.handleDisableFlow} icon="pause-circle" tooltip={this.msg('disable')} row={record} /> :
       <RowAction onClick={this.handleEnableFlow} icon="play-circle" tooltip={this.msg('enable')} row={record} />
       }
-      <RowAction onClick={this.handleSubFlowAuth} icon="setting" tooltip={this.msg('config')} row={record} />
     </span>
     ),
   },
@@ -233,6 +232,7 @@ export default class FlowList extends React.Component {
           onCancel={() => this.props.toggleFlowDesigner(false)}
           footer={null}
           wrapClassName="fullscreen-modal"
+          destroyOnClose
         >
           <FlowDesigner currentFlow={thisFlow} reloadOnDel={this.handleDelReload} />
         </Modal>

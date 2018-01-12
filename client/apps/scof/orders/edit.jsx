@@ -108,7 +108,7 @@ export default class EditOrder extends Component {
   }
   render() {
     return (
-      <div>
+      <Layout>
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
@@ -132,7 +132,7 @@ export default class EditOrder extends Component {
         <Content className="page-content">
           <OrderForm operation="edit" />
         </Content>
-      </div>
+      </Layout>
     );
   }
 }

@@ -89,23 +89,16 @@ export default class FlowProviderModal extends React.Component {
   render() {
     const { pendingProvider } = this.state;
     const {
-      visible, vendorTenants, providerList, flow, submitting,
+      visible, vendorTenants, providerList, submitting,
     } = this.props;
     return (
       <Modal
-        title={flow.name}
+        title="流程授权"
         visible={visible}
         maskClosable={false}
         footer={[]}
         onCancel={this.handleCancel}
       >
-        <Table
-          size="middle"
-          pagination={false}
-          columns={this.columns}
-          dataSource={providerList}
-          rowKey="id"
-        />
         <Form layout="inline">
           <FormItem>
             <Select allowClear showSearch value={pendingProvider.tenant_id} onChange={this.handlePendingProviderSelect} style={{ width: '200px' }}>
@@ -118,9 +111,16 @@ export default class FlowProviderModal extends React.Component {
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary" disabled={!pendingProvider.tenant_id} loading={submitting} onClick={this.handleSaveProvider} icon="plus">新增</Button>
+            <Button type="primary" disabled={!pendingProvider.tenant_id} loading={submitting} onClick={this.handleSaveProvider} icon="plus-circle-o">添加</Button>
           </FormItem>
         </Form>
+        <Table
+          size="middle"
+          pagination={false}
+          columns={this.columns}
+          dataSource={providerList}
+          rowKey="id"
+        />
       </Modal>
     );
   }
