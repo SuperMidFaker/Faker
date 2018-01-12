@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Input, Select, message } from 'antd';
+import { Form, Row, Col, Card, Select, message } from 'antd';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
 import FormPane from 'client/components/FormPane';
+import UserAvatar from 'client/components/UserAvatar';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -97,7 +98,7 @@ export default class CMSDelegateForm extends Component {
   }
   render() {
     const {
-      formData, formRequires, serviceTeam,
+      formData, formRequires, serviceTeam, cmsQuotes,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -112,19 +113,18 @@ export default class CMSDelegateForm extends Component {
     };
     const { node } = formData;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
-    // const iconType = node.kind === 'export' ? 'logout' : 'login';
     return (
       <FormPane>
         <Card>
           <Row>
-            <Col sm={24} lg={8}>
+            <Col span={8}>
               <FormItem label={this.msg('declareWay')} {...formItemLayout}>
                 <Select value={node.decl_way_code} onChange={value => this.handleChange('decl_way_code', value)}>
                   { declWays.map(dw => <Option value={dw.key} key={dw.key}>{dw.value}</Option>) }
                 </Select>
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
+            <Col span={8}>
               <FormItem label={this.msg('declCustoms')} {...formItemLayout}>
                 <Select showSearch value={node.decl_port} onChange={value => this.handleChange('decl_port', value)}>
                   {
@@ -134,14 +134,14 @@ export default class CMSDelegateForm extends Component {
                 </Select>
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label="备注" {...formItemLayout}>
-                <Input value={node.remark} onChange={ev => this.handleChange('remark', ev.target.value)} />
+            <Col span={8}>
+              <FormItem label={this.msg('操作人员')} {...formItemLayout}>
+                <Select value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
+                </Select>
               </FormItem>
             </Col>
-          </Row>
-          <Row>
-            <Col sm={24} lg={8}>
+            <Col span={8}>
               <FormItem label={this.msg('customsBroker')} {...formItemLayout}>
                 <Select allowClear showSearch value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
                   {
@@ -152,7 +152,7 @@ export default class CMSDelegateForm extends Component {
                 </Select>
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
+            <Col span={8}>
               <FormItem label={this.msg('ciqBroker')} {...formItemLayout}>
                 <Select allowClear showSearch value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
                   {
@@ -163,10 +163,13 @@ export default class CMSDelegateForm extends Component {
                 </Select>
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
-                <Select value={node.person_id} onChange={value => this.handlePersonChange(value)}>
-                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
+            <Col span={8}>
+              <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
+                <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
+                  {
+                    cmsQuotes.map(cq =>
+                      <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
+                  }
                 </Select>
               </FormItem>
             </Col>

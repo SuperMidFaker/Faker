@@ -10,6 +10,7 @@ import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
+import UserAvatar from 'client/components/UserAvatar';
 import * as Location from 'client/util/location';
 import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
@@ -583,13 +584,6 @@ export default class TMSConsignForm extends Component {
         }
           <Row>
             <Col span={8}>
-              <FormItem label="运输模式" required {...formItemLayout}>
-                <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
-                  {transitModes.map(tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>)}
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span={8}>
               <FormItem label="起运地" {...formItemLayout}>
                 <Select
                   allowClear
@@ -638,9 +632,9 @@ export default class TMSConsignForm extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem label={this.msg('承运商')} {...formItemLayout}>
+              <FormItem label={this.msg('调度人员')} {...formItemLayout}>
                 <Select value={node.person_id} onChange={this.handlePersonChange}>
-                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
+                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
                 </Select>
               </FormItem>
             </Col>
@@ -663,19 +657,26 @@ export default class TMSConsignForm extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
+              <FormItem label="运输模式" required {...formItemLayout}>
+                <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
+                  {transitModes.map(tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>)}
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label={this.msg('承运商')} {...formItemLayout}>
+                <Select value={node.person_id} onChange={this.handlePersonChange}>
+                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span={8}>
               <FormItem label={this.msg('quoteNo')} validateStatus={quoteNoField.validateStatus} help={quoteNoField.help} {...formItemLayout}>
                 <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
                   {
                   this.state.tariffs && this.state.tariffs.map(t =>
                     <Option value={t.quoteNo} key={t._id}>{this.renderTmsTariff(t)}</Option>)
                 }
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
-                <Select value={node.person_id} onChange={this.handlePersonChange}>
-                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
                 </Select>
               </FormItem>
             </Col>

@@ -27,7 +27,8 @@ export default class UserAvatar extends React.Component {
     if (avatar) {
       return <Avatar size={this.props.size} shape={this.props.shape} src={avatar} />;
     } else if (name) {
-      return <Avatar size={this.props.size} shape={this.props.shape}>{name}</Avatar>;
+      const initial = name.substr(0, 1);
+      return <Avatar size={this.props.size} shape={this.props.shape} style={{ backgroundColor: '#87d068' }}>{initial}</Avatar>;
     }
     return <Avatar size={this.props.size} shape={this.props.shape} icon="user" />;
   }

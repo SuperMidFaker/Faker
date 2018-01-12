@@ -133,7 +133,7 @@ export default class LogsList extends React.Component {
       <Select
         placeholder="操作人员"
         value={searchFilter.user}
-        style={{ width: 150 }}
+        style={{ width: 120 }}
         showArrow={false}
         showSearch
         onChange={value => this.handleFilterChange('user', value)}
@@ -145,7 +145,7 @@ export default class LogsList extends React.Component {
       <Select
         showSearch
         placeholder="行为"
-        style={{ width: 100 }}
+        style={{ width: 80 }}
         value={searchFilter.behavior}
         onChange={value => this.handleFilterChange('behavior', value)}
         allowClear
@@ -177,6 +177,7 @@ export default class LogsList extends React.Component {
       <RangePicker
         ranges={searchFilter.daterange}
         onChange={range => this.handleFilterChange('daterange', range)}
+        style={{ width: 256 }}
       />
       <Button type="primary" onClick={this.handleSearch}>查询</Button>
       <Button onClick={this.handleReset}>重置</Button>

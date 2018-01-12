@@ -237,7 +237,7 @@ export default class OrderList extends React.Component {
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
       title: '执行者',
-      dataindex: 'executed_by',
+      dataindex: 'operator',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
     }, {

@@ -8,6 +8,7 @@ import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import FormPane from 'client/components/FormPane';
+import UserAvatar from 'client/components/UserAvatar';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -19,6 +20,7 @@ const { Option } = Select;
 @connect(
   state => ({
     recParams: state.scofFlow.cwmParams,
+    serviceTeam: state.crmCustomers.operators,
   }),
   { setClientForm, loadFlowNodeData }
 )
@@ -66,7 +68,7 @@ export default class CwmReceivingForm extends Component {
   }
 
   render() {
-    const { recParams, formData } = this.props;
+    const { recParams, formData, serviceTeam } = this.props;
     const { node } = formData;
     const formItemLayout = {
       labelCol: {
@@ -108,10 +110,20 @@ export default class CwmReceivingForm extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem label="供货商" {...formItemLayout}>
-                <Input value={node.supplier} onChange={ev => this.handleCommonFieldChange('supplier', ev.target.value)} />
+              <FormItem label={this.msg('操作人员')} {...formItemLayout}>
+                <Select value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
+                </Select>
               </FormItem>
             </Col>
+            {/*
+              <Col span={8}>
+              <FormItem label="供货商" {...formItemLayout}>
+                <Input value={node.supplier} onChange={ev =>
+                  this.handleCommonFieldChange('supplier', ev.target.value)} />
+              </FormItem>
+            </Col>
+            */}
             <Col span={8}>
               <FormItem label="货物属性" {...formItemLayout}>
                 <Select onChange={this.handleBondedChange} value={node.bonded}>
