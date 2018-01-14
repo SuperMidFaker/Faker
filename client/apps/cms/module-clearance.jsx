@@ -16,7 +16,6 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     privileges: state.account.privileges,
-    navOption: state.cmsPreferences.navOption,
   }),
   { switchNavOption }
 )
@@ -36,17 +35,6 @@ export default class Clearance extends React.Component {
   componentWillMount() {
     const { privileges, intl } = this.props;
     const linkMenus = [];
-    let navOpt = 'CC';
-    if (typeof window !== 'undefined' && window.localStorage) {
-      navOpt = this.props.navOption;
-      const navtopt = window.localStorage.getItem('cms-nav-option');
-      if (navtopt === null) {
-        window.localStorage.setItem('cms-nav-option', navOpt);
-      } else {
-        navOpt = navtopt;
-        this.props.switchNavOption(navOpt);
-      }
-    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
@@ -65,7 +53,7 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'delegation'),
       });
     }
-    if (navOpt === 'CC' || navOpt === 'ALL') {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
       linkMenus.push({
         single: true,
         key: 'cms-customs',
@@ -79,40 +67,6 @@ export default class Clearance extends React.Component {
         path: '/clearance/ciqdecl',
         icon: 'logixon icon-ciq',
         text: formatMsg(intl, 'ciqDecl'),
-      });
-    }
-    if (navOpt === 'IE' || navOpt === 'ALL') {
-      linkMenus.push({
-        single: false,
-        key: 'cms-import',
-        path: '/clearance/import',
-        icon: 'icon-ikons-login',
-        text: formatMsg(intl, 'import'),
-        sublinks: [{
-          key: 'cms-import-2',
-          path: '/clearance/import/cusdecl',
-          text: formatMsg(intl, 'importCustomsDecl'),
-        }, {
-          key: 'cms-import-3',
-          path: '/clearance/import/ciqdecl',
-          text: formatMsg(intl, 'importCiqDecl'),
-        }],
-      });
-      linkMenus.push({
-        single: false,
-        key: 'cms-export',
-        path: '/clearance/export',
-        icon: 'icon-ikons-logout',
-        text: formatMsg(intl, 'export'),
-        sublinks: [{
-          key: 'cms-export-2',
-          path: '/clearance/export/cusdecl',
-          text: formatMsg(intl, 'exportCustomsDecl'),
-        }, {
-          key: 'cms-export-3',
-          path: '/clearance/export/ciqdecl',
-          text: formatMsg(intl, 'exportCiqDecl'),
-        }],
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'compliance' })) {
@@ -164,23 +118,12 @@ export default class Clearance extends React.Component {
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
-        single: false,
+        single: true,
+        bottom: true,
         key: 'cms-settings',
+        path: '/clearance/settings',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
-        sublinks: [{
-          key: 'cms-settings-0',
-          path: '/clearance/settings/clients',
-          text: formatMsg(intl, 'clients'),
-        }, {
-          key: 'cms-settings-1',
-          path: '/clearance/settings/brokers',
-          text: formatMsg(intl, 'brokers'),
-        }, {
-          key: 'cms-settings-4',
-          path: '/clearance/settings/preferences',
-          text: formatMsg(intl, 'preferences'),
-        }],
       });
     }
     this.setState({ linkMenus });
@@ -189,120 +132,6 @@ export default class Clearance extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    const { intl } = this.props;
-    if (nextProps.navOption !== this.props.navOption) {
-      const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'cms-import' && lm.key !== 'cms-export' && lm.key !== 'cms-customs' && lm.key !== 'cms-ciq');
-      if (nextProps.navOption === 'CC') {
-        linkMenus.splice(
-          2, 0,
-          {
-            single: true,
-            key: 'cms-customs',
-            path: '/clearance/cusdecl',
-            icon: 'logixon icon-customs',
-            text: formatMsg(intl, 'customsDecl'),
-          },
-          {
-            single: true,
-            key: 'cms-ciq',
-            path: '/clearance/ciqdecl',
-            icon: 'logixon icon-ciq',
-            text: formatMsg(intl, 'ciqDecl'),
-          }
-        );
-      } else if (nextProps.navOption === 'IE') {
-        linkMenus.splice(
-          2, 0,
-          {
-            single: false,
-            key: 'cms-import',
-            path: '/clearance/import',
-            icon: 'icon-ikons-login',
-            text: formatMsg(intl, 'import'),
-            sublinks: [{
-              key: 'cms-import-2',
-              path: '/clearance/import/cusdecl',
-              text: formatMsg(intl, 'importCustomsDecl'),
-            }, {
-              key: 'cms-import-3',
-              group: formatMsg(intl, 'import'),
-              path: '/clearance/import/ciqdecl',
-              text: formatMsg(intl, 'importCiqDecl'),
-            }],
-          },
-          {
-            single: false,
-            key: 'cms-export',
-            path: '/clearance/export',
-            icon: 'icon-ikons-logout',
-            text: formatMsg(intl, 'export'),
-            sublinks: [{
-              key: 'cms-export-2',
-              path: '/clearance/export/cusdecl',
-              text: formatMsg(intl, 'exportCustomsDecl'),
-            }, {
-              key: 'cms-export-3',
-              group: formatMsg(intl, 'export'),
-              path: '/clearance/export/ciqdecl',
-              text: formatMsg(intl, 'exportCiqDecl'),
-            }],
-          }
-        );
-      } else if (nextProps.navOption === 'ALL') {
-        linkMenus.splice(
-          2, 0,
-          {
-            single: true,
-            key: 'cms-customs',
-            path: '/clearance/cusdecl',
-            icon: 'logixon icon-customs',
-            text: formatMsg(intl, 'customsDecl'),
-          },
-          {
-            single: true,
-            key: 'cms-ciq',
-            path: '/clearance/ciqdecl',
-            icon: 'logixon icon-ciq',
-            text: formatMsg(intl, 'ciqDecl'),
-          },
-          {
-            single: false,
-            key: 'cms-import',
-            path: '/clearance/import',
-            icon: 'icon-ikons-login',
-            text: formatMsg(intl, 'import'),
-            sublinks: [{
-              key: 'cms-import-2',
-              path: '/clearance/import/customs',
-              text: formatMsg(intl, 'importCustomsDecl'),
-            }, {
-              key: 'cms-import-3',
-              group: formatMsg(intl, 'import'),
-              path: '/clearance/import/ciqdecl',
-              text: formatMsg(intl, 'importCiqDecl'),
-            }],
-          },
-          {
-            single: false,
-            key: 'cms-export',
-            path: '/clearance/export',
-            icon: 'icon-ikons-logout',
-            text: formatMsg(intl, 'export'),
-            sublinks: [{
-              key: 'cms-export-2',
-              path: '/clearance/export/customs',
-              text: formatMsg(intl, 'exportCustomsDecl'),
-            }, {
-              key: 'cms-export-3',
-              group: formatMsg(intl, 'export'),
-              path: '/clearance/export/ciqdecl',
-              text: formatMsg(intl, 'exportCiqDecl'),
-            }],
-          }
-        );
-      }
-      this.setState({ linkMenus });
-    }
     if (nextProps.children === null && this.props.children !== nextProps.children) {
       this.redirectInitialRoute(nextProps.privileges);
     }

@@ -25,9 +25,12 @@ function isInclusivePath(pathTarget, pathSource) {
 
 export default class CollapsibleSiderLayout extends PureComponent {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }).isRequired,
     links: PropTypes.arrayOf(PropTypes.shape({
       single: PropTypes.bool,
+      bottom: PropTypes.bool,
       key: PropTypes.string.isRequired,
       path: PropTypes.string,
       icon: PropTypes.string.isRequired,
@@ -127,9 +130,10 @@ export default class CollapsibleSiderLayout extends PureComponent {
           >
             {
               links.map((link) => {
+                const bottomMenuItem = link.bottom ? 'bottom-menu-item' : '';
                 if (link.single) {
                   return (
-                    <MenuItem key={link.key} disabled={link.disabled}>
+                    <MenuItem key={link.key} disabled={link.disabled} className={bottomMenuItem}>
                       <NavLink to={link.path}>
                         <i className={`icon ${link.icon}`} />
                         <span className="nav-text">{link.text}</span>

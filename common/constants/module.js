@@ -1,7 +1,7 @@
 const MODULE_SCOF = {
   id: 'scof',
   text: 'moduleSCOF',
-  defaultText: '客户订单流',
+  defaultText: '订单中心',
   features: [
     {
       id: 'dashboard',
@@ -82,6 +82,44 @@ const MODULE_SCOF = {
     {
       id: 'customers',
       text: 'featScofCustomers',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'vendors',
+      text: 'featScofVendors',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'settings',
+      text: 'featScofSettings',
       actions: [
         {
           id: 'view',

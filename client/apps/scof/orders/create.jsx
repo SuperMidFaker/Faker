@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/crmOrders';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
-import OrderForm from './forms/orderForm';
-import PageHeader from 'client/components/PageHeader';
-import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/crmOrders';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import PageHeader from 'client/components/PageHeader';
+import OrderForm from './forms/orderForm';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -45,7 +45,9 @@ export default class CreateOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
+    formData: PropTypes.shape({
+      cust_shipmt_transfer: PropTypes.string,
+    }).isRequired,
     submitOrder: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -105,6 +107,8 @@ export default class CreateOrder extends Component {
     this.context.router.goBack();
   }
   render() {
+    const { formData } = this.props;
+    const invalidOrder = !formData.cust_shipmt_transfer || !formData.flow_id;
     return (
       <Layout>
         <PageHeader>
@@ -122,7 +126,7 @@ export default class CreateOrder extends Component {
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>
+            <Button type="primary" onClick={this.handleSave} loading={this.props.saving} disabled={invalidOrder}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

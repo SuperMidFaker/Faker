@@ -98,6 +98,7 @@ export default class Transport extends React.Component {
     if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
       linkMenus.push({
         single: false,
+        bottom: true,
         key: 'tms-6',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),

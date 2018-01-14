@@ -5,8 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import { loadWhse, switchDefaultWhse } from 'common/reducers/cwmContext';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
+
 
 const formatMsg = format(messages);
 
@@ -22,7 +23,7 @@ export default class ModuleCWM extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node,
   };
   state = {
     linkMenus: [],
@@ -119,15 +120,12 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'products'),
     });
     linkMenus.push({
-      single: false,
+      single: true,
+      bottom: true,
       key: 'cwm-settings',
+      path: '/cwm/settings/warehouse',
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
-      sublinks: [{
-        key: 'cwm-settings-0',
-        path: '/cwm/settings/warehouse',
-        text: formatMsg(intl, 'warehouse'),
-      }],
     });
     this.setState({ linkMenus });
     if (!this.props.whse.code && typeof window !== 'undefined') {

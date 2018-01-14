@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Input, Layout, Popconfirm, Tag } from 'antd';
-import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -11,10 +10,11 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import SettingMenu from '../menu';
 import BrokerModal from './modal/brokerModal';
 import { formatMsg } from '../message.i18n';
 
-const { Content } = Layout;
+const { Content, Sider } = Layout;
 const { Search } = Input;
 
 function fetchData({ dispatch }) {
@@ -182,29 +182,40 @@ export default class BrokerList extends Component {
       onSearch={this.handleSearch}
     />);
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
+      <Layout>
+        <Sider width={200} className="menu-sider" key="sider">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('settings')}
               </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('brokers')}
-              </Breadcrumb.Item>
             </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Actions>
-            <PrivilegeCover module="clearance" feature="resources" action="create">
-              <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增代理</Button>
-            </PrivilegeCover>
-          </PageHeader.Actions>
-        </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions} dataSource={data} columns={columns} rowKey="id" />
-          <BrokerModal onOk={this.handleReload} />
-        </Content>
-      </QueueAnim>
+          </div>
+          <div className="left-sider-panel">
+            <SettingMenu currentKey="brokers" />
+          </div>
+        </Sider>
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('brokers')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
+              <PrivilegeCover module="clearance" feature="resources" action="create">
+                <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增代理</Button>
+              </PrivilegeCover>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content" key="main">
+            <DataTable toolbarActions={toolbarActions} dataSource={data} columns={columns} rowKey="id" />
+            <BrokerModal onOk={this.handleReload} />
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

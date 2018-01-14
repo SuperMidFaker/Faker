@@ -99,6 +99,7 @@ import * as SCOFTracking from './scof/tracking';
 import * as SCOFCustomers from './scof/customers';
 import * as SCOFVendors from './scof/vendors';
 import * as SCOFFlow from './scof/flow';
+import * as SCOFSettings from './scof/settings';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
 import * as BSSFeeSummary from './bss/fee/summary';
@@ -169,7 +170,7 @@ export default(store) => {
           <IndexRedirect to="/hub/integration/installed" />
           <Route path="dev">
             <IndexRoute component={HubDev.List} />
-            {/* <Route path=":appId" component={HubDev.Profile} /> */}
+            <Route path=":appId" component={HubDev.Config} />
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">
@@ -361,6 +362,7 @@ export default(store) => {
               <Route path="report/:id" component={CMSAnalytics.Report} />
             </Route>
             <Route path="settings">
+              <IndexRedirect to="/clearance/settings/brokers" />
               <Route path="brokers" component={CMSBrokers.List} />
               <Route path="clients">
                 <IndexRoute component={CMSClients.List} />
@@ -518,6 +520,9 @@ export default(store) => {
             <Route path="customers" component={SCOFCustomers.List} />
             <Route path="vendors" component={SCOFVendors.List} />
             <Route path="flow" component={SCOFFlow.ListPanel} />
+            <Route path="settings" >
+              <IndexRoute component={SCOFSettings.Preferences} />
+            </Route>
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
             <IndexRedirect to="/bss/dashboard" />

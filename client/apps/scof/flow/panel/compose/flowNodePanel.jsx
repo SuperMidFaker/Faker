@@ -89,7 +89,7 @@ export default class FlowNodePanel extends Component {
     const provider = model.provider_tenant_id === tenantId;
     return (
       <Collapse accordion bordered={false} defaultActiveKey={['properties']} style={{ marginTop: 2 }} >
-        <Panel header={this.msg('nodeProperties')} key="properties">
+        <Panel header={this.msg('nodeProperties')} key="properties" className="form-layout-multi-col">
           <FormItem label={this.msg('nodeName')} {...formItemLayout}>
             {getFieldDecorator('name', {
               initialValue: model.name,

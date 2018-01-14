@@ -1,40 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 
 @injectIntl
-@connect(state => ({
-  profile: state.account.profile,
-  role: state.account.role_name,
-  tenantId: state.account.tenantId,
-  parentTenantId: state.account.parentTenantId,
-  code: state.account.code,
-}), )
-
 export default class DevAppList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    avatar: '',
-  }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
-  handleCancel = () => {
-    this.context.router.goBack();
-  }
+  msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('appName'),
     dataIndex: 'app_name',
@@ -62,16 +43,22 @@ export default class DevAppList extends React.Component {
   }];
 
   mockDataSource = [{
-    app_name: '夸微制单系统',
-    scope: '全局',
+    app_id: '5a309589b2a69f0001acaaaf',
+    app_name: '自建应用',
     api_key: 'a530318f6f6890a68dc6efeadb623926',
     api_secret: '62740c97bf7868964b58e314cc8205c8',
   },
   ];
+  handleCancel = () => {
+    this.context.router.goBack();
+  }
+  handleConfig = (appId) => {
+    this.context.router.push(`/hub/dev/${appId}`);
+  }
 
   render() {
     return (
-      <div>
+      <Layout>
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
@@ -91,7 +78,7 @@ export default class DevAppList extends React.Component {
             grid={{ gutter: 16, column: 3 }}
             dataSource={this.mockDataSource}
             renderItem={item => (
-              <List.Item>
+              <List.Item onClick={() => this.handleConfig(item.app_id)}>
                 <Card title={item.app_name} className="app-card">
                   <div className="app-logo" />
                   <div className="app-desc">{item.scope}</div>
@@ -100,7 +87,7 @@ export default class DevAppList extends React.Component {
               )}
           />
         </Content>
-      </div>
+      </Layout>
     );
   }
 }

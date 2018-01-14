@@ -1,2 +1,2 @@
 export List from './list';
-export Profile from './profile';
+export Config from './config';

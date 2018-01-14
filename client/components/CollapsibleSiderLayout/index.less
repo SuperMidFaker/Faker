@@ -23,6 +23,18 @@
   &.left-sider {
     z-index: 50;
     overflow: visible;
+    .ant-menu-item.bottom-menu-item,
+    .ant-menu-submenu.bottom-menu-item {
+      width: 176px;
+      position: fixed;
+      bottom: 48px;
+    }
+    &.ant-layout-sider-collapsed {
+      .ant-menu-item.bottom-menu-item,
+      .ant-menu-submenu.bottom-menu-item {
+        width: 80px;
+      }
+    }
   }
   &.right-sider {
     background: #f7f7f7;
@@ -52,6 +64,10 @@
       .icon, .zmdi {
         min-width: 14px;
         margin-right: 8px;
+      }
+      &.bottom-menu-item {
+        position: fixed;
+        bottom: 48px;
       }
     }
     .menu-sider-item,

@@ -6,6 +6,7 @@ import { locationShape } from 'react-router';
 import { loadTrackings } from 'common/reducers/scvTracking';
 import { format } from 'client/common/i18n/helpers';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
+
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -13,6 +14,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    privileges: state.account.privileges,
     trackings: state.scvTracking.trackings,
   }),
   { loadTrackings }
@@ -70,6 +72,14 @@ export default class ModuleSCOF extends React.Component {
       path: '/scof/vendors',
       icon: 'logixon icon-supplier-mng',
       text: formatMsg(intl, 'vendors'),
+    });
+    linkMenus.push({
+      single: true,
+      bottom: true,
+      key: 'cms-settings',
+      path: '/scof/settings',
+      icon: 'logixon icon-setting-o',
+      text: formatMsg(intl, 'settings'),
     });
     this.setState({ linkMenus });
   }

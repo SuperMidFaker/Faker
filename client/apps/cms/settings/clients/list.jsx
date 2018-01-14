@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Layout, Table, Input, Breadcrumb, Tabs, Form } from 'antd';
+import { Card, Layout, Table, Icon, Input, Breadcrumb, Tabs, Form } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { setResTabkey, setCustomer } from 'common/reducers/cmsResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import PageHeader from 'client/components/PageHeader';
+import NavLink from 'client/components/NavLink';
 import TradersPane from './tabpane/tradersPane';
 import ManifestRulesPane from './tabpane/manifestRulesPane';
 import DocuTemplatesPane from './tabpane/docuTemplatesPane';
@@ -101,10 +102,12 @@ export default class ClientsList extends Component {
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('settings')}
+                <NavLink to="/clearance/settings">
+                  <Icon type="left" /> {this.msg('settings')}
+                </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('clients')}
+                {this.msg('ruleTemplates')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
