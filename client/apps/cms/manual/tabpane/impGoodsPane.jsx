@@ -7,8 +7,11 @@ import DataPane from 'client/components/DataPane';
 import TrimSpan from 'client/components/trimSpan';
 import { loadManualGoods } from 'common/reducers/cmsTradeManual';
 import { DELG_EXEMPTIONWAY } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
-const Search = Input.Search;
+const formatMsg = format(messages);
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -48,6 +51,7 @@ export default class ImpGoodsPane extends React.Component {
       this.handleLoad();
     }
   }
+  msg = key => formatMsg(this.props.intl, key);
   handleLoad = () => {
     this.props.loadManualGoods(this.props.manualNo, 'IMG').then((result) => {
       if (!result.error) {
@@ -61,68 +65,78 @@ export default class ImpGoodsPane extends React.Component {
     this.setState({ searchValue: value });
   }
   columns = [{
-    title: '序号',
+    title: this.msg('no'),
     dataIndex: 'em_g_no',
     width: 45,
   }, {
-    title: '商品编码',
+    title: this.msg('codeS'),
     dataIndex: 'code_s',
     width: 80,
   }, {
-    title: '附加编码',
+    title: this.msg('codeT'),
     dataIndex: 'code_t',
     width: 80,
   }, {
-    title: '商品名称',
+    title: this.msg('gName'),
     dataIndex: 'g_name',
     width: 200,
   }, {
-    title: '规格型号',
+    title: this.msg('model'),
     dataIndex: 'g_model',
     width: 250,
   }, {
-    title: '计量单位',
+    title: this.msg('unit'),
     dataIndex: 'g_unit',
     width: 100,
-    render: o => <TrimSpan text={this.props.units.find(u => u.value === o) && this.props.units.find(u => u.value === o).text} />,
+    render: o => (<TrimSpan text={this.props.units.find(u => u.value === o) &&
+       this.props.units.find(u => u.value === o).text}
+    />),
   }, {
-    title: '法定计量单位',
+    title: this.msg('unit1'),
     dataIndex: 'unit_1',
     width: 100,
-    render: o => <TrimSpan text={this.props.units.find(u => u.value === o) && this.props.units.find(u => u.value === o).text} />,
+    render: o => (<TrimSpan text={this.props.units.find(u => u.value === o) &&
+       this.props.units.find(u => u.value === o).text}
+    />),
   }, {
-    title: '申报数量',
+    title: this.msg('decQty'),
     dataIndex: 'dec_qty',
     width: 100,
   }, {
-    title: '申报单价',
+    title: this.msg('decPrice'),
     dataIndex: 'dec_price',
     width: 100,
   }, {
-    title: '申报总价',
+    title: this.msg('decAmount'),
     dataIndex: 'dec_amount',
     width: 100,
   }, {
-    title: '币制',
+    title: this.msg('currency'),
     dataIndex: 'currency',
     width: 100,
-    render: o => <TrimSpan text={this.props.currencies.find(cu => cu.value === o) && this.props.currencies.find(cu => cu.value === o).text} />,
+    render: o => (<TrimSpan text={this.props.currencies.find(cu => cu.value === o) &&
+       this.props.currencies.find(cu => cu.value === o).text}
+    />),
   }, {
-    title: '产销国',
+    title: this.msg('country'),
     width: 100,
     dataIndex: 'country',
-    render: o => <TrimSpan text={this.props.countries.find(co => co.value === o) && this.props.countries.find(co => co.value === o).text} />,
+    render: o => (<TrimSpan text={this.props.countries.find(co => co.value === o) &&
+       this.props.countries.find(co => co.value === o).text}
+    />),
   }, {
-    title: '征免方式',
+    title: this.msg('dutyMode'),
     width: 100,
     dataIndex: 'duty_mode',
-    render: o => <TrimSpan text={DELG_EXEMPTIONWAY.find(way => way.value === o) && DELG_EXEMPTIONWAY.find(way => way.value === o).text} />,
+    render: o => (<TrimSpan text={DELG_EXEMPTIONWAY.find(way => way.value === o) &&
+       DELG_EXEMPTIONWAY.find(way => way.value === o).text}
+    />),
   }, {
-    title: '征税比例',
+    title: this.msg('dutyRate'),
     width: 100,
     dataIndex: 'duty_rate',
   }, {
-    title: '备注',
+    title: this.msg('remark'),
     dataIndex: 'remark',
   }]
   render() {
@@ -134,12 +148,17 @@ export default class ImpGoodsPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={dataSource}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="商品编码" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search placeholder={this.msg('codeT')} value={this.state.searchValue} style={{ width: 200 }} onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

@@ -89,7 +89,7 @@ export default class ManualList extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('手/帐册编号'),
+    title: this.msg('manualNo'),
     dataIndex: 'manual_no',
     width: 120,
     fixed: 'left',
@@ -98,22 +98,22 @@ export default class ManualList extends Component {
         {o}
       </a>),
   }, {
-    title: this.msg('货主'),
+    title: this.msg('ownerName'),
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
-    title: this.msg('经营单位'),
+    title: this.msg('tradeName'),
     width: 180,
     dataIndex: 'trade_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: this.msg('手/帐册类型'),
+    title: this.msg('manualType'),
     width: 200,
     dataIndex: 'manual_type',
     render: o => <TrimSpan text={o} maxLen={25} />,
   }, {
-    title: this.msg('主管海关'),
+    title: this.msg('masterCustomsCode'),
     width: 180,
     dataIndex: 'master_customs_code',
     render: o => (<TrimSpan
@@ -122,7 +122,7 @@ export default class ManualList extends Component {
       maxLen={20}
     />),
   }, {
-    title: this.msg('贸易方式'),
+    title: this.msg('tradeMode'),
     width: 180,
     dataIndex: 'trade_mode',
     render: o => (<TrimSpan
@@ -131,7 +131,7 @@ export default class ManualList extends Component {
       maxLen={10}
     />),
   }, {
-    title: this.msg('征免性质'),
+    title: this.msg('cutMode'),
     width: 80,
     dataIndex: 'cut_mode',
     render: o => (<TrimSpan
@@ -140,15 +140,15 @@ export default class ManualList extends Component {
       maxLen={10}
     />),
   }, {
-    title: this.msg('录入日期'),
+    title: this.msg('inputDate'),
     dataIndex: 'input_date',
     render: (o, record) => (record.input_date ? moment(record.input_date).format('MM.DD HH:mm') : '-'),
   }, {
-    title: this.msg('申报日期'),
+    title: this.msg('declDate'),
     dataIndex: 'decl_date',
     render: (o, record) => (record.decl_date ? moment(record.decl_date).format('MM.DD HH:mm') : '-'),
   }, {
-    title: this.msg('有效日期'),
+    title: this.msg('validDate'),
     dataIndex: 'valid_date',
     render: (o, record) => (record.valid_date ? moment(record.valid_date).format('MM.DD HH:mm') : '-'),
   }]
@@ -187,7 +187,7 @@ export default class ManualList extends Component {
     };
     const toolbarActions = (<span>
       <SearchBar
-        placeholder={this.msg('搜索手/账册编号')}
+        placeholder={this.msg('manualNo')}
         onInputSearch={this.handleSearch}
       />
     </span>);
@@ -214,7 +214,7 @@ export default class ManualList extends Component {
     });
     const menu = (
       <Menu onClick={this.handleExportClick}>
-        <Menu.Item key="1">下载模版</Menu.Item>
+        <Menu.Item key="1">{this.msg('downloadTemplate')}</Menu.Item>
       </Menu>
     );
     return (
@@ -230,7 +230,7 @@ export default class ManualList extends Component {
           <PageHeader.Actions>
             <Dropdown overlay={menu}>
               <Button type="primary" onClick={this.handleCreateBtnClick} icon="upload">
-                {this.msg('导入')}
+                {this.msg('import')}
               </Button>
             </Dropdown>
           </PageHeader.Actions>

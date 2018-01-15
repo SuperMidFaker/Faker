@@ -73,7 +73,7 @@ export default class CiqDeclEdit extends React.Component {
     this.props.updateCiqHead(this.props.router.params.declNo, values).then((result) => {
       if (!result.error) {
         this.props.loadCiqDeclHead(this.props.router.params.declNo);
-        message.info('保存成功');
+        message.info(this.msg('saveSuccess'));
       }
     });
   }
@@ -82,10 +82,10 @@ export default class CiqDeclEdit extends React.Component {
       form, entries, ciqDeclHead, ciqs,
     } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab="基本信息" key="header">
+    tabs.push(<TabPane tab={this.msg('basicInfo')} key="header">
       <CiqDeclHeadPane ioType={this.props.params.ioType} form={form} />
     </TabPane>);
-    tabs.push(<TabPane tab="商品信息" key="body">
+    tabs.push(<TabPane tab={this.msg('goodsInfo')} key="body">
       <CiqDeclGoodsPane ioType={this.props.params.ioType} fullscreen={this.state.fullscreen} />
     </TabPane>);
     return (
@@ -112,7 +112,7 @@ export default class CiqDeclEdit extends React.Component {
               billSeqNo={ciqDeclHead.bill_seq_no}
               ietype={this.props.params.ioType === 'in' ? 'import' : 'export'}
             />}
-            <Button icon="file-excel">九城商检导出</Button>
+            <Button icon="file-excel">{this.msg('declExport')}</Button>
             <Button type="primary" icon="save" onClick={this.handleSave} disabled={this.props.ciqHeadChangeTimes === 0}>保存</Button>
           </PageHeader.Actions>
         </PageHeader>
