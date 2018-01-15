@@ -33,6 +33,10 @@ const initialState = {
     order: '',
   },
   listFilter: {},
+  currentApp: {
+    name: '',
+    enabled: -1,
+  },
   easipassApp: {},
   quickpassApp: {},
   arctm: {},
@@ -55,15 +59,55 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_INSTALLED_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_EASI_SUCCEED:
-      return { ...state, easipassApp: action.result.data };
+      return {
+        ...state,
+        easipassApp: action.result.data,
+        currentApp: {
+          uuid: action.result.data.uuid,
+          name: action.result.data.name,
+          enabled: action.result.data.enabled,
+        },
+      };
     case actionTypes.LOAD_ARC_SUCCEED:
-      return { ...state, arctm: action.result.data };
+      return {
+        ...state,
+        arctm: action.result.data,
+        currentApp: {
+          uuid: action.result.data.uuid,
+          name: action.result.data.name,
+          enabled: action.result.data.enabled,
+        },
+      };
     case actionTypes.LOAD_SHFTZ_SUCCEED:
-      return { ...state, shftzApp: action.result.data };
+      return {
+        ...state,
+        shftzApp: action.result.data,
+        currentApp: {
+          uuid: action.result.data.uuid,
+          name: action.result.data.name,
+          enabled: action.result.data.enabled,
+        },
+      };
     case actionTypes.LOAD_SFEXPRESS_SUCCEED:
-      return { ...state, sfexpress: action.result.data };
+      return {
+        ...state,
+        sfexpress: action.result.data,
+        currentApp: {
+          uuid: action.result.data.uuid,
+          name: action.result.data.name,
+          enabled: action.result.data.enabled,
+        },
+      };
     case actionTypes.LOAD_WHSESUPV_SUCCEED:
       return { ...state, whseSupervisonApps: action.result.data };
+    case actionTypes.UPDATE_APPSTATUS_SUCCEED:
+      return {
+        ...state,
+        currentApp: {
+          ...state.currentApp,
+          enabled: action.result.data.enabled,
+        },
+      };
     default:
       return state;
   }
@@ -129,7 +173,7 @@ export function updateEasipassApp(easipass) {
   };
 }
 
-export function updateAppStatus(easipass) {
+export function updateAppStatus(enabled) {
   return {
     [CLIENT_API]: {
       types: [
@@ -139,7 +183,7 @@ export function updateAppStatus(easipass) {
       ],
       endpoint: 'v1/platform/integration/update/app/status',
       method: 'post',
-      data: easipass,
+      data: enabled,
     },
   };
 }

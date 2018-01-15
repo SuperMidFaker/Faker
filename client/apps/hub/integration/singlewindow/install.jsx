@@ -5,7 +5,7 @@ import { message, Button, Breadcrumb, Form, Input, Card, Icon, Layout } from 'an
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { installEasipassApp } from 'common/reducers/openIntegration';
-import MainForm from './forms/mainForm';
+import ParamsForm from './forms/paramsForm';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -92,7 +92,7 @@ export default class InstallSingleWindow extends React.Component {
               </FormItem>
             </Card>
             <Card title={this.msg('interfaceConfig')}>
-              <MainForm form={form} quickpass={this.defaultEasipassConfig} />
+              <ParamsForm form={form} quickpass={this.defaultEasipassConfig} />
             </Card>
           </Form>
         </Content>

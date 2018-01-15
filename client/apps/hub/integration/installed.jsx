@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Layout } from 'antd';
+import { Avatar, Badge, Breadcrumb, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
-import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import RowAction from 'client/components/RowAction';
@@ -29,14 +28,13 @@ function fetchData({ state, dispatch }) {
     listFilter: state.openIntegration.listFilter,
     sortFilter: state.openIntegration.sortFilter,
     tenantId: state.account.tenantId,
-    applist: state.openIntegration.list,
+    installedAppsList: state.openIntegration.list,
   }),
   { loadInstalledApps, deleteApp, updateAppStatus }
 )
 export default class InstalledAppsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -61,101 +59,46 @@ export default class InstalledAppsList extends React.Component {
       }
       return <span />;
     },
-  }, {
-    title: this.msg('opColumn'),
-    dataIndex: 'OP_COL',
-    width: 160,
-    render: (txt, row) => {
-      let appType = null;
-      if (row.app_type === 'EASIPASS') {
-        appType = 'easipass';
-      } else if (row.app_type === 'ARCTM') {
-        appType = 'arctm';
-      } else if (row.app_type === 'SHFTZ') {
-        appType = 'shftz';
-      } else if (row.app_type === 'SFEXPRESS') {
-        appType = 'sfexpress';
-      }
-      return (<span>
-        <RowAction onClick={() => this.handleAppConfig(row, appType)} icon="setting" label="配置" />
-        {row.enabled ? <RowAction onClick={this.handleAppDisable} icon="pause-circle" tooltip="停用" row={row} /> :
-        <RowAction onClick={this.handleAppEnable} icon="play-circle" tooltip="启用" row={row} />}
-        <RowAction confirm="确定删除？" onConfirm={this.handleAppDelete} icon="delete" row={row} />
-      </span>);
-    },
   }]
-  dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadInstalledApps(params),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-      showTotal: total => `共 ${total} 条`,
-    }),
-    getParams: (pagination, filters, sorter) => {
-      const params = {
-        tenantId: this.props.tenantId,
-        pageSize: pagination.pageSize,
-        current: pagination.current,
-        sorter: JSON.stringify({
-          field: sorter.field,
-          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
-        }),
-        filter: JSON.stringify(this.props.listFilter),
-      };
-      return params;
-    },
-    remotes: this.props.applist,
-  })
-  handleAppDelete = (row) => {
-    this.props.deleteApp(row.uuid).then((result) => {
-      if (!result.error) {
-        this.props.loadInstalledApps({
-          tenantId: this.props.tenantId,
-          pageSize: this.props.applist.pageSize,
-          current: 1,
-          filter: JSON.stringify(this.props.listFilter),
-          sorter: JSON.stringify(this.props.sortFilter),
-        });
-      }
-    });
-  }
-  handleAppEnable = (row) => {
-    this.props.updateAppStatus({ uuid: row.uuid, enabled: true }).then((result) => {
-      if (!result.error) {
-        this.props.loadInstalledApps({
-          tenantId: this.props.tenantId,
-          pageSize: this.props.applist.pageSize,
-          current: this.props.applist.current,
-          filter: JSON.stringify(this.props.listFilter),
-          sorter: JSON.stringify(this.props.sortFilter),
-        });
-      }
-    });
-  }
-  handleAppDisable = (row) => {
-    this.props.updateAppStatus({ uuid: row.uuid, enabled: false }).then((result) => {
-      if (!result.error) {
-        this.props.loadInstalledApps({
-          tenantId: this.props.tenantId,
-          pageSize: this.props.applist.pageSize,
-          current: this.props.applist.current,
-          filter: JSON.stringify(this.props.listFilter),
-          sorter: JSON.stringify(this.props.sortFilter),
-        });
-      }
-    });
-  }
-  handleAppConfig = (row, appType) => {
+  handleAppConfig = (row) => {
+    let appType = null;
+    if (row.app_type === 'EASIPASS') {
+      appType = 'easipass';
+    } else if (row.app_type === 'ARCTM') {
+      appType = 'arctm';
+    } else if (row.app_type === 'SHFTZ') {
+      appType = 'shftz';
+    } else if (row.app_type === 'SFEXPRESS') {
+      appType = 'sfexpress';
+    }
     const link = `/hub/integration/${appType}/config/${row.uuid}`;
     this.context.router.push(link);
   }
+  renderAppLogo(app) {
+    if (app.app_type === 'EASIPASS') {
+      return <Avatar shape="square" style={{ backgroundColor: '#008dff' }}>EP</Avatar>;
+    } else if (app.app_type === 'ARCTM') {
+      return <Avatar shape="square" style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>AmberRoad</Avatar>;
+    } else if (app.app_type === 'SHFTZ') {
+      return <Avatar shape="square" style={{ backgroundColor: '#00a2ae' }}>FTZ</Avatar>;
+    } else if (app.app_type === 'SFEXPRESS') {
+      return <Avatar shape="square" style={{ backgroundColor: '#292929' }}>SF</Avatar>;
+    } else if (app.app_type === 'SW') {
+      return <Avatar shape="square" style={{ backgroundColor: '#f56a00' }}>SW</Avatar>;
+    } else if (app.app_type === 'QP') {
+      return <Avatar shape="square" style={{ backgroundColor: '#7265e6' }}>QP</Avatar>;
+    }
+    return <Avatar shape="square">{this.msg('unknownApp')}</Avatar>;
+  }
   render() {
-    const { loading, applist } = this.props;
-    this.dataSource.remotes = applist;
+    const { installedAppsList } = this.props;
+    const pagination = {
+      pageSize: installedAppsList.pageSize,
+      current: installedAppsList.current,
+      total: installedAppsList.totalCount,
+      showTotal: total => `共 ${total} 条`,
+      onChange: (() => {}),
+    };
     return (
       <div>
         <PageHeader>
@@ -167,8 +110,26 @@ export default class InstalledAppsList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
         </PageHeader>
-        <Content className="page-content">
-          <DataTable columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" />
+        <Content className="page-content layout-fixed-width">
+          <Card bodyStyle={{ padding: 16 }} >
+            <List
+              dataSource={installedAppsList.data}
+              pagination={pagination}
+              renderItem={item => (
+                <List.Item
+                  key={item.id}
+                  actions={[<RowAction onClick={() => this.handleAppConfig(item)} icon="setting" label={this.msg('config')} />]}
+                >
+                  <List.Item.Meta
+                    avatar={this.renderAppLogo(item)}
+                    title={item.name}
+                    description={item.desc}
+                  />
+                  {item.enabled === 1 ? <Badge status="success" text={this.msg('appEnabled')} /> : <Badge status="default" text={this.msg('appDisabled')} />}
+                </List.Item>
+                )}
+            />
+          </Card>
         </Content>
       </div>
     );

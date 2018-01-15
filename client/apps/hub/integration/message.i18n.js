@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   integration: {
     id: 'hub.integration',
-    defaultMessage: '整合管理',
+    defaultMessage: '整合应用',
   },
   integrationDesc: {
     id: 'hub.integration.desc',
@@ -16,11 +16,15 @@ const messages = defineMessages({
   },
   appsStore: {
     id: 'hub.integration.apps.store',
-    defaultMessage: '系统整合',
+    defaultMessage: '应用市场',
   },
   installedApps: {
     id: 'hub.integration.installed.apps',
     defaultMessage: '已安装应用',
+  },
+  appName: {
+    id: 'hub.integration.app.name',
+    defaultMessage: '应用名称',
   },
   appAmberRoadCTM: {
     id: 'hub.integration.app.arctm',
@@ -70,13 +74,25 @@ const messages = defineMessages({
     id: 'hub.integration.install.app',
     defaultMessage: '安装',
   },
-  saveApp: {
-    id: 'hub.integration.save.app',
+  save: {
+    id: 'hub.integration.save',
     defaultMessage: '保存',
   },
-  cancel: {
-    id: 'hub.integration.cancel',
-    defaultMessage: '取消',
+  close: {
+    id: 'hub.integration.close',
+    defaultMessage: '关闭',
+  },
+  enable: {
+    id: 'hub.integration.enable',
+    defaultMessage: '启用',
+  },
+  disable: {
+    id: 'hub.integration.disable',
+    defaultMessage: '停用',
+  },
+  deleteApp: {
+    id: 'hub.integration.delete.app',
+    defaultMessage: '删除应用',
   },
   integrationNameRequired: {
     id: 'hub.integration.name.required',
@@ -173,6 +189,18 @@ const messages = defineMessages({
   sfexpressCustid: {
     id: 'hub.integration.sfexpress.custid',
     defaultMessage: '月结卡号',
+  },
+  appEnabled: {
+    id: 'hub.integration.msg.app.enabled',
+    defaultMessage: '已启用',
+  },
+  appDisabled: {
+    id: 'hub.integration.msg.app.disabled',
+    defaultMessage: '已停用',
+  },
+  appDeleted: {
+    id: 'hub.integration.msg.app.deleted',
+    defaultMessage: '应用已删除',
   },
 });
 

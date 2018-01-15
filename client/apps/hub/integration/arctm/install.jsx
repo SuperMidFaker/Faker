@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { installArCtmApp } from 'common/reducers/openIntegration';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import MainForm from './forms/mainForm';
+import ParamsForm from './forms/paramsForm';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
@@ -104,7 +104,7 @@ export default class InstallAmberRoadCTM extends React.Component {
               </FormItem>
             </Card>
             <Card title={this.msg('AmberRoadCTMParam')}>
-              <MainForm form={form} partners={formPartners} formData={formData} />
+              <ParamsForm form={form} partners={formPartners} formData={formData} />
             </Card>
           </Form>
         </Content>
