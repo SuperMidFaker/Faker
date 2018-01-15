@@ -1,11 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import { Avatar, Badge, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
+const IconText = ({ type, text }) => (
+  <a>
+    <Icon type={type} style={{ marginRight: 8 }} />
+    {text}
+  </a>
+);
 
 @injectIntl
 export default class DevAppList extends React.Component {
@@ -45,6 +51,13 @@ export default class DevAppList extends React.Component {
   mockDataSource = [{
     app_id: '5a309589b2a69f0001acaaaf',
     app_name: '自建应用',
+    desc: '第一个自建应用',
+    api_key: 'a530318f6f6890a68dc6efeadb623926',
+    api_secret: '62740c97bf7868964b58e314cc8205c8',
+  },
+  {
+    app_id: '5a309589b2a69f0001ac23af',
+    app_name: '自建应用3',
     api_key: 'a530318f6f6890a68dc6efeadb623926',
     api_secret: '62740c97bf7868964b58e314cc8205c8',
   },
@@ -63,7 +76,7 @@ export default class DevAppList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="code-o" /> 自建应用
+                <Icon type="code-o" /> {this.msg('dev')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
@@ -73,19 +86,26 @@ export default class DevAppList extends React.Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          <List
-            grid={{ gutter: 16, column: 3 }}
-            dataSource={this.mockDataSource}
-            renderItem={item => (
-              <List.Item onClick={() => this.handleConfig(item.app_id)}>
-                <Card title={item.app_name} className="app-card">
-                  <div className="app-logo" />
-                  <div className="app-desc">{item.scope}</div>
-                </Card>
-              </List.Item>
-              )}
-          />
+        <Content className="page-content layout-fixed-width">
+          <Card bodyStyle={{ padding: 16 }} >
+            <List
+              dataSource={this.mockDataSource}
+              renderItem={item => (
+                <List.Item
+                  key={item.app_id}
+                  actions={[<IconText type="setting" text="配置" />]}
+                  onClick={() => this.handleConfig(item.app_id)}
+                >
+                  <List.Item.Meta
+                    avatar={<Avatar shape="square" src={item.app_logo} />}
+                    title={item.app_name}
+                    description={item.desc}
+                  />
+                  <Badge status="success" text="已上线" />
+                </List.Item>
+                )}
+            />
+          </Card>
         </Content>
       </Layout>
     );

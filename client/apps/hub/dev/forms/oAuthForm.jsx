@@ -32,7 +32,7 @@ export default class OAuthForm extends Component {
         </FormItem>
         <Divider />
         <h6>OAuth 2 介绍</h6>
-        <p>1、访问授权地址, 浏览器访问 https://account.teambition.com/oauth2/authorize?client_id=&redirect_uri=</p>
+        <p>1、访问授权地址, 浏览器访问 https://sso.welogix.cn/oauth2/authorize?client_id=&redirect_uri=</p>
         <p>2、用户登录并授权，跳转至回调地址</p>
         <p>3、根据回调地址上携带的一次性授权码(code), 根据接口获取授权token(access_token)</p>
         <p>4、使用 access_token 即可调用接口</p>

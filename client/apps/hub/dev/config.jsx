@@ -35,7 +35,7 @@ export default class ConfigDevApp extends React.Component {
     router: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl);
-  handleCancel = () => {
+  handleClose = () => {
     this.context.router.goBack();
   }
 
@@ -55,14 +55,14 @@ export default class ConfigDevApp extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancel}>
-              {this.msg('cancel')}
+            <Button icon="close" onClick={this.handleClose}>
+              {this.msg('close')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-fixed-width">
           <Card bodyStyle={{ padding: 0 }}>
-            <Collapse accordion bordered={false} defaultActiveKey={['1']}>
+            <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
               <Panel header="基本信息" key="profile">
                 <ProfileForm app={app} />
               </Panel>
