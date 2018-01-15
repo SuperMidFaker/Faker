@@ -3,9 +3,15 @@ import { Modal, Input } from 'antd';
 import { connect } from 'react-redux';
 import { toggleTradeItemModal, loadTradeItems, addPermitTradeItem, loadPermitModels } from 'common/reducers/cmsPermit';
 import DataTable from 'client/components/DataTable';
+import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+
+const formatMsg = format(messages);
 
 const { Search } = Input;
 
+@injectIntl
 @connect(
   state => ({
     visible: state.cmsPermit.tradeItemModal.visible,
@@ -21,23 +27,27 @@ const { Search } = Input;
   }
 )
 export default class PermitItemModal extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+  }
   state = {
     searchText: '',
     selectedRowKeys: [],
     selectedRows: [],
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   columns = [{
-    title: '序号',
+    title: this.msg('no'),
     width: 45,
     render: (o, record, index) => index + 1,
   }, {
-    title: '商品货号',
+    title: this.msg('productNo'),
     dataIndex: 'cop_product_no',
   }, {
-    title: 'HS编码',
+    title: this.msg('hscode'),
     dataIndex: 'hscode',
   }, {
-    title: '中文品名',
+    title: this.msg('gName'),
     dataIndex: 'g_name',
   }]
   handleCancel = () => {
@@ -107,7 +117,7 @@ export default class PermitItemModal extends Component {
     };
     return (
       <Modal
-        title="关联商品货号"
+        title={this.msg('relProductNo')}
         width={800}
         visible={this.props.visible}
         onCancel={this.handleCancel}

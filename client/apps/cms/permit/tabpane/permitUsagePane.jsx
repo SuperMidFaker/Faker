@@ -42,20 +42,20 @@ export default class PermitUsagePane extends React.Component {
     className: 'table-col-seq',
     render: (o, record, index) => index + 1,
   }, {
-    title: this.msg('型号系列'),
+    title: this.msg('model'),
     dataIndex: 'permit_model',
     width: 200,
   }, {
-    title: this.msg('关联商品货号'),
+    title: this.msg('relProductNos'),
     dataIndex: 'rel_product_nos',
   }, {
-    title: this.msg('使用次数'),
+    title: this.msg('usageCount'),
     dataIndex: 'usage_count',
   }, {
-    title: this.msg('使用时间'),
+    title: this.msg('usageDate'),
     dataIndex: 'usage_date',
   }, {
-    title: this.msg('使用对象'),
+    title: this.msg('usageObject'),
     dataIndex: 'pre_entry_seq_no',
   }];
 

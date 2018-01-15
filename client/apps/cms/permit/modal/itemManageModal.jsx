@@ -5,7 +5,13 @@ import { connect } from 'react-redux';
 import { toggleItemManageModal, loadModelItems, deleteModelItem, loadPermitModels, toggleTradeItemModal } from 'common/reducers/cmsPermit';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
+import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
+const formatMsg = format(messages);
+
+@injectIntl
 @connect(
   state => ({
     visible: state.cmsPermit.itemManageModal.visible,
@@ -24,6 +30,7 @@ import RowAction from 'client/components/RowAction';
 
 export default class ItemManageModal extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     permitId: PropTypes.number.isRequired,
   }
   componentWillReceiveProps(nextProps) {
@@ -36,6 +43,7 @@ export default class ItemManageModal extends Component {
       });
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleClose = () => {
     this.props.toggleItemManageModal(false);
   }
@@ -59,25 +67,25 @@ export default class ItemManageModal extends Component {
     this.props.toggleTradeItemModal(true, this.props.modelId);
   }
   columns = [{
-    title: '商品货号',
+    title: this.msg('productNo'),
     dataIndex: 'cop_product_no',
   }, {
-    title: 'HS编码',
+    title: this.msg('hscode'),
     dataIndex: 'hscode',
     width: 120,
   }, {
-    title: '中文品名',
+    title: this.msg('gName'),
     dataIndex: 'g_name',
   }, {
-    title: '海关监管条件',
+    title: this.msg('customsControl'),
     dataIndex: 'customs_control',
   }, {
-    title: '检验检疫条件',
+    title: this.msg('inspectionQuarantine'),
     dataIndex: 'inspection_quarantine',
   }, {
     dataIndex: 'OPS_COL',
     width: 60,
-    render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
+    render: (o, record) => <RowAction danger confirm={this.msg('ensureDelete')} onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />,
   }]
   render() {
     const { visible, loading } = this.props;
@@ -104,13 +112,13 @@ export default class ItemManageModal extends Component {
       remotes: this.props.modelItems,
     });
     const title = (<div>
-      <span>关联商品货号管理</span>
+      <span>{this.msg('productNoManage')}</span>
       <div className="toolbar-right">
-        <Button onClick={this.handleClose}>关闭</Button>
+        <Button onClick={this.handleClose}>{this.msg('close')}</Button>
       </div>
     </div>);
     const toolbarActions = (<span>
-      <Button type="primary" icon="plus-circle-o" onClick={this.toggleTradeItemModal}>添加</Button>
+      <Button type="primary" icon="plus-circle-o" onClick={this.toggleTradeItemModal}>{this.msg('add')}</Button>
     </span>);
     return (
       <Modal

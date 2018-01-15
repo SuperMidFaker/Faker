@@ -4,8 +4,13 @@ import PropTypes from 'prop-types';
 import { Modal, Input, Table } from 'antd';
 import { toggleReqDocuModal, saveRequiredDocuments, loadCiqDeclHead } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
+import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
+const formatMsg = format(messages);
 
+@injectIntl
 @connect(
   state => ({
     visible: state.cmsCiqDeclare.requiredDocuModal.visible,
@@ -14,7 +19,8 @@ import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
 )
 export default class RequiredDocuModal extends Component {
   static propTypes = {
-    preEntrySeqNo: PropTypes.string.isRequired,
+    intl: intlShape.isRequired,
+    preEntrySeqNo: PropTypes.string,
     selectedRowKeys: PropTypes.string,
     applOris: PropTypes.string,
     applCopyQuans: PropTypes.string,
@@ -50,6 +56,7 @@ export default class RequiredDocuModal extends Component {
       }
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleCancel = () => {
     this.props.toggleReqDocuModal(false);
   }
@@ -124,26 +131,26 @@ export default class RequiredDocuModal extends Component {
       className: 'table-col-seq',
       render: (o, record, index) => index + 1,
     }, {
-      title: '证书代码',
+      title: this.msg('appCertCode'),
       dataIndex: 'app_cert_code',
       align: 'center',
       width: 80,
     }, {
-      title: '证书名称',
+      title: this.msg('appCertName'),
       dataIndex: 'app_cert_name',
     }, {
-      title: '正本数量',
+      title: this.msg('applOri'),
       dataIndex: 'appl_ori',
       width: 100,
       render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleOriChange(e, index)} />,
     }, {
-      title: '副本数量',
+      title: this.msg('applCopyQuan'),
       dataIndex: 'appl_copy_quan',
       width: 100,
       render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleCopyQuanChange(e, index)} />,
     }];
     return (
-      <Modal width={800} title="所需单证" visible={visible} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} style={{ top: 20 }}>
+      <Modal width={800} title={this.msg('certNeeded')} visible={visible} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} style={{ top: 20 }}>
         <Table size="middle" columns={columns} dataSource={documents} scroll={{ y: 560 }} rowSelection={rowSelection} rowKey="app_cert_code" pagination={false} />
       </Modal>
     );

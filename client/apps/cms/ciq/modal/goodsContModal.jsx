@@ -4,7 +4,11 @@ import { Col, Form, Row, Input, Select, Modal, Table, Button } from 'antd';
 import { toggleGoodsContModal, addGoodsCont, loadGoodsCont, deleteGoodsCont } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_TRANS_MEANS_TYPE, CIQ_CNTNR_MODE_CODE, CIQ_QTY_MEAS_UNIT, CIQ_WT_UNIT_CODE } from 'common/constants';
 import RowAction from 'client/components/RowAction';
+import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -20,8 +24,12 @@ const { Option } = Select;
     deleteGoodsCont,
   }
 )
+@injectIntl
 @Form.create()
 export default class GoodsLicenceModal extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+  }
   state = {
     dataSource: [],
   }
@@ -30,6 +38,7 @@ export default class GoodsLicenceModal extends Component {
       this.loadDataSource(nextProps.goodsData.id);
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleCancel = () => {
     this.props.toggleGoodsContModal(false);
   }
@@ -77,55 +86,55 @@ export default class GoodsLicenceModal extends Component {
       },
     };
     const columns = [{
-      title: '集装箱号',
+      title: this.msg('contCode'),
       dataIndex: 'cont_code',
     }, {
-      title: '集装箱规格',
+      title: this.msg('contModeCode'),
       dataIndex: 'cntnr_mode_code',
     }, {
-      title: '数量',
+      title: this.msg('qty'),
       dataIndex: 'qty',
     }, {
-      title: '数量计量单位',
+      title: this.msg('qtyMeasUnit'),
       dataIndex: 'qty_meas_unit',
     }, {
-      title: '标准数量',
+      title: this.msg('stdMeasUnitQty'),
       dataIndex: 'std_meas_unit_qty',
     }, {
-      title: '标准数量计量单位',
+      title: this.msg('stdMeasUnit'),
       dataIndex: 'std_meas_unit',
     }, {
-      title: '重量',
+      title: this.msg('weight'),
       dataIndex: 'weight',
     }, {
-      title: '重量单位代码',
+      title: this.msg('wtUnitCode'),
       dataIndex: 'wt_unit_code',
     }, {
       dataIndex: 'OPS_COL',
       width: 45,
-      render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
+      render: (o, record) => <RowAction danger confirm={this.msg('ensureDelete')} onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />,
     }];
     return (
-      <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
+      <Modal width={1000} title={this.msg('goodsContainer')} visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
           <Row>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="商品编码" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('hscode')} >
                 <Input value={goodsData.hscode} disabled />
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="商品名称" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('gName')} >
                 <Input value={goodsData.gName} disabled />
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="CIQ代码" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('ciqCode')} >
                 <Input value={goodsData.ciqCode} disabled />
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="运输工具类型" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('transMeansType')} >
                 {getFieldDecorator('trans_means_type', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_TRANS_MEANS_TYPE.map(type =>
@@ -134,14 +143,14 @@ export default class GoodsLicenceModal extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="集装箱号" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('contCode')} >
                 {getFieldDecorator('cont_code', {
                 required: true,
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="集装箱规格" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('contModeCode')} >
                 {getFieldDecorator('cntnr_mode_code', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_CNTNR_MODE_CODE.map(code =>
@@ -150,13 +159,13 @@ export default class GoodsLicenceModal extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="数量" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('qty')} >
                 {getFieldDecorator('qty', {
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="计量单位" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('qtyMeasUnit')} >
                 {getFieldDecorator('qty_meas_unit', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_QTY_MEAS_UNIT.map(unit =>
@@ -165,13 +174,13 @@ export default class GoodsLicenceModal extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="标准数量" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('stdMeasUnitQty')} >
                 {getFieldDecorator('std_meas_unit_qty', {
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="标准数量单位" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('stdMeasUnit')} >
                 {getFieldDecorator('std_meas_unit', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_QTY_MEAS_UNIT.map(unit =>
@@ -180,13 +189,13 @@ export default class GoodsLicenceModal extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="重量" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('weight')} >
                 {getFieldDecorator('weight', {
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="重量单位" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('wtUnitCode')} >
                 {getFieldDecorator('wt_unit_code', {
               })(<Select showSearch style={{ width: '100%' }}>
                 {CIQ_WT_UNIT_CODE.map(code =>
@@ -196,7 +205,7 @@ export default class GoodsLicenceModal extends Component {
             </Col>
           </Row>
           <Row style={{ marginBottom: 8, textAlign: 'right' }}>
-            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
+            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>{this.msg('save')}</Button>
           </Row>
         </Form>
         <Table size="small" columns={columns} dataSource={dataSource} pagination={null} rowKey="id" />
