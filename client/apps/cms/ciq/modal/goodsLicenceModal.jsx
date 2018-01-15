@@ -4,7 +4,11 @@ import { Col, Form, Row, Input, Select, Modal, Table, Button } from 'antd';
 import { toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences, loadLicenceNo } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
 import RowAction from 'client/components/RowAction';
+import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
+const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -18,8 +22,13 @@ const { Option } = Select;
     toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences, loadLicenceNo,
   }
 )
+
+@injectIntl
 @Form.create()
 export default class GoodsLicenceModal extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+  }
   state = {
     dataSource: [],
     licenceNos: [],
@@ -30,6 +39,7 @@ export default class GoodsLicenceModal extends Component {
       this.loadDataSource(nextProps.goodsData.id);
     }
   }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleCancel = () => {
     this.props.toggleGoodsLicenceModal(false);
   }
@@ -121,54 +131,54 @@ export default class GoodsLicenceModal extends Component {
       },
     };
     const columns = [{
-      title: '许可证类别',
+      title: this.msg('licenceType'),
       dataIndex: 'lic_type_code',
       render: o => CIQ_LICENCE_TYPE.find(type => type.value === o) &&
                    CIQ_LICENCE_TYPE.find(type => type.value === o).text,
     }, {
-      title: '许可证编号',
+      title: this.msg('licenceNo'),
       dataIndex: 'licence_no',
     }, {
-      title: '核销货物序号',
+      title: this.msg('wrtofDetailNo'),
       dataIndex: 'lic_wrtof_detail_no',
     }, {
-      title: '核销数量',
+      title: this.msg('wrtofQty'),
       dataIndex: 'lic_wrtof_qty',
       align: 'right',
     }, {
-      title: '核销明细余量',
+      title: this.msg('detailLeft'),
       dataIndex: 'lic_detail_left',
       align: 'right',
     }, {
-      title: '核销后余量',
+      title: this.msg('wrtofLeft'),
       dataIndex: 'lic_wrtof_left',
       align: 'right',
     }, {
       dataIndex: 'OPS_COL',
       width: 45,
-      render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
+      render: (o, record) => <RowAction danger confirm={this.msg('ensureDelete')} onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />,
     }];
     return (
-      <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel} destroyOnClose>
+      <Modal width={1000} title={this.msg('goodsLicence')} visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel} destroyOnClose>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
           <Row>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="商品编码" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('hscode')} >
                 <Input value={goodsData.hscode} disabled />
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="商品名称" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('gName')} >
                 <Input value={goodsData.gName} disabled />
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="CIQ代码" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('ciqCode')} >
                 <Input value={goodsData.ciqCode} disabled />
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="许可证类别" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('licenceType')} >
                 {getFieldDecorator('lic_type_code', {
                 required: true,
               })(<Select showSearch optionFilterProp="children" onChange={this.handleChange}>
@@ -180,7 +190,7 @@ export default class GoodsLicenceModal extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="许可证编号" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('licenceNo')} >
                 {getFieldDecorator('licence_no', {
                 required: true,
               })(<Select showSearch optionFilterProp="children" onChange={this.handleLicenceNoChange}>
@@ -192,32 +202,32 @@ export default class GoodsLicenceModal extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="核销货物序号" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('wrtofDetailNo')} >
                 {getFieldDecorator('lic_wrtof_detail_no', {
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="核销明细余量" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('detailLeft')} >
                 {getFieldDecorator('lic_detail_left', {
               })(<Input disabled />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="核销数量" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('wrtofQty')} >
                 {getFieldDecorator('lic_wrtof_qty', {
               })(<Input onChange={this.handleQtyChange} />)}
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem {...formItemLayout} colon={false} label="核销后余量" >
+              <FormItem {...formItemLayout} colon={false} label={this.msg('wrtofLeft')} >
                 {getFieldDecorator('lic_wrtof_left', {
               })(<Input disabled />)}
               </FormItem>
             </Col>
           </Row>
           <Row style={{ marginBottom: 8, textAlign: 'right' }}>
-            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
+            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>{this.msg('save')}</Button>
           </Row>
         </Form>
         <Table size="small" columns={columns} dataSource={dataSource} pagination={null} rowKey="id" />

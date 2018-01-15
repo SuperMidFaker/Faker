@@ -45,6 +45,14 @@ export default defineMessages({
     id: 'cms.permit.category',
     defaultMessage: '标准',
   },
+  customs: {
+    id: 'cms.permit.category.customs',
+    defaultMessage: '海关标准',
+  },
+  ciq: {
+    id: 'cms.permit.category.ciq',
+    defaultMessage: '国检标准',
+  },
   permitType: {
     id: 'cms.permit.type',
     defaultMessage: '证书类型',
@@ -81,6 +89,14 @@ export default defineMessages({
     id: 'cms.permit.status',
     defaultMessage: '状态',
   },
+  valid: {
+    id: 'cms.permit.status.valid',
+    defaultMessage: '有效',
+  },
+  invalid: {
+    id: 'cms.permit.status.invalid',
+    defaultMessage: '失效',
+  },
   opCol: {
     id: 'cms.permit.op.col',
     defaultMessage: '操作',
@@ -92,5 +108,105 @@ export default defineMessages({
   cancel: {
     id: 'cms.permit.action.cancel',
     defaultMessage: '取消',
+  },
+  turnOn: {
+    id: 'cms.permit.action.turnOn',
+    defaultMessage: '开启',
+  },
+  close: {
+    id: 'cms.permit.action.close',
+    defaultMessage: '关闭',
+  },
+  check: {
+    id: 'cms.permit.action.check',
+    defaultMessage: '查看',
+  },
+  update: {
+    id: 'cms.permit.action.update',
+    defaultMessage: '上传',
+  },
+  updateSuccess: {
+    id: 'cms.permit.action.updateSuccess',
+    defaultMessage: '更新成功',
+  },
+  detail: {
+    id: 'cms.permit.detail',
+    defaultMessage: '详情',
+  },
+  relPartner: {
+    id: 'cms.permit.relPartner',
+    defaultMessage: '选择关联货主',
+  },
+  model: {
+    id: 'cms.permit.item.model',
+    defaultMessage: '型号系列',
+  },
+  productNo: {
+    id: 'cms.permit.item.productNo',
+    defaultMessage: '商品货号',
+  },
+  manage: {
+    id: 'cms.permit.item.manage',
+    defaultMessage: '关联管理',
+  },
+  automaticMatch: {
+    id: 'cms.permit.item.automaticMatch',
+    defaultMessage: '自动匹配',
+  },
+  hscode: {
+    id: 'cms.permit.item.hscode',
+    defaultMessage: 'HS编码',
+  },
+  gName: {
+    id: 'cms.permit.item.name',
+    defaultMessage: '中文品名',
+  },
+  customsControl: {
+    id: 'cms.permit.item.customsControl',
+    defaultMessage: '海关监管条件',
+  },
+  inspectionQuarantine: {
+    id: 'cms.permit.item.inspectionQuarantine',
+    defaultMessage: '检验检疫条件',
+  },
+  addModel: {
+    id: 'cms.permit.addModel',
+    defaultMessage: '新增型号系列',
+  },
+  relProductNos: {
+    id: 'cms.permit.relProductNos',
+    defaultMessage: '关联商品货号',
+  },
+  productNoManage: {
+    id: 'cms.pertmit.productNoManage',
+    defaultMessage: '关联商品货号管理',
+  },
+  usageCount: {
+    id: 'cms.permit.usageCount',
+    defaultMessage: '使用次数',
+  },
+  usageDate: {
+    id: 'cms.permit.usageDate',
+    defaultMessage: '使用时间',
+  },
+  usageObject: {
+    id: 'cms.permit.usageObject',
+    defaultMessage: '使用对象',
+  },
+  ensureDelete: {
+    id: 'cms.permit.action.ensureDelete',
+    defaultMessage: '确定删除?',
+  },
+  delete: {
+    id: 'cms.permit.action.delete',
+    defaultMessage: '删除',
+  },
+  add: {
+    id: 'cms.permit.action.add',
+    defaultMessage: '添加',
+  },
+  no: {
+    id: 'cms.permit.no',
+    defaultMessage: '序号',
   },
 });

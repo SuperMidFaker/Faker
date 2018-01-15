@@ -94,7 +94,7 @@ export default class PermitList extends Component {
     width: 100,
     dataIndex: 'usage_control',
     align: 'center',
-    render: o => (o ? <Tag color="#87d068">开启</Tag> : <Tag>关闭</Tag>),
+    render: o => (o ? <Tag color="#87d068">{this.msg('turnOn')}</Tag> : <Tag>{this.msg('close')}</Tag>),
   }, {
     title: this.msg('maxUsage'),
     width: 100,
@@ -110,7 +110,7 @@ export default class PermitList extends Component {
     width: 120,
     dataIndex: 'expiry_control',
     align: 'center',
-    render: o => (o ? <Tag color="#87d068">开启</Tag> : <Tag>关闭</Tag>),
+    render: o => (o ? <Tag color="#87d068">{this.msg('turnOn')}</Tag> : <Tag>{this.msg('close')}</Tag>),
   }, {
     title: this.msg('startDate'),
     dataIndex: 'start_date',
@@ -129,9 +129,9 @@ export default class PermitList extends Component {
     dataIndex: 'status',
     render: (o) => {
       if (o) {
-        return <Tag color="green">有效</Tag>;
+        return <Tag color="green">{this.msg('valid')}</Tag>;
       }
-      return <Tag color="red">失效</Tag>;
+      return <Tag color="red">{this.msg('invalid')}</Tag>;
     },
   }, {
     title: this.msg('permitFile'),
@@ -149,7 +149,7 @@ export default class PermitList extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />
+        <RowAction onClick={this.handleDetail} icon="form" label={this.msg('detail')} row={record} />
       </span>),
   }]
   handleAdd = () => {
@@ -176,7 +176,7 @@ export default class PermitList extends Component {
     };
     const toolbarActions = (<span>
       <SearchBar
-        placeholder={this.msg('证书编号')}
+        placeholder={this.msg('permitNo')}
         onInputSearch={this.handleSearch}
       />
     </span>);
