@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Collapse, Form, Col, Row, Radio, Select, Input } from 'antd';
+import { Collapse, Form, Col, Row, Radio, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
@@ -79,19 +79,9 @@ export default class CWMShippingPane extends Component {
                   })(<RadioGroup>
                     {CWM_SO_BONDED_REGTYPES.map(cabr =>
                       (<RadioButton value={cabr.value} key={cabr.value}>
-                        {cabr.ftztext}
+                        {cabr.ftztext || cabr.text}
                       </RadioButton>))}
                   </RadioGroup>)}
-                </FormItem>
-              </Col>
-            }
-            {
-              getFieldValue('bonded_reg_type') === CWM_SO_BONDED_REGTYPES[0].value &&
-              <Col sm={24} lg={8} >
-                <FormItem label="保税预期出库日期">
-                  {getFieldDecorator('ship_after_decl_days', {
-                    initialValue: model.ship_after_decl_days,
-                  })(<Input addonBefore="晚于申报日期" addonAfter="天" />)}
                 </FormItem>
               </Col>
             }

@@ -314,6 +314,10 @@ const messages = defineMessages({
     id: 'scof.flow.biz.event.so.finished',
     defaultMessage: '已发货',
   },
+  onSoDecl: {
+    id: 'scof.flow.biz.event.so.decl',
+    defaultMessage: '出库清关',
+  },
   onRegFinished: {
     id: 'scof.flow.biz.event.reg.finished',
     defaultMessage: '已备案',
