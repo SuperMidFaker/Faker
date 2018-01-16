@@ -344,6 +344,9 @@ export default class DelegationList extends Component {
     const link = `/clearance/${clearType}/manifest/view/${row.delg_no}`;
     this.context.router.push(link);
   }
+  handleClientSetting = () => {
+    this.context.router.push('/clearance/delegation/clients');
+  }
   handleDelegationAccept = (row, lid) => {
     if (!lid) {
       message.info('制单人不能为空');
@@ -653,8 +656,11 @@ export default class DelegationList extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button type="primary" onClick={this.handleCreate} icon="plus">
+            <Button type="primary" onClick={this.handleCreate} icon="plus" disabled>
               {this.msg('createDelegation')}
+            </Button>
+            <Button onClick={this.handleClientSetting} icon="setting">
+              {this.msg('clientSetting')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { intlShape, injectIntl } from 'react-intl';
 import { Avatar, Badge, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
-import { intlShape, injectIntl } from 'react-intl';
+import RowAction from 'client/components/RowAction';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
-const IconText = ({ type, text }) => (
-  <a>
-    <Icon type={type} style={{ marginRight: 8 }} />
-    {text}
-  </a>
-);
 
 @injectIntl
 export default class DevAppList extends React.Component {
@@ -93,8 +88,7 @@ export default class DevAppList extends React.Component {
               renderItem={item => (
                 <List.Item
                   key={item.app_id}
-                  actions={[<IconText type="setting" text="配置" />]}
-                  onClick={() => this.handleConfig(item.app_id)}
+                  actions={[<RowAction onClick={() => this.handleConfig(item.app_id)} icon="setting" label={this.msg('config')} />]}
                 >
                   <List.Item.Meta
                     avatar={<Avatar shape="square" src={item.app_logo} />}

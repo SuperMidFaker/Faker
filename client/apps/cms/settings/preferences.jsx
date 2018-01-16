@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Form, Radio, Layout } from 'antd';
+import { Breadcrumb, Card, Collapse, List, Radio, Layout, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { switchNavOption } from 'common/reducers/cmsPreferences';
-import { CMS_DECL_CHANNEL } from 'common/constants';
+import { CMS_DECL_CHANNEL, CMS_PLUGINS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import PageHeader from 'client/components/PageHeader';
@@ -12,9 +12,9 @@ import SettingMenu from './menu';
 import { formatMsg } from './message.i18n';
 
 const { Content, Sider } = Layout;
+const { Panel } = Collapse;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -35,7 +35,6 @@ const FormItem = Form.Item;
 export default class Preferences extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -57,16 +56,32 @@ export default class Preferences extends Component {
     }
   }
   render() {
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
+    const customPanelStyle = {
+      background: 'transparent',
+      border: 0,
     };
+    const cusDeclPrefList = [
+      {
+        key: 'declChannel',
+        name: '默认申报通道',
+        actions: [<RadioGroup
+          value={this.state.declChannel}
+          onChange={this.handleDeclChannelChange}
+        >
+          {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
+          const channel = CMS_DECL_CHANNEL[declChannel];
+          return (<RadioButton
+            value={channel.value}
+            key={channel.value}
+            disabled={channel.disabled}
+          >
+            {channel.text}
+          </RadioButton>);
+        })}
+        </RadioGroup>,
+        ],
+      },
+    ];
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -92,23 +107,44 @@ export default class Preferences extends Component {
             </PageHeader.Title>
           </PageHeader>
           <Content className="page-content layout-fixed-width">
-            <Card title="报关">
-              <FormItem label="默认申报通道" {...formItemLayout}>
-                <RadioGroup value={this.state.declChannel} onChange={this.handleDeclChannelChange}>
-                  {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
-                    const channel = CMS_DECL_CHANNEL[declChannel];
-                    return (<RadioButton
-                      value={channel.value}
-                      key={channel.value}
-                      disabled={channel.disabled}
-                    >
-                      {channel.text}
-                    </RadioButton>);
-                  })}
-                </RadioGroup>
-              </FormItem>
-            </Card>
-            <Card title="报检" />
+            <Collapse bordered={false} defaultActiveKey={['pluginsPref', 'cusDeclPref']}>
+              <Panel header={this.msg('pluginsPref')} key="pluginsPref" style={customPanelStyle}>
+                <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 0 }} >
+                  <List
+                    dataSource={CMS_PLUGINS}
+                    renderItem={plugin => (
+                      <List.Item
+                        key={plugin.key}
+                        actions={[<Switch checkedChildren="开启" unCheckedChildren="关闭" />]}
+                      >
+                        <List.Item.Meta
+                          title={plugin.name}
+                          description={plugin.desc}
+                        />
+                      </List.Item>
+                      )}
+                  />
+                </Card>
+              </Panel>
+              <Panel header={this.msg('cusDeclPref')} key="cusDeclPref" style={customPanelStyle}>
+                <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 0 }} >
+                  <List
+                    dataSource={cusDeclPrefList}
+                    renderItem={pref => (
+                      <List.Item
+                        key={pref.key}
+                        actions={pref.actions}
+                      >
+                        <List.Item.Meta
+                          title={pref.name}
+                          description={pref.desc}
+                        />
+                      </List.Item>
+                      )}
+                  />
+                </Card>
+              </Panel>
+            </Collapse>
           </Content>
         </Layout>
       </Layout>

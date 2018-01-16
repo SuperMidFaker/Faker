@@ -102,12 +102,12 @@ export default class ClientsList extends Component {
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <NavLink to="/clearance/settings">
-                  <Icon type="left" /> {this.msg('settings')}
+                <NavLink to="/clearance/delegation">
+                  <Icon type="left" /> {this.msg('delgManifest')}
                 </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ruleTemplates')}
+                {this.msg('clientSetting')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

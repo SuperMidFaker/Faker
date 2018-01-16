@@ -111,8 +111,8 @@ export default class InvoiceContent extends React.Component {
       });
     }
     return (
-      <Content className="main-content layout-fixed-width layout-fixed-width-lg">
-        <Card style={{ margin: 16 }}>
+      <Content className="page-content layout-fixed-width">
+        <Card style={{ width: 650, minHeight: 800 }}>
           <div className="doc-header">
             <h3>发票 INVOICE</h3>
             <span />

@@ -17,8 +17,6 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 import OrderDockPanel from './docks/orderDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
@@ -28,9 +26,9 @@ import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 import CreatorSelect from './creatorSelect';
+import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
-const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
@@ -107,7 +105,7 @@ export default class OrderList extends React.Component {
       }
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   handleCreate = () => {
     this.props.setClientForm(-2, {});
     this.props.emptyFlows();
@@ -310,6 +308,16 @@ export default class OrderList extends React.Component {
         <Option value="all">全部客户</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
+        value={filters.partnerId ? filters.partnerId : 'all'}
+      >
+        <Option value="all">全部类型</Option>
+        {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+      </Select>
       <span />
       <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
     </span>
@@ -329,19 +337,6 @@ export default class OrderList extends React.Component {
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="active">进行中</RadioButton>
               <RadioButton value="completed">已完成</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup onChange={this.handleTransferChange} value={filters.transfer}>
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value={SCOF_ORDER_TRANSFER[0].value}>
-                <Icon type={SCOF_ORDER_TRANSFER[0].icon} /> {SCOF_ORDER_TRANSFER[0].text}
-              </RadioButton>
-              <RadioButton value={SCOF_ORDER_TRANSFER[1].value}>
-                <Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}
-              </RadioButton>
-              <RadioButton value={SCOF_ORDER_TRANSFER[2].value}>
-                <Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}
-              </RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>

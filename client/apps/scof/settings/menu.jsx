@@ -20,12 +20,9 @@ export default class SettingMenu extends React.Component {
       <div>
         <Menu mode="inline" selectedKeys={[this.props.currentKey]}>
           <Menu.Item key="preferences">
-            <NavLink to="/clearance/settings/preferences">
+            <NavLink to="/scof/settings/preferences">
               <Icon type="tool" /> {this.msg('preferences')}
             </NavLink>
-          </Menu.Item>
-          <Menu.Item key="brokers">
-            <NavLink to="/clearance/settings/brokers"><Icon type="database" /> {this.msg('brokers')}</NavLink>
           </Menu.Item>
         </Menu>
       </div>);

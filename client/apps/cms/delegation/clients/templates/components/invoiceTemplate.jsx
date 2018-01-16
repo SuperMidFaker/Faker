@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
+import { Button, Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
+import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
 import connectNav from 'client/common/decorators/connect-nav';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import InvoiceContent from './invoiceContent';
 import { formatMsg } from './message.i18n';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
 
-const Sider = Layout.Sider;
-const Panel = Collapse.Panel;
+const { Sider } = Layout;
+const { Panel } = Collapse;
 const FormItem = Form.Item;
 
 function MSCheckbox(props) {
@@ -62,7 +62,6 @@ function fetchData({ dispatch, state, params }) {
 export default class InvoiceTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     invData: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
@@ -75,7 +74,7 @@ export default class InvoiceTemplate extends React.Component {
     const { invData } = this.props;
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider">
+        <Sider width={420} className="menu-sider" key="sider">
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>

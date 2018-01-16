@@ -23,5 +23,6 @@ const messages = defineMessages({
     defaultMessage: '查看',
   },
 });
+
 export default messages;
 export const formatMsg = formati18n(messages);

@@ -1,12 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Select } from 'antd';
+import { Avatar, Select } from 'antd';
+import { formatMsg } from './message.i18n';
 
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
-
+@connect(
+  state => ({
+    avatar: state.account.profile.avatar,
+    loginName: state.account.username,
+  }),
+  { }
+)
 export default class CreatorSelect extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -20,6 +28,7 @@ export default class CreatorSelect extends React.Component {
   componentDidMount() {
     this.initializeFieldsValue();
   }
+  msg = formatMsg(this.props.intl)
   initializeFieldsValue = () => {
     if (window.localStorage) {
       const fieldsValue = JSON.parse(window.localStorage.scofAdvancedSearchFieldsValue || '{"creator": "all"}');
@@ -45,6 +54,7 @@ export default class CreatorSelect extends React.Component {
   }
 
   render() {
+    const { avatar, loginName } = this.props;
     const { fieldsValue } = this.state;
     return (
       <Select
@@ -53,8 +63,8 @@ export default class CreatorSelect extends React.Component {
         style={{ width: 160 }}
         size={this.props.size}
       >
-        <Option value="all">全部订单</Option>
-        <Option value="me">我创建的订单</Option>
+        <Option value="all"><Avatar size="small" icon="team" /> {this.msg('allOperators')}</Option>
+        <Option value="me">{avatar ? <Avatar size="small" src={avatar} /> : <Avatar size="small" icon="user" />} {loginName}</Option>
       </Select>
     );
   }

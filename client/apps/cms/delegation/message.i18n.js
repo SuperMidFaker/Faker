@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
+const messages = defineMessages({
   delgManifest: {
     id: 'cms.delegation.manifest',
     defaultMessage: '委托制单',
@@ -12,6 +13,10 @@ export default defineMessages({
   modifyDelegation: {
     id: 'cms.delegation.edit',
     defaultMessage: '修改委托',
+  },
+  clientSetting: {
+    id: 'cms.delegation.client.setting',
+    defaultMessage: '委托方设置',
   },
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
@@ -466,3 +471,6 @@ export default defineMessages({
     defaultMessage: '指定执行者',
   },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

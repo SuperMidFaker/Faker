@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Avatar, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import { Menu, Avatar, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { INTEGRATION_APPS } from 'common/constants';
 import { formatMsg } from './message.i18n';
 import './index.less';
 
 const { Header, Content } = Layout;
+const { SubMenu } = Menu;
 
 @injectIntl
 export default class IntegrationAppsList extends React.Component {
@@ -36,44 +38,6 @@ export default class IntegrationAppsList extends React.Component {
     return <Avatar shape="square">{this.msg('unknownApp')}</Avatar>;
   }
   render() {
-    const data = [
-      {
-        app_type: 'SW',
-        title: '『单一窗口』货物申报',
-        link: '/hub/integration/singlewindow/install',
-        description: '国际贸易单一窗口',
-      },
-      {
-        app_type: 'QP',
-        title: 'QP海关预录入系统',
-        link: '/hub/integration/quickpass/install',
-        description: 'QuickPass 海关预录入系统',
-      },
-      {
-        app_type: 'EASIPASS',
-        title: '亿通EDI海关申报系统',
-        link: '/hub/integration/easipass/install',
-        description: '海关EDI申报系统是亿通公司就针对海关通关管理系统',
-      },
-      {
-        app_type: 'SHFTZ',
-        title: '上海自贸区监管系统',
-        link: '/hub/integration/shftz/install',
-        description: '上海自贸区监管系统',
-      },
-      {
-        app_type: 'ARCTM',
-        title: 'Amber Road CTM',
-        link: '/hub/integration/arctm/install',
-        description: 'Amber Road 中国贸易管理（CTM）系统',
-      },
-      {
-        app_type: 'SFEXPRESS',
-        title: '顺丰速运',
-        link: '/hub/integration/sfexpress/install',
-        description: '通过与顺丰快递公司合作，获取快递单号以打印快递单',
-      },
-    ];
     return (
       <div>
         <Header className="page-header">
@@ -85,28 +49,39 @@ export default class IntegrationAppsList extends React.Component {
           <div className="page-header-tools" />
         </Header>
         <Content className="main-content">
-          <Alert
-            description={this.msg('integrationDesc')}
-            type="info"
-            showIcon
-            closable
-            key="alert"
-          />
-          <List
-            grid={{ gutter: 16, column: 6 }}
-            dataSource={data}
-            renderItem={item => (
-              <List.Item>
-                <Card title={item.title} className="app-card">
-                  <div className="app-logo">
-                    {this.renderAppLogo(item)}
-                  </div>
-                  <div className="app-desc">{item.description}</div>
-                  <Button type="primary" ghost icon="tool" onClick={() => this.handleInstall(item.link)}>安装</Button>
-                </Card>
-              </List.Item>
-              )}
-          />
+          <Card bodyStyle={{ padding: 16 }} >
+            <Menu
+              onClick={this.handleClick}
+              mode="horizontal"
+              defaultActiveKey="all"
+              style={{ marginBottom: 16 }}
+            >
+              <Menu.Item key="all">
+                <Icon type="appstore" />{this.msg('allApps')}
+              </Menu.Item>
+              <SubMenu title={<span><Icon type="folder" />{this.msg('categories')}</span>}>
+                <Menu.Item key="category:1">企业关务</Menu.Item>
+                <Menu.Item key="category:2">海关申报</Menu.Item>
+                <Menu.Item key="category:3">辅助监管</Menu.Item>
+                <Menu.Item key="category:4">物流平台</Menu.Item>
+              </SubMenu>
+            </Menu>
+            <List
+              grid={{ gutter: 16, column: 6 }}
+              dataSource={INTEGRATION_APPS}
+              renderItem={item => (
+                <List.Item>
+                  <Card title={item.title} className="app-card">
+                    <div className="app-logo">
+                      {this.renderAppLogo(item)}
+                    </div>
+                    <div className="app-desc">{item.description}</div>
+                    <Button type="primary" ghost icon="tool" onClick={() => this.handleInstall(item.link)}>安装</Button>
+                  </Card>
+                </List.Item>
+                )}
+            />
+          </Card>
         </Content>
       </div>
     );

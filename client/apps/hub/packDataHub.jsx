@@ -41,7 +41,7 @@ export default class DataHubPack extends React.Component {
                 </Menu.Item>
                 <Menu.Item key="installed">
                   <NavLink to="/hub/integration/installed">
-                    <Icon type="appstore-o" />整合应用
+                    <Icon type="api" />整合应用
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="dev">

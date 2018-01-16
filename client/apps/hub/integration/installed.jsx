@@ -105,7 +105,7 @@ export default class InstalledAppsList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="appstore-o" /> {this.msg('integration')}
+                <Icon type="api" /> {this.msg('integration')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>

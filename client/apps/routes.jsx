@@ -47,6 +47,7 @@ import * as Template from './pub/template';
 import CMS from './cms/module-clearance';
 import * as CMSDashboard from './cms/dashboard';
 import * as CMSDelegation from './cms/delegation';
+import * as CMSClients from './cms/delegation/clients';
 import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
@@ -55,7 +56,6 @@ import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
-import * as CMSClients from './cms/settings/clients';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
 import * as CMSTradeItemRepo from './cms/tradeitem/repo';
@@ -294,7 +294,13 @@ export default(store) => {
             <Route path="delegation">
               <IndexRoute component={CMSDelegation.List} />
               <Route path="create" component={CMSDelegation.Create} />
-              <Route path=":delgNo" component={CMSDelegation.Detail} />
+              <Route path="clients">
+                <IndexRoute component={CMSClients.List} />
+                <Route path="templates/invoice/:id" component={CMSClients.InvoiceTemplate} />
+                <Route path="templates/contract/:id" component={CMSClients.ContractTemplate} />
+                <Route path="templates/packinglist/:id" component={CMSClients.PackingListTemplate} />
+              </Route>
+              <Route path="edit/:delgNo" component={CMSDelegation.Detail} />
             </Route>
             <Route path="cusdecl">
               <IndexRoute component={CMSCusDecl.List} />
@@ -362,15 +368,9 @@ export default(store) => {
               <Route path="report/:id" component={CMSAnalytics.Report} />
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/clearance/settings/brokers" />
-              <Route path="brokers" component={CMSBrokers.List} />
-              <Route path="clients">
-                <IndexRoute component={CMSClients.List} />
-                <Route path="templates/invoice/:id" component={CMSClients.InvoiceTemplate} />
-                <Route path="templates/contract/:id" component={CMSClients.ContractTemplate} />
-                <Route path="templates/packinglist/:id" component={CMSClients.PackingListTemplate} />
-              </Route>
+              <IndexRedirect to="/clearance/settings/preferences" />
               <Route path="preferences" component={CMSSettings.Preferences} />
+              <Route path="brokers" component={CMSBrokers.List} />
             </Route>
             <Route path="tradeitem">
               <IndexRedirect to="/clearance/tradeitem/repo" />
@@ -520,8 +520,9 @@ export default(store) => {
             <Route path="customers" component={SCOFCustomers.List} />
             <Route path="vendors" component={SCOFVendors.List} />
             <Route path="flow" component={SCOFFlow.ListPanel} />
-            <Route path="settings" >
-              <IndexRoute component={SCOFSettings.Preferences} />
+            <Route path="settings">
+              <IndexRedirect to="/scof/settings/preferences" />
+              <Route path="preferences" component={SCOFSettings.Preferences} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>

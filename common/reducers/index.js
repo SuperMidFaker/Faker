@@ -40,6 +40,7 @@ import cmsTradeManual from './cmsTradeManual';
 import cmsAnalytics from './cmsAnalytics';
 import cmsPreferences from './cmsPreferences';
 import scofFlow from './scofFlow';
+import scofSettings from './scofSettings';
 import sofVendors from './sofVendors';
 import scvInboundShipments from './scvInboundShipments';
 import scvOutboundShipments from './scvOutboundShipments';
@@ -119,6 +120,7 @@ export default combineReducers({
   cmsTradeManual,
   cmsAnalytics,
   scofFlow,
+  scofSettings,
   sofVendors,
   scvInboundShipments,
   scvOutboundShipments,
