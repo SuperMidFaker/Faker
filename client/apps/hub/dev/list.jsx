@@ -13,7 +13,9 @@ const { Content } = Layout;
 
 @injectIntl
 @connect(
-  () => ({}),
+  state => ({
+    apps: state.devApp.apps,
+  }),
   { toggleAppCreateModal, loadDevApps }
 )
 export default class DevAppList extends React.Component {
@@ -23,17 +25,8 @@ export default class DevAppList extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    dataSource: [],
-  }
   componentDidMount() {
-    this.props.loadDevApps().then((result) => {
-      if (!result.error) {
-        this.setState({
-          dataSource: result.data,
-        });
-      }
-    });
+    this.props.loadDevApps();
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -91,7 +84,7 @@ export default class DevAppList extends React.Component {
         <Content className="page-content layout-fixed-width">
           <Card bodyStyle={{ padding: 16 }} >
             <List
-              dataSource={this.state.dataSource}
+              dataSource={this.props.apps}
               renderItem={item => (
                 <List.Item
                   key={item.app_id}

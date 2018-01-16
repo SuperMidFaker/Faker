@@ -19,6 +19,7 @@ const initialState = {
     visible: false,
   },
   app: {},
+  apps: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -27,6 +28,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, appCreateModal: { ...state.appCreateModal, visible: action.visible } };
     case actionTypes.GET_APP_SUCCEED:
       return { ...state, app: action.result.data };
+    case actionTypes.LOAD_DEV_APPS_SUCCEED:
+      return { ...state, apps: action.result.data };
     default:
       return state;
   }
