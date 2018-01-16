@@ -11,16 +11,12 @@ import { isLoginNameExist, checkLoginName } from 'common/reducers/checker-reduce
 import { validatePhone } from 'common/validater';
 import { PRESET_TENANT_ROLE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import globalMessages from 'client/common/root.i18n';
-import containerMessages from 'client/apps/message.i18n';
+import PageHeader from 'client/components/PageHeader';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
-const formatContainerMsg = format(containerMessages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 function fetchData({
   state, dispatch, cookie, params,
@@ -30,12 +26,10 @@ function fetchData({
   if (pid) {
     if (!isFormDataLoaded(state.personnel, pid)) {
       return dispatch(loadForm(cookie, pid));
-    } else {
-      return dispatch(assignForm(state.personnel, pid));
     }
-  } else {
-    return dispatch(clearForm());
+    return dispatch(assignForm(state.personnel, pid));
   }
+  return dispatch(clearForm());
 }
 
 function goBack(router) {
@@ -59,13 +53,12 @@ function goBack(router) {
 @withPrivilege({
   module: 'corp',
   feature: 'personnel',
-  action: props => props.formData.key === null ? 'create' : 'edit',
+  action: props => (props.formData.key === null ? 'create' : 'edit'),
 })
 @Form.create()
 export default class CorpEdit extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    selectedIndex: PropTypes.number.isRequired,
     roles: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
@@ -93,6 +86,7 @@ export default class CorpEdit extends React.Component {
       goBack(this.context.router);
     }
   }
+  msg = formatMsg(this.props.intl)
   handleRoleSelect = (value) => {
     const role = this.props.roles.filter(rl => rl.id === value)[0];
     this.setState({
@@ -109,9 +103,16 @@ export default class CorpEdit extends React.Component {
           role: this.state.role || this.props.formData.role,
         };
         if (this.props.formData.key) {
-          this.props.edit(form, this.props.code, this.props.tenantId).then(result => this.onSubmitReturn(result.error));
+          this.props.edit(form, this.props.code, this.props.tenantId).then(result =>
+            this.onSubmitReturn(result.error));
         } else {
-          this.props.submit(form, this.props.code, this.props.tenantId, this.props.parentTenantId).then(result => this.onSubmitReturn(result.error));
+          this.props.submit(
+            form,
+            this.props.code,
+            this.props.tenantId,
+            this.props.parentTenantId
+          ).then(result =>
+            this.onSubmitReturn(result.error));
         }
       } else {
         this.forceUpdate();
@@ -124,10 +125,16 @@ export default class CorpEdit extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const { form: { getFieldDecorator } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
-        hasFeedback required={required}
+      <FormItem
+        label={labelName}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        hasFeedback
+        required={required}
       >
-        {getFieldDecorator(field, { rules, ...fieldProps })(<Input type={type} placeholder={placeholder} />)}
+        {getFieldDecorator(field, {
+          rules, ...fieldProps,
+        })(<Input type={type} placeholder={placeholder} />)}
       </FormItem>
     );
   }
@@ -143,34 +150,42 @@ export default class CorpEdit extends React.Component {
     return (
       <Form layout="horizontal" onSubmit={this.handleSubmit} >
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {msg('members')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {msg('addMember')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {msg('members')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {msg('addMember')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
               <Button onClick={this.handleCancel} disabled={submitting}>
-                {formatGlobalMsg(intl, 'cancel')}
+                {this.msg('cancel')}
               </Button>
-              <Button htmlType="submit" type="primary" loading={submitting}
+              <Button
+                htmlType="submit"
+                type="primary"
+                loading={submitting}
                 title={msg('nonTenantEdit')}
               >
-                {formatGlobalMsg(intl, 'ok')}
+                {this.msg('ok')}
               </Button>
-            </div>
-          </Header>
-          <Content className="main-content layout-fixed-width">
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content layout-fixed-width">
             <Card>
               {this.renderTextInput(
                 msg('fullName'), msg('fullNamePlaceholder'), 'name', true,
                 [{ required: true, min: 2, message: msg('fullNameMessage') }],
                 { initialValue: name }
               )}
-              <FormItem label={msg('username')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
+              <FormItem
+                label={msg('username')}
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 18 }}
                 required
               >
                 {getFieldDecorator('username', {
@@ -194,13 +209,15 @@ export default class CorpEdit extends React.Component {
               {this.renderTextInput(
                 msg('phone'), msg('phonePlaceholder'), 'phone', false,
                 [{
-                  validator: (rule, value, callback) => validatePhone(value, callback, (msgs, descriptor) => format(msgs)(intl, descriptor)),
+                  validator: (rule, value, callback) =>
+                  validatePhone(value, callback, (msgs, descriptor) =>
+                  format(msgs)(intl, descriptor)),
                 }],
                 { initialValue: phone }
               )}
               {this.renderTextInput(
                 'Email', msg('emailPlaceholder'), 'email', false,
-                [{ type: 'email', message: formatContainerMsg(intl, 'emailError') }],
+                [{ type: 'email', message: this.msg('emailError') }],
                 { initialValue: email }
               )}
               {
@@ -216,7 +233,8 @@ export default class CorpEdit extends React.Component {
                     rules: [{ required: true, message: ' ', type: 'number' }],
                   })(<Select onSelect={this.handleRoleSelect}>
                     {
-                  roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(role => <Option value={role.id} key={role.id}>{role.name}</Option>)
+                  roles.filter(rol => rol.name !== PRESET_TENANT_ROLE.owner.name).map(role =>
+                    <Option value={role.id} key={role.id}>{role.name}</Option>)
                 }
                   </Select>)}
                 </FormItem>}

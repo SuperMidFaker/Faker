@@ -13,9 +13,8 @@ import Forgot from './sso/forgot';
 import PackAccount from './account/pack-account';
 import MyProfile from './account/profile';
 import Password from './account/password';
-import Corp from './corp/pack-corp';
-import * as CorpOverview from './corp/overview';
-import CorpInfo from './corp/info';
+import PackCorp from './corp/pack-corp';
+import * as Corp from './corp';
 import * as CorpMembers from './corp/members';
 import * as CorpRole from './corp/role';
 import * as CorpLogs from './corp/logs';
@@ -205,16 +204,15 @@ export default(store) => {
             <Route path="partners" component={Collab.Partners} />
           </Route>
         </Route>
-        <Route path="corp" component={Corp}>
-          <IndexRedirect to="/corp/overview" />
-          <Route path="overview" component={CorpOverview.Index} />
-          <Route path="info" component={CorpInfo} />
+        <Route path="corp" component={PackCorp}>
+          <IndexRedirect to="/corp/info" />
+          <Route path="info" component={Corp.Info} />
           <Route path="members">
             <IndexRoute component={CorpMembers.List} />
             <Route path="new" component={CorpMembers.Edit} />
             <Route path="edit/:id" component={CorpMembers.Edit} />
           </Route>
-          <Route path="role" component={CorpRole.Wrapper}>
+          <Route path="role">
             <IndexRoute component={CorpRole.List} />
             <Route path="new" component={CorpRole.Create} />
             <Route path="edit/:id" component={CorpRole.Edit} />

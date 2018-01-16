@@ -2,22 +2,45 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
-import { Button, Form, Input, Card, Switch, Checkbox, Row, Col, message } from 'antd';
+import { Button, Form, Input, Card, Collapse, Switch, Checkbox, Row, Col, message } from 'antd';
 import { routerShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadTenantModules } from 'common/reducers/role';
 import { PRESET_ROLE_NAME_KEYS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 
+const { Panel } = Collapse;
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 
-function goBack(router) {
-  router.goBack();
+function getCheckedActions(privileges, moduleId, featId, featActions) {
+  if (!privileges[moduleId]) {
+    return [];
+  }
+  if (privileges[moduleId] === true) {
+    return featActions;
+  }
+  if (!privileges[moduleId][featId]) {
+    return [];
+  }
+  if (privileges[moduleId][featId] === true) {
+    return featActions;
+  }
+  return Object.keys(privileges[moduleId][featId]);
+}
+
+function isFullFeature(privileges, moduleId, featId) {
+  if (!privileges[moduleId]) {
+    return false;
+  }
+  if (privileges[moduleId] === true) {
+    return true;
+  }
+  return privileges[moduleId][featId] === true;
 }
 
 function FormInputItem(props) {
@@ -27,7 +50,10 @@ function FormInputItem(props) {
   const { getFieldDecorator, ...fieldOptions } = options;
   const fieldInputProps = getFieldDecorator(field, fieldOptions);
   return (
-    <FormItem label={labelName} labelCol={{ span: labelSpan }} required={required}
+    <FormItem
+      label={labelName}
+      labelCol={{ span: labelSpan }}
+      required={required}
       wrapperCol={{ span: 24 - labelSpan }}
     >
       {fieldInputProps(<Input type={type} placeholder={placeholder} />)}
@@ -90,38 +116,6 @@ export default class RoleForm extends React.Component {
       this.setState({ editPrivilegeMap: nextProps.formData.privileges });
     }
   }
-  onSubmitReturn(error) {
-    if (error) {
-      message.error(error.message, 10);
-    } else {
-      goBack(this.context.router);
-    }
-  }
-  getCheckedActions(privileges, moduleId, featId, featActions) {
-    if (!privileges[moduleId]) {
-      return [];
-    }
-    if (privileges[moduleId] === true) {
-      return featActions;
-    }
-    if (!privileges[moduleId][featId]) {
-      return [];
-    }
-    if (privileges[moduleId][featId] === true) {
-      return featActions;
-    }
-    return Object.keys(privileges[moduleId][featId]);
-  }
-  isFullFeature(privileges, moduleId, featId) {
-    if (!privileges[moduleId]) {
-      return false;
-    }
-    if (privileges[moduleId] === true) {
-      return true;
-    } else {
-      return privileges[moduleId][featId] === true;
-    }
-  }
   handleFeatureFullCheck(moduleId, featId, checked) {
     let state;
     if (checked) {
@@ -150,12 +144,21 @@ export default class RoleForm extends React.Component {
     let state;
     if (this.state.editPrivilegeMap[moduleId]) {
       if (this.state.editPrivilegeMap[moduleId][featId]) {
-        state = update(this.state, { editPrivilegeMap: { [moduleId]: { [featId]: { $set: actionObj } } } });
+        state = update(
+          this.state,
+          { editPrivilegeMap: { [moduleId]: { [featId]: { $set: actionObj } } } }
+        );
       } else {
-        state = update(this.state, { editPrivilegeMap: { [moduleId]: { $merge: { [featId]: actionObj } } } });
+        state = update(
+          this.state,
+          { editPrivilegeMap: { [moduleId]: { $merge: { [featId]: actionObj } } } }
+        );
       }
     } else {
-      state = update(this.state, { editPrivilegeMap: { $merge: { [moduleId]: { [featId]: actionObj } } } });
+      state = update(
+        this.state,
+        { editPrivilegeMap: { $merge: { [moduleId]: { [featId]: actionObj } } } }
+      );
     }
     this.setState(state);
   }
@@ -170,15 +173,14 @@ export default class RoleForm extends React.Component {
           tenantId: this.props.mode === 'new' ? this.props.tenantId : undefined,
         };
         this.props.onSubmit(form).then((result) => {
-          this.onSubmitReturn(result.error);
+          if (result.error) {
+            message.error(result.error.message, 10);
+          }
         });
       } else {
         this.forceUpdate();
       }
     });
-  }
-  handleCancel = () => {
-    goBack(this.context.router);
   }
   render() {
     const {
@@ -187,11 +189,15 @@ export default class RoleForm extends React.Component {
     } = this.props;
     const { editPrivilegeMap: privileges } = this.state;
     return (
-      <div className="page-body card-wrapper">
-        <Form layout="horizontal" onSubmit={this.handleSubmit}>
-          <Row gutter={16}>
-            <Col span={12}>
-              <FormInputItem labelName={formatMsg(intl, 'nameColumn')} labelSpan={8} field="name" options={{
+      <Form layout="horizontal" onSubmit={this.handleSubmit}>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
+            <Panel header="基本信息" key="profile">
+              <FormInputItem
+                labelName={formatMsg(intl, 'nameColumn')}
+                labelSpan={8}
+                field="name"
+                options={{
                 getFieldDecorator,
                 rules: [{
                   required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
@@ -207,66 +213,68 @@ export default class RoleForm extends React.Component {
                 initialValue: name,
               }}
               />
-              <FormInputItem labelName={formatMsg(intl, 'descColumn')} labelSpan={8} field="desc"
+              <FormInputItem
+                labelName={formatMsg(intl, 'descColumn')}
+                labelSpan={8}
+                field="desc"
                 options={{ getFieldDecorator, initialValue: desc }}
               />
               <FormItem label="属于管理层" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
                 {getFieldDecorator('bureau', { initialValue: false })(<Switch />)}
               </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            {
-            tenantModules.map(tnm => (
-              <Col md={24} lg={24} key={tnm.text}>
-                <Card title={formatGlobalMsg(intl, tnm.text)}>
-                  <Row style={{ paddingBottom: 10 }}>
+            </Panel>
+            {tenantModules.map(tnm => (
+              <Panel header={formatGlobalMsg(intl, tnm.text)} key={tnm.text}>
+
+                <Row style={{ paddingBottom: 10 }}>
+                  <Col span={4} offset={2}>
+                    {formatMsg(intl, 'featureName')}
+                  </Col>
+                  <Col span={2} offset={2}>
+                    {formatMsg(intl, 'allFull')}
+                  </Col>
+                  <Col span={12} offset={2}>
+                    {formatMsg(intl, 'actionName')}
+                  </Col>
+                </Row>
+                {tnm.features.map(feat => (
+                  <Row key={feat.text} style={{ paddingBottom: 10 }}>
                     <Col span={4} offset={2}>
-                      {formatMsg(intl, 'featureName')}
+                      {formatGlobalMsg(intl, feat.text)}
                     </Col>
                     <Col span={2} offset={2}>
-                      {formatMsg(intl, 'allFull')}
+                      <Switch
+                        size="small"
+                        checked={isFullFeature(privileges, tnm.id, feat.id)}
+                        onChange={checked => this.handleFeatureFullCheck(tnm.id, feat.id, checked)}
+                      />
                     </Col>
                     <Col span={12} offset={2}>
-                      {formatMsg(intl, 'actionName')}
+                      <CheckboxGroup
+                        options={feat.actions.map(act => ({
+                                  label: formatGlobalMsg(intl, act.text),
+                                  value: act.id,
+                                }))}
+                        value={
+                                  getCheckedActions(privileges, tnm.id, feat.id, feat.actions)
+                                }
+                        onChange={checkeds => this.handleActionCheck(tnm.id, feat.id, checkeds)}
+                      />
                     </Col>
                   </Row>
-                  {
-                      tnm.features.map(feat =>
-                        (<Row key={feat.text} style={{ paddingBottom: 10 }}>
-                          <Col span={4} offset={2}>
-                            {formatGlobalMsg(intl, feat.text)}
-                          </Col>
-                          <Col span={2} offset={2}>
-                            <Switch size="small" checked={this.isFullFeature(privileges, tnm.id, feat.id)}
-                              onChange={checked => this.handleFeatureFullCheck(tnm.id, feat.id, checked)}
-                            />
-                          </Col>
-                          <Col span={12} offset={2}>
-                            <CheckboxGroup options={feat.actions.map(act => ({
-                                label: formatGlobalMsg(intl, act.text),
-                                value: act.id,
-                              }))} value={
-                                this.getCheckedActions(privileges, tnm.id, feat.id, feat.actions)
-                              }
-                              onChange={checkeds => this.handleActionCheck(tnm.id, feat.id, checkeds)}
-                            />
-                          </Col>
-                        </Row>))
-                    }
-                </Card>
-              </Col>
-              ))
-          }
-          </Row>
-          <Row>
-            <Col span="18" offset="6">
-              <Button htmlType="submit" type="primary" loading={submitting}>{formatGlobalMsg(intl, 'ok')}</Button>
-              <Button onClick={this.handleCancel} disabled={submitting}>{formatGlobalMsg(intl, 'cancel')}</Button>
-            </Col>
-          </Row>
-        </Form>
-      </div>
+                        ))
+                      }
+              </Panel>
+
+                ))}
+          </Collapse>
+        </Card>
+        <Row>
+          <Col span="18" offset="6">
+            <Button htmlType="submit" type="primary" loading={submitting}>{formatGlobalMsg(intl, 'save')}</Button>
+          </Col>
+        </Row>
+      </Form>
     );
   }
 }

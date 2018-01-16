@@ -4,8 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table, Modal, Input, Button } from 'antd';
 import { loadNonDepartmentMembers, saveDepartMember, closeMemberModal } from 'common/reducers/personnel';
+import { formatMsg } from '../message.i18n';
 
-const Search = Input.Search;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -41,7 +42,7 @@ export default class AddMemberModal extends Component {
       });
     }
   }
-
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.closeMemberModal();
     if (this.state.added) {
@@ -83,10 +84,19 @@ export default class AddMemberModal extends Component {
     const { visible } = this.props;
     return (
       <Modal maskClosable={false} visible={visible} title="添加成员到部门" onCancel={this.handleCancel} footer={null}>
-        <Search placeholder="搜索成员" style={{ width: 480, marginBottom: 5, borderBottom: '1px solid #F1F1F1' }}
-          onSearch={this.handleMemberSearch} value={searchValue} onChange={this.handleSearchChange}
+        <Search
+          placeholder="搜索成员"
+          style={{ width: 480, marginBottom: 5, borderBottom: '1px solid #F1F1F1' }}
+          onSearch={this.handleMemberSearch}
+          value={searchValue}
+          onChange={this.handleSearchChange}
         />
-        <Table dataSource={members} columns={this.columns} showHeader={false} scroll={{ y: 500 }} pagination={false}
+        <Table
+          dataSource={members}
+          columns={this.columns}
+          showHeader={false}
+          scroll={{ y: 500 }}
+          pagination={false}
           rowKey="user_id"
         />
       </Modal>
