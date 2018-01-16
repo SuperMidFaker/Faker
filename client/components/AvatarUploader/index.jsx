@@ -30,6 +30,11 @@ export default class AvatarUploader extends React.Component {
     imageUrl: '',
     loading: false,
   };
+  componentWillMount() {
+    this.setState({
+      imageUrl: this.props.url,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.url !== this.props.url) {
       this.setState({
