@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Form, Input, Col, Icon, Switch, message } from 'antd';
+import { Button, Form, Input, Col, Icon, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateEasipassApp } from 'common/reducers/openIntegration';
 import { formatMsg } from '../message.i18n';
@@ -26,7 +26,6 @@ export default class FieldsForm extends Component {
 
   }
   render() {
-    const { form: { getFieldDecorator }, app } = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },

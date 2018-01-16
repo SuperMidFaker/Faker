@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Form, Input, Radio, message } from 'antd';
+import { Button, Form, Input, Radio } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { SCOF_ORDER_TRANSFER } from 'common/constants';

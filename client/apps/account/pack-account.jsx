@@ -12,7 +12,7 @@ const { Header, Content } = Layout;
 export default class AccountPack extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
   }
   componentWillMount() {
     this.props.dispatch(setNavTitle({

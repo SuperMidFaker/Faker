@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import connectNav from 'client/common/decorators/connect-nav';
 import { Button, Card, Form, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { changePassword } from 'common/reducers/account';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
+import messages from './message.i18n';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
@@ -19,10 +19,6 @@ const FormItem = Form.Item;
   }),
   { changePassword }
 )
-@connectNav({
-  depth: 3,
-  jumpOut: true,
-})
 @Form.create()
 export default class ChangePassword extends React.Component {
   static propTypes = {
@@ -123,18 +119,30 @@ export default class ChangePassword extends React.Component {
     return (
       <Card title="登录密码">
         <Form layout="horizontal" onSubmit={this.handlePasswordChange}>
-          <FormItem {...formItemLayout} label={this.msg('oldPwd')}
-            help={this.oldPwdRules && getFieldError('oldPwd')} hasFeedback required
+          <FormItem
+            {...formItemLayout}
+            label={this.msg('oldPwd')}
+            help={this.oldPwdRules && getFieldError('oldPwd')}
+            hasFeedback
+            required
           >
             {getFieldDecorator('oldPwd', this.oldPwdRules)(<Input type="password" />)}
           </FormItem>
-          <FormItem {...formItemLayout} label={this.msg('newPwd')}
-            help={this.oldPwdRules && getFieldError('newPwd')} hasFeedback required
+          <FormItem
+            {...formItemLayout}
+            label={this.msg('newPwd')}
+            help={this.oldPwdRules && getFieldError('newPwd')}
+            hasFeedback
+            required
           >
             {getFieldDecorator('newPwd', this.pwdRules)(<Input type="password" />)}
           </FormItem>
-          <FormItem {...formItemLayout} label={this.msg('confirmPwd')}
-            help={this.oldPwdRules && getFieldError('confirmPwd')} hasFeedback required
+          <FormItem
+            {...formItemLayout}
+            label={this.msg('confirmPwd')}
+            help={this.oldPwdRules && getFieldError('confirmPwd')}
+            hasFeedback
+            required
           >
             {getFieldDecorator('confirmPwd', this.confirmPwdRules)(<Input type="password" />)}
           </FormItem>

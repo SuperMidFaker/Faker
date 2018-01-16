@@ -22,10 +22,10 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
 
 const initialState = {
   loading: false,
-  list: {
+  installedAppsList: {
     totalCount: 0,
     current: 1,
-    pageSize: 20,
+    pageSize: 10,
     data: [],
   },
   sortFilter: {
@@ -55,7 +55,7 @@ export default function reducer(state = initialState, action) {
         loading: true,
       };
     case actionTypes.LOAD_INSTALLED_SUCCEED:
-      return { ...state, loading: false, list: action.result.data };
+      return { ...state, loading: false, installedAppsList: action.result.data };
     case actionTypes.LOAD_INSTALLED_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_EASI_SUCCEED:

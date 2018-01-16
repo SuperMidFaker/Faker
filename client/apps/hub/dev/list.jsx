@@ -6,6 +6,7 @@ import PageHeader from 'client/components/PageHeader';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleAppCreateModal, loadDevApps } from 'common/reducers/devApp';
 import RowAction from 'client/components/RowAction';
+import HubSiderMenu from '../menu';
 import AppCreateModal from './modal/appCreateModal';
 import { formatMsg } from './message.i18n';
 
@@ -67,41 +68,44 @@ export default class DevAppList extends React.Component {
   render() {
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="code-o" /> {this.msg('dev')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Actions>
-            <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
-              {this.msg('create')}
-            </Button>
-          </PageHeader.Actions>
-        </PageHeader>
-        <Content className="page-content layout-fixed-width">
-          <Card bodyStyle={{ padding: 16 }} >
-            <List
-              dataSource={this.props.apps}
-              renderItem={item => (
-                <List.Item
-                  key={item.app_id}
-                  actions={[<RowAction onClick={() => this.handleConfig(item.app_id)} icon="setting" label={this.msg('config')} />]}
-                >
-                  <List.Item.Meta
-                    avatar={<Avatar shape="square" src={item.app_logo} />}
-                    title={item.app_name}
-                    description={item.desc}
-                  />
-                  {item.status ? <Badge status="success" text="已上线" /> : <Badge status="default" text="未上线" />}
-                </List.Item>
-                )}
-            />
-          </Card>
-        </Content>
-        <AppCreateModal />
+        <HubSiderMenu currentKey="dev" />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Icon type="code-o" /> {this.msg('dev')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
+              <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
+                {this.msg('create')}
+              </Button>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content layout-fixed-width">
+            <Card bodyStyle={{ padding: 16 }} >
+              <List
+                dataSource={this.props.apps}
+                renderItem={item => (
+                  <List.Item
+                    key={item.app_id}
+                    actions={[<RowAction onClick={() => this.handleConfig(item.app_id)} icon="setting" label={this.msg('config')} />]}
+                  >
+                    <List.Item.Meta
+                      avatar={<Avatar shape="square" src={item.app_logo} />}
+                      title={item.app_name}
+                      description={item.desc}
+                    />
+                    {item.status ? <Badge status="success" text="已上线" /> : <Badge status="default" text="未上线" />}
+                  </List.Item>
+                  )}
+              />
+            </Card>
+          </Content>
+          <AppCreateModal />
+        </Layout>
       </Layout>
     );
   }

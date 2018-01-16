@@ -92,6 +92,9 @@ export default class HeaderNavBar extends React.Component {
       }
     });
   }
+  handleGoAccount = () => {
+    window.open('/my/profile');
+  }
   handleGoDepth2 = () => {
     this.context.router.go(-this.props.navTitle.stack);
   }
@@ -109,10 +112,10 @@ export default class HeaderNavBar extends React.Component {
       <div className="navbar-popover">
         <Menu>
           {!compact && <MenuItem>
-            <NavLink to="/my/profile">
+            <a role="presentation" onClick={this.handleGoAccount}>
               <Icon type="user" />
               <span>{formatMsg(intl, 'userAccount')}</span>
-            </NavLink>
+            </a>
           </MenuItem>}
           {!compact && <MenuItem>
             <a role="presentation" onClick={this.handleShowPreference}>

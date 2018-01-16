@@ -6,6 +6,7 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { changeInvitationType } from 'common/reducers/invitation';
 import { Breadcrumb, Icon, Radio, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import HubSiderMenu from '../../menu';
 import ToInviteListContainer from './ToInviteListContainer';
 import ReceiveInvitationListContainer from './ReceiveInvitationListContainer';
 import SendInvitationListContainer from './SendInvitationListContainer';
@@ -40,30 +41,33 @@ export default class MainContainer extends Component {
     ];
     const content = components[invitationType];
     return (
-      <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Icon type="team" /> 协作邀请
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
-            <RadioButton value="0">待邀请</RadioButton>
-            <RadioButton value="1">收到的邀请</RadioButton>
-            <RadioButton value="2">发出的邀请</RadioButton>
-          </RadioGroup>
-          <div className="toolbar-right" />
-        </Header>
-        <Content className="main-content">
-          <QueueAnim type="right">
-            <div className="page-body" key="body">
-              <div className="panel-body table-panel table-fixed-layout">
-                {content}
+      <Layout>
+        <HubSiderMenu currentKey="partners" />
+        <Layout>
+          <Header className="page-header">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Icon type="team" /> 协作邀请
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
+              <RadioButton value="0">待邀请</RadioButton>
+              <RadioButton value="1">收到的邀请</RadioButton>
+              <RadioButton value="2">发出的邀请</RadioButton>
+            </RadioGroup>
+            <div className="toolbar-right" />
+          </Header>
+          <Content className="main-content">
+            <QueueAnim type="right">
+              <div className="page-body" key="body">
+                <div className="panel-body table-panel table-fixed-layout">
+                  {content}
+                </div>
               </div>
-            </div>
-          </QueueAnim>
-        </Content>
-      </div>
+            </QueueAnim>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

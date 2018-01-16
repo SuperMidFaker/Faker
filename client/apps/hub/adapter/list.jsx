@@ -2,7 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Button, Icon, Layout, notification } from 'antd';
+import { PARTNER_ROLES } from 'common/constants';
+import { loadPartners } from 'common/reducers/partner';
+import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
+import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import DataTable from 'client/components/DataTable';
+import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
 import RowAction from 'client/components/RowAction';
@@ -10,12 +15,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import AdaptorModal from './modal/adaptorModal';
 import AdaptorDetailModal from './modal/adaptorDetailModal';
-import ExcelUploader from 'client/components/ExcelUploader';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
-import { loadPartners } from 'common/reducers/partner';
+import HubSiderMenu from '../menu';
 import messages from './message.i18n';
-import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -39,14 +40,9 @@ const { Content } = Layout;
 export default class ApiAuthList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  }
-  state = {
-    avatar: '',
   }
   componentWillMount() {
     this.props.loadAdaptors();
@@ -88,9 +84,8 @@ export default class ApiAuthList extends React.Component {
     render: (o) => {
       if (o) {
         return this.props.customers.find(cus => cus.id === o).name;
-      } else {
-        return '全局';
       }
+      return '全局';
     },
   }, {
     title: this.msg('操作'),
@@ -102,8 +97,10 @@ export default class ApiAuthList extends React.Component {
           <RowAction onClick={this.handleEditBtnClick} icon="edit" label="修改" row={record} />
         </PrivilegeCover>);
       } else {
-        editDiv = (<ExcelUploader endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
-          formData={{ data: JSON.stringify({ code: record.code }) }} onUploaded={this.handleUploaded}
+        editDiv = (<ExcelUploader
+          endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
+          formData={{ data: JSON.stringify({ code: record.code }) }}
+          onUploaded={this.handleUploaded}
         >
           <RowAction icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
         </ExcelUploader>);
@@ -123,30 +120,35 @@ export default class ApiAuthList extends React.Component {
   }
   render() {
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="usb" /> 数据适配
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Actions>
-            <PageHint />
-            <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
-              {this.msg('create')}
-            </Button>
-          </PageHeader.Actions>
-        </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            columns={this.columns} dataSource={this.props.adaptors} rowKey="id"
-          />
-        </Content>
-        <AdaptorModal />
-        <AdaptorDetailModal />
-      </div>
+      <Layout>
+        <HubSiderMenu currentKey="adapter" />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Icon type="usb" /> 数据适配
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
+              <PageHint />
+              <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
+                {this.msg('create')}
+              </Button>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content" key="main">
+            <DataTable
+              columns={this.columns}
+              dataSource={this.props.adaptors}
+              rowKey="id"
+            />
+          </Content>
+          <AdaptorModal />
+          <AdaptorDetailModal />
+        </Layout>
+      </Layout>
     );
   }
 }
