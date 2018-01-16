@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Upload, Icon, message } from 'antd';
+import PropTypes from 'prop-types';
 
 function getBase64(img, callback) {
   const reader = new window.FileReader();
@@ -21,9 +22,21 @@ function beforeUpload(file) {
 }
 
 export default class AvatarUploader extends React.Component {
+  static propTypes = {
+    afterUpload: PropTypes.func,
+    url: PropTypes.string,
+  }
   state = {
+    imageUrl: '',
     loading: false,
   };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.url !== this.props.url) {
+      this.setState({
+        imageUrl: nextProps.url,
+      });
+    }
+  }
   handleChange = (info) => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
@@ -31,10 +44,15 @@ export default class AvatarUploader extends React.Component {
     }
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl => this.setState({
-        imageUrl,
-        loading: false,
-      }));
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        this.setState({
+          imageUrl,
+          loading: false,
+        });
+      });
+    }
+    if (info.file.response && info.file.response.status === 200) {
+      this.props.afterUpload(info.file.response.data);
     }
   }
   render() {
@@ -51,6 +69,7 @@ export default class AvatarUploader extends React.Component {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
+        withCredentials
         action={`${API_ROOTS.default}v1/upload/img/`}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
