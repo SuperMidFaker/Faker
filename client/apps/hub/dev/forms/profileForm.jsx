@@ -97,14 +97,14 @@ export default class ProfileForm extends Component {
         </FormItem>
         <Divider />
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={10}>
             <FormItem label={this.msg('appId')}>
               {getFieldDecorator('app_id', {
                 initialValue: app.app_id,
               })(<Input disabled />)}
             </FormItem>
           </Col>
-          <Col span={12}>
+          <Col span={14}>
             <FormItem label={this.msg('appSecret')}>
               <Input disabled value={app.app_secret} />
             </FormItem>

@@ -35,7 +35,7 @@ export default class ModuleCWM extends React.Component {
       single: true,
       key: 'cwm-dashboard',
       path: '/cwm/dashboard',
-      icon: 'logixon icon-apps',
+      icon: 'logixon icon-dashboard',
       text: formatMsg(intl, 'dashboard'),
     });
     if (this.props.whse.bonded) {
@@ -165,7 +165,11 @@ export default class ModuleCWM extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout
+        links={this.state.linkMenus}
+        childContent={this.props.children}
+        location={this.props.location}
+      />
     );
   }
 }

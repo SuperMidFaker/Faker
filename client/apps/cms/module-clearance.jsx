@@ -22,7 +22,11 @@ const formatMsg = format(messages);
 export default class Clearance extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    privileges: PropTypes.object.isRequired,
+    privileges: PropTypes.shape({
+      module_id: PropTypes.string,
+      feature_id: PropTypes.string,
+      action_id: PropTypes.string,
+    }).isRequired,
     location: locationShape.isRequired,
     children: PropTypes.node,
   };
@@ -40,7 +44,7 @@ export default class Clearance extends React.Component {
         single: true,
         key: 'cms-dashboard',
         path: '/clearance/dashboard',
-        icon: 'logixon icon-apps',
+        icon: 'logixon icon-dashboard',
         text: formatMsg(intl, 'dashboard'),
       });
     }

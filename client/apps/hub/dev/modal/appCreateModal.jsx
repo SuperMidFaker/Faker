@@ -14,48 +14,44 @@ const FormItem = Form.Item;
   }),
   { toggleAppCreateModal, createApp, loadDevApps }
 )
-
+@Form.create()
 export default class AppCreateModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-  }
-  state = {
-    appName: '',
   }
   msg = formatMsg(this.props.intl);
   handleCancel = () => {
     this.props.toggleAppCreateModal(false);
   }
   handleOk = () => {
-    const { appName } = this.state;
-    if (!appName) {
-      message.warn('应用名称不能为空');
-      return;
-    }
-    this.props.createApp(appName).then((result) => {
-      if (!result.error) {
-        this.props.loadDevApps();
-        this.handleCancel();
+    this.props.form.validateFields((error, values) => {
+      if (!error) {
+        this.props.createApp(values.app_name).then((result) => {
+          if (!result.error) {
+            this.props.loadDevApps();
+            this.handleCancel();
+          } else {
+            message.error(result.error.message, 10);
+          }
+        });
       }
     });
   }
-  handleChange = (e) => {
-    this.setState({
-      appName: e.target.value,
-    });
-  }
   render() {
-    const { visible } = this.props;
-    const { appName } = this.state;
+    const { visible, form: { getFieldDecorator } } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal title="创建应用" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
-        <FormItem {...formItemLayout} label="应用名称">
-          <Input value={appName} onChange={this.handleChange} />
-        </FormItem>
+      <Modal title="创建应用" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk} destroyOnClose>
+        <Form>
+          <FormItem {...formItemLayout} label="应用名称">
+            {getFieldDecorator('app_name', {
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
+            })(<Input />)}
+          </FormItem>
+        </Form>
       </Modal>
     );
   }

@@ -17,7 +17,11 @@ const formatMsg = format(messages);
 export default class Transport extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    privileges: PropTypes.object.isRequired,
+    privileges: PropTypes.shape({
+      module_id: PropTypes.string,
+      feature_id: PropTypes.string,
+      action_id: PropTypes.string,
+    }).isRequired,
     location: locationShape.isRequired,
     children: PropTypes.node,
   }
@@ -35,7 +39,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-0',
         path: '/transport/dashboard',
-        icon: 'logixon icon-apps',
+        icon: 'logixon icon-dashboard',
         text: formatMsg(intl, 'dashboard'),
       });
     }
@@ -150,7 +154,11 @@ export default class Transport extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout
+        links={this.state.linkMenus}
+        childContent={this.props.children}
+        location={this.props.location}
+      />
     );
   }
 }
