@@ -8,7 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const FromItem = Form.Item;
+const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
@@ -62,9 +62,9 @@ export default class PermitItemModal extends Component {
     return (
       <Modal title={this.msg('addModel')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Alert message="若无特定型号可填写星号: *" type="info" />
-        <FromItem label={this.msg('model')} {...formItemLayout}>
+        <FormItem label={this.msg('model')} {...formItemLayout}>
           <Input value={model} placeholder="例: MODEL-1234XXX (X代表字母、数字或空白)" onChange={this.handleChange} />
-        </FromItem>
+        </FormItem>
       </Modal>
     );
   }

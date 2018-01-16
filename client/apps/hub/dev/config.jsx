@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Collapse, Button, Card, Breadcrumb, Icon, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import PageHeader from 'client/components/PageHeader';
-import { loadEasipassApp, updateEasipassApp } from 'common/reducers/openIntegration';
+import { getApp } from 'common/reducers/devApp';
 import ProfileForm from './forms/profileForm';
 import OAuthForm from './forms/oAuthForm';
 import WebHookForm from './forms/webHookForm';
@@ -15,17 +14,12 @@ import { formatMsg } from './message.i18n';
 const { Content } = Layout;
 const { Panel } = Collapse;
 
-function fetchData({ dispatch, params }) {
-  return dispatch(loadEasipassApp(params.uuid));
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    app: state.openIntegration.easipassApp,
+    app: state.devApp.app,
   }),
-  { updateEasipassApp }
+  { getApp }
 )
 export default class ConfigDevApp extends React.Component {
   static propTypes = {
@@ -34,11 +28,13 @@ export default class ConfigDevApp extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  componentDidMount() {
+    this.props.getApp(this.props.router.params.appId);
+  }
   msg = formatMsg(this.props.intl);
   handleClose = () => {
     this.context.router.goBack();
   }
-
   render() {
     const { app } = this.props;
     return (
@@ -50,7 +46,7 @@ export default class ConfigDevApp extends React.Component {
                 <Icon type="code-o" /> {this.msg('dev')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {app.name}
+                {app.app_name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>

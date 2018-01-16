@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Avatar, Badge, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import { intlShape, injectIntl } from 'react-intl';
+import { toggleAppCreateModal, loadDevApps } from 'common/reducers/devApp';
+import AppCreateModal from './modal/appCreateModal';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -14,12 +17,28 @@ const IconText = ({ type, text }) => (
 );
 
 @injectIntl
+@connect(
+  () => ({}),
+  { toggleAppCreateModal, loadDevApps }
+)
 export default class DevAppList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  state = {
+    dataSource: [],
+  }
+  componentDidMount() {
+    this.props.loadDevApps().then((result) => {
+      if (!result.error) {
+        this.setState({
+          dataSource: result.data,
+        });
+      }
+    });
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -48,27 +67,15 @@ export default class DevAppList extends React.Component {
     ),
   }];
 
-  mockDataSource = [{
-    app_id: '5a309589b2a69f0001acaaaf',
-    app_name: '自建应用',
-    desc: '第一个自建应用',
-    api_key: 'a530318f6f6890a68dc6efeadb623926',
-    api_secret: '62740c97bf7868964b58e314cc8205c8',
-  },
-  {
-    app_id: '5a309589b2a69f0001ac23af',
-    app_name: '自建应用3',
-    api_key: 'a530318f6f6890a68dc6efeadb623926',
-    api_secret: '62740c97bf7868964b58e314cc8205c8',
-  },
-  ];
   handleCancel = () => {
     this.context.router.goBack();
   }
   handleConfig = (appId) => {
     this.context.router.push(`/hub/dev/${appId}`);
   }
-
+  handleCreateApp = () => {
+    this.props.toggleAppCreateModal(true);
+  }
   render() {
     return (
       <Layout>
@@ -89,7 +96,7 @@ export default class DevAppList extends React.Component {
         <Content className="page-content layout-fixed-width">
           <Card bodyStyle={{ padding: 16 }} >
             <List
-              dataSource={this.mockDataSource}
+              dataSource={this.state.dataSource}
               renderItem={item => (
                 <List.Item
                   key={item.app_id}
@@ -101,12 +108,13 @@ export default class DevAppList extends React.Component {
                     title={item.app_name}
                     description={item.desc}
                   />
-                  <Badge status="success" text="已上线" />
+                  {item.status ? <Badge status="success" text="已上线" /> : <Badge status="default" text="未上线" />}
                 </List.Item>
                 )}
             />
           </Card>
         </Content>
+        <AppCreateModal />
       </Layout>
     );
   }
