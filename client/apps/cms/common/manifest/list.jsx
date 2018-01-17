@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, DatePicker, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
+import { Breadcrumb, DatePicker, Layout, Radio, Input, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
@@ -10,7 +10,7 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -22,6 +22,7 @@ import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPane
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const { Search } = Input;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -319,7 +320,7 @@ export default class ManifestList extends Component {
             <QueueAnim type={['bottom', 'up']}>
               <div className="page-body" key="body">
                 <div className="toolbar">
-                  <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+                  <Search placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />
                   <span />
                   <Select
                     showSearch

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Select, notification } from 'antd';
+import { Button, Input, Select, notification } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+
 import { delWorkspaceItem, resolveWorkspaceItem, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
 import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
@@ -13,6 +13,7 @@ import ItemDiffModal from './modal/itemDiffModal';
 import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -255,7 +256,7 @@ export default class ConflictItemTable extends React.Component {
         {repos.map(rep => (<Option value={String(rep.id)} key={rep.owner_name}>
           {rep.owner_name}</Option>))}
       </Select>}
-      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
+      <Search placeholder={this.msg('商品货号/HS编码/品名')} onSearch={this.handleSearch} style={{ width: 200 }} />
     </span>);
     const bulkActions = (<span>
       <Button icon="pushpin-o" onClick={this.handleBatchMakeStandard}>批量设为标准值</Button>

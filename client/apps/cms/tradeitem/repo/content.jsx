@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Form, Input, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, Tooltip, message } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
@@ -13,7 +13,7 @@ import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSl
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import SearchBar from 'client/components/SearchBar';
+
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
 import ItemDiffModal from '../workspace/modal/itemDiffModal';
@@ -26,6 +26,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
 const { Option } = Select;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -541,7 +542,7 @@ export default class RepoContent extends Component {
       }
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={listFilter.search} key="searchbar" />];
+    const toolbarActions = [<Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 200 }} key="searchbar" />];
     if (listFilter.status === 'versioned') {
       toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
     }

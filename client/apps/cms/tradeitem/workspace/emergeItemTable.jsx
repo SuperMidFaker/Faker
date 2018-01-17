@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { notification, Select } from 'antd';
+import { notification, Input, Select } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+
 import RowAction from 'client/components/RowAction';
 import { delWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import makeColumns from './commonCols';
 import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -165,7 +166,7 @@ export default class EmergeItemTable extends React.Component {
         {repos.map(rep =>
           <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>}
-      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
+      <Search placeholder={this.msg('商品货号/HS编码/品名')} onSearch={this.handleSearch} style={{ width: 200 }} />
     </span>);
     return (
       <DataTable

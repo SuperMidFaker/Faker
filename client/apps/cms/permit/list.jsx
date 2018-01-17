@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Icon, Layout, Radio, Tag } from 'antd';
+import { Breadcrumb, Button, Input, Icon, Layout, Radio, Tag } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
@@ -13,13 +13,14 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { loadPermits, loadCertParams } from 'common/reducers/cmsPermit';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CIQ_LICENCE_TYPE } from 'common/constants';
-import SearchBar from 'client/components/SearchBar';
+
 import messages from './message.i18n';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Search } = Input;
 
 
 @injectIntl
@@ -175,9 +176,10 @@ export default class PermitList extends Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar
+      <Search
         placeholder={this.msg('permitNo')}
-        onInputSearch={this.handleSearch}
+        onSearch={this.handleSearch}
+        style={{ width: 200 }}
       />
     </span>);
     const dataSource = new DataTable.DataSource({

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { Breadcrumb, Button, Layout, message } from 'antd';
+import { Breadcrumb, Button, Input, Layout, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
@@ -12,13 +12,14 @@ import messages from '../message.i18n';
 import BillingForm from './billingForm';
 import { loadBillings, updateBilling, sendBilling, billingInvoiced } from 'common/reducers/cmsBilling';
 import { CMS_BILLING_STATUS } from 'common/constants';
-import SearchBar from 'client/components/SearchBar';
+
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import CancelChargeModal from '../modals/cancelChargeModal';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const { Search } = Input;
 
 @injectIntl
 @connectNav({
@@ -273,8 +274,10 @@ export default class BillingList extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-                value={this.props.billings.searchValue}
+              <Search
+                placeholder="输入账单名称搜索"
+                onSearch={this.handleSearchInput}
+                style={{ width: 200 }}
               />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
@@ -284,8 +287,12 @@ export default class BillingList extends React.Component {
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" />
             </div>
             <BillingForm type={this.props.type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
-            <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
-              billingId={this.state.billingId} fromId={this.state.fromId} handleOk={this.handleTableLoad}
+            <CancelChargeModal
+              visible={this.state.cancelChargeModalVisible}
+              toggle={this.toggleCancelChargeModal}
+              billingId={this.state.billingId}
+              fromId={this.state.fromId}
+              handleOk={this.handleTableLoad}
             />
           </div>
         </Content>

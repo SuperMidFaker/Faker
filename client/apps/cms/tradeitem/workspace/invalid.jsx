@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Breadcrumb, Icon, Layout, Popover, Select, Tag, Tooltip, notification } from 'antd';
+import { Button, Breadcrumb, Icon, Input, Layout, Popover, Select, Tag, Tooltip, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import { loadWorkspaceItems, submitAudit, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
@@ -17,6 +17,7 @@ import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
 const { Option } = Select;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -290,7 +291,7 @@ export default class InvalidItemsList extends React.Component {
         {repos.map(rep =>
           <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
-      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={listFilter.name} />
+      <Search placeholder={this.msg('商品货号/HS编码/品名')} onSearch={this.handleSearch} style={{ width: 200 }} />
     </span>);
     return (
       <Layout>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Radio, message } from 'antd';
+import { Badge, Breadcrumb, Button, Input, DatePicker, Icon, Layout, Radio, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 // import Table from 'client/components/remoteAntTable';
 import DataTable from 'client/components/DataTable';
@@ -15,7 +15,7 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import moment from 'moment';
-import SearchBar from 'client/components/SearchBar';
+
 import TrimSpan from 'client/components/trimSpan';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
@@ -27,6 +27,7 @@ import AdvExpsImpTempModal from './modals/advExpImpTempModal';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+const { Search } = Input;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const RangePicker = DatePicker.RangePicker;
@@ -487,7 +488,7 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const toolbarActions = (<SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />);
+    const toolbarActions = (<Search placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />);
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>
