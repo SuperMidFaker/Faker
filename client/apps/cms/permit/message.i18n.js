@@ -206,7 +206,7 @@ export default defineMessages({
     defaultMessage: '添加',
   },
   no: {
-    id: 'cms.permit.no',
+    id: 'cms.permit.seq.no',
     defaultMessage: '序号',
   },
 });

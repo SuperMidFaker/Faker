@@ -5,10 +5,7 @@ import { Modal, Input, Table } from 'antd';
 import { toggleReqDocuModal, saveRequiredDocuments, loadCiqDeclHead } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
@@ -56,7 +53,7 @@ export default class RequiredDocuModal extends Component {
       }
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleReqDocuModal(false);
   }

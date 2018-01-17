@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Tag, Select } from 'antd';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 
 function ColumnSelect(props) {
   const {
@@ -64,7 +62,7 @@ export default class Expander extends Component {
     this.props.onchange({ custname: this.props.custkey, changeData: dataSource });
     this.setState({ dataSource });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { dataSource } = this.state;
     const columns = [{

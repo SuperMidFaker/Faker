@@ -5,10 +5,8 @@ import { Popover, Button, Form, Input, Row, Col, Checkbox, Select, Icon } from '
 import { updateGoodsLicenceInfo, loadGoodsLicenceInfo } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_DANG_PACK_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -51,7 +49,7 @@ export default class GoodsLicencePopover extends Component {
       });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleChange = (e) => {
     this.setState({
       dangerFlag: e.target.checked,

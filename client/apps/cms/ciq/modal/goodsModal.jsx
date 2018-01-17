@@ -15,15 +15,13 @@ import { hideGoodsModal,
   getCiqCodeByHscode,
 } from 'common/reducers/cmsCiqDeclare';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import GoodsLicenceModal from './goodsLicenceModal';
 import StandbyPopover from '../popover/standbyPopover';
 import DangerGoodsPopover from '../popover/dangerGoodsPopover';
 import GoodsContModal from './goodsContModal';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const { Option } = Select;
@@ -92,7 +90,7 @@ export default class GoodsModal extends Component {
       this.props.form.resetFields();
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.hideGoodsModal();
   }

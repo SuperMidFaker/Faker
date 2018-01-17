@@ -5,10 +5,8 @@ import { toggleGoodsContModal, addGoodsCont, loadGoodsCont, deleteGoodsCont } fr
 import { CIQ_TRANS_MEANS_TYPE, CIQ_CNTNR_MODE_CODE, CIQ_QTY_MEAS_UNIT, CIQ_WT_UNIT_CODE } from 'common/constants';
 import RowAction from 'client/components/RowAction';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -38,7 +36,7 @@ export default class GoodsLicenceModal extends Component {
       this.loadDataSource(nextProps.goodsData.id);
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleGoodsContModal(false);
   }

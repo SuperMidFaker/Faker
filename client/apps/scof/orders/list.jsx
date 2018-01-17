@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
+import { Breadcrumb, Button, Menu, Icon, Input, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -29,9 +29,10 @@ import CreatorSelect from './creatorSelect';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
+const { Option } = Select;
+const { Search } = Input;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const { Option } = Select;
 
 // 暂时由 CreatorSelect 触发获取list
 function fetchData({ state, dispatch }) {
@@ -294,8 +295,7 @@ export default class OrderList extends React.Component {
       remotes: this.props.orders,
     });
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={filters.order_no} />
-      <span />
+      <Search placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />
       <Select
         showSearch
         optionFilterProp="children"

@@ -12,7 +12,6 @@ import { loadCiqDeclHead, searchOrganizations, searchWorldPorts, searchChinaPort
   toggleAttDocuModal, searchCnCities } from 'common/reducers/cmsCiqDeclare';
 import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { loadBusinessUnits } from 'common/reducers/cmsResources';
-import { format } from 'client/common/i18n/helpers';
 import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG,
   CIQ_TRANSPORTS_TYPE, CIQ_TRADE_MODE, CIQ_ENT_QUALIFY_TYPE, TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
@@ -20,11 +19,8 @@ import { CiqCodeAutoCompSelect } from '../../common/form/headFormItems';
 import EntQualifyModal from '../modal/entQualifyModal';
 import RequiredDocuModal from '../modal/requiredDocuModal';
 import AttachedDocuModal from '../modal/attachedDocuModal';
+import { formatMsg } from '../message.i18n';
 
-import messages from '../message.i18n';
-
-
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const { Option } = Select;
@@ -168,7 +164,7 @@ export default class CiqDeclHeadPane extends React.Component {
       });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleSearchOrg = (field, value) => {
     if (value) {
       this.props.searchOrganizations(value);

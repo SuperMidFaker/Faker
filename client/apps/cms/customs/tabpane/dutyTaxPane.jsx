@@ -8,10 +8,8 @@ import { getDeclTax } from 'common/reducers/cmsCustomsDeclare';
 import { taxRecalculate } from 'common/reducers/cmsDelegationDock';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../../common/message.i18n';
 
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
@@ -47,7 +45,7 @@ export default class DutyTaxPane extends React.Component {
   componentDidMount() {
     this.handleReload();
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleCalculator = () => {
     this.setState({
       loading: true,

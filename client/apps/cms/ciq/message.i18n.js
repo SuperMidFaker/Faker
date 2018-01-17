@@ -1,7 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
-
+const messages = defineMessages({
   ciqDecl: {
     id: 'cms.ciq.decl',
     defaultMessage: '报检申报',
@@ -199,7 +199,7 @@ export default defineMessages({
     defaultMessage: '口岸机构',
   },
   code: {
-    id: 'cms.ciq.decl.code',
+    id: 'cms.ciq.decl.ciqcode',
     defaultMessage: '编码',
   },
   name: {
@@ -663,3 +663,6 @@ export default defineMessages({
     defaultMessage: '随附单据编号',
   },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

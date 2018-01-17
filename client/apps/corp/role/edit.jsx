@@ -10,7 +10,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { edit, loadRole } from 'common/reducers/role';
 import { formatMsg } from '../message.i18n';
-import RoleForm from './editForm';
+import RolePrivilegesForm from './form/rolePrivilegesForm';
 
 const { Content } = Layout;
 
@@ -78,7 +78,7 @@ export default class RoleEdit extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-fixed-width">
-          <RoleForm formData={formData} mode="edit" />
+          <RolePrivilegesForm formData={formData} mode="edit" />
         </Content>
       </Layout>
     );

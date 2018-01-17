@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Badge, Input, Modal, Layout, Select, Tooltip, Tag } from 'antd';
+import { Breadcrumb, Button, Badge, Input, Modal, Layout, Radio, Select, Tooltip, Tag } from 'antd';
 import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -11,13 +11,14 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
 import CreateFlowModal from './modal/createFlowModal';
-// import SubFlowAuthModal from './modal/subFlowAuthModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Search } = Input;
 const { Option } = Select;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadFlowList({
@@ -206,6 +207,12 @@ export default class FlowList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup onChange={this.handleStatusChange}>
+              <RadioButton value="enabled">已启用</RadioButton>
+              <RadioButton value="disabled">已停用</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateFlow} >{this.msg('createFlow')}</Button>
           </PageHeader.Actions>

@@ -6,10 +6,8 @@ import RowAction from 'client/components/RowAction';
 import { toggleAttDocuModal, saveAttDocuments, loadCiqDeclHead, loadAttDocuments } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_ATT_DOCUMENTS } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 
 @connect(
   state => ({
@@ -54,7 +52,7 @@ export default class AttachedDocuModal extends Component {
       });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleAttDocuModal(false);
   }

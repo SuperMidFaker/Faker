@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import { buildTipItems } from 'client/common/customs';
 import DataPane from 'client/components/DataPane';
-import messages from '../../common/message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(state => ({
@@ -34,7 +31,7 @@ export default class CiqDetailsPane extends React.Component {
     intl: intlShape.isRequired,
     filterProducts: PropTypes.array.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { filterProducts } = this.props;
     const columns = [{

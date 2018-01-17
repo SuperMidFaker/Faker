@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
@@ -10,9 +9,7 @@ import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { loadCiqDeclGoods, showGoodsModal } from 'common/reducers/cmsCiqDeclare';
 import GoodsModal from '../modal/goodsModal';
-import messages from '../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 function calculateTotal(bodies) {
   let totQty = 0;
@@ -180,7 +177,7 @@ export default class CiqDeclGoodsPane extends React.Component {
     }];
     return columns;
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handlePageChange = (current) => {
     this.setState({
       pagination: {

@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
+const messages = defineMessages({
   delgNo: {
     id: 'cms.forms.delg.no',
     defaultMessage: '委托编号',
@@ -546,3 +547,6 @@ export default defineMessages({
     defaultMessage: '检验检疫类别',
   },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

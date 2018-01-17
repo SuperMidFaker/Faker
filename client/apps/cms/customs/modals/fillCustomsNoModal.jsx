@@ -6,10 +6,8 @@ import { Form, Modal, Input, message } from 'antd';
 import { closeEfModal } from 'common/reducers/cmsDelegation';
 import { fillEntryId } from 'common/reducers/cmsManifest';
 import { validateEntryId } from 'common/reducers/cmsCustomsDeclare';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 
 @injectIntl
@@ -87,7 +85,7 @@ export default class FillCustomsNoModal extends React.Component {
       }
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { visible } = this.props;
     const { validateStatus, entryNo } = this.state;

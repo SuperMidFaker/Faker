@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Form, Input, Radio } from 'antd';
+import { Button, Col, Form, Input, Radio } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { SCOF_ORDER_TRANSFER } from 'common/constants';
@@ -14,7 +14,7 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    app: state.openIntegration.currentApp,
+    orderType: state.openIntegration.currentApp,
   }),
   { updateAppStatus, deleteApp }
 )
@@ -28,18 +28,25 @@ export default class TypeForm extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, app } = this.props;
+    const { form: { getFieldDecorator }, orderType } = this.props;
     return (
       <Form>
         <FormItem label={this.msg('orderType')}>
-          {getFieldDecorator('type', {
-            initialValue: app.type,
-            rules: [{ required: true, message: this.msg('parameterRequired') }],
-          })(<Input />)}
+          <Col span={12}>
+            {getFieldDecorator('name', {
+              initialValue: orderType.name,
+              rules: [{ required: true, message: this.msg('parameterRequired') }],
+            })(<Input placeholder={this.msg('类型名称')} />)}
+          </Col>
+          <Col span={10} offset={1}>
+            {getFieldDecorator('code', {
+              initialValue: orderType.code,
+            })(<Input placeholder={this.msg('类型代码，用于数据导入')} />)}
+          </Col>
         </FormItem>
         <FormItem label={this.msg('orderTransfer')}>
           {getFieldDecorator('order_transfer', {
-            initialValue: app.order_transfer,
+            initialValue: orderType.order_transfer,
             rules: [{ required: true, message: this.msg('parameterRequired') }],
           })(<RadioGroup>
             {SCOF_ORDER_TRANSFER.map(sot =>

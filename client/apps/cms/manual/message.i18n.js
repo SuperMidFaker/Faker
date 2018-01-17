@@ -70,7 +70,7 @@ export default defineMessages({
     defaultMessage: '成品表',
   },
   no: {
-    id: 'cms.manual.no',
+    id: 'cms.manual.seq.no',
     defaultMessage: '序号',
   },
   codeS: {

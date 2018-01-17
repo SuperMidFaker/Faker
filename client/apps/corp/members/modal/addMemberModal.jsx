@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table, Modal, Input, Button } from 'antd';
 import { loadNonDepartmentMembers, saveDepartMember, closeMemberModal } from 'common/reducers/personnel';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const { Search } = Input;
 

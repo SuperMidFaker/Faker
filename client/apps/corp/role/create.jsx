@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
+import { Button, Breadcrumb, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
+import PageHeader from 'client/components/PageHeader';
 import { clearForm, submit } from 'common/reducers/role';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-import RoleForm from './editForm';
+import { formatMsg } from '../message.i18n';
+import RolePrivilegesForm from './form/rolePrivilegesForm';
 
-const formatMsg = format(messages);
+const { Content } = Layout;
+
 function fetchData({ dispatch }) {
   return dispatch(clearForm());
 }
@@ -43,14 +45,32 @@ export default class RoleCreate extends React.Component {
     router: routerShape.isRequired,
   }
   handleSubmit = form => this.props.submit(form)
+  msg = formatMsg(this.props.intl);
   render() {
     const { formData } = this.props;
     return (
-      <RoleForm
-        formData={formData}
-        onSubmit={this.handleSubmit}
-        mode="new"
-      />
+      <Layout>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('corpRole')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {formData.name}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
+            <Button icon="close" onClick={this.handleClose}>
+              {this.msg('close')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content layout-fixed-width">
+          <RolePrivilegesForm formData={formData} mode="create" />
+        </Content>
+      </Layout>
     );
   }
 }

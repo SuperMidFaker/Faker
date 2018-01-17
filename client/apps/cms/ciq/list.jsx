@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, message, Icon, Input, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -16,15 +16,13 @@ import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
-import { format } from 'client/common/i18n/helpers';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CIQ_DECL_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
+const { Search } = Input;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
@@ -90,7 +88,7 @@ export default class CiqDeclList extends Component {
       [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance
     );
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('ciqDeclNo'),
     dataIndex: 'pre_entry_seq_no',
@@ -294,7 +292,7 @@ export default class CiqDeclList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />
+      <Search placeholder={this.msg('ciqSearchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />
       <Select
         showSearch
         optionFilterProp="children"

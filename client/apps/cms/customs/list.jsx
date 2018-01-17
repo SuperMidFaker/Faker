@@ -18,7 +18,6 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
@@ -30,9 +29,8 @@ import DeclMsgPanel from './panel/declMsgPanel';
 import DeclMsgModal from './modals/declMsgModal';
 import DeclStatusPopover from '../common/popover/declStatusPopover';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -103,7 +101,7 @@ export default class CustomsList extends Component {
     this.props.loadTableParams();
     this.handleTableLoad(this.props.customslist.current, filters);
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('declNo'),
     dataIndex: 'entry_id',

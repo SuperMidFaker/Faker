@@ -3,13 +3,13 @@ import moment from 'moment';
 import { Input, Tabs } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import DataTable from 'client/components/DataTable';
-import { injectIntl } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import RowAction from 'client/components/RowAction';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
-
+import { formatMsg } from '../message.i18n';
 
 const { Search } = Input;
 const { TabPane } = Tabs;
@@ -33,6 +33,7 @@ const { TabPane } = Tabs;
 )
 export default class DeclMsgPanel extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
   }
   state = {
     searchText: '',
@@ -51,6 +52,7 @@ export default class DeclMsgPanel extends React.Component {
       pageSize: returnRecords.pageSize,
     });
   }
+  msg = formatMsg(this.props.intl)
   sendDataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadSendRecords(params),
     resolve: result => result.data,

@@ -4,20 +4,16 @@ import { connect } from 'react-redux';
 import { Form, Breadcrumb, Button, Layout, Tabs, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateCiqHead, loadCiqDeclHead, ciqHeadChange } from 'common/reducers/cmsCiqDeclare';
-import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import CiqDeclHeadPane from './tabpane/ciqDeclHeadPane';
 import CiqDeclGoodsPane from './tabpane/ciqDeclGoodsPane';
-
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 import DeclTreePopover from '../common/popover/declTreePopover';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { TabPane } = Tabs;
-
 const navObj = {
   depth: 3,
   moduleName: 'clearance',
@@ -48,7 +44,7 @@ export default class CiqDeclEdit extends React.Component {
   state = {
     fullscreen: true,
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }

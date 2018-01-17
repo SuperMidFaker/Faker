@@ -9,7 +9,7 @@ import { loadTenantModules } from 'common/reducers/role';
 import { PRESET_ROLE_NAME_KEYS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 
 const { Panel } = Collapse;
 const formatMsg = format(messages);
@@ -87,10 +87,10 @@ FormInputItem.propTypes = {
   { loadTenantModules }
 )
 @Form.create()
-export default class RoleForm extends React.Component {
+export default class RolePrivilegesForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    mode: PropTypes.oneOf(['edit', 'new']).isRequired,
+    mode: PropTypes.oneOf(['edit', 'create']).isRequired,
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
@@ -170,7 +170,7 @@ export default class RoleForm extends React.Component {
           ...this.props.formData,
           ...this.props.form.getFieldsValue(),
           privileges: this.state.editPrivilegeMap,
-          tenantId: this.props.mode === 'new' ? this.props.tenantId : undefined,
+          tenantId: this.props.mode === 'create' ? this.props.tenantId : undefined,
         };
         this.props.onSubmit(form).then((result) => {
           if (result.error) {

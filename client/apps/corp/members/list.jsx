@@ -13,7 +13,7 @@ import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPriv
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
 import CorpSiderMenu from '../menu';
-import AddMemberModal from './addMemberModal';
+import AddMemberModal from './modal/addMemberModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
