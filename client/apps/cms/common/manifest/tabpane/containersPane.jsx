@@ -54,7 +54,7 @@ function ColumnSelect(props) {
   const option = options.find(item => item.value === record[field]);
   return <span>{option ? option.text : ''}</span>;
 }
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   inEdit: PropTypes.bool,
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,

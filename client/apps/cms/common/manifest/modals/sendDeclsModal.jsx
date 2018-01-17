@@ -30,7 +30,7 @@ function ColumnSelect(props) {
   );
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   record: PropTypes.object.isRequired,
   index: PropTypes.number,
   field: PropTypes.string.isRequired,

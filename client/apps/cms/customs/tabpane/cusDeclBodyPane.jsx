@@ -30,7 +30,7 @@ function ColumnSelect(props) {
   const label = foundOpts.length === 1 ? `${foundOpts[0].value}|${foundOpts[0].text}` : '';
   return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
 }
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,

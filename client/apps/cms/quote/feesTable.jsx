@@ -144,7 +144,7 @@ function ColumnSelect(props) {
   return <span style={style}>{label}</span>;
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   inEdit: PropTypes.bool,
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
