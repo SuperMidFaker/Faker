@@ -53,7 +53,7 @@ export default class CMSCustomsDeclPane extends Component {
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsDeclChannel')}>
                 {getFieldDecorator('dec_channel', {
-                  initialValue: model.dec_channel,
+                  initialValue: provider ? model.dec_channel : null,
                 })(<RadioGroup disabled={!provider}>
                   {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
                       const channel = CMS_DECL_CHANNEL[declChannel];
@@ -69,7 +69,7 @@ export default class CMSCustomsDeclPane extends Component {
             { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.EP.value && <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsEasipass')}>
                 {getFieldDecorator('ep_app_uuid', {
-                  initialValue: model.ep_app_uuid,
+                  initialValue: provider ? model.ep_app_uuid : null,
                 })(<Select allowClear disabled={!provider}>
                   {
                     eplist.map(item =>
@@ -82,7 +82,7 @@ export default class CMSCustomsDeclPane extends Component {
             { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.QP.value && <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsQuickpass')}>
                 {getFieldDecorator('ep_app_uuid', {
-                  initialValue: model.ep_app_uuid,
+                  initialValue: provider ? model.ep_app_uuid : null,
                 })(<Select allowClear disabled={!provider}>
                   {
                     qplist.map(item =>

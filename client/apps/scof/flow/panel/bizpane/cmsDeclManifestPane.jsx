@@ -33,7 +33,7 @@ export default class CMSDeclManifestPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('manifestTemplate')}>
                 {getFieldDecorator('manifest_template', {
-                  initialValue: model.manifest_template,
+                  initialValue: provider ? model.manifest_template : null,
                 })(<Select allowClear disabled={!provider}>
                   {
                       templates.map(tmp => <Option value={tmp.id} key={tmp.id}>{tmp.name}</Option>)
@@ -45,7 +45,7 @@ export default class CMSDeclManifestPane extends Component {
               <FormItem label="关联导入">
                 {getFieldDecorator('correl', {
                   valuePropName: 'checked',
-                  initialValue: model.correl,
+                  initialValue: provider ? model.correl : null,
                 })(<Switch disabled={!provider} />)}
               </FormItem>
             </Col>

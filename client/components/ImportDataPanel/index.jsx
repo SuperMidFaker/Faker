@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Button, Icon, Select, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
-import UploadMask from '../UploadMask';
 import { format } from 'client/common/i18n/helpers';
+import UploadMask from '../UploadMask';
 import messages from './message.i18n';
 
-const Option = Select.Option;
-const Dragger = Upload.Dragger;
+const { Option } = Select;
+const { Dragger } = Upload;
 const formatMsg = format(messages);
 
 @injectIntl
@@ -20,7 +20,6 @@ export default class ImportDataPanel extends React.Component {
     endpoint: PropTypes.string.isRequired,
     template: PropTypes.string,
     children: PropTypes.node,
-    formData: PropTypes.object,
     onUploaded: PropTypes.func,
     onClose: PropTypes.func,
     adaptors: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string })),
@@ -38,6 +37,11 @@ export default class ImportDataPanel extends React.Component {
   }
   handleAdaptorChange = (value) => {
     this.setState({ adaptor: value });
+  }
+  handleBeforeUpload = () => {
+    if (this.props.onBeforeUpload) {
+      this.props.onBeforeUpload();
+    }
   }
   handleClose = () => {
     this.setState({ adaptor: '' });
@@ -60,15 +64,25 @@ export default class ImportDataPanel extends React.Component {
           {children}
         </div>
         {adaptors &&
-        <Select allowClear showSearch placeholder="导入适配器"
-          onChange={this.handleAdaptorChange} style={{ width: '100%', marginBottom: 10 }}
+        <Select
+          allowClear
+          showSearch
+          placeholder="导入适配器"
+          onChange={this.handleAdaptorChange}
+          style={{ width: '100%', marginBottom: 10 }}
         >
           {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
         </Select>
         }
         <div style={{ height: 300, marginBottom: 24 }}>
-          <Dragger accept=".xls,.xlsx" action={endpoint} showUploadList={false}
-            data={{ data: JSON.stringify(formData) }} onChange={this.handleUploadFile} withCredentials
+          <Dragger
+            accept=".xls,.xlsx"
+            action={endpoint}
+            showUploadList={false}
+            data={{ data: JSON.stringify(formData) }}
+            onChange={this.handleUploadFile}
+            withCredentials
+            beforeUpload={this.handleBeforeUpload}
           >
             <p className="ant-upload-drag-icon">
               <Icon type="inbox" />

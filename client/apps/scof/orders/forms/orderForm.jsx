@@ -36,9 +36,6 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    username: state.account.username,
-    tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
     formRequires: state.crmOrders.formRequires,
     flows: state.scofFlow.partnerFlows,
@@ -59,7 +56,6 @@ export default class OrderForm extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
-    tenantName: PropTypes.string.isRequired,
     formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     formRequires: PropTypes.shape({
       clients: PropTypes.shape({ partner_id: PropTypes.number }),
@@ -203,9 +199,6 @@ export default class OrderForm extends Component {
   }
   handleChange = (key, value) => {
     this.props.setClientForm(-1, { [key]: value });
-    if (key === 'cust_shipmt_is_container') {
-      this.props.setClientForm(-1, { containers: [] });
-    }
   }
   handleKvChange = (key, value, prefix) => {
     this.props.setClientForm(-1, { [key]: value, [`${key}_name`]: SeletableKeyNameMap[`${prefix}-${value}`] });
@@ -269,7 +262,6 @@ export default class OrderForm extends Component {
       cust_shipmt_weight: formData.cust_shipmt_weight,
       cust_shipmt_volume: formData.cust_shipmt_volume,
       cust_shipmt_goods_type: formData.cust_shipmt_goods_type,
-      cust_shipmt_is_container: formData.cust_shipmt_is_container,
       cust_shipmt_wrap_type: formData.cust_shipmt_wrap_type,
     };
     const current = formData.subOrders.length || 0;
@@ -326,7 +318,7 @@ export default class OrderForm extends Component {
                     </Col>
                     <Col span={6}>
                       <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
-                        <Select value={formData.operator_id} onChange={value => this.handleChange('operator_id', value)}>
+                        <Select value={formData.exec_login_id} onChange={value => this.handleChange('exec_login_id', value)}>
                           {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
                         </Select>
                       </FormItem>
@@ -400,7 +392,7 @@ export default class OrderForm extends Component {
                     </Col>
                     <Col span={6}>
                       <FormItem label="紧急程度" {...formItemLayout}>
-                        <Select value={formData.cust_shipmt_expedited} onChange={value => this.handleKvChange('cust_shipmt_expedited', value, '0')}>
+                        <Select value={formData.cust_shipmt_expedited} onChange={value => this.handleChange('cust_shipmt_expedited', value)}>
                           <Option value={EXPEDITED_TYPES[0].value}>
                             <Tag>{EXPEDITED_TYPES[0].text}</Tag></Option>
                           <Option value={EXPEDITED_TYPES[1].value}>
@@ -531,30 +523,50 @@ export default class OrderForm extends Component {
                           <FormItem label="运费" {...formItemLayout}>
                             <InputGroup compact>
                               <Input style={{ width: '50%' }} value={formData.cust_shipmt_freight} onChange={e => this.handleChange('cust_shipmt_freight', e.target.value)} />
-                              <Select style={{ width: '50%' }} />
+                              <Select
+                                style={{ width: '50%' }}
+                                value={formData.cust_shipmt_freight_currency}
+                                onChange={value => this.handleChange('cust_shipmt_freight_currency', value)}
+                              >
+                                {formRequires.customsCurrency.map(data => (
+                                  <Option key={data.code} value={data.code}>{data.name}</Option>))}
+                              </Select>
                             </InputGroup>
                           </FormItem>
                         </Col>
                         <Col span={6}>
                           <FormItem label="保费" {...formItemLayout}>
                             <InputGroup compact>
-                              <Input style={{ width: '50%' }} value={formData.cust_shipmt_insurance} onChange={e => this.handleChange('cust_shipmt_insurance', e.target.value)} />
-                              <Select style={{ width: '50%' }} />
+                              <Input style={{ width: '50%' }} value={formData.cust_shipmt_insur_fee} onChange={e => this.handleChange('cust_shipmt_insur_fee', e.target.value)} />
+                              <Select
+                                style={{ width: '50%' }}
+                                value={formData.cust_shipmt_insur_currency}
+                                onChange={value => this.handleChange('cust_shipmt_insur_currency', value)}
+                              >
+                                {formRequires.customsCurrency.map(data => (
+                                  <Option key={data.code} value={data.code}>{data.name}</Option>))}
+                              </Select>
                             </InputGroup>
                           </FormItem>
                         </Col>
                         <Col span={6}>
                           <FormItem label="杂费" {...formItemLayout}>
                             <InputGroup compact>
-                              <Input style={{ width: '50%' }} value={formData.cust_shipmt_misc} onChange={e => this.handleChange('cust_shipmt_misc', e.target.value)} />
-                              <Select style={{ width: '50%' }} />
+                              <Input style={{ width: '50%' }} value={formData.cust_shipmt_misc_fee} onChange={e => this.handleChange('cust_shipmt_misc_fee', e.target.value)} />
+                              <Select
+                                style={{ width: '50%' }}
+                                value={formData.cust_shipmt_misc_currency}
+                                onChange={value => this.handleChange('cust_shipmt_misc_currency', value)}
+                              >
+                                {formRequires.customsCurrency.map(data => (
+                                  <Option key={data.code} value={data.code}>{data.name}</Option>))}
+                              </Select>
                             </InputGroup>
                           </FormItem>
                         </Col>
                       </Row>
                     </Panel>
                   </Collapse>
-
                 </Card>
               </FormPane>
             </TabPane>

@@ -21,6 +21,7 @@ const { Option } = Select;
     formRequires: state.crmOrders.formRequires,
     cmsQuotes: state.scofFlow.cmsQuotes,
     serviceTeam: state.crmCustomers.operators,
+    tenantId: state.account.tenantId,
   }),
   { setClientForm, loadFlowNodeData }
 )
@@ -98,7 +99,7 @@ export default class CMSDelegateForm extends Component {
   }
   render() {
     const {
-      formData, formRequires, serviceTeam, cmsQuotes,
+      formData, formRequires, serviceTeam, cmsQuotes, tenantId,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -113,6 +114,7 @@ export default class CMSDelegateForm extends Component {
     };
     const { node } = formData;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
+    const provider = node.provider_tenant_id === tenantId;
     return (
       <FormPane>
         <Card>
@@ -136,14 +138,18 @@ export default class CMSDelegateForm extends Component {
             </Col>
             <Col span={8}>
               <FormItem label={this.msg('操作人员')} {...formItemLayout}>
-                <Select value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+                <Select
+                  value={provider ? node.person_id : null}
+                  disabled={!provider}
+                  onChange={value => this.handlePersonChange(value)}
+                >
                   {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
                 </Select>
               </FormItem>
             </Col>
             <Col span={8}>
               <FormItem label={this.msg('customsBroker')} {...formItemLayout}>
-                <Select allowClear showSearch value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
+                <Select allowClear showSearch value={provider ? node.customs_partner_id : null} disabled={!provider} onChange={value => this.handleChange('customs_partner_id', value)}>
                   {
                     formRequires.customsBrokers.map(cb =>
                       (<Option value={cb.partner_id} key={cb.partner_id}>
@@ -154,7 +160,7 @@ export default class CMSDelegateForm extends Component {
             </Col>
             <Col span={8}>
               <FormItem label={this.msg('ciqBroker')} {...formItemLayout}>
-                <Select allowClear showSearch value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
+                <Select allowClear showSearch value={provider ? node.ciq_partner_id : null} disabled={!provider} onChange={value => this.handleChange('ciq_partner_id', value)}>
                   {
                     formRequires.ciqBrokers.map(cb =>
                       (<Option value={cb.partner_id} key={cb.partner_id}>
@@ -165,7 +171,7 @@ export default class CMSDelegateForm extends Component {
             </Col>
             <Col span={8}>
               <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
-                <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
+                <Select allowClear value={provider ? node.quote_no : null} disabled={!provider} onChange={value => this.handleChange('quote_no', value)}>
                   {
                     cmsQuotes.map(cq =>
                       <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)

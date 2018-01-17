@@ -99,7 +99,7 @@ export default class FlowNodePanel extends Component {
           {flowDemandProvider}
           <FormItem label={this.msg('nodeExecutor')} {...formItemLayout}>
             {getFieldDecorator('person_id', {
-              initialValue: model.person_id,
+              initialValue: provider ? model.person_id : null,
             })(<Select
               onChange={this.handleResponsiblerSelect}
               allowClear

@@ -324,7 +324,7 @@ export default class FlowDesigner extends React.Component {
         out_degree: 0,
         name: kind !== 'terminal' ? `节点${this.graph.get('items').filter(item => item.get('type') === 'node').length + 1}` : undefined,
         demander_tenant_id: currentFlow.customer_tenant_id || tenantId,
-        demander_partner_id: currentFlow.customer_partner_id,
+        demander_partner_id: currentFlow.partner_id,
         provider_tenant_id: tenantId,
       });
       this.graph.refresh();

@@ -3,20 +3,22 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Menu, Icon, Input, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
+import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
 import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
 import { loadPartners } from 'common/reducers/partner';
-import { emptyFlows } from 'common/reducers/scofFlow';
+import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
+import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import OrderDockPanel from './docks/orderDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
@@ -30,7 +32,6 @@ import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
-const { Search } = Input;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -60,8 +61,18 @@ function fetchData({ state, dispatch }) {
   orders: state.crmOrders.orders,
   filters: state.crmOrders.orderFilters,
   partners: state.partner.partners,
+  adaptors: state.saasLineFileAdaptor.adaptors,
+  flows: state.scofFlow.partnerFlows,
 }), {
-  loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadOrderDetail,
+  loadOrders,
+  removeOrder,
+  setClientForm,
+  acceptOrder,
+  emptyFlows,
+  loadPartnerFlowList,
+  loadAdaptors,
+  hideDock,
+  loadOrderDetail,
 })
 @connectNav({
   depth: 2,
@@ -87,6 +98,11 @@ export default class OrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    importPanel: {
+      visible: false,
+      customer_partner_id: undefined,
+      flow_id: undefined,
+    },
   }
   componentWillMount() {
     this.props.hideDock();
@@ -96,6 +112,8 @@ export default class OrderList extends React.Component {
     if (query.shipmt_order_no) {
       this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
     }
+    this.props.loadPartnerFlowList();
+    this.props.loadAdaptors(null, [], true);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
@@ -107,6 +125,9 @@ export default class OrderList extends React.Component {
     }
   }
   msg = formatMsg(this.props.intl)
+  handleImport = () => {
+    this.setState({ importPanel: { visible: true } });
+  }
   handleCreate = () => {
     this.props.setClientForm(-2, {});
     this.props.emptyFlows();
@@ -190,11 +211,29 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
+  handleImportClientChange = (customerPartnerId) => {
+    this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
+    this.props.loadAdaptors(customerPartnerId, [], true);
+    this.setState({ importPanel: { ...this.state.importPanel, partner_id: customerPartnerId } });
+  }
+  handleImportFlowChange = (flowId) => {
+    this.setState({ importPanel: { ...this.state.importPanel, flow_id: flowId } });
+  }
+  handleCheckUpload = () => {
+    if (!this.state.importPanel.flow_id) {
+      message.warn('订单导入流程规则未选');
+      return false;
+    }
+    return true;
+  }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { loading, filters, partners } = this.props;
+    const {
+      loading, filters, flows, partners,
+    } = this.props;
+    const { importPanel } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -236,7 +275,7 @@ export default class OrderList extends React.Component {
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
       title: '执行者',
-      dataindex: 'operator',
+      dataindex: 'exec_login_id',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
     }, {
@@ -340,6 +379,9 @@ export default class OrderList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
+            <Button icon="upload" onClick={this.handleImport}>
+              {this.msg('orderImport')}
+            </Button>
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}
             </Button>
@@ -363,6 +405,41 @@ export default class OrderList extends React.Component {
         <ShipmentDockPanel />
         <ReceiveDockPanel />
         <ShippingDockPanel />
+        <ImportDataPanel
+          adaptors={this.props.adaptors}
+          title="订单导入"
+          visible={importPanel.visible}
+          endpoint=""
+          formData={{ customer_partner_id: importPanel.partner_id, flow_id: importPanel.flow_id }}
+          onClose={() => { this.setState({ importPanel: { visible: false } }); }}
+          onBeforeUpload={this.handleCheckUpload}
+          onUploaded={this.handleTableReload}
+          template=""
+        >
+          <Select
+            placeholder="请选择客户"
+            showSearch
+            allowClear
+            optionFilterProp="children"
+            value={importPanel.partner_id}
+            onChange={this.handleImportClientChange}
+            dropdownMatchSelectWidth={false}
+            dropdownStyle={{ width: 360 }}
+            style={{ width: '100%', marginBottom: '10px' }}
+          >
+            {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+          </Select>
+          <Select
+            placeholder="流程规则必填"
+            showSearch
+            allowClear
+            value={importPanel.flow_id}
+            onChange={this.handleImportFlowChange}
+            style={{ width: '100%' }}
+          >
+            {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
+          </Select>
+        </ImportDataPanel>
       </QueueAnim>
     );
   }
