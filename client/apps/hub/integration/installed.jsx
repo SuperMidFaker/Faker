@@ -98,7 +98,15 @@ export default class InstalledAppsList extends React.Component {
       current: installedAppsList.current,
       total: installedAppsList.totalCount,
       showTotal: total => `共 ${total} 条`,
-      onChange: (() => {}),
+      onChange: (page) => {
+        this.props.loadInstalledApps({
+          tenantId: this.props.tenantId,
+          filter: JSON.stringify(this.props.listFilter),
+          sorter: JSON.stringify(this.props.sortFilter),
+          pageSize: installedAppsList.pageSize,
+          current: page,
+        });
+      },
     };
     return (
       <Layout>

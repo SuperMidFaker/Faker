@@ -16,6 +16,7 @@ const { Content } = Layout;
 @connect(
   state => ({
     apps: state.devApp.apps,
+    pageSize: state.devApp.apps.pageSize,
   }),
   { toggleAppCreateModal, loadDevApps }
 )
@@ -27,7 +28,10 @@ export default class DevAppList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    this.props.loadDevApps();
+    this.props.loadDevApps({
+      pageSize: this.props.apps.pageSize,
+      current: 1,
+    });
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -66,6 +70,19 @@ export default class DevAppList extends React.Component {
     this.props.toggleAppCreateModal(true);
   }
   render() {
+    const { apps } = this.props;
+    const pagination = {
+      pageSize: apps.pageSize,
+      current: apps.current,
+      total: apps.total,
+      showTotal: total => `共 ${total} 条`,
+      onChange: (page, pageSize) => {
+        this.props.loadDevApps({
+          pageSize,
+          current: page,
+        });
+      },
+    };
     return (
       <Layout>
         <HubSiderMenu currentKey="dev" />
@@ -87,7 +104,8 @@ export default class DevAppList extends React.Component {
           <Content className="page-content layout-fixed-width">
             <Card bodyStyle={{ padding: 16 }} >
               <List
-                dataSource={this.props.apps}
+                dataSource={this.props.apps.data}
+                pagination={pagination}
                 renderItem={item => (
                   <List.Item
                     key={item.app_id}

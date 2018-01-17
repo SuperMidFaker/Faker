@@ -11,6 +11,8 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     visible: state.devApp.appCreateModal.visible,
+    pageSize: state.devApp.apps.pageSize,
+    current: state.devApp.apps.current,
   }),
   { toggleAppCreateModal, createApp, loadDevApps }
 )
@@ -28,7 +30,10 @@ export default class AppCreateModal extends Component {
       if (!error) {
         this.props.createApp(values.app_name).then((result) => {
           if (!result.error) {
-            this.props.loadDevApps();
+            this.props.loadDevApps({
+              pageSize: this.props.pageSize,
+              current: this.props.current,
+            });
             this.handleCancel();
           } else {
             message.error(result.error.message, 10);
