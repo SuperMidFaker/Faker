@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Button, Card, Table, Switch, Form, Modal, Row, Col, Radio, Select, Tag, Tooltip, Input, message } from 'antd';
 
 import SearchBox from 'client/components/SearchBox';
-import { formatMsg } from '../../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 import { toggleDeclImportModal, loadDeclEntries, loadEntryGnoDetails, importDeclBodies } from 'common/reducers/cmsManifestImport';
 
 

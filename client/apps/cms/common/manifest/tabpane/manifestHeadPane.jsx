@@ -14,7 +14,7 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
 const CODE_AS_STATE = {

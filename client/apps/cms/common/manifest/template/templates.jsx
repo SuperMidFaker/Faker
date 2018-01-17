@@ -6,7 +6,7 @@ import { Table, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { loadPartners } from 'common/reducers/partner';
 
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 import AddTemplateModal from './modal/addTemplateModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';

@@ -6,7 +6,7 @@ import { Alert, Form, Modal, InputNumber, notification, Select, Row, Col, messag
 import { closeAmountModel, editBillBody, loadBillBody } from 'common/reducers/cmsManifest';
 import { dividAmount } from '../tabpane/helper';
 
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
 const FormItem = Form.Item;

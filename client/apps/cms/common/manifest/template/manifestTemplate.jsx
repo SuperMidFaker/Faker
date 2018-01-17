@@ -12,7 +12,7 @@ import HeadRulesPane from './tabpane/headRulesPane';
 import ImportRulesPane from './tabpane/importRulesPane';
 import MergeSplitRulesPane from './tabpane/mergeSplitRulesPane';
 import TemplateUsersPane from './tabpane/templateUsersPane';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
 const { Header, Content, Sider } = Layout;

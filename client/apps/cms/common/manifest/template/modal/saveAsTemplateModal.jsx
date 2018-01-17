@@ -7,7 +7,7 @@ import { setStepVisible, createGeneratedTemplate, validateTempName } from 'commo
 import ImportRuleForm from '../../form/bodyImportRuleForm';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
 
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../../message.i18n';
 
 
 const FormItem = Form.Item;

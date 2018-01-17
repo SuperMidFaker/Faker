@@ -90,7 +90,7 @@ export default class TaxStatsCard extends Component {
           </Option>))}
         </Select>
         <RangePicker
-          style={{ width: 256, marginLeft: 8 }}
+          style={{ marginLeft: 8 }}
           value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
           onChange={this.onDateChange}

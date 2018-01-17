@@ -8,7 +8,7 @@ import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 
 import moment from 'moment';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const { Option } = Select;
 

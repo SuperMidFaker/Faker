@@ -6,7 +6,7 @@ import { Button, Icon, Table, Select, message } from 'antd';
 import { loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser } from 'common/reducers/cmsManifest';
 import { loadPartners } from 'common/reducers/partner';
 
-import { formatMsg } from 'client/apps/cms/message.i18n';
+import { formatMsg } from '../../../message.i18n';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const role = PARTNER_ROLES.SUP;

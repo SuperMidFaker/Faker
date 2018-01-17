@@ -6,7 +6,7 @@ import { Radio, Checkbox, Select, Row, Col, Form, Collapse } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;

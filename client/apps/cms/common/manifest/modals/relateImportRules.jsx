@@ -6,7 +6,7 @@ import { Modal, Form, Mention, message } from 'antd';
 import { closeRuleModel, saveBillRules } from 'common/reducers/cmsManifest';
 
 import ImportRuleForm from '../form/bodyImportRuleForm';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
 function getFieldInits(formData) {

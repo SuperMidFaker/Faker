@@ -4,7 +4,7 @@ import { Checkbox, Card, Col, Row, Form, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 
 import FormPane from 'client/components/FormPane';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../../message.i18n';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
 
 

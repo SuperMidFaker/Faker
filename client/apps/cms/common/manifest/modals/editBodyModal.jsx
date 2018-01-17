@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, message } from 'antd';
 import { showEditBodyModal, editBillBody, loadBillBody, addNewBillBody } from 'common/reducers/cmsManifest';
 
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 import EditBodyForm from '../form/editBodyForm';
 
 

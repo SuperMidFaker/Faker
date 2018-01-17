@@ -73,5 +73,4 @@ const messages = defineMessages({
 });
 
 export default messages;
-
 export const formatMsg = formati18n(messages);

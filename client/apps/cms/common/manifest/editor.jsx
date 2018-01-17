@@ -21,7 +21,7 @@ import ContainersPane from './tabpane/containersPane';
 import InvoicesPane from './tabpane/invoicesPane';
 import GenerateDeclModal from './modals/generateDeclModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import DeclTreePopover from '../popover/declTreePopover';
 import DelegationDockPanel from '../dock/delegationDockPanel';

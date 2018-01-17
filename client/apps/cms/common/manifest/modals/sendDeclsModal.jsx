@@ -6,7 +6,7 @@ import { Modal, Select, message, Table } from 'antd';
 import { getEasipassList, sendMutiDecl } from 'common/reducers/cmsCustomsDeclare';
 import { showSendDeclsModal } from 'common/reducers/cmsManifest';
 
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 
 

@@ -11,14 +11,13 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
-import DelegationDockPanel from '../dock/delegationDockPanel';
-
-import { formatMsg } from './message.i18n';
 import RowAction from 'client/components/RowAction';
 import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import Templates from './template/templates';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import DelegationDockPanel from '../dock/delegationDockPanel';
+import { formatMsg } from '../message.i18n';
 
 
 const { Header, Content, Sider } = Layout;

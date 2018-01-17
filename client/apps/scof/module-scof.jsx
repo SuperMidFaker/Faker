@@ -6,7 +6,6 @@ import { locationShape } from 'react-router';
 import { loadTrackings } from 'common/reducers/scvTracking';
 import { format } from 'client/common/i18n/helpers';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
-
 import messages from './message.i18n';
 
 const formatMsg = format(messages);

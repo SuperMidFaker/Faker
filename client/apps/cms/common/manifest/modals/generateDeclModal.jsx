@@ -8,7 +8,7 @@ import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
 
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
 const FormItem = Form.Item;

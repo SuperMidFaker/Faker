@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import pdfMake from 'pdfmake/build/pdfmake';
-// import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Collapse, Button, Breadcrumb, Table, Select, Icon, Form, message } from 'antd';
@@ -11,8 +9,7 @@ import { CMS_DOCU_TYPE } from 'common/constants';
 import InvoiceDetails from '../docus/invoiceDetails';
 import ContractDetails from '../docus/contractDetails';
 import PacklistDetails from '../docus/packlistDetails';
-
-import { formatMsg } from '../docus/message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
 const { Panel } = Collapse;

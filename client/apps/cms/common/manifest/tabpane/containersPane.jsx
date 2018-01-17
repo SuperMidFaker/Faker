@@ -2,17 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Menu, Input, Select, message } from 'antd';
+import { Input, Select, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import { CMS_CNTNR_SPEC_CUS, CMS_CNTNR_SPEC_CIQ } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
-
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const { Option } = Select;
-
 
 function ColumnInput(props) {
   const {

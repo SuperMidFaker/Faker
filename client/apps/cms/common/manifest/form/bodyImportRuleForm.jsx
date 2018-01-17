@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Radio, Mention, Row, Col } from 'antd';
 import { closeRuleModel } from 'common/reducers/cmsManifest';
 import { SOURCE_CHOOSE } from 'common/constants';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
