@@ -102,7 +102,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('customsBroker')}>
                 {getFieldDecorator('customs_partner_id', {
-                  initialValue: model.customs_partner_id,
+                  initialValue: provider ? model.customs_partner_id : null,
                   onChange: this.handleCustomsChange,
                 })(<Select allowClear disabled={!provider}>
                   {
@@ -117,7 +117,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('ciqBroker')}>
                 {getFieldDecorator('ciq_partner_id', {
-                  initialValue: model.ciq_partner_id,
+                  initialValue: provider ? model.ciq_partner_id : null,
                 })(<Select allowClear disabled={!provider}>
                   {
                     ciqBrokers.map(cb =>
@@ -131,7 +131,7 @@ export default class CMSDelegationPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('quoteNo')}>
                 {getFieldDecorator('quote_no', {
-                  initialValue: model.quote_no,
+                  initialValue: provider ? model.quote_no : null,
                 })(<Select allowClear disabled={!provider}>
                   {cmsQuotes.map(cq =>
                     <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)}
