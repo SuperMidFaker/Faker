@@ -36,9 +36,6 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    username: state.account.username,
-    tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
     formRequires: state.crmOrders.formRequires,
     flows: state.scofFlow.partnerFlows,
@@ -59,7 +56,6 @@ export default class OrderForm extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
-    tenantName: PropTypes.string.isRequired,
     formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     formRequires: PropTypes.shape({
       clients: PropTypes.shape({ partner_id: PropTypes.number }),
