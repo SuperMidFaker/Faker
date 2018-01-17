@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Input, Card, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
+
 const FormItem = Form.Item;
 
 function getFieldInits(aspect, formData) {
@@ -33,7 +33,7 @@ export default class SiderForm extends Component {
     form: PropTypes.object.isRequired,
     fieldInits: PropTypes.object.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, fieldInits } = this.props;
     return (

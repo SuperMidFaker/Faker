@@ -7,11 +7,11 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { hideImportModal } from 'common/reducers/cmsTradeManual';
 import { loadPartners } from 'common/reducers/partner';
 import ExcelUploader from 'client/components/ExcelUploader';
-import { format } from 'client/common/i18n/helpers';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { formatMsg } from '../message.i18n';
+
+
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -44,7 +44,7 @@ export default class ImportModal extends Component {
     ownerTenantId: '',
     ownerName: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.hideImportModal();
     this.setState({

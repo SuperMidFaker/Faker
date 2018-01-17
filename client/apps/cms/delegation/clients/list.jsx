@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Layout, Table, Icon, Input, Breadcrumb, Tabs, Form } from 'antd';
+import { Card, Layout, Table, Icon, Breadcrumb, Tabs, Form } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { setResTabkey, setCustomer } from 'common/reducers/cmsResources';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import PageHeader from 'client/components/PageHeader';
+import SearchBox from 'client/components/SearchBox';
 import NavLink from 'client/components/NavLink';
 import TradersPane from './tabpane/tradersPane';
 import ManifestRulesPane from './tabpane/manifestRulesPane';
@@ -17,7 +18,7 @@ import { formatMsg } from '../message.i18n';
 
 
 const { Content, Sider } = Layout;
-const { Search } = Input;
+
 const { TabPane } = Tabs;
 
 function fetchData({ state, dispatch }) {
@@ -113,7 +114,7 @@ export default class ClientsList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} />
+              <SearchBox onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} />
             </div>
             <div className="list-body">
               <Table

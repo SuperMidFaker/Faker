@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Mention, message } from 'antd';
 import { closeRuleModel, saveBillRules } from 'common/reducers/cmsManifest';
-import { format } from 'client/common/i18n/helpers';
+
 import ImportRuleForm from '../form/bodyImportRuleForm';
-import messages from '../message.i18n';
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
 
 function getFieldInits(formData) {
   const init = {};
@@ -60,7 +60,7 @@ export default class RelateImportRuleModal extends React.Component {
       }
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form, visibleRuleModal, fieldInits } = this.props;
     return (

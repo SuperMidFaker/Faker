@@ -4,14 +4,11 @@ import PropTypes from 'prop-types';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input, Select } from 'antd';
 import { CMS_FEE_UNIT, CMS_CONFIRM } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import FormInput from './formInput';
 import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 const InputGroup = Input.Group;
@@ -126,7 +123,7 @@ export class RelationAutoCompSelect extends React.Component {
     onChange: PropTypes.func,
   }
 
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
+  msg = formatMsg(this.props.intl);
   handleSelect = (value) => {
     const {
       onSelect, codeField, custCodeField, nameField,
@@ -1042,7 +1039,7 @@ export class CiqCodeAutoCompSelect extends React.Component {
     onSelect: PropTypes.func,
   }
 
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
+  msg = formatMsg(this.props.intl);
   handleSelect = (value) => {
     const {
       onSelect, codeField, cnameField, enameField,

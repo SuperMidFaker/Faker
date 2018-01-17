@@ -4,14 +4,14 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Table, Switch, Form, Modal, Row, Col, Radio, Select, Tag, Tooltip, Input, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../../message.i18n';
+
+import SearchBox from 'client/components/SearchBox';
+import { formatMsg } from '../../../message.i18n';
 import { toggleDeclImportModal, loadDeclEntries, loadEntryGnoDetails, importDeclBodies } from 'common/reducers/cmsManifestImport';
 
-const formatMsg = format(messages);
+
 const FormItem = Form.Item;
-const Search = Input.Search;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -81,7 +81,7 @@ export default class ImportDeclaredBodyModal extends Component {
     }
   }
 
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   entryColumns = [{
     title: '报关单号',
     dataIndex: 'entry_id',
@@ -262,8 +262,8 @@ export default class ImportDeclaredBodyModal extends Component {
       }
     });
   }
-  handleAddedEntryNoChange = (ev) => {
-    this.setState({ addedEntryId: ev.target.value });
+  handleAddedEntryNoChange = (value) => {
+    this.setState({ addedEntryId: value });
   }
   handleFilterSwitch = (filtered) => {
     this.setState({ filtered });
@@ -365,12 +365,9 @@ export default class ImportDeclaredBodyModal extends Component {
               <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search
+                    <SearchBox
                       placeholder="报关单号"
-                      style={{ width: 200 }}
-                      onChange={this.handleAddedEntryNoChange}
-                      onSearch={this.handleSearch}
-                      value={this.state.addedEntryId}
+                      onSearch={this.handleAddedEntryNoChange}
                     />
                     {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.handleDetailBatchDel}>批量删除</Button>}
                     <div className="toolbar-right">

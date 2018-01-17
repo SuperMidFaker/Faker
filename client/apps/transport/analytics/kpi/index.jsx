@@ -137,9 +137,8 @@ export default class Kpi extends React.Component {
       if (value) {
         const reg = new RegExp(value);
         return reg.test(item.name);
-      } else {
-        return true;
       }
+      return true;
     });
     this.setState({ clients, currentPage: 1 });
   }
@@ -254,7 +253,11 @@ export default class Kpi extends React.Component {
     }
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={collapsed}
           collapsedWidth={0}
@@ -269,15 +272,20 @@ export default class Kpi extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search
+              <SearchBox
                 placeholder="搜索"
                 onSearch={this.handleSearch}
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.clients} columns={columns} showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="partner_id"
-                rowClassName={record => record.partner_id === customer.partner_id ? 'table-row-selected' : ''}
+              <Table
+                size="middle"
+                dataSource={this.state.clients}
+                columns={columns}
+                showHeader={false}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowKey="partner_id"
+                rowClassName={record => (record.partner_id === customer.partner_id ? 'table-row-selected' : '')}
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}
@@ -296,7 +304,8 @@ export default class Kpi extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>}
             <ButtonToggle
-              iconOn="menu-fold" iconOff="menu-unfold"
+              iconOn="menu-fold"
+              iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />
@@ -327,7 +336,8 @@ export default class Kpi extends React.Component {
               </div>
               <Layout className="main-wrapper">
                 <Sider className="nav-sider" width={150}>
-                  <Menu onClick={this.handleMenuChange}
+                  <Menu
+                    onClick={this.handleMenuChange}
                     style={{ width: 150 }}
                     defaultOpenKeys={['sub1']}
                     selectedKeys={[selectedKey]}

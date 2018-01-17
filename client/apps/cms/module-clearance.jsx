@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
-import { format } from 'client/common/i18n/helpers';
+
 import { switchNavOption } from 'common/reducers/cmsPreferences';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(

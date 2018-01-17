@@ -9,13 +9,13 @@ import RowAction from 'client/components/RowAction';
 import { loadPartners } from 'common/reducers/partner';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal } from 'common/reducers/cmsManifest';
 import { CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
+
 import AddManifestRuleModal from '../modal/addManifestRuleModal';
 import ManifestRuleCloneModal from '../modal/manifestRuleCloneModal';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const { Content } = Layout;
-const formatMsg = format(messages);
+
 
 @injectIntl
 @connect(
@@ -42,7 +42,7 @@ export default class ManifestRulesPane extends React.Component {
   componentWillMount() {
     this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: this.props.ietype });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleEdit = (record) => {
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
     this.context.router.push(`/clearance/${ietype}/manifest/rules/edit/${record.id}`);

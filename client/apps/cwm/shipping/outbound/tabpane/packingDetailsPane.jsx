@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Icon, Input } from 'antd';
+import { Tag, Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import { loadPackDetails } from 'common/reducers/cwmOutbound';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -97,9 +97,8 @@ export default class PackingDetailsPane extends React.Component {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
         return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
       }
+      return true;
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -108,12 +107,17 @@ export default class PackingDetailsPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={dataSource}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

@@ -12,7 +12,7 @@ import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrde
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
@@ -295,7 +295,7 @@ export default class OrderList extends React.Component {
       remotes: this.props.orders,
     });
     const toolbarActions = (<span>
-      <Search placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />
+      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
         optionFilterProp="children"

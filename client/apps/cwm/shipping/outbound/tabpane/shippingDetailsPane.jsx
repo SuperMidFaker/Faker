@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
-import { notification, Button, Tag, Icon, Input } from 'antd';
+import { notification, Button, Tag, Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import { loadShipDetails, exportNormalExitBySo } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -123,9 +123,8 @@ export default class ShippingDetailsPane extends React.Component {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
         return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
       }
+      return true;
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -134,12 +133,17 @@ export default class ShippingDetailsPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={dataSource}
+        rowKey="id"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.Actions>
             {shipDetails.length > 0 && (outboundHead.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value || pickDetails.filter(pd => !pd.portion && pd.ftz_ent_filed_id).length > 0) &&
             <Button type="primary" onClick={this.handleExportExitVoucher}>导出出区凭单</Button>}

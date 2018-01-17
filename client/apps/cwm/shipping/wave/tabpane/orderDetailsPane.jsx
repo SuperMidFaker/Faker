@@ -2,12 +2,12 @@ import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Input } from 'antd';
+import { Button } from 'antd';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import { openAllocatingModal } from 'common/reducers/cwmOutbound';
 import { loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -88,12 +88,17 @@ export default class OrderDetailsPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={this.props.waveDetails} rowKey="wave_seq_no" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={this.props.waveDetails}
+        rowKey="wave_seq_no"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

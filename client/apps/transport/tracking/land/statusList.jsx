@@ -17,7 +17,7 @@ import RowAction from 'client/components/RowAction';
 import VehicleModal from './modals/vehicle-updater';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -39,9 +39,8 @@ function fetchData({
         name: 'type',
         value: params.state,
       };
-    } else {
-      return flt;
     }
+    return flt;
   });
   if (!newfilters.find(item => item.name === 'loginId')) {
     newfilters.push({
@@ -128,9 +127,8 @@ export default class TrackingStatusList extends React.Component {
             name: 'type',
             value: nextProps.params.state,
           };
-        } else {
-          return flt;
         }
+        return flt;
       });
       this.handleSelectionClear();
     } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
@@ -394,8 +392,11 @@ export default class TrackingStatusList extends React.Component {
     return (
       <PrivilegeCover module="transport" feature="tracking" action="edit">
         <span>
-          <RowAction label={locLabel} onHover={this.handleReportLocHover}
-            onClick={this.handleShowTransitModal} row={record}
+          <RowAction
+            label={locLabel}
+            onHover={this.handleReportLocHover}
+            onClick={this.handleShowTransitModal}
+            row={record}
             className={reported ? 'mdc-text-grey' : ''}
           />
         </span>
@@ -452,9 +453,7 @@ export default class TrackingStatusList extends React.Component {
       carriers: this.props.carriers,
     }, this.msg);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-        value={this.state.searchInput}
-      />
+      <SearchBox placeholder={this.msg('searchShipmtPH')} onSearch={this.handleSearchInput} />
       <span />
       <CustomerSelect onChange={this.handleCustomerChange} />
       <span />
@@ -464,9 +463,18 @@ export default class TrackingStatusList extends React.Component {
     </span>);
     return (
       <div>
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-        <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} scroll={{ x: 2720 }} selectedRowKeys={this.state.selectedRowKeys}
+        <AdvancedSearchBar
+          visible={this.state.advancedSearchVisible}
+          onSearch={this.handleAdvancedSearch}
+          toggle={this.toggleAdvancedSearch}
+        />
+        <DataTable
+          toolbarActions={toolbarActions}
+          rowSelection={rowSelection}
+          columns={columns}
+          loading={loading}
+          dataSource={this.dataSource}
+          selectedRowKeys={this.state.selectedRowKeys}
           handleDeselectRows={this.handleSelectionClear}
         />
         <VehicleModal onOK={this.handleTableLoad} />

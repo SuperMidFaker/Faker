@@ -2,20 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Badge, Input, Modal, Layout, Radio, Select, Tooltip, Tag } from 'antd';
+import { Breadcrumb, Button, Badge, Modal, Layout, Radio, Select, Tooltip, Tag } from 'antd';
 import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import EditableCell from 'client/components/EditableCell';
 import CreateFlowModal from './modal/createFlowModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
-const { Search } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -184,7 +184,10 @@ export default class FlowList extends React.Component {
     } = this.props;
     this.flowDataSource.remotes = flowList;
     const toolbarActions = (<span>
-      <Search onSearch={this.handleSearch} style={{ width: 200 }} />
+      <SearchBox
+        placeholder={this.msg('searchPlaceholder')}
+        onSearch={this.handleSearch}
+      />
       <Select
         showSearch
         optionFilterProp="children"

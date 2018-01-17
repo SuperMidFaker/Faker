@@ -14,7 +14,7 @@ import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
 // import OrderDockPanel from '../orders/docks/orderDockPanel';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_ORDER_MODE } from 'common/constants';
 import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../common/ccbDelgNoColumn';
@@ -140,16 +140,14 @@ export default class FeesList extends React.Component {
   renderTransportCharge = (o, record) => {
     if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.transport) >= 0) {
       return o ? o.toFixed(2) : '';
-    } else {
-      return '';
     }
+    return '';
   }
   renderClearanceCharge = (o, record) => {
     if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
       return o ? o.toFixed(2) : '';
-    } else {
-      return '';
     }
+    return '';
   }
   render() {
     const { customers } = this.state;
@@ -268,7 +266,9 @@ export default class FeesList extends React.Component {
         <Header className="page-header">
           <span>{this.msg('fee')}</span>
           <div className="page-header-tools">
-            <SearchBar placeholder="输入订单号搜索" onInputSearch={this.handleSearchInput}
+            <SearchBox
+              placeholder="输入订单号搜索"
+              onSearch={this.handleSearchInput}
               value={this.props.fees.searchValue}
             />
           </div>
@@ -278,7 +278,9 @@ export default class FeesList extends React.Component {
             <div className="toolbar">
               <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
               <div className="toolbar-right">
-                <RangePicker style={{ width: 200 }} value={[moment(startDate), moment(endDate)]}
+                <RangePicker
+                  style={{ width: 200 }}
+                  value={[moment(startDate), moment(endDate)]}
                   onChange={this.onDateChange}
                 />
               </div>

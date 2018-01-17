@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, message, Form, Select } from 'antd';
 import { closeCreateModal, loadPartners, createQuote } from 'common/reducers/cmsQuote';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../message.i18n';
 import { TARIFF_KINDS, PARTNER_ROLES } from 'common/constants';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+
+const { Option } = Select;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -112,13 +112,17 @@ export default class CreateQtModal extends React.Component {
     }
     return value;
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, visible, partners } = this.props;
     const { disBase } = this.state;
     return (
-      <Modal maskClosable={false} title={this.msg('newQuote')} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('newQuote')}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <div>
           <FormItem label={this.msg('tariffKinds')} {...formItemLayout}>
@@ -135,13 +139,19 @@ export default class CreateQtModal extends React.Component {
             {getFieldDecorator('partner.name', {
               rules: [{ required: true, message: '必选' }],
               getValueFromEvent: this.handleClientChange,
-            })(<Select showSearch showArrow optionFilterProp="searched"
-              style={{ width: '100%' }} disabled={disBase}
+            })(<Select
+              showSearch
+              showArrow
+              optionFilterProp="searched"
+              style={{ width: '100%' }}
+              disabled={disBase}
             >
               {
                 partners.map(pt => (
-                  <Option searched={`${pt.partner_code}${pt.name}`}
-                    value={pt.partner_id} key={pt.partner_id}
+                  <Option
+                    searched={`${pt.partner_code}${pt.name}`}
+                    value={pt.partner_id}
+                    key={pt.partner_id}
                   >{pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
                   </Option>))
               }

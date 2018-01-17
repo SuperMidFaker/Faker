@@ -12,7 +12,6 @@ import PageHeader from 'client/components/PageHeader';
 import ReportSettingPanel from './panel/reportSettingPanel';
 import { formatMsg } from './message.i18n';
 
-
 const { Content } = Layout;
 const { Panel } = Collapse;
 

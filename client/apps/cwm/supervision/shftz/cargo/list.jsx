@@ -7,7 +7,7 @@ import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS,
   fileCargos, confirmCargos, editGname } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
@@ -295,7 +295,7 @@ export default class SHFTZCargoList extends React.Component {
       columns.shift();
     }
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBox placeholder={this.msg('productSearchPlaceholder')} onSearch={this.handleSearch} value={listFilter.filterNo} />
     </span>);
     return (
       <Layout>
@@ -314,12 +314,17 @@ export default class SHFTZCargoList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
+              <SearchBox placeholder={this.msg('ownerSearchPlaceholder')} onSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false}
+              <Table
+                size="middle"
+                columns={ownerColumns}
+                dataSource={filterOwners}
+                showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''} rowKey="id"
+                rowClassName={record => (record.id === owner.id ? 'table-row-selected' : '')}
+                rowKey="id"
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}
@@ -367,7 +372,8 @@ export default class SHFTZCargoList extends React.Component {
               </Button>
               }
               <Popover content={<a href={`${XLSX_CDN}/分拨货物备案料号模板.xlsx`}><Icon type="file-excel" />下载导入模板</a>}>
-                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
+                <ExcelUploader
+                  endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
                   formData={{
                     data: JSON.stringify({
                       loginId,
@@ -375,7 +381,8 @@ export default class SHFTZCargoList extends React.Component {
                       ownerCusCode: owner.customs_code,
                       ruleType: rule,
                     }),
-                  }} onUploaded={this.handleFiledCargoImport}
+                  }}
+                  onUploaded={this.handleFiledCargoImport}
                 >
                   <Button ><Icon type="upload" /> 导入备案料号</Button>
                 </ExcelUploader>
@@ -384,8 +391,14 @@ export default class SHFTZCargoList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <DataTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
-              toolbarActions={toolbarActions} scroll={{ x: 1400 }} loading={loading}
+            <DataTable
+              columns={columns}
+              dataSource={this.dataSource}
+              rowSelection={rowSelection}
+              rowKey="id"
+              toolbarActions={toolbarActions}
+              scroll={{ x: 1400 }}
+              loading={loading}
             />
           </Content>
         </Layout>

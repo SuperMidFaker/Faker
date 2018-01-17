@@ -4,10 +4,7 @@ import { connect } from 'react-redux';
 import { Modal, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { changeCancelCharge } from 'common/reducers/cmsBilling';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
@@ -33,7 +30,7 @@ export default class CancelChargeModal extends React.Component {
   state = {
     cancelCharge: 0,
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleOk = () => {
     const { billingId, tenantId } = this.props;
     this.props.changeCancelCharge({ tenantId, billingId, cancelCharge: this.state.cancelCharge }).then(() => {
@@ -52,8 +49,12 @@ export default class CancelChargeModal extends React.Component {
     const { visible } = this.props;
     return (
       <div>
-        <Modal maskClosable={false} style={{ width: '680px' }} visible={visible}
-          title={this.msg('cancelCharge')} onOk={this.handleOk}
+        <Modal
+          maskClosable={false}
+          style={{ width: '680px' }}
+          visible={visible}
+          title={this.msg('cancelCharge')}
+          onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
           <div style={{ width: 300, margin: '0 auto' }}>

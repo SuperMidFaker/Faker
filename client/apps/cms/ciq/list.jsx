@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Breadcrumb, Layout, Radio, message, Icon, Input, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { setInspect } from 'common/reducers/cmsCustomsDeclare';
@@ -22,7 +23,7 @@ import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
-const { Search } = Input;
+
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
@@ -292,7 +293,7 @@ export default class CiqDeclList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <Search placeholder={this.msg('ciqSearchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />
+      <SearchBox placeholder={this.msg('ciqSearchPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
         optionFilterProp="children"

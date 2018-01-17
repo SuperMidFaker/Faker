@@ -12,7 +12,7 @@ import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
+
 import { createFilename } from 'client/util/dataTransform';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
@@ -25,9 +25,9 @@ import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
 import AmountModel from '../modals/amountDivid';
 import RelateImportRuleModal from '../modals/relateImportRules';
 import { dividGrossWt } from './helper';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
+
 const { Option } = Select;
 
 function ColumnInput(props) {
@@ -643,7 +643,7 @@ export default class ManifestBodyPane extends React.Component {
       }
     });
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handlePageChange = (current) => {
     this.setState({
       pagination: {

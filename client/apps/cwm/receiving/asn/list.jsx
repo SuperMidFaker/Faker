@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -104,9 +104,8 @@ export default class ReceivingASNList extends React.Component {
       const asnStatusKey = Object.keys(CWM_ASN_STATUS).filter(as => CWM_ASN_STATUS[as].value === o)[0];
       if (asnStatusKey) {
         return (<Badge status={CWM_ASN_STATUS[asnStatusKey].badge} text={CWM_ASN_STATUS[asnStatusKey].text} />);
-      } else {
-        return '';
       }
+      return '';
     },
   }, {
     title: '保税监管',
@@ -116,9 +115,8 @@ export default class ReceivingASNList extends React.Component {
       if (bonded) {
         const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === record.bonded_intype)[0];
         return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
-      } else {
-        return (<Tag>非保税</Tag>);
       }
+      return (<Tag>非保税</Tag>);
     },
   }, {
     title: '监管状态',
@@ -183,13 +181,12 @@ export default class ReceivingASNList extends React.Component {
           <RowAction onClick={this.handleReleaseASN} icon="play-circle-o" label="释放" row={record} />
           <RowAction onClick={this.handleEditASN} icon="edit" tooltip="修改" row={record} />
         </span>);
-      } else {
-        return (<span>
-          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowAction onClick={this.handleInbound} icon="form" label="入库操作" row={record} />}
-          {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowAction onClick={this.handleInbound} label="差异处理" row={record} />}
-          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowAction onClick={this.handleInbound} icon="eye-o" label="入库详情" row={record} />}
-        </span>);
       }
+      return (<span>
+        {record.status === CWM_ASN_STATUS.INBOUND.value && <RowAction onClick={this.handleInbound} icon="form" label="入库操作" row={record} />}
+        {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowAction onClick={this.handleInbound} label="差异处理" row={record} />}
+        {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowAction onClick={this.handleInbound} icon="eye-o" label="入库详情" row={record} />}
+      </span>);
     },
   }]
   handlePreview = (asnNo) => {
@@ -363,18 +360,30 @@ export default class ReceivingASNList extends React.Component {
       columns.splice(6, 1);
     }
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
-      <Select showSearch optionFilterProp="children" value={filters.ownerCode}
-        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.ownerCode}
+        onChange={this.handleOwnerChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
       </Select>
-      <Select showSearch optionFilterProp="children" value={filters.supplierCode}
-        onChange={this.handleSupplierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.supplierCode}
+        onChange={this.handleSupplierChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部供货商</Option>
-        {suppliers.filter(supplier => filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true)
+        {suppliers.filter(supplier => (filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true))
         .map(supplier => (<Option key={supplier.code} value={supplier.code}>{supplier.name}</Option>))}
       </Select>
     </span>);
@@ -416,9 +425,16 @@ export default class ReceivingASNList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="asn_no" loading={loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={dataSource}
+            rowSelection={rowSelection}
+            rowKey="asn_no"
+            loading={loading}
             locale={{ emptyText: '没有当前状态的ASN' }}
           />
         </Content>

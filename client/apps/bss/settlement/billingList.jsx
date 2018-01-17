@@ -15,7 +15,7 @@ import { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPar
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_BILLING_STATUS } from 'common/constants';
 import CancelChargeModal from './modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -312,7 +312,9 @@ export default class BillingList extends React.Component {
         <Header className="page-header">
           <span>{this.msg('billing')}</span>
           <div className="page-header-tools">
-            <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
+            <SearchBox
+              placeholder="输入账单名称搜索"
+              onSearch={this.handleSearchInput}
               value={this.props.billings.searchValue}
             />
           </div>
@@ -330,8 +332,13 @@ export default class BillingList extends React.Component {
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
             </div>
             <BillingForm visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
-            <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
-              billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
+            <CancelChargeModal
+              visible={this.state.cancelChargeModalVisible}
+              toggle={this.toggleCancelChargeModal}
+              billingId={this.state.billingId}
+              fromId={this.state.fromId}
+              totalCharge={this.state.totalCharge}
+              handleOk={this.handleTableLoad}
             />
           </div>
         </Content>

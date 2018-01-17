@@ -8,7 +8,7 @@ import { Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd'
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Logixon } from 'client/components/FontIcon';
@@ -267,7 +267,7 @@ export default class OutboundList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('outboundPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBox placeholder={this.msg('outboundPlaceholder')} onSearch={this.handleSearch} />
       <span />
       <Select
         showSearch

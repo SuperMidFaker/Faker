@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Steps, Modal, Form, Select, DatePicker, Progress } from 'antd';
 import { closeTrialModal, trialQuote } from 'common/reducers/cmsQuote';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+import { formatMsg } from '../message.i18n';
+
+
+const { Option } = Select;
 const Step = Steps.Step;
-const RangePicker = DatePicker.RangePicker;
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -90,7 +90,7 @@ export default class TrialModal extends React.Component {
       curStep: 2,
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     const {

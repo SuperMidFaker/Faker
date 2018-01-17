@@ -5,12 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Card, DatePicker, Select } from 'antd';
 import moment from 'moment';
 import currencyFormatter from 'currency-formatter';
-import { format } from 'client/common/i18n/helpers';
+
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadCmsTaxStats } from 'common/reducers/cmsDashboard';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
+
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
@@ -62,7 +62,7 @@ export default class TaxStatsCard extends Component {
       tenantId: this.props.tenantId, startDate, endDate, clientView: JSON.stringify(clientView),
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const {
       startDate, endDate, totalPaid, dutyTax, vatTax, comsuTax, totalWithdrawn,

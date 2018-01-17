@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 import { loadEditQuote } from 'common/reducers/cmsQuote';
 import { Form, Tabs, Layout } from 'antd';
 import QuoteTitle from './quoteTitle';
@@ -11,7 +11,7 @@ import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 import RevisionTable from './revisionTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
-const formatMsg = format(messages);
+
 const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
 
@@ -38,7 +38,7 @@ export default class QuotingView extends Component {
   handleTabChange = (key) => {
     this.setState({ tabKey: key });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { form } = this.props;
     return (

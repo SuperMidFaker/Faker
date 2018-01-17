@@ -4,11 +4,8 @@ import { Modal, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadDispsBeforeTime, loadExpsBeforeTime, alterBillingFees } from 'common/reducers/cmsBilling';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 
@@ -76,7 +73,7 @@ export default class BeforeFeesModal extends React.Component {
     }
   }
 
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  msg = formatMsg(this.props.intl)
 
   handleAdd = (fee) => {
     this.props.alterBillingFees(fee);

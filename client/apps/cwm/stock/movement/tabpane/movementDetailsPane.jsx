@@ -9,9 +9,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail } from 'common/reducers/cwmMovement';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -183,7 +183,7 @@ export default class MovementDetailsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {this.state.selectedRowKeys.length > 0 && (<Button onClick={this.handleBatchDetailRemove}>
               <MdIcon type="check-all" />批量移除明细

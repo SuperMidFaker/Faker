@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Badge, Breadcrumb, Button, Input, DatePicker, Icon, Layout, Radio, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Radio, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 // import Table from 'client/components/remoteAntTable';
 import DataTable from 'client/components/DataTable';
@@ -12,10 +12,10 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import moment from 'moment';
 
+import { formatMsg } from './message.i18n';
+import moment from 'moment';
+import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
@@ -25,12 +25,12 @@ import AdvModelModal from './modals/advModelModal';
 import AdvUploadModal from './modals/advUploadModal';
 import AdvExpsImpTempModal from './modals/advExpImpTempModal';
 
-const formatMsg = format(messages);
+
 const { Header, Content } = Layout;
-const { Search } = Input;
+
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const RangePicker = DatePicker.RangePicker;
+const { RangePicker } = DatePicker;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -126,7 +126,7 @@ export default class ExpenseList extends Component {
       this.setState({ custFilter, supeFilter });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor);
+  msg = formatMsg(this.props.intl)
   columns = [
     {
       title: this.msg('delgNo'),
@@ -488,7 +488,7 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const toolbarActions = (<Search placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />);
+    const toolbarActions = (<SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />);
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>

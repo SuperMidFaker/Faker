@@ -8,7 +8,7 @@ import { loadNonbondedStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ModuleMenu from '../../menu';
 import QueryForm from './queryForm';
@@ -54,7 +54,7 @@ export default class SHFTZNonBondedStockList extends React.Component {
   componentWillMount() {
     this.props.loadParams();
   }
-  onInputSearch = (product) => {
+  onSearch = (product) => {
     const filter = { ...this.state.filter, product };
     this.handleStockQuery(filter);
   }
@@ -227,7 +227,7 @@ export default class SHFTZNonBondedStockList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder="货号/商品编码" onInputSearch={this.onInputSearch} />
+      <SearchBox placeholder="货号/商品编码" onSearch={this.onSearch} />
     </span>);
     return (
       <Layout>

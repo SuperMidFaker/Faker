@@ -1,25 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { Breadcrumb, Button, Input, Layout, message } from 'antd';
+import { Breadcrumb, Button, Layout, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-import BillingForm from './billingForm';
 import { loadBillings, updateBilling, sendBilling, billingInvoiced } from 'common/reducers/cmsBilling';
 import { CMS_BILLING_STATUS } from 'common/constants';
-
+import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import CancelChargeModal from '../modals/cancelChargeModal';
+import { formatMsg } from '../message.i18n';
+import BillingForm from './billingForm';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const { Search } = Input;
+
 
 @injectIntl
 @connectNav({
@@ -62,7 +60,7 @@ export default class BillingList extends React.Component {
   componentDidMount() {
     this.handleTableLoad();
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  msg = formatMsg(this.props.intl)
   handleAddBtnClicked = () => {
     this.setState({
       billingFormVisible: true,
@@ -274,7 +272,7 @@ export default class BillingList extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <Search
+              <SearchBox
                 placeholder="输入账单名称搜索"
                 onSearch={this.handleSearchInput}
                 style={{ width: 200 }}

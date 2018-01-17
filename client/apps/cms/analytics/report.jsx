@@ -10,7 +10,6 @@ import { MiniArea, MiniBar, Pie } from 'client/components/Charts';
 import PageHeader from 'client/components/PageHeader';
 import { formatMsg } from './message.i18n';
 
-
 const { Content } = Layout;
 
 function Chart(props) {

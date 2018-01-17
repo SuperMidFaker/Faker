@@ -10,12 +10,12 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+
+import { formatMsg } from './message.i18n';
 import moment from 'moment';
 import CreateQtModal from './modals/createQtModal';
 
-const formatMsg = format(messages);
+
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -61,7 +61,7 @@ export default class QuoteList extends Component {
   state = {
     selectedRowKeys: [],
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor);
+  msg = formatMsg(this.props.intl)
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadQuoteTable(params),
     resolve: result => result.data,
@@ -171,7 +171,7 @@ export default class QuoteList extends Component {
     this.props.openCreateModal();
   }
   render() {
-    const msg = descriptor => formatMsg(this.props.intl, descriptor);
+    const msg = formatMsg(this.props.intl);
     const { quotesList, listFilter, tenantId } = this.props;
     this.dataSource.remotes = quotesList;
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);
@@ -189,9 +189,8 @@ export default class QuoteList extends Component {
         render: (o, record) => {
           if (record.valid) {
             return o;
-          } else {
-            return <span className="mdc-text-grey">{o}</span>;
           }
+          return <span className="mdc-text-grey">{o}</span>;
         },
       }, {
         title: msg('partnerLabel'),
@@ -313,9 +312,8 @@ export default class QuoteList extends Component {
         render: (o) => {
           if (!o) {
             return <Tag color="#ccc">{msg('invalid')}</Tag>;
-          } else {
-            return <Tag color="#87d068">{msg('valid')}</Tag>;
           }
+          return <Tag color="#87d068">{msg('valid')}</Tag>;
         },
       }, {
         title: msg('version'),
@@ -358,23 +356,22 @@ export default class QuoteList extends Component {
                   </PrivilegeCover>
                 </span>
               );
-            } else {
-              return (
-                <span>
-                  <PrivilegeCover module="clearance" feature="quote" action="edit">
-                    <div>
-                      <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
-                      <span className="ant-divider" />
-                      <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteQuote(record.quote_no)}>
-                        <a>{msg('delete')}</a>
-                      </Popconfirm>
-                      <span className="ant-divider" />
-                      <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
-                    </div>
-                  </PrivilegeCover>
-                </span>
-              );
             }
+            return (
+              <span>
+                <PrivilegeCover module="clearance" feature="quote" action="edit">
+                  <div>
+                    <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
+                    <span className="ant-divider" />
+                    <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteQuote(record.quote_no)}>
+                      <a>{msg('delete')}</a>
+                    </Popconfirm>
+                    <span className="ant-divider" />
+                    <a onClick={() => this.handleQuoteView(record)}>{msg('view')}</a>
+                  </div>
+                </PrivilegeCover>
+              </span>
+            );
           } else if (auth === 'read') {
             return (
               <span>
@@ -428,8 +425,13 @@ export default class QuoteList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource}
-                loading={quotesList.loading} scroll={{ x: 1400 }} rowKey="_id"
+              <Table
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={this.dataSource}
+                loading={quotesList.loading}
+                scroll={{ x: 1400 }}
+                rowKey="_id"
               />
             </div>
           </div>

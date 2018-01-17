@@ -10,7 +10,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
 
 const Sider = Layout.Sider;
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 const FormItem = Form.Item;
 
 function MSCheckbox(props) {

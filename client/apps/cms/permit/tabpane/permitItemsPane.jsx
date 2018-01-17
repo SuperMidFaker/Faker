@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
-import { format } from 'client/common/i18n/helpers';
+
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { togglePermitItemModal, loadPermitModels, automaticMatch, toggleItemManageModal } from 'common/reducers/cmsPermit';
 import PermitItemModal from '../modal/permitItemModal';
 import TradeItemsModal from '../modal/tradeItemsModal';
 import ItemManageModal from '../modal/itemManageModal';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(state => ({
@@ -46,7 +45,7 @@ export default class PermitItemsPane extends React.Component {
   componentDidMount() {
     this.props.loadPermitModels(this.context.router.params.id);
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   columns = [{
     dataIndex: 's_no',
     fixed: 'left',

@@ -6,10 +6,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Switch, Button } from 'antd';
 import { showAdvModelModal } from 'common/reducers/cmsExpense';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
 
 @injectIntl
 @connect(
@@ -57,7 +56,7 @@ export default class AdvModelModal extends Component {
       this.setState({ datas });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor);
+  msg = formatMsg(this.props.intl)
   handleChange = (check, record) => {
     record.invoice_en = check; // eslint-disable-line no-param-reassign
     this.forceUpdate();
@@ -84,11 +83,10 @@ export default class AdvModelModal extends Component {
       const view = new Uint8Array(buf);
       for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
       return buf;
-    } else {
-      const buf = new Array(s.length);
-      for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
     }
+    const buf = new Array(s.length);
+    for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+    return buf;
   }
   handleSave = () => {
     const { datas, selectedRowKeys } = this.state;

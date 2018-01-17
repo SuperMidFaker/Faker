@@ -15,7 +15,7 @@ import { loadTable, delTariffById, updateTariffValid, loadFormParams,
   showCreateTariffModal, delTariffByQuoteNo, createTariffByNextVersion } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS, TARIFF_METER_METHODS, GOODS_TYPES, TARIFF_PARTNER_PERMISSION } from 'common/constants';
 import CreateTariffModal from './modals/createTariffModal';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';
@@ -266,9 +266,8 @@ export default class TariffList extends React.Component {
         }
         if (kindIdx !== null) {
           return TARIFF_KINDS[kindIdx].text;
-        } else {
-          return '';
         }
+        return '';
       },
     }, {
       title: this.msg('transModeMeterGoodsType'),
@@ -293,11 +292,10 @@ export default class TariffList extends React.Component {
           return (
             <span className="mdc-text-green">有效</span>
           );
-        } else {
-          return (
-            <span className="mdc-text-red">无效</span>
-          );
         }
+        return (
+          <span className="mdc-text-red">无效</span>
+        );
       },
     }, {
       title: this.msg('effectiveDate'),
@@ -317,7 +315,7 @@ export default class TariffList extends React.Component {
       title: this.msg('publishDate'),
       dataIndex: 'publishDate',
       width: 100,
-      render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+      render: o => (o ? moment(o).format('YYYY.MM.DD') : ''),
     }, {
       title: formatContainerMsg(this.props.intl, 'opColumn'),
       width: 160,
@@ -342,34 +340,32 @@ export default class TariffList extends React.Component {
                 </PrivilegeCover>
               </span>
             );
-          } else {
-            return (
-              <span>
-                <PrivilegeCover module="transport" feature="tariff" action="edit">
-                  <a onClick={() => this.handleChangeValid(record._id, true)}>{this.msg('enable')}</a>
-                </PrivilegeCover>
-                <span className="ant-divider" />
-                <PrivilegeCover module="transport" feature="tariff" action="delete">
-                  <Popconfirm title="确认删除?" onConfirm={() => this.handleDelByQuoteNo(record.quoteNo)} >
-                    <a >删除</a>
-                  </Popconfirm>
-                </PrivilegeCover>
-                <span className="ant-divider" />
-                <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
-                  查看
-                </NavLink>
-              </span>
-            );
           }
-        } else {
           return (
-            <PrivilegeCover module="transport" feature="tariff" action="view">
+            <span>
+              <PrivilegeCover module="transport" feature="tariff" action="edit">
+                <a onClick={() => this.handleChangeValid(record._id, true)}>{this.msg('enable')}</a>
+              </PrivilegeCover>
+              <span className="ant-divider" />
+              <PrivilegeCover module="transport" feature="tariff" action="delete">
+                <Popconfirm title="确认删除?" onConfirm={() => this.handleDelByQuoteNo(record.quoteNo)} >
+                  <a >删除</a>
+                </Popconfirm>
+              </PrivilegeCover>
+              <span className="ant-divider" />
               <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
-                查看
+                  查看
               </NavLink>
-            </PrivilegeCover>
+            </span>
           );
         }
+        return (
+          <PrivilegeCover module="transport" feature="tariff" action="view">
+            <NavLink to={`/transport/billing/tariff/view/${record.quoteNo}/${record.version}`}>
+                查看
+            </NavLink>
+          </PrivilegeCover>
+        );
       },
     }];
     if (this.state.status === 'draft') {
@@ -410,9 +406,8 @@ export default class TariffList extends React.Component {
           }
           if (kindIdx !== null) {
             return TARIFF_KINDS[kindIdx].text;
-          } else {
-            return '';
           }
+          return '';
         },
       }, {
         title: this.msg('transModeMeterGoodsType'),
@@ -441,7 +436,7 @@ export default class TariffList extends React.Component {
         title: this.msg('publishDate'),
         dataIndex: 'publishDate',
         width: 100,
-        render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+        render: o => (o ? moment(o).format('YYYY.MM.DD') : ''),
       }, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 140,
@@ -469,7 +464,7 @@ export default class TariffList extends React.Component {
       }];
     }
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -500,7 +495,11 @@ export default class TariffList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            rowSelection={rowSelection}
+            columns={columns}
+            loading={loading}
             dataSource={this.dataSource}
           />
           <CreateTariffModal />

@@ -6,10 +6,9 @@ import { toggleItemManageModal, loadModelItems, deleteModelItem, loadPermitModel
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
 
 @injectIntl
 @connect(
@@ -43,7 +42,7 @@ export default class ItemManageModal extends Component {
       });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleClose = () => {
     this.props.toggleItemManageModal(false);
   }

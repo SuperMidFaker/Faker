@@ -4,10 +4,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import SearchBox from 'client/components/SearchBox';
 import { closeNewTransfOutModal, loadParams, loadNormalSoRegs,
   loadSoRelDetails, newTransfOutRegBySo } from 'common/reducers/cwmShFtz';
 
-const Search = Input.Search;
+
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -314,7 +315,7 @@ export default class NewTransfOutModal extends Component {
               <Card title="转出明细" bodyStyle={{ padding: 0 }}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search placeholder="海关入库单号" style={{ width: 200 }} onChange={this.handleDetailFilterChange} value={relDetailFilter} />
+                    <SearchBox placeholder="海关入库单号" onSearch={this.handleDetailFilterChange} />
                     <div className={`bulk-actions ${selRelDetailKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{selRelDetailKeys.length}项</h3>
                       {selRelDetailKeys.length !== 0 && <Button onClick={this.handleRelBatchDelete}>批量删除</Button>}

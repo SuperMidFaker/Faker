@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, DatePicker, Layout, Radio, Input, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
+import { Breadcrumb, DatePicker, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
@@ -10,24 +10,24 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import TrimSpan from 'client/components/trimSpan';
-
+import SearchBox from 'client/components/SearchBox';
 import DelegationDockPanel from '../dock/delegationDockPanel';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+
+import { formatMsg } from './message.i18n';
 import RowAction from 'client/components/RowAction';
 import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import Templates from './template/templates';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
-const formatMsg = format(messages);
+
 const { Header, Content, Sider } = Layout;
-const { Search } = Input;
+
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
-const RangePicker = DatePicker.RangePicker;
+const { Option } = Select;
+const { OptGroup } = Select;
+const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -67,7 +67,7 @@ export default class ManifestList extends Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -320,7 +320,7 @@ export default class ManifestList extends Component {
             <QueueAnim type={['bottom', 'up']}>
               <div className="page-body" key="body">
                 <div className="toolbar">
-                  <Search placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} style={{ width: 200 }} />
+                  <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
                   <span />
                   <Select
                     showSearch

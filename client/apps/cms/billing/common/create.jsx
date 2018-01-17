@@ -5,13 +5,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadDispsByChooseModal, loadExpsByDisp, createBilling, updateBillingFees } from 'common/reducers/cmsBilling';
 import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
@@ -78,7 +76,7 @@ export default class CreateBilling extends React.Component {
       this.props.loadExpsByDisp(nextProps.dispIds, this.props.tenantId);
     }
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  msg = formatMsg(this.props.intl)
   handleSave = () => {
     const {
       loginId, tenantId, loginName, type,

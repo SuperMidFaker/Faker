@@ -5,12 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Row, Menu, Col, Card } from 'antd';
 import { saveBaseInfo } from 'common/reducers/cmsDelegationDock';
 import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import { MdIcon } from 'client/components/FontIcon';
-import messages from '../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
@@ -25,7 +22,7 @@ export default class MainInfoCard extends React.Component {
     intl: intlShape.isRequired,
     delegation: PropTypes.object.isRequired,
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleFill = (val, field) => {
     const change = {};
     change[field] = val;

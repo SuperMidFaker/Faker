@@ -6,12 +6,12 @@ import moment from 'moment';
 import { Tag, Button, Modal, Input, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -220,7 +220,7 @@ export default class PutawayDetailsPane extends React.Component {
         loading={this.props.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button onClick={this.handleBatchPutAways} icon="check">
           批量上架确认

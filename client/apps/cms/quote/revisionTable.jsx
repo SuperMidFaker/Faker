@@ -6,10 +6,9 @@ import { routerShape } from 'react-router';
 import { Table } from 'antd';
 import moment from 'moment';
 import { loadQuoteRevisions, restoreQuote } from 'common/reducers/cmsQuote';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from './message.i18n';
+
 
 @injectIntl
 @connect(
@@ -34,12 +33,12 @@ export default class RevisionTable extends React.Component {
   componentDidMount() {
     this.props.loadQuoteRevisions(this.props.quoteNo);
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('publishVersion'),
     width: 100,
     dataIndex: 'version',
-    render: (o, row) => row.status === 'current' ? `v${o}(${this.msg('version')})` : `v${o}`,
+    render: (o, row) => (row.status === 'current' ? `v${o}(${this.msg('version')})` : `v${o}`),
   }, {
     title: this.msg('publishRemark'),
     width: 140,

@@ -8,7 +8,7 @@ import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -121,9 +121,8 @@ export default class WaveList extends React.Component {
             <RowAction onClick={this.handleAllocate} label="出库操作" row={record} />
             <RowAction onClick={this.handleEntryReg} label="出区备案" row={record} />
           </span>);
-        } else {
-          return (<RowAction onClick={this.handleAllocate} icon="form" label="出库操作" row={record} />);
         }
+        return (<RowAction onClick={this.handleAllocate} icon="form" label="出库操作" row={record} />);
       }
     },
   }]
@@ -212,10 +211,17 @@ export default class WaveList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('wavePlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBox placeholder={this.msg('wavePlaceholder')} onSearch={this.handleSearch} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={filters.ownerCode}
-        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={filters.ownerCode}
+        onChange={this.handleOwnerChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
@@ -248,8 +254,16 @@ export default class WaveList extends React.Component {
           </PageHeader.Nav>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading}
-            toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+          <DataTable
+            columns={this.columns}
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            rowKey="id"
+            scroll={{ x: 1400 }}
+            loading={loading}
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
           />
         </Content>
       </QueueAnim>

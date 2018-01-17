@@ -6,9 +6,9 @@ import { Modal, Form, Mention, message, Steps, Button, Row, Col, Input } from 'a
 import { setStepVisible, createGeneratedTemplate, validateTempName } from 'common/reducers/cmsManifest';
 import ImportRuleForm from '../../form/bodyImportRuleForm';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-const formatMsg = format(messages);
+
+import { formatMsg } from '../message.i18n';
+
 
 const FormItem = Form.Item;
 const Step = Steps.Step;
@@ -112,10 +112,9 @@ export default class SaveAsTemplateModal extends React.Component {
           this.props.validateTempName({ name, tenantId: this.props.tenantId }).then((result) => {
             if (result.error) {
               return message.error(result.error.message, 10);
-            } else {
-              current += 1;
-              this.setState({ current });
             }
+            current += 1;
+            this.setState({ current });
           });
         } else {
           current += 1;
@@ -205,7 +204,7 @@ export default class SaveAsTemplateModal extends React.Component {
       }
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form, form: { getFieldDecorator }, visibleStepModal } = this.props;
     const { current, formData } = this.state;

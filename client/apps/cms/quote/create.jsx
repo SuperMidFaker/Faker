@@ -3,15 +3,15 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+
+import { formatMsg } from './message.i18n';
 import { loadEditQuote } from 'common/reducers/cmsQuote';
 import { Tabs, Form, Layout } from 'antd';
 import EditToolbar from './editToolbar';
 import FeesTable from './feesTable';
 import FeesForm from './feesForm';
 
-const formatMsg = format(messages);
+
 const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
 
@@ -32,7 +32,7 @@ export default class QuotingCreate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { form } = this.props;
     return (

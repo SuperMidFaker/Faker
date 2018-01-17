@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Select, DatePicker, Modal } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../message.i18n';
 import { createFilename } from 'client/util/dataTransform';
 
-const formatMsg = format(messages);
+
 const FormItem = Form.Item;
-const Option = Select.Option;
-const RangePicker = DatePicker.RangePicker;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 const endDay = new Date();
 const firstDay = new Date();
 firstDay.setDate(1);
@@ -58,8 +58,12 @@ export default class BillingForm extends React.Component {
     const { form: { getFieldDecorator }, visible } = this.props;
     const { beginDate, endDate } = this.state;
     return (
-      <Modal maskClosable={false} visible={visible} title={this.msg('eptExp')}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        title={this.msg('eptExp')}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form>
           <FormItem

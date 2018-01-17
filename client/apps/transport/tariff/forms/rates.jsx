@@ -5,7 +5,7 @@ import { Card, Row, Col, Button, Upload, Modal, Progress, Switch, Tooltip, Icon 
 import RateSourceTable from './rateSourceTable';
 import RateEndTable from './rateEndTable';
 import { loadRateEnds } from 'common/reducers/transportTariff';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { getEndTableVarColumns } from './commodity';
 import { createFilename } from 'client/util/dataTransform';
 
@@ -102,7 +102,8 @@ export default class TariffRatesForm extends React.Component {
               <Card bodyStyle={{ padding: 0 }}>
                 <div className="toolbar">
                   {(type === 'create' || type === 'edit') && (
-                    <Button icon="plus-circle-o"
+                    <Button
+                      icon="plus-circle-o"
                       onClick={this.handleSourceAdd}
                     >
                     添加
@@ -121,8 +122,10 @@ export default class TariffRatesForm extends React.Component {
                     {getFieldDecorator('accurateMatch', {
                       valuePropName: 'checked',
                       initialValue: formData.accurateMatch,
-})(<Switch disabled={!(type === 'create' || type === 'edit')}
-  checkedChildren="是" unCheckedChildren="否"
+})(<Switch
+  disabled={!(type === 'create' || type === 'edit')}
+  checkedChildren="是"
+  unCheckedChildren="否"
 />)}
                   </div>
                 </div>
@@ -138,9 +141,13 @@ export default class TariffRatesForm extends React.Component {
                   </Button>}
                   {(type === 'create' || type === 'edit') &&
                   <span style={{ marginLeft: 8 }}>
-                    <Upload accept=".xls,.xlsx" action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
-                      data={{ rateId: this.props.rateId }} onChange={this.handleImport}
-                      showUploadList={false} withCredentials
+                    <Upload
+                      accept=".xls,.xlsx"
+                      action={`${API_ROOTS.mongo}v1/transport/tariff/import/ratends`}
+                      data={{ rateId: this.props.rateId }}
+                      onChange={this.handleImport}
+                      showUploadList={false}
+                      withCredentials
                     >
                       <Button icon="upload" type="ghost">导入费率表</Button>
                     </Upload>
@@ -149,7 +156,7 @@ export default class TariffRatesForm extends React.Component {
                     导出费率表
                   </Button>
                   <span style={{ float: 'right', marginRight: 20 }}>
-                    <SearchBar placeholder="目的地" onInputSearch={this.handleSearch} />
+                    <SearchBox placeholder="目的地" onSearch={this.handleSearch} />
                   </span>
                 </div>
                 {
@@ -161,7 +168,10 @@ export default class TariffRatesForm extends React.Component {
           </Row>
         </div>
         <Modal maskClosable={false} closable={false} footer={[]} visible={inUpload}>
-          <Progress type="circle" percent={uploadPercent} status={uploadStatus}
+          <Progress
+            type="circle"
+            percent={uploadPercent}
+            status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}
           />
         </Modal>

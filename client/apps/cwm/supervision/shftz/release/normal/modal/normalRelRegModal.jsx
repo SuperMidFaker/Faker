@@ -5,12 +5,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
+import SearchBox from 'client/components/SearchBox';
 import messages from '../../../message.i18n';
 import { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails,
   loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
-const Search = Input.Search;
+
 const Option = Select.Option;
 
 @injectIntl
@@ -407,29 +408,48 @@ export default class NormalRelRegModal extends Component {
       if (relDetailFilter) {
         const reg = new RegExp(relDetailFilter);
         return reg.test(item.ftz_ent_no);
-      } else {
-        return true;
       }
+      return true;
     });
     const srcSearchTool = [];
     if (srcType === 'so_no') {
-      srcSearchTool.push(<Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户单号"
-        onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+      srcSearchTool.push(<Input
+        key="ftz_ent_no"
+        value={srcFilter.bill_no}
+        placeholder="客户单号"
+        onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)}
+        style={{ width: 200 }}
       />);
     } else if (srcType === 'ftz_ent_no') {
-      srcSearchTool.push(<Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="海关入库单号"
-        onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+      srcSearchTool.push(<Input
+        key="ftz_ent_no"
+        value={srcFilter.bill_no}
+        placeholder="海关入库单号"
+        onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)}
+        style={{ width: 200 }}
       />);
     } else if (srcType === 'ftz_ent_stock') {
       srcSearchTool.push(
-        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="海关入库单号"
-          onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+        <Input
+          key="ftz_ent_no"
+          value={srcFilter.bill_no}
+          placeholder="海关入库单号"
+          onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)}
+          style={{ width: 200 }}
         />,
-        <Input key="product_no" value={srcFilter.product_no} placeholder="货号"
-          onChange={ev => this.handleSrcFilterChange('product_no', ev.target.value)} style={{ width: 200, marginLeft: 8 }}
+        <Input
+          key="product_no"
+          value={srcFilter.product_no}
+          placeholder="货号"
+          onChange={ev => this.handleSrcFilterChange('product_no', ev.target.value)}
+          style={{ width: 200, marginLeft: 8 }}
         />,
-        <Input key="name" value={srcFilter.name} placeholder="品名"
-          onChange={ev => this.handleSrcFilterChange('name', ev.target.value)} style={{ width: 200, marginLeft: 8 }}
+        <Input
+          key="name"
+          value={srcFilter.name}
+          placeholder="品名"
+          onChange={ev => this.handleSrcFilterChange('name', ev.target.value)}
+          style={{ width: 200, marginLeft: 8 }}
         />,
       );
     }
@@ -447,31 +467,46 @@ export default class NormalRelRegModal extends Component {
       </div>
     </div>);
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        footer={null} visible={this.props.visible}
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+        visible={this.props.visible}
       >
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title={<div>
-                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200, fontSize: 16 }} value={ownerCusCode}>
-                  {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
-                </Select>
-                <Select size="small" value={srcType} placeholder="业务单据类型" style={{ width: 160, fontSize: 16, marginLeft: 16 }}
-                  onSelect={this.handleSrcTypeChange}
-                >
-                  <Option key="so_no">出货订单</Option>
-                  <Option key="ftz_ent_no">海关入库单</Option>
-                  <Option key="ftz_ent_stock">保税库存</Option>
-                </Select>
-              </div>} bodyStyle={{ padding: 0 }}
+              <Card
+                title={<div>
+                  <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200, fontSize: 16 }} value={ownerCusCode}>
+                    {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                  </Select>
+                  <Select
+                    size="small"
+                    value={srcType}
+                    placeholder="业务单据类型"
+                    style={{ width: 160, fontSize: 16, marginLeft: 16 }}
+                    onSelect={this.handleSrcTypeChange}
+                  >
+                    <Option key="so_no">出货订单</Option>
+                    <Option key="ftz_ent_no">海关入库单</Option>
+                    <Option key="ftz_ent_stock">保税库存</Option>
+                  </Select>
+                </div>}
+                bodyStyle={{ padding: 0 }}
               >
                 <div className="table-panel table-fixed-layout">
                   {srcSearchTool.length > 0 && <div className="toolbar">
                     {srcSearchTool}
                     <Button icon="search" onClick={this.handleNormalSrcQuery} style={{ marginLeft: 8 }} />
                   </div>}
-                  <Table columns={normalRegColumns} dataSource={this.state.normalSources} rowKey="id"
+                  <Table
+                    columns={normalRegColumns}
+                    dataSource={this.state.normalSources}
+                    rowKey="id"
                     scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
@@ -481,13 +516,17 @@ export default class NormalRelRegModal extends Component {
               <Card title="出库备案明细" bodyStyle={{ padding: 0 }}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search placeholder="海关入库单号" style={{ width: 200 }} onChange={this.handleDetailFilterChange} value={relDetailFilter} />
+                    <SearchBox placeholder="海关入库单号" onSearch={this.handleDetailFilterChange} />
                     <div className={`bulk-actions ${selRelDetailKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{selRelDetailKeys.length}项</h3>
                       {selRelDetailKeys.length !== 0 && <Button onClick={this.handleRelBatchDelete}>批量删除</Button>}
                     </div>
                   </div>
-                  <Table columns={this.relDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={relDetailRowSelection}
+                  <Table
+                    columns={this.relDetailColumns}
+                    dataSource={dataSource}
+                    rowKey="id"
+                    rowSelection={relDetailRowSelection}
                     scroll={{ x: this.relDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                   />
                 </div>

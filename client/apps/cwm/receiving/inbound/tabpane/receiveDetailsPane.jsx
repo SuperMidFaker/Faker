@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Input, Tag, Tooltip } from 'antd';
+import { Modal, Button, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import SKUPopover from '../../../common/popover/skuPopover';
 import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
@@ -16,7 +17,6 @@ import { openReceiveModal, updateInbProductVol, loadInboundProductDetails, showB
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
 import moment from 'moment';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -250,7 +250,7 @@ export default class ReceiveDetailsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {inboundHead.rec_mode === 'manual' &&
             <Button onClick={this.handleBatchProductReceive}>

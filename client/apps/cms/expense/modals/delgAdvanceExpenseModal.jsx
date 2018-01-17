@@ -8,7 +8,7 @@ import { loadCurrencies, closeAdvanceFeeModal,
 import { CMS_DUTY_TAXTYPE } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
-const Option = Select.Option;
+const { Option } = Select;
 const FormItem = Form.Item;
 
 @injectIntl
@@ -129,9 +129,8 @@ export default class DelgAdvanceExpenseModal extends React.Component {
         return '';
       } else if (this.state.editFees[row.code]) {
         return <span className="mdc-text-grey">{o.toFixed(2)}</span>;
-      } else {
-        return o.toFixed(2);
       }
+      return o.toFixed(2);
     },
   }, {
     title: this.msg('totalValue'),
@@ -143,9 +142,8 @@ export default class DelgAdvanceExpenseModal extends React.Component {
         return '';
       } else if (this.state.editFees[row.code]) {
         return <span className="mdc-text-grey">{o.toFixed(2)}</span>;
-      } else {
-        return o.toFixed(2);
       }
+      return o.toFixed(2);
     },
   }]
   handleFeeValChange = (row, value) => {
@@ -217,8 +215,12 @@ export default class DelgAdvanceExpenseModal extends React.Component {
       advanceParties, advDirection, visible, delgNo, fees,
     } = this.props;
     return (
-      <Modal maskClosable={false} title={`${delgNo} ${advDirection === 'send' ? this.msg('cushCost') : this.msg('cushBill')}`}
-        onOk={this.handleOk} onCancel={this.handleCancel} visible={visible}
+      <Modal
+        maskClosable={false}
+        title={`${delgNo} ${advDirection === 'send' ? this.msg('cushCost') : this.msg('cushBill')}`}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+        visible={visible}
       >
         {
           advanceParties.map((ap) => {
@@ -236,8 +238,14 @@ export default class DelgAdvanceExpenseModal extends React.Component {
               titleLabel = '客户';
             }
             return titleLabel ? (
-              <Table columns={this.columns} dataSource={feeData} pagination={false} title={() => `${titleLabel}: ${ap.name}`}
-                bordered rowKey="code" style={{ marginBottom: 10 }}
+              <Table
+                columns={this.columns}
+                dataSource={feeData}
+                pagination={false}
+                title={() => `${titleLabel}: ${ap.name}`}
+                bordered
+                rowKey="code"
+                style={{ marginBottom: 10 }}
               />) : null;
           })
         }

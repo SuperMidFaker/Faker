@@ -5,15 +5,14 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, DatePicker, Form, Icon, Input, Select, Switch, Radio, Row, Upload, Col, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+
 import FormPane from 'client/components/FormPane';
 import { Logixon } from 'client/components/FontIcon';
 import { loadPermit } from 'common/reducers/cmsPermit';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
 
-const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
@@ -66,7 +65,7 @@ export default class PermitHeadPane extends Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleCategoryChange = (e) => {
     this.setState({
       permitCategory: e.target.value,

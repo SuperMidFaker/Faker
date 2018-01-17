@@ -5,14 +5,14 @@ import { Breadcrumb, Card, Form, Tabs, Row, Col, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
-import { format } from 'client/common/i18n/helpers';
+
 import { loadManualHead } from 'common/reducers/cmsTradeManual';
 import { intlShape, injectIntl } from 'react-intl';
 import ImpGoodsPane from './tabpane/impGoodsPane';
 import ExpGoodsPane from './tabpane/expGoodsPane';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -51,7 +51,7 @@ export default class ManualDetail extends Component {
       }
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { manualHead } = this.state;
     const { customs } = this.props;

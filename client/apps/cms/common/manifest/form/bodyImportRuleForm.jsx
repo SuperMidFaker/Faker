@@ -4,16 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Radio, Mention, Row, Col } from 'antd';
 import { closeRuleModel } from 'common/reducers/cmsManifest';
-import { format } from 'client/common/i18n/helpers';
 import { SOURCE_CHOOSE } from 'common/constants';
-import messages from '../message.i18n';
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const Nav = Mention.Nav;
-
+const { Nav } = Mention;
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
@@ -60,7 +57,7 @@ export default class ImportRuleForm extends React.Component {
       </Nav>));
     this.setState({ suggestions });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, formData } = this.props;
     return (
@@ -117,8 +114,13 @@ export default class ImportRuleForm extends React.Component {
             <FormItem label="规格型号" labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} >
               {getFieldDecorator('rule_element', {
                 initialValue: Mention.toContentState(formData.rule_element),
-              })(<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch}
-                placeholder="示例(固定值+备注)：String + $remark" multiLines style={{ width: '100%', height: '100%' }}
+              })(<Mention
+                suggestions={this.state.suggestions}
+                prefix="$"
+                onSearchChange={this.handleSearch}
+                placeholder="示例(固定值+备注)：String + $remark"
+                multiLines
+                style={{ width: '100%', height: '100%' }}
               />)}
             </FormItem>
           </Col>

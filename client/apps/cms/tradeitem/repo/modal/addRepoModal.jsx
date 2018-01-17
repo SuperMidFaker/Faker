@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Select, message } from 'antd';
 import { createRepo, closeAddModal, loadRepos } from 'common/reducers/cmsTradeitem';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../../message.i18n';
+
+
 const { Option } = Select;
 const FormItem = Form.Item;
 
@@ -65,7 +65,7 @@ export default class AddTradeRepoModal extends React.Component {
   handleSelectChange = (value) => {
     this.setState({ customerid: value });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const {
       form: { getFieldDecorator }, visibleAddModal, customers, repos,

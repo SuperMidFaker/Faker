@@ -7,10 +7,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { loadTradeItemHistory, toggleHistoryItemsDecl } from 'common/reducers/cmsTradeitem';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../../../message.i18n';
+
 
 @injectIntl
 @connect(
@@ -33,7 +32,7 @@ export default class ItemHistoryPane extends React.Component {
     const { repoId, copProdNo } = this.props;
     this.props.loadTradeItemHistory(repoId, copProdNo);
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     key: 'sno',
     width: 45,

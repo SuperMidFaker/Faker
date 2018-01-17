@@ -3,24 +3,24 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Input, Icon, Layout, Radio, Tag } from 'antd';
-import { format } from 'client/common/i18n/helpers';
+import { Breadcrumb, Button, Icon, Layout, Radio, Tag } from 'antd';
+
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
 import { Logixon } from 'client/components/FontIcon';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadPermits, loadCertParams } from 'common/reducers/cmsPermit';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CIQ_LICENCE_TYPE } from 'common/constants';
 
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const formatMsg = format(messages);
+
 const { Content } = Layout;
-const { Search } = Input;
 
 
 @injectIntl
@@ -61,7 +61,7 @@ export default class PermitList extends Component {
     );
     this.props.loadCertParams();
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleDetail = (row) => {
     this.context.router.push(`/clearance/permit/${row.id}`);
   }
@@ -176,10 +176,9 @@ export default class PermitList extends Component {
       },
     };
     const toolbarActions = (<span>
-      <Search
+      <SearchBox
         placeholder={this.msg('permitNo')}
         onSearch={this.handleSearch}
-        style={{ width: 200 }}
       />
     </span>);
     const dataSource = new DataTable.DataSource({

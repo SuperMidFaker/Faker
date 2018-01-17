@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { toggleBillTempModal, createBillTemplate } from 'common/reducers/cmsManifest';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 
 @connect(state => ({
@@ -88,7 +88,9 @@ export default class AddTemplateModal extends React.Component {
 
               style={{ width: '100%' }}
             >
-              {customers.map(data => (<Option key={data.id} value={data.id}
+              {customers.map(data => (<Option
+                key={data.id}
+                value={data.id}
                 search={`${data.partner_code}${data.name}`}
               >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
               </Option>))}

@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import DataPane from 'client/components/DataPane';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import DataPane from 'client/components/DataPane';
+import { formatMsg } from '../message.i18n';
+
 
 @injectIntl
 @connect(state => ({
@@ -34,7 +33,7 @@ export default class PermitUsagePane extends React.Component {
 
     };
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   columns = [{
     key: 'sno',
     width: 45,

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, message, Mention, Collapse, Tabs } from 'antd';
 import { saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
+
 import InfoItem from 'client/components/InfoItem';
 import ButtonToggle from 'client/components/ButtonToggle';
 import MagicCard from 'client/components/MagicCard';
@@ -12,9 +12,9 @@ import HeadRulesPane from './tabpane/headRulesPane';
 import ImportRulesPane from './tabpane/importRulesPane';
 import MergeSplitRulesPane from './tabpane/mergeSplitRulesPane';
 import TemplateUsersPane from './tabpane/templateUsersPane';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
+
 const { Header, Content, Sider } = Layout;
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
@@ -135,7 +135,7 @@ export default class ManifestTemplate extends Component {
       this.setState({ changed: true });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = () => {
     const { template, fieldInits } = this.props;
     let element = this.props.form.getFieldValue('rule_element') || fieldInits.rule_element;

@@ -6,14 +6,14 @@ import { Card, DatePicker, Radio, Select } from 'antd';
 import moment from 'moment';
 import { Link } from 'react-router';
 import currencyFormatter from 'currency-formatter';
-import { format } from 'client/common/i18n/helpers';
+
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadCmsStatistics } from 'common/reducers/cmsDashboard';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
+
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
@@ -148,7 +148,7 @@ export default class StatsCard extends Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const {
       startDate, endDate, total, sumImport, sumExport, processing,

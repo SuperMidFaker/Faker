@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Avatar, Breadcrumb, DatePicker, Icon, Input, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Avatar, Breadcrumb, DatePicker, Icon, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
@@ -36,7 +37,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const { Search } = Input;
+
 
 @injectIntl
 @connect(
@@ -596,12 +597,10 @@ export default class CustomsList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <Search
-        style={{ width: 250 }}
+      <SearchBox
+        width={250}
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
-        onChange={this.handleSearchChange}
-        value={filterName}
       />
       <Select
         showSearch

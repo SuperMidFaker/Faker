@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
+const messages = defineMessages({
   permit: {
     id: 'cms.permit',
     defaultMessage: '涉证资料',
@@ -210,3 +211,6 @@ export default defineMessages({
     defaultMessage: '序号',
   },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

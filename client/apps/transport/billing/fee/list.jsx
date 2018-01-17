@@ -17,7 +17,7 @@ import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import ActualDate from '../../common/actualDate';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
@@ -221,9 +221,8 @@ export default class FeesList extends React.Component {
                 <Icon type="edit" />
               </a>
             );
-          } else {
-            return '';
           }
+          return '';
         },
       }, {
         title: '特殊费用收入',
@@ -239,9 +238,8 @@ export default class FeesList extends React.Component {
                 </SpecialChargePopover>
               </span>
             );
-          } else {
-            return '';
           }
+          return '';
         },
       }, {
         title: '收入合计',
@@ -320,9 +318,8 @@ export default class FeesList extends React.Component {
                 <Icon type="edit" />
               </a>
             );
-          } else {
-            return '';
           }
+          return '';
         },
       }, {
         title: '特殊费用成本',
@@ -338,9 +335,8 @@ export default class FeesList extends React.Component {
                 </SpecialChargePopover>
               </span>
             );
-          } else {
-            return '';
           }
+          return '';
         },
       }, {
         title: '成本合计',
@@ -436,7 +432,7 @@ export default class FeesList extends React.Component {
       title: '接单时间',
       dataIndex: 'acpt_time',
       width: 100,
-      render: (o, record) => record.acpt_time ? moment(record.acpt_time).format('YYYY.MM.DD') : '',
+      render: (o, record) => (record.acpt_time ? moment(record.acpt_time).format('YYYY.MM.DD') : ''),
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
@@ -503,10 +499,9 @@ export default class FeesList extends React.Component {
     };
     const { startDate, endDate, filters } = this.props.fees;
     const toolbarActions = (<span>
-      <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
-        value={this.props.fees.searchValue}
-      />
-      <RangePicker value={[moment(startDate), moment(endDate)]}
+      <SearchBox placeholder="输入运单号搜索" onSearch={this.handleSearchInput} />
+      <RangePicker
+        value={[moment(startDate), moment(endDate)]}
         onChange={this.onDateChange}
       />
     </span>);
@@ -532,9 +527,16 @@ export default class FeesList extends React.Component {
           </div>
         </Header>
         <Content className="main-content">
-          <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection}
-            dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: tableWidth }} loading={loading}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleSelectionClear}
+          <DataTable
+            toolbarActions={toolbarActions}
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            columns={columns}
+            rowKey="shipmt_no"
+            scroll={{ x: tableWidth }}
+            loading={loading}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleSelectionClear}
           />
         </Content>
         <ShipmentDockPanel />

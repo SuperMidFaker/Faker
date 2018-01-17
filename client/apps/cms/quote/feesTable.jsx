@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { format } from 'client/common/i18n/helpers';
+
 import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote } from 'common/reducers/cmsQuote';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 import RowAction from 'client/components/RowAction';
 import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
 import { Select, Table, Button, Input, Switch, message, Mention } from 'antd';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+
+const { Option } = Select;
 const Nav = Mention.Nav;
 
 function getRowKey(row) {
@@ -31,10 +31,9 @@ function ColumnInput(props) {
   }
   if (record.fee_style === 'advance' && field !== 'fee_name') {
     return <span />;
-  } else {
-    return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
-      : <span style={style}>{record[field] || ''}</span>;
   }
+  return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
+    : <span style={style}>{record[field] || ''}</span>;
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
@@ -105,10 +104,9 @@ function ColumnSwitch(props) {
   }
   if (inEdit) {
     return <Switch size="small" disabled={(!record.enabled && field !== 'enabled')} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
-  } else {
-    const val = record[field] ? '是' : '否';
-    return <span style={style}>{val}</span>;
   }
+  const val = record[field] ? '是' : '否';
+  return <span style={style}>{val}</span>;
 }
 ColumnSwitch.propTypes = {
   inEdit: PropTypes.bool,
@@ -136,15 +134,14 @@ function ColumnSelect(props) {
         }
       </Select>
     );
-  } else {
-    let style = {};
-    if (!record.enabled) {
-      style = { color: '#CCCCCC' };
-    }
-    const foundOpts = options.filter(opt => opt.value === record[field]);
-    const label = foundOpts.length === 1 ? foundOpts[0].text : '';
-    return <span style={style}>{label}</span>;
   }
+  let style = {};
+  if (!record.enabled) {
+    style = { color: '#CCCCCC' };
+  }
+  const foundOpts = options.filter(opt => opt.value === record[field]);
+  const label = foundOpts.length === 1 ? foundOpts[0].text : '';
+  return <span style={style}>{label}</span>;
 }
 
 ColumnSelect.proptypes = {
@@ -421,7 +418,7 @@ export default class FeesTable extends Component {
   }
   renderToolbar = () => {
     const { action } = this.props;
-    const msg = key => formatMsg(this.props.intl, key);
+    const msg = formatMsg(this.props.intl);
     if (action === 'edit') {
       return (
         <div className="toolbar">
@@ -444,7 +441,7 @@ export default class FeesTable extends Component {
     const {
       editIndex, addedit, dataSource, editable, batchSaved,
     } = this.state;
-    const msg = key => formatMsg(this.props.intl, key);
+    const msg = formatMsg(this.props.intl);
     const columns = [
       {
         title: msg('serialNo'),
@@ -474,8 +471,12 @@ export default class FeesTable extends Component {
         ],
         width: 150,
         render: (o, record, index) =>
-          (<ColumnSelect field="category" inEdit={editable || (index === editIndex)} record={record}
-            onChange={this.handleEditChange} options={FEE_CATEGORY}
+          (<ColumnSelect
+            field="category"
+            inEdit={editable || (index === editIndex)}
+            record={record}
+            onChange={this.handleEditChange}
+            options={FEE_CATEGORY}
           />),
       }, {
         title: msg('feeStyle'),
@@ -486,16 +487,24 @@ export default class FeesTable extends Component {
         ],
         width: 150,
         render: (o, record, index) =>
-          (<ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
-            onChange={this.handleEditChange} options={FEE_STYLE}
+          (<ColumnSelect
+            field="fee_style"
+            inEdit={editable || (index === editIndex)}
+            record={record}
+            onChange={this.handleEditChange}
+            options={FEE_STYLE}
           />),
       }, {
         title: msg('chargeParam'),
         dataIndex: 'charge_param',
         width: 150,
         render: (o, record, index) =>
-          (<ColumnSelect field="charge_param" inEdit={editable || (index === editIndex)} record={record}
-            onChange={this.handleEditChange} options={CHARGE_PARAM}
+          (<ColumnSelect
+            field="charge_param"
+            inEdit={editable || (index === editIndex)}
+            record={record}
+            onChange={this.handleEditChange}
+            options={CHARGE_PARAM}
           />),
       }, {
         title: msg('formulaFactor'),
@@ -504,12 +513,18 @@ export default class FeesTable extends Component {
         render: (o, record, index) => {
           const inEdit = editable || (index === editIndex);
           if (record.charge_param === '$formula' && inEdit) {
-            return (<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch} defaultValue={Mention.toContentState(o)}
-              placeholder="$公式" onChange={editorState => this.handleonChange(record, editorState)} multiLines style={{ width: '100%', height: '100%' }}
+            return (<Mention
+              suggestions={this.state.suggestions}
+              prefix="$"
+              onSearchChange={this.handleSearch}
+              defaultValue={Mention.toContentState(o)}
+              placeholder="$公式"
+              onChange={editorState => this.handleonChange(record, editorState)}
+              multiLines
+              style={{ width: '100%', height: '100%' }}
             />);
-          } else {
-            return <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />;
           }
+          return <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />;
         },
       }, {
         title: (
@@ -590,8 +605,14 @@ export default class FeesTable extends Component {
     return (
       <div>
         {this.renderToolbar()}
-        <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
-          loading={quoteData.loading} onChange={this.handleTableChange} scroll={{ y: 450 }}
+        <Table
+          pagination={false}
+          rowKey={getRowKey}
+          columns={columns}
+          dataSource={dataSource}
+          loading={quoteData.loading}
+          onChange={this.handleTableChange}
+          scroll={{ y: 450 }}
           footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
         />
       </div>

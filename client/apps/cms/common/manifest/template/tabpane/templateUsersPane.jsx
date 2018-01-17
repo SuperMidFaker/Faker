@@ -5,14 +5,14 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Icon, Table, Select, message } from 'antd';
 import { loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser } from 'common/reducers/cmsManifest';
 import { loadPartners } from 'common/reducers/partner';
-import { format } from 'client/common/i18n/helpers';
-import messages from 'client/apps/cms/message.i18n';
+
+import { formatMsg } from 'client/apps/cms/message.i18n';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
-const formatMsg = format(messages);
-const Option = Select.Option;
+
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -54,7 +54,7 @@ export default class TemplateUsersPane extends React.Component {
       datas: nextProps.templateUsers,
     });
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleAdd = () => {
     const addOne = {
       template_id: this.props.template.id,
@@ -118,9 +118,8 @@ export default class TemplateUsersPane extends React.Component {
               }
             </Select>
           );
-        } else {
-          return record.tenant_name;
         }
+        return record.tenant_name;
       },
     }];
     if (operation === 'edit') {
@@ -129,9 +128,9 @@ export default class TemplateUsersPane extends React.Component {
         render: (o, record, index) => {
           if (record.tenant_id === this.props.tenantId) {
             return '';
-          } else {
-            return (
-              <div className="editable-row-operations">{
+          }
+          return (
+            <div className="editable-row-operations">{
                 (record.id) ?
                   <span>
                     <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>
@@ -143,13 +142,17 @@ export default class TemplateUsersPane extends React.Component {
                     <a onClick={() => this.editDone(index)}><Icon type="close" /></a>
                   </span>
                 }
-              </div>);
-          }
+            </div>);
         },
       });
     }
     return (
-      <Table size="middle" showHeader={false} pagination={false} columns={columns} dataSource={this.state.datas}
+      <Table
+        size="middle"
+        showHeader={false}
+        pagination={false}
+        columns={columns}
+        dataSource={this.state.datas}
         footer={operation === 'edit' ? () => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} /> : null}
       />
     );

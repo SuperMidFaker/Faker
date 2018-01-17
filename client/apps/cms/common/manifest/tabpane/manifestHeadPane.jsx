@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Card, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadSearchedParam, resetBillHead } from 'common/reducers/cmsManifest';
-import { format } from 'client/common/i18n/helpers';
+
 import FormPane from 'client/components/FormPane';
 import FormInput from '../../form/formInput';
 import FormDatePicker from '../../form/formDatePicker';
@@ -14,9 +14,8 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 
 const CODE_AS_STATE = {
   trade_co: 'trades',
@@ -50,7 +49,7 @@ export default class ManifestHeadPane extends React.Component {
   componentDidMount() {
     // document.addEventListener('keydown', this.handleKeyDown);
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleKeyDown = (event) => {
     if (event.keyCode === 13) {
       event.stopPropagation();

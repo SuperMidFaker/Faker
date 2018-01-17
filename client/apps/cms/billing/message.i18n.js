@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
+const messages = defineMessages({
   billing: {
     id: 'cms.billing',
     defaultMessage: '账务中心',
@@ -182,3 +183,6 @@ export default defineMessages({
     defaultMessage: '操作',
   },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

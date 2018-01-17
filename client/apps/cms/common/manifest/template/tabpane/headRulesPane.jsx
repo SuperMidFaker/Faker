@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Row, Col, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadSearchedParam } from 'common/reducers/cmsManifest';
-import { format } from 'client/common/i18n/helpers';
+
 import FormPane from 'client/components/FormPane';
 import FormInput from '../../../form/formInput';
 import {
@@ -13,9 +13,8 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../../form/headFormItems';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 
 const CODE_AS_STATE = {
   trade_co: 'trades',
@@ -45,7 +44,7 @@ export default class HeadRulesPane extends React.Component {
     loadSearchedParam: PropTypes.func.isRequired,
     template: PropTypes.object.isRequired,
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleSheetSave = (ev) => {
     ev.stopPropagation();
     ev.preventDefault();

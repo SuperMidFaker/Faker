@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Avatar, Badge, Breadcrumb, Button, DatePicker, Layout, Input, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
+import { Avatar, Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import UserAvatar from 'client/components/UserAvatar';
+import SearchBox from 'client/components/SearchBox';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE,
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { format } from 'client/common/i18n/helpers';
+
 import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { Logixon, MdIcon } from 'client/components/FontIcon';
@@ -23,19 +24,19 @@ import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, d
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const { Search } = Input;
+
 
 @injectIntl
 @connect(
@@ -140,7 +141,7 @@ export default class DelegationList extends Component {
       JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}'), ...filters });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: <Logixon type="dan" />,
     dataIndex: 'order_rel_no',
@@ -478,12 +479,10 @@ export default class DelegationList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <Search
-        style={{ width: 250 }}
+      <SearchBox
+        width={250}
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
-        onChange={this.handleSearchChange}
-        value={filterName}
       />
       <Select
         showSearch

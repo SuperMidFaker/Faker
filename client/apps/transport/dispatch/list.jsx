@@ -25,7 +25,7 @@ import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_VEHICLE_CONNECT, TRANS_MODE_INDICATOR } from 'common/constants';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import messages from './message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
@@ -1030,7 +1030,7 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} />
+      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <span />
       <CustomerSelect onChange={this.handleCustomerChange} />
       <span />

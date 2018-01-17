@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Input } from 'antd';
+import { Button } from 'antd';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 import { CWM_SO_TYPES } from 'common/constants';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -89,12 +89,17 @@ export default class OrderDetailsPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={this.props.waveOrders} rowKey="so_no" loading={this.state.loading}
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={this.props.waveOrders}
+        rowKey="so_no"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="SO编号" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="SO编号" onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button onClick={this.handleRemoveOrders} icon="close">
               移除订单

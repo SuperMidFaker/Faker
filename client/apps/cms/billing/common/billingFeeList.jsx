@@ -5,12 +5,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/cmsBilling';
 import TrimSpan from 'client/components/trimSpan';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
@@ -53,7 +51,7 @@ export default class BillingFeeList extends React.Component {
   state = {
     changed: false,
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  msg = formatMsg(this.props.intl)
   handleAccept = () => {
     const {
       loginId, tenantId, loginName, type, billing,

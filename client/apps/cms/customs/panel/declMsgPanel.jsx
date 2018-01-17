@@ -9,9 +9,10 @@ import RowAction from 'client/components/RowAction';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
+import SearchBox from 'client/components/SearchBox';
 import { formatMsg } from '../message.i18n';
 
-const { Search } = Input;
+
 const { TabPane } = Tabs;
 
 @injectIntl
@@ -203,10 +204,7 @@ export default class DeclMsgPanel extends React.Component {
             scrollOffset="240"
             rowkey="sent_file"
             toolbarActions={
-              <Search
-                style={{ width: 200 }}
-                value={this.state.searchText}
-                onChange={this.searchSend}
+              <SearchBox
                 onSearch={this.handleSearchSend}
               />
               }
@@ -220,10 +218,7 @@ export default class DeclMsgPanel extends React.Component {
             scrollOffset="240"
             rowkey="return_file"
             toolbarActions={
-              <Search
-                style={{ width: 200 }}
-                value={this.state.recvText}
-                onChange={this.searchRecv}
+              <SearchBox
                 onSearch={this.handleSearchRecv}
               />
               }

@@ -8,7 +8,7 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvInboundShipments';
 import Table from 'client/components/remoteAntTable';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 // import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -164,9 +164,8 @@ export default class InboundShipmentsList extends React.Component {
             <Progress percent={100} strokeWidth={5} showInfo={false} />
           </div>
         );
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     title: this.msg('originCountry'),
@@ -189,45 +188,44 @@ export default class InboundShipmentsList extends React.Component {
     render: (o) => {
       if (o === 'AIR') {
         return <i className="zmdi zmdi-airplane zmdi-hc-2x" />;
-      } else {
-        return <i className="zmdi zmdi-boat zmdi-hc-2x" />;
       }
+      return <i className="zmdi zmdi-boat zmdi-hc-2x" />;
     },
   }, {
     title: this.msg('etd'),
     width: 100,
     dataIndex: 'etd_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    render: o => (o ? moment(o).format('YYYY/MM/DD') : ''),
   }, {
     title: this.msg('atd'),
     width: 100,
     dataIndex: 'atd_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    render: o => (o ? moment(o).format('YYYY/MM/DD') : ''),
   }, {
     title: this.msg('eta'),
     width: 100,
     dataIndex: 'eta_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    render: o => (o ? moment(o).format('YYYY/MM/DD') : ''),
   }, {
     title: this.msg('ata'),
     width: 100,
     dataIndex: 'ata_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    render: o => (o ? moment(o).format('YYYY/MM/DD') : ''),
   }, {
     title: this.msg('customsCleared'),
     width: 100,
     dataIndex: 'decl_finished_time',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    render: o => (o ? moment(o).format('YYYY/MM/DD') : ''),
   }, {
     title: this.msg('etaDelivery'),
     width: 100,
     dataIndex: 'delivery_eta',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    render: o => (o ? moment(o).format('YYYY/MM/DD') : ''),
   }, {
     title: this.msg('ataDelivery'),
     width: 100,
     dataIndex: 'delivery_ata',
-    render: o => o ? moment(o).format('YYYY/MM/DD') : '',
+    render: o => (o ? moment(o).format('YYYY/MM/DD') : ''),
   }, {
     title: this.msg('opColumn'),
     width: 100,
@@ -379,9 +377,13 @@ export default class InboundShipmentsList extends React.Component {
             <RadioButton value="inland"><i className="zmdi zmdi-truck" /></RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
-            <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
-              data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
-              showUploadList={false} withCredentials
+            <Upload
+              accept=".xls,.xlsx"
+              action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
+              data={{ tenantId: this.props.tenantId }}
+              onChange={this.handleImport}
+              showUploadList={false}
+              withCredentials
             >
               <Button >
                 {this.msg('importShipments')}
@@ -397,13 +399,18 @@ export default class InboundShipmentsList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+              <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
             </div>
             <div className="panel-body table-panel table-fixed-layout expandable">
-              <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
-                expandedRowKeys={this.state.expandedKeys} rowKey="id"
+              <Table
+                columns={this.columns}
+                dataSource={this.dataSource}
+                loading={inboundlist.loading}
+                expandedRowKeys={this.state.expandedKeys}
+                rowKey="id"
                 expandedRowRender={this.handleExpandDetail}
-                scroll={{ x: 1420 }} onExpandedRowsChange={this.handleExpandedChange}
+                scroll={{ x: 1420 }}
+                onExpandedRowsChange={this.handleExpandedChange}
               />
             </div>
           </div>
@@ -411,7 +418,10 @@ export default class InboundShipmentsList extends React.Component {
           <CreateModal />
         </Content>
         <Modal maskClosable={false} closable={false} footer={[]} visible={inUpload}>
-          <Progress type="circle" percent={uploadPercent} status={uploadStatus}
+          <Progress
+            type="circle"
+            percent={uploadPercent}
+            status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}
           />
         </Modal>

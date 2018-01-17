@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import Summary from 'client/components/Summary';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -211,9 +211,14 @@ export default class FeeSummaryList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
-      <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
+      <Select
+        showSearch
+        placeholder="结算对象"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       />
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
@@ -259,10 +264,17 @@ export default class FeeSummaryList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="asn_no" loading={loading}
-            locale={{ emptyText: '当前没有待结算的费用' }} total={totCol}
+          <DataTable
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={mockData}
+            rowSelection={rowSelection}
+            rowKey="asn_no"
+            loading={loading}
+            locale={{ emptyText: '当前没有待结算的费用' }}
+            total={totCol}
           />
         </Content>
       </QueueAnim>

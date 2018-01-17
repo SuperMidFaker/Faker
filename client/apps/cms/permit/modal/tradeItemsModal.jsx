@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import { Modal, Input } from 'antd';
+import { Modal } from 'antd';
 import { connect } from 'react-redux';
 import { toggleTradeItemModal, loadTradeItems, addPermitTradeItem, loadPermitModels } from 'common/reducers/cmsPermit';
 import DataTable from 'client/components/DataTable';
+import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
-const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -35,7 +33,7 @@ export default class PermitItemModal extends Component {
     selectedRowKeys: [],
     selectedRows: [],
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('no'),
     width: 45,
@@ -133,10 +131,7 @@ export default class PermitItemModal extends Component {
           loading={this.props.loading}
           rowSelection={rowSelection}
           toolbarActions={
-            <Search
-              style={{ width: 200 }}
-              value={this.state.searchText}
-              onChange={this.handleChange}
+            <SearchBox
               onSearch={this.handleSearch}
             />
           }

@@ -5,12 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Form, Modal, InputNumber, notification, Select, Row, Col, message } from 'antd';
 import { closeAmountModel, editBillBody, loadBillBody } from 'common/reducers/cmsManifest';
 import { dividAmount } from '../tabpane/helper';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
+
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -109,12 +109,16 @@ export default class AmountModel extends React.Component {
       });
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { visibleAmtModal, currencies } = this.props;
     return (
-      <Modal maskClosable={false} title="金额平摊" visible={visibleAmtModal}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title="金额平摊"
+        visible={visibleAmtModal}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Alert message="将按每项申报总价的占比重新分摊输入的总金额" type="info" showIcon />
         <Row>

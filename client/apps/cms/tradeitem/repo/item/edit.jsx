@@ -8,14 +8,14 @@ import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import { loadTradeItem, saveRepoItem, toggleConfirmChangesModal, changeItemMaster, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
+
 import ItemMasterPane from './tabpane/itemMasterPane';
 import ItemPermitPane from './tabpane/itemPermitPane';
 import ItemHistoryPane from './tabpane/itemHistoryPane';
 import ConfirmChangesModal from './modal/confirmChangesModal';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -59,7 +59,7 @@ export default class TradeItemEdit extends Component {
   state = {
     fullscreen: true,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }

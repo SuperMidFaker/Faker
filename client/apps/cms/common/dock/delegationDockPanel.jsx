@@ -8,21 +8,16 @@ import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants
 import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelegationDock';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
-import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import ShipmentPane from './tabpanes/shipmentPane';
-// import CustomsDeclPane from './tabpanes/customsDeclPane';
-// import CiqDeclPane from './tabpanes/ciqDeclPane';
 import DutyTaxPane from './tabpanes/dutyTaxPane';
 import ExpensePane from './tabpanes/expensePane';
 import FilesPane from './tabpanes/filesPane';
 import DelgDispModal from './delgDispModal';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { TabPane } = Tabs;
-
 
 @injectIntl
 @connect(
@@ -66,7 +61,7 @@ export default class DelegationDockPanel extends React.Component {
   componentWillUnmount() {
     this.props.hideDock();
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleTabChange = (tabKey) => {
     this.props.setPreviewTabkey(tabKey);
   }

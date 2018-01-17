@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Form, Tag, Icon } from 'antd';
+import { Layout, Table, Tooltip, Button, Breadcrumb, Tabs, Form, Tag, Icon } from 'antd';
 import PageHeader from 'client/components/PageHeader';
+import SearchBox from 'client/components/SearchBox';
 import WarehouseModal from './modal/warehouseModal';
 import OwnersPane from './tabpane/ownersPane';
 import SuppliersPane from './tabpane/suppliersPane';
@@ -19,7 +20,7 @@ import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from './message.i18n';
 
 const { Content, Sider } = Layout;
-const Search = Input.Search;
+
 const TabPane = Tabs.TabPane;
 
 @injectIntl
@@ -99,8 +100,8 @@ export default class WarehouseList extends Component {
   handleEditWarehouse = () => {
     this.props.showEditWhseModal(this.state.warehouse);
   }
-  handleSearchWhse = (e) => {
-    this.props.searchWhse(e.target.value);
+  handleSearchWhse = (value) => {
+    this.props.searchWhse(value);
   }
   render() {
     const { warehouse, warehouses } = this.state;
@@ -140,7 +141,11 @@ export default class WarehouseList extends Component {
     }
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -162,12 +167,17 @@ export default class WarehouseList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search placeholder={this.msg('searchPlaceholder')} onChange={this.handleSearchWhse} />
+              <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearchWhse} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false}
+              <Table
+                size="middle"
+                columns={whseColumns}
+                dataSource={warehouses}
+                showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
-                rowClassName={record => record.code === warehouse.code ? 'table-row-selected' : ''} rowKey="id"
+                rowClassName={record => (record.code === warehouse.code ? 'table-row-selected' : '')}
+                rowKey="id"
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}

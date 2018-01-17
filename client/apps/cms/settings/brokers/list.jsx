@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Input, Layout, Popconfirm, Tag } from 'antd';
+import { Breadcrumb, Button, Layout, Popconfirm, Tag } from 'antd';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -9,13 +9,14 @@ import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } f
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SettingMenu from '../menu';
 import BrokerModal from './modal/brokerModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
-const { Search } = Input;
+
 
 function fetchData({ dispatch }) {
   return dispatch(loadCmsBrokers());
@@ -176,8 +177,7 @@ export default class BrokerList extends Component {
         ),
       },
     ];
-    const toolbarActions = (<Search
-      style={{ width: 250 }}
+    const toolbarActions = (<SearchBox
       placeholder="搜索"
       onSearch={this.handleSearch}
     />);

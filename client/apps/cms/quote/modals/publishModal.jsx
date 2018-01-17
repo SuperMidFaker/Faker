@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Input, Modal, message, Form, Select, DatePicker } from 'antd';
 import { closePublishModal, publishQuote } from 'common/reducers/cmsQuote';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+import { formatMsg } from '../message.i18n';
+
+
+const { Option } = Select;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -69,12 +69,16 @@ export default class CreateQtModal extends React.Component {
     });
   }
   disabledBasementDate = current => current && current.valueOf() > Date.now()
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
-      <Modal maskClosable={false} title={this.msg('publishTitle')} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('publishTitle')}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form layout="horizontal">
           <Alert message="报价发布后将按设置的生效时间起重新计费" type="info" showIcon />

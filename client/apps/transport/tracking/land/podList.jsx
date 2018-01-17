@@ -13,11 +13,12 @@ import PodAuditModal from './modals/pod-audit';
 import makeColumns from './columnDef';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { sendMessage } from 'common/reducers/notification';
+
 const formatMsg = format(messages);
 
 function fetchData({
@@ -29,9 +30,8 @@ function fetchData({
         name: 'type',
         value: params.state,
       };
-    } else {
-      return flt;
     }
+    return flt;
   });
   if (!newfilters.find(item => item.name === 'loginId')) {
     newfilters.push({
@@ -112,9 +112,8 @@ export default class TrackingPODList extends React.Component {
             name: 'type',
             value: nextProps.params.state,
           };
-        } else {
-          return flt;
         }
+        return flt;
       });
     } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
       newfilters = nextProps.filters;
@@ -265,9 +264,7 @@ export default class TrackingPODList extends React.Component {
       carriers: this.props.carriers,
     }, this.msg);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-        value={this.state.searchInput}
-      />
+      <SearchBox placeholder={this.msg('searchShipmtPH')} onSearch={this.handleSearchInput} />
       <span />
       <CustomerSelect onChange={this.handleCustomerChange} />
       <span />
@@ -278,8 +275,14 @@ export default class TrackingPODList extends React.Component {
     return (
       <div>
         <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-        <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} scroll={{ x: 2770 }} selectedRowKeys={this.state.selectedRowKeys}
+        <DataTable
+          toolbarActions={toolbarActions}
+          rowSelection={rowSelection}
+          columns={columns}
+          loading={loading}
+          dataSource={this.dataSource}
+          scroll={{ x: 2770 }}
+          selectedRowKeys={this.state.selectedRowKeys}
           handleDeselectRows={this.handleSelectionClear}
         />
         <PodAuditModal />

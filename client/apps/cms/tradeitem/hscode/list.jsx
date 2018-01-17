@@ -4,20 +4,18 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon, Input } from 'antd';
+import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon } from 'antd';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
+import SearchBox from 'client/components/SearchBox';
 import { createFilename } from 'client/util/dataTransform';
-import { format } from 'client/common/i18n/helpers';
 import { hscodeColumns } from './hscodeColumns';
 import ModuleMenu from '../menu';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Sider, Content } = Layout;
-const { Search } = Input;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -56,7 +54,7 @@ export default class HSCodeList extends Component {
   state = {
     collapsed: true,
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadHscodes(params),
     resolve: result => result.data,
@@ -151,7 +149,7 @@ export default class HSCodeList extends Component {
         <Menu.Item key="model"><Icon type="download" /> 下载模板(申报单位)</Menu.Item>
       </Menu>
     );
-    const toolbarActions = (<Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 400 }} enterButton />);
+    const toolbarActions = (<SearchBox placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} width={400} enterButton />);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">

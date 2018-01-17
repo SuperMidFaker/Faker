@@ -8,11 +8,11 @@ import { CMS_CNTNR_SPEC_CUS, CMS_CNTNR_SPEC_CIQ } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+
+import { formatMsg } from './message.i18n';
 
 const { Option } = Select;
-const formatMsg = format(messages);
+
 
 function ColumnInput(props) {
   const {
@@ -94,7 +94,7 @@ export default class ContainersPane extends React.Component {
       this.setState({ datas: nextProps.containers });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();

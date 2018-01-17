@@ -5,14 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Input, message } from 'antd';
 import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'common/reducers/cmsHsCode';
 import DataTable from 'client/components/DataTable';
-
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+
+import { formatMsg } from '../../message.i18n';
 import { hscodeColumns } from './hscodeColumns';
 
-const formatMsg = format(messages);
-const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -45,7 +43,7 @@ export default class HSCodeSpecialList extends React.Component {
       this.handleTableLoad(nextProps);
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   handleHscodeChange = (e) => {
     this.setState({ hscode: e.target.value });
   }
@@ -134,10 +132,9 @@ export default class HSCodeSpecialList extends React.Component {
       }
       return col;
     };
-    const toolbarActions = (<Search
+    const toolbarActions = (<SearchBox
       placeholder="编码/名称/描述/申报要素"
       onSearch={this.handleSearch}
-      style={{ width: 200 }}
     />);
     return (
       <DataTable toolbarActions={toolbarActions} dataSource={categoryHscodesDataSource} columns={columns} rowKey="id" bordered loading={loading} />

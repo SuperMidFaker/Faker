@@ -2,16 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
-import { Input } from 'antd';
+import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import TrimSpan from 'client/components/trimSpan';
 import { loadManualGoods } from 'common/reducers/cmsTradeManual';
 import { DELG_EXEMPTIONWAY } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
-const { Search } = Input;
+import { formatMsg } from '../message.i18n';
+
 
 @injectIntl
 @connect(
@@ -51,7 +49,7 @@ export default class ImpGoodsPane extends React.Component {
       this.handleLoad();
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleLoad = () => {
     this.props.loadManualGoods(this.props.manualNo, 'IMG').then((result) => {
       if (!result.error) {
@@ -158,7 +156,7 @@ export default class ImpGoodsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder={this.msg('codeT')} value={this.state.searchValue} style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder={this.msg('codeT')} onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

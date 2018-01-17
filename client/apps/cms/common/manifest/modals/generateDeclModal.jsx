@@ -7,10 +7,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -174,7 +173,7 @@ export default class MergeSplitModal extends React.Component {
       this.setState({ splitCategories, mergeCategories });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   mergeConditions = [{
     label: this.msg('codeT'),
     value: 'byHsCode',

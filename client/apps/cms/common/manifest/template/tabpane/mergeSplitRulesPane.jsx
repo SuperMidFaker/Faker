@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Card, Col, Row, Form, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
+
 import FormPane from 'client/components/FormPane';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
 
-const formatMsg = format(messages);
+
 const { Option } = Select;
 const FormItem = Form.Item;
 
@@ -21,7 +21,7 @@ export default class MergeSplitRulesPane extends React.Component {
   state = {
     mergeSplit: this.props.formData.set_merge_split === 1,
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleOnChange = (checked) => {
     this.setState({ mergeSplit: checked });
   }

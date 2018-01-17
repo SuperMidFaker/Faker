@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, Layout, Radio } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import PageHeader from 'client/components/PageHeader';
@@ -188,7 +188,7 @@ export default class PayableInvoiceList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
     </span>);
     const totCol = (
       <Summary>

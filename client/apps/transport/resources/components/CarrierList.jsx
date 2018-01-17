@@ -5,7 +5,7 @@ import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import NavLink from 'client/components/NavLink';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import CarrierModal from '../modals/carrierModal';
 
@@ -82,9 +82,8 @@ export default class DriverList extends Component {
         render: (_, record, index) => {
           if (record.status === 1) {
             return this.renderEditAndStopOperations(record, index);
-          } else {
-            return this.renderDeleteAndResumeOperations(record);
           }
+          return this.renderDeleteAndResumeOperations(record);
         },
       },
     ];
@@ -105,9 +104,7 @@ export default class DriverList extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <SearchBar placeholder="承运商/承运商代码/统一社会信用代码" onInputSearch={this.props.onSearch}
-              value={this.props.searchText}
-            />
+            <SearchBox placeholder="承运商/承运商代码/统一社会信用代码" onSearch={this.props.onSearch} />
           </div>
         </Header>
         <Content className="main-content" key="main">

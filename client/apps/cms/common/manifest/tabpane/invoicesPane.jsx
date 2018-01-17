@@ -6,12 +6,12 @@ import { Button, Input, Select, message, DatePicker } from 'antd';
 import { loadInvoices, addInvoice, deleteInvoice, updateInvoice } from 'common/reducers/cmsManifest';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { format } from 'client/common/i18n/helpers';
+
 import moment from 'moment';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 const { Option } = Select;
-const formatMsg = format(messages);
+
 
 function ColumnInput(props) {
   const {
@@ -108,7 +108,7 @@ export default class InvoicesPane extends React.Component {
       this.setState({ datas: nextProps.invoices });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();

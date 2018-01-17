@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
+const messages = defineMessages({
   importClearance: {
     id: 'cms.manifest.import.clearance',
     defaultMessage: '进口申报',
@@ -518,3 +519,6 @@ export default defineMessages({
     defaultMessage: '批量发送申报',
   },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

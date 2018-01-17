@@ -5,16 +5,16 @@ import { connect } from 'react-redux';
 import { Button, Card, DatePicker, Form, Icon, Input, Select, Rate, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
-import { format } from 'client/common/i18n/helpers';
+
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { toggleApplyCertsModal } from 'common/reducers/cmsTradeitem';
 import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE, TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import ApplyCertsModal from '../modal/applyCertsModal';
-import messages from '../../../message.i18n';
+import { formatMsg } from '../../../message.i18n';
 
-const formatMsg = format(messages);
+
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -119,7 +119,7 @@ export default class ItemMasterPane extends React.Component {
       this.setState({ fieldInits });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleHscodeChange = (value) => {
     const { hscodes, form } = this.props;
     form.setFieldsValue({ g_model: '' });

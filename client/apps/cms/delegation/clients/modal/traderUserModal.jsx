@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { toggleUnitRuleSetModal, loadBusinessUnitUsers, loadBrokers, addTradeUser, deleteTradeUser } from 'common/reducers/cmsResources';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
-const Option = Select.Option;
+const { Option } = Select;
 
 @connect(state => ({
   tenantId: state.account.tenantId,

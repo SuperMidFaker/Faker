@@ -4,15 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Input, Select, DatePicker, message, Modal } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { updateBilling, loadPartners } from 'common/reducers/cmsBilling';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
-const RangePicker = DatePicker.RangePicker;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 const firstDay = new Date();
 firstDay.setDate(1);
 @injectIntl
@@ -52,7 +50,7 @@ export default class BillingForm extends React.Component {
     }
     this.props.loadPartners(this.props.tenantId, roles, businessTypes);
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  msg = formatMsg(this.props.intl)
   handleOk = () => {
     const fieldsValue = this.props.form.getFieldsValue();
     const { beginDate, endDate } = this.state;
@@ -87,8 +85,12 @@ export default class BillingForm extends React.Component {
     const { form: { getFieldDecorator }, partners, visible } = this.props;
     const { beginDate, endDate, name } = this.state;
     return (
-      <Modal maskClosable={false} visible={visible} title={`${this.msg(this.props.type)}${this.msg('billing')}`}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        title={`${this.msg(this.props.type)}${this.msg('billing')}`}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form>
           <FormItem
@@ -97,7 +99,8 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            {getFieldDecorator('partnerId')(<Select id="select"
+            {getFieldDecorator('partnerId')(<Select
+              id="select"
               showSearch
               placeholder=""
               optionFilterProp="children"
@@ -105,8 +108,10 @@ export default class BillingForm extends React.Component {
             >
               {
                   partners.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
+                    <Option
+                      searched={`${pt.partner_code}${pt.name}`}
+                      value={pt.partner_id}
+                      key={pt.partner_id}
                     >
                       {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
                     </Option>))

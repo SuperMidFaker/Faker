@@ -10,7 +10,7 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
@@ -190,24 +190,22 @@ export default class ShippingOrderList extends React.Component {
           <RowAction icon="play-circle-o" label="释放" row={record} onClick={this.handleReleaseSO} />
           <RowAction onClick={this.handleEditSO} tooltip="修改" icon="edit" row={record} />
         </span>);
-      } else {
-        const outbndActions = (<span>
-          {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
-            && <RowAction onClick={this.handleOutbound} icon="form" label="出库操作" row={record} />}
-          {record.status === CWM_SO_STATUS.COMPLETED.value &&
-            <RowAction onClick={this.handleOutbound} icon="eye-o" label="出库详情" row={record} />}
-        </span>);
-        if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
-          return (<span>
-            {outbndActions}
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ?
-              <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="海关备案" row={record} />
-              : <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="备案详情" row={record} />}
-          </span>);
-        } else {
-          return (<span>{outbndActions}</span>);
-        }
       }
+      const outbndActions = (<span>
+        {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
+            && <RowAction onClick={this.handleOutbound} icon="form" label="出库操作" row={record} />}
+        {record.status === CWM_SO_STATUS.COMPLETED.value &&
+        <RowAction onClick={this.handleOutbound} icon="eye-o" label="出库详情" row={record} />}
+      </span>);
+      if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
+        return (<span>
+          {outbndActions}
+          {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ?
+            <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="海关备案" row={record} />
+              : <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="备案详情" row={record} />}
+        </span>);
+      }
+      return (<span>{outbndActions}</span>);
     },
   }]
   handleSupervision = (row) => {
@@ -432,10 +430,15 @@ export default class ShippingOrderList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('soPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBox placeholder={this.msg('soPlaceholder')} onSearch={this.handleSearch} />
       <span />
-      <Select showSearch optionFilterProp="children" value={filters.ownerCode}
-        onChange={this.handleOwnerChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.ownerCode}
+        onChange={this.handleOwnerChange}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {
@@ -443,22 +446,32 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" value={filters.receiverCode}
-        onChange={this.handleReceiverChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.receiverCode}
+        onChange={this.handleReceiverChange}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部收货人</Option>
         {
-            receivers.filter(receiver => filters.ownerCode !== 'all' ? filters.ownerCode === receiver.owner_partner_id : true)
+            receivers.filter(receiver => (filters.ownerCode !== 'all' ? filters.ownerCode === receiver.owner_partner_id : true))
             .map(receiver => (<Option key={receiver.code} value={receiver.code}>{receiver.name}</Option>))
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" value={filters.carrierCode}
-        onChange={this.handleCarrierChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.carrierCode}
+        onChange={this.handleCarrierChange}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部承运人</Option>
         {
-            carriers.filter(carrier => filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true)
+            carriers.filter(carrier => (filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true))
             .map(carrier => (<Option key={carrier.code} value={carrier.code}>{carrier.name}</Option>))
           }
       </Select>
@@ -508,9 +521,17 @@ export default class ShippingOrderList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-            toolbarActions={toolbarActions} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
-            bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+          <DataTable
+            columns={columns}
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            rowKey="id"
+            toolbarActions={toolbarActions}
+            scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+            loading={loading}
+            bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
           />
         </Content>
         <ShippingDockPanel />

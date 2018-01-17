@@ -6,6 +6,10 @@ const messages = defineMessages({
     id: 'hub.dev',
     defaultMessage: '自建应用',
   },
+  config: {
+    id: 'hub.dev.config',
+    defaultMessage: '配置',
+  },
 });
 
 export default messages;

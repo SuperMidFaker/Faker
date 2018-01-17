@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { togglePermitItemModal, addPermitModel, loadPermitModels } from 'common/reducers/cmsPermit';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
+
 const FormItem = Form.Item;
 @injectIntl
 @connect(
@@ -24,7 +24,7 @@ export default class PermitItemModal extends Component {
   state = {
     model: '',
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.togglePermitItemModal(false);
     this.setState({

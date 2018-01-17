@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Button, Layout, Radio, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
@@ -244,7 +244,7 @@ export default class NormalDeclList extends React.Component {
     };
     this.dataSource.remotes = delglist;
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('normalSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBox placeholder={this.msg('normalSearchPlaceholder')} onSearch={this.handleSearch} />
       <span />
       <Select
         showSearch
