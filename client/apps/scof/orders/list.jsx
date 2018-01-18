@@ -408,7 +408,7 @@ export default class OrderList extends React.Component {
         <ReceiveDockPanel />
         <ShippingDockPanel />
         <ImportDataPanel
-          adaptors={this.props.adaptors.data}
+          adaptors={this.props.adaptors}
           title="订单导入"
           visible={importPanel.visible}
           endpoint={`${API_ROOTS.default}v1/sof/order/import`}

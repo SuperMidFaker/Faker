@@ -1100,7 +1100,7 @@ export default class ManifestBodyPane extends React.Component {
         <DeclElementsModal onOk={this.handleModelChange} />
         <ImportDeclaredBodyModal reload={() => this.handleReload(true)} />
         <ImportDataPanel
-          adaptors={this.props.adaptors.data}
+          adaptors={this.props.adaptors}
           title={importPanel.title}
           visible={importPanelVisible}
           endpoint={importPanel.endpoint}

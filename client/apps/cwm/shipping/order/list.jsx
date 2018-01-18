@@ -560,7 +560,7 @@ export default class ShippingOrderList extends React.Component {
         <ShipmentDockPanel />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
-          adaptors={this.props.adaptors.data}
+          adaptors={this.props.adaptors}
           endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
           formData={{
             tenantName: this.props.tenantName,
