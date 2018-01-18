@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Badge, Icon, Table, Tooltip } from 'antd';
+import { intlShape, injectIntl } from 'react-intl';
+import { Badge, Icon, Table, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import InviteModal from '../components/inviteModal';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import RowAction from 'client/components/RowAction';
 import { loadToInvites, inviteOnlinePartner, showInviteModal } from 'common/reducers/invitation';
-import PartnershipsColumn from '../components/partnershipsColumn';
+import PartnershipsColumn from './common/partnershipsColumn';
+import InviteModal from './modal/inviteModal';
+import { formatMsg } from './message.i18n';
 
 const rowSelection = {
   onChange() {},
@@ -18,6 +21,7 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadToInvites(state.account.tenantId));
 }
 
+@injectIntl
 @connectFetch()(fetchData)
 @connect(state => ({
   toInvitesLoaded: state.invitation.toInvitesLoaded,
@@ -26,6 +30,7 @@ function fetchData({ state, dispatch }) {
 }), { inviteOnlinePartner, showInviteModal, loadToInvites })
 export default class ToInviteList extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     toInvitesLoaded: PropTypes.bool.isRequired,
     toInvites: PropTypes.array.isRequired, // 待邀请的partner
@@ -38,26 +43,29 @@ export default class ToInviteList extends Component {
       this.handleTableLoad();
     }
   }
+  msg = formatMsg(this.props.intl);
   columns = [{
     title: '合作伙伴',
     dataIndex: 'name',
     key: 'name',
+    width: 350,
     render: (o, record) => {
       if (record.partner_tenant_id === -1) {
         return <Tooltip title="线下企业" placement="left"><Badge status="default" />{o}</Tooltip>;
       } else if (record.partner_tenant_id > 0) {
         return <Tooltip title="线上租户" placement="left"><Badge status="processing" />{o}</Tooltip>;
       }
+      return null;
     },
   }, {
     title: '统一社会信用代码',
     dataIndex: 'partner_unique_code',
     key: 'partner_unique_code',
+    width: 200,
   }, {
     title: '业务关系',
     dataIndex: 'partnerships',
     key: 'partnerships',
-    width: 200,
     render: o => <PartnershipsColumn partnerships={o} />,
   }, {
     title: '创建日期',
@@ -73,7 +81,7 @@ export default class ToInviteList extends Component {
     title: '操作',
     dataIndex: 'tenant_type',
     key: 'tenant_type',
-    width: 100,
+    width: 180,
     render: (_, record) => {
       const inviteeInfo = {
         name: record.name,
@@ -83,25 +91,22 @@ export default class ToInviteList extends Component {
         phone: record.phone,
         email: record.email,
       };
-      const { tenantId } = this.props;
       if (record.invited === 0) {
         if (record.partner_tenant_id === -1) {
           return (
             <PrivilegeCover module="corp" feature="partners" action="edit">
-              <a onClick={() => this.handleShowInviteModal(inviteeInfo)}><Icon type="rocket" /> 申请开通</a>
-            </PrivilegeCover>
-          );
-        } else {
-          return (
-            <PrivilegeCover module="corp" feature="partners" action="edit">
-              <a onClick={() => this.props.inviteOnlinePartner({ tenantId, inviteeInfo })}><Icon type="star-o" /> 邀请加入</a>
+              <RowAction onClick={() => this.handleShowInviteModal(inviteeInfo)} icon="rocket" label={this.msg('activate')} />
             </PrivilegeCover>
           );
         }
+        return (
+          <PrivilegeCover module="corp" feature="partners" action="edit">
+            <RowAction onClick={() => this.handleInvite(inviteeInfo)} icon="star-o" label={this.msg('invite')} />
+          </PrivilegeCover>
+        );
       } else if (record.invited === 2) {
-        return <span><Icon type="hourglass" /> 已申请</span>;
+        return <span><Icon type="hourglass" /> 申请中</span>;
       }
-
       return '';
     },
   }]
@@ -111,11 +116,19 @@ export default class ToInviteList extends Component {
   handleShowInviteModal = (inviteeInfo) => {
     this.props.showInviteModal(true, inviteeInfo);
   }
+  handleInvite = (inviteeInfo) => {
+    const { tenantId } = this.props;
+    this.props.inviteOnlinePartner({ tenantId, inviteeInfo });
+    message.success(this.msg('invitationSent'));
+  }
   render() {
     const { toInvites } = this.props;
     return (
       <div>
-        <Table columns={this.columns} dataSource={addUniqueKeys(toInvites)} rowSelection={rowSelection}
+        <Table
+          columns={this.columns}
+          dataSource={addUniqueKeys(toInvites)}
+          rowSelection={rowSelection}
           pagination={{ showSizeChanger: true, defaultPageSize: 20 }}
         />
         <InviteModal />

@@ -18,9 +18,29 @@ export default class IntegrationAppsList extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedCategory: this.msg('categories'),
+      catIcon: 'folder',
+    };
+  }
   msg = formatMsg(this.props.intl);
   handleInstall = (link) => {
     this.context.router.push(link);
+  }
+  handleClick = (ev) => {
+    if (ev.key === 'all') {
+      this.setState({
+        selectedCategory: this.msg('categories'),
+        catIcon: 'folder',
+      });
+    } else {
+      this.setState({
+        selectedCategory: this.msg(ev.key),
+        catIcon: 'folder-open',
+      });
+    }
   }
   renderAppLogo(app) {
     if (app.app_type === 'EASIPASS') {
@@ -56,17 +76,20 @@ export default class IntegrationAppsList extends React.Component {
               <Menu
                 onClick={this.handleClick}
                 mode="horizontal"
-                defaultActiveKey="all"
+                defaultSelectedKeys={['all']}
                 style={{ marginBottom: 16 }}
               >
                 <Menu.Item key="all">
                   <Icon type="appstore" />{this.msg('allApps')}
                 </Menu.Item>
-                <SubMenu title={<span><Icon type="folder" />{this.msg('categories')}</span>}>
-                  <Menu.Item key="category:1">企业关务</Menu.Item>
-                  <Menu.Item key="category:2">海关申报</Menu.Item>
-                  <Menu.Item key="category:3">辅助监管</Menu.Item>
-                  <Menu.Item key="category:4">物流平台</Menu.Item>
+                <SubMenu title={(<span>
+                  <Icon type={this.state.catIcon} />{this.state.selectedCategory}
+                </span>)}
+                >
+                  <Menu.Item key="catEnt">企业关务</Menu.Item>
+                  <Menu.Item key="catCus">海关申报</Menu.Item>
+                  <Menu.Item key="catSup">辅助监管</Menu.Item>
+                  <Menu.Item key="catLog">物流平台</Menu.Item>
                 </SubMenu>
               </Menu>
               <List
@@ -79,7 +102,7 @@ export default class IntegrationAppsList extends React.Component {
                         {this.renderAppLogo(item)}
                       </div>
                       <div className="app-desc">{item.description}</div>
-                      <Button type="primary" ghost icon="tool" onClick={() => this.handleInstall(item.link)}>安装</Button>
+                      <Button type="primary" icon="tool" onClick={() => this.handleInstall(item.link)}>安装</Button>
                     </Card>
                   </List.Item>
                   )}

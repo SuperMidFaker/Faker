@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import { loadPartners } from 'common/reducers/partner';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Radio, Layout } from 'antd';
+import { intlShape, injectIntl } from 'react-intl';
+import { Breadcrumb, Card, Icon, Radio, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { changeInvitationType } from 'common/reducers/invitation';
 import PageHeader from 'client/components/PageHeader';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import HubSiderMenu from '../../menu';
-import ToInviteListContainer from './ToInviteListContainer';
-import ReceiveInvitationListContainer from './ReceiveInvitationListContainer';
-import SendInvitationListContainer from './SendInvitationListContainer';
+import HubSiderMenu from '../menu';
+import ToInviteList from './toInviteList';
+import ReceivedInvitationList from './receivedInvitationList';
+import SentInvitationList from './sentInvitationList';
+import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
@@ -24,21 +26,26 @@ function fetchData({ state, dispatch }) {
   }));
 }
 
+@injectIntl
 @connectFetch()(fetchData)
 @connect(state => ({
   invitationType: state.invitation.invitationType,
 }), { changeInvitationType })
 @withPrivilege({ module: 'corp', feature: 'partners' })
 export default class MainContainer extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+  }
+  msg = formatMsg(this.props.intl);
   handleInvitationTypeChange = (e) => {
     this.props.changeInvitationType(e.target.value);
   }
   render() {
     const { invitationType = '0' } = this.props;
     const components = [
-      <ToInviteListContainer />,
-      <ReceiveInvitationListContainer />,
-      <SendInvitationListContainer />,
+      <ToInviteList />,
+      <ReceivedInvitationList />,
+      <SentInvitationList />,
     ];
     const content = components[invitationType];
     return (
@@ -63,11 +70,9 @@ export default class MainContainer extends Component {
           </PageHeader>
           <Content className="page-content">
             <QueueAnim type="right">
-              <div className="page-body" key="body">
-                <div className="panel-body table-panel table-fixed-layout">
-                  {content}
-                </div>
-              </div>
+              <Card bodyStyle={{ padding: 0 }} className="table-fixed-layout">
+                {content}
+              </Card>
             </QueueAnim>
           </Content>
         </Layout>

@@ -1,1 +1,1 @@
-export Partners from './containers/MainContainer';
+export Partners from './partners';

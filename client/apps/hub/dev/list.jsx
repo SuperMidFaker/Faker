@@ -70,6 +70,9 @@ export default class DevAppList extends React.Component {
   handleCreateApp = () => {
     this.props.toggleAppCreateModal(true);
   }
+  handleSearch = () => {
+
+  }
   render() {
     const { apps } = this.props;
     const pagination = {

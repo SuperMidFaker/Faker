@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Badge, Table, Tag, Tooltip } from 'antd';
+import { intlShape, injectIntl } from 'react-intl';
+import { Badge, Table, Tag, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { addUniqueKeys } from 'client/util/dataTransform';
-import PartnershipsColumn from '../components/partnershipsColumn';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import RowAction from 'client/components/RowAction';
 import { loadSendInvitations, cancelInvite } from 'common/reducers/invitation';
+import PartnershipsColumn from './common/partnershipsColumn';
+import { formatMsg } from './message.i18n';
 
 const rowSelection = {
   onChange() {},
@@ -16,14 +19,17 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadSendInvitations(state.account.tenantId));
 }
 
+@injectIntl
 @connectFetch()(fetchData)
 @connect(state => ({
   sendInvitationsLoaded: state.invitation.sendInvitationsLoaded,
   tenantId: state.account.tenantId,
   sendInvitations: state.invitation.sendInvitations,
 }), { cancelInvite, loadSendInvitations })
-export default class SendInvitation extends Component {
+
+export default class SentInvitationList extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     sendInvitationsLoaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
     sendInvitations: PropTypes.array.isRequired, // 发出的邀请
@@ -35,6 +41,7 @@ export default class SendInvitation extends Component {
       this.handleTableLoad();
     }
   }
+  msg = formatMsg(this.props.intl);
   handleTableLoad = () => {
     this.props.loadSendInvitations(this.props.tenantId);
   }
@@ -42,22 +49,24 @@ export default class SendInvitation extends Component {
     title: '合作伙伴',
     dataIndex: 'invitee_name',
     key: 'invitee_name',
+    width: 350,
     render: (o, record) => {
       if (record.invitee_tenant_id === -1) {
         return <Tooltip title="线下企业" placement="left"><Badge status="default" />{o}</Tooltip>;
       } else if (record.invitee_tenant_id > 0) {
         return <Tooltip title="线上租户" placement="left"><Badge status="processing" />{o}</Tooltip>;
       }
+      return null;
     },
   }, {
     title: '统一社会信用代码',
     dataIndex: 'invitee_code',
     key: 'partner_unique_code',
+    width: 200,
   }, {
     title: '业务关系',
     dataIndex: 'partnerships',
     key: 'partnerships',
-    width: 200,
     render: o => <PartnershipsColumn partnerships={o} />,
   }, {
     title: '发出时间',
@@ -79,11 +88,11 @@ export default class SendInvitation extends Component {
         case 0:
           return (<Tag color="#ffbf00">待定</Tag>);
         case 1:
-          return (<Tag color="#00a854">已接受</Tag>);
+          return (<Tag color="#00a854">已被接受</Tag>);
         case 2:
-          return (<Tag color="#f04134">已拒绝</Tag>);
+          return (<Tag color="#f04134">已被拒绝</Tag>);
         case 3:
-          return (<Tag color="#bfbfbf">已取消</Tag>);
+          return (<Tag color="#bfbfbf">已撤回</Tag>);
         default:
           return null;
       }
@@ -92,22 +101,25 @@ export default class SendInvitation extends Component {
     title: '操作',
     dataIndex: 'operation',
     key: 'operation',
-    width: 100,
+    width: 180,
     render: (_, record) => {
       if (record.status === 0) {
-        return (<a onClick={() => this.handleCancelInviteBtnClick(record.id, record.partner_id)}>取消邀请</a>);
-      } else {
-        return null;
+        return (<RowAction onClick={() => this.handleRevoke(record)} icon="close-circle-o" label={this.msg('revoke')} />);
       }
+      return null;
     },
   }]
-  handleCancelInviteBtnClick = (id, partnerId) => {
-    this.props.cancelInvite(id, partnerId);
+  handleRevoke = (partner) => {
+    this.props.cancelInvite(partner.id, partner.partnerId);
+    message.info(this.msg('invitationRevoked'));
   }
   render() {
     const { sendInvitations } = this.props;
     return (
-      <Table columns={this.columns} dataSource={addUniqueKeys(sendInvitations)} rowSelection={rowSelection}
+      <Table
+        columns={this.columns}
+        dataSource={addUniqueKeys(sendInvitations)}
+        rowSelection={rowSelection}
         pagination={{ showSizeChanger: true, defaultPageSize: 20 }}
       />
     );

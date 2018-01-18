@@ -76,6 +76,9 @@ export default class InstalledAppsList extends React.Component {
     const link = `/hub/integration/${appType}/config/${row.uuid}`;
     this.context.router.push(link);
   }
+  handleSearch = () => {
+
+  }
   renderAppLogo(app) {
     if (app.app_type === 'EASIPASS') {
       return <Avatar shape="square" style={{ backgroundColor: '#008dff' }}>EP</Avatar>;

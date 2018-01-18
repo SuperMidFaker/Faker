@@ -10,9 +10,29 @@ const messages = defineMessages({
     id: 'hub.integration',
     defaultMessage: '整合应用',
   },
-  integrationDesc: {
-    id: 'hub.integration.desc',
-    defaultMessage: '微骆平台提供了与主流关务软件、口岸信息平台的对接能力，企业用户可以通过配置对接参数，快速实现系统整合。',
+  allApps: {
+    id: 'hub.integration.all.apps',
+    defaultMessage: '全部应用',
+  },
+  categories: {
+    id: 'hub.integration.categories',
+    defaultMessage: '应用分类',
+  },
+  catEnt: {
+    id: 'hub.integration.cat.ent',
+    defaultMessage: '企业关务',
+  },
+  catCus: {
+    id: 'hub.integration.cat.cus',
+    defaultMessage: '海关申报',
+  },
+  catSup: {
+    id: 'hub.integration.cat.sup',
+    defaultMessage: '辅助监管',
+  },
+  catLog: {
+    id: 'hub.integration.cat.log',
+    defaultMessage: '物流平台',
   },
   appsStore: {
     id: 'hub.integration.apps.store',
