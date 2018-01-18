@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Breadcrumb, Button, Badge, Modal, Layout, Radio, Select, Tooltip, Tag } from 'antd';
-import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
+import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList,
+  editFlow, toggleFlowDesigner, toggleFlowStatus } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -11,6 +12,8 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import EditableCell from 'client/components/EditableCell';
+import { loadPartners } from 'common/reducers/partner';
+import { PARTNER_ROLES } from 'common/constants';
 import CreateFlowModal from './modal/createFlowModal';
 import FlowDesigner from './designer';
 import { formatMsg } from './message.i18n';
@@ -21,11 +24,17 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadFlowList({
+  const promises = [];
+  promises.push(dispatch(loadFlowList({
     filter: JSON.stringify({ ...state.scofFlow.listFilter, name: '' }),
     pageSize: state.scofFlow.flowList.pageSize,
     current: state.scofFlow.flowList.current,
-  }));
+  })));
+  promises.push(dispatch(loadPartners({
+    tenantId: state.account.tenantId,
+    role: PARTNER_ROLES.CUS,
+  })));
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)
@@ -40,6 +49,7 @@ function fetchData({ state, dispatch }) {
     listCollapsed: state.scofFlow.listCollapsed,
     designerVisible: state.scofFlow.flowDesigner.visible,
     partners: state.partner.partners,
+    users: state.account.userMembers,
   }),
   {
     openCreateFlowModal,
@@ -49,6 +59,7 @@ function fetchData({ state, dispatch }) {
     reloadFlowList,
     editFlow,
     toggleFlowDesigner,
+    toggleFlowStatus,
   }
 )
 @connectNav({
@@ -118,19 +129,32 @@ export default class FlowList extends React.Component {
     dataIndex: 'last_updated_by',
     key: 'last_updated_by',
     width: 120,
+    render: o => this.props.users.find(user => user.login_id === o) &&
+    this.props.users.find(user => user.login_id === o).name,
   }, {
     title: '操作',
     key: 'OP_COL',
     width: 140,
     render: (_, record) => (<span>
       <RowAction onClick={this.handleDesignFlow} icon="form" label={this.msg('design')} row={record} />
-      {record.status === 1 ? <RowAction onClick={this.handleDisableFlow} icon="pause-circle" tooltip={this.msg('disable')} row={record} /> :
-      <RowAction onClick={this.handleEnableFlow} icon="play-circle" tooltip={this.msg('enable')} row={record} />
+      {record.status === 1 ? <RowAction onClick={this.toggleFlowStatus} icon="pause-circle" tooltip={this.msg('disable')} row={record} /> :
+      <RowAction onClick={this.toggleFlowStatus} icon="play-circle" tooltip={this.msg('enable')} row={record} />
       }
     </span>
     ),
   },
   ]
+  toggleFlowStatus = (row) => {
+    this.props.toggleFlowStatus(!row.status, row.id).then((result) => {
+      if (!result.error) {
+        this.props.loadFlowList({
+          filter: JSON.stringify(this.props.listFilter),
+          pageSize: this.props.flowList.pageSize,
+          current: this.props.flowList.current,
+        });
+      }
+    });
+  }
   handleTableChange = (pagination, filters, sorter) => {
     const params = {
       pageSize: pagination.pageSize,
@@ -178,6 +202,22 @@ export default class FlowList extends React.Component {
   handleSubFlowAuth = (flow) => {
     this.props.openSubFlowAuthModal(flow.id);
   }
+  handleClientSelectChange = (value) => {
+    const filter = { ...this.props.listFilter, ownerPartnerId: value };
+    this.props.loadFlowList({
+      filter: JSON.stringify(filter),
+      pageSize: this.props.flowList.pageSize,
+      current: 1,
+    });
+  }
+  handleStatusChange = (e) => {
+    const filter = { ...this.props.listFilter, status: e.target.value === 'enabled' };
+    this.props.loadFlowList({
+      filter: JSON.stringify(filter),
+      pageSize: this.props.flowList.pageSize,
+      current: 1,
+    });
+  }
   render() {
     const {
       thisFlow, flowList, loading, designerVisible, partners, listFilter,
@@ -193,10 +233,11 @@ export default class FlowList extends React.Component {
         optionFilterProp="children"
         style={{ width: 200 }}
         onChange={this.handleClientSelectChange}
-        value={listFilter.partnerId}
+        value={listFilter.ownerPartnerId}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >
+        <Option value="all" key="all">全部</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
     </span>);
