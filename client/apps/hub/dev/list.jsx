@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Avatar, Badge, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
+import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleAppCreateModal, loadDevApps } from 'common/reducers/devApp';
 import RowAction from 'client/components/RowAction';
@@ -88,6 +89,7 @@ export default class DevAppList extends React.Component {
             <Card bodyStyle={{ padding: 16 }} >
               <List
                 dataSource={this.props.apps}
+                header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
                 renderItem={item => (
                   <List.Item
                     key={item.app_id}

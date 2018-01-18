@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { loadPartners } from 'common/reducers/partner';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { connect } from 'react-redux';
-import withPrivilege from 'client/common/decorators/withPrivilege';
-import { changeInvitationType } from 'common/reducers/invitation';
 import { Breadcrumb, Icon, Radio, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import { changeInvitationType } from 'common/reducers/invitation';
+import PageHeader from 'client/components/PageHeader';
+import withPrivilege from 'client/common/decorators/withPrivilege';
 import HubSiderMenu from '../../menu';
 import ToInviteListContainer from './ToInviteListContainer';
 import ReceiveInvitationListContainer from './ReceiveInvitationListContainer';
 import SendInvitationListContainer from './SendInvitationListContainer';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -44,20 +45,23 @@ export default class MainContainer extends Component {
       <Layout>
         <HubSiderMenu currentKey="partners" />
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="team" /> 协作邀请
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
-              <RadioButton value="0">待邀请</RadioButton>
-              <RadioButton value="1">收到的邀请</RadioButton>
-              <RadioButton value="2">发出的邀请</RadioButton>
-            </RadioGroup>
-            <div className="toolbar-right" />
-          </Header>
-          <Content className="main-content">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Icon type="team" /> {this.msg('collab')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Nav>
+              <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
+                <RadioButton value="0">待邀请</RadioButton>
+                <RadioButton value="1">收到的邀请</RadioButton>
+                <RadioButton value="2">发出的邀请</RadioButton>
+              </RadioGroup>
+            </PageHeader.Nav>
+          </PageHeader>
+          <Content className="page-content">
             <QueueAnim type="right">
               <div className="page-body" key="body">
                 <div className="panel-body table-panel table-fixed-layout">

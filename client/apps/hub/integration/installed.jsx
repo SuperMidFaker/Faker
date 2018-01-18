@@ -6,6 +6,7 @@ import PageHeader from 'client/components/PageHeader';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/openIntegration';
 import HubSiderMenu from '../menu';
 import { formatMsg } from './message.i18n';
@@ -117,6 +118,7 @@ export default class InstalledAppsList extends React.Component {
             <Card bodyStyle={{ padding: 16 }} >
               <List
                 dataSource={installedAppsList.data}
+                header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
                 pagination={pagination}
                 renderItem={item => (
                   <List.Item
