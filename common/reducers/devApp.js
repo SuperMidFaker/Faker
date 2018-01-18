@@ -138,7 +138,7 @@ export function updateCallbackUrl(url, id) {
   };
 }
 
-export function toggleStatus(status, id) {
+export function toggleStatus(status, id, appId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -148,7 +148,7 @@ export function toggleStatus(status, id) {
       ],
       endpoint: 'v1/hub/dev/app/status/toggle',
       method: 'post',
-      data: { status, id },
+      data: { status, id, appId },
     },
   };
 }

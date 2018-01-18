@@ -90,7 +90,7 @@ export default class DevAppList extends React.Component {
           <PageHeader>
             <PageHeader.Title>
               <Breadcrumb>
-                <Breadcrumb.Item>
+                <Breadcrumb.Item></Breadcrumb.Item>
                   <Icon type="code-o" /> {this.msg('dev')}
                 </Breadcrumb.Item>
               </Breadcrumb>
