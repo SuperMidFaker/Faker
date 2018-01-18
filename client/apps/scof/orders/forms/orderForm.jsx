@@ -416,7 +416,7 @@ export default class OrderForm extends Component {
                     </Col>
                     <Col span={12}>
                       <FormItem label="备注" {...formItemSpan2Layout}>
-                        <Input value={formData.remark} onChange={e => this.handleChange('remark', e.target.value)} />
+                        <Input value={formData.cust_remark} onChange={e => this.handleChange('cust_remark', e.target.value)} />
                       </FormItem>
                     </Col>
                     <Col span={6}>
