@@ -7,7 +7,7 @@ import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, L
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
-import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
+import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
@@ -113,7 +113,7 @@ export default class OrderList extends React.Component {
       this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
     }
     this.props.loadPartnerFlowList();
-    this.props.loadAdaptors(null, [], true);
+    this.props.loadAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key], true);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
@@ -213,15 +213,17 @@ export default class OrderList extends React.Component {
   }
   handleImportClientChange = (customerPartnerId) => {
     this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
-    this.props.loadAdaptors(customerPartnerId, [], true);
+    this.props.loadAdaptors(customerPartnerId, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key], true);
     this.setState({ importPanel: { ...this.state.importPanel, partner_id: customerPartnerId } });
   }
   handleImportFlowChange = (flowId) => {
     this.setState({ importPanel: { ...this.state.importPanel, flow_id: flowId } });
   }
-  handleCheckUpload = () => {
+  handleCheckUpload = (msg) => {
     if (!this.state.importPanel.flow_id) {
-      message.warn('订单导入流程规则未选');
+      if (msg) {
+        message.warn('订单导入流程规则未选');
+      }
       return false;
     }
     return true;
@@ -409,12 +411,15 @@ export default class OrderList extends React.Component {
           adaptors={this.props.adaptors.data}
           title="订单导入"
           visible={importPanel.visible}
-          endpoint=""
+          endpoint={`${API_ROOTS.default}v1/sof/order/import`}
           formData={{ customer_partner_id: importPanel.partner_id, flow_id: importPanel.flow_id }}
           onClose={() => { this.setState({ importPanel: { visible: false } }); }}
           onBeforeUpload={this.handleCheckUpload}
-          onUploaded={this.handleTableReload}
-          template=""
+          onUploaded={() => {
+            this.setState({ importPanel: { visible: false } });
+            this.handleTableLoad();
+}}
+          template={`${XLSX_CDN}/订单导入模板.xlsx`}
         >
           <Select
             placeholder="请选择客户"

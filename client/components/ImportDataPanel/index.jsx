@@ -29,6 +29,12 @@ export default class ImportDataPanel extends React.Component {
     adaptor: '',
   }
   handleUploadFile = (info) => {
+    if (this.props.onBeforeUpload) {
+      const upload = this.props.onBeforeUpload();
+      if (!upload) {
+        return;
+      }
+    }
     this.setState({ importInfo: info });
   }
   handleDownloadTemplate = () => {
@@ -40,8 +46,10 @@ export default class ImportDataPanel extends React.Component {
   }
   handleBeforeUpload = () => {
     if (this.props.onBeforeUpload) {
-      this.props.onBeforeUpload();
+      const upload = this.props.onBeforeUpload(true);
+      return upload;
     }
+    return true;
   }
   handleClose = () => {
     this.setState({ adaptor: '' });

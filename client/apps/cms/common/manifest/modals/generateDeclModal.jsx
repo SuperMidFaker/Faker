@@ -87,7 +87,7 @@ export default class MergeSplitModal extends React.Component {
     sortOpt: {
       customControl: true,
       inspectQuarantine: false,
-      decTotal: false,
+      decTotal: '0',
       decPriceDesc: false,
       hsCodeAsc: false,
     },
@@ -160,7 +160,7 @@ export default class MergeSplitModal extends React.Component {
         },
         sortOpt: {
           customControl: rule.sort_customs,
-          decTotal: rule.sort_dectotal,
+          decTotal: String(rule.sort_dectotal),
           hsCodeAsc: rule.sort_hscode,
         },
         mergeOptArr,
@@ -218,20 +218,6 @@ export default class MergeSplitModal extends React.Component {
       mergeOptArr: checkeds,
     });
   }
-  handleSortSelectChange = (value) => {
-    const sortOpt = { ...this.state.sortOpt };
-    if (value === 'hsCodeAsc') {
-      sortOpt.hsCodeAsc = true;
-      sortOpt.decTotal = false;
-    } else if (value === 'decTotal') {
-      sortOpt.decTotal = true;
-      sortOpt.hsCodeAsc = false;
-    }
-    this.setState({
-      sortOpt,
-      sortSelectValue: value,
-    });
-  }
   handleSplitSelectChange = (value) => {
     const splitOpt = { ...this.state.splitOpt, perCount: value };
     this.setState({ splitOpt });
@@ -250,6 +236,11 @@ export default class MergeSplitModal extends React.Component {
     this.setState({
       [fieldOpt]: opt,
     });
+  }
+  handleDecTotalSort = (value) => {
+    const opt = { ...this.state.sortOpt };
+    opt.decTotal = value;
+    this.setState({ sortOpt: opt });
   }
   handleOk = () => {
     const { billSeqNo } = this.props;
@@ -481,14 +472,12 @@ export default class MergeSplitModal extends React.Component {
                 </FormItem>
               </Col>
               <Col span={8}>
-                <FormItem>
-                  <MSCheckbox
-                    fieldOpt="sortOpt"
-                    field="decTotal"
-                    text={this.msg('priceDescSort')}
-                    onChange={this.handleCheckChange}
-                    state={this.state}
-                  />
+                <FormItem label="申报金额" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <Select style={{ width: '120px' }} value={this.state.sortOpt.decTotal} onChange={this.handleDecTotalSort}>
+                    <Option value="0">不排序</Option>
+                    <Option value="1">降序</Option>
+                    <Option value="2">升序</Option>
+                  </Select>
                 </FormItem>
               </Col>
               <Col span={8}>

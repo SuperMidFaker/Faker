@@ -219,8 +219,12 @@ export default class MergeSplitForm extends React.Component {
                 </FormItem>
               </Col>
               <Col span={8}>
-                <FormItem>
-                  {getFieldDecorator('sort_dectotal', { initialValue: formData.sort_dectotal, valuePropName: 'checked' })(<Checkbox>{this.msg('priceDescSort')}</Checkbox>)}
+                <FormItem label="申报金额" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  {getFieldDecorator('sort_dectotal', { initialValue: formData.sort_dectotal })(<Select style={{ width: '120px' }}>
+                    <Option value="0">不排序</Option>
+                    <Option value="1">降序</Option>
+                    <Option value="2">升序</Option>
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span={8}>
