@@ -112,8 +112,8 @@ export default class ProfileForm extends Component {
         </Row>
         <Divider />
         <FormItem>
-          {app.status === 0 ? <Button onClick={() => this.toggleStatus(true)} icon="play-circle">上线</Button> :
-          <Button onClick={() => this.toggleStatus(false)} icon="pause-circle-o">下线</Button>}
+          {app.status === 0 ? <Button onClick={() => this.toggleStatus(true)} icon="play-circle">{this.msg('online')}</Button> :
+          <Button onClick={() => this.toggleStatus(false)} icon="pause-circle-o">{this.msg('offline')}</Button>}
           <Button type="danger" icon="delete" style={{ marginLeft: 8 }} onClick={() => this.handleDeleteApp(app.id)}>{this.msg('delete')}</Button>
         </FormItem>
       </Form>

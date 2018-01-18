@@ -11,14 +11,15 @@ function getBase64(img, callback) {
 
 function beforeUpload(file) {
   const isPNG = file.type === 'image/png';
-  if (!isPNG) {
-    message.error('You can only upload PNG file!');
+  const isJPG = file.type === 'image/jpeg';
+  if (!isPNG && !isJPG) {
+    message.error('You can only upload PNG or JPG file!');
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
     message.error('Image must smaller than 2MB!');
   }
-  return isPNG && isLt2M;
+  return (isPNG || isJPG) && isLt2M;
 }
 
 export default class AvatarUploader extends React.Component {

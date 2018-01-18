@@ -100,6 +100,7 @@ export default class DevAppList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
+              <Button icon="book">{this.msg('apiDocs')}</Button>
               <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
                 {this.msg('create')}
               </Button>
@@ -119,7 +120,7 @@ export default class DevAppList extends React.Component {
                     <List.Item.Meta
                       avatar={<Avatar shape="square" src={item.app_logo} />}
                       title={item.app_name}
-                      description={item.desc}
+                      description={item.app_desc}
                     />
                     {item.status ? <Badge status="success" text="已上线" /> : <Badge status="default" text="未上线" />}
                   </List.Item>

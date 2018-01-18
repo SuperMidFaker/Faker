@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Icon, Layout, notification, List, Card } from 'antd';
-import { PARTNER_ROLES } from 'common/constants';
+import { Avatar, Breadcrumb, Button, Icon, Layout, notification, List, Card } from 'antd';
+import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
 import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -18,6 +18,7 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
 
 @injectIntl
 @connect(
@@ -70,12 +71,15 @@ export default class ApiAuthList extends React.Component {
   handleUploaded = () => {
     this.handleReload();
   }
-  handleAddWarehouse = () => {
+  handleCreateAdapter = () => {
     this.props.showAdaptorModal();
   }
   handleReload = () => {
     const { pageSize, current } = this.props;
     this.props.loadAdaptors('', '', pageSize, current);
+  }
+  handleSearch = () => {
+
   }
   render() {
     const { adaptors } = this.props;
@@ -96,13 +100,12 @@ export default class ApiAuthList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Icon type="usb" /> 数据适配
+                  <Icon type="usb" /> {this.msg('adapter')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <PageHint />
-              <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
+              <Button type="primary" icon="plus" onClick={this.handleCreateAdapter}>
                 {this.msg('create')}
               </Button>
             </PageHeader.Actions>
@@ -111,11 +114,12 @@ export default class ApiAuthList extends React.Component {
             <Card bodyStyle={{ padding: 16 }} >
               <List
                 dataSource={this.props.adaptors.data}
+                header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
                 pagination={pagination}
                 renderItem={(item) => {
                   let action = null;
                   if (item.active) {
-                    action = <RowAction onClick={this.handleEditBtnClick} icon="edit" label="修改" row={item} />;
+                    action = <RowAction onClick={this.handleEditBtnClick} icon="edit" label={this.msg('config')} row={item} />;
                   } else {
                     action = (<ExcelUploader
                       endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
@@ -125,20 +129,19 @@ export default class ApiAuthList extends React.Component {
                       <RowAction icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
                     </ExcelUploader>);
                   }
-                  return (<List.Item
-                    key={item.code}
-                    actions={[
-                      action,
-                      <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={item} />,
-                    ]}
-                  >
-                    <List.Item.Meta
-                      title={item.name}
-                      description={item.biz_model}
-                    />
-                    <div>stratLine: {item.start_line}</div>
-                  </List.Item>);
-}}
+                  const bizModel = impModels.find(model => model.key === item.biz_model);
+                  return (
+                    <List.Item
+                      key={item.code}
+                      actions={[action, <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={item} />]}
+                    >
+                      <List.Item.Meta
+                        avatar={<Avatar shape="square" icon="file-excel" style={{ backgroundColor: '#3e7b51' }} />}
+                        title={item.name}
+                        description={bizModel && bizModel.name}
+                      />
+                    </List.Item>);
+                  }}
               />
             </Card>
           </Content>

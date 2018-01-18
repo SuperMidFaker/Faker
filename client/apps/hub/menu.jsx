@@ -22,7 +22,7 @@ export default class HubSiderMenu extends React.Component {
     return (
       <Sider className="menu-sider">
         <Menu mode="inline" selectedKeys={[this.props.currentKey]}>
-          <MenuItemGroup key="integration" title="整合">
+          <MenuItemGroup key="integration" title="应用">
             <Menu.Item key="apps">
               <NavLink to="/hub/integration/apps">
                 <Icon type="shop" />应用市场
@@ -38,6 +38,8 @@ export default class HubSiderMenu extends React.Component {
                 <Icon type="code-o" />自建应用
               </NavLink>
             </Menu.Item>
+          </MenuItemGroup>
+          <MenuItemGroup key="data" title="数据">
             <Menu.Item key="adapter">
               <NavLink to="/hub/adapter">
                 <Icon type="usb" />数据适配
