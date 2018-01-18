@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   flowName: {
     id: 'scof.flow.name',
-    defaultMessage: '流程',
+    defaultMessage: '流程名称',
   },
   flowDesigner: {
     id: 'scof.flow.designer',
@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
   flowCustomer: {
     id: 'scof.flow.customer',
-    defaultMessage: '客户',
+    defaultMessage: '关联客户',
   },
   customerTracking: {
     id: 'scof.flow.customer.tracking',

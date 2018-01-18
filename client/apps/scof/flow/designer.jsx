@@ -15,7 +15,7 @@ import { Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import PageHeader from 'client/components/PageHeader';
 import { PARTNER_ROLES } from 'common/constants';
-import FlowProviderModal from './modal/flowProviderModal';
+import FlowSettingModal from './modal/flowSettingModal';
 import AddTriggerModal from './panel/compose/addTriggerModal';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -585,16 +585,13 @@ export default class FlowDesigner extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            {!currentFlow.main_flow_id &&
-            <Tooltip placement="bottom" title="流程授权">
-              <Button icon="key" onClick={this.handleSubFlowAuth} />
-            </Tooltip>}
+            <Button icon="setting" onClick={this.handleSubFlowAuth}>流程设置</Button>
             <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('saveFlow')}
             </Button>
             <ButtonToggle
-              iconOn="setting"
-              iconOff="setting"
+              iconOn="menu-unfold"
+              iconOff="menu-fold"
               onClick={this.toggleRightSider}
             />
           </PageHeader.Actions>
@@ -608,10 +605,8 @@ export default class FlowDesigner extends React.Component {
                 style={{ marginBottom: 8 }}
                 extra={<div className="toolbar-right">
                   {this.renderGraphToolbar()}
-                  <Button icon="swap-right" onClick={this.handleAddEdge}>
-                    {this.msg('addFlowEdge')}
-                  </Button>
-                  <Button icon="delete" onClick={this.handleRemoveItem} />
+                  <Tooltip title={this.msg('addFlowEdge')}><Button onClick={this.handleAddEdge}><Logixon type="connect" /></Button></Tooltip>
+                  <Tooltip title={this.msg('erase')}><Button onClick={this.handleRemoveItem}><Logixon type="erase" /></Button></Tooltip>
                 </div>}
               >
                 <div id="flowchart" />
@@ -648,7 +643,7 @@ export default class FlowDesigner extends React.Component {
                 kind={activeItem && activeItem.get('model').kind}
                 model={activeItem && activeItem.get('model')}
               />
-              <FlowProviderModal />
+              <FlowSettingModal graph={this.graph} />
             </Spin>
           </Content>
           <Sider
@@ -686,7 +681,6 @@ export default class FlowDesigner extends React.Component {
             </div>
           </Sider>
         </Layout>
-
       </Layout>
     );
   }

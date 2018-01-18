@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Modal, Button, Table, Select, message } from 'antd';
+import { Form, Button, Table, Select, message } from 'antd';
 import { closeSubFlowAuthModal, createProviderFlow, deleteProviderFlow } from 'common/reducers/scofFlow';
 import RowAction from 'client/components/RowAction';
 import { formatMsg } from '../message.i18n';
@@ -23,7 +23,7 @@ const FormItem = Form.Item;
     closeSubFlowAuthModal, createProviderFlow, deleteProviderFlow,
   }
 )
-export default class FlowProviderModal extends React.Component {
+export default class ShareFlowPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     flow: PropTypes.shape({
@@ -82,32 +82,32 @@ export default class FlowProviderModal extends React.Component {
       return vendor && vendor.name;
     },
   }, {
-    width: 80,
+    width: 40,
     render: (o, record) =>
       <RowAction shape="circle" confirm="确定删除?" onConfirm={() => this.handleDelete(record.id)} icon="delete" />,
   }];
   render() {
     const { pendingProvider } = this.state;
     const {
-      visible, vendorTenants, providerList, submitting,
+      vendorTenants, providerList, submitting,
     } = this.props;
     return (
-      <Modal
-        title="流程授权"
-        visible={visible}
-        maskClosable={false}
-        footer={[]}
-        onCancel={this.handleCancel}
-      >
+      <div>
         <Form layout="inline">
           <FormItem>
-            <Select allowClear showSearch value={pendingProvider.tenant_id} onChange={this.handlePendingProviderSelect} style={{ width: '200px' }}>
+            <Select
+              allowClear
+              showSearch
+              value={pendingProvider.tenant_id}
+              onChange={this.handlePendingProviderSelect}
+              style={{ width: 360 }}
+            >
               {
                 vendorTenants.filter(vt =>
                   providerList.filter(pl => pl.tenant_id === vt.partner_tenant_id).length === 0)
-                .map(opt =>
-                  <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
-            }
+                  .map(opt =>
+                    <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
+                }
             </Select>
           </FormItem>
           <FormItem>
@@ -115,13 +115,13 @@ export default class FlowProviderModal extends React.Component {
           </FormItem>
         </Form>
         <Table
-          size="middle"
+          size="small"
           pagination={false}
           columns={this.columns}
           dataSource={providerList}
           rowKey="id"
         />
-      </Modal>
+      </div>
     );
   }
 }
