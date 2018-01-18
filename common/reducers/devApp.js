@@ -19,7 +19,11 @@ const initialState = {
     visible: false,
   },
   app: {},
-  apps: [],
+  apps: {
+    data: [],
+    pageSize: 10,
+    current: 1,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -57,7 +61,7 @@ export function createApp(appName) {
   };
 }
 
-export function loadDevApps() {
+export function loadDevApps({ pageSize, current }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -67,6 +71,7 @@ export function loadDevApps() {
       ],
       endpoint: 'v1/hub/dev/apps/load',
       method: 'get',
+      params: { pageSize, current },
     },
   };
 }
@@ -133,7 +138,7 @@ export function updateCallbackUrl(url, id) {
   };
 }
 
-export function toggleStatus(status, id) {
+export function toggleStatus(status, id, appId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -143,7 +148,7 @@ export function toggleStatus(status, id) {
       ],
       endpoint: 'v1/hub/dev/app/status/toggle',
       method: 'post',
-      data: { status, id },
+      data: { status, id, appId },
     },
   };
 }

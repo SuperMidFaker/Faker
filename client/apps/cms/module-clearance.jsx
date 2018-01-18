@@ -15,6 +15,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     privileges: state.account.privileges,
+    cms: state.account.apps.cms,
   }),
   { switchNavOption }
 )
@@ -34,10 +35,12 @@ export default class Clearance extends React.Component {
   }
   state = {
     linkMenus: [],
+    appMenus: [],
   }
   componentWillMount() {
-    const { privileges, intl } = this.props;
+    const { privileges, intl, cms } = this.props;
     const linkMenus = [];
+    const appMenus = [];
     if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
@@ -120,16 +123,45 @@ export default class Clearance extends React.Component {
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
+      const bottom = !cms.length > 0;
       linkMenus.push({
         single: true,
-        bottom: true,
+        bottom,
         key: 'cms-settings',
         path: '/clearance/settings',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
       });
+      if (cms.length > 0) {
+        if (cms.length === 1) {
+          appMenus.push({
+            single: true,
+            bottom: true,
+            key: cms[0].app_id,
+            path: cms[0].url,
+            icon: 'logixon icon-setting-o',
+            text: formatMsg(intl, cms[0].app_name),
+          });
+        } else {
+          appMenus.push({
+            single: false,
+            bottom: true,
+            key: 'cms-app',
+            icon: 'logixon icon-setting-o',
+            text: formatMsg(intl, 'app'),
+            sublinks: [],
+          });
+          cms.forEach((c, index) => {
+            appMenus[0].sublinks.push({
+              key: `cms-app-${index}`,
+              path: c.url,
+              text: formatMsg(intl, c.app_name),
+            });
+          });
+        }
+      }
     }
-    this.setState({ linkMenus });
+    this.setState({ linkMenus, appMenus });
     if (this.props.children === null) {
       this.redirectInitialRoute(this.props.privileges);
     }
@@ -169,6 +201,7 @@ export default class Clearance extends React.Component {
     return (
       <CollapsibleSiderLayout
         links={this.state.linkMenus}
+        appMenus={this.state.appMenus}
         childContent={this.props.children}
         location={this.props.location}
       />

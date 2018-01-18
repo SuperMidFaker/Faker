@@ -60,7 +60,7 @@ export default class ProfileForm extends Component {
   }
   toggleStatus = (status) => {
     const { app } = this.props;
-    this.props.toggleStatus(status, app.id).then((result) => {
+    this.props.toggleStatus(status, app.id, app.app_id).then((result) => {
       if (!result.error) {
         this.props.getApp(app.app_id);
       }
