@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Icon, Layout, notification } from 'antd';
+import { Breadcrumb, Button, Icon, Layout, notification, List, Card } from 'antd';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import DataTable from 'client/components/DataTable';
 import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -31,6 +29,8 @@ const { Content } = Layout;
     code: state.account.code,
     adaptors: state.saasLineFileAdaptor.adaptors,
     customers: state.partner.partners,
+    pageSize: state.saasLineFileAdaptor.adaptors.pageSize,
+    current: state.saasLineFileAdaptor.adaptors.current,
   }),
   {
     showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor,
@@ -45,7 +45,7 @@ export default class ApiAuthList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
-    this.props.loadAdaptors();
+    this.props.loadAdaptors('', '', '', this.props.pageSize, 1);
     this.props.loadPartners({
       role: PARTNER_ROLES.CUS,
     });
@@ -63,62 +63,31 @@ export default class ApiAuthList extends React.Component {
       if (result.error) {
         notification.error({ description: result.error.message });
       } else {
-        this.props.loadAdaptors();
+        this.handleReload();
       }
     });
   }
   handleUploaded = () => {
-    this.props.loadAdaptors();
+    this.handleReload();
   }
-  columns = [{
-    title: this.msg('适配器名称'),
-    dataIndex: 'name',
-    width: 200,
-  }, {
-    title: this.msg('适配对象'),
-    width: 250,
-    dataIndex: 'biz_model',
-  }, {
-    title: this.msg('适用范围'),
-    dataIndex: 'owner_partner_id',
-    render: (o) => {
-      if (o) {
-        return this.props.customers.find(cus => cus.id === o).name;
-      }
-      return '全局';
-    },
-  }, {
-    title: this.msg('操作'),
-    width: 140,
-    render: (_, record) => {
-      let editDiv = null;
-      if (record.active) {
-        editDiv = (<PrivilegeCover module="clearance" feature="resources" action="edit">
-          <RowAction onClick={this.handleEditBtnClick} icon="edit" label="修改" row={record} />
-        </PrivilegeCover>);
-      } else {
-        editDiv = (<ExcelUploader
-          endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
-          formData={{ data: JSON.stringify({ code: record.code }) }}
-          onUploaded={this.handleUploaded}
-        >
-          <RowAction icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
-        </ExcelUploader>);
-      }
-      return (<span>
-        {editDiv}
-        <PrivilegeCover module="clearance" feature="resources" action="delete">
-          <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={record} />
-        </PrivilegeCover>
-      </span>
-      );
-    },
-  }];
-
   handleAddWarehouse = () => {
     this.props.showAdaptorModal();
   }
+  handleReload = () => {
+    const { pageSize, current } = this.props;
+    this.props.loadAdaptors('', '', '', pageSize, current);
+  }
   render() {
+    const { adaptors } = this.props;
+    const pagination = {
+      pageSize: adaptors.pageSize,
+      current: adaptors.current,
+      total: adaptors.total,
+      showTotal: total => `共 ${total} 条`,
+      onChange: (page, pageSize) => {
+        this.props.loadAdaptors('', '', '', pageSize, page);
+      },
+    };
     return (
       <Layout>
         <HubSiderMenu currentKey="adapter" />
@@ -138,12 +107,40 @@ export default class ApiAuthList extends React.Component {
               </Button>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              columns={this.columns}
-              dataSource={this.props.adaptors}
-              rowKey="id"
-            />
+          <Content className="page-content layout-fixed-width" key="main">
+            <Card bodyStyle={{ padding: 16 }} >
+              <List
+                dataSource={this.props.adaptors.data}
+                pagination={pagination}
+                renderItem={(item) => {
+                  let action = null;
+                  if (item.active) {
+                    action = <RowAction onClick={this.handleEditBtnClick} icon="edit" label="修改" row={item} />;
+                  } else {
+                    action = (<ExcelUploader
+                      endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
+                      formData={{ data: JSON.stringify({ code: item.code }) }}
+                      onUploaded={this.handleUploaded}
+                    >
+                      <RowAction icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
+                    </ExcelUploader>);
+                  }
+                  return (<List.Item
+                    key={item.code}
+                    actions={[
+                      action,
+                      <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={item} />,
+                    ]}
+                  >
+                    <List.Item.Meta
+                      title={item.name}
+                      description={item.biz_model}
+                    />
+                    <div>stratLine: {item.start_line}</div>
+                  </List.Item>);
+}}
+              />
+            </Card>
           </Content>
           <AdaptorModal />
           <AdaptorDetailModal />

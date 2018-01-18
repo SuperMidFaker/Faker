@@ -34,6 +34,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'TOGGLE_ADD_LOCATION_MODAL',
   'SEARCH_RATE_ENDS', 'SEARCH_RATE_ENDS_SUCCEED', 'SEARCH_RATE_ENDS_FAIL',
   'TOGGLE_FLOW_DESIGNER',
+  'TOGGLE_FLOW_STATUS', 'TOGGLE_FLOW_STATUS_SUCCEED', 'TOGGLE_FLOW_STATUS_FAIL',
 ]);
 
 const initialState = {
@@ -61,7 +62,7 @@ const initialState = {
   flowListLoading: false,
   reloadFlowList: false,
   submitting: false,
-  listFilter: { name: '' },
+  listFilter: { name: '', ownerPartnerId: 'all' },
   trackingFields: [],
   currentFlow: null,
   flowGraph: {
@@ -652,6 +653,21 @@ export function searchRateEnds(params) {
       method: 'get',
       params,
       origin: 'mongo',
+    },
+  };
+}
+
+export function toggleFlowStatus(status, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.TOGGLE_FLOW_STATUS,
+        actionTypes.TOGGLE_FLOW_STATUS_SUCCEED,
+        actionTypes.TOGGLE_FLOW_STATUS_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/status/toggle',
+      method: 'post',
+      data: { status, id },
     },
   };
 }
