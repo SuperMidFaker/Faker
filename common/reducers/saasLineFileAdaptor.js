@@ -14,7 +14,11 @@ const actionTypes = createActionTypes('@@welogix/saas/lineadaptor/', [
 
 const initState = {
   loadingAdaptors: false,
-  adaptors: [],
+  adaptors: {
+    data: [],
+    pageSize: 10,
+    current: 1,
+  },
   loadingAdaptor: false,
   adaptor: { name: '', columns: [] },
   adaptorModal: {
@@ -52,7 +56,7 @@ export default function reducer(state = initState, action) {
   }
 }
 
-export function loadAdaptors(ownerPid, models, active) {
+export function loadAdaptors(ownerPid, models, active, pageSize, current) {
   return {
     [CLIENT_API]: {
       types: [
@@ -62,7 +66,9 @@ export function loadAdaptors(ownerPid, models, active) {
       ],
       endpoint: 'v1/saas/linefile/adaptors',
       method: 'get',
-      params: { ownerPid, models: JSON.stringify(models), active },
+      params: {
+        ownerPid, models: JSON.stringify(models), active, pageSize, current,
+      },
     },
   };
 }
