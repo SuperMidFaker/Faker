@@ -71,8 +71,8 @@ function getFieldInits(formData) {
     ['merge_checked', 'sort_customs'].forEach((fd) => {
       init[fd] = formData[fd] !== 0;
     });
-    ['sort_dectotal', 'sort_hscode',
-      'split_hscode', 'split_ciqdecl', 'split_applcert', 'split_curr',
+    init.sort_dectotal = formData.sort_dectotal || '0';
+    ['sort_hscode', 'split_hscode', 'split_ciqdecl', 'split_applcert', 'split_curr',
       'set_special_code', 'set_merge_split', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
