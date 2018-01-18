@@ -208,7 +208,7 @@ export default class CollapsibleSiderLayout extends PureComponent {
               appMenus.map((app) => {
                 if (app.single) {
                   return (
-                    <MenuItem key={app.key} disabled={app.disabled} className="bottom-menu-item">
+                    <MenuItem key={app.key} disabled={app.disabled}>
                       <NavLink onChange={() => this.handleAppClick(app.path)}>
                         <i className={`icon ${app.icon}`} />
                         <span className="nav-text">{app.text}</span>

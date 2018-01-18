@@ -124,7 +124,7 @@ export default class ModuleCWM extends React.Component {
     });
     linkMenus.push({
       single: true,
-      bottom: !bwm.length > 0,
+      bottom: true,
       key: 'cwm-settings',
       path: '/cwm/settings/warehouse',
       icon: 'logixon icon-setting-o',
@@ -134,19 +134,17 @@ export default class ModuleCWM extends React.Component {
       if (bwm.length === 1) {
         appMenus.push({
           single: true,
-          bottom: true,
           key: bwm[0].app_id,
           path: bwm[0].url,
-          icon: 'logixon icon-setting-o',
+          icon: 'logixon icon-apps',
           text: formatMsg(intl, bwm[0].app_name),
         });
       } else {
         appMenus.push({
           single: false,
-          bottom: true,
           key: 'bwm-app',
-          icon: 'logixon icon-setting-o',
-          text: formatMsg(intl, 'bwm'),
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
         bwm.forEach((b, index) => {

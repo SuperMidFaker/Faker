@@ -93,7 +93,7 @@ export default class ModuleBMS extends React.Component {
     });
     linkMenus.push({
       single: true,
-      bottom: !bss.length > 0,
+      bottom: true,
       key: 'bss-settings',
       path: '/bss/settings',
       icon: 'logixon icon-setting-o',
@@ -103,19 +103,17 @@ export default class ModuleBMS extends React.Component {
       if (bss.length === 1) {
         appMenus.push({
           single: true,
-          bottom: true,
           key: bss[0].app_id,
           path: bss[0].url,
-          icon: 'logixon icon-setting-o',
+          icon: 'logixon icon-apps',
           text: formatMsg(intl, bss[0].app_name),
         });
       } else {
         appMenus.push({
           single: false,
-          bottom: true,
           key: 'bss-app',
-          icon: 'logixon icon-setting-o',
-          text: formatMsg(intl, 'bss'),
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
         bss.forEach((b, index) => {

@@ -54,6 +54,10 @@ const messages = defineMessages({
     id: 'bss.module.settings',
     defaultMessage: '设置',
   },
+  devApps: {
+    id: 'bss.module.dev.apps',
+    defaultMessage: '更多应用',
+  },
 });
 
 export default messages;

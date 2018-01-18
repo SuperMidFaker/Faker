@@ -77,7 +77,7 @@ export default class ModuleSCOF extends React.Component {
     });
     linkMenus.push({
       single: true,
-      bottom: !sof.length > 0,
+      bottom: true,
       key: 'cms-settings',
       path: '/scof/settings',
       icon: 'logixon icon-setting-o',
@@ -87,19 +87,17 @@ export default class ModuleSCOF extends React.Component {
       if (sof.length === 1) {
         appMenus.push({
           single: true,
-          bottom: true,
           key: sof[0].app_id,
           path: sof[0].url,
-          icon: 'logixon icon-setting-o',
+          icon: 'logixon icon-apps',
           text: formatMsg(intl, sof[0].app_name),
         });
       } else {
         appMenus.push({
           single: false,
-          bottom: true,
           key: 'sof-app',
-          icon: 'logixon icon-setting-o',
-          text: formatMsg(intl, 'sof'),
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
         sof.forEach((s, index) => {

@@ -123,44 +123,42 @@ export default class Clearance extends React.Component {
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
-      const bottom = !cms.length > 0;
       linkMenus.push({
         single: true,
-        bottom,
+        bottom: true,
         key: 'cms-settings',
         path: '/clearance/settings',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
       });
-      if (cms.length > 0) {
-        if (cms.length === 1) {
-          appMenus.push({
-            single: true,
-            bottom: true,
-            key: cms[0].app_id,
-            path: cms[0].url,
-            icon: 'logixon icon-setting-o',
-            text: formatMsg(intl, cms[0].app_name),
+    }
+    if (cms.length > 0) {
+      if (cms.length === 1) {
+        appMenus.push({
+          single: true,
+          key: cms[0].app_id,
+          path: cms[0].url,
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, cms[0].app_name),
+        });
+      } else {
+        appMenus.push({
+          single: false,
+          key: 'cms-app',
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
+          sublinks: [],
+        });
+        cms.forEach((c, index) => {
+          appMenus[0].sublinks.push({
+            key: `cms-app-${index}`,
+            path: c.url,
+            text: formatMsg(intl, c.app_name),
           });
-        } else {
-          appMenus.push({
-            single: false,
-            bottom: true,
-            key: 'cms-app',
-            icon: 'logixon icon-setting-o',
-            text: formatMsg(intl, 'app'),
-            sublinks: [],
-          });
-          cms.forEach((c, index) => {
-            appMenus[0].sublinks.push({
-              key: `cms-app-${index}`,
-              path: c.url,
-              text: formatMsg(intl, c.app_name),
-            });
-          });
-        }
+        });
       }
     }
+
     this.setState({ linkMenus, appMenus });
     if (this.props.children === null) {
       this.redirectInitialRoute(this.props.privileges);

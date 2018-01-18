@@ -124,19 +124,17 @@ export default class Transport extends React.Component {
       if (tms.length === 1) {
         appMenus.push({
           single: true,
-          bottom: true,
           key: tms[0].app_id,
           path: tms[0].url,
-          icon: 'logixon icon-setting-o',
+          icon: 'logixon icon-apps',
           text: formatMsg(intl, tms[0].app_name),
         });
       } else {
         appMenus.push({
           single: false,
-          bottom: true,
           key: 'tms-app',
-          icon: 'logixon icon-setting-o',
-          text: formatMsg(intl, 'tms'),
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
         tms.forEach((t, index) => {

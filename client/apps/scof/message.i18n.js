@@ -33,6 +33,10 @@ const messages = defineMessages({
     id: 'sof.module.settings',
     defaultMessage: '设置',
   },
+  devApps: {
+    id: 'sof.module.dev.apps',
+    defaultMessage: '更多应用',
+  },
 });
 
 export default messages;
