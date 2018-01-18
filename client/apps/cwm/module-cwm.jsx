@@ -16,6 +16,7 @@ const formatMsg = format(messages);
   state => ({
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
+    bwm: state.account.apps.bwm,
   }),
   { loadWhse, switchDefaultWhse }
 )
@@ -27,10 +28,12 @@ export default class ModuleCWM extends React.Component {
   };
   state = {
     linkMenus: [],
+    appMenus: [],
   }
   componentWillMount() {
-    const { intl } = this.props;
+    const { intl, bwm } = this.props;
     const linkMenus = [];
+    const appMenus = [];
     linkMenus.push({
       single: true,
       key: 'cwm-dashboard',
@@ -121,13 +124,41 @@ export default class ModuleCWM extends React.Component {
     });
     linkMenus.push({
       single: true,
-      bottom: true,
+      bottom: !bwm.length > 0,
       key: 'cwm-settings',
       path: '/cwm/settings/warehouse',
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
     });
-    this.setState({ linkMenus });
+    if (bwm.length > 0) {
+      if (bwm.length === 1) {
+        appMenus.push({
+          single: true,
+          bottom: true,
+          key: bwm[0].app_id,
+          path: bwm[0].url,
+          icon: 'logixon icon-setting-o',
+          text: formatMsg(intl, bwm[0].app_name),
+        });
+      } else {
+        appMenus.push({
+          single: false,
+          bottom: true,
+          key: 'bwm-app',
+          icon: 'logixon icon-setting-o',
+          text: formatMsg(intl, 'bwm'),
+          sublinks: [],
+        });
+        bwm.forEach((b, index) => {
+          appMenus[0].sublinks.push({
+            key: `bwm-app-${index}`,
+            path: b.url,
+            text: formatMsg(intl, b.app_name),
+          });
+        });
+      }
+    }
+    this.setState({ linkMenus, appMenus });
     if (!this.props.whse.code && typeof window !== 'undefined') {
       let defaultWhse = this.props.whses.length > 0 ? this.props.whses[0].code : null;
       if (window.localStorage) {
@@ -167,6 +198,7 @@ export default class ModuleCWM extends React.Component {
     return (
       <CollapsibleSiderLayout
         links={this.state.linkMenus}
+        appMenus={this.state.appMenus}
         childContent={this.props.children}
         location={this.props.location}
       />

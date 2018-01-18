@@ -42,6 +42,10 @@ export default class CollapsibleSiderLayout extends PureComponent {
         group: PropTypes.string,
       })),
     })).isRequired,
+    appMenus: PropTypes.arrayOf(PropTypes.shape({
+      app_name: PropTypes.string,
+      url: PropTypes.string,
+    })),
     showLogo: PropTypes.bool,
   }
   state = {
@@ -108,9 +112,13 @@ export default class CollapsibleSiderLayout extends PureComponent {
       openedKey: ev.keyPath.slice(1),
     });
   }
+  handleAppClick = (url) => {
+    const win = window.open(url, '_blank');
+    win.focus();
+  }
   render() {
     const links = this.props.links.filter(l => !l.invisible);
-    const { childContent, showLogo } = this.props;
+    const { childContent, showLogo, appMenus } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
         <Sider
@@ -195,6 +203,38 @@ export default class CollapsibleSiderLayout extends PureComponent {
                     </SubMenu>
                   );
               })
+            }
+            {
+              appMenus.map((app) => {
+                if (app.single) {
+                  return (
+                    <MenuItem key={app.key} disabled={app.disabled} className="bottom-menu-item">
+                      <NavLink onChange={() => this.handleAppClick(app.path)}>
+                        <i className={`icon ${app.icon}`} />
+                        <span className="nav-text">{app.text}</span>
+                      </NavLink>
+                    </MenuItem>
+                  );
+                }
+                const subMenuItems = appMenus[0].sublinks.map(sub => (
+                  <MenuItem key={sub.key} disabled={sub.disabled}>
+                    <NavLink onChange={() => this.handleAppClick(sub.path)}>
+                      {sub.icon && <i className={`icon ${sub.icon}`} />}
+                      <span className="nav-text">{sub.text}</span>
+                    </NavLink>
+                  </MenuItem>));
+                return (
+                  <SubMenu
+                    key={app.key}
+                    disabled={app.disabled}
+                    className={this.state.openedKey[0] === app.key ? 'ant-menu-submenu-selected' : ''}
+                    title={<div><i className={`icon ${app.icon}`} /><span className="nav-text">{app.text}</span></div>}
+                  >
+                    { subMenuItems }
+                  </SubMenu>
+                );
+              })
+
             }
           </Menu>
         </Sider>

@@ -13,6 +13,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(state => ({
   privileges: state.account.privileges,
+  tms: state.account.apps.tms,
 }))
 export default class Transport extends React.Component {
   static propTypes = {
@@ -30,10 +31,12 @@ export default class Transport extends React.Component {
   }
   state = {
     linkMenus: [],
+    appMenus: [],
   }
   componentWillMount() {
-    const { privileges, intl } = this.props;
+    const { privileges, intl, tms } = this.props;
     const linkMenus = [];
+    const appMenus = [];
     if (hasPermission(privileges, { module: 'transport', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
@@ -102,7 +105,7 @@ export default class Transport extends React.Component {
     if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
       linkMenus.push({
         single: false,
-        bottom: true,
+        bottom: !tms.length > 0,
         key: 'tms-6',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
@@ -117,7 +120,35 @@ export default class Transport extends React.Component {
         }],
       });
     }
-    this.setState({ linkMenus });
+    if (tms.length > 0) {
+      if (tms.length === 1) {
+        appMenus.push({
+          single: true,
+          bottom: true,
+          key: tms[0].app_id,
+          path: tms[0].url,
+          icon: 'logixon icon-setting-o',
+          text: formatMsg(intl, tms[0].app_name),
+        });
+      } else {
+        appMenus.push({
+          single: false,
+          bottom: true,
+          key: 'tms-app',
+          icon: 'logixon icon-setting-o',
+          text: formatMsg(intl, 'tms'),
+          sublinks: [],
+        });
+        tms.forEach((t, index) => {
+          appMenus[0].sublinks.push({
+            key: `tms-app-${index}`,
+            path: t.url,
+            text: formatMsg(intl, t.app_name),
+          });
+        });
+      }
+    }
+    this.setState({ linkMenus, appMenus });
     if (this.props.children === null) {
       this.redirectInitialRoute(this.props.privileges);
     }
@@ -156,6 +187,7 @@ export default class Transport extends React.Component {
     return (
       <CollapsibleSiderLayout
         links={this.state.linkMenus}
+        appMenus={this.state.appMenus}
         childContent={this.props.children}
         location={this.props.location}
       />

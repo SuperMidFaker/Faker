@@ -15,6 +15,7 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     privileges: state.account.privileges,
     trackings: state.scvTracking.trackings,
+    sof: state.account.apps.sof,
   }),
   { loadTrackings }
 )
@@ -27,11 +28,13 @@ export default class ModuleSCOF extends React.Component {
   };
   state = {
     linkMenus: [],
+    appMenus: [],
   }
   componentWillMount() {
     this.props.loadTrackings(this.props.tenantId);
-    const { intl } = this.props;
+    const { intl, sof } = this.props;
     const linkMenus = [];
+    const appMenus = [];
     linkMenus.push({
       single: true,
       key: 'scof-order',
@@ -74,13 +77,41 @@ export default class ModuleSCOF extends React.Component {
     });
     linkMenus.push({
       single: true,
-      bottom: true,
+      bottom: !sof.length > 0,
       key: 'cms-settings',
       path: '/scof/settings',
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
     });
-    this.setState({ linkMenus });
+    if (sof.length > 0) {
+      if (sof.length === 1) {
+        appMenus.push({
+          single: true,
+          bottom: true,
+          key: sof[0].app_id,
+          path: sof[0].url,
+          icon: 'logixon icon-setting-o',
+          text: formatMsg(intl, sof[0].app_name),
+        });
+      } else {
+        appMenus.push({
+          single: false,
+          bottom: true,
+          key: 'sof-app',
+          icon: 'logixon icon-setting-o',
+          text: formatMsg(intl, 'sof'),
+          sublinks: [],
+        });
+        sof.forEach((s, index) => {
+          appMenus[0].sublinks.push({
+            key: `sof-app-${index}`,
+            path: s.url,
+            text: formatMsg(intl, s.app_name),
+          });
+        });
+      }
+    }
+    this.setState({ linkMenus, appMenus });
   }
   componentWillReceiveProps(nextProps) {
     let trackingSublinks = [];
@@ -113,6 +144,7 @@ export default class ModuleSCOF extends React.Component {
     return (
       <CollapsibleSiderLayout
         links={this.state.linkMenus}
+        appMenus={this.state.appMenus}
         childContent={this.props.children}
         location={this.props.location}
       />
