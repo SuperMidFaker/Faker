@@ -9,7 +9,7 @@ import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt,
   showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
 import { toggleDeclImportModal } from 'common/reducers/cmsManifestImport';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
-import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadModelAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 
@@ -191,7 +191,7 @@ function calculateTotal(bodies, currencies) {
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
     billMeta: state.cmsManifest.billMeta,
-    adaptors: state.saasLineFileAdaptor.adaptors,
+    adaptors: state.saasLineFileAdaptor.modelAdaptors,
   }),
   {
     loadBill,
@@ -212,7 +212,7 @@ function calculateTotal(bodies, currencies) {
     updateBillBody,
     getElementByHscode,
     toggleDeclImportModal,
-    loadAdaptors,
+    loadModelAdaptors,
   }
 )
 export default class ManifestBodyPane extends React.Component {
@@ -268,10 +268,9 @@ export default class ManifestBodyPane extends React.Component {
     };
   }
   componentDidMount() {
-    this.props.loadAdaptors(
+    this.props.loadModelAdaptors(
       this.props.billHead.owner_cuspartner_id,
       [LINE_FILE_ADAPTOR_MODELS.CMS_MANIFEST_BODY.key],
-      true
     );
   }
   componentWillReceiveProps(nextProps) {

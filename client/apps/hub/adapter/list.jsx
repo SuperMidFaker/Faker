@@ -27,10 +27,10 @@ const { Content } = Layout;
     tenantId: state.account.tenantId,
     parentTenantId: state.account.parentTenantId,
     code: state.account.code,
-    adaptors: state.saasLineFileAdaptor.adaptors,
+    adaptors: state.saasLineFileAdaptor.adaptorList,
     customers: state.partner.partners,
-    pageSize: state.saasLineFileAdaptor.adaptors.pageSize,
-    current: state.saasLineFileAdaptor.adaptors.current,
+    pageSize: state.saasLineFileAdaptor.adaptorList.pageSize,
+    current: state.saasLineFileAdaptor.adaptorList.current,
   }),
   {
     showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor,
@@ -45,7 +45,7 @@ export default class ApiAuthList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
-    this.props.loadAdaptors('', '', '', this.props.pageSize, 1);
+    this.props.loadAdaptors('', '', this.props.pageSize, 1);
     this.props.loadPartners({
       role: PARTNER_ROLES.CUS,
     });
@@ -75,7 +75,7 @@ export default class ApiAuthList extends React.Component {
   }
   handleReload = () => {
     const { pageSize, current } = this.props;
-    this.props.loadAdaptors('', '', '', pageSize, current);
+    this.props.loadAdaptors('', '', pageSize, current);
   }
   render() {
     const { adaptors } = this.props;
@@ -85,7 +85,7 @@ export default class ApiAuthList extends React.Component {
       total: adaptors.total,
       showTotal: total => `共 ${total} 条`,
       onChange: (page, pageSize) => {
-        this.props.loadAdaptors('', '', '', pageSize, page);
+        this.props.loadAdaptors('', '', pageSize, page);
       },
     };
     return (

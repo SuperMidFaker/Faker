@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/saas/lineadaptor/', [
   'LOAD_ADAPTORS', 'LOAD_ADAPTORS_SUCCEED', 'LOAD_ADAPTORS_FAIL',
+  'LOAD_MLADAPTORS', 'LOAD_MLADAPTORS_SUCCEED', 'LOAD_MLADAPTORS_FAIL',
   'LOAD_ADAPTOR', 'LOAD_ADAPTOR_SUCCEED', 'LOAD_ADAPTOR_FAIL',
   'ADD_ADAPTOR', 'ADD_ADAPTOR_SUCCEED', 'ADD_ADAPTOR_FAIL',
   'UPDATE_COLFD', 'UPDATE_COLFD_SUCCEED', 'UPDATE_COLFD_FAIL',
@@ -14,11 +15,12 @@ const actionTypes = createActionTypes('@@welogix/saas/lineadaptor/', [
 
 const initState = {
   loadingAdaptors: false,
-  adaptors: {
+  adaptorList: {
     data: [],
     pageSize: 10,
     current: 1,
   },
+  modelAdaptors: [],
   loadingAdaptor: false,
   adaptor: { name: '', columns: [] },
   adaptorModal: {
@@ -32,11 +34,13 @@ const initState = {
 export default function reducer(state = initState, action) {
   switch (action.type) {
     case actionTypes.LOAD_ADAPTORS:
-      return { ...state, loadingAdaptors: true, adaptors: [] };
+      return { ...state, loadingAdaptors: true };
     case actionTypes.LOAD_ADAPTORS_SUCCEED:
-      return { ...state, loadingAdaptors: false, adaptors: action.result.data };
+      return { ...state, loadingAdaptors: false, adaptorList: action.result.data };
     case actionTypes.LOAD_ADAPTORS_FAIL:
       return { ...state, loadingAdaptors: false };
+    case actionTypes.LOAD_MLADAPTORS_SUCCEED:
+      return { ...state, modelAdaptors: action.result.data };
     case actionTypes.LOAD_ADAPTOR:
       return { ...state, loadingAdaptors: true, adaptor: initState.adaptor };
     case actionTypes.LOAD_ADAPTOR_SUCCEED:
@@ -56,7 +60,7 @@ export default function reducer(state = initState, action) {
   }
 }
 
-export function loadAdaptors(ownerPid, models, active, pageSize, current) {
+export function loadAdaptors(ownerPid, models, pageSize, current) {
   return {
     [CLIENT_API]: {
       types: [
@@ -67,7 +71,24 @@ export function loadAdaptors(ownerPid, models, active, pageSize, current) {
       endpoint: 'v1/saas/linefile/adaptors',
       method: 'get',
       params: {
-        ownerPid, models: JSON.stringify(models), active, pageSize, current,
+        ownerPid, models: JSON.stringify(models), pageSize, current,
+      },
+    },
+  };
+}
+
+export function loadModelAdaptors(ownerPid, models) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MLADAPTORS,
+        actionTypes.LOAD_MLADAPTORS_SUCCEED,
+        actionTypes.LOAD_MLADAPTORS_FAIL,
+      ],
+      endpoint: 'v1/saas/linefile/model/adaptors',
+      method: 'get',
+      params: {
+        ownerPid, models: JSON.stringify(models),
       },
     },
   };

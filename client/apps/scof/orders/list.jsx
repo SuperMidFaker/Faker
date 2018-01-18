@@ -11,7 +11,7 @@ import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR
 import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
-import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadModelAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -61,7 +61,7 @@ function fetchData({ state, dispatch }) {
   orders: state.crmOrders.orders,
   filters: state.crmOrders.orderFilters,
   partners: state.partner.partners,
-  adaptors: state.saasLineFileAdaptor.adaptors,
+  adaptors: state.saasLineFileAdaptor.modelAdaptors,
   flows: state.scofFlow.partnerFlows,
 }), {
   loadOrders,
@@ -70,7 +70,7 @@ function fetchData({ state, dispatch }) {
   acceptOrder,
   emptyFlows,
   loadPartnerFlowList,
-  loadAdaptors,
+  loadModelAdaptors,
   hideDock,
   loadOrderDetail,
 })
@@ -113,7 +113,7 @@ export default class OrderList extends React.Component {
       this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
     }
     this.props.loadPartnerFlowList();
-    this.props.loadAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key], true);
+    this.props.loadModelAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
@@ -213,7 +213,7 @@ export default class OrderList extends React.Component {
   }
   handleImportClientChange = (customerPartnerId) => {
     this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
-    this.props.loadAdaptors(customerPartnerId, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key], true);
+    this.props.loadModelAdaptors(customerPartnerId, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
     this.setState({ importPanel: { ...this.state.importPanel, partner_id: customerPartnerId } });
   }
   handleImportFlowChange = (flowId) => {
