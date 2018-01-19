@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
   'INSTALL_SFEXPRESS', 'INSTALL_SFEXPRESS_SUCCEED', 'INSTALL_SFEXPRESS_FAIL',
   'LOAD_SFEXPRESS', 'LOAD_SFEXPRESS_SUCCEED', 'LOAD_SFEXPRESS_FAIL',
   'UPDATE_SFEXPRESS', 'UPDATE_SFEXPRESS_SUCCEED', 'UPDATE_SFEXPRESS_FAIL',
+  'TOGGLE_CREATE_MODAL',
 ]);
 
 const initialState = {
@@ -43,6 +44,10 @@ const initialState = {
   shftzApp: {},
   sfexpress: {},
   whseSupervisonApps: [],
+  createModal: {
+    visible: false,
+    type: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -106,6 +111,15 @@ export default function reducer(state = initialState, action) {
         currentApp: {
           ...state.currentApp,
           enabled: action.result.data.enabled,
+        },
+      };
+    case actionTypes.TOGGLE_CREATE_MODAL:
+      return {
+        ...state,
+        createModal: {
+          ...state.createModal,
+          visible: action.visible,
+          type: action.appType,
         },
       };
     default:
@@ -350,5 +364,13 @@ export function updateSFExpressApp(easipass) {
       method: 'post',
       data: easipass,
     },
+  };
+}
+
+export function toggleCreateModal(visible, appType) {
+  return {
+    type: actionTypes.TOGGLE_CREATE_MODAL,
+    visible,
+    appType,
   };
 }
