@@ -22,13 +22,13 @@ import PackDataHub from './hub/packDataHub';
 import * as Collab from './hub/collab';
 import * as HubDev from './hub/dev';
 import * as HubAdapter from './hub/adapter';
-import * as OpenIntegration from './hub/integration';
-import * as IntegraionArCTM from './hub/integration/arctm';
-import * as IntegraionQuickPass from './hub/integration/quickpass';
-import * as IntegraionEasipassEDI from './hub/integration/easipass';
-import * as IntegraionSingleWindow from './hub/integration/singlewindow';
-import * as IntegraionSHFTZ from './hub/integration/shftz';
-import * as IntegraionSFExpress from './hub/integration/sfexpress';
+import * as HubIntegration from './hub/integration';
+import * as HubArCTM from './hub/integration/arctm';
+import * as HubQuickPass from './hub/integration/quickpass';
+import * as HubEasipassEDI from './hub/integration/easipass';
+import * as HubSingleWindow from './hub/integration/singlewindow';
+import * as HubSHFTZ from './hub/integration/shftz';
+import * as HubSFExpress from './hub/integration/sfexpress';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -173,31 +173,25 @@ export default(store) => {
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">
-            <Route path="apps" component={OpenIntegration.AppsList} />
-            <Route path="installed" component={OpenIntegration.InstalledList} />
+            <Route path="apps" component={HubIntegration.AppsList} />
+            <Route path="installed" component={HubIntegration.InstalledList} />
             <Route path="arctm">
-              <Route path="install" component={IntegraionArCTM.Install} />
-              <Route path="config/:uuid" component={IntegraionArCTM.Config} />
+              <Route path="config/:uuid" component={HubArCTM.Config} />
             </Route>
             <Route path="quickpass">
-              <Route path="install" component={IntegraionQuickPass.Install} />
-              <Route path="config/:uuid" component={IntegraionQuickPass.Config} />
+              <Route path="config/:uuid" component={HubQuickPass.Config} />
             </Route>
             <Route path="easipass">
-              <Route path="install" component={IntegraionEasipassEDI.Install} />
-              <Route path="config/:uuid" component={IntegraionEasipassEDI.Config} />
+              <Route path="config/:uuid" component={HubEasipassEDI.Config} />
             </Route>
             <Route path="singlewindow">
-              <Route path="install" component={IntegraionSingleWindow.Install} />
-              <Route path="config/:uuid" component={IntegraionSingleWindow.Config} />
+              <Route path="config/:uuid" component={HubSingleWindow.Config} />
             </Route>
             <Route path="shftz">
-              <Route path="install" component={IntegraionSHFTZ.Install} />
-              <Route path="config/:uuid" component={IntegraionSHFTZ.Config} />
+              <Route path="config/:uuid" component={HubSHFTZ.Config} />
             </Route>
             <Route path="sfexpress">
-              <Route path="install" component={IntegraionSFExpress.Install} />
-              <Route path="config/:uuid" component={IntegraionSFExpress.Config} />
+              <Route path="config/:uuid" component={HubSFExpress.Config} />
             </Route>
           </Route>
           <Route path="collab">

@@ -66,7 +66,7 @@ export default class ConfigQuickpass extends React.Component {
         </PageHeader>
         <Content className="page-content layout-fixed-width">
           <Card bodyStyle={{ padding: 0 }}>
-            <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
+            <Collapse accordion bordered={false} defaultActiveKey={['params']}>
               <Panel header="基本信息" key="profile">
                 <ProfileForm app={quickpass} />
               </Panel>

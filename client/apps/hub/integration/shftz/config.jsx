@@ -66,7 +66,7 @@ export default class ConfigSHFTZ extends React.Component {
         </PageHeader>
         <Content className="page-content layout-fixed-width">
           <Card bodyStyle={{ padding: 0 }}>
-            <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
+            <Collapse accordion bordered={false} defaultActiveKey={['params']}>
               <Panel header="基本信息" key="profile">
                 <ProfileForm app={shftz} />
               </Panel>
