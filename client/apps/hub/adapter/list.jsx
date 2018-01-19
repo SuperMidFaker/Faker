@@ -84,8 +84,8 @@ export default class ApiAuthList extends React.Component {
   render() {
     const { adaptors } = this.props;
     const pagination = {
-      pageSize: adaptors.pageSize,
-      current: adaptors.current,
+      pageSize: Number(adaptors.pageSize),
+      current: Number(adaptors.current),
       total: adaptors.total,
       showTotal: total => `共 ${total} 条`,
       onChange: (page, pageSize) => {

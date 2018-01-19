@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { Menu, Avatar, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { INTEGRATION_APPS } from 'common/constants';
+import { toggleCreateModal } from 'common/reducers/openIntegration';
+import { connect } from 'react-redux';
 import HubSiderMenu from '../menu';
+import CreateModal from './common/createModal';
 import { formatMsg } from './message.i18n';
 import './index.less';
 
@@ -11,6 +14,10 @@ const { Header, Content } = Layout;
 const { SubMenu } = Menu;
 
 @injectIntl
+@connect(
+  () => ({}),
+  { toggleCreateModal }
+)
 export default class IntegrationAppsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -23,6 +30,7 @@ export default class IntegrationAppsList extends React.Component {
     this.state = {
       selectedCategory: this.msg('categories'),
       catIcon: 'folder',
+      appList: INTEGRATION_APPS,
     };
   }
   msg = formatMsg(this.props.intl);
@@ -34,13 +42,18 @@ export default class IntegrationAppsList extends React.Component {
       this.setState({
         selectedCategory: this.msg('categories'),
         catIcon: 'folder',
+        appList: INTEGRATION_APPS,
       });
     } else {
       this.setState({
         selectedCategory: this.msg(ev.key),
         catIcon: 'folder-open',
+        appList: INTEGRATION_APPS.filter(app => app.category === ev.key),
       });
     }
+  }
+  toggleCreateModal = (type) => {
+    this.props.toggleCreateModal(true, type);
   }
   renderAppLogo(app) {
     if (app.app_type === 'EASIPASS') {
@@ -82,9 +95,11 @@ export default class IntegrationAppsList extends React.Component {
                 <Menu.Item key="all">
                   <Icon type="appstore" />{this.msg('allApps')}
                 </Menu.Item>
-                <SubMenu title={(<span>
-                  <Icon type={this.state.catIcon} />{this.state.selectedCategory}
-                </span>)}
+                <SubMenu
+                  title={(<span>
+                    <Icon type={this.state.catIcon} />{this.state.selectedCategory}
+                  </span>)}
+                  onTitleClick={this.handleSubMenuClick}
                 >
                   <Menu.Item key="catEnt">企业关务</Menu.Item>
                   <Menu.Item key="catCus">海关申报</Menu.Item>
@@ -94,7 +109,7 @@ export default class IntegrationAppsList extends React.Component {
               </Menu>
               <List
                 grid={{ gutter: 16, column: 6 }}
-                dataSource={INTEGRATION_APPS}
+                dataSource={this.state.appList}
                 renderItem={item => (
                   <List.Item>
                     <Card title={item.title} className="app-card">
@@ -102,12 +117,13 @@ export default class IntegrationAppsList extends React.Component {
                         {this.renderAppLogo(item)}
                       </div>
                       <div className="app-desc">{item.description}</div>
-                      <Button type="primary" icon="tool" onClick={() => this.handleInstall(item.link)}>安装</Button>
+                      <Button type="primary" icon="tool" onClick={() => this.toggleCreateModal(item.app_type)}>安装</Button>
                     </Card>
                   </List.Item>
                   )}
               />
             </Card>
+            <CreateModal />
           </Content>
         </Layout>
       </Layout>

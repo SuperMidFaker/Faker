@@ -18,6 +18,8 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
   'INSTALL_SFEXPRESS', 'INSTALL_SFEXPRESS_SUCCEED', 'INSTALL_SFEXPRESS_FAIL',
   'LOAD_SFEXPRESS', 'LOAD_SFEXPRESS_SUCCEED', 'LOAD_SFEXPRESS_FAIL',
   'UPDATE_SFEXPRESS', 'UPDATE_SFEXPRESS_SUCCEED', 'UPDATE_SFEXPRESS_FAIL',
+  'TOGGLE_CREATE_MODAL',
+  'UPDATE_INTE_BASIC_INFO', 'UPDATE_INTE_BASIC_INFO_SUCCEED', 'UPDATE_INTE_BASIC_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -43,6 +45,10 @@ const initialState = {
   shftzApp: {},
   sfexpress: {},
   whseSupervisonApps: [],
+  createModal: {
+    visible: false,
+    type: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -106,6 +112,15 @@ export default function reducer(state = initialState, action) {
         currentApp: {
           ...state.currentApp,
           enabled: action.result.data.enabled,
+        },
+      };
+    case actionTypes.TOGGLE_CREATE_MODAL:
+      return {
+        ...state,
+        createModal: {
+          ...state.createModal,
+          visible: action.visible,
+          type: action.appType,
         },
       };
     default:
@@ -349,6 +364,29 @@ export function updateSFExpressApp(easipass) {
       endpoint: 'v1/platform/integration/update/sfexpress',
       method: 'post',
       data: easipass,
+    },
+  };
+}
+
+export function toggleCreateModal(visible, appType) {
+  return {
+    type: actionTypes.TOGGLE_CREATE_MODAL,
+    visible,
+    appType,
+  };
+}
+
+export function updateInteBasicInfo({ name, uuid }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INTE_BASIC_INFO,
+        actionTypes.UPDATE_INTE_BASIC_INFO_SUCCEED,
+        actionTypes.UPDATE_INTE_BASIC_INFO_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/basic/info/update',
+      method: 'post',
+      data: { name, uuid },
     },
   };
 }
