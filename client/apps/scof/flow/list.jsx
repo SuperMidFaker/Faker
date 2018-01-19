@@ -26,7 +26,7 @@ const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadFlowList({
-    filter: JSON.stringify({ ...state.scofFlow.listFilter, name: '' }),
+    filter: JSON.stringify({ ...state.scofFlow.listFilter, name: '', status: '' }),
     pageSize: state.scofFlow.flowList.pageSize,
     current: state.scofFlow.flowList.current,
   })));
