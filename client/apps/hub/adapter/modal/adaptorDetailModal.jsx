@@ -44,14 +44,25 @@ export default class AdaptorDetailModal extends Component {
           width: 200,
           render: (value, row) => {
             if (row.editable) {
+              let columns = [];
+              const modelKeys = Object.keys(LINE_FILE_ADAPTOR_MODELS);
+              for (let i = 0; i < modelKeys.length; i++) {
+                const model = modelKeys[i];
+                if (LINE_FILE_ADAPTOR_MODELS[model].key === nextProps.adaptor.biz_model) {
+                  columns = LINE_FILE_ADAPTOR_MODELS[model].columns;
+                  break;
+                }
+              }
               return (
-                <EditableCell value={value} cellTrigger type="select"
-                  options={LINE_FILE_ADAPTOR_MODELS[nextProps.adaptor.biz_model].columns.map(acol => ({ key: acol.field, text: acol.label }))}
+                <EditableCell
+                  value={value}
+                  cellTrigger
+                  type="select"
+                  options={columns.map(acol => ({ key: acol.field, text: acol.label }))}
                   onSave={field => this.handleFieldMap(col.id, field)}
                 />);
-            } else {
-              return value;
             }
+            return value;
           },
         });
         lineData[0][dataIndex] = col.desc1;
@@ -73,18 +84,32 @@ export default class AdaptorDetailModal extends Component {
     const { visible, adaptor } = this.props;
     const { lineColumns, lineData, scrollX } = this.state;
     return (
-      <Modal maskClosable={false} title={adaptor.name} width="100%" wrapClassName="fullscreen-modal"
-        footer={null} onCancel={this.handleEditCancel} visible={visible}
+      <Modal
+        maskClosable={false}
+        title={adaptor.name}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        footer={null}
+        onCancel={this.handleEditCancel}
+        visible={visible}
       >
         <Row>
           <Col span={5}>
             <FormItem label="起始行" {...formItemLayout}>
-              <EditableCell value={adaptor.start_line} style={{ width: 160 }} cellTrigger onSave={value => this.props.updateStartLine(adaptor.code, value)} />
+              <EditableCell
+                value={adaptor.start_line}
+                style={{ width: 160 }}
+                cellTrigger
+                onSave={value => this.props.updateStartLine(adaptor.code, value)}
+              />
             </FormItem>
           </Col>
         </Row>
-        <Table dataSource={lineData} columns={lineColumns}
-          scroll={{ x: scrollX, y: 600 }} pagination={false}
+        <Table
+          dataSource={lineData}
+          columns={lineColumns}
+          scroll={{ x: scrollX, y: 600 }}
+          pagination={false}
         />
       </Modal>
     );
