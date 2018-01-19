@@ -8,7 +8,7 @@ import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 
 const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 14 },
@@ -18,6 +18,8 @@ const formItemLayout = {
   state => ({
     visible: state.saasLineFileAdaptor.adaptorModal.visible,
     customers: state.partner.partners,
+    pageSize: state.saasLineFileAdaptor.adaptorList.pageSize,
+    current: state.saasLineFileAdaptor.adaptorList.current,
   }),
   {
     showAdaptorModal, hideAdaptorModal, loadPartners, addAdaptor, loadAdaptors,
@@ -47,7 +49,7 @@ export default class AdaptorModal extends Component {
     }).then((result) => {
       if (!result.error) {
         this.props.hideAdaptorModal();
-        this.props.loadAdaptors();
+        this.props.loadAdaptors('', '', this.props.pageSize, this.props.current);
       }
     });
   }
@@ -75,7 +77,8 @@ export default class AdaptorModal extends Component {
     const { visible, customers } = this.props;
     const { adaptorName, model } = this.state;
     return (
-      <Modal maskClosable={false}
+      <Modal
+        maskClosable={false}
         title="新增适配器"
         onOk={this.handleAddAdaptor}
         onCancel={this.handleCancel}
