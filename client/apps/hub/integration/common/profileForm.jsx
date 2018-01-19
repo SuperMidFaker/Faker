@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Divider, Form, Input, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { updateAppStatus, deleteApp } from 'common/reducers/openIntegration';
+import { updateAppStatus, deleteApp, updateInteBasicInfo } from 'common/reducers/openIntegration';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -14,7 +14,7 @@ const { confirm } = Modal;
   state => ({
     app: state.openIntegration.currentApp,
   }),
-  { updateAppStatus, deleteApp }
+  { updateAppStatus, deleteApp, updateInteBasicInfo }
 )
 @Form.create()
 export default class ProfileForm extends Component {
@@ -57,6 +57,21 @@ export default class ProfileForm extends Component {
       },
     });
   }
+  handleSave = () => {
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.props.updateInteBasicInfo({
+          ...values, uuid: this.props.app.uuid,
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            message.success('更新成功');
+          }
+        });
+      }
+    });
+  }
   render() {
     const { form: { getFieldDecorator }, app } = this.props;
     return (
@@ -68,7 +83,7 @@ export default class ProfileForm extends Component {
           })(<Input />)}
         </FormItem>
         <FormItem>
-          <Button type="primary" icon="save">{this.msg('save')}</Button>
+          <Button type="primary" icon="save" onClick={this.handleSave}>{this.msg('save')}</Button>
         </FormItem>
         <Divider />
         <FormItem>

@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
   'LOAD_SFEXPRESS', 'LOAD_SFEXPRESS_SUCCEED', 'LOAD_SFEXPRESS_FAIL',
   'UPDATE_SFEXPRESS', 'UPDATE_SFEXPRESS_SUCCEED', 'UPDATE_SFEXPRESS_FAIL',
   'TOGGLE_CREATE_MODAL',
+  'UPDATE_INTE_BASIC_INFO', 'UPDATE_INTE_BASIC_INFO_SUCCEED', 'UPDATE_INTE_BASIC_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -372,5 +373,20 @@ export function toggleCreateModal(visible, appType) {
     type: actionTypes.TOGGLE_CREATE_MODAL,
     visible,
     appType,
+  };
+}
+
+export function updateInteBasicInfo({ name, uuid }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INTE_BASIC_INFO,
+        actionTypes.UPDATE_INTE_BASIC_INFO_SUCCEED,
+        actionTypes.UPDATE_INTE_BASIC_INFO_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/basic/info/update',
+      method: 'post',
+      data: { name, uuid },
+    },
   };
 }
