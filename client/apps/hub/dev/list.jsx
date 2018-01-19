@@ -76,8 +76,8 @@ export default class DevAppList extends React.Component {
   render() {
     const { apps } = this.props;
     const pagination = {
-      pageSize: apps.pageSize,
-      current: apps.current,
+      pageSize: Number(apps.pageSize),
+      current: Number(apps.current),
       total: apps.total,
       showTotal: total => `共 ${total} 条`,
       onChange: (page, pageSize) => {
