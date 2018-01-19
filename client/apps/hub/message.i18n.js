@@ -2,29 +2,37 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
-  settings: {
-    id: 'hub.settings',
-    defaultMessage: '设置',
+  hub: {
+    id: 'hub',
+    defaultMessage: '协作平台',
   },
-  cancel: {
-    id: 'hub.settings.cancel',
-    defaultMessage: '取消',
+  integration: {
+    id: 'hub.integration',
+    defaultMessage: '扩展与集成',
   },
-  save: {
-    id: 'hub.settings.save',
-    defaultMessage: '保存',
+  appStore: {
+    id: 'hub.integration.app.store',
+    defaultMessage: '应用市场',
   },
-  modify: {
-    id: 'hub.settings.modify',
-    defaultMessage: '修改',
+  installedApps: {
+    id: 'hub.integration.installed.apps',
+    defaultMessage: '已安装应用',
   },
-  config: {
-    id: 'hub.settings.config',
-    defaultMessage: '配置',
+  devApps: {
+    id: 'hub.dev.apps',
+    defaultMessage: '自建应用',
   },
-  orderConfig: {
-    id: 'hub.settings.order.config',
-    defaultMessage: '订单类型配置',
+  dataAdapters: {
+    id: 'hub.data.adapters',
+    defaultMessage: '数据适配器',
+  },
+  collab: {
+    id: 'hub.collab',
+    defaultMessage: '协作',
+  },
+  invitations: {
+    id: 'hub.collab.invitations',
+    defaultMessage: '协作邀请',
   },
 });
 

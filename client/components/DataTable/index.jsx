@@ -39,6 +39,7 @@ class DataSource {
 class DataTable extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-table',
+    fixedBody: true,
   }
   static propTypes = {
     baseCls: PropTypes.string,
@@ -53,6 +54,7 @@ class DataTable extends React.Component {
     selectedRowKeys: PropTypes.arrayOf(PropTypes.string),
     handleDeselectRows: PropTypes.func,
     noBorder: PropTypes.bool,
+    fixedBody: PropTypes.bool,
     noSetting: PropTypes.bool,
     total: PropTypes.node,
   }
@@ -251,7 +253,9 @@ class DataTable extends React.Component {
     this.setState({ popoverColumns });
   }
   render() {
-    const { baseCls, noBorder, noSetting } = this.props;
+    const {
+      baseCls, noBorder, fixedBody, noSetting,
+    } = this.props;
     let { dataSource } = this.props;
     let { pagination } = this.props;
     if (dataSource && !isLocalDataSource(dataSource)) {
@@ -289,6 +293,9 @@ class DataTable extends React.Component {
     const classes = classNames(baseCls, {
       [`${baseCls}-no-border`]: noBorder,
     });
+    const bodyClasses = classNames(`${baseCls}-body`, {
+      [`${baseCls}-body-fixed`]: fixedBody,
+    });
     return (
       <div className={classes}>
         <div className={`${baseCls}-toolbar`}>
@@ -320,7 +327,7 @@ class DataTable extends React.Component {
             {this.props.total}
           </div>}
         </div>
-        <div className={`${baseCls}-body ${baseCls}-body-fixed`}>
+        <div className={bodyClasses}>
           <Table
             {...this.props}
             dataSource={dataSource}

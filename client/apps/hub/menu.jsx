@@ -22,34 +22,32 @@ export default class HubSiderMenu extends React.Component {
     return (
       <Sider className="menu-sider">
         <Menu mode="inline" selectedKeys={[this.props.currentKey]}>
-          <MenuItemGroup key="integration" title="应用">
+          <MenuItemGroup key="integration" title={this.msg('integration')}>
             <Menu.Item key="apps">
               <NavLink to="/hub/integration/apps">
-                <Icon type="shop" />应用市场
+                <Icon type="shop" />{this.msg('appStore')}
               </NavLink>
             </Menu.Item>
             <Menu.Item key="installed">
               <NavLink to="/hub/integration/installed">
-                <Icon type="api" />整合应用
+                <Icon type="api" />{this.msg('installedApps')}
               </NavLink>
             </Menu.Item>
             <Menu.Item key="dev">
               <NavLink to="/hub/dev">
-                <Icon type="code-o" />自建应用
+                <Icon type="code-o" />{this.msg('devApps')}
               </NavLink>
             </Menu.Item>
-          </MenuItemGroup>
-          <MenuItemGroup key="data" title="数据">
             <Menu.Item key="adapter">
               <NavLink to="/hub/adapter">
-                <Icon type="usb" />数据适配
+                <Icon type="usb" />{this.msg('dataAdapters')}
               </NavLink>
             </Menu.Item>
           </MenuItemGroup>
-          <MenuItemGroup key="collab" title="协作">
+          <MenuItemGroup key="collab" title={this.msg('collab')}>
             <Menu.Item key="partners">
               <NavLink to="/hub/collab/partners">
-                <span><Icon type="team" /><span>协作邀请</span></span>
+                <span><Icon type="team" /><span>{this.msg('invitations')}</span></span>
               </NavLink>
             </Menu.Item>
           </MenuItemGroup>

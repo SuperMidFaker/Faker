@@ -18,7 +18,7 @@ import * as Corp from './corp';
 import * as CorpMembers from './corp/members';
 import * as CorpRole from './corp/role';
 import * as CorpLogs from './corp/logs';
-import PackDataHub from './hub/packDataHub';
+import PackCollabHub from './hub/packCollabHub';
 import * as Collab from './hub/collab';
 import * as HubDev from './hub/dev';
 import * as HubAdapter from './hub/adapter';
@@ -165,8 +165,8 @@ export default(store) => {
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
         </Route>
-        <Route path="hub" component={PackDataHub}>
-          <IndexRedirect to="/hub/integration/installed" />
+        <Route path="hub" component={PackCollabHub}>
+          <IndexRedirect to="/hub/integration/apps" />
           <Route path="dev">
             <IndexRoute component={HubDev.List} />
             <Route path=":appId" component={HubDev.Config} />

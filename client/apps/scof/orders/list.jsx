@@ -7,7 +7,7 @@ import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, L
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
-import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
@@ -245,16 +245,15 @@ export default class OrderList extends React.Component {
 
     const columns = [{
       title: '订单',
-      width: 260,
-      fixed: 'left',
+      width: 180,
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
       dataIndex: 'order_status',
-      width: 100,
+      width: 60,
       render: (o, record) => {
         const percent = record.flow_node_num ?
           Number(((record.finish_num / record.flow_node_num) * 100).toFixed(1)) : 0;
-        return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={50} />
+        return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={40} />
           <div className="mdc-text-grey table-font-small">
             <Tooltip title={`创建于${moment(record.created_date).format('YYYY.MM.DD HH:mm')}`} placement="bottom">
               <Icon type="clock-circle-o" /> {moment(record.created_date).fromNow()}
@@ -263,34 +262,25 @@ export default class OrderList extends React.Component {
         </div>);
       },
     }, {
-      dataIndex: 'cust_shipmt_transfer',
-      width: 30,
-      render: (o) => {
-        const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === o)[0];
-        return transfer && <Tooltip title={transfer.text} ><Icon type={transfer.icon} /></Tooltip>;
-      },
-    }, {
-      width: 250,
+      width: 200,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
       title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
-      title: '执行者',
       dataindex: 'exec_login_id',
-      width: 120,
-      render: lid => <UserAvatar size="small" loginId={lid} showName />,
+      width: 40,
+      render: lid => <UserAvatar size="small" loginId={lid} />,
     }, {
       title: '操作',
-      width: 120,
+      width: 90,
       fixed: 'right',
-      className: 'editable-row-operations',
       render: (o, record) => {
         if (record.order_status === CRM_ORDER_STATUS.created) {
           return (
             <div>
               {record.flow_node_num > 0 &&
-                <RowAction onClick={this.handleStart} label={this.msg('startOrder')} icon="caret-right" row={record} />
+                <RowAction onClick={this.handleStart} tooltip={this.msg('startOrder')} icon="caret-right" row={record} />
               }
               <RowAction overlay={(
                 <Menu onClick={this.handleMenuClick}>
@@ -392,6 +382,7 @@ export default class OrderList extends React.Component {
         <Content className="page-content" key="main">
           <DataTable
             noSetting
+            fixedBody={false}
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}

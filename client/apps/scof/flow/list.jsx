@@ -11,6 +11,7 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
+import UserAvatar from 'client/components/UserAvatar';
 import EditableCell from 'client/components/EditableCell';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
@@ -107,9 +108,14 @@ export default class FlowList extends React.Component {
   }, {
     title: this.msg('关联客户'),
     dataIndex: 'customer',
-    render: (o, record) => (record.customer_tenant_id === -1 ?
-      <Tooltip title="线下企业" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
-      <Tooltip title="线上租户" placement="left"><Badge status="processing" />{record.customer}</Tooltip>),
+    render: (o, record) => {
+      if (record.partner_id) {
+        return (record.customer_tenant_id === -1 ?
+          <Tooltip title="线下企业" placement="left"><Badge status="default" />{record.customer}</Tooltip> :
+          <Tooltip title="线上租户" placement="left"><Badge status="processing" />{record.customer}</Tooltip>);
+      }
+      return null;
+    },
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -121,16 +127,19 @@ export default class FlowList extends React.Component {
     dataIndex: 'last_updated_date',
     key: 'last_updated_date',
     width: 140,
-    render(o) {
-      return moment(o).format('YYYY/MM/DD HH:mm');
-    },
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '更新者',
     dataIndex: 'last_updated_by',
     key: 'last_updated_by',
-    width: 120,
-    render: o => this.props.users.find(user => user.login_id === o) &&
-    this.props.users.find(user => user.login_id === o).name,
+    width: 100,
+    render: lid => lid && <UserAvatar size="small" loginId={lid} showName />,
+  }, {
+    title: '创建日期',
+    dataIndex: 'created_date',
+    key: 'created_date',
+    width: 100,
+    render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: '操作',
     key: 'OP_COL',
@@ -247,12 +256,12 @@ export default class FlowList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('flowName')}
+                {this.msg('flow')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange}>
+            <RadioGroup value={listFilter.status ? 'enabled' : 'disabled'} onChange={this.handleStatusChange}>
               <RadioButton value="enabled">已启用</RadioButton>
               <RadioButton value="disabled">已停用</RadioButton>
             </RadioGroup>
@@ -266,7 +275,6 @@ export default class FlowList extends React.Component {
             toolbarActions={toolbarActions}
             dataSource={this.flowDataSource}
             columns={this.columns}
-            rowClassName={record => (thisFlow && record.id === thisFlow.id ? 'table-row-selected' : '')}
             loading={loading}
             rowKey="id"
             onRow={record => ({

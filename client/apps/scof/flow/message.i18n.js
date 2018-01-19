@@ -2,6 +2,10 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  flow: {
+    id: 'scof.flow',
+    defaultMessage: '流程',
+  },
   flowName: {
     id: 'scof.flow.name',
     defaultMessage: '流程名称',

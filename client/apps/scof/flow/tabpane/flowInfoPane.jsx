@@ -47,7 +47,7 @@ export default class InfoPane extends Component {
           {
        getFieldDecorator('customer', {
         initialValue: currentFlow.customer,
-       })(<Select showSearch optionFilterProp="children" onSelect={this.handleCustomerSelect}>
+       })(<Select showSearch allowClear optionFilterProp="children" onSelect={this.handleCustomerSelect}>
          {customerPartners.map(data => (
            <Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
        </Select>)

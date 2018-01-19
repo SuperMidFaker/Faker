@@ -1,15 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Layout } from 'antd';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
 import { setNavTitle } from 'common/reducers/navbar';
+import { formatMsg } from './message.i18n';
 
 const { Header } = Layout;
 
+@injectIntl
 @connect()
-export default class DataHubPack extends React.Component {
+export default class CollabHubPack extends React.Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
   }
@@ -18,11 +22,12 @@ export default class DataHubPack extends React.Component {
       depth: 1,
     }));
   }
+  msg = formatMsg(this.props.intl);
   render() {
     return (
       <Layout className="welo-layout-wrapper">
         <Header>
-          <CorpHeaderBar title="协作平台" />
+          <CorpHeaderBar title={this.msg('hub')} />
         </Header>
         <Layout>
           {this.props.children}
