@@ -38,7 +38,7 @@ export default class CustomerModal extends React.Component {
     checkPartner: PropTypes.func.isRequired,
     hideCustomerModal: PropTypes.func.isRequired,
     editCustomer: PropTypes.func.isRequired,
-    customer: PropTypes.shapge({
+    customer: PropTypes.shape({
       name: PropTypes.string,
     }).isRequired,
     onOk: PropTypes.func,
