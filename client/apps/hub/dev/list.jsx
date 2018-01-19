@@ -73,6 +73,9 @@ export default class DevAppList extends React.Component {
   handleSearch = () => {
 
   }
+  handleOpenApiDocs = () => {
+    window.open('https://docs.welogix.cn');
+  }
   render() {
     const { apps } = this.props;
     const pagination = {
@@ -100,7 +103,7 @@ export default class DevAppList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="book">{this.msg('apiDocs')}</Button>
+              <Button icon="book" onClick={this.handleOpenApiDocs}>{this.msg('apiDocs')}</Button>
               <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
                 {this.msg('create')}
               </Button>

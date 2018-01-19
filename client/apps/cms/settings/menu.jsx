@@ -27,6 +27,9 @@ export default class SettingMenu extends React.Component {
           <Menu.Item key="brokers">
             <NavLink to="/clearance/settings/brokers"><Icon type="database" /> {this.msg('brokers')}</NavLink>
           </Menu.Item>
+          <Menu.Item key="notification">
+            <NavLink to="/clearance/settings/brokers"><Icon type="database" /> {this.msg('brokers')}</NavLink>
+          </Menu.Item>
         </Menu>
       </div>);
   }
