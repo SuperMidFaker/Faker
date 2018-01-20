@@ -10,13 +10,11 @@ import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import AdaptorModal from './modal/adaptorModal';
 import AdaptorDetailModal from './modal/adaptorDetailModal';
 import HubSiderMenu from '../menu';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
 
@@ -51,7 +49,7 @@ export default class ApiAuthList extends React.Component {
       role: PARTNER_ROLES.CUS,
     });
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.context.router.goBack();
   }
@@ -119,7 +117,7 @@ export default class ApiAuthList extends React.Component {
                 renderItem={(item) => {
                   let action = null;
                   if (item.active) {
-                    action = <RowAction onClick={this.handleEditBtnClick} icon="edit" label={this.msg('config')} row={item} />;
+                    action = <RowAction onClick={this.handleEditBtnClick} icon="setting" label={this.msg('config')} row={item} />;
                   } else {
                     action = (<ExcelUploader
                       endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
@@ -133,7 +131,7 @@ export default class ApiAuthList extends React.Component {
                   return (
                     <List.Item
                       key={item.code}
-                      actions={[action, <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={item} />]}
+                      actions={[action]}
                     >
                       <List.Item.Meta
                         avatar={<Avatar shape="square" icon="file-excel" style={{ backgroundColor: '#3e7b51' }} />}

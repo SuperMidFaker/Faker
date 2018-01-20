@@ -6,9 +6,9 @@ const messages = defineMessages({
     id: 'hub.integration.parent',
     defaultMessage: '协作平台',
   },
-  integration: {
-    id: 'hub.integration',
-    defaultMessage: '整合应用',
+  searchTip: {
+    id: 'hub.integration.search.tip',
+    defaultMessage: '搜索已安装应用',
   },
   allApps: {
     id: 'hub.integration.all.apps',
@@ -90,8 +90,8 @@ const messages = defineMessages({
     id: 'hub.integration.opcolumn',
     defaultMessage: '操作',
   },
-  installApp: {
-    id: 'hub.integration.install.app',
+  install: {
+    id: 'hub.integration.install',
     defaultMessage: '安装',
   },
   save: {
@@ -109,6 +109,10 @@ const messages = defineMessages({
   disable: {
     id: 'hub.integration.disable',
     defaultMessage: '停用',
+  },
+  installApp: {
+    id: 'hub.integration.install.app',
+    defaultMessage: '安装应用',
   },
   deleteApp: {
     id: 'hub.integration.delete.app',

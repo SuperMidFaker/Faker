@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Button, Card, Collapse, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Card, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadVendorTenants, openSubFlowAuthModal, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { loadFormRequires } from 'common/reducers/crmOrders';
@@ -27,7 +27,6 @@ import { formatMsg } from './message.i18n';
 const { Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const { Panel } = Collapse;
 const { Option } = Select;
 
 const NodeKindPanelMap = {
@@ -112,11 +111,10 @@ export default class FlowDesigner extends React.Component {
     this.formhoc = null;
     this.trackingColumns = [{
       title: '追踪点',
-      width: 50,
+      width: 150,
       dataIndex: 'title',
     }, {
       title: '来源节点',
-      width: 130,
       dataIndex: 'node',
       render: (node, row) => {
         if (this.graph) {
@@ -139,8 +137,14 @@ export default class FlowDesigner extends React.Component {
       },
     }];
   }
+
   componentWillMount() {
     const { currentFlow } = this.props;
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        contentHeight: window.innerHeight - 150,
+      });
+    }
     this.props.loadFlowGraph(currentFlow.id, currentFlow.main_flow_id);
     if (currentFlow.customer_tenant_id && currentFlow.customer_tenant_id !== -1) {
       this.props.loadScvTrackings(currentFlow.customer_tenant_id).then((result) => {
@@ -585,7 +589,7 @@ export default class FlowDesigner extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="setting" onClick={this.handleSubFlowAuth}>流程设置</Button>
+            <Button icon="setting" onClick={this.handleSubFlowAuth}>{this.msg('flowSetting')}</Button>
             <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('saveFlow')}
             </Button>
@@ -597,7 +601,7 @@ export default class FlowDesigner extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
-          <Content style={{ padding: 8 }} >
+          <Content style={{ padding: 8, height: this.state.contentHeight }} >
             <Spin spinning={this.props.graphLoading}>
               <Card
                 title={this.msg('flowRelationGraph')}
@@ -656,28 +660,18 @@ export default class FlowDesigner extends React.Component {
             className="right-sider"
           >
             <div className="right-sider-panel">
-              <Collapse accordion defaultActiveKey="tracking">
-                <Panel header="追踪节点" key="tracking">
-                  <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
-                    {this.state.trackings.map(data => (
-                      <Option key={data.id} value={data.id}>{data.name}</Option>))}
-                  </Select>
-                  <Table
-                    size="middle"
-                    columns={this.trackingColumns}
-                    bordered={false}
-                    dataSource={this.state.trackDataSource}
-                    rowKey="field"
-                    scroll={{ y: 400 }}
-                  />
-                </Panel>
-                <Panel header="更多" key="more">
-                  <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
-                  <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteFlow}>
-                    <Button type="danger" icon="delete">删除流程</Button>
-                  </Popconfirm>
-                </Panel>
-              </Collapse>
+              <Table
+                size="middle"
+                title={() => (<Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
+                  {this.state.trackings.map(data => (
+                    <Option key={data.id} value={data.id}>{data.name}</Option>))}
+                </Select>)}
+                columns={this.trackingColumns}
+                bordered={false}
+                dataSource={this.state.trackDataSource}
+                rowKey="field"
+                scroll={{ y: (this.state.contentHeight - 100) }}
+              />
             </div>
           </Sider>
         </Layout>

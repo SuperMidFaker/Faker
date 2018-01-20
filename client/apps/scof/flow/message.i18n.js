@@ -82,6 +82,10 @@ const messages = defineMessages({
     id: 'scof.flow.graph.save',
     defaultMessage: '保存',
   },
+  flowSetting: {
+    id: 'scof.flow.setting',
+    defaultMessage: '流程设置',
+  },
   bizObject: {
     id: 'scof.flow.biz.object',
     defaultMessage: '业务对象',

@@ -9,6 +9,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
@@ -75,7 +76,7 @@ export default class MemberDepartmentView extends React.Component {
   columns = [{
     title: this.msg('fullName'),
     dataIndex: 'name',
-    width: 80,
+    width: 100,
     sorter: true,
     render: (o, record) => this.renderColumnText(record.status, record.name),
   }, {
@@ -87,24 +88,23 @@ export default class MemberDepartmentView extends React.Component {
     ),
   }, {
     title: this.msg('phone'),
-    width: 100,
+    width: 150,
     render: (o, record) => this.renderColumnText(record.status, record.phone),
   }, {
     title: this.msg('email'),
     dataIndex: 'email',
-    width: 150,
+    width: 200,
     sorter: true,
     render: (o, record) => this.renderColumnText(record.status, record.email),
   }, {
     title: this.msg('department'),
-    width: 200,
     dataIndex: 'department',
     render: (dept, record) => this.renderColumnText(record.status, dept),
   }, {
     title: this.msg('role'),
     sorter: true,
     dataIndex: 'role_name',
-    width: 100,
+    width: 150,
     filters: [{
       text: this.msg('tenantManager'),
       value: PRESET_TENANT_ROLE.manager.name,
@@ -119,8 +119,9 @@ export default class MemberDepartmentView extends React.Component {
         : role,
     ),
   }, {
-    title: this.msg('statusColumn'),
-    width: 50,
+    title: this.msg('status'),
+    dataIndex: 'status',
+    width: 80,
     render: (o, record) => {
       let style = { color: '#51C23A' };
       let { text } = ACCOUNT_STATUS.normal;
@@ -131,46 +132,32 @@ export default class MemberDepartmentView extends React.Component {
       return <span style={style}>{this.msg(text)}</span>;
     },
   }, {
-    title: this.msg('opColumn'),
-    width: 120,
+    title: this.msg('opCol'),
+    key: 'OP_COL',
+    width: 100,
+    fixed: 'right',
     render: (text, record, index) => {
       if (record.role === PRESET_TENANT_ROLE.owner.name) {
         return (
-          <span>
-            <PrivilegeCover module="corp" feature="personnel" action="edit">
-              <NavLink to={`/corp/members/edit/${record.key}`}>
-                {this.msg('modify')}
-              </NavLink>
-            </PrivilegeCover>
-          </span>
+          <PrivilegeCover module="corp" feature="personnel" action="edit">
+            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={this.handleModify} />
+          </PrivilegeCover>
         );
       } else if (record.status === ACCOUNT_STATUS.normal.id) {
         return (
           <PrivilegeCover module="corp" feature="personnel" action="edit">
-            <span>
-              <NavLink to={`/corp/members/edit/${record.key}`}>
-                {this.msg('modify')}
-              </NavLink>
-              <span className="ant-divider" />
-              <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
-                {this.msg('disableOp')}
-              </a>
-            </span>
+            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={this.handleModify} />
+            <RowAction icon="pause-circle-o" tooltip={this.msg('disable')} onClick={() => this.handleStatusSwitch(record, index)} />
           </PrivilegeCover>
         );
       } else if (record.status === ACCOUNT_STATUS.blocked.id) {
         return (
           <span>
-            <PrivilegeCover module="corp" feature="personnel" action="delete">
-              <a role="presentation" onClick={() => this.handlePersonnelDel(record)}>
-                {this.msg('delete')}
-              </a>
-            </PrivilegeCover>
-            <span className="ant-divider" />
             <PrivilegeCover module="corp" feature="personnel" action="edit">
-              <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
-                {this.msg('enableOp')}
-              </a>
+              <RowAction icon="play-circle-o" tooltip={this.msg('enable')} onClick={() => this.handleStatusSwitch(record, index)} />
+            </PrivilegeCover>
+            <PrivilegeCover module="corp" feature="personnel" action="delete">
+              <RowAction danger icon="delete" tooltip={this.msg('delete')} onConfirm={() => this.handlePersonnelDel(record)} />
             </PrivilegeCover>
           </span>
         );
@@ -326,7 +313,7 @@ export default class MemberDepartmentView extends React.Component {
       selectMenuKeys.push('members');
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
-          <Button type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="user-add">
+          <Button type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="plus-circle-o">
             {this.msg('newUser')}
           </Button>
         </PrivilegeCover>);

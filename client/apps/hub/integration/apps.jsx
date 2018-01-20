@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Menu, Avatar, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { INTEGRATION_APPS } from 'common/constants';
-import { toggleCreateModal } from 'common/reducers/openIntegration';
+import { toggleInstallAppModal } from 'common/reducers/openIntegration';
 import { connect } from 'react-redux';
 import HubSiderMenu from '../menu';
-import CreateModal from './common/createModal';
+import InstallAppModal from './common/installAppModal';
 import { formatMsg } from './message.i18n';
 import './index.less';
 
@@ -16,7 +16,7 @@ const { SubMenu } = Menu;
 @injectIntl
 @connect(
   () => ({}),
-  { toggleCreateModal }
+  { toggleInstallAppModal }
 )
 export default class IntegrationAppsList extends React.Component {
   static propTypes = {
@@ -52,8 +52,8 @@ export default class IntegrationAppsList extends React.Component {
       });
     }
   }
-  toggleCreateModal = (type) => {
-    this.props.toggleCreateModal(true, type);
+  toggleInstallAppModal = (type) => {
+    this.props.toggleInstallAppModal(true, type);
   }
   renderAppLogo(app) {
     if (app.app_type === 'EASIPASS') {
@@ -112,18 +112,24 @@ export default class IntegrationAppsList extends React.Component {
                 dataSource={this.state.appList}
                 renderItem={item => (
                   <List.Item>
-                    <Card title={item.title} className="app-card">
+                    <Card className="app-card">
                       <div className="app-logo">
                         {this.renderAppLogo(item)}
                       </div>
+                      <h4 className="app-title">{item.title}</h4>
                       <div className="app-desc">{item.description}</div>
-                      <Button type="primary" icon="tool" onClick={() => this.toggleCreateModal(item.app_type)}>安装</Button>
+                      <Button
+                        type="primary"
+                        ghost
+                        icon="plus-circle-o"
+                        onClick={() => this.toggleInstallAppModal(item.app_type)}
+                      >{this.msg('install')}</Button>
                     </Card>
                   </List.Item>
                   )}
               />
             </Card>
-            <CreateModal />
+            <InstallAppModal />
           </Content>
         </Layout>
       </Layout>

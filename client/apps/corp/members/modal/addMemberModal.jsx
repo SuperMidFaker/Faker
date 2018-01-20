@@ -86,12 +86,13 @@ export default class AddMemberModal extends Component {
       <Modal maskClosable={false} visible={visible} title="添加成员到部门" onCancel={this.handleCancel} footer={null}>
         <Search
           placeholder="搜索成员"
-          style={{ width: 480, marginBottom: 5, borderBottom: '1px solid #F1F1F1' }}
           onSearch={this.handleMemberSearch}
           value={searchValue}
           onChange={this.handleSearchChange}
+          style={{ marginBottom: 8 }}
         />
         <Table
+          size="small"
           dataSource={members}
           columns={this.columns}
           showHeader={false}

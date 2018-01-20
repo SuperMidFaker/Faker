@@ -108,7 +108,7 @@ export function loadTenantModules(tenantId) {
   };
 }
 
-export function edit(form) {
+export function updateRole(form) {
   return {
     [CLIENT_API]: {
       types: [

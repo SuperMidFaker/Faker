@@ -50,7 +50,7 @@ export default class ConfigSFExpress extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="appstore-o" /> {this.msg('integration')}
+                <Icon type="appstore-o" /> {this.msg('installedApps')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('appSFExpress')}

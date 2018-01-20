@@ -18,7 +18,7 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
   'INSTALL_SFEXPRESS', 'INSTALL_SFEXPRESS_SUCCEED', 'INSTALL_SFEXPRESS_FAIL',
   'LOAD_SFEXPRESS', 'LOAD_SFEXPRESS_SUCCEED', 'LOAD_SFEXPRESS_FAIL',
   'UPDATE_SFEXPRESS', 'UPDATE_SFEXPRESS_SUCCEED', 'UPDATE_SFEXPRESS_FAIL',
-  'TOGGLE_CREATE_MODAL',
+  'TOGGLE_INSTALL_APP_MODAL',
   'UPDATE_INTE_BASIC_INFO', 'UPDATE_INTE_BASIC_INFO_SUCCEED', 'UPDATE_INTE_BASIC_INFO_FAIL',
 ]);
 
@@ -45,7 +45,7 @@ const initialState = {
   shftzApp: {},
   sfexpress: {},
   whseSupervisonApps: [],
-  createModal: {
+  installAppModal: {
     visible: false,
     type: '',
   },
@@ -114,11 +114,19 @@ export default function reducer(state = initialState, action) {
           enabled: action.result.data.enabled,
         },
       };
-    case actionTypes.TOGGLE_CREATE_MODAL:
+    case actionTypes.UPDATE_INTE_BASIC_INFO_SUCCEED:
       return {
         ...state,
-        createModal: {
-          ...state.createModal,
+        currentApp: {
+          ...state.currentApp,
+          name: action.data.name,
+        },
+      };
+    case actionTypes.TOGGLE_INSTALL_APP_MODAL:
+      return {
+        ...state,
+        installAppModal: {
+          ...state.installAppModal,
           visible: action.visible,
           type: action.appType,
         },
@@ -368,9 +376,9 @@ export function updateSFExpressApp(easipass) {
   };
 }
 
-export function toggleCreateModal(visible, appType) {
+export function toggleInstallAppModal(visible, appType) {
   return {
-    type: actionTypes.TOGGLE_CREATE_MODAL,
+    type: actionTypes.TOGGLE_INSTALL_APP_MODAL,
     visible,
     appType,
   };

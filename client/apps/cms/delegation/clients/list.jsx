@@ -149,14 +149,14 @@ export default class ClientsList extends Component {
           <Content className="page-content">
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.props.tabkey} onChange={this.handleTabChange}>
-                <TabPane tab="收发货人" key="traders">
-                  <TradersPane />
-                </TabPane>
                 <TabPane tab="制单规则" key="rules">
                   <ManifestRulesPane />
                 </TabPane>
                 <TabPane tab="单据模板" key="templates">
                   <DocuTemplatesPane />
+                </TabPane>
+                <TabPane tab="收发货人" key="traders">
+                  <TradersPane />
                 </TabPane>
               </Tabs>
             </Card>

@@ -5,7 +5,7 @@ import { Modal, Button, Icon, Tabs } from 'antd';
 import { closeSubFlowAuthModal, createProviderFlow, deleteProviderFlow, delFlow, toggleFlowDesigner } from 'common/reducers/scofFlow';
 import FlowInfoPane from '../tabpane/flowInfoPane';
 import ShareFlowPane from '../tabpane/shareFlowPane';
-import TrackPointsPane from '../tabpane/trackPointsPane';
+// import TrackPointsPane from '../tabpane/trackPointsPane';
 import { formatMsg } from '../message.i18n';
 
 const { TabPane } = Tabs;
@@ -77,9 +77,6 @@ export default class FlowSettingModal extends React.Component {
           <TabPane tab={<span><Icon type="key" />共享授权</span>} key="share">
             <ShareFlowPane />
           </TabPane>}
-          <TabPane tab={<span><Icon type="select" />追踪节点</span>} key="track">
-            <TrackPointsPane graph={this.props.graph} />
-          </TabPane>
           <TabPane tab={<span><Icon type="ellipsis" />更多</span>} key="more">
             <Button type="danger" icon="delete" onClick={this.handleDeleteFlow}>删除流程</Button>
           </TabPane>

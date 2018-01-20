@@ -56,13 +56,13 @@ export default class ConfigAmberRoadCTM extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="appstore-o" /> {this.msg('integration')}
+                <Icon type="appstore-o" /> {this.msg('installedApps')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('appAmberRoadCTM')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {arctm.name} {this.renderStatusTag(app.enabled)}
+                {app.name} {this.renderStatusTag(app.enabled)}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>

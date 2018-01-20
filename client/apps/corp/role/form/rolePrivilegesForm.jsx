@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
-import { Button, Form, Input, Card, Collapse, Switch, Checkbox, Row, Col, message } from 'antd';
+import { Button, Form, Input, Card, Collapse, Switch, Checkbox, Row, Col, Table, message } from 'antd';
 import { routerShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadTenantModules } from 'common/reducers/role';
+import { loadTenantModules, updateRole } from 'common/reducers/role';
 import { PRESET_ROLE_NAME_KEYS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
@@ -16,6 +16,7 @@ const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const { Column } = Table;
 
 function getCheckedActions(privileges, moduleId, featId, featActions) {
   if (!privileges[moduleId]) {
@@ -50,12 +51,7 @@ function FormInputItem(props) {
   const { getFieldDecorator, ...fieldOptions } = options;
   const fieldInputProps = getFieldDecorator(field, fieldOptions);
   return (
-    <FormItem
-      label={labelName}
-      labelCol={{ span: labelSpan }}
-      required={required}
-      wrapperCol={{ span: 24 - labelSpan }}
-    >
+    <FormItem label={labelName} required={required}>
       {fieldInputProps(<Input type={type} placeholder={placeholder} />)}
     </FormItem>
   );
@@ -84,13 +80,13 @@ FormInputItem.propTypes = {
     submitting: state.role.submitting,
     tenantModules: state.role.modules,
   }),
-  { loadTenantModules }
+  { loadTenantModules, updateRole }
 )
 @Form.create()
 export default class RolePrivilegesForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    mode: PropTypes.oneOf(['edit', 'create']).isRequired,
+    mode: PropTypes.oneOf(['updateRole', 'create']).isRequired,
     tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
@@ -172,7 +168,7 @@ export default class RolePrivilegesForm extends React.Component {
           privileges: this.state.editPrivilegeMap,
           tenantId: this.props.mode === 'create' ? this.props.tenantId : undefined,
         };
-        this.props.onSubmit(form).then((result) => {
+        this.props.updateRole(form).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           }
@@ -189,91 +185,92 @@ export default class RolePrivilegesForm extends React.Component {
     } = this.props;
     const { editPrivilegeMap: privileges } = this.state;
     return (
-      <Form layout="horizontal" onSubmit={this.handleSubmit}>
-        <Card bodyStyle={{ padding: 0 }}>
+      <Form layout="vertical" onSubmit={this.handleSubmit}>
+        <Card
+          bodyStyle={{ padding: 0 }}
+          extra={<Button htmlType="submit" type="primary" icon="save" loading={submitting}>{formatGlobalMsg(intl, 'save')}</Button>}
+        >
           <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
             <Panel header="基本信息" key="profile">
-              <FormInputItem
-                labelName={formatMsg(intl, 'nameColumn')}
-                labelSpan={8}
-                field="name"
-                options={{
-                getFieldDecorator,
-                rules: [{
-                  required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
-                }, {
-                  validator(rule, value, callback) {
-                    if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
-                    nk.toUpperCase() === value.toUpperCase()).length > 0) {
-                      return callback(new Error(formatMsg(intl, 'unallowDefaultName')));
-                    }
-                    callback();
-                  },
-                }],
-                initialValue: name,
-              }}
-              />
-              <FormInputItem
-                labelName={formatMsg(intl, 'descColumn')}
-                labelSpan={8}
-                field="desc"
-                options={{ getFieldDecorator, initialValue: desc }}
-              />
-              <FormItem label="属于管理层" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                {getFieldDecorator('bureau', { initialValue: false })(<Switch />)}
-              </FormItem>
+              <Card bodyStyle={{ padding: 16 }}>
+                <Row gutter={16}>
+                  <Col span={16}>
+                    <FormInputItem
+                      labelName={formatMsg(intl, 'nameColumn')}
+                      field="name"
+                      options={{
+                      getFieldDecorator,
+                      rules: [{
+                        required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
+                      }, {
+                        validator(rule, value, callback) {
+                          if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
+                          nk.toUpperCase() === value.toUpperCase()).length > 0) {
+                            return callback(new Error(formatMsg(intl, 'unallowDefaultName')));
+                          }
+                          return callback();
+                        },
+                      }],
+                      initialValue: name,
+                    }}
+                    />
+                  </Col>
+                  <Col span={8}>
+                    <FormItem label="属于管理层">
+                      {getFieldDecorator('bureau', { initialValue: false })(<Switch />)}
+                    </FormItem>
+                  </Col>
+                  <Col span={24}>
+                    <FormInputItem
+                      labelName={formatMsg(intl, 'descColumn')}
+                      labelSpan={8}
+                      field="desc"
+                      options={{ getFieldDecorator, initialValue: desc }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
             </Panel>
             {tenantModules.map(tnm => (
               <Panel header={formatGlobalMsg(intl, tnm.text)} key={tnm.text}>
-
-                <Row style={{ paddingBottom: 10 }}>
-                  <Col span={4} offset={2}>
-                    {formatMsg(intl, 'featureName')}
-                  </Col>
-                  <Col span={2} offset={2}>
-                    {formatMsg(intl, 'allFull')}
-                  </Col>
-                  <Col span={12} offset={2}>
-                    {formatMsg(intl, 'actionName')}
-                  </Col>
-                </Row>
-                {tnm.features.map(feat => (
-                  <Row key={feat.text} style={{ paddingBottom: 10 }}>
-                    <Col span={4} offset={2}>
-                      {formatGlobalMsg(intl, feat.text)}
-                    </Col>
-                    <Col span={2} offset={2}>
-                      <Switch
+                <Card bodyStyle={{ padding: 0 }}>
+                  <Table size="small" dataSource={tnm.features} pagination={false}>
+                    <Column
+                      title={formatMsg(intl, 'featureName')}
+                      dataIndex="text"
+                      key="text"
+                      width={200}
+                    />
+                    <Column
+                      title={formatMsg(intl, 'allFull')}
+                      dataIndex="allFull"
+                      key="allFull"
+                      width={100}
+                      render={(o, feat) => (<Switch
                         size="small"
                         checked={isFullFeature(privileges, tnm.id, feat.id)}
                         onChange={checked => this.handleFeatureFullCheck(tnm.id, feat.id, checked)}
-                      />
-                    </Col>
-                    <Col span={12} offset={2}>
-                      <CheckboxGroup
+                      />)}
+                    />
+                    <Column
+                      title={formatMsg(intl, 'actionName')}
+                      key="action"
+                      render={(o, feat) => (<CheckboxGroup
                         options={feat.actions.map(act => ({
-                                  label: formatGlobalMsg(intl, act.text),
-                                  value: act.id,
-                                }))}
+                          label: formatGlobalMsg(intl, act.text),
+                          value: act.id,
+                        }))}
                         value={
-                                  getCheckedActions(privileges, tnm.id, feat.id, feat.actions)
-                                }
+                          getCheckedActions(privileges, tnm.id, feat.id, feat.actions)
+                        }
                         onChange={checkeds => this.handleActionCheck(tnm.id, feat.id, checkeds)}
-                      />
-                    </Col>
-                  </Row>
-                        ))
-                      }
-              </Panel>
-
-                ))}
+                      />)}
+                    />
+                  </Table>
+                </Card>
+              </Panel>))}
           </Collapse>
         </Card>
-        <Row>
-          <Col span="18" offset="6">
-            <Button htmlType="submit" type="primary" loading={submitting}>{formatGlobalMsg(intl, 'save')}</Button>
-          </Col>
-        </Row>
       </Form>
     );
   }

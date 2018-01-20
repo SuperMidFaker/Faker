@@ -120,7 +120,7 @@ export default class InstalledAppsList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Icon type="api" /> {this.msg('integration')}
+                  <Icon type="api" /> {this.msg('installedApps')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>

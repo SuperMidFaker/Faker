@@ -150,6 +150,14 @@ const messages = defineMessages({
     id: 'corp.members.list.role',
     defaultMessage: '角色',
   },
+  status: {
+    id: 'corp.members.list.status',
+    defaultMessage: '状态',
+  },
+  opCol: {
+    id: 'corp.members.list.op.col',
+    defaultMessage: '操作',
+  },
   searchPlaceholder: {
     id: 'corp.members.list.searchPlaceholder',
     defaultMessage: '搜索姓名/手机号/邮箱',
@@ -160,11 +168,11 @@ const messages = defineMessages({
   },
   newUser: {
     id: 'corp.members.list.newUser',
-    defaultMessage: '添加用户',
+    defaultMessage: '新建用户',
   },
   newDeptMember: {
     id: 'corp.members.list.new.dept.member',
-    defaultMessage: '添加部门成员',
+    defaultMessage: '添加到部门',
   },
   user: {
     id: 'corp.members.edit.user',
@@ -201,6 +209,14 @@ const messages = defineMessages({
   nonTenantEdit: {
     id: 'corp.members.edit.nonTenant',
     defaultMessage: '未选择所属租户,无法修改',
+  },
+  createRole: {
+    id: 'corp.role.create.role',
+    defaultMessage: '新建角色',
+  },
+  customizeRole: {
+    id: 'corp.role.customize.role',
+    defaultMessage: '自定义',
   },
 });
 

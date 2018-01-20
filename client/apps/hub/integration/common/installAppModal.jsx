@@ -4,7 +4,7 @@ import { Form, Input, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleCreateModal } from 'common/reducers/openIntegration';
+import { installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleInstallAppModal } from 'common/reducers/openIntegration';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -12,16 +12,16 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    visible: state.openIntegration.createModal.visible,
-    type: state.openIntegration.createModal.type,
+    visible: state.openIntegration.installAppModal.visible,
+    type: state.openIntegration.installAppModal.type,
     tenantId: state.account.tenantId,
   }),
   {
-    installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleCreateModal,
+    installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleInstallAppModal,
   }
 )
 @Form.create()
-export default class CreateModal extends Component {
+export default class InstallAppModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -30,7 +30,7 @@ export default class CreateModal extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.props.toggleCreateModal(false);
+    this.props.toggleInstallAppModal(false);
   }
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
@@ -72,10 +72,10 @@ export default class CreateModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal title="创建应用" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal title={this.msg('installApp')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <FormItem {...formItemLayout} label={this.msg('appName')}>
           {getFieldDecorator('name', {
-            rules: [{ required: true, message: this.msg('parameterRequired') }],
+            rules: [{ required: true, message: this.msg('appNameRequired') }],
           })(<Input />)}
         </FormItem>
       </Modal>

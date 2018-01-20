@@ -8,7 +8,7 @@ import PageHeader from 'client/components/PageHeader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { edit, loadRole } from 'common/reducers/role';
+import { loadRole } from 'common/reducers/role';
 import { formatMsg } from '../message.i18n';
 import RolePrivilegesForm from './form/rolePrivilegesForm';
 
@@ -25,7 +25,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     formData: state.role.formData,
   }),
-  { edit }
+  { }
 )
 @connectNav({
   depth: 3,
@@ -46,13 +46,11 @@ export default class RoleEdit extends React.Component {
       desc: PropTypes.string,
       privilege: PropTypes.object,
     }).isRequired,
-    edit: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: routerShape.isRequired,
   }
   msg = formatMsg(this.props.intl);
-  handleSubmit = form => this.props.edit(form)
   handleClose = () => {
     this.context.router.goBack();
   }

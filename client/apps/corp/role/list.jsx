@@ -89,7 +89,7 @@ export default class RoleList extends React.Component {
             <PageHeader.Actions>
               <PrivilegeCover module="corp" feature="role" action="create">
                 <Button type="primary" onClick={this.handleCreate} icon="plus-circle-o">
-                  {this.msg('createNew')}
+                  {this.msg('createRole')}
                 </Button>
               </PrivilegeCover>
             </PageHeader.Actions>
@@ -101,7 +101,7 @@ export default class RoleList extends React.Component {
                 renderItem={role => (
                   <List.Item
                     key={role.id}
-                    actions={[<RowAction onClick={() => this.handleConfig(role)} icon="setting" label={this.msg('config')} />]}
+                    actions={[<RowAction onClick={() => this.handleConfig(role)} icon="form" label={this.msg('customizeRole')} />]}
                   >
                     <List.Item.Meta
                       avatar={<Avatar src={role.app_logo} />}

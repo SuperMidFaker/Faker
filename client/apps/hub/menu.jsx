@@ -22,7 +22,7 @@ export default class HubSiderMenu extends React.Component {
     return (
       <Sider className="menu-sider">
         <Menu mode="inline" selectedKeys={[this.props.currentKey]}>
-          <MenuItemGroup key="integration" title={this.msg('integration')}>
+          <MenuItemGroup key="integration" title={this.msg('installedApps')}>
             <Menu.Item key="apps">
               <NavLink to="/hub/integration/apps">
                 <Icon type="shop" />{this.msg('appStore')}

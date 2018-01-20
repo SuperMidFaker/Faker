@@ -41,7 +41,7 @@ export default class OrderNoColumn extends React.Component {
             >
               {order.shipmt_order_no}
             </a>
-            <div><TrimSpan text={order.customer_name} maxLen={12} /></div>
+            <div><TrimSpan text={order.customer_name} maxLen={10} /></div>
             <div className="mdc-text-grey">{order.cust_order_no} {order.cust_invoice_no && <Popover placement="right" content={content}><Icon type="caret-right" /></Popover>}</div>
           </Col>
         </Row>
