@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Card, Collapse, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadVendorTenants, openSubFlowAuthModal, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { loadFormRequires } from 'common/reducers/crmOrders';
@@ -28,6 +28,7 @@ const { Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
+const { Panel } = Collapse;
 
 const NodeKindPanelMap = {
   import: BizObjCMSPanel,
@@ -660,18 +661,23 @@ export default class FlowDesigner extends React.Component {
             className="right-sider"
           >
             <div className="right-sider-panel">
-              <Table
-                size="middle"
-                title={() => (<Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
-                  {this.state.trackings.map(data => (
-                    <Option key={data.id} value={data.id}>{data.name}</Option>))}
-                </Select>)}
-                columns={this.trackingColumns}
-                bordered={false}
-                dataSource={this.state.trackDataSource}
-                rowKey="field"
-                scroll={{ y: (this.state.contentHeight - 100) }}
-              />
+              <Collapse accordion defaultActiveKey="nodeOrdering">
+                <Panel header={this.msg('nodeOrdering')} key="nodeOrdering" />
+                <Panel header={this.msg('tracking')} key="tracking">
+                  <Table
+                    size="middle"
+                    title={() => (<Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
+                      {this.state.trackings.map(data => (
+                        <Option key={data.id} value={data.id}>{data.name}</Option>))}
+                    </Select>)}
+                    columns={this.trackingColumns}
+                    bordered={false}
+                    dataSource={this.state.trackDataSource}
+                    rowKey="field"
+                    scroll={{ y: (this.state.contentHeight - 280) }}
+                  />
+                </Panel>
+              </Collapse>
             </div>
           </Sider>
         </Layout>

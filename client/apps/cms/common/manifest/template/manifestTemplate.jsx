@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, message, Mention, Collapse, Tabs } from 'antd';
 import { saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
-
+import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
 import ButtonToggle from 'client/components/ButtonToggle';
 import MagicCard from 'client/components/MagicCard';
@@ -15,7 +15,7 @@ import TemplateUsersPane from './tabpane/templateUsersPane';
 import { formatMsg } from '../../message.i18n';
 
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
 
@@ -228,8 +228,8 @@ export default class ManifestTemplate extends Component {
     } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
-        <Layout>
-          <Header className="page-header">
+        <PageHeader>
+          <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('billTemplates')}
@@ -238,23 +238,25 @@ export default class ManifestTemplate extends Component {
                 {`${templateName}`}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="page-header-tools">
-              {operation === 'edit' &&
+          </PageHeader.Title>
+          <PageHeader.Actions>
+            {operation === 'edit' &&
               <Button type="ghost" onClick={this.handleCancel}>
                 {this.msg('cancel')}
               </Button>}
-              {operation === 'edit' &&
+            {operation === 'edit' &&
               <Button type="primary" icon="save" onClick={this.handleSave} disabled={!this.state.changed}>
                 {this.msg('save')}
               </Button>}
-              <ButtonToggle
-                iconOn="setting"
-                iconOff="setting"
-                onClick={this.toggleRightSider}
-              />
-            </div>
-          </Header>
-          <Content className="main-content layout-min-width layout-min-width-large">
+            <ButtonToggle
+              iconOn="setting"
+              iconOff="setting"
+              onClick={this.toggleRightSider}
+            />
+          </PageHeader.Actions>
+        </PageHeader>
+        <Layout>
+          <Content className="page-content">
             <MagicCard
               bodyStyle={{ padding: 0 }}
 
@@ -274,30 +276,27 @@ export default class ManifestTemplate extends Component {
               </Tabs>
             </MagicCard>
           </Content>
-        </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSidercollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="panel-header">
-              <h3>模板设置</h3>
+          <Sider
+            trigger={null}
+            defaultCollapsed
+            collapsible
+            collapsed={this.state.rightSidercollapsed}
+            width={480}
+            collapsedWidth={0}
+            className="right-sider"
+          >
+            <div className="right-sider-panel">
+              <Collapse accordion defaultActiveKey="properties">
+                <Panel header="模板属性" key="properties">
+                  <InfoItem label="模板名称" field={templateName} dataIndex="template_name" placeholder="模板名称" editable onEdit={this.handleTempInfoChange} />
+                </Panel>
+                <Panel header="授权使用单位" key="user">
+                  <TemplateUsersPane template={template} operation={operation} />
+                </Panel>
+              </Collapse>
             </div>
-            <Collapse accordion defaultActiveKey="properties">
-              <Panel header="模板属性" key="properties">
-                <InfoItem label="模板名称" field={templateName} dataIndex="template_name" placeholder="模板名称" editable onEdit={this.handleTempInfoChange} />
-              </Panel>
-              <Panel header="授权使用单位" key="user">
-                <TemplateUsersPane template={template} operation={operation} />
-              </Panel>
-            </Collapse>
-          </div>
-        </Sider>
+          </Sider>
+        </Layout>
       </Layout>
     );
   }
