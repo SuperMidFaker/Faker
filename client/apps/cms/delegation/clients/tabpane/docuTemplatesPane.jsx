@@ -6,7 +6,7 @@ import { CMS_DOCU_TYPE } from 'common/constants';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile } from 'common/reducers/cmsInvoice';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Table, Button, Icon, Layout, Menu, Popconfirm, Popover, Upload, message } from 'antd';
-
+import RowAction from 'client/components/RowAction';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import InvTemplateModal from '../templates/modals/newTemplate';
 import { formatMsg } from '../../message.i18n';
@@ -134,7 +134,7 @@ export default class InvoiceTemplate extends Component {
     } else if (record.docu_type === CMS_DOCU_TYPE.packingList) {
       type = 'packinglist';
     }
-    this.context.router.push(`/clearance/settings/clients/templates/${type}/${record.id}`);
+    this.context.router.push(`/clearance/delegation/clients/templates/${type}/${record.id}`);
   }
   handleDelete = (record) => {
     this.props.deleteInvTemplate(record.id).then((result) => {
@@ -212,9 +212,8 @@ export default class InvoiceTemplate extends Component {
       width: 100,
       render: (_, record) => (
         <span>
-          <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
-          <span className="ant-divider" />
-          <Popconfirm title="确定删除？" onConfirm={() => this.handleDelete(record)}><a><Icon type="delete" /></a></Popconfirm>
+          <RowAction icon="edit" onClick={() => this.handleEdit(record)} />
+          <RowAction danger icon="delete" confirm="确定删除？" onConfirm={() => this.handleEdit(record)} />
         </span>),
     }];
     const excelTemplPopover = (<div style={{ width: 300 }}>

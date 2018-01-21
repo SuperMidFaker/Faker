@@ -83,7 +83,7 @@ export default class CreateQtModal extends React.Component {
       } else {
         this.props.closeCreateModal();
         const { quoteNo, version } = result.data;
-        this.context.router.push(`/clearance/billing/quote/edit/${quoteNo}/${version}`);
+        this.context.router.push(`/clearance/quote/edit/${quoteNo}/${version}`);
       }
     });
   }

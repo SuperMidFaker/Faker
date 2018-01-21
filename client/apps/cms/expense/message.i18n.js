@@ -6,37 +6,29 @@ const messages = defineMessages({
     id: 'cms.expense.search',
     defaultMessage: '委托编号/发票号/提运单号',
   },
-  billing: {
-    id: 'cms.expense.billing',
-    defaultMessage: '账务中心',
-  },
-  expense: {
-    id: 'cms.expense',
-    defaultMessage: '费用管理',
-  },
-  both: {
-    id: 'cms.expense.both',
-    defaultMessage: '收入/支出结算',
-  },
-  receivable: {
-    id: 'cms.expense.receivable',
-    defaultMessage: '收入结算',
-  },
-  payable: {
+  payableExpense: {
     id: 'cms.expense.payable',
-    defaultMessage: '支出结算',
+    defaultMessage: '费用应付',
   },
-  allStatus: {
-    id: 'cms.expense.all.status',
-    defaultMessage: '全部状态',
+  receivableExpense: {
+    id: 'cms.expense.receivable',
+    defaultMessage: '费用应收',
   },
-  statusPending: {
-    id: 'cms.expense.status.pending',
-    defaultMessage: '待计费',
+  byDelegation: {
+    id: 'cms.expense.by.delegation',
+    defaultMessage: '按委托',
   },
-  statusEstimated: {
-    id: 'cms.expense.status.estimated',
-    defaultMessage: '已预估',
+  byCustomer: {
+    id: 'cms.expense.by.customer',
+    defaultMessage: '按客户',
+  },
+  byVendor: {
+    id: 'cms.expense.by.vendor',
+    defaultMessage: '按供应商',
+  },
+  byItem: {
+    id: 'cms.expense.by.item',
+    defaultMessage: '按明细',
   },
   statusClosed: {
     id: 'cms.expense.status.closed',

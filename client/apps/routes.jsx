@@ -331,29 +331,19 @@ export default(store) => {
               <Route path="add" component={CMSPermit.Add} />
               <Route path=":id" component={CMSPermit.Detail} />
             </Route>
-            <Route path="billing">
-              <IndexRedirect to="/clearance/billing/expense" />
-              <Route path="expense" component={CMSExpense.List} />
+            <Route path="expense">
               <Route path="receivable">
-                <IndexRoute component={CMSBilling.ReceivableList} />
-                <Route path="create" component={CMSBilling.CreateReceivableBilling} />
-                <Route path="check/:billingId" component={CMSBilling.CheckReceivableBilling} />
-                <Route path="view/:billingId" component={CMSBilling.ViewReceivableBilling} />
-                <Route path="edit/:billingId" component={CMSBilling.EditReceivableBilling} />
+                <IndexRoute component={CMSExpense.ReceivableList} />
               </Route>
               <Route path="payable">
-                <IndexRoute component={CMSBilling.PayableList} />
-                <Route path="create" component={CMSBilling.CreatePayableBilling} />
-                <Route path="check/:billingId" component={CMSBilling.CheckPayableBilling} />
-                <Route path="view/:billingId" component={CMSBilling.ViewPayableBilling} />
-                <Route path="edit/:billingId" component={CMSBilling.EditPayableBilling} />
+                <IndexRoute component={CMSExpense.PayableList} />
               </Route>
-              <Route path="quote">
-                <IndexRoute component={CMSQuote.List} />
-                <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
-                <Route path="view/:quoteno/:version" component={CMSQuote.View} />
-                <Route path="template" component={CMSQuote.Template} />
-              </Route>
+            </Route>
+            <Route path="quote">
+              <IndexRoute component={CMSQuote.List} />
+              <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
+              <Route path="view/:quoteno/:version" component={CMSQuote.View} />
+              <Route path="template" component={CMSQuote.Template} />
             </Route>
             <Route path="analytics">
               <IndexRoute component={CMSAnalytics.List} />

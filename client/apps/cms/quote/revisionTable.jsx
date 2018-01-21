@@ -72,7 +72,7 @@ export default class RevisionTable extends React.Component {
   handleRestore = (row) => {
     this.props.restoreQuote(row._id, row.quote_no, `恢复自v${row.version}版本`).then((result) => {
       if (!result.error) {
-        this.context.router.push('/clearance/billing/quote');
+        this.context.router.push('/clearance/quote');
       }
     });
   }

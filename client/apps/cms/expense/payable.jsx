@@ -3,30 +3,29 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
+import moment from 'moment';
 import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Radio, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-// import Table from 'client/components/remoteAntTable';
+import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
-
-import { formatMsg } from './message.i18n';
-import moment from 'moment';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
+import RowAction from 'client/components/RowAction';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
-import RowAction from 'client/components/RowAction';
 import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
 import AdvUploadModal from './modals/advUploadModal';
 import AdvExpsImpTempModal from './modals/advExpImpTempModal';
+import { formatMsg } from './message.i18n';
 
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -488,33 +487,33 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const tabList = [
+      {
+        key: 'byDelegation',
+        tab: this.msg('byDelegation'),
+      },
+      {
+        key: 'byVendor',
+        tab: this.msg('byVendor'),
+      },
+      {
+        key: 'byItem',
+        tab: this.msg('byItem'),
+      },
+    ];
     const toolbarActions = (<SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />);
     this.dataSource.remotes = expslist;
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('billing')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('expense')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.type} onChange={this.handleRadioChange} >
-            <RadioButton value="receivable">{this.msg('receivable')}</RadioButton>
-            <RadioButton value="payable">{this.msg('payable')}</RadioButton>
-            <RadioButton value="both">{this.msg('both')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
-            <RadioButton value="all">{this.msg('allStatus')}</RadioButton>
-            <RadioButton value="pending">{this.msg('statusPending')}</RadioButton>
-            <RadioButton value="estimated">{this.msg('statusEstimated')}</RadioButton>
-            <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
-            <RadioButton value="settled">{this.msg('statusSettled')}</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools">
+      <Layout>
+        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('payableExpense')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button icon="download" onClick={this.handleAdvModelEpt}>
               {this.msg('eptAdvModel')}
             </Button>
@@ -524,9 +523,9 @@ export default class ExpenseList extends Component {
             <Button icon="file-excel" onClick={this.handleExpExport}>
               {this.msg('eptExp')}
             </Button>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
           <DataTable
             toolbarActions={toolbarActions}
             scrollOffset={360}
@@ -546,7 +545,7 @@ export default class ExpenseList extends Component {
         <AdvUploadModal visible={this.state.advUploadVisible} toggle={this.toggleAdvUploadModal} />
         <AdvExpsImpTempModal onload={() => this.handleExpListLoad()} />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
-      </QueueAnim>
+      </Layout>
     );
   }
 }

@@ -62,7 +62,7 @@ export default class CreateQtModal extends React.Component {
           } else {
             message.info('发布成功', 5);
             this.props.closePublishModal();
-            this.context.router.push('/clearance/billing/quote');
+            this.context.router.push('/clearance/quote');
           }
         });
       }

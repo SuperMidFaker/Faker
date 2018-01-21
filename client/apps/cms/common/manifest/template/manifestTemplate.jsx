@@ -259,7 +259,6 @@ export default class ManifestTemplate extends Component {
           <Content className="page-content">
             <MagicCard
               bodyStyle={{ padding: 0 }}
-
               loading={this.props.manifestSpinning}
               onSizeChange={this.toggleFullscreen}
             >
@@ -281,7 +280,7 @@ export default class ManifestTemplate extends Component {
             defaultCollapsed
             collapsible
             collapsed={this.state.rightSidercollapsed}
-            width={480}
+            width={380}
             collapsedWidth={0}
             className="right-sider"
           >

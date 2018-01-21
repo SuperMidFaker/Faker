@@ -129,25 +129,25 @@ export default class QuoteList extends Component {
   }
   handleQuoteEdit = (row) => {
     if (row.status === 'draft') {
-      this.context.router.push(`/clearance/billing/quote/edit/${row.quote_no}/${row.version}`);
+      this.context.router.push(`/clearance/quote/edit/${row.quote_no}/${row.version}`);
     } else if (row.next_version) {
-      this.context.router.push(`/clearance/billing/quote/edit/${row.quote_no}/${row.next_version}`);
+      this.context.router.push(`/clearance/quote/edit/${row.quote_no}/${row.next_version}`);
     } else {
       const { loginName, loginId } = this.props;
       this.props.createDraftQuote(row.quote_no, loginName, loginId).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.context.router.push(`/clearance/billing/quote/edit/${row.quote_no}/${result.data.version}`);
+          this.context.router.push(`/clearance/quote/edit/${row.quote_no}/${result.data.version}`);
         }
       });
     }
   }
   handleQuoteView = (row) => {
-    this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
+    this.context.router.push(`/clearance/quote/view/${row.quote_no}/${row.version}`);
   }
   handleQuoteTemplate = () => {
-    this.context.router.push('/clearance/billing/quote/template');
+    this.context.router.push('/clearance/quote/template');
   }
   handleDeleteQuote = (quoteNo) => {
     this.props.deleteQuote(quoteNo).then((result) => {
@@ -391,10 +391,7 @@ export default class QuoteList extends Component {
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('billing')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('quotation')}
+              {this.msg('quoteRates')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
