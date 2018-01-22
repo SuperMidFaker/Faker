@@ -84,7 +84,7 @@ module.exports = (serverPort, dirName, appName) => {
       notify: 'http://notify.welogix.co/',
       self: '/',
     });
-    config.set('CDN_URL', 'http://staging-cdn.welogix.co');
+    config.set('CDN_URL', 'http://st-cdn.welogix.co');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }
