@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, DatePicker, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -168,7 +168,7 @@ export default class ManifestList extends Component {
       }
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadDelgBill(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -360,7 +360,7 @@ export default class ManifestList extends Component {
                   </div>
                 </div>
                 <div className="panel-body table-panel table-fixed-layout">
-                  <Table
+                  <DataTable
                     rowSelection={rowSelection}
                     columns={this.columns}
                     rowKey="delg_no"

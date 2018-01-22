@@ -298,7 +298,7 @@ class DataTable extends React.Component {
     });
     return (
       <div className={classes}>
-        <div className={`${baseCls}-toolbar`}>
+        {this.props.toolbarActions && <div className={`${baseCls}-toolbar`}>
           {this.props.toolbarActions}
           <div className={`${baseCls}-toolbar-right`}>
             {this.props.total}
@@ -326,7 +326,7 @@ class DataTable extends React.Component {
             </div>
             {this.props.total}
           </div>}
-        </div>
+        </div>}
         <div className={bodyClasses}>
           <Table
             {...this.props}

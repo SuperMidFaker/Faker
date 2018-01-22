@@ -4,7 +4,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { format } from 'client/common/i18n/helpers';
 import { loadWaves, addToWave, hideAddToWave } from 'common/reducers/cwmShippingOrder';
 import messages from '../../message.i18n';
@@ -53,7 +53,7 @@ export default class AddToWaveModal extends Component {
     dataIndex: 'created_date',
     render: o => moment(o).format('MM.DD HH:mm'),
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadWaves(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -100,7 +100,7 @@ export default class AddToWaveModal extends Component {
     this.dataSource.remotes = wave;
     return (
       <Modal maskClosable={false} title="添加到波次计划" visible={this.props.visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
-        <Table size="middle" columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} loading={loading} rowKey="wave_no" />
+        <DataTable size="middle" columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} loading={loading} rowKey="wave_no" />
       </Modal>
     );
   }

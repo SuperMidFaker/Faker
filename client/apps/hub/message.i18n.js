@@ -7,31 +7,31 @@ const messages = defineMessages({
     defaultMessage: '协作平台',
   },
   integration: {
-    id: 'hub.integration',
+    id: 'hub.menu.integration',
     defaultMessage: '扩展与集成',
   },
   appStore: {
-    id: 'hub.integration.app.store',
+    id: 'hub.menu.app.store',
     defaultMessage: '应用市场',
   },
   installedApps: {
-    id: 'hub.integration.installed.apps',
+    id: 'hub.menu.installed.apps',
     defaultMessage: '已安装应用',
   },
   devApps: {
-    id: 'hub.dev.apps',
+    id: 'hub.menu.dev.apps',
     defaultMessage: '自建应用',
   },
   dataAdapters: {
-    id: 'hub.data.adapters',
+    id: 'hub.menu.adapters',
     defaultMessage: '数据适配器',
   },
   collab: {
-    id: 'hub.collab',
+    id: 'hub.menu.collab',
     defaultMessage: '协作',
   },
   invitations: {
-    id: 'hub.collab.invitations',
+    id: 'hub.menu.collab.invitations',
     defaultMessage: '协作邀请',
   },
 });

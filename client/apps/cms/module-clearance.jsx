@@ -80,7 +80,7 @@ export default class Clearance extends React.Component {
         single: false,
         key: 'cms-compliance',
         icon: 'logixon icon-compliance',
-        text: formatMsg(intl, 'compliance'),
+        text: formatMsg(intl, 'complianceGroup'),
         sublinks: [{
           key: 'cms-compliance-0',
           path: '/clearance/tradeitem',
@@ -101,7 +101,7 @@ export default class Clearance extends React.Component {
         single: false,
         key: 'cms-billing',
         icon: 'logixon icon-finance',
-        text: formatMsg(intl, 'billing'),
+        text: formatMsg(intl, 'billingGroup'),
         sublinks: [{
           key: 'cms-billing-0',
           path: '/clearance/expense/receivable',
@@ -150,7 +150,7 @@ export default class Clearance extends React.Component {
           single: false,
           key: 'cms-app',
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, 'devApps'),
+          text: formatMsg(intl, 'moreGroup'),
           sublinks: [],
         });
         cms.forEach((c, index) => {

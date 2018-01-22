@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, Popconfirm, Radio, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 
 import { formatMsg } from './message.i18n';
-import moment from 'moment';
+
 import CreateQtModal from './modals/createQtModal';
 
 
@@ -62,7 +63,7 @@ export default class QuoteList extends Component {
     selectedRowKeys: [],
   }
   msg = formatMsg(this.props.intl)
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadQuoteTable(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -422,7 +423,7 @@ export default class QuoteList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table
+              <DataTable
                 rowSelection={rowSelection}
                 columns={columns}
                 dataSource={this.dataSource}

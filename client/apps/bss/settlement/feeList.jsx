@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, DatePicker, Layout } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -228,7 +228,7 @@ export default class FeesList extends React.Component {
       },
     }];
 
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadOrders(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -289,7 +289,7 @@ export default class FeesList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1600 }} loading={loading} />
+              <DataTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1600 }} loading={loading} />
             </div>
           </div>
         </Content>

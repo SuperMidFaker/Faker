@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { Button, message, Popconfirm, Layout } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
@@ -155,7 +155,7 @@ export default class BillingList extends React.Component {
     const { customers } = this.state;
     const { tenantId, loading } = this.props;
     const { searchValue } = this.props.billings;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadBillings(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -329,7 +329,7 @@ export default class BillingList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
+              <DataTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} />
             </div>
             <BillingForm visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal

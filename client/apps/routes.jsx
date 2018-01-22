@@ -88,8 +88,6 @@ import * as CWMSupSHFTZBatchDecl from './cwm/supervision/shftz/decl/batch';
 import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
 import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbonded';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
-import SCV from './scv/module-scv';
-import * as SCVDashboard from './scv/dashboard';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
@@ -383,10 +381,6 @@ export default(store) => {
                 <Route path="changes" component={CMSTradeItemHSCode.Changes} />
               </Route>
             </Route>
-          </Route>
-          <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
-            <IndexRedirect to="/scv/dashboard" />
-            <Route path="dashboard" component={SCVDashboard.Index} />
           </Route>
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
             <IndexRedirect to="/cwm/dashboard" />
