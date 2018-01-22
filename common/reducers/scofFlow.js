@@ -35,6 +35,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'SEARCH_RATE_ENDS', 'SEARCH_RATE_ENDS_SUCCEED', 'SEARCH_RATE_ENDS_FAIL',
   'TOGGLE_FLOW_DESIGNER',
   'TOGGLE_FLOW_STATUS', 'TOGGLE_FLOW_STATUS_SUCCEED', 'TOGGLE_FLOW_STATUS_FAIL',
+  'UPDATE_FLOW_INFO', 'UPDATE_FLOW_INFO_SUCCEED', 'UPDATE_FLOW_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -668,6 +669,23 @@ export function toggleFlowStatus(status, id) {
       endpoint: 'v1/scof/flow/status/toggle',
       method: 'post',
       data: { status, id },
+    },
+  };
+}
+
+export function updateFlowInfo(name, partnerTenantId, partnerId, partnerName, flowId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_FLOW_INFO,
+        actionTypes.UPDATE_FLOW_INFO_SUCCEED,
+        actionTypes.UPDATE_FLOW_INFO_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/info/update',
+      method: 'post',
+      data: {
+        name, partnerTenantId, partnerId, partnerName, flowId,
+      },
     },
   };
 }
