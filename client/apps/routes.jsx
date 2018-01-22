@@ -53,7 +53,6 @@ import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
-import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
