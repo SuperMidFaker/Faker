@@ -24,6 +24,7 @@ const initialState = {
     pageSize: 10,
     current: 1,
   },
+  filter: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -61,7 +62,7 @@ export function createApp(appName) {
   };
 }
 
-export function loadDevApps({ pageSize, current }) {
+export function loadDevApps({ pageSize, current, filter }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -71,7 +72,7 @@ export function loadDevApps({ pageSize, current }) {
       ],
       endpoint: 'v1/hub/dev/apps/load',
       method: 'get',
-      params: { pageSize, current },
+      params: { pageSize, current, filter },
     },
   };
 }

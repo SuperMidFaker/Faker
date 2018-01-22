@@ -30,6 +30,7 @@ const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
     customers: state.partner.partners,
     pageSize: state.saasLineFileAdaptor.adaptorList.pageSize,
     current: state.saasLineFileAdaptor.adaptorList.current,
+    filter: state.saasLineFileAdaptor.filter,
   }),
   {
     showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor,
@@ -44,7 +45,7 @@ export default class ApiAuthList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
-    this.props.loadAdaptors('', '', this.props.pageSize, 1);
+    this.props.loadAdaptors('', '', this.props.pageSize, 1, this.props.filter);
     this.props.loadPartners({
       role: PARTNER_ROLES.CUS,
     });
@@ -73,21 +74,23 @@ export default class ApiAuthList extends React.Component {
     this.props.showAdaptorModal();
   }
   handleReload = () => {
-    const { pageSize, current } = this.props;
-    this.props.loadAdaptors('', '', pageSize, current);
+    const { pageSize, current, filter } = this.props;
+    this.props.loadAdaptors('', '', pageSize, current, filter);
   }
-  handleSearch = () => {
-
+  handleSearch = (value) => {
+    const { pageSize, current } = this.props;
+    const filter = { ...this.props.filter, searchText: value };
+    this.props.loadAdaptors('', '', pageSize, current, filter);
   }
   render() {
-    const { adaptors } = this.props;
+    const { adaptors, filter } = this.props;
     const pagination = {
       pageSize: Number(adaptors.pageSize),
       current: Number(adaptors.current),
       total: adaptors.total,
       showTotal: total => `共 ${total} 条`,
       onChange: (page, pageSize) => {
-        this.props.loadAdaptors('', '', pageSize, page);
+        this.props.loadAdaptors('', '', pageSize, page, filter);
       },
     };
     return (

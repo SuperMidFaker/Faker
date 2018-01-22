@@ -16,7 +16,7 @@ const { Content } = Layout;
 function fetchData({ state, dispatch }) {
   return dispatch(loadInstalledApps({
     tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.openIntegration.listFilter),
+    filter: JSON.stringify({}),
     sorter: JSON.stringify(state.openIntegration.sortFilter),
     pageSize: state.openIntegration.installedAppsList.pageSize,
     current: 1,
@@ -76,8 +76,18 @@ export default class InstalledAppsList extends React.Component {
     const link = `/hub/integration/${appType}/config/${row.uuid}`;
     this.context.router.push(link);
   }
-  handleSearch = () => {
-
+  handleSearch = (value) => {
+    const {
+      tenantId, listFilter, sortFilter, installedAppsList,
+    } = this.props;
+    const filter = { ...listFilter, searchText: value };
+    this.props.loadInstalledApps({
+      tenantId,
+      filter: JSON.stringify(filter),
+      sorter: JSON.stringify(sortFilter),
+      pageSize: installedAppsList.pageSize,
+      current: 1,
+    });
   }
   renderAppLogo(app) {
     if (app.app_type === 'EASIPASS') {

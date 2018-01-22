@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Breadcrumb, Card, Icon, Button, Form, Input, Row, Col, Layout, Upload, message } from 'antd';
+import { Avatar, Breadcrumb, Card, Button, Form, Input, Row, Col, Layout, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
 import { isFormDataLoaded, loadForm, edit } from 'common/reducers/corps';
+import AvatarUploader from 'client/components/AvatarUploader';
 import { checkCorpDomain } from 'common/reducers/corp-domain';
 import { format } from 'client/common/i18n/helpers';
 import CorpSiderMenu from './menu';
@@ -16,7 +17,6 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const FormItem = Form.Item;
-const { Dragger } = Upload;
 
 function fetchData({ state, dispatch, cookie }) {
   const corpId = state.account.tenantId;
@@ -39,8 +39,15 @@ function fetchData({ state, dispatch, cookie }) {
 export default class CorpInfo extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    formData: PropTypes.object.isRequired,
+    form: PropTypes.shape({
+      getFieldDecorator: PropTypes.func,
+    }).isRequired,
+    formData: PropTypes.shape({
+      name: PropTypes.string,
+      shortName: PropTypes.string,
+      code: PropTypes.string,
+      remark: PropTypes.string,
+    }).isRequired,
     edit: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -64,17 +71,10 @@ export default class CorpInfo extends React.Component {
     });
     this.setState(newState);
   }
-  handleImgUpload = (upinfo) => {
-    const { file } = upinfo;
-    if (file.status === 'done') {
-      if (file.response.status === 200) {
-        this.setState({
-          logo: file.response.data,
-        });
-      } else {
-        message.error(file.response.msg, 10);
-      }
-    }
+  handleImgUpload = (url) => {
+    this.setState({
+      logo: url,
+    });
   }
   handleSubmit = () => {
     this.props.form.validateFields((errors) => {
@@ -215,28 +215,7 @@ export default class CorpInfo extends React.Component {
                 <Card title={msg('brandInfo')}>
                   <Form layout="vertical">
                     <FormItem>
-                      <img
-                        src={this.state.logo || '/assets/img/wetms.png'}
-                        style={{
-                        height: 120,
-                        width: 120,
-                        margin: 10,
-                        border: '1px solid #e0e0e0',
-                        borderRadius: 60,
-                      }}
-                        alt="logo"
-                      />
-                      <div title={msg('dragHint')} style={{ height: 140, marginTop: 20 }}>
-                        <Dragger
-                          onChange={this.handleImgUpload}
-                          showUploadList={false}
-                          action={`${API_ROOTS.default}v1/upload/img`}
-                          withCredentials
-                        >
-                          <Icon type="upload" />
-                          <p className="ant-upload-hint">{msg('imgUploadHint')}</p>
-                        </Dragger>
-                      </div>
+                      <AvatarUploader url={this.state.logo} afterUpload={this.handleImgUpload} />
                     </FormItem>
                   </Form>
                 </Card>
