@@ -13,6 +13,7 @@ const FormItem = Form.Item;
     visible: state.devApp.appCreateModal.visible,
     pageSize: state.devApp.apps.pageSize,
     current: state.devApp.apps.current,
+    filter: state.devApp.filter,
   }),
   { toggleAppCreateModal, createApp, loadDevApps }
 )
@@ -33,6 +34,7 @@ export default class AppCreateModal extends Component {
             this.props.loadDevApps({
               pageSize: this.props.pageSize,
               current: this.props.current,
+              filter: JSON.stringify(this.props.filter),
             });
             this.handleCancel();
           } else {

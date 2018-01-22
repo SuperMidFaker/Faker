@@ -18,6 +18,7 @@ const { Content } = Layout;
   state => ({
     apps: state.devApp.apps,
     pageSize: state.devApp.apps.pageSize,
+    filter: state.devApp.filter,
   }),
   { toggleAppCreateModal, loadDevApps }
 )
@@ -32,6 +33,7 @@ export default class DevAppList extends React.Component {
     this.props.loadDevApps({
       pageSize: this.props.apps.pageSize,
       current: 1,
+      filter: JSON.stringify({}),
     });
   }
   msg = formatMsg(this.props.intl);
@@ -70,14 +72,19 @@ export default class DevAppList extends React.Component {
   handleCreateApp = () => {
     this.props.toggleAppCreateModal(true);
   }
-  handleSearch = () => {
-
+  handleSearch = (value) => {
+    const filter = { ...this.props.filter, searchText: value };
+    this.props.loadDevApps({
+      pageSize: this.props.apps.pageSize,
+      current: 1,
+      filter: JSON.stringify(filter),
+    });
   }
   handleOpenApiDocs = () => {
     window.open('https://docs.welogix.cn');
   }
   render() {
-    const { apps } = this.props;
+    const { apps, filter } = this.props;
     const pagination = {
       pageSize: Number(apps.pageSize),
       current: Number(apps.current),
@@ -87,6 +94,7 @@ export default class DevAppList extends React.Component {
         this.props.loadDevApps({
           pageSize,
           current: page,
+          filter: JSON.stringify(filter),
         });
       },
     };

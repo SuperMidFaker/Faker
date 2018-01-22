@@ -29,6 +29,7 @@ const initState = {
   adaptorDetailModal: {
     visible: false,
   },
+  filter: {},
 };
 
 export default function reducer(state = initState, action) {
@@ -60,7 +61,7 @@ export default function reducer(state = initState, action) {
   }
 }
 
-export function loadAdaptors(ownerPid, models, pageSize, current) {
+export function loadAdaptors(ownerPid, models, pageSize, current, filter) {
   return {
     [CLIENT_API]: {
       types: [
@@ -71,7 +72,7 @@ export function loadAdaptors(ownerPid, models, pageSize, current) {
       endpoint: 'v1/saas/linefile/adaptors',
       method: 'get',
       params: {
-        ownerPid, models: JSON.stringify(models), pageSize, current,
+        ownerPid, models: JSON.stringify(models), pageSize, current, filter: JSON.stringify(filter),
       },
     },
   };
