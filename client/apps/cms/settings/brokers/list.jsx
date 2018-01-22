@@ -206,7 +206,7 @@ export default class BrokerList extends Component {
             </PageHeader.Title>
             <PageHeader.Actions>
               <PrivilegeCover module="clearance" feature="resources" action="create">
-                <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增代理</Button>
+                <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">{this.msg('addBroker')}</Button>
               </PrivilegeCover>
             </PageHeader.Actions>
           </PageHeader>

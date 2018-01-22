@@ -16,7 +16,7 @@ const formatMsg = format(messages);
   state => ({
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
-    bwm: state.account.apps.bwm,
+    bwmApps: state.account.apps.bwm,
   }),
   { loadWhse, switchDefaultWhse }
 )
@@ -31,7 +31,7 @@ export default class ModuleCWM extends React.Component {
     appMenus: [],
   }
   componentWillMount() {
-    const { intl, bwm } = this.props;
+    const { intl, bwmApps } = this.props;
     const linkMenus = [];
     const appMenus = [];
     linkMenus.push({
@@ -130,14 +130,14 @@ export default class ModuleCWM extends React.Component {
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
     });
-    if (bwm.length > 0) {
-      if (bwm.length === 1) {
+    if (bwmApps.length > 0) {
+      if (bwmApps.length === 1) {
         appMenus.push({
           single: true,
-          key: bwm[0].app_id,
-          path: bwm[0].url,
+          key: bwmApps[0].app_id,
+          path: bwmApps[0].url,
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, bwm[0].app_name),
+          text: formatMsg(intl, bwmApps[0].app_name),
         });
       } else {
         appMenus.push({
@@ -147,7 +147,7 @@ export default class ModuleCWM extends React.Component {
           text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
-        bwm.forEach((b, index) => {
+        bwmApps.forEach((b, index) => {
           appMenus[0].sublinks.push({
             key: `bwm-app-${index}`,
             path: b.url,

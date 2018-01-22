@@ -12,7 +12,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    bss: state.account.apps.bss,
+    bssApps: state.account.apps.bss,
   }),
   {}
 )
@@ -27,7 +27,7 @@ export default class ModuleBMS extends React.Component {
     appMenus: [],
   }
   componentWillMount() {
-    const { intl, bss } = this.props;
+    const { intl, bssApps } = this.props;
     const linkMenus = [];
     const appMenus = [];
     linkMenus.push({
@@ -99,14 +99,14 @@ export default class ModuleBMS extends React.Component {
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
     });
-    if (bss.length > 0) {
-      if (bss.length === 1) {
+    if (bssApps.length > 0) {
+      if (bssApps.length === 1) {
         appMenus.push({
           single: true,
-          key: bss[0].app_id,
-          path: bss[0].url,
+          key: bssApps[0].app_id,
+          path: bssApps[0].url,
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, bss[0].app_name),
+          text: formatMsg(intl, bssApps[0].app_name),
         });
       } else {
         appMenus.push({
@@ -116,7 +116,7 @@ export default class ModuleBMS extends React.Component {
           text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
-        bss.forEach((b, index) => {
+        bssApps.forEach((b, index) => {
           appMenus[0].sublinks.push({
             key: `bss-app-${index}`,
             path: b.url,

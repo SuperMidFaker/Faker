@@ -101,7 +101,7 @@ export default class Preferences extends Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                参数设定
+                  {this.msg('preferences')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>

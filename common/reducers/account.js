@@ -21,6 +21,7 @@ const initialState = {
     // name(same as outter username), username(loginName without @), phone, email,
   },
   modules: [],
+  apps: [],
   privileges: {}, // module_id: true(全部功能) || { feature_id: true || { action_id: true }}
   userMembers: [],
 };
@@ -34,8 +35,8 @@ const actions = [
 const domain = '@@welogix/account/';
 const actionTypes = createActionTypes(domain, actions);
 
-export const ACC_LOAD_SUCCEED = actionTypes.ACC_LOAD_SUCCEED;
-export const PROFILE_UPDATE_SUCCEED = actionTypes.PROFILE_UPDATE_SUCCEED;
+export const { ACC_LOAD_SUCCEED } = actionTypes;
+export const { PROFILE_UPDATE_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.ACC_LOAD_SUCCEED:

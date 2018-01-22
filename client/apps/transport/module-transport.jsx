@@ -13,7 +13,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(state => ({
   privileges: state.account.privileges,
-  tms: state.account.apps.tms,
+  tmsApps: state.account.apps.tms,
 }))
 export default class Transport extends React.Component {
   static propTypes = {
@@ -34,7 +34,7 @@ export default class Transport extends React.Component {
     appMenus: [],
   }
   componentWillMount() {
-    const { privileges, intl, tms } = this.props;
+    const { privileges, intl, tmsApps } = this.props;
     const linkMenus = [];
     const appMenus = [];
     if (hasPermission(privileges, { module: 'transport', feature: 'dashboard' })) {
@@ -105,7 +105,7 @@ export default class Transport extends React.Component {
     if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
       linkMenus.push({
         single: false,
-        bottom: !tms.length > 0,
+        bottom: !tmsApps.length > 0,
         key: 'tms-6',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
@@ -120,14 +120,14 @@ export default class Transport extends React.Component {
         }],
       });
     }
-    if (tms.length > 0) {
-      if (tms.length === 1) {
+    if (tmsApps.length > 0) {
+      if (tmsApps.length === 1) {
         appMenus.push({
           single: true,
-          key: tms[0].app_id,
-          path: tms[0].url,
+          key: tmsApps[0].app_id,
+          path: tmsApps[0].url,
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, tms[0].app_name),
+          text: formatMsg(intl, tmsApps[0].app_name),
         });
       } else {
         appMenus.push({
@@ -137,7 +137,7 @@ export default class Transport extends React.Component {
           text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
-        tms.forEach((t, index) => {
+        tmsApps.forEach((t, index) => {
           appMenus[0].sublinks.push({
             key: `tms-app-${index}`,
             path: t.url,

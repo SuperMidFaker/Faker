@@ -15,7 +15,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(state => ({
   enabledmods: state.account.modules.map(mod => mod.id),
-  homes: state.account.apps.home,
+  homeApps: state.account.apps.home,
 }))
 export default class ModuleLayout extends React.Component {
   static propTypes = {
@@ -28,11 +28,12 @@ export default class ModuleLayout extends React.Component {
     win.focus();
   }
   render() {
+    const { enabledmods, homeApps } = this.props;
     const containerCls = `module-container ${this.props.size || ''}`;
     return (
       <QueueAnim type="bottom">
         {
-          this.props.enabledmods.map((mod) => {
+          enabledmods.map((mod) => {
             const emod = DEFAULT_MODULES[mod];
             return (
               <Col span="8" key={mod}>
@@ -52,7 +53,7 @@ export default class ModuleLayout extends React.Component {
           })
         }
         {
-          this.props.homes.map(home => (
+          homeApps && homeApps.map(home => (
             <Col span="8" key={home.app_id}>
               <a >
                 <div className={containerCls}>

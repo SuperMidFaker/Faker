@@ -15,7 +15,7 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     privileges: state.account.privileges,
     trackings: state.scvTracking.trackings,
-    sof: state.account.apps.sof,
+    sofApps: state.account.apps.sof,
   }),
   { loadTrackings }
 )
@@ -32,7 +32,7 @@ export default class ModuleSCOF extends React.Component {
   }
   componentWillMount() {
     this.props.loadTrackings(this.props.tenantId);
-    const { intl, sof } = this.props;
+    const { intl, sofApps } = this.props;
     const linkMenus = [];
     const appMenus = [];
     linkMenus.push({
@@ -78,19 +78,19 @@ export default class ModuleSCOF extends React.Component {
     linkMenus.push({
       single: true,
       bottom: true,
-      key: 'cms-settings',
+      key: 'scof-settings',
       path: '/scof/settings',
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
     });
-    if (sof.length > 0) {
-      if (sof.length === 1) {
+    if (sofApps.length > 0) {
+      if (sofApps.length === 1) {
         appMenus.push({
           single: true,
-          key: sof[0].app_id,
-          path: sof[0].url,
+          key: sofApps[0].app_id,
+          path: sofApps[0].url,
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, sof[0].app_name),
+          text: formatMsg(intl, sofApps[0].app_name),
         });
       } else {
         appMenus.push({
@@ -100,7 +100,7 @@ export default class ModuleSCOF extends React.Component {
           text: formatMsg(intl, 'devApps'),
           sublinks: [],
         });
-        sof.forEach((s, index) => {
+        sofApps.forEach((s, index) => {
           appMenus[0].sublinks.push({
             key: `sof-app-${index}`,
             path: s.url,

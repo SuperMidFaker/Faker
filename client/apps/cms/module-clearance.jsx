@@ -15,7 +15,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     privileges: state.account.privileges,
-    cms: state.account.apps.cms,
+    cmsApps: state.account.apps.cms,
   }),
   { switchNavOption }
 )
@@ -38,7 +38,7 @@ export default class Clearance extends React.Component {
     appMenus: [],
   }
   componentWillMount() {
-    const { privileges, intl, cms } = this.props;
+    const { privileges, intl, cmsApps } = this.props;
     const linkMenus = [];
     const appMenus = [];
     if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
@@ -136,14 +136,14 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'settings'),
       });
     }
-    if (cms.length > 0) {
-      if (cms.length === 1) {
+    if (cmsApps.length > 0) {
+      if (cmsApps.length === 1) {
         appMenus.push({
           single: true,
-          key: cms[0].app_id,
-          path: cms[0].url,
+          key: cmsApps[0].app_id,
+          path: cmsApps[0].url,
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, cms[0].app_name),
+          text: formatMsg(intl, cmsApps[0].app_name),
         });
       } else {
         appMenus.push({
@@ -153,7 +153,7 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'moreGroup'),
           sublinks: [],
         });
-        cms.forEach((c, index) => {
+        cmsApps.forEach((c, index) => {
           appMenus[0].sublinks.push({
             key: `cms-app-${index}`,
             path: c.url,
