@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import { connect } from 'react-redux';
-import { Button, Form, Input, Card, Collapse, Switch, Checkbox, Row, Col, Table, message } from 'antd';
+import { Button, Form, Icon, Input, Card, Collapse, Switch, Checkbox, Row, Col, Table, Tooltip, message } from 'antd';
 import { routerShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadTenantModules, updateRole } from 'common/reducers/role';
@@ -46,7 +46,7 @@ function isFullFeature(privileges, moduleId, featId) {
 
 function FormInputItem(props) {
   const {
-    type = 'text', labelName, labelSpan, required, placeholder, field, options,
+    type = 'text', labelName, required, placeholder, field, options,
   } = props;
   const { getFieldDecorator, ...fieldOptions } = options;
   const fieldInputProps = getFieldDecorator(field, fieldOptions);
@@ -59,7 +59,6 @@ function FormInputItem(props) {
 
 FormInputItem.propTypes = {
   labelName: PropTypes.string.isRequired,
-  labelSpan: PropTypes.number.isRequired,
   required: PropTypes.bool,
   placeholder: PropTypes.string,
   field: PropTypes.string,
@@ -88,14 +87,13 @@ export default class RolePrivilegesForm extends React.Component {
     intl: intlShape.isRequired,
     mode: PropTypes.oneOf(['updateRole', 'create']).isRequired,
     tenantId: PropTypes.number.isRequired,
-    form: PropTypes.object.isRequired,
-    formData: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    formData: PropTypes.shape({ name: PropTypes.string }).isRequired,
     submitting: PropTypes.bool.isRequired,
     tenantModules: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       text: PropTypes.string.isRequired,
     })),
-    onSubmit: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: routerShape.isRequired,
@@ -180,7 +178,7 @@ export default class RolePrivilegesForm extends React.Component {
   }
   render() {
     const {
-      formData: { name, desc }, tenantModules, intl,
+      formData: { name }, tenantModules, intl,
       submitting, form: { getFieldDecorator },
     } = this.props;
     const { editPrivilegeMap: privileges } = this.state;
@@ -191,14 +189,13 @@ export default class RolePrivilegesForm extends React.Component {
           extra={<Button htmlType="submit" type="primary" icon="save" loading={submitting}>{formatGlobalMsg(intl, 'save')}</Button>}
         >
           <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
-            <Panel header="基本信息" key="profile">
-              <Card bodyStyle={{ padding: 16 }}>
-                <Row gutter={16}>
-                  <Col span={16}>
-                    <FormInputItem
-                      labelName={formatMsg(intl, 'nameColumn')}
-                      field="name"
-                      options={{
+            <Panel header="角色信息" key="profile">
+              <Row gutter={16}>
+                <Col span={16}>
+                  <FormInputItem
+                    labelName={formatMsg(intl, 'nameColumn')}
+                    field="name"
+                    options={{
                       getFieldDecorator,
                       rules: [{
                         required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
@@ -213,26 +210,21 @@ export default class RolePrivilegesForm extends React.Component {
                       }],
                       initialValue: name,
                     }}
-                    />
-                  </Col>
-                  <Col span={8}>
-                    <FormItem label="属于管理层">
-                      {getFieldDecorator('bureau', { initialValue: false })(<Switch />)}
-                    </FormItem>
-                  </Col>
-                  <Col span={24}>
-                    <FormInputItem
-                      labelName={formatMsg(intl, 'descColumn')}
-                      labelSpan={8}
-                      field="desc"
-                      options={{ getFieldDecorator, initialValue: desc }}
-                    />
-                  </Col>
-                </Row>
-              </Card>
+                  />
+                </Col>
+                <Col span={8}>
+                  <FormItem label={<span>
+                    是否管理层&nbsp;<Tooltip title="What do you want others to call you?">
+                      <Icon type="question-circle-o" />
+                    </Tooltip></span>}
+                  >
+                    {getFieldDecorator('bureau', { initialValue: false })(<Switch />)}
+                  </FormItem>
+                </Col>
+              </Row>
             </Panel>
             {tenantModules.map(tnm => (
-              <Panel header={formatGlobalMsg(intl, tnm.text)} key={tnm.text}>
+              <Panel header={`「${formatGlobalMsg(intl, tnm.text)}」权限`} key={tnm.text}>
                 <Card bodyStyle={{ padding: 0 }}>
                   <Table size="small" dataSource={tnm.features} pagination={false}>
                     <Column

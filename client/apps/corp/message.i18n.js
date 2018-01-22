@@ -116,7 +116,7 @@ const messages = defineMessages({
   },
   basicInfo: {
     id: 'corp.info.basic',
-    defaultMessage: '基础信息',
+    defaultMessage: '基本信息',
   },
   brandInfo: {
     id: 'corp.info.brand',
@@ -153,6 +153,34 @@ const messages = defineMessages({
   status: {
     id: 'corp.members.list.status',
     defaultMessage: '状态',
+  },
+  accountNormal: {
+    id: 'corp.members.normal',
+    defaultMessage: '正常',
+  },
+  accountDisabled: {
+    id: 'corp.members.disabled',
+    defaultMessage: '停用',
+  },
+  tenantOwner: {
+    id: 'corp.tenant.role.owner',
+    defaultMessage: '拥有者',
+  },
+  tenantManager: {
+    id: 'corp.tenant.role.manager',
+    defaultMessage: '管理员',
+  },
+  tenantMember: {
+    id: 'corp.tenant.role.member',
+    defaultMessage: '成员',
+  },
+  tenantAnalyst: {
+    id: 'corp.tenant.role.analyst',
+    defaultMessage: '分析师',
+  },
+  tenantBilling: {
+    id: 'corp.tenant.role.billing',
+    defaultMessage: '结算人员',
   },
   opCol: {
     id: 'corp.members.list.op.col',
@@ -214,9 +242,9 @@ const messages = defineMessages({
     id: 'corp.role.create.role',
     defaultMessage: '新建角色',
   },
-  customizeRole: {
-    id: 'corp.role.customize.role',
-    defaultMessage: '自定义',
+  configPrivileges: {
+    id: 'corp.role.config.privileges',
+    defaultMessage: '配置权限',
   },
 });
 

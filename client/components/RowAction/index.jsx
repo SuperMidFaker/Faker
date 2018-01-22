@@ -4,15 +4,19 @@ import { Button, Dropdown, Icon, Popconfirm, Popover, Tooltip } from 'antd';
 import './index.less';
 
 export default class RowAction extends Component {
+  static defaultProps = {
+    size: 'small',
+  }
   static propTypes = {
-    label: PropTypes.any,
+    label: PropTypes.node,
     icon: PropTypes.string,
     shape: PropTypes.string,
+    size: PropTypes.string,
     disabled: PropTypes.bool,
     onClick: PropTypes.func,
     onHover: PropTypes.func,
     onConfirm: PropTypes.func,
-    row: PropTypes.object,
+    row: PropTypes.shape({ id: PropTypes.number }),
     index: PropTypes.number,
     tooltip: PropTypes.string,
     confirm: PropTypes.string,
@@ -40,7 +44,7 @@ export default class RowAction extends Component {
   }
   renderButton = () => {
     const {
-      label, primary, danger, overlay, icon, shape, disabled,
+      label, primary, danger, overlay, icon, shape, size, disabled,
     } = this.props;
     let type = 'default';
     if (primary) {
@@ -56,9 +60,9 @@ export default class RowAction extends Component {
       (<Button
         type={type}
         shape={shape}
+        size={size}
         ghost={primary}
         disabled={disabled}
-        size="small"
         icon={icon}
         onClick={this.handleClick}
         onMouseEnter={this.handleHover}

@@ -120,21 +120,21 @@ export default class ApiAuthList extends React.Component {
                 renderItem={(item) => {
                   let action = null;
                   if (item.active) {
-                    action = <RowAction onClick={this.handleEditBtnClick} icon="setting" label={this.msg('config')} row={item} />;
+                    action = <RowAction size="default" onClick={this.handleEditBtnClick} icon="setting" label={this.msg('config')} row={item} />;
                   } else {
                     action = (<ExcelUploader
                       endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
                       formData={{ data: JSON.stringify({ code: item.code }) }}
                       onUploaded={this.handleUploaded}
                     >
-                      <RowAction icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
+                      <RowAction size="default" icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
                     </ExcelUploader>);
                   }
                   const bizModel = impModels.find(model => model.key === item.biz_model);
                   return (
                     <List.Item
                       key={item.code}
-                      actions={[action]}
+                      actions={[<span>{action}<RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={this.handleDel} row={item} /></span>]}
                     >
                       <List.Item.Meta
                         avatar={<Avatar shape="square" icon="file-excel" style={{ backgroundColor: '#3e7b51' }} />}

@@ -144,7 +144,7 @@ export default class InstalledAppsList extends React.Component {
                 renderItem={item => (
                   <List.Item
                     key={item.id}
-                    actions={[<RowAction onClick={() => this.handleAppConfig(item)} icon="setting" label={this.msg('config')} />]}
+                    actions={[<RowAction size="default" onClick={() => this.handleAppConfig(item)} icon="setting" label={this.msg('config')} />]}
                   >
                     <List.Item.Meta
                       avatar={this.renderAppLogo(item)}

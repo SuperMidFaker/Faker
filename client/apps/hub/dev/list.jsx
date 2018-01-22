@@ -126,7 +126,7 @@ export default class DevAppList extends React.Component {
                 renderItem={item => (
                   <List.Item
                     key={item.app_id}
-                    actions={[<RowAction onClick={() => this.handleConfig(item.app_id)} icon="setting" label={this.msg('config')} />]}
+                    actions={[<RowAction size="default" onClick={() => this.handleConfig(item.app_id)} icon="setting" label={this.msg('config')} />]}
                   >
                     <List.Item.Meta
                       avatar={<Avatar shape="square" src={item.app_logo} />}

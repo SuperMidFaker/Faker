@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
-import { Tooltip } from 'antd';
+import { Icon, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { logout } from 'common/reducers/account';
 import { goBackNav } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import NavLink from './NavLink';
-import { MdIcon } from './FontIcon';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from '../../common/reducers/preference';
 import { showActivitiesDock } from '../../common/reducers/activities';
 import messages from './message.i18n';
@@ -55,20 +54,20 @@ export default class PubHeaderBar extends React.Component {
     if (navTitle.depth === 2) {
       brandNav = (
         <NavLink to="/" className="navbar-toggle">
-          <MdIcon type="home" />
+          <Icon type="home" />
         </NavLink>
       );
     } else if (navTitle.depth === 3) {
       brandNav = [(
         <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('back')} key="back" >
           <a role="presentation" className="navbar-anchor" key="back" onClick={this.handleGoBack}>
-            <MdIcon type="arrow-left" />
+            <Icon type="arrow-left" />
           </a>
         </Tooltip>)];
       if (navTitle.jumpOut && this.props.navTitle.stack > 1) {
         brandNav.push(<Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('close')} key="close" >
           <a role="presentation" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
-            <MdIcon type="close" />
+            <Icon type="close" />
           </a>
         </Tooltip>);
       }

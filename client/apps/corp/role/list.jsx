@@ -101,7 +101,8 @@ export default class RoleList extends React.Component {
                 renderItem={role => (
                   <List.Item
                     key={role.id}
-                    actions={[<RowAction onClick={() => this.handleConfig(role)} icon="form" label={this.msg('customizeRole')} />]}
+                    actions={[<span><RowAction size="default" onClick={() => this.handleConfig(role)} icon="form" label={this.msg('configPrivileges')} />
+                      <RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={this.handleDelete} row={role} /></span>]}
                   >
                     <List.Item.Meta
                       avatar={<Avatar src={role.app_logo} />}
