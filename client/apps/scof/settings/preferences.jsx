@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Breadcrumb, Card, Collapse, List, Layout, Modal } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { toggleOrderConfigModal } from 'common/reducers/scofSettings';
+import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/reducers/sofOrderPref';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -18,13 +18,12 @@ const { Content, Sider } = Layout;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
-    invTemplates: state.cmsInvoice.invTemplates,
-    visible: state.scofSettings.orderConfigModal.visible,
+    orderTypeList: state.sofOrderPref.orderTypeList,
+    visible: state.sofOrderPref.orderTypeModal.visible,
+    modalOrderType: state.sofOrderPref.orderTypeModal.orderType,
+    reload: state.sofOrderPref.typeListReload,
   }),
-  { toggleOrderConfigModal }
+  { toggleOrderTypeModal, loadOrderTypes, removeOrderType }
 )
 @connectNav({
   depth: 2,
@@ -37,32 +36,49 @@ export default class Preferences extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = formatMsg(this.props.intl);
-  orderTypeList = [
-    {
-      id: '100001',
-      type: '进口订单',
-      transfer: 'IMP',
-    },
-    {
-      id: '100002',
-      type: '出口订单',
-      transfer: 'EXP',
-    },
-    {
-      id: '100003',
-      type: '国内订单',
-      transfer: 'DOM',
-    },
-  ];
-  handleCreate = () => {
-    this.props.toggleOrderConfigModal(true);
+  componentDidMount() {
+    const { orderTypeList } = this.props;
+    this.props.loadOrderTypes({
+      pageSize: orderTypeList.pageSize,
+      current: orderTypeList.current,
+    });
   }
-  handleConfig = () => {
-    this.props.toggleOrderConfigModal(true);
+  msg = formatMsg(this.props.intl);
+  handleCreate = () => {
+    this.props.toggleOrderTypeModal(true, {});
+  }
+  handleConfig = (type) => {
+    this.props.toggleOrderTypeModal(true, type);
+  }
+  handleTypeDel = (type) => {
+    this.props.removeOrderType(type.id).then((result) => {
+      if (!result.error) {
+        const { orderTypeList } = this.props;
+        this.props.loadOrderTypes({
+          pageSize: orderTypeList.pageSize,
+          current: orderTypeList.current,
+        });
+      }
+    });
+  }
+  handleModalCancel = () => {
+    const { orderTypeList, reload } = this.props;
+    if (reload) {
+      this.props.loadOrderTypes({
+        pageSize: orderTypeList.pageSize,
+        current: orderTypeList.current,
+      });
+    }
+    this.props.toggleOrderTypeModal(false, {});
+  }
+  handlePageLoad = (current, pageSize) => {
+    this.props.loadOrderTypes({
+      pageSize,
+      current,
+    });
   }
   render() {
-    const { visible } = this.props;
+    const { visible, modalOrderType, orderTypeList } = this.props;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -90,16 +106,22 @@ export default class Preferences extends Component {
           <Content className="page-content layout-fixed-width">
             <Card extra={<Button type="primary" ghost icon="plus-circle-o" onClick={this.handleCreate}>添加订单类型</Button>} bodyStyle={{ padding: 16 }} >
               <List
-                dataSource={this.orderTypeList}
+                loading={orderTypeList.loading}
+                pagination={{
+                  pageSize: orderTypeList.pageSize,
+                  current: orderTypeList.current,
+                  total: orderTypeList.totalCount,
+                  onChange: this.handlePageLoad,
+                }}
+                dataSource={orderTypeList.data}
                 renderItem={type => (
                   <List.Item
                     key={type.id}
-                    actions={[<RowAction onClick={() => this.handleConfig(type.id)} icon="setting" label={this.msg('config')} />]}
+                    actions={[<RowAction row={type} key="config" onClick={this.handleConfig} icon="setting" label={this.msg('config')} />,
+                      <RowAction danger row={type} confirm="确认删除?" key="del" onConfirm={this.handleTypeDel} icon="delete" />,
+                    ]}
                   >
-                    <List.Item.Meta
-                      title={type.type}
-                      description={type.desc}
-                    />
+                    <List.Item.Meta title={type.name} />
                   </List.Item>
                   )}
               />
@@ -111,7 +133,7 @@ export default class Preferences extends Component {
           title={this.msg('orderConfig')}
           width="100%"
           visible={visible}
-          onCancel={() => this.props.toggleOrderConfigModal(false)}
+          onCancel={this.handleModalCancel}
           footer={null}
           wrapClassName="fullscreen-modal"
           destroyOnClose
@@ -122,7 +144,7 @@ export default class Preferences extends Component {
                 <Panel header="订单类型" key="type">
                   <TypeForm />
                 </Panel>
-                <Panel header="扩展字段" key="fields">
+                <Panel header="扩展字段" key="fields" disabled={!modalOrderType.id}>
                   <FieldsForm />
                 </Panel>
               </Collapse>

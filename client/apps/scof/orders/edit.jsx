@@ -7,6 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/sofOrders';
+import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { format } from 'client/common/i18n/helpers';
 import OrderForm from './forms/orderForm';
 import messages from './message.i18n';
@@ -17,6 +18,8 @@ const { Content } = Layout;
 const VALIDATE_MSG = {
   no_customer: '请选择客户',
   no_goods_type: '请选择货物类型',
+  no_order_type: '请选择订单类型',
+  no_order_type_attr: '请填写订单类型扩展属性',
   no_flowid: '请选择流程',
   cust_order_no_exist: '客户订单号已存在',
 };
@@ -24,6 +27,7 @@ const VALIDATE_MSG = {
 function fetchData({ state, params, dispatch }) {
   const proms = [
     dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
+    dispatch(loadRequireOrderTypes()),
     dispatch(loadOrder(params.orderNo)),
   ];
   return Promise.all(proms);

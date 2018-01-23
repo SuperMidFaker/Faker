@@ -58,6 +58,7 @@ const initialState = {
     subOrders: [],
   },
   formRequires: {
+    orderTypes: [],
     clients: [],
     packagings: [],
     transitModes: [],
@@ -74,7 +75,9 @@ const initialState = {
     current: 1,
     data: [],
   },
-  orderFilters: { progress: 'all', transfer: 'all', partnerId: '' },
+  orderFilters: {
+    progress: 'all', transfer: 'all', partnerId: '', orderType: null,
+  },
   orderBizObjects: [],
 };
 

@@ -182,16 +182,16 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '收货方名称',
     }, {
       field: 'cust_receiver_contact',
-      label: '联系人',
+      label: '收货方联系人',
     }, {
       field: 'cust_receiver_address',
       label: '收件详细地址',
     }, {
       field: 'cust_receiver_tel',
-      label: '联系电话',
+      label: '收货方联系电话',
     }, {
       field: 'cust_receiver_mobile',
-      label: '手机号',
+      label: '收货方手机号',
     }, {
       field: 'cust_remark',
       label: '备注',

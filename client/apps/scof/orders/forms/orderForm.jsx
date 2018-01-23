@@ -41,6 +41,7 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
     flows: state.scofFlow.partnerFlows,
     graphLoading: state.scofFlow.graphLoading,
     serviceTeam: state.sofCustomers.operators,
+    orderTypes: state.sofOrderPref.requireOrderTypes,
   }),
   {
     setClientForm,
@@ -203,6 +204,15 @@ export default class OrderForm extends Component {
   handleKvChange = (key, value, prefix) => {
     this.props.setClientForm(-1, { [key]: value, [`${key}_name`]: SeletableKeyNameMap[`${prefix}-${value}`] });
   }
+  handleOrderTypeChange = (value) => {
+    const orderType = this.props.orderTypes.filter(ort => ort.id === Number(value))[0];
+    if (orderType) {
+      this.props.setClientForm(-1, {
+        cust_shipmt_order_type: Number(value),
+        cust_shipmt_transfer: orderType.transfer,
+      });
+    }
+  }
   renderSteps = (subOrders, shipment) => {
     const { operation } = this.props;
     const steps = [];
@@ -226,7 +236,7 @@ export default class OrderForm extends Component {
   }
   render() {
     const {
-      formRequires, formData, flows, serviceTeam,
+      formRequires, formData, flows, serviceTeam, orderTypes,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -277,6 +287,51 @@ export default class OrderForm extends Component {
     */
     const shipmentDisabled = !formData.cust_shipmt_transfer || formData.cust_shipmt_transfer === 'DOM';
     const shipmentActiveKey = shipmentDisabled ? [] : ['shipment'];
+    let ext1Label = { label: '扩展单号1' };
+    let ext2Label = { label: '扩展单号2' };
+    let ext3Label = { label: '扩展单号3' };
+    let ext4Label = { label: '扩展单号4' };
+    if (formData.cust_shipmt_order_type) {
+      const orderType = orderTypes.filter(ort =>
+        ort.id === Number(formData.cust_shipmt_order_type))[0];
+      const ext1 = orderType.ext1_params ? JSON.parse(orderType.ext1_params) : {};
+      if (ext1.enabled) {
+        ext1Label = {
+          label: ext1.title || ext1Label.label,
+          required: ext1.required,
+        };
+      } else {
+        ext1Label = null;
+      }
+      const ext2 = orderType.ext2_params ? JSON.parse(orderType.ext2_params) : {};
+      if (ext2.enabled) {
+        ext2Label = {
+          label: ext2.title || ext2Label.label,
+          required: ext2.required,
+        };
+      } else {
+        ext2Label = null;
+      }
+      const ext3 = orderType.ext3_params ? JSON.parse(orderType.ext3_params) : {};
+      if (ext3.enabled) {
+        ext3Label = {
+          label: ext3.title || ext3Label.label,
+          required: ext3.required,
+        };
+      } else {
+        ext3Label = null;
+      }
+      const ext4 = orderType.ext4_params ? JSON.parse(orderType.ext4_params) : {};
+      if (ext4.enabled) {
+        ext4Label = {
+          label: ext4.title || ext4Label.label,
+          required: ext4.required,
+        };
+      } else {
+        ext4Label = null;
+      }
+    }
+
     return (
       <div>
         <Card bodyStyle={{ padding: 0 }}>
@@ -305,15 +360,26 @@ export default class OrderForm extends Component {
                     </Col>
                     <Col span={6}>
                       <FormItem label="订单类型" {...formItemLayout} required>
-                        <Select
-                          value={formData.cust_shipmt_transfer}
-                          onChange={value =>
+                        {orderTypes.length === 0 ?
+                          <Select
+                            value={formData.cust_shipmt_transfer}
+                            onChange={value =>
                             this.handleKvChange('cust_shipmt_transfer', value, 'transfer')}
-                        >
-                          {SCOF_ORDER_TRANSFER.map(sot =>
+                          >
+                            {SCOF_ORDER_TRANSFER.map(sot =>
                             (<Option value={sot.value} key={sot.value}>
                               {sot.text}</Option>))}
-                        </Select>
+                          </Select> :
+                          <Select
+                            value={formData.cust_shipmt_order_type &&
+                                String(formData.cust_shipmt_order_type)}
+                            onChange={this.handleOrderTypeChange}
+                          >
+                            {orderTypes.map(ort =>
+                            (<Option value={String(ort.id)} key={ort.id}>
+                              {ort.name}</Option>))}
+                          </Select>
+                        }
                       </FormItem>
                     </Col>
                     <Col span={6}>
@@ -419,26 +485,30 @@ export default class OrderForm extends Component {
                         <Input value={formData.cust_remark} onChange={e => this.handleChange('cust_remark', e.target.value)} />
                       </FormItem>
                     </Col>
-                    <Col span={6}>
-                      <FormItem label="扩展单号1" {...formItemLayout}>
-                        <Input value={formData.ext_attr_1} onChange={e => this.handleChange('ext_attr_1', e.target.value)} />
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label="扩展单号2" {...formItemLayout}>
-                        <Input value={formData.ext_attr_2} onChange={e => this.handleChange('ext_attr_2', e.target.value)} />
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label="扩展单号3" {...formItemLayout}>
-                        <Input value={formData.ext_attr_3} onChange={e => this.handleChange('ext_attr_3', e.target.value)} />
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label="扩展单号4" {...formItemLayout}>
-                        <Input value={formData.ext_attr_4} onChange={e => this.handleChange('ext_attr_4', e.target.value)} />
-                      </FormItem>
-                    </Col>
+                    {ext1Label &&
+                      <Col span={6}>
+                        <FormItem {...ext1Label} {...formItemLayout}>
+                          <Input value={formData.ext_attr_1} onChange={e => this.handleChange('ext_attr_1', e.target.value)} />
+                        </FormItem>
+                      </Col>}
+                    {ext2Label &&
+                      <Col span={6}>
+                        <FormItem {...ext2Label} {...formItemLayout}>
+                          <Input value={formData.ext_attr_2} onChange={e => this.handleChange('ext_attr_2', e.target.value)} />
+                        </FormItem>
+                      </Col>}
+                    {ext3Label &&
+                      <Col span={6}>
+                        <FormItem {...ext3Label} {...formItemLayout}>
+                          <Input value={formData.ext_attr_3} onChange={e => this.handleChange('ext_attr_3', e.target.value)} />
+                        </FormItem>
+                      </Col>}
+                    {ext4Label &&
+                      <Col span={6}>
+                        <FormItem {...ext4Label} {...formItemLayout}>
+                          <Input value={formData.ext_attr_4} onChange={e => this.handleChange('ext_attr_4', e.target.value)} />
+                        </FormItem>
+                      </Col>}
                   </Row>
                 </Card>
                 <Card bodyStyle={{ padding: 0 }} >

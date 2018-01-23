@@ -98,6 +98,10 @@ const messages = defineMessages({
     id: 'scof.orders.at.received',
     defaultMessage: 'Received',
   },
+  allOperators: {
+    id: 'sof.orders.allOperators',
+    defaultMessage: '全部人员',
+  },
   opColumn: {
     id: 'scof.orders.column.operation',
     defaultMessage: 'Operation',

@@ -9,6 +9,7 @@ import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/sofOrders';
+import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
@@ -63,6 +64,7 @@ function fetchData({ state, dispatch }) {
   partners: state.partner.partners,
   adaptors: state.hubDataAdapter.modelAdaptors,
   flows: state.scofFlow.partnerFlows,
+  orderTypes: state.sofOrderPref.requireOrderTypes,
 }), {
   loadOrders,
   removeOrder,
@@ -72,6 +74,7 @@ function fetchData({ state, dispatch }) {
   loadPartnerFlowList,
   loadModelAdaptors,
   hideDock,
+  loadRequireOrderTypes,
   loadOrderDetail,
 })
 @connectNav({
@@ -114,6 +117,7 @@ export default class OrderList extends React.Component {
     }
     this.props.loadPartnerFlowList();
     this.props.loadModelAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
+    this.props.loadRequireOrderTypes();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
@@ -202,6 +206,15 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
+  handleOrderTypeChange = (value) => {
+    const filters = { ...this.props.filters, orderType: value === 'all' ? null : Number(value) };
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
+    });
+  }
   handleCreatorChange = (fieldsValue) => {
     const filters = { ...this.props.filters, ...fieldsValue, loginId: this.props.loginId };
     this.props.loadOrders({
@@ -233,7 +246,7 @@ export default class OrderList extends React.Component {
   }
   render() {
     const {
-      loading, filters, flows, partners,
+      loading, filters, flows, partners, orderTypes,
     } = this.props;
     const { importPanel } = this.state;
     const rowSelection = {
@@ -341,13 +354,13 @@ export default class OrderList extends React.Component {
       </Select>
       <Select
         showSearch
-        optionFilterProp="children"
         style={{ width: 160 }}
-        onChange={this.handleClientSelectChange}
-        value={filters.partnerId ? filters.partnerId : 'all'}
+        onChange={this.handleOrderTypeChange}
+        value={filters.orderType ? String(filters.orderType) : 'all'}
       >
         <Option value="all">全部类型</Option>
-        {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+        {orderTypes.map(data => (<Option key={data.id} value={String(data.id)}>
+          {data.name}</Option>))}
       </Select>
       <span />
       <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />

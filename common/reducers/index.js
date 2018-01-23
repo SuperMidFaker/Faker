@@ -52,7 +52,7 @@ import hubDataAdapter from './hubDataAdapter';
 import hubDevApp from './hubDevApp';
 import hubIntegration from './hubIntegration';
 import scofFlow from './scofFlow';
-import scofSettings from './scofSettings';
+import sofOrderPref from './sofOrderPref';
 import sofVendors from './sofVendors';
 import sofTracking from './sofTracking';
 import transportAcceptance from './transport-acceptance';
@@ -112,7 +112,7 @@ export default combineReducers({
   cmsTradeManual,
   cmsAnalytics,
   scofFlow,
-  scofSettings,
+  sofOrderPref,
   sofVendors,
   sofTracking,
   sofCustomers,

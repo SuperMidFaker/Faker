@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/sofOrders';
+import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
@@ -16,15 +17,21 @@ const { Content } = Layout;
 const VALIDATE_MSG = {
   no_customer: '请选择客户',
   no_goods_type: '请选择货物类型',
+  no_order_type: '请选择订单类型',
+  no_order_type_attr: '请填写订单类型扩展属性',
   no_flowid: '请选择流程',
   cust_order_no_exist: '客户订单号已存在',
 };
 
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadFormRequires({
-    tenantId: state.account.tenantId,
-  }));
+  const proms = [
+    dispatch(loadFormRequires({
+      tenantId: state.account.tenantId,
+    })),
+    dispatch(loadRequireOrderTypes()),
+  ];
+  return Promise.all(proms);
 }
 
 @connectFetch()(fetchData)

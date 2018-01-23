@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Col, Form, Input, Radio } from 'antd';
+import { message, Button, Col, Form, Input, Radio } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { SCOF_ORDER_TRANSFER } from 'common/constants';
-import { updateAppStatus, deleteApp } from 'common/reducers/hubIntegration';
+import { upsertOrderType } from 'common/reducers/sofOrderPref';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -14,9 +14,10 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    orderType: state.hubIntegration.currentApp,
+    visible: state.sofOrderPref.orderTypeModal.visible,
+    orderType: state.sofOrderPref.orderTypeModal.orderType,
   }),
-  { updateAppStatus, deleteApp }
+  { upsertOrderType }
 )
 @Form.create()
 export default class TypeForm extends Component {
@@ -26,12 +27,29 @@ export default class TypeForm extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && !this.props.visible) {
+      this.props.form.resetFields();
+    }
+  }
   msg = formatMsg(this.props.intl)
+  handleTypeSave = () => {
+    this.props.form.validateFields((errors, values) => {
+      if (!errors) {
+        const { orderType } = this.props;
+        this.props.upsertOrderType({ id: orderType.id, ...values }).then((result) => {
+          if (!result.error) {
+            message.success('保存成功');
+          }
+        });
+      }
+    });
+  }
   render() {
     const { form: { getFieldDecorator }, orderType } = this.props;
     return (
       <Form>
-        <FormItem label={this.msg('orderType')}>
+        <FormItem label={this.msg('orderTypeInfo')}>
           <Col span={12}>
             {getFieldDecorator('name', {
               initialValue: orderType.name,
@@ -45,8 +63,8 @@ export default class TypeForm extends Component {
           </Col>
         </FormItem>
         <FormItem label={this.msg('orderTransfer')}>
-          {getFieldDecorator('order_transfer', {
-            initialValue: orderType.order_transfer,
+          {getFieldDecorator('transfer', {
+            initialValue: orderType.transfer,
             rules: [{ required: true, message: this.msg('parameterRequired') }],
           })(<RadioGroup>
             {SCOF_ORDER_TRANSFER.map(sot =>
@@ -55,7 +73,7 @@ export default class TypeForm extends Component {
           </RadioGroup>)}
         </FormItem>
         <FormItem>
-          <Button type="primary" icon="save">{this.msg('save')}</Button>
+          <Button type="primary" icon="save" onClick={this.handleTypeSave}>{this.msg('save')}</Button>
         </FormItem>
       </Form>
     );
