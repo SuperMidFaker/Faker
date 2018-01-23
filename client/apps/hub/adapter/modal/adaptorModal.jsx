@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Select, Input } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
-import { loadAdaptors, addAdaptor, showAdaptorModal, hideAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
+import { loadAdaptors, addAdaptor, showAdaptorModal, hideAdaptorModal } from 'common/reducers/hubDataAdapter';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -15,10 +15,10 @@ const { Option } = Select;
 @injectIntl
 @connect(
   state => ({
-    visible: state.saasLineFileAdaptor.adaptorModal.visible,
+    visible: state.hubDataAdapter.adaptorModal.visible,
     customers: state.partner.partners,
-    pageSize: state.saasLineFileAdaptor.adaptorList.pageSize,
-    current: state.saasLineFileAdaptor.adaptorList.current,
+    pageSize: state.hubDataAdapter.adaptorList.pageSize,
+    current: state.hubDataAdapter.adaptorList.current,
   }),
   {
     showAdaptorModal, hideAdaptorModal, loadPartners, addAdaptor, loadAdaptors,

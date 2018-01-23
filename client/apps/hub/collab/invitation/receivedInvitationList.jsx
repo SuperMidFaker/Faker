@@ -11,7 +11,7 @@ import RowAction from 'client/components/RowAction';
 import { loadReceiveInvitations, rejectInvitation, acceptInvitation } from 'common/reducers/invitation';
 import { PARTNER_ROLES } from 'common/constants';
 import PartnershipsColumn from './common/partnershipsColumn';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const rowSelection = {
   onChange() {},

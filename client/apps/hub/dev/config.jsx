@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Collapse, Button, Card, Breadcrumb, Icon, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
-import { getApp } from 'common/reducers/devApp';
+import { getApp } from 'common/reducers/hubDevApp';
 import ProfileForm from './forms/profileForm';
 import OAuthForm from './forms/oAuthForm';
 import WebHookForm from './forms/webHookForm';
@@ -17,7 +17,7 @@ const { Panel } = Collapse;
 @injectIntl
 @connect(
   state => ({
-    app: state.devApp.app,
+    app: state.hubDevApp.app,
   }),
   { getApp }
 )

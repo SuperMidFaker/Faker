@@ -15,7 +15,7 @@ const RadioGroup = Radio.Group;
   tenantName: state.account.tenantName,
   visible: state.cmsManifest.addTemplateModal.visible,
   operation: state.cmsManifest.addTemplateModal.operation,
-  customers: state.crmCustomers.customers,
+  customers: state.sofCustomers.customers,
 }), { toggleBillTempModal, createBillTemplate })
 @Form.create()
 export default class AddTemplateModal extends React.Component {

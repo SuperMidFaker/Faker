@@ -13,7 +13,7 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(
   state => ({
-    order: state.crmOrders.dock.order,
+    order: state.sofOrders.dock.order,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,

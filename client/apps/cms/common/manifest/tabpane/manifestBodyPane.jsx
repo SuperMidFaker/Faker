@@ -9,7 +9,7 @@ import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt,
   showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
 import { toggleDeclImportModal } from 'common/reducers/cmsManifestImport';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
-import { loadModelAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 
@@ -191,7 +191,7 @@ function calculateTotal(bodies, currencies) {
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
     billMeta: state.cmsManifest.billMeta,
-    adaptors: state.saasLineFileAdaptor.modelAdaptors,
+    adaptors: state.hubDataAdapter.modelAdaptors,
   }),
   {
     loadBill,

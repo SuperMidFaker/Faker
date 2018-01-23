@@ -20,7 +20,7 @@ const FormItem = Form.Item;
     tariff: state.scofFlow.addLineModal.tariff,
     tenantId: state.account.tenantId,
     loginName: state.account.username,
-    formRequires: state.crmOrders.formRequires,
+    formRequires: state.sofOrders.formRequires,
   }),
   {
     toggleAddLineModal,
@@ -130,8 +130,13 @@ export default class AddLineModal extends React.Component {
     if (tariff.intervals) varColumns = getEndTableVarColumns(tariff, transitModes, vehicleTypes, vehicleLengths);
 
     return (
-      <Modal maskClosable={false} visible={visible} width={700} title="添加线路"
-        onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        width={700}
+        title="添加线路"
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
       >
         <Row>
           <FormItem label={this.msg('quoteNo')}>

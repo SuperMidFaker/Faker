@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Select, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Radio, message } from 'antd';
+import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -25,8 +26,10 @@ import { formatMsg } from './message.i18n';
 
 
 const { Content } = Layout;
+
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -134,76 +137,74 @@ export default class ExpenseList extends Component {
           {o}
         </a>),
     }, {
-      title: this.msg('cusDeclCharges'),
-      dataIndex: 'cus_decl_charges',
-      width: 120,
-      align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
+      title: this.msg('custName'),
+      dataIndex: 'send_name',
+      width: 200,
+      filters: this.state.custFilter,
+      render: o => <TrimSpan text={o} maxLen={12} />,
     }, {
-      title: this.msg('ciqDeclCharges'),
-      dataIndex: 'ciq_decl_charges',
-      width: 120,
-      align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
-    }, {
-      title: this.msg('certsCharges'),
-      dataIndex: 'certs_charges',
-      width: 120,
-      align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
-    }, {
-      title: this.msg('allCost'),
-      dataIndex: 'total_charges',
-      width: 120,
-      align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
-    }, {
-      title: this.msg('servCost'),
-      dataIndex: 'serv_cost',
-      key: 'serv_cost',
-      width: 120,
-      align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return o.toFixed(2);
-        }
-      },
-    }, {
-      title: this.msg('cushCost'),
-      dataIndex: 'cush_cost',
-      key: 'cush_cost',
-      width: 120,
-      align: 'right',
-      render: (o, row) => {
-        if (!isNaN(o)) {
-          const labelElem = (
-            <span>{o.toFixed(2)}<Icon type="edit" /></span>
-          );
-          return (
-            <RowAction
-              onClick={this.handleAddAdvancePayment}
-              field="cush_cost"
-              row={{ delg_no: row.delg_no }}
-              label={labelElem}
-            />);
-        }
-      },
+      title: this.msg('revenue'),
+      dataIndex: 'revenue',
+      children: [
+        {
+          title: this.msg('serviceRevenue'),
+          dataIndex: 'serv_bill',
+          key: 'serv_bill',
+          width: 80,
+          align: 'right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('cushBill'),
+          dataIndex: 'cush_bill',
+          key: 'cush_bill',
+          width: 80,
+          align: 'right',
+          render: (o, row) => {
+            if (!isNaN(o)) {
+              const labelElem = (
+                <span>{o.toFixed(2)}<Icon type="edit" /></span>
+              );
+              return (
+                <RowAction
+                  onClick={this.handleAddAdvanceIncome}
+                  field="cush_bill"
+                  row={{ delg_no: row.delg_no }}
+                  label={labelElem}
+                />);
+            }
+          },
+        }, {
+          title: this.msg('allBill'),
+          dataIndex: 'all_bill',
+          key: 'all_bill',
+          width: 80,
+          align: 'right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return (<b>{o.toFixed(2)}</b>);
+            }
+          },
+        }, {
+          title: this.msg('status'),
+          width: 60,
+          dataIndex: 'bill_status',
+          key: 'revenue_status',
+          className: 'status-indicator',
+          render: (status) => {
+            if (status === 0) {
+              return <Badge status="default" />;
+            } else if (status === 1) {
+              return <Badge status="warning" />;
+            } else if (status === 2) {
+              return <Badge status="success" />;
+            }
+          },
+        },
+      ],
     }, {
       title: this.msg('agentName'),
       dataIndex: 'agent_name',
@@ -211,19 +212,86 @@ export default class ExpenseList extends Component {
       filters: this.state.supeFilter,
       render: o => <TrimSpan text={o} maxLen={12} />,
     }, {
-      title: this.msg('status'),
-      dataIndex: 'cost_status',
-      key: 'cost_status',
-      className: 'status-indicator',
-      render: (status) => {
-        if (status === 0) {
-          return <Badge status="default" />;
-        } else if (status === 1) {
-          return <Badge status="warning" />;
-        } else if (status === 2) {
-          return <Badge status="success" />;
+      title: this.msg('cost'),
+      dataIndex: 'cost',
+      children: [
+        {
+          title: this.msg('servCost'),
+          dataIndex: 'serv_cost',
+          key: 'serv_cost',
+          width: 80,
+          align: 'right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('cushCost'),
+          dataIndex: 'cush_cost',
+          key: 'cush_cost',
+          width: 80,
+          align: 'right',
+          render: (o, row) => {
+            if (!isNaN(o)) {
+              const labelElem = (
+                <span>{o.toFixed(2)}<Icon type="edit" /></span>
+              );
+              return (
+                <RowAction
+                  onClick={this.handleAddAdvancePayment}
+                  field="cush_cost"
+                  row={{ delg_no: row.delg_no }}
+                  label={labelElem}
+                />);
+            }
+          },
+        }, {
+          title: this.msg('allCost'),
+          dataIndex: 'all_cost',
+          width: 80,
+          align: 'right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return (<b>{o.toFixed(2)}</b>);
+            }
+          },
+        }, {
+          title: this.msg('status'),
+          width: 60,
+          dataIndex: 'cost_status',
+          key: 'cost_status',
+          className: 'status-indicator',
+          render: (status) => {
+            if (status === 0) {
+              return <Badge status="default" />;
+            } else if (status === 1) {
+              return <Badge status="warning" />;
+            } else if (status === 2) {
+              return <Badge status="success" />;
+            }
+          },
+        },
+      ],
+    }, {
+      title: this.msg('profit'),
+      width: 80,
+      dataIndex: 'profit',
+      align: 'right',
+      render: (o, record) => {
+        const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
+        const cost = isNaN(record.all_cost) ? 0 : record.all_cost;
+        if (bill < cost) {
+          return (<span className="mdc-text-red">{-(cost - bill).toFixed(2)}</span>);
+        } else if (bill > cost) {
+          return (<span className="mdc-text-green">{(bill - cost).toFixed(2)}</span>);
         }
+        return (<span className="mdc-text-grey">0.00</span>);
       },
+    }, {
+      title: this.msg('invoiceNo'),
+      dataIndex: 'invoice_no',
+      width: 180,
     }, {
       title: this.msg('acptTime'),
       dataIndex: 'acpt_time',
@@ -428,23 +496,12 @@ export default class ExpenseList extends Component {
         key: 'byVendor',
         tab: this.msg('byVendor'),
       },
+      {
+        key: 'byItem',
+        tab: this.msg('byItem'),
+      },
     ];
-    const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
-      <Select
-        value={listFilter.status}
-        style={{ width: 160 }}
-        onChange={this.handleStatusChange}
-      >
-        <Option value="pending">未提交结算</Option>
-        <Option value="submitted">已提交结算</Option>
-      </Select>
-      <RangePicker
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-        onChange={this.handleDateRangeChange}
-        style={{ width: 256 }}
-      />
-    </span>);
+    const toolbarActions = (<SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />);
     this.dataSource.remotes = expslist;
     return (
       <Layout>
@@ -471,6 +528,7 @@ export default class ExpenseList extends Component {
         <Content className="page-content" key="main">
           <DataTable
             toolbarActions={toolbarActions}
+            scrollOffset={360}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}
@@ -478,6 +536,7 @@ export default class ExpenseList extends Component {
             dataSource={this.dataSource}
             rowKey="delg_no"
             loading={expslist.loading}
+            bordered
           />
         </Content>
         <DelegationDockPanel />

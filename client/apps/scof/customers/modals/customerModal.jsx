@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, Checkbox, Select, Row, Col, Button, Icon, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/crmCustomers';
+import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/sofCustomers';
 import { getCompanyInfo } from 'common/reducers/common';
 import { checkPartner } from 'common/reducers/partner';
 import { BUSINESS_TYPES } from 'common/constants';
@@ -19,9 +19,9 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.crmCustomers.customerModal.visible,
-    customer: state.crmCustomers.customerModal.customer,
-    operation: state.crmCustomers.customerModal.operation,
+    visible: state.sofCustomers.customerModal.visible,
+    customer: state.sofCustomers.customerModal.customer,
+    operation: state.sofCustomers.customerModal.operation,
   }),
   {
     addCustomer, editCustomer, checkPartner, hideCustomerModal, getCompanyInfo,

@@ -6,7 +6,7 @@ import { Breadcrumb, Button, Input, Table, Tooltip, Layout, Popconfirm, Icon } f
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTrackings, addTracking, removeTracking, updateTracking,
-  loadTrackingFields, toggleTrackingModal, loadTrackingItems } from 'common/reducers/scvTracking';
+  loadTrackingFields, toggleTrackingModal, loadTrackingItems } from 'common/reducers/sofTracking';
 import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
@@ -25,9 +25,9 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    trackings: state.scvTracking.trackings,
-    loading: state.scvTracking.loading,
-    loaded: state.scvTracking.loaded,
+    trackings: state.sofTracking.trackings,
+    loading: state.sofTracking.loading,
+    loaded: state.sofTracking.loaded,
   }),
   {
     loadTrackings,

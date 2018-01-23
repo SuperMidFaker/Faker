@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Collapse } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import { showCustomerModal } from 'common/reducers/crmCustomers';
+import { showCustomerModal } from 'common/reducers/sofCustomers';
 import messages from '../message.i18n';
 import DetailPane from '../pane/detailPane';
 import SubCustomerPane from '../pane/subCustomerPane';

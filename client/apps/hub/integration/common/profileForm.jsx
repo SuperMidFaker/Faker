@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Divider, Form, Input, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { updateAppStatus, deleteApp, updateInteBasicInfo } from 'common/reducers/openIntegration';
+import { updateAppStatus, deleteApp, updateInteBasicInfo } from 'common/reducers/hubIntegration';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -12,7 +12,7 @@ const { confirm } = Modal;
 @injectIntl
 @connect(
   state => ({
-    app: state.openIntegration.currentApp,
+    app: state.hubIntegration.currentApp,
   }),
   { updateAppStatus, deleteApp, updateInteBasicInfo }
 )

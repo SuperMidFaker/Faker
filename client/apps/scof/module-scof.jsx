@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { locationShape } from 'react-router';
-import { loadTrackings } from 'common/reducers/scvTracking';
+import { loadTrackings } from 'common/reducers/sofTracking';
 import { format } from 'client/common/i18n/helpers';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import messages from './message.i18n';
@@ -14,7 +14,7 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
     privileges: state.account.privileges,
-    trackings: state.scvTracking.trackings,
+    trackings: state.sofTracking.trackings,
     sofApps: state.account.apps.sof,
   }),
   { loadTrackings }

@@ -8,10 +8,10 @@ import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/sofOrders';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
-import { loadModelAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -40,9 +40,9 @@ function fetchData({ state, dispatch }) {
   const promises = [
     // dispatch(loadOrders({
     //   tenantId: state.account.tenantId,
-    //   pageSize: state.crmOrders.orders.pageSize,
-    //   current: state.crmOrders.orders.current,
-    //   filters: state.crmOrders.orderFilters,
+    //   pageSize: state.sofOrders.orders.pageSize,
+    //   current: state.sofOrders.orders.current,
+    //   filters: state.sofOrders.orderFilters,
     //   partners: state.partner.partners,
     // })),
     dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
@@ -57,11 +57,11 @@ function fetchData({ state, dispatch }) {
   loginId: state.account.loginId,
   username: state.account.username,
   tenantName: state.account.tenantName,
-  loading: state.crmOrders.loading,
-  orders: state.crmOrders.orders,
-  filters: state.crmOrders.orderFilters,
+  loading: state.sofOrders.loading,
+  orders: state.sofOrders.orders,
+  filters: state.sofOrders.orderFilters,
   partners: state.partner.partners,
-  adaptors: state.saasLineFileAdaptor.modelAdaptors,
+  adaptors: state.hubDataAdapter.modelAdaptors,
   flows: state.scofFlow.partnerFlows,
 }), {
   loadOrders,

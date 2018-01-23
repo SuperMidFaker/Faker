@@ -4,7 +4,7 @@ import { Button, Col, Form, Input, Radio } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { SCOF_ORDER_TRANSFER } from 'common/constants';
-import { updateAppStatus, deleteApp } from 'common/reducers/openIntegration';
+import { updateAppStatus, deleteApp } from 'common/reducers/hubIntegration';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -14,7 +14,7 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    orderType: state.openIntegration.currentApp,
+    orderType: state.hubIntegration.currentApp,
   }),
   { updateAppStatus, deleteApp }
 )

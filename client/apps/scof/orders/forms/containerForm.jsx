@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Checkbox, Form, Row, Col, Card, Input, Select, Table } from 'antd';
-import { setClientForm } from 'common/reducers/crmOrders';
+import { setClientForm } from 'common/reducers/sofOrders';
 import FormPane from 'client/components/FormPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';

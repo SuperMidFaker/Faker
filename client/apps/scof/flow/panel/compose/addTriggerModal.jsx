@@ -313,7 +313,7 @@ NotifyActionForm.propTypes = {
     nodeBizObject: state.scofFlow.triggerModal.node_biz_object,
     trigger: state.scofFlow.triggerModal.key,
     actions: state.scofFlow.triggerModal.actions,
-    serviceTeamMembers: state.crmCustomers.operators,
+    serviceTeamMembers: state.sofCustomers.operators,
     partnerId: state.scofFlow.currentFlow.partner_id,
   }),
   { closeAddTriggerModal }

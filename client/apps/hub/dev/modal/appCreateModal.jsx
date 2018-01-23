@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Input, Form, message } from 'antd';
 import { connect } from 'react-redux';
-import { toggleAppCreateModal, createApp, loadDevApps } from 'common/reducers/devApp';
+import { toggleAppCreateModal, createApp, loadDevApps } from 'common/reducers/hubDevApp';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../message.i18n';
 
@@ -10,10 +10,10 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    visible: state.devApp.appCreateModal.visible,
-    pageSize: state.devApp.apps.pageSize,
-    current: state.devApp.apps.current,
-    filter: state.devApp.filter,
+    visible: state.hubDevApp.appCreateModal.visible,
+    pageSize: state.hubDevApp.apps.pageSize,
+    current: state.hubDevApp.apps.current,
+    filter: state.hubDevApp.filter,
   }),
   { toggleAppCreateModal, createApp, loadDevApps }
 )

@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Collapse, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadVendorTenants, openSubFlowAuthModal, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
-import { loadFormRequires } from 'common/reducers/crmOrders';
+import { loadFormRequires } from 'common/reducers/sofOrders';
 import { loadPartners } from 'common/reducers/partner';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';

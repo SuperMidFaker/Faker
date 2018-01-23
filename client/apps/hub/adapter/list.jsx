@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Avatar, Breadcrumb, Button, Icon, Layout, notification, List, Card } from 'antd';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
+import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/hubDataAdapter';
 import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
@@ -26,11 +26,11 @@ const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
     tenantId: state.account.tenantId,
     parentTenantId: state.account.parentTenantId,
     code: state.account.code,
-    adaptors: state.saasLineFileAdaptor.adaptorList,
+    adaptors: state.hubDataAdapter.adaptorList,
     customers: state.partner.partners,
-    pageSize: state.saasLineFileAdaptor.adaptorList.pageSize,
-    current: state.saasLineFileAdaptor.adaptorList.current,
-    filter: state.saasLineFileAdaptor.filter,
+    pageSize: state.hubDataAdapter.adaptorList.pageSize,
+    current: state.hubDataAdapter.adaptorList.current,
+    filter: state.hubDataAdapter.filter,
   }),
   {
     showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor,

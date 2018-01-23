@@ -5,8 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, Checkbox, Button, Icon, Row, Col, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { addCustomer, editCustomer, hideSubCustomerModal } from 'common/reducers/crmCustomers';
+import { addCustomer, editCustomer, hideSubCustomerModal } from 'common/reducers/sofCustomers';
 import { BUSINESS_TYPES } from 'common/constants';
+
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const formatMsg = format(messages);
@@ -15,9 +16,9 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.crmCustomers.subCustomerModal.visible,
-    customer: state.crmCustomers.subCustomerModal.customer,
-    operation: state.crmCustomers.subCustomerModal.operation,
+    visible: state.sofCustomers.subCustomerModal.visible,
+    customer: state.sofCustomers.subCustomerModal.customer,
+    operation: state.sofCustomers.subCustomerModal.operation,
   }),
   { addCustomer, editCustomer, hideSubCustomerModal }
 )
@@ -176,7 +177,8 @@ export default class SubCustomerModal extends React.Component {
           >
             <Row gutter={5}>
               <Col span={20}>
-                <Input placeholder="请填写18位统一社会信用代码"
+                <Input
+                  placeholder="请填写18位统一社会信用代码"
                   value={this.state.partnerUniqueCode}
                   onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }}
                 />
@@ -195,7 +197,8 @@ export default class SubCustomerModal extends React.Component {
           >
             <Row gutter={5}>
               <Col span={20}>
-                <Input placeholder="请填写10位海关编码"
+                <Input
+                  placeholder="请填写10位海关编码"
                   value={this.state.customsCode}
                   onChange={(e) => { this.setState({ customsCode: e.target.value }); }}
                 />
@@ -212,7 +215,9 @@ export default class SubCustomerModal extends React.Component {
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={BUSINESS_TYPES} value={businessArray}
+            <CheckboxGroup
+              options={BUSINESS_TYPES}
+              value={businessArray}
               onChange={(value) => {
                 if (value !== []) {
                   this.setState({ businessType: value.join(',') });

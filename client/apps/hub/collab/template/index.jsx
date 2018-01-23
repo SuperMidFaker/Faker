@@ -7,9 +7,8 @@ import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleAppCreateModal, loadDevApps } from 'common/reducers/hubDevApp';
 import RowAction from 'client/components/RowAction';
-import HubSiderMenu from '../menu';
-import AppCreateModal from './modal/appCreateModal';
-import { formatMsg } from './message.i18n';
+import HubSiderMenu from '../../menu';
+import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
 
@@ -22,7 +21,7 @@ const { Content } = Layout;
   }),
   { toggleAppCreateModal, loadDevApps }
 )
-export default class DevAppList extends React.Component {
+export default class NoticeTemplateList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -100,18 +99,17 @@ export default class DevAppList extends React.Component {
     };
     return (
       <Layout>
-        <HubSiderMenu currentKey="dev" />
+        <HubSiderMenu currentKey="template" />
         <Layout>
           <PageHeader>
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Icon type="code-o" /> {this.msg('dev')}
+                  <Icon type="notification" /> {this.msg('templates')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="book" onClick={this.handleOpenApiDocs}>{this.msg('apiDocs')}</Button>
               <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
                 {this.msg('create')}
               </Button>
@@ -139,7 +137,6 @@ export default class DevAppList extends React.Component {
               />
             </Card>
           </Content>
-          <AppCreateModal />
         </Layout>
       </Layout>
     );

@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Switch, Breadcrumb, Button, Icon, Menu, Modal, Layout, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadRepos, openAddModal, switchRepoMode, switchRepoVersionKeep, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
-import { loadCustomers } from 'common/reducers/crmCustomers';
+import { loadCustomers } from 'common/reducers/sofCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';

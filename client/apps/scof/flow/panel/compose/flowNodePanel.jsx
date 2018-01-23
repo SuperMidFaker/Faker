@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Collapse, Form, Input, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadOperators } from 'common/reducers/crmCustomers';
+import { loadOperators } from 'common/reducers/sofCustomers';
 import FlowTriggerTable from './flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
@@ -17,7 +17,7 @@ const { Option } = Select;
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     partnerId: state.scofFlow.currentFlow.partner_id,
-    serviceTeam: state.crmCustomers.operators,
+    serviceTeam: state.sofCustomers.operators,
     customerPartners: state.partner.partners,
     vendorTenants: state.scofFlow.vendorTenants,
     providerFlows: state.scofFlow.flowGraph.providerFlows,

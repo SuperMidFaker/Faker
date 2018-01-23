@@ -6,7 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
 import PageHeader from 'client/components/PageHeader';
-import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/crmOrders';
+import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/sofOrders';
 import { format } from 'client/common/i18n/helpers';
 import OrderForm from './forms/orderForm';
 import messages from './message.i18n';
@@ -38,8 +38,8 @@ function fetchData({ state, params, dispatch }) {
 @connect(
   state => ({
     tenantName: state.account.tenantName,
-    formData: state.crmOrders.formData,
-    saving: state.crmOrders.orderSaving,
+    formData: state.sofOrders.formData,
+    saving: state.sofOrders.orderSaving,
   }),
   { editOrder, validateOrder }
 )

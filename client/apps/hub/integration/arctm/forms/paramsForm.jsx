@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Form, Select, Input, Col, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateArCtmApp } from 'common/reducers/openIntegration';
+import { updateArCtmApp } from 'common/reducers/hubIntegration';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { formatMsg } from '../../message.i18n';
 
@@ -14,7 +14,7 @@ const ButtonGroup = Button.Group;
 @injectIntl
 @connect(
   state => ({
-    app: state.openIntegration.arctm,
+    app: state.hubIntegration.arctm,
   }),
   { updateArCtmApp }
 )

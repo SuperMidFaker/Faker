@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Steps } from 'antd';
-import { loadOrderProgress } from 'common/reducers/crmOrders';
+import { loadOrderProgress } from 'common/reducers/sofOrders';
 import { CRM_ORDER_STATUS, NODE_BIZ_OBJECTS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';

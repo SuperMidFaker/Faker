@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Menu, Avatar, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { INTEGRATION_APPS } from 'common/constants';
-import { toggleInstallAppModal } from 'common/reducers/openIntegration';
+import { toggleInstallAppModal } from 'common/reducers/hubIntegration';
 import { connect } from 'react-redux';
 import HubSiderMenu from '../menu';
 import InstallAppModal from './common/installAppModal';

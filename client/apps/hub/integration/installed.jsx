@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
-import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/openIntegration';
+import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/hubIntegration';
 import HubSiderMenu from '../menu';
 import { formatMsg } from './message.i18n';
 
@@ -17,8 +17,8 @@ function fetchData({ state, dispatch }) {
   return dispatch(loadInstalledApps({
     tenantId: state.account.tenantId,
     filter: JSON.stringify({}),
-    sorter: JSON.stringify(state.openIntegration.sortFilter),
-    pageSize: state.openIntegration.installedAppsList.pageSize,
+    sorter: JSON.stringify(state.hubIntegration.sortFilter),
+    pageSize: state.hubIntegration.installedAppsList.pageSize,
     current: 1,
   }));
 }
@@ -27,10 +27,10 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    listFilter: state.openIntegration.listFilter,
-    sortFilter: state.openIntegration.sortFilter,
+    listFilter: state.hubIntegration.listFilter,
+    sortFilter: state.hubIntegration.sortFilter,
     tenantId: state.account.tenantId,
-    installedAppsList: state.openIntegration.installedAppsList,
+    installedAppsList: state.hubIntegration.installedAppsList,
   }),
   { loadInstalledApps, deleteApp, updateAppStatus }
 )

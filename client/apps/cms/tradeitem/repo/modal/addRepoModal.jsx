@@ -18,7 +18,7 @@ const FormItem = Form.Item;
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
-    customers: state.crmCustomers.customers,
+    customers: state.sofCustomers.customers,
     repos: state.cmsTradeitem.repos,
   }),
   { createRepo, closeAddModal, loadRepos }

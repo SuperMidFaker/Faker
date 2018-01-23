@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Select, message } from 'antd';
 import { DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
-import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
+import { setClientForm, loadFlowNodeData } from 'common/reducers/sofOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
 import FormPane from 'client/components/FormPane';
@@ -18,9 +18,9 @@ const { Option } = Select;
 @injectIntl
 @connect(
   state => ({
-    formRequires: state.crmOrders.formRequires,
+    formRequires: state.sofOrders.formRequires,
     cmsQuotes: state.scofFlow.cmsQuotes,
-    serviceTeam: state.crmCustomers.operators,
+    serviceTeam: state.sofCustomers.operators,
     tenantId: state.account.tenantId,
   }),
   { setClientForm, loadFlowNodeData }

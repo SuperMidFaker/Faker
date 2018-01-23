@@ -14,7 +14,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
-  order: state.crmOrders.dock.order,
+  order: state.sofOrders.dock.order,
 }), { })
 export default class OrderPane extends React.Component {
   static propTypes = {

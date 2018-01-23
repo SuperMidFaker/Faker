@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Breadcrumb, Card, Collapse, Icon, Layout, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadArCtmApp, updateArCtmApp } from 'common/reducers/openIntegration';
+import { loadArCtmApp, updateArCtmApp } from 'common/reducers/hubIntegration';
 import PageHeader from 'client/components/PageHeader';
 import ProfileForm from '../common/profileForm';
 import ParamsForm from './forms/paramsForm';
@@ -21,8 +21,8 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    app: state.openIntegration.currentApp,
-    arctm: state.openIntegration.arctm,
+    app: state.hubIntegration.currentApp,
+    arctm: state.hubIntegration.arctm,
   }),
   { loadArCtmApp, updateArCtmApp }
 )

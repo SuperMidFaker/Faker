@@ -14,22 +14,12 @@ import partner from './partner';
 import role from './role';
 import invitation from './invitation';
 import operationLog from './operationLog';
-import openIntegration from './openIntegration';
-import transportAcceptance from './transport-acceptance';
-import trackingLandStatus from './trackingLandStatus';
-import trackingLandPod from './trackingLandPod';
-import trackingLandException from './trackingLandException';
-import shipment from './shipment';
-import transportDispatch from './transportDispatch';
-import transportResources from './transportResources';
-import transportSettings from './transportSettings';
-import transportTariff from './transportTariff';
-import transportBilling from './transportBilling';
-import transportKpi from './transportKpi';
 import cmsDashboard from './cmsDashboard';
 import cmsDelegation from './cmsDelegation';
 import cmsDelegationDock from './cmsDelegationDock';
 import cmsCustomsDeclare from './cmsCustomsDeclare';
+import cmsCiqDeclare from './cmsCiqDeclare';
+import cmsPermit from './cmsPermit';
 import cmsManifest from './cmsManifest';
 import cmsManifestImport from './cmsManifestImport';
 import cmsInvoice from './cmsInvoice';
@@ -39,23 +29,11 @@ import cmsBrokers from './cmsBrokers';
 import cmsTradeManual from './cmsTradeManual';
 import cmsAnalytics from './cmsAnalytics';
 import cmsPreferences from './cmsPreferences';
-import scofFlow from './scofFlow';
-import scofSettings from './scofSettings';
-import sofVendors from './sofVendors';
-import scvInboundShipments from './scvInboundShipments';
-import scvOutboundShipments from './scvOutboundShipments';
-import scvInventoryStock from './scvInventoryStock';
-import scvInventoryTransaction from './scvInventoryTransaction';
-import scvWarehouse from './scvWarehouse';
-import scvTracking from './scvTracking';
-import scvClassification from './scvClassification';
-import scvClearance from './scvClearance';
 import cmsExpense from './cmsExpense';
-import cmsBilling from './cmsBilling';
 import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
-import crmCustomers from './crmCustomers';
-import crmOrders from './crmOrders';
+import sofCustomers from './sofCustomers';
+import sofOrders from './sofOrders';
 import crmBilling from './crmBilling';
 import cwmReceive from './cwmReceive';
 import cwmOutbound from './cwmOutbound';
@@ -70,10 +48,24 @@ import cwmContext from './cwmContext';
 import cwmTransaction from './cwmTransaction';
 import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
-import saasLineFileAdaptor from './saasLineFileAdaptor';
-import cmsCiqDeclare from './cmsCiqDeclare';
-import cmsPermit from './cmsPermit';
-import devApp from './devApp';
+import hubDataAdapter from './hubDataAdapter';
+import hubDevApp from './hubDevApp';
+import hubIntegration from './hubIntegration';
+import scofFlow from './scofFlow';
+import scofSettings from './scofSettings';
+import sofVendors from './sofVendors';
+import sofTracking from './sofTracking';
+import transportAcceptance from './transport-acceptance';
+import trackingLandStatus from './trackingLandStatus';
+import trackingLandPod from './trackingLandPod';
+import trackingLandException from './trackingLandException';
+import shipment from './shipment';
+import transportDispatch from './transportDispatch';
+import transportResources from './transportResources';
+import transportSettings from './transportSettings';
+import transportTariff from './transportTariff';
+import transportBilling from './transportBilling';
+import transportKpi from './transportKpi';
 
 export default combineReducers({
   activities,
@@ -91,7 +83,7 @@ export default combineReducers({
   role,
   invitation,
   operationLog,
-  openIntegration,
+  hubIntegration,
   shipment,
   transportAcceptance,
   trackingLandStatus,
@@ -114,7 +106,6 @@ export default combineReducers({
   cmsResources,
   cmsPreferences,
   cmsExpense,
-  cmsBilling,
   cmsTradeitem,
   cmsHsCode,
   cmsBrokers,
@@ -123,16 +114,9 @@ export default combineReducers({
   scofFlow,
   scofSettings,
   sofVendors,
-  scvInboundShipments,
-  scvOutboundShipments,
-  scvInventoryStock,
-  scvInventoryTransaction,
-  scvWarehouse,
-  scvTracking,
-  scvClassification,
-  scvClearance,
-  crmCustomers,
-  crmOrders,
+  sofTracking,
+  sofCustomers,
+  sofOrders,
   crmBilling,
   cwmReceive,
   cwmOutbound,
@@ -147,8 +131,8 @@ export default combineReducers({
   cwmInventoryStock,
   cwmTransition,
   cwmMovement,
-  saasLineFileAdaptor,
+  hubDataAdapter,
   cmsCiqDeclare,
   cmsPermit,
-  devApp,
+  hubDevApp,
 });

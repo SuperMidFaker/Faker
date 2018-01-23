@@ -57,7 +57,7 @@ const { RangePicker } = DatePicker;
       value: cus.customs_code,
       text: `${cus.customs_name}`,
     })),
-    operators: state.crmCustomers.operators,
+    operators: state.sofCustomers.operators,
   }),
   {
     loadDelegationList,

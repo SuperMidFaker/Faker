@@ -11,7 +11,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import ProfileCard from './cards/profileCard';
 import CustomerModal from './modals/customerModal';
-import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
+import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/sofCustomers';
 import { PARTNER_ROLES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import OverviewCard from './cards/overviewCard';
@@ -28,9 +28,9 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    customers: state.crmCustomers.customers,
-    loading: state.crmCustomers.loading,
-    loaded: state.crmCustomers.loaded,
+    customers: state.sofCustomers.customers,
+    loading: state.sofCustomers.loading,
+    loaded: state.sofCustomers.loaded,
   }),
   { loadCustomers, deleteCustomer, showCustomerModal }
 )

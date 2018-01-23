@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Collapse, Form, Row, Col, Card, Input, Select, Steps, Tag, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODES } from 'common/constants';
-import { setClientForm } from 'common/reducers/crmOrders';
+import { setClientForm } from 'common/reducers/sofOrders';
 import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadCwmBizParams } from 'common/reducers/scofFlow';
-import { loadOperators } from 'common/reducers/crmCustomers';
+import { loadOperators } from 'common/reducers/sofCustomers';
 import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
 import UserAvatar from 'client/components/UserAvatar';
@@ -36,11 +36,11 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    formData: state.crmOrders.formData,
-    formRequires: state.crmOrders.formRequires,
+    formData: state.sofOrders.formData,
+    formRequires: state.sofOrders.formRequires,
     flows: state.scofFlow.partnerFlows,
     graphLoading: state.scofFlow.graphLoading,
-    serviceTeam: state.crmCustomers.operators,
+    serviceTeam: state.sofCustomers.operators,
   }),
   {
     setClientForm,

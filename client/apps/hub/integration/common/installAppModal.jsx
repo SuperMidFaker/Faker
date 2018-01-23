@@ -4,7 +4,7 @@ import { Form, Input, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleInstallAppModal } from 'common/reducers/openIntegration';
+import { installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleInstallAppModal } from 'common/reducers/hubIntegration';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -12,8 +12,8 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    visible: state.openIntegration.installAppModal.visible,
-    type: state.openIntegration.installAppModal.type,
+    visible: state.hubIntegration.installAppModal.visible,
+    type: state.hubIntegration.installAppModal.type,
     tenantId: state.account.tenantId,
   }),
   {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Form, Input, Col, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateShftzApp } from 'common/reducers/openIntegration';
+import { updateShftzApp } from 'common/reducers/hubIntegration';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -11,7 +11,7 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    app: state.openIntegration.shftzApp,
+    app: state.hubIntegration.shftzApp,
   }),
   { updateShftzApp }
 )

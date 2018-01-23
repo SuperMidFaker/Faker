@@ -8,11 +8,11 @@ import QueueAnim from 'rc-queue-anim';
 import { changeInvitationType } from 'common/reducers/invitation';
 import PageHeader from 'client/components/PageHeader';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import HubSiderMenu from '../menu';
+import HubSiderMenu from '../../menu';
 import ToInviteList from './toInviteList';
 import ReceivedInvitationList from './receivedInvitationList';
 import SentInvitationList from './sentInvitationList';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
@@ -50,7 +50,7 @@ export default class MainContainer extends Component {
     const content = components[invitationType];
     return (
       <Layout>
-        <HubSiderMenu currentKey="partners" />
+        <HubSiderMenu currentKey="invitation" />
         <Layout>
           <PageHeader>
             <PageHeader.Title>

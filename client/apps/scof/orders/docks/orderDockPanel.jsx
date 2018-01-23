@@ -5,7 +5,7 @@ import { Button, Icon, Col, Row, Tabs, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER } from 'common/constants';
-import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/crmOrders';
+import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpanes/orderPane';
@@ -22,10 +22,10 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    dock: state.crmOrders.dock,
-    visible: state.crmOrders.dock.visible,
-    tabKey: state.crmOrders.dock.tabKey,
-    order: state.crmOrders.dock.order,
+    dock: state.sofOrders.dock,
+    visible: state.sofOrders.dock.visible,
+    tabKey: state.sofOrders.dock.tabKey,
+    order: state.sofOrders.dock.order,
   }),
   {
     hideDock, changeDockTab, cancelOrder, closeOrder,
@@ -139,9 +139,13 @@ export default class OrderDockPanel extends React.Component {
   render() {
     const { order, visible } = this.props;
     return (
-      <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
+      <DockPanel
+        size="large"
+        visible={visible}
+        onClose={this.props.hideDock}
         title={`订单关联号:${order.shipmt_order_no}`}
-        status={this.renderStatus(order.order_status)} statusText={this.renderStatusMsg(order.order_status)}
+        status={this.renderStatus(order.order_status)}
+        statusText={this.renderStatusMsg(order.order_status)}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}
       >

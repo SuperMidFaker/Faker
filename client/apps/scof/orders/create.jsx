@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/crmOrders';
+import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/sofOrders';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
@@ -36,8 +36,8 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantName: state.account.tenantName,
-    formData: state.crmOrders.formData,
-    saving: state.crmOrders.orderSaving,
+    formData: state.sofOrders.formData,
+    saving: state.sofOrders.orderSaving,
   }),
   { submitOrder, validateOrder }
 )

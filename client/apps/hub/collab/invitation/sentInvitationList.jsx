@@ -9,7 +9,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import RowAction from 'client/components/RowAction';
 import { loadSendInvitations, cancelInvite } from 'common/reducers/invitation';
 import PartnershipsColumn from './common/partnershipsColumn';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const rowSelection = {
   onChange() {},

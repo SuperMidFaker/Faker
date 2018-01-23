@@ -33,17 +33,17 @@ const messages = defineMessages({
     id: 'cms.module.compliance.ebook',
     defaultMessage: '电子帐册',
   },
-  billingGroup: {
-    id: 'cms.module.group.billing',
-    defaultMessage: '计费管理',
+  expenseGroup: {
+    id: 'cms.module.group.expense',
+    defaultMessage: '费用管理',
   },
   payableExpense: {
     id: 'cms.module.expense.payable',
-    defaultMessage: '费用应付',
+    defaultMessage: '应付费用',
   },
   receivableExpense: {
     id: 'cms.module.expense.receivable',
-    defaultMessage: '费用应收',
+    defaultMessage: '应收费用',
   },
   quote: {
     id: 'cms.module.quote',

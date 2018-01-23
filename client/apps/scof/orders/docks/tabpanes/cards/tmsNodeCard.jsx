@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Col, Row, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { hideDock, manualEnterFlowInstance } from 'common/reducers/crmOrders';
+import { hideDock, manualEnterFlowInstance } from 'common/reducers/sofOrders';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
 import NodeFooter from './nodeFooter';

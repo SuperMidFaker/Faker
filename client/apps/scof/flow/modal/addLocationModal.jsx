@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Modal, Form, Input, Row, Col, AutoComplete } from 'antd';
 import RegionCascader from 'client/components/RegionCascader';
 import { toggleAddLocationModal, loadTmsBizParams, searchRateEnds } from 'common/reducers/scofFlow';
-import { loadFormRequires } from 'common/reducers/crmOrders';
+import { loadFormRequires } from 'common/reducers/sofOrders';
 import { loadFormRequire } from 'common/reducers/shipment';
 import { addNode } from 'common/reducers/transportResources';
 import { loadRatesSources } from 'common/reducers/transportTariff';
@@ -148,7 +148,8 @@ export default class AddLocationModal extends React.Component {
       typeDesc = '收货方';
     }
     return (
-      <Modal maskClosable={false}
+      <Modal
+        maskClosable={false}
         visible={visible}
         title={`添加${typeDesc}`}
         onCancel={this.handleCancel}
@@ -172,7 +173,8 @@ export default class AddLocationModal extends React.Component {
           </Col>
           <Col span="10">
             <FormItem label="地点别名">
-              {getFieldDecorator('byname')(<AutoComplete style={{ width: '100%' }}
+              {getFieldDecorator('byname')(<AutoComplete
+                style={{ width: '100%' }}
                 placeholder="地点别名"
                 dataSource={this.state.locations.map(item => item.name)}
                 onChange={this.handleNameChange}

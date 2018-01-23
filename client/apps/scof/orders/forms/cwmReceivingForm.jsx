@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Row, Col, Card, DatePicker, Input, Select, Tag } from 'antd';
-import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
+import { setClientForm, loadFlowNodeData } from 'common/reducers/sofOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import FormPane from 'client/components/FormPane';
@@ -20,7 +20,7 @@ const { Option } = Select;
 @connect(
   state => ({
     recParams: state.scofFlow.cwmParams,
-    serviceTeam: state.crmCustomers.operators,
+    serviceTeam: state.sofCustomers.operators,
   }),
   { setClientForm, loadFlowNodeData }
 )

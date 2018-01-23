@@ -4,31 +4,43 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   searchPlaceholder: {
     id: 'cms.expense.search',
-    defaultMessage: '委托编号/发票号/提运单号',
+    defaultMessage: '委托编号/提运单号',
   },
   payableExpense: {
     id: 'cms.expense.payable',
-    defaultMessage: '费用应付',
+    defaultMessage: '应付费用',
   },
   receivableExpense: {
     id: 'cms.expense.receivable',
-    defaultMessage: '费用应收',
+    defaultMessage: '应收费用',
   },
   byDelegation: {
     id: 'cms.expense.by.delegation',
-    defaultMessage: '按委托',
+    defaultMessage: '按委托汇总',
   },
   byCustomer: {
     id: 'cms.expense.by.customer',
-    defaultMessage: '按客户',
+    defaultMessage: '按客户汇总',
   },
   byVendor: {
     id: 'cms.expense.by.vendor',
-    defaultMessage: '按供应商',
+    defaultMessage: '按供应商汇总',
   },
   byItem: {
     id: 'cms.expense.by.item',
-    defaultMessage: '按明细',
+    defaultMessage: '按商品分摊',
+  },
+  cusDeclCharges: {
+    id: 'cms.expense.cus.decl.charges',
+    defaultMessage: '报关费用',
+  },
+  ciqDeclCharges: {
+    id: 'cms.expense.ciq.decl.charges',
+    defaultMessage: '报检费用',
+  },
+  certsCharges: {
+    id: 'cms.expense.certs.charges',
+    defaultMessage: '鉴定办证',
   },
   statusClosed: {
     id: 'cms.expense.status.closed',

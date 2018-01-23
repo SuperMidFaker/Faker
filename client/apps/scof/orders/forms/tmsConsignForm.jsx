@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { DatePicker, Form, Row, Col, Card, Input, Select, Alert } from 'antd';
-import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
+import { setClientForm, loadFlowNodeData } from 'common/reducers/sofOrders';
 import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
@@ -27,10 +27,10 @@ const quoteNoFieldWarning = {
 @injectIntl
 @connect(
   state => ({
-    formRequires: state.crmOrders.formRequires,
-    customerPartnerId: state.crmOrders.formData.customer_partner_id,
-    customerName: state.crmOrders.formData.customer_name,
-    serviceTeam: state.crmCustomers.operators,
+    formRequires: state.sofOrders.formRequires,
+    customerPartnerId: state.sofOrders.formData.customer_partner_id,
+    customerName: state.sofOrders.formData.customer_name,
+    serviceTeam: state.sofCustomers.operators,
     needLoadTariff: state.scofFlow.needLoadTariff,
   }),
   {

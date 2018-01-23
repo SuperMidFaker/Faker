@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button, Col, Divider, Form, Input, Modal, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import AvatarUploader from 'client/components/AvatarUploader';
-import { updateBasicInfo, deleteDevApp, toggleStatus, getApp } from 'common/reducers/devApp';
+import { updateBasicInfo, deleteDevApp, toggleStatus, getApp } from 'common/reducers/hubDevApp';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;

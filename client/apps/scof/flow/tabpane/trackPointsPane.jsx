@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Select, Table, message } from 'antd';
 
 import { saveFlowGraph, loadScvTrackings } from 'common/reducers/scofFlow';
-import { loadFormRequires } from 'common/reducers/crmOrders';
+import { loadFormRequires } from 'common/reducers/sofOrders';
 import EditableCell from 'client/components/EditableCell';
 import { formatMsg } from '../message.i18n';
 

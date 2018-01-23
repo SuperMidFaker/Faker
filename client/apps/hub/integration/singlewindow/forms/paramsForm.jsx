@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Form, Input, Col, Radio, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateSingleWindowApp } from 'common/reducers/openIntegration';
+import { updateSingleWindowApp } from 'common/reducers/hubIntegration';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -13,7 +13,7 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    app: state.openIntegration.singleWindowApp,
+    app: state.hubIntegration.singleWindowApp,
   }),
   { updateSingleWindowApp }
 )

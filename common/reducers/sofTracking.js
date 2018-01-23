@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/scv/tracking/', [
+const actionTypes = createActionTypes('@@welogix/sof/tracking/', [
   'LOAD_TRACKING_FIELDS', 'LOAD_TRACKING_FIELDS_SUCCEED', 'LOAD_TRACKING_FIELDS_FAIL',
 
   'LOAD_TRACKINGS', 'LOAD_TRACKINGS_SUCCEED', 'LOAD_TRACKINGS_FAIL',

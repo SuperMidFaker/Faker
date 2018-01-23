@@ -5,7 +5,7 @@ import { Breadcrumb, Button, Card, Collapse, Input, Modal, Form, Layout, Select,
 import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
 import EditableCell from 'client/components/EditableCell';
-import { hideAdaptorDetailModal, updateColumnField, updateStartLine, delAdaptor } from 'common/reducers/saasLineFileAdaptor';
+import { hideAdaptorDetailModal, updateColumnField, updateStartLine, delAdaptor } from 'common/reducers/hubDataAdapter';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -18,8 +18,8 @@ const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
 
 @injectIntl
 @connect(state => ({
-  adaptor: state.saasLineFileAdaptor.adaptor,
-  visible: state.saasLineFileAdaptor.adaptorDetailModal.visible,
+  adaptor: state.hubDataAdapter.adaptor,
+  visible: state.hubDataAdapter.adaptorDetailModal.visible,
   customers: state.partner.partners,
 }), {
   hideAdaptorDetailModal, updateColumnField, updateStartLine, delAdaptor,

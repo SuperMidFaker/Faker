@@ -7,6 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, Popconfirm, Radio, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
@@ -389,50 +390,42 @@ export default class QuoteList extends Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('quoteRates')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
-            <RadioButton value="all">{msg('filterAll')}</RadioButton>
-            <RadioButton value="selling">{msg('filterSelling')}</RadioButton>
-            <RadioButton value="buying">{msg('filterBuying')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
-            <RadioButton value="draft">{msg('filterDraft')}</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('quoteRates')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
+              <RadioButton value="all">{msg('filterAll')}</RadioButton>
+              <RadioButton value="selling">{msg('filterSelling')}</RadioButton>
+              <RadioButton value="buying">{msg('filterBuying')}</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
+              <RadioButton value="draft">{msg('filterDraft')}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
               新建报价
             </Button>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <div className="toolbar-right">
-                <Tooltip title="报价模板设置">
-                  <Button icon="setting" onClick={this.handleQuoteTemplate} />
-                </Tooltip>
-              </div>
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable
-                rowSelection={rowSelection}
-                columns={columns}
-                dataSource={this.dataSource}
-                loading={quotesList.loading}
-                scroll={{ x: 1400 }}
-                rowKey="_id"
-              />
-            </div>
-          </div>
+            <Tooltip title="报价模板设置">
+              <Button icon="setting" onClick={this.handleQuoteTemplate} />
+            </Tooltip>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={this.dataSource}
+            loading={quotesList.loading}
+            rowKey="_id"
+          />
         </Content>
         <CreateQtModal />
       </QueueAnim>

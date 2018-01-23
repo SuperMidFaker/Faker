@@ -4,7 +4,7 @@ import { routerShape } from 'react-router';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Col, Row, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { hideDock, getAsnFromFlow, manualEnterFlowInstance } from 'common/reducers/crmOrders';
+import { hideDock, getAsnFromFlow, manualEnterFlowInstance } from 'common/reducers/sofOrders';
 import { showDock } from 'common/reducers/cwmReceive';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
 import NodeFooter from './nodeFooter';
@@ -13,7 +13,7 @@ import NodeFooterAction from './nodeFooterAction';
 @connect(
   (state, props) => ({
     tenantId: state.account.tenantId,
-    asn: state.crmOrders.dockInstMap[props.node.uuid],
+    asn: state.sofOrders.dockInstMap[props.node.uuid],
   }),
   {
     hideDock, showDock, getAsnFromFlow, manualEnterFlowInstance,

@@ -9,7 +9,7 @@ import EditableCell from 'client/components/EditableCell';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
-import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/scvTracking';
+import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/sofTracking';
 import { makeExcel } from 'common/reducers/common';
 import { createFilename } from 'client/util/dataTransform';
 import RangePickerPopover from './modals/rangePickerPopover';
@@ -32,9 +32,9 @@ function momentDateArg(itemDate) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    trackings: state.scvTracking.trackings,
-    trackingItems: state.scvTracking.trackingItems,
-    orders: state.scvTracking.orderList,
+    trackings: state.sofTracking.trackings,
+    trackingItems: state.sofTracking.trackingItems,
+    orders: state.sofTracking.orderList,
   }),
   {
     loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom, makeExcel,
@@ -217,7 +217,7 @@ export default class Instance extends Component {
         table.push([...row, items.shipmt_order_no]);
       });
       const sheets = [{ name: 'sheet1', data: table }];
-      this.props.makeExcel(sheets, `${createFilename('scvTracking')}.xlsx`).then((result1) => {
+      this.props.makeExcel(sheets, `${createFilename('sofTracking')}.xlsx`).then((result1) => {
         window.open(`${API_ROOTS.default}v1/common/excel/${result1.data.filename}`);
         this.setState({ exportLoading: false });
       });

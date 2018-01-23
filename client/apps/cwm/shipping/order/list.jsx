@@ -15,7 +15,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import connectNav from 'client/common/decorators/connect-nav';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadModelAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
 import { exportNormalExitBySo } from 'common/reducers/cwmOutbound';
 import { format } from 'client/common/i18n/helpers';
@@ -56,7 +56,7 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
     userMembers: state.account.userMembers,
-    adaptors: state.saasLineFileAdaptor.modelAdaptors,
+    adaptors: state.hubDataAdapter.modelAdaptors,
   }),
   {
     loadSos,

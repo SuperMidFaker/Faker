@@ -192,7 +192,8 @@ export default(store) => {
             </Route>
           </Route>
           <Route path="collab">
-            <Route path="partners" component={Collab.Partners} />
+            <Route path="invitation" component={Collab.Invitation} />
+            <Route path="template" component={Collab.Template} />
           </Route>
         </Route>
         <Route path="corp" component={PackCorp}>

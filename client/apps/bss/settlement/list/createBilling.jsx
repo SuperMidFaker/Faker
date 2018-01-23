@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { loadFeesByChooseModal, loadClearanceFeesByChooseModal, loadTransportFeesByChooseModal,
   createBilling, updateBillingFees, showBeforeFeesModal } from 'common/reducers/crmBilling';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
 // import OrderDockPanel from '../../orders/docks/orderDockPanel';
@@ -15,6 +15,7 @@ import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
 import { CRM_ORDER_MODE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
@@ -161,16 +162,14 @@ export default class CreateBilling extends React.Component {
   renderTransportCharge = (o, record) => {
     if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.transport) >= 0) {
       return o ? o.toFixed(2) : '';
-    } else {
-      return '';
     }
+    return '';
   }
   renderClearanceCharge = (o, record) => {
     if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
       return o ? o.toFixed(2) : '';
-    } else {
-      return '';
     }
+    return '';
   }
   render() {
     // const { } = this.props;

@@ -34,6 +34,10 @@ const messages = defineMessages({
     id: 'hub.menu.collab.invitations',
     defaultMessage: '协作邀请',
   },
+  templates: {
+    id: 'hub.menu.collab.templates',
+    defaultMessage: '通知模板',
+  },
 });
 
 export default messages;

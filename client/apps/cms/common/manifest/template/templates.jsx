@@ -10,7 +10,7 @@ import { formatMsg } from '../../message.i18n';
 import AddTemplateModal from './modal/addTemplateModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
-import { loadCustomers } from 'common/reducers/crmCustomers';
+import { loadCustomers } from 'common/reducers/sofCustomers';
 
 
 @injectIntl

@@ -11,7 +11,7 @@ const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(state => ({
-  order: state.crmOrders.dock.order,
+  order: state.sofOrders.dock.order,
   pickDetails: state.cwmOutbound.pickDetails,
   packDetails: state.cwmOutbound.packDetails,
   shipDetails: state.cwmOutbound.shipDetails,

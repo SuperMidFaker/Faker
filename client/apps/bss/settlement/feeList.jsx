@@ -13,7 +13,7 @@ import { loadOrders, loadClearanceFees, loadTransportFees, changeFeesFilter, loa
 import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
 // import OrderDockPanel from '../orders/docks/orderDockPanel';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import SearchBox from 'client/components/SearchBox';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_ORDER_MODE } from 'common/constants';
 import TrsShipmtNoColumn from '../common/trsShipmtNoColumn';

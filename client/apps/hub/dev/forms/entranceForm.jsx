@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Checkbox, Col, Form, Input, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateEntranceUrl } from 'common/reducers/devApp';
+import { updateEntranceUrl } from 'common/reducers/hubDevApp';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;

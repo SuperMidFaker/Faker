@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Card, Table, Tabs, Checkbox } from 'antd';
 import { CRM_ORDER_MODE } from 'common/constants';
-import { loadClearanceFees } from 'common/reducers/crmOrders';
+import { loadClearanceFees } from 'common/reducers/sofOrders';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+
 const formatMsg = format(messages);
 
 const TabPane = Tabs.TabPane;
@@ -14,10 +15,10 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    order: state.crmOrders.dock.order,
-    delgNos: state.crmOrders.dock.order.ccb_delg_no,
-    transports: state.crmOrders.dock.transports,
-    clearanceFees: state.crmOrders.dock.clearanceFees,
+    order: state.sofOrders.dock.order,
+    delgNos: state.sofOrders.dock.order.ccb_delg_no,
+    transports: state.sofOrders.dock.transports,
+    clearanceFees: state.sofOrders.dock.clearanceFees,
   }),
   { loadClearanceFees }
 )
@@ -265,9 +266,8 @@ export default class BillingPanel extends React.Component {
       render: (o) => {
         if (o === true) {
           return <Checkbox checked disabled />;
-        } else {
-          return null;
         }
+        return null;
       },
     }];
     const advancesColumns = [{
@@ -298,9 +298,8 @@ export default class BillingPanel extends React.Component {
       render: (o) => {
         if (o === 1) {
           return '应收';
-        } else {
-          return '应付';
         }
+        return '应付';
       },
     }, {
       title: this.msg('advanceSubmitter'),
@@ -379,30 +378,29 @@ export default class BillingPanel extends React.Component {
             {this.renderClearanceFees(clearanceFees[0])}
           </div>
         );
-      } else {
-        return (
-          <div className="pane-content tab-pane" >
-            <Card bodyStyle={{ padding: 16 }}>
-              <Row>
-                <h5>清关</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+      }
+      return (
+        <div className="pane-content tab-pane" >
+          <Card bodyStyle={{ padding: 16 }}>
+            <Row>
+              <h5>清关</h5>
+              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
                   }
-                </div>
-              </Row>
-            </Card>
-            <Card bodyStyle={{ padding: 16 }}>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
-                {clearanceFees.map(item => (
-                  <TabPane tab={item.delg_no} key={item.delg_no}>
-                    {this.renderClearanceFees(item)}
-                  </TabPane>
+              </div>
+            </Row>
+          </Card>
+          <Card bodyStyle={{ padding: 16 }}>
+            <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
+              {clearanceFees.map(item => (
+                <TabPane tab={item.delg_no} key={item.delg_no}>
+                  {this.renderClearanceFees(item)}
+                </TabPane>
                   ))}
-              </Tabs>
-            </Card>
-          </div>
-        );
-      }
+            </Tabs>
+          </Card>
+        </div>
+      );
     } else if (order.shipmt_order_mode === CRM_ORDER_MODE.transport) {
       if (transports.length === 1) {
         return (
@@ -419,73 +417,71 @@ export default class BillingPanel extends React.Component {
             {this.renderTransportFees(transports[0])}
           </div>
         );
-      } else {
-        return (
-          <div className="pane-content tab-pane" >
-            <Card bodyStyle={{ padding: 16 }}>
-              <Row>
-                <h5>运输</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
-                    intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }
-                </div>
-              </Row>
-            </Card>
-            <Card bodyStyle={{ padding: 16 }}>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
-                {transports.map(item => (
-                  <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
-                    {this.renderTransportFees(item)}
-                  </TabPane>
-                  ))}
-              </Tabs>
-            </Card>
-          </div>
-        );
       }
-    } else {
       return (
         <div className="pane-content tab-pane" >
           <Card bodyStyle={{ padding: 16 }}>
             <Row>
-              <Col span="8">
-                <h5>清关</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
-                    intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }
-                </div>
-              </Col>
-              <Col span="8">
-                <h5>运输</h5>
-                <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+              <h5>运输</h5>
+              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
                   }
-                </div>
-              </Col>
-              <Col span="8">
-                <h5>总计</h5>
-                <div style={{ color: '#666', fontSize: '18px' }}>{
-                    intl.formatNumber(totalFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }
-                </div>
-              </Col>
+              </div>
             </Row>
           </Card>
           <Card bodyStyle={{ padding: 16 }}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
-              {clearanceFees.map(item => (
-                <TabPane tab={item.delg_no} key={item.delg_no}>
-                  {this.renderClearanceFees(item)}
+              {transports.map(item => (
+                <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                  {this.renderTransportFees(item)}
                 </TabPane>
-                )).concat(transports.map(item => (
-                  <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
-                    {this.renderTransportFees(item)}
-                  </TabPane>
-                )))}
+                  ))}
             </Tabs>
           </Card>
         </div>
       );
     }
+    return (
+      <div className="pane-content tab-pane" >
+        <Card bodyStyle={{ padding: 16 }}>
+          <Row>
+            <Col span="8">
+              <h5>清关</h5>
+              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }
+              </div>
+            </Col>
+            <Col span="8">
+              <h5>运输</h5>
+              <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
+                    intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }
+              </div>
+            </Col>
+            <Col span="8">
+              <h5>总计</h5>
+              <div style={{ color: '#666', fontSize: '18px' }}>{
+                    intl.formatNumber(totalFee.toFixed(2), { style: 'currency', currency: 'cny' })
+                  }
+              </div>
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 16 }}>
+          <Tabs activeKey={this.state.tabKey} onChange={this.handleChangeTab}>
+            {clearanceFees.map(item => (
+              <TabPane tab={item.delg_no} key={item.delg_no}>
+                {this.renderClearanceFees(item)}
+              </TabPane>
+                )).concat(transports.map(item => (
+                  <TabPane tab={item.shipmt_no} key={item.shipmt_no}>
+                    {this.renderTransportFees(item)}
+                  </TabPane>
+                )))}
+          </Tabs>
+        </Card>
+      </div>
+    );
   }
 }

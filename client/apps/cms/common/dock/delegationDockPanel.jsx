@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants';
 import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelegationDock';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import ShipmentPane from './tabpanes/shipmentPane';
@@ -29,7 +29,7 @@ const { TabPane } = Tabs;
     tabKey: state.cmsDelegationDock.tabKey,
     previewKey: state.cmsDelegationDock.previewKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
-    operators: state.crmCustomers.operators,
+    operators: state.sofCustomers.operators,
     partnerId: state.cmsDelegationDock.previewer.delgDispatch.send_partner_id,
   }),
   {
