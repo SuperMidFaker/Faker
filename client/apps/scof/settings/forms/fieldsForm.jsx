@@ -72,6 +72,34 @@ export default class FieldsForm extends Component {
     ext5_params: {},
     ext6_params: {},
   }
+  componentWillMount() {
+    if (this.props.orderType && this.props.orderType.id) {
+      const { orderType } = this.props;
+      this.setState({
+        ext1_params: orderType.ext1_params ?
+          JSON.parse(orderType.ext1_params) : {},
+        ext2_params: orderType.ext2_params ?
+          JSON.parse(orderType.ext2_params) : {},
+        ext3_params: orderType.ext3_params ?
+          JSON.parse(orderType.ext3_params) : {},
+        ext4_params: orderType.ext4_params ?
+          JSON.parse(orderType.ext4_params) : {},
+        ext5_params: orderType.ext5_params ?
+          JSON.parse(orderType.ext5_params) : {},
+        ext6_params: orderType.ext6_params ?
+          JSON.parse(orderType.ext6_params) : {},
+      });
+    } else {
+      this.setState({
+        ext1_params: {},
+        ext2_params: {},
+        ext3_params: {},
+        ext4_params: {},
+        ext5_params: {},
+        ext6_params: {},
+      });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.orderType && nextProps.orderType.id) {
       this.setState({
