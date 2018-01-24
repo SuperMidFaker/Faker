@@ -196,7 +196,7 @@ export default class RolePrivilegesForm extends React.Component {
   }
   render() {
     const {
-      formData: { name }, tenantModules, intl,
+      formData: { name, desc }, tenantModules, intl,
       submitting, form: { getFieldDecorator },
     } = this.props;
     const { editPrivilegeMap: privileges, bureauChecked } = this.state;
