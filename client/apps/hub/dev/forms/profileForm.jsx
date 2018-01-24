@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { Button, Col, Divider, Form, Input, Modal, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import AvatarUploader from 'client/components/AvatarUploader';
-import { updateBasicInfo, deleteDevApp, toggleStatus, getApp } from 'common/reducers/hubDevApp';
+import { updateBasicInfo, deleteDevApp, toggleStatus, showOpenApiConfigModal, getApp } from 'common/reducers/hubDevApp';
+import AppOpenApiModal from '../modal/openapiConfigModal';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -15,7 +16,7 @@ const { confirm } = Modal;
 @connect(
   () => ({}),
   {
-    updateBasicInfo, deleteDevApp, toggleStatus, getApp,
+    updateBasicInfo, deleteDevApp, toggleStatus, getApp, showOpenApiConfigModal,
   }
 )
 export default class ProfileForm extends Component {
@@ -66,6 +67,9 @@ export default class ProfileForm extends Component {
       }
     });
   }
+  handleConfigOpenapi = () => {
+    this.props.showOpenApiConfigModal(true);
+  }
   render() {
     const { form: { getFieldDecorator }, app } = this.props;
     return (
@@ -109,6 +113,7 @@ export default class ProfileForm extends Component {
               <Input disabled value={app.app_secret} />
             </FormItem>
           </Col>
+          <Button icon="setting" style={{ marginLeft: 8 }} onClick={this.handleConfigOpenapi}>{this.msg('openapiConfig')}</Button>
         </Row>
         <Divider />
         <FormItem>
@@ -116,6 +121,7 @@ export default class ProfileForm extends Component {
           <Button onClick={() => this.toggleStatus(false)} icon="pause-circle-o">{this.msg('offline')}</Button>}
           <Button type="danger" icon="delete" style={{ marginLeft: 8 }} onClick={() => this.handleDeleteApp(app.id)}>{this.msg('delete')}</Button>
         </FormItem>
+        <AppOpenApiModal />
       </Form>
     );
   }
