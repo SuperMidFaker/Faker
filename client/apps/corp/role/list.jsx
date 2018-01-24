@@ -8,7 +8,7 @@ import PageHeader from 'client/components/PageHeader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadRoles, switchEnable, toggleRoleModal } from 'common/reducers/role';
+import { loadRoles, switchEnable, toggleRoleModal, deleteRole } from 'common/reducers/role';
 import { formatMsg } from '../message.i18n';
 import CorpSiderMenu from '../menu';
 import RoleModal from './modal/roleModal';
@@ -34,7 +34,9 @@ function fetchData({ state, dispatch }) {
     loading: state.role.loading,
     tenantId: state.account.tenantId,
   }),
-  { loadRoles, switchEnable, toggleRoleModal }
+  {
+    loadRoles, switchEnable, toggleRoleModal, deleteRole,
+  }
 )
 @connectNav({
   depth: 1,
@@ -73,6 +75,17 @@ export default class RoleList extends React.Component {
   handleConfig = (role) => {
     this.context.router.push(`/corp/role/edit/${role.id}`);
   }
+  handleDelete = (id) => {
+    this.props.deleteRole(id).then((result) => {
+      if (!result.error) {
+        this.props.loadRoles({
+          tenantId: this.props.tenantId,
+          pageSize: this.props.rolelist.pageSize,
+          current: this.props.rolelist.current,
+        });
+      }
+    });
+  }
   render() {
     const { rolelist } = this.props;
     return (
@@ -103,7 +116,7 @@ export default class RoleList extends React.Component {
                   <List.Item
                     key={role.id}
                     actions={[<span><RowAction size="default" onClick={() => this.handleConfig(role)} icon="form" label={this.msg('configPrivileges')} />
-                      <RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={this.handleDelete} row={role} /></span>]}
+                      <RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={() => this.handleDelete(role.id)} row={role} /></span>]}
                   >
                     <List.Item.Meta
                       avatar={<Avatar src={role.app_logo} />}

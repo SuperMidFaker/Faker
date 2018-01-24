@@ -331,7 +331,7 @@ export default class MemberDepartmentView extends React.Component {
       selectMenuKeys.push('members');
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
-          <Button type="primary" onClick={this.toggleUserModal} icon="plus-circle-o">
+          <Button type="primary" onClick={() => this.toggleUserModal()} icon="plus-circle-o">
             {this.msg('newUser')}
           </Button>
         </PrivilegeCover>);
