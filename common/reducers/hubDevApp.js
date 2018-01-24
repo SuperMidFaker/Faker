@@ -1,8 +1,8 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/hub/dev', [
-  'TOGGLE_APP_CREATE_MODAL',
+const actionTypes = createActionTypes('@@welogix/hub/devapp/', [
+  'TOGGLE_APP_CREATE_MODAL', 'SHOW_OACMODAL',
   'CREATE_APP', 'CREATE_APP_SUCCEED', 'CREATE_APP_FAIL',
   'LOAD_DEV_APPS', 'LOAD_DEV_APPS_SUCCEED', 'LOAD_DEV_APPS_FAIL',
   'GET_APP', 'GET_APP_SUCCEED', 'GET_APP_FAIL',
@@ -12,10 +12,15 @@ const actionTypes = createActionTypes('@@welogix/hub/dev', [
   'TOGGLE_STATUS', 'TOGGLE_STATUS_SUCCEED', 'TOGGLE_STATUS_FAIL',
   'UPDATE_HOOK_URL', 'UPDATE_HOOK_URL_SUCCEED', 'UPDATE_HOOK_URL_FAIL',
   'UPDATE_ENTRANCE_URL', 'UPDATE_ENTRANCE_URL_SUCCEED', 'UPDATE_ENTRANCE_URL_FAIL',
+  'UPDATE_DEVAPPSETT', 'UPDATE_DEVAPPSETT_SUCCEED', 'UPDATE_DEVAPPSETT_FAIL',
+  'GEN_OAUTHTK', 'GEN_OAUTHTK_SUCCEED', 'GEN_OAUTHTK_FAIL',
 ]);
 
 const initialState = {
   appCreateModal: {
+    visible: false,
+  },
+  openapiConfigModal: {
     visible: false,
   },
   app: {},
@@ -31,10 +36,16 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TOGGLE_APP_CREATE_MODAL:
       return { ...state, appCreateModal: { ...state.appCreateModal, visible: action.visible } };
+    case actionTypes.SHOW_OACMODAL:
+      return { ...state, openapiConfigModal: { ...state.openapiConfigModal, ...action.data } };
     case actionTypes.GET_APP_SUCCEED:
       return { ...state, app: action.result.data };
     case actionTypes.LOAD_DEV_APPS_SUCCEED:
       return { ...state, apps: action.result.data };
+    case actionTypes.UPDATE_DEVAPPSETT_SUCCEED:
+      return { ...state, app: { ...state.app, ...action.data.setting } };
+    case actionTypes.GEN_OAUTHTK_SUCCEED:
+      return { ...state, app: { ...state.app, access_token: action.result.data.access_token } };
     default:
       return state;
   }
@@ -44,6 +55,13 @@ export function toggleAppCreateModal(visible) {
   return {
     type: actionTypes.TOGGLE_APP_CREATE_MODAL,
     visible,
+  };
+}
+
+export function showOpenApiConfigModal(visible) {
+  return {
+    type: actionTypes.SHOW_OACMODAL,
+    data: { visible },
   };
 }
 
@@ -180,6 +198,36 @@ export function updateEntranceUrl(urls, id) {
       endpoint: 'v1/hub/dev/app/entrance/url/update',
       method: 'post',
       data: { urls, id },
+    },
+  };
+}
+
+export function updateDevAppSetting(setting, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_DEVAPPSETT,
+        actionTypes.UPDATE_DEVAPPSETT_SUCCEED,
+        actionTypes.UPDATE_DEVAPPSETT_FAIL,
+      ],
+      endpoint: 'v1/hub/dev/app/update/setting',
+      method: 'post',
+      data: { setting, id },
+    },
+  };
+}
+
+export function genOAuthToken(appid, appSecret) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GEN_OAUTHTK,
+        actionTypes.GEN_OAUTHTK_SUCCEED,
+        actionTypes.GEN_OAUTHTK_FAIL,
+      ],
+      endpoint: 'v1/hub/dev/app/gen/oauth/token',
+      method: 'post',
+      data: { appid, appSecret },
     },
   };
 }

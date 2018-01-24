@@ -62,6 +62,10 @@ const messages = defineMessages({
     id: 'hub.dev.app.secret',
     defaultMessage: 'Client Secret/密钥',
   },
+  openapiConfig: {
+    id: 'hub.dev.app.openapi.config',
+    defaultMessage: 'OPENAPI参数配置',
+  },
   callbackUrl: {
     id: 'hub.dev.app.callback.url',
     defaultMessage: '回调地址',
