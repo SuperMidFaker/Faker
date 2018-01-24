@@ -777,7 +777,7 @@ export function closeRuleModel() {
 }
 
 export function submitBillMegeSplit({
-  billSeqNo, mergeOpt, splitOpt, sortOpt,
+  billSeqNo, mergeOpt, splitOpt, sortOpt, invGen
 }) {
   return {
     [CLIENT_API]: {
@@ -789,7 +789,7 @@ export function submitBillMegeSplit({
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
       data: {
-        billSeqNo, mergeOpt, splitOpt, sortOpt,
+        billSeqNo, mergeOpt, splitOpt, sortOpt, invGen
       },
     },
   };
