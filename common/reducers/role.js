@@ -29,6 +29,7 @@ const actions = [
   'LOAD_MODULES', 'LOAD_MODULES_SUCCEED', 'LOAD_MODULES_FAIL',
   'SWITCH_ENABLE', 'SWITCH_ENABLE_SUCCEED', 'SWITCH_ENABLE_FAIL',
   'CLEAR_FORM', 'TOGGLE_ROLE_MODAL',
+  'DELETE_ROLE', 'DELETE_ROLE_SUCCEED', 'DELETE_ROLE_FAIL',
 ];
 const domain = '@@welogix/role/';
 const actionTypes = createActionTypes(domain, actions);
@@ -74,7 +75,10 @@ export default function reducer(state = initialState, action) {
 export function loadRoles(params) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.LOAD_ROLES, actionTypes.LOAD_ROLES_SUCCEED, actionTypes.LOAD_ROLES_FAIL],
+      types: [
+        actionTypes.LOAD_ROLES,
+        actionTypes.LOAD_ROLES_SUCCEED,
+        actionTypes.LOAD_ROLES_FAIL],
       endpoint: 'v1/tenant/paged/roles',
       method: 'get',
       params,
@@ -91,7 +95,10 @@ export function clearForm() {
 export function loadRole(roleId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.LOAD_ROLE, actionTypes.LOAD_ROLE_SUCCEED, actionTypes.LOAD_ROLE_FAIL],
+      types: [
+        actionTypes.LOAD_ROLE,
+        actionTypes.LOAD_ROLE_SUCCEED,
+        actionTypes.LOAD_ROLE_FAIL],
       endpoint: 'v1/tenant/roleprivilege',
       method: 'get',
       params: { roleId },
@@ -103,7 +110,8 @@ export function loadTenantModules(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_MODULES, actionTypes.LOAD_MODULES_SUCCEED,
+        actionTypes.LOAD_MODULES,
+        actionTypes.LOAD_MODULES_SUCCEED,
         actionTypes.LOAD_MODULES_FAIL,
       ],
       endpoint: 'v1/tenant/modules',
@@ -117,7 +125,8 @@ export function updateRole(form) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.EDIT_ROLE, actionTypes.EDIT_ROLE_SUCCEED,
+        actionTypes.EDIT_ROLE,
+        actionTypes.EDIT_ROLE_SUCCEED,
         actionTypes.EDIT_ROLE_FAIL,
       ],
       endpoint: 'v1/tenant/role/edit',
@@ -131,7 +140,8 @@ export function submit(form) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SUBMIT_ROLE, actionTypes.SUBMIT_ROLE_SUCCEED,
+        actionTypes.SUBMIT_ROLE,
+        actionTypes.SUBMIT_ROLE_SUCCEED,
         actionTypes.SUBMIT_ROLE_FAIL,
       ],
       endpoint: 'v1/tenant/role/submit',
@@ -145,7 +155,8 @@ export function switchEnable(role, index, enabled) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SWITCH_ENABLE, actionTypes.SWITCH_ENABLE_SUCCEED,
+        actionTypes.SWITCH_ENABLE,
+        actionTypes.SWITCH_ENABLE_SUCCEED,
         actionTypes.SWITCH_ENABLE_FAIL,
       ],
       endpoint: 'v1/role/switch/enabled',
@@ -160,5 +171,20 @@ export function toggleRoleModal(visible) {
   return {
     type: actionTypes.TOGGLE_ROLE_MODAL,
     visible,
+  };
+}
+
+export function deleteRole(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_ROLE,
+        actionTypes.DELETE_ROLE_SUCCEED,
+        actionTypes.DELETE_ROLE_FAIL,
+      ],
+      endpoint: 'v1/role/delete',
+      method: 'post',
+      data: { id },
+    },
   };
 }

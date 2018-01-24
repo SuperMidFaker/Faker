@@ -45,7 +45,7 @@ export default class InfoPane extends Component {
         }
       });
     } else {
-      this.props.updateFlowInfo(data.name, -1, -1, data.customer, currentFlow.id).then((result) => {
+      this.props.updateFlowInfo(data.name, -1, -1, data.customer || '', currentFlow.id).then((result) => {
         if (!result.error) {
           message.success('保存成功');
         }

@@ -37,7 +37,7 @@ function fetchData({
     personnel: state.personnel,
   }),
   {
-    edit, submit, checkLoginName, toggleUserModal, loadRoles, assignForm,
+    edit, submit, checkLoginName, toggleUserModal, loadRoles, assignForm, clearForm,
   }
 )
 @withPrivilege({
@@ -79,13 +79,16 @@ export default class CorpEdit extends React.Component {
   state = {
     role: '',
   }
+  componentDidMount() {
+    this.props.form.resetFields();
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.pid !== this.props.pid && nextProps.pid) {
+    if (nextProps.visible !== this.props.visible && nextProps.visible) {
       const { pid } = nextProps;
       if (pid) {
         this.props.assignForm(this.props.personnel, pid);
       } else {
-        clearForm();
+        this.props.clearForm();
       }
     }
   }
@@ -110,10 +113,10 @@ export default class CorpEdit extends React.Component {
           ...this.props.form.getFieldsValue(),
           role: this.state.role || this.props.formData.role,
         };
-        if (this.props.formData.key !== -1) {
+        if (this.props.pid) {
           this.props.edit(form, this.props.code, this.props.tenantId).then((result) => {
             if (!result.error) {
-              this.props.toggleUserModal(false);
+              this.handleCancel(false);
               this.props.reload();
             } else {
               this.onSubmitReturn(result.error);
@@ -127,7 +130,7 @@ export default class CorpEdit extends React.Component {
             this.props.parentTenantId
           ).then((result) => {
             if (!result.error) {
-              this.props.toggleUserModal(false);
+              this.handleCancel(false);
               this.props.reload();
             } else {
               this.onSubmitReturn(result.error);
@@ -141,6 +144,7 @@ export default class CorpEdit extends React.Component {
   }
   handleCancel = () => {
     this.props.toggleUserModal(false);
+    this.props.form.resetFields();
   }
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps, type = 'text') {
     const { form: { getFieldDecorator } } = this.props;
@@ -161,18 +165,18 @@ export default class CorpEdit extends React.Component {
   render() {
     const {
       formData: {
-        name, username, password, phone, email, position,
+        name, username, phone, email, position,
       },
       intl, form: { getFieldDecorator }, code, roles, visible,
     } = this.props;
-    const isCreating = this.props.formData.key === null;
+    const isCreating = !this.props.pid && this.props.pid !== 0;
     const msg = descriptor => formatMsg(intl, descriptor);
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal onOk={this.handleSubmit} maskClosable={false} visible={visible} title={this.props.formData.key !== -1 ? '编辑用户' : '添加用户'} onCancel={this.handleCancel} destroyOnClose>
+      <Modal onOk={this.handleSubmit} maskClosable={false} visible={visible} title={this.props.pid ? '编辑用户' : '添加用户'} onCancel={this.handleCancel}>
         <Form layout="horizontal">
           <FormItem
             label={this.msg('fullName')}
@@ -193,10 +197,10 @@ export default class CorpEdit extends React.Component {
             {getFieldDecorator('username', {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(
-                    value, code, this.props.formData.login_id,
-                    this.props.tenantId, callback, message, this.props.checkLoginName,
-                    (msgs, descriptor) => format(msgs)(intl, descriptor)
-                  ),
+                      username, code, this.props.formData.login_id,
+                      this.props.tenantId, callback, message, this.props.checkLoginName,
+                      (msgs, descriptor) => format(msgs)(intl, descriptor)
+                    ),
                 }],
                 initialValue: username && username.split('@')[0],
               })(<Input type="text" addonAfter={`@${code}`} />)}
@@ -205,7 +209,7 @@ export default class CorpEdit extends React.Component {
               isCreating && this.renderTextInput(
                 this.msg('password'), this.msg('passwordPlaceholder'), 'password', true,
                 [{ required: true, min: 6, message: msg('passwordMessage') }],
-                { initialValue: password }, 'password'
+                { initialValue: '' }, 'password'
               )
             }
           {this.renderTextInput(
