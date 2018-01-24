@@ -86,6 +86,7 @@ export default class DevAppList extends React.Component {
   render() {
     const { apps, filter } = this.props;
     const pagination = {
+      hideOnSinglePage: true,
       pageSize: Number(apps.pageSize),
       current: Number(apps.current),
       total: apps.total,

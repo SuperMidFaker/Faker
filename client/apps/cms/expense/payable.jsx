@@ -206,7 +206,7 @@ export default class ExpenseList extends Component {
       title: this.msg('status'),
       dataIndex: 'cost_status',
       key: 'cost_status',
-      className: 'status-indicator',
+      width: 100,
       render: (status) => {
         if (status === 1) {
           return <Badge status="warning" />;

@@ -85,6 +85,7 @@ export default class ApiAuthList extends React.Component {
   render() {
     const { adaptors, filter } = this.props;
     const pagination = {
+      hideOnSinglePage: true,
       pageSize: Number(adaptors.pageSize),
       current: Number(adaptors.current),
       total: adaptors.total,

@@ -3,8 +3,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Layout, Table, Tooltip, Button, Breadcrumb, Tabs, Form, Tag, Icon } from 'antd';
+import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, clearLocations } from 'common/reducers/cwmWarehouse';
+import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
+import MagicCard from 'client/components/MagicCard';
 import WarehouseModal from './modal/warehouseModal';
 import OwnersPane from './tabpane/ownersPane';
 import SuppliersPane from './tabpane/suppliersPane';
@@ -15,13 +18,11 @@ import ZoneLocationPane from './tabpane/zoneLocationPane';
 import BrokersPane from './tabpane/brokersPane';
 import SupervisionPane from './tabpane/supervisionPane';
 import EditWhseModal from './modal/editWarehouseModal';
-import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, clearLocations } from 'common/reducers/cwmWarehouse';
-import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from './message.i18n';
 
 const { Content, Sider } = Layout;
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connectNav({
@@ -36,7 +37,13 @@ const TabPane = Tabs.TabPane;
     locationLoading: state.cwmWarehouse.locationLoading,
   }),
   {
-    showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext, clearLocations,
+    showWarehouseModal,
+    loadZones,
+    loadLocations,
+    showEditWhseModal,
+    searchWhse,
+    loadWhseContext,
+    clearLocations,
   }
 )
 @Form.create()
@@ -49,9 +56,6 @@ export default class WarehouseList extends Component {
     currentPage: 1,
     warehouse: {},
     warehouses: [],
-    zoneName: '',
-    zoneCode: '',
-    visible: false,
   }
   componentWillMount() {
     this.setState({
@@ -77,9 +81,6 @@ export default class WarehouseList extends Component {
   showWarehouseModal = () => {
     this.props.showWarehouseModal();
   }
-  handleVisibleChange = (visible) => {
-    this.setState({ visible });
-  }
   handleRowClick = (record) => {
     this.setState({
       warehouse: record,
@@ -87,11 +88,6 @@ export default class WarehouseList extends Component {
     this.props.loadZones(record.code).then((result) => {
       if (!result.error && result.data.length !== 0) {
         this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code);
-        this.setState({
-          zone: result.data[0],
-          zones: result.data,
-          selectKeys: [result.data[0].zone_code],
-        });
       } else {
         this.props.clearLocations();
       }
@@ -112,7 +108,12 @@ export default class WarehouseList extends Component {
     }];
     const tabs = [];
     tabs.push(<TabPane tab="货主" key="owners">
-      <OwnersPane whseCode={warehouse.code} whseName={warehouse.name} whseTenantId={warehouse.wh_ent_tenant_id} warehouse={warehouse} />
+      <OwnersPane
+        whseCode={warehouse.code}
+        whseName={warehouse.name}
+        whseTenantId={warehouse.wh_ent_tenant_id}
+        warehouse={warehouse}
+      />
     </TabPane>);
     tabs.push(<TabPane tab="供货商" key="suppliers">
       <SuppliersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
@@ -136,7 +137,11 @@ export default class WarehouseList extends Component {
     }
     if (warehouse.bonded) {
       tabs.push(<TabPane tab="保税监管" key="supervision">
-        <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} customsCode={warehouse.customs_code} />
+        <SupervisionPane
+          whseCode={warehouse.code}
+          ftzAppId={warehouse.ftz_integration_app_id}
+          customsCode={warehouse.customs_code}
+        />
       </TabPane>);
     }
     return (
@@ -199,11 +204,11 @@ export default class WarehouseList extends Component {
             </PageHeader.Title>
           </PageHeader>
           <Content className="page-content">
-            <div className="page-body tabbed">
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="owners">
                 {tabs}
               </Tabs>
-            </div>
+            </MagicCard>
           </Content>
         </Layout>
       </Layout>

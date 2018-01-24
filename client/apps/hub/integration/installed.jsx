@@ -108,6 +108,7 @@ export default class InstalledAppsList extends React.Component {
   render() {
     const { installedAppsList } = this.props;
     const pagination = {
+      hideOnSinglePage: true,
       pageSize: installedAppsList.pageSize,
       current: installedAppsList.current,
       total: installedAppsList.totalCount,
