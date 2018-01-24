@@ -21,6 +21,22 @@ const messages = defineMessages({
     id: 'root.desc',
     defaultMessage: '描述',
   },
+  all: {
+    id: 'root.all',
+    defaultMessage: '全部',
+  },
+  op: {
+    id: 'root.op',
+    defaultMessage: '操作',
+  },
+  yes: {
+    id: 'root.yes',
+    defaultMessage: '是',
+  },
+  nope: {
+    id: 'root.nope',
+    defaultMessage: '否',
+  },
   ok: {
     id: 'root.ok',
     defaultMessage: '确定',
@@ -41,6 +57,14 @@ const messages = defineMessages({
     id: 'root.modify',
     defaultMessage: '修改',
   },
+  config: {
+    id: 'root.config',
+    defaultMessage: '配置',
+  },
+  assign: {
+    id: 'root.assign',
+    defaultMessage: '分配',
+  },
   delete: {
     id: 'root.delete',
     defaultMessage: '删除',
@@ -49,8 +73,8 @@ const messages = defineMessages({
     id: 'root.add',
     defaultMessage: '添加',
   },
-  createNew: {
-    id: 'root.createNew',
+  create: {
+    id: 'root.create',
     defaultMessage: '新建',
   },
   export: {
@@ -60,6 +84,42 @@ const messages = defineMessages({
   save: {
     id: 'root.save',
     defaultMessage: '保存',
+  },
+  close: {
+    id: 'root.close',
+    defaultMessage: '关闭',
+  },
+  search: {
+    id: 'root.search',
+    defaultMessage: '搜索',
+  },
+  setting: {
+    id: 'root.setting',
+    defaultMessage: '设置',
+  },
+  accept: {
+    id: 'root.accept',
+    defaultMessage: '接受',
+  },
+  reject: {
+    id: 'root.reject',
+    defaultMessage: '拒绝',
+  },
+  approve: {
+    id: 'root.approve',
+    defaultMessage: '通过',
+  },
+  revoke: {
+    id: 'root.revoke',
+    defaultMessage: '撤销',
+  },
+  deleteConfirm: {
+    id: 'root.delete.confirm',
+    defaultMessage: '确定删除?',
+  },
+  savedSuccess: {
+    id: 'root.saved.success',
+    defaultMessage: '保存成功',
   },
   nextStep: {
     id: 'root.nextStep',
@@ -104,14 +164,6 @@ const messages = defineMessages({
   moduleCWM: {
     id: 'component.module.cwm',
     defaultMessage: '保税仓储',
-  },
-  moduleSCV: {
-    id: 'component.module.scv',
-    defaultMessage: '供应链可视',
-  },
-  moduleCorporation: {
-    id: 'component.module.corporation',
-    defaultMessage: '企业管理',
   },
   featCorpOverview: {
     id: 'component.feature.corp.overview',
@@ -208,10 +260,6 @@ const messages = defineMessages({
   allocateOperator: {
     id: 'component.operators.tms.title',
     defaultMessage: '指定接单人',
-  },
-  accepting: {
-    id: 'component.operate.accept',
-    defaultMessage: '接单',
   },
 });
 export default messages;

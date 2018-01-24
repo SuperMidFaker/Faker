@@ -172,13 +172,19 @@ export default class CorpEdit extends React.Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal width={1000} onOk={this.handleSubmit} maskClosable={false} visible={visible} title={this.props.formData.key !== -1 ? '编辑用户' : '添加用户'} onCancel={this.handleCancel}>
+      <Modal onOk={this.handleSubmit} maskClosable={false} visible={visible} title={this.props.formData.key !== -1 ? '编辑用户' : '添加用户'} onCancel={this.handleCancel} destroyOnClose>
         <Form layout="horizontal">
-          {this.renderTextInput(
-              this.msg('fullName'), this.msg('fullNamePlaceholder'), 'name', true,
-              [{ required: true, min: 2, message: msg('fullNameMessage') }],
-              { initialValue: name }
-            )}
+          <FormItem
+            label={this.msg('fullName')}
+            {...formItemLayout}
+            hasFeedback
+            required
+          >
+            {getFieldDecorator('name', {
+              rules: [{ required: true, min: 2, message: this.msg('fullNameMessage') }],
+              initialValue: name,
+            })(<Input placeholder={this.msg('fullNamePlaceholder')} />)}
+          </FormItem>
           <FormItem
             label={this.msg('username')}
             {...formItemLayout}

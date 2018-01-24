@@ -40,6 +40,7 @@ class DataTable extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-table',
     fixedBody: true,
+    scrollOffset: 280,
   }
   static propTypes = {
     baseCls: PropTypes.string,
@@ -69,11 +70,10 @@ class DataTable extends React.Component {
     pathname: '',
   }
   componentWillMount() {
-    const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
     const { location } = this.context.router;
     let columnRule;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ scrollY: window.innerHeight - offset });
+      this.setState({ scrollY: window.innerHeight - this.props.scrollOffset });
       if (window.localStorage) {
         columnRule = JSON.parse(window.localStorage.getItem(location.pathname));
       }
@@ -264,6 +264,7 @@ class DataTable extends React.Component {
         ...pagination,
         ...dataSource.getPagination(dataSource.remotes, resolveCurrent),
       } : pagination;
+      pagination.size = 'small';
       dataSource = data;
     }
     let scrollProp;

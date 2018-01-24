@@ -9,7 +9,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadRole } from 'common/reducers/role';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 import RolePrivilegesForm from './form/rolePrivilegesForm';
 
 const { Content } = Layout;
@@ -51,6 +51,7 @@ export default class RoleEdit extends React.Component {
     router: routerShape.isRequired,
   }
   msg = formatMsg(this.props.intl);
+  gmsg = formatGlobalMsg(this.props.intl)
   handleClose = () => {
     this.context.router.goBack();
   }
@@ -71,7 +72,7 @@ export default class RoleEdit extends React.Component {
           </PageHeader.Title>
           <PageHeader.Actions>
             <Button icon="close" onClick={this.handleClose}>
-              {this.msg('close')}
+              {this.gmsg('close')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

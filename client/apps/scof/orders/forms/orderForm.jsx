@@ -59,7 +59,7 @@ export default class OrderForm extends Component {
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
     formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     formRequires: PropTypes.shape({
-      clients: PropTypes.shape({ partner_id: PropTypes.number }),
+      clients: PropTypes.arrayOf(PropTypes.shape({ partner_id: PropTypes.number })),
     }).isRequired,
     setClientForm: PropTypes.func.isRequired,
     graphLoading: PropTypes.bool.isRequired,
@@ -271,6 +271,7 @@ export default class OrderForm extends Component {
       cust_shipmt_pieces: formData.cust_shipmt_pieces,
       cust_shipmt_weight: formData.cust_shipmt_weight,
       cust_shipmt_volume: formData.cust_shipmt_volume,
+      cust_shipmt_expedited: formData.cust_shipmt_expedited,
       cust_shipmt_goods_type: formData.cust_shipmt_goods_type,
       cust_shipmt_wrap_type: formData.cust_shipmt_wrap_type,
     };

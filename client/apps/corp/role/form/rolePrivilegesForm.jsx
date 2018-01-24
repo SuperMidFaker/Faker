@@ -7,13 +7,9 @@ import { routerShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadTenantModules, updateRole } from 'common/reducers/role';
 import { PRESET_ROLE_NAME_KEYS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import globalMessages from 'client/common/root.i18n';
-import messages from '../../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Panel } = Collapse;
-const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessages);
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const { Column } = Table;
@@ -122,6 +118,8 @@ export default class RolePrivilegesForm extends React.Component {
       });
     }
   }
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleFeatureFullCheck(moduleId, featId, checked) {
     let state;
     if (checked) {
@@ -182,6 +180,8 @@ export default class RolePrivilegesForm extends React.Component {
         this.props.updateRole(form).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
+          } else {
+            message.success(this.gmsg('savedSuccess'));
           }
         });
       } else {
@@ -204,7 +204,7 @@ export default class RolePrivilegesForm extends React.Component {
       <Form layout="vertical" onSubmit={this.handleSubmit}>
         <Card
           bodyStyle={{ padding: 0 }}
-          extra={<Button htmlType="submit" type="primary" icon="save" loading={submitting}>{formatGlobalMsg(intl, 'save')}</Button>}
+          extra={<Button htmlType="submit" type="primary" icon="save" loading={submitting}>{this.gmsg('save')}</Button>}
         >
           <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
             <Panel header="角色信息" key="profile">
@@ -252,7 +252,7 @@ export default class RolePrivilegesForm extends React.Component {
               </Card>
             </Panel>
             {tenantModules.map(tnm => (
-              <Panel header={`「${formatGlobalMsg(intl, tnm.text)}」权限`} key={tnm.text}>
+              <Panel header={`「${this.gmsg(tnm.text)}」权限`} key={tnm.text}>
                 <Card bodyStyle={{ padding: 0 }}>
                   <Table size="small" dataSource={tnm.features} pagination={false}>
                     <Column
@@ -277,7 +277,7 @@ export default class RolePrivilegesForm extends React.Component {
                       key="action"
                       render={(o, feat) => (<CheckboxGroup
                         options={feat.actions.map(act => ({
-                          label: formatGlobalMsg(intl, act.text),
+                          label: this.gmsg(act.text),
                           value: act.id,
                         }))}
                         value={

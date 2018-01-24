@@ -51,6 +51,7 @@ const initialState = {
     cust_shipmt_pieces: null,
     cust_shipmt_weight: null,
     cust_shipmt_volume: null,
+    cust_shipmt_expedited: 0,
     cust_shipmt_goods_type: 0,
     cust_shipmt_wrap_type: null,
     ccb_need_exchange: 0,

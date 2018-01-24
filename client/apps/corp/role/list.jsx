@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Avatar, Badge, Breadcrumb, Button, Card, Layout, List } from 'antd';
+import { Breadcrumb, Button, Card, Layout, List } from 'antd';
 import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -51,7 +51,7 @@ export default class RoleList extends React.Component {
       data: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
-        desc: PropTypes.string.isRequired,
+        desc: PropTypes.string,
         status: PropTypes.number.isRequired,
       })),
     }).isRequired,
@@ -106,11 +106,9 @@ export default class RoleList extends React.Component {
                       <RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={this.handleDelete} row={role} /></span>]}
                   >
                     <List.Item.Meta
-                      avatar={<Avatar src={role.app_logo} />}
                       title={role.name}
                       description={role.desc}
                     />
-                    {role.status ? <Badge status="success" text="已启用" /> : <Badge status="default" text="已停用" />}
                   </List.Item>
                   )}
               />

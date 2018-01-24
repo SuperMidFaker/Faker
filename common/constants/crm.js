@@ -71,13 +71,13 @@ export const GOODSTYPES = [{
 }];
 
 export const EXPEDITED_TYPES = [{
-  value: '0',
+  value: 0,
   text: '不紧急',
 }, {
-  value: '1',
+  value: 1,
   text: '紧急',
 }, {
-  value: '2',
+  value: 2,
   text: '非常紧急',
 }];
 

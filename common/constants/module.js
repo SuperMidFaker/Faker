@@ -451,7 +451,6 @@ const MODULE_CWM = {
   id: 'cwm',
   text: 'moduleCWM',
   defaultText: '保税仓储',
-  status: 'alpha',
   features: [
     {
       id: 'dashboard',
@@ -597,21 +596,12 @@ const MODULE_BSS = {
   features: [],
 };
 
-const MODULE_SCV = {
-  id: 'scv',
-  text: 'moduleSCV',
-  defaultText: 'SCV',
-  status: 'alpha',
-  features: [],
-};
-
 const appModules = [
   MODULE_SCOF,
   MODULE_CLEARANCE,
   MODULE_CWM,
   MODULE_TRANSPORT,
   MODULE_BSS,
-  MODULE_SCV,
 ];
 
 const spnModules = [
