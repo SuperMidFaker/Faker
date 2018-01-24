@@ -6,7 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
 import { MdIcon } from 'client/components/FontIcon';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';
+import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal, toggleUserModal } from 'common/reducers/personnel';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -15,6 +15,7 @@ import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
 import CorpSiderMenu from '../menu';
 import AddMemberModal from './modal/addMemberModal';
+import AddUser from './modal/addUserModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
@@ -45,7 +46,13 @@ function fetchData({ state, dispatch }) {
     loading: state.personnel.loading,
   }),
   {
-    delMember, switchStatus, loadDepartments, createDepartment, loadMembers, openMemberModal,
+    delMember,
+    switchStatus,
+    loadDepartments,
+    createDepartment,
+    loadMembers,
+    openMemberModal,
+    toggleUserModal,
   }
 )
 @withPrivilege({ module: 'corp', feature: 'personnel' })
@@ -127,7 +134,7 @@ export default class MemberDepartmentView extends React.Component {
       let { text } = ACCOUNT_STATUS.normal;
       if (record.status === ACCOUNT_STATUS.blocked.id) {
         style = { color: '#CCC' };
-        text = ACCOUNT_STATUS.blocked.text;
+        text = ACCOUNT_STATUS.blocked.text; // eslint-disable-line
       }
       return <span style={style}>{this.msg(text)}</span>;
     },
@@ -140,13 +147,13 @@ export default class MemberDepartmentView extends React.Component {
       if (record.role === PRESET_TENANT_ROLE.owner.name) {
         return (
           <PrivilegeCover module="corp" feature="personnel" action="edit">
-            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={this.handleModify} />
+            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={() => this.toggleUserModal(record.key)} />
           </PrivilegeCover>
         );
       } else if (record.status === ACCOUNT_STATUS.normal.id) {
         return (
           <PrivilegeCover module="corp" feature="personnel" action="edit">
-            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={this.handleModify} />
+            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={() => this.toggleUserModal(record.key)} />
             <RowAction icon="pause-circle-o" tooltip={this.msg('disable')} onClick={() => this.handleStatusSwitch(record, index)} />
           </PrivilegeCover>
         );
@@ -157,7 +164,7 @@ export default class MemberDepartmentView extends React.Component {
               <RowAction icon="play-circle-o" tooltip={this.msg('enable')} onClick={() => this.handleStatusSwitch(record, index)} />
             </PrivilegeCover>
             <PrivilegeCover module="corp" feature="personnel" action="delete">
-              <RowAction danger icon="delete" tooltip={this.msg('delete')} onConfirm={() => this.handlePersonnelDel(record)} />
+              <RowAction danger icon="delete" tooltip={this.msg('delete')} confirm="确认删除？" onConfirm={() => this.handlePersonnelDel(record)} />
             </PrivilegeCover>
           </span>
         );
@@ -185,7 +192,7 @@ export default class MemberDepartmentView extends React.Component {
         sortOrder: sorter.order,
         filters: { ...this.props.filters },
       };
-      Object.keys(filters).forEach((key) => { params.filters[key] = filters[key][0]; });
+      Object.keys(filters).forEach((key) => { params.filters[key] = filters[key][0]; }); // eslint-disable-line
       params.filters = JSON.stringify(params.filters);
       return params;
     },
@@ -260,10 +267,10 @@ export default class MemberDepartmentView extends React.Component {
   }
   handleMenuClick = (menukey) => {
     const filters = { ...this.props.filters };
-    const key = menukey.key;
+    const { key } = menukey;
     if (key === 'members') {
       filters.dept_id = undefined;
-    } else if (!isNaN(key)) {
+    } else if (!isNaN(key)) { // eslint-disable-line
       filters.dept_id = parseInt(key, 10);
     }
     this.props.loadMembers({
@@ -287,7 +294,18 @@ export default class MemberDepartmentView extends React.Component {
       });
     }
   }
-  renderColumnText(status, text) {
+  handleReloadAllMembers = () => {
+    this.props.loadMembers({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.personnelist.pageSize,
+      current: 1,
+      filters: JSON.stringify(this.props.filters),
+    });
+  }
+  toggleUserModal = (key) => {
+    this.props.toggleUserModal(true, key);
+  }
+  renderColumnText(status, text) { // eslint-disable-line
     let style = {};
     if (status === ACCOUNT_STATUS.blocked.id) {
       style = { color: '#CCC' };
@@ -301,7 +319,7 @@ export default class MemberDepartmentView extends React.Component {
     this.dataSource.remotes = personnelist;
     const selectMenuKeys = [];
     let contentHeadAction;
-    if (!isNaN(filters.dept_id)) {
+    if (!isNaN(filters.dept_id)) { // eslint-disable-line
       selectMenuKeys.push(filters.dept_id.toString());
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
@@ -313,7 +331,7 @@ export default class MemberDepartmentView extends React.Component {
       selectMenuKeys.push('members');
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
-          <Button type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="plus-circle-o">
+          <Button type="primary" onClick={this.toggleUserModal} icon="plus-circle-o">
             {this.msg('newUser')}
           </Button>
         </PrivilegeCover>);
@@ -382,6 +400,7 @@ export default class MemberDepartmentView extends React.Component {
               </Layout>
             </Card>
             <AddMemberModal reload={this.handleDepartMembersLoad} />
+            <AddUser reload={this.handleReloadAllMembers} />
           </Content>
         </Layout>
       </Layout>

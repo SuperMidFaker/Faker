@@ -76,7 +76,7 @@ export default class RoleEdit extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-fixed-width">
-          <RolePrivilegesForm formData={formData} mode="edit" />
+          <RolePrivilegesForm mode="edit" />
         </Content>
       </Layout>
     );
