@@ -8,9 +8,10 @@ import PageHeader from 'client/components/PageHeader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadRoles, switchEnable } from 'common/reducers/role';
+import { loadRoles, switchEnable, toggleRoleModal } from 'common/reducers/role';
 import { formatMsg } from '../message.i18n';
 import CorpSiderMenu from '../menu';
+import RoleModal from './modal/roleModal';
 
 const { Content } = Layout;
 
@@ -33,7 +34,7 @@ function fetchData({ state, dispatch }) {
     loading: state.role.loading,
     tenantId: state.account.tenantId,
   }),
-  { loadRoles, switchEnable }
+  { loadRoles, switchEnable, toggleRoleModal }
 )
 @connectNav({
   depth: 1,
@@ -61,7 +62,7 @@ export default class RoleList extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   handleCreate = () => {
-    this.context.router.push('/corp/role/new');
+    this.props.toggleRoleModal(true);
   }
   handleEnable(role, index) {
     this.props.switchEnable(role, index, true);
@@ -114,6 +115,7 @@ export default class RoleList extends React.Component {
                   )}
               />
             </Card>
+            <RoleModal />
           </Content>
         </Layout>
       </Layout>

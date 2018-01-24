@@ -16,6 +16,9 @@ const initialState = {
   formData: {
     privileges: {},
   },
+  roleModal: {
+    visible: false,
+  },
 };
 
 const actions = [
@@ -25,7 +28,7 @@ const actions = [
   'SUBMIT_ROLE', 'SUBMIT_ROLE_SUCCEED', 'SUBMIT_ROLE_FAIL',
   'LOAD_MODULES', 'LOAD_MODULES_SUCCEED', 'LOAD_MODULES_FAIL',
   'SWITCH_ENABLE', 'SWITCH_ENABLE_SUCCEED', 'SWITCH_ENABLE_FAIL',
-  'CLEAR_FORM',
+  'CLEAR_FORM', 'TOGGLE_ROLE_MODAL',
 ];
 const domain = '@@welogix/role/';
 const actionTypes = createActionTypes(domain, actions);
@@ -56,11 +59,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EDIT_ROLE_SUCCEED:
       return { ...state, loaded: false, submitting: false };
     case actionTypes.SWITCH_ENABLE_SUCCEED: {
-      const extra = action.extra;
+      const { extra } = action;
       const listData = [...state.list.data];
       listData[extra.index].status = extra.enabled ? 1 : 0;
       return { ...state, list: { ...state.list, data: listData } };
     }
+    case actionTypes.TOGGLE_ROLE_MODAL:
+      return { ...state, roleModal: { ...state.roleModal, visible: action.visible } };
     default:
       return state;
   }
@@ -148,5 +153,12 @@ export function switchEnable(role, index, enabled) {
       data: { roleId: role.id, enabled },
       extra: { index, enabled },
     },
+  };
+}
+
+export function toggleRoleModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_ROLE_MODAL,
+    visible,
   };
 }
