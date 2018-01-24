@@ -4,12 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout } from 'antd';
-
-import { formatMsg } from './message.i18n';
-import FeesTable from './feesTable';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import { formatMsg } from './message.i18n';
+import FeesTable from './feesTable';
 
 
 const { Header, Content } = Layout;
@@ -35,8 +34,6 @@ function fetchData({ dispatch, state }) {
 export default class QuoteTemplate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    loadQuoteModel: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -64,9 +61,7 @@ export default class QuoteTemplate extends Component {
           </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <FeesTable action="model" editable />
-          </div>
+          <FeesTable action="model" editable />
         </Content>
       </Layout>
     );
