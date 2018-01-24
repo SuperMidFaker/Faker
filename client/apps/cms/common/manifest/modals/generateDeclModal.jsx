@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
-
+import { loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { formatMsg } from '../../message.i18n';
 
 
@@ -53,7 +53,7 @@ function fetchData({ state, dispatch }) {
     hscodeCategories: state.cmsHsCode.hscodeCategories,
     billRule: state.cmsManifest.billRule,
   }),
-  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody }
+  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody, loadInvTemplates }
 )
 @Form.create()
 export default class MergeSplitModal extends React.Component {
@@ -500,8 +500,7 @@ export default class MergeSplitModal extends React.Component {
                 })(<Checkbox>{this.msg('生成发票')}</Checkbox>)}
                     {getFieldValue('gen_invoice') &&
                     <div>
-                      {getFieldDecorator('invoice_template', {
-                    rules: [{ type: 'array' }],
+                      {getFieldDecorator('invoice_template_id', {
                   })(<Select placeholder={this.msg('选择发票模板')}>
                     {invoiceTemplates && invoiceTemplates.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
@@ -515,8 +514,7 @@ export default class MergeSplitModal extends React.Component {
                 })(<Checkbox>{this.msg('生成箱单')}</Checkbox>)}
                     {getFieldValue('gen_packing_list') &&
                     <div>
-                      {getFieldDecorator('packing_list_template', {
-                    rules: [{ type: 'array' }],
+                      {getFieldDecorator('packing_list_template_id', {
                   })(<Select placeholder={this.msg('选择箱单模板')}>
                     {packingListTemplates && packingListTemplates.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
@@ -530,8 +528,7 @@ export default class MergeSplitModal extends React.Component {
                 })(<Checkbox>{this.msg('生成合同')}</Checkbox>)}
                     {getFieldValue('gen_contract') &&
                     <div>
-                      {getFieldDecorator('contract_template', {
-                    rules: [{ type: 'array' }],
+                      {getFieldDecorator('contract_template_id', {
                   })(<Select placeholder={this.msg('选择合同模板')}>
                     {contractTemplates && contractTemplates.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}

@@ -73,8 +73,12 @@ function getFieldInits(formData) {
     });
     init.sort_dectotal = formData.sort_dectotal || '0';
     ['sort_hscode', 'split_hscode', 'split_ciqdecl', 'split_applcert', 'split_curr',
-      'set_special_code', 'set_merge_split', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
+      'set_special_code', 'set_merge_split', 'merge_bysplhs', 'merge_bysplno',
+      'gen_invoice', 'gen_packing_list', 'gen_contract'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
+    });
+    ['invoice_template_id', 'packing_list_template_id', 'contract_template_id'].forEach(fd => {
+      init[fd] = formData[fd];
     });
     init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
   }

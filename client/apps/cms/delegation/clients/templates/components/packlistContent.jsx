@@ -159,13 +159,13 @@ export default class PackingListContent extends React.Component {
                 />
               </Col>
               <Col sm={24}>
-                {!!invoice.remark_en && <InfoItem label="备注 Remark" field={invoice.remark} editable placeholder="输入备注" dataIndex="remark" onEdit={this.handleFill} />}
+                {!!invoice.remark_en && <InfoItem label="备注 Remark" field={invoice.remark} editable placeholder="输入备注" dataIndex="remark" onEdit={value => this.handleFill(value, 'remark')} />}
               </Col>
               <Col sm={12}>
-                <InfoItem type="number" label="大件数  Packages" addonAfter="Package" field={invoice.packages} editable placeholder="输入件数" dataIndex="packages" onEdit={this.handleFill} />
+                <InfoItem label="大件数  Packages" addonAfter="Package" field={invoice.packages} editable placeholder="输入件数" dataIndex="packages" onEdit={value => this.handleFill(value, 'packages')} />
               </Col>
               <Col sm={12}>
-                <InfoItem type="number" label="毛重  Gross Weight" addonAfter="Kgs" field={invoice.gross_wet} editable placeholder="输入毛重" dataIndex="gross_wet" onEdit={this.handleFill} />
+                <InfoItem label="毛重  Gross Weight" addonAfter="Kgs" field={invoice.gross_wet} editable placeholder="输入毛重" dataIndex="gross_wet" onEdit={value => this.handleFill(value, 'gross_wet')} />
               </Col>
             </Row>
           </div>
