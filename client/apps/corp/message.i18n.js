@@ -247,6 +247,18 @@ const messages = defineMessages({
     id: 'corp.role.config.privileges',
     defaultMessage: '配置权限',
   },
+  roleInfo: {
+    id: 'corp.role.info',
+    defaultMessage: '角色信息',
+  },
+  isManagerLevel: {
+    id: 'corp.role.is.manager.level',
+    defaultMessage: '是否管理层',
+  },
+  privilege: {
+    id: 'corp.role.privilege',
+    defaultMessage: '权限',
+  },
 });
 
 export default messages;

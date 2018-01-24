@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Select, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Layout, Select, message } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -21,12 +21,25 @@ import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
 import AdvUploadModal from './modals/advUploadModal';
 import AdvExpsImpTempModal from './modals/advExpImpTempModal';
-import { formatMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+
+function mergeFilters(curFilters, value) {
+  const newFilters = {};
+  Object.keys(curFilters).forEach((key) => {
+    if (key !== 'filterNo') {
+      newFilters[key] = curFilters[key];
+    }
+  });
+  if (value !== null && value !== undefined && value !== '') {
+    newFilters.filterNo = value;
+  }
+  return newFilters;
+}
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -41,8 +54,8 @@ function fetchData({ state, dispatch }) {
       acptDate: { en: false, firstDay, endDay },
       cleanDate: { en: false, firstDay, endDay },
     }),
-    pageSize: state.cmsExpense.expslist.pageSize,
-    currentPage: state.cmsExpense.expslist.current,
+    pageSize: state.cmsExpense.expenseList.pageSize,
+    currentPage: state.cmsExpense.expenseList.current,
   })));
   promises.push(dispatch(loadPartnersForFilter(state.account.tenantId)));
   return Promise.all(promises);
@@ -53,13 +66,18 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
-    expslist: state.cmsExpense.expslist,
+    expenseList: state.cmsExpense.expenseList,
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
     partners: state.cmsExpense.partners,
   }),
   {
-    loadCurrencies, loadExpense, showPreviewer, loadAdvanceParties, showAdvModelModal, loadQuoteModel,
+    loadCurrencies,
+    loadExpense,
+    showPreviewer,
+    loadAdvanceParties,
+    showAdvModelModal,
+    loadQuoteModel,
   }
 )
 @connectNav({
@@ -71,12 +89,15 @@ export default class ExpenseList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     tenantName: PropTypes.string.isRequired,
-    expslist: PropTypes.object.isRequired,
+    expenseList: PropTypes.shape({ current: PropTypes.number }).isRequired,
     intl: intlShape.isRequired,
-    listFilter: PropTypes.object.isRequired,
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
     loadExpense: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
-    partners: PropTypes.object.isRequired,
+    partners: PropTypes.shape({
+      customer: PropTypes.array,
+      supplier: PropTypes.array,
+    }),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -84,10 +105,7 @@ export default class ExpenseList extends Component {
   state = {
     selectedRowKeys: [],
     expEptVisible: false,
-    custFilter: [],
     supeFilter: [],
-    filterAcptVisible: false,
-    filterCleanVisible: false,
     sortedInfo: { field: '', order: '' },
     advUploadVisible: false,
   }
@@ -119,10 +137,11 @@ export default class ExpenseList extends Component {
         text: `${this.props.tenantId} | ${this.props.tenantName}`,
         value: `tenantId:${this.props.tenantId}`,
       });
-      this.setState({ custFilter, supeFilter });
+      this.setState({ supeFilter });
     }
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   columns = [
     {
       title: this.msg('delgNo'),
@@ -134,76 +153,49 @@ export default class ExpenseList extends Component {
           {o}
         </a>),
     }, {
-      title: this.msg('cusDeclCharges'),
+      title: this.msg('cusDeclExpense'),
       dataIndex: 'cus_decl_charges',
       width: 120,
       align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
+      render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('ciqDeclCharges'),
+      title: this.msg('ciqDeclExpense'),
       dataIndex: 'ciq_decl_charges',
       width: 120,
       align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
+      render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('certsCharges'),
+      title: this.msg('certsExpense'),
       dataIndex: 'certs_charges',
       width: 120,
       align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
+      render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('allCost'),
-      dataIndex: 'total_charges',
-      width: 120,
-      align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return (<b>{o.toFixed(2)}</b>);
-        }
-      },
-    }, {
-      title: this.msg('servCost'),
-      dataIndex: 'serv_cost',
-      key: 'serv_cost',
-      width: 120,
-      align: 'right',
-      render: (o) => {
-        if (!isNaN(o)) {
-          return o.toFixed(2);
-        }
-      },
-    }, {
-      title: this.msg('cushCost'),
-      dataIndex: 'cush_cost',
-      key: 'cush_cost',
-      width: 120,
-      align: 'right',
-      render: (o, row) => {
-        if (!isNaN(o)) {
-          const labelElem = (
-            <span>{o.toFixed(2)}<Icon type="edit" /></span>
-          );
-          return (
-            <RowAction
-              onClick={this.handleAddAdvancePayment}
-              field="cush_cost"
-              row={{ delg_no: row.delg_no }}
-              label={labelElem}
-            />);
-        }
-      },
+      title: this.msg('cost'),
+      dataIndex: 'payable',
+      children: [
+        {
+          title: this.msg('serviceExpense'),
+          dataIndex: 'serv_cost',
+          key: 'serv_cost',
+          width: 120,
+          align: 'right',
+          render: o => o && o.toFixed(2),
+        }, {
+          title: this.msg('cushCost'),
+          dataIndex: 'cush_cost',
+          key: 'cush_cost',
+          width: 120,
+          align: 'right',
+          render: o => o && o.toFixed(2),
+        }, {
+          title: this.msg('allCost'),
+          dataIndex: 'total_charges',
+          width: 120,
+          align: 'right',
+          render: o => o && o.toFixed(2),
+        },
+      ],
     }, {
       title: this.msg('agentName'),
       dataIndex: 'agent_name',
@@ -216,54 +208,34 @@ export default class ExpenseList extends Component {
       key: 'cost_status',
       className: 'status-indicator',
       render: (status) => {
-        if (status === 0) {
-          return <Badge status="default" />;
-        } else if (status === 1) {
+        if (status === 1) {
           return <Badge status="warning" />;
         } else if (status === 2) {
           return <Badge status="success" />;
         }
+        return <Badge status="default" />;
       },
     }, {
       title: this.msg('acptTime'),
       dataIndex: 'acpt_time',
       width: 120,
-      filterDropdown: (
-        <RangePicker value={[moment(this.props.listFilter.acptDate.firstDay), moment(this.props.listFilter.acptDate.endDay)]} onChange={this.handleAcptDateChange} />
-      ),
-      filterDropdownVisible: this.state.filterAcptVisible,
-      onFilterDropdownVisibleChange: visible => this.setState({ filterAcptVisible: visible }),
-      render: o => `${moment(o).format('MM.DD HH:mm')}`,
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
       title: this.msg('cleanDate'),
       dataIndex: 'clean_time',
       width: 120,
-      filterDropdown: (
-        <RangePicker value={[moment(this.props.listFilter.cleanDate.firstDay), moment(this.props.listFilter.cleanDate.endDay)]} onChange={this.handleCleanDateChange} />
-      ),
-      filterDropdownVisible: this.state.filterCleanVisible,
-      onFilterDropdownVisibleChange: visible => this.setState({ filterCleanVisible: visible }),
-      render: (o) => {
-        if (o) {
-          return <span>{moment(o).format('MM.DD HH:mm')}</span>;
-        }
-      },
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
       title: this.msg('lastActT'),
       dataIndex: 'last_charge_time',
       width: 120,
-      render: (o) => {
-        if (o) {
-          return <span>{moment(o).format('MM.DD HH:mm')}</span>;
-        }
-        return <span>--:--</span>;
-      },
+      render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
-      title: this.msg('opCol'),
+      title: this.gmsg('op'),
       dataIndex: 'OPS_COL',
       width: 120,
       fixed: 'right',
-      render: record => <RowAction onClick={this.handleInbound} label="费用明细" row={record} />,
+      render: (o, record) => <RowAction onClick={this.handleDetail} label="应付明细" row={record} />,
     },
   ];
   dataSource = new DataTable.DataSource({
@@ -308,14 +280,14 @@ export default class ExpenseList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.expslist,
+    remotes: this.props.expenseList,
   })
 
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'shipment');
   }
   handleExpListLoad = (currentPage, filter) => {
-    const { tenantId, listFilter, expslist: { pageSize, current } } = this.props;
+    const { tenantId, listFilter, expenseList: { pageSize, current } } = this.props;
     this.props.loadExpense({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
@@ -335,7 +307,7 @@ export default class ExpenseList extends Component {
     this.handleExpListLoad(1, filter);
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.listFilter, searchVal);
+    const filters = mergeFilters(this.props.listFilter, searchVal);
     this.handleExpListLoad(1, filters);
   }
   handleAddAdvanceIncome = (row) => {
@@ -343,18 +315,6 @@ export default class ExpenseList extends Component {
   }
   handleAddAdvancePayment = (row) => {
     this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'send');
-  }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
-    Object.keys(curFilters).forEach((key) => {
-      if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
-      }
-    });
-    if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
-    }
-    return newFilters;
   }
   handleAdvFeesImport = () => {
     this.toggleAdvUploadModal();
@@ -411,8 +371,12 @@ export default class ExpenseList extends Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleDetail = (row) => {
+    const link = `/clearance/expense/payable/${row.delg_no}`;
+    this.context.router.push(link);
+  }
   render() {
-    const { expslist, listFilter } = this.props;
+    const { expenseList, listFilter } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -445,7 +409,7 @@ export default class ExpenseList extends Component {
         style={{ width: 256 }}
       />
     </span>);
-    this.dataSource.remotes = expslist;
+    this.dataSource.remotes = expenseList;
     return (
       <Layout>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
@@ -477,7 +441,9 @@ export default class ExpenseList extends Component {
             columns={this.columns}
             dataSource={this.dataSource}
             rowKey="delg_no"
-            loading={expslist.loading}
+            loading={expenseList.loading}
+            scrollOffset={320}
+            bordered
           />
         </Content>
         <DelegationDockPanel />

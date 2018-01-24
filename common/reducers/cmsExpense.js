@@ -37,7 +37,7 @@ const initialState = {
     allcost: [],
     parameters: [],
   },
-  expslist: {
+  expenseList: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
@@ -118,9 +118,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EXP_PANE_LOAD_FAIL:
       return { ...state, expenses: initialState.expenses, expensesLoading: false };
     case actionTypes.EXP_PANE_LOAD_SUCCEED:
-      return { ...state, expenses: { ...state.expenses, ...action.result.data }, expensesLoading: false };
+      return {
+        ...state,
+        expenses: { ...state.expenses, ...action.result.data },
+        expensesLoading: false,
+      };
     case actionTypes.EXP_LOAD:
-      return { ...state, expslist: { ...initialState.expslist, loading: true }, saved: false };
+      return {
+        ...state,
+        expenseList: { ...initialState.expenseList, loading: true },
+        saved: false,
+      };
     case actionTypes.EXP_LOAD_SUCCEED: {
       const expFeesMap = {};
       const exps = action.result.data;
@@ -129,7 +137,7 @@ export default function reducer(state = initialState, action) {
       });
       return {
         ...state,
-        expslist: { ...state.expslist, ...exps, loading: false },
+        expenseList: { ...state.expenseList, ...exps, loading: false },
         expFeesMap,
         listFilter: JSON.parse(action.params.filter),
       };
@@ -537,7 +545,11 @@ export function advExpImport(data) {
       endpoint: 'v1/cms/expense/advance/import',
       method: 'post',
       data,
-      payload: { importMode: data.importMode, partner: data.partner, calculateAll: data.calculateAll },
+      payload: {
+        importMode: data.importMode,
+        partner: data.partner,
+        calculateAll: data.calculateAll,
+      },
     },
   };
 }

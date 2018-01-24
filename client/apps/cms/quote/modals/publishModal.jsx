@@ -27,12 +27,12 @@ const formItemLayout = {
   { closePublishModal, publishQuote }
 )
 @Form.create()
-export default class CreateQtModal extends React.Component {
+export default class PublishQuoteModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    form: PropTypes.object.isRequired,
-    quoteForm: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    quoteForm: PropTypes.shape({ getFieldsValue: PropTypes.func.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -97,7 +97,6 @@ export default class CreateQtModal extends React.Component {
           </FormItem>
           <FormItem label={this.msg('publishRemark')} {...formItemLayout}>
             {getFieldDecorator('publish_commit', {
-              rules: [{ required: true, message: '备注必填' }],
             })(<Input.TextArea row={3} />)}
           </FormItem>
         </Form>

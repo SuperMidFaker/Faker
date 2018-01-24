@@ -196,7 +196,7 @@ export default class RolePrivilegesForm extends React.Component {
   }
   render() {
     const {
-      formData: { name, desc }, tenantModules, intl,
+      formData: { name, desc }, tenantModules,
       submitting, form: { getFieldDecorator },
     } = this.props;
     const { editPrivilegeMap: privileges, bureauChecked } = this.state;
@@ -207,62 +207,60 @@ export default class RolePrivilegesForm extends React.Component {
           extra={<Button htmlType="submit" type="primary" icon="save" loading={submitting}>{this.gmsg('save')}</Button>}
         >
           <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
-            <Panel header="角色信息" key="profile">
-              <Card>
-                <Row gutter={16}>
-                  <Col span={16}>
-                    <FormInputItem
-                      labelName={formatMsg(intl, 'nameColumn')}
-                      field="name"
-                      options={{
+            <Panel header={this.msg('roleInfo')} key="profile">
+              <Row gutter={16}>
+                <Col span={16}>
+                  <FormInputItem
+                    labelName={this.msg('nameColumn')}
+                    field="name"
+                    options={{
                         getFieldDecorator,
                         rules: [{
-                          required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
+                          required: true, min: 2, messages: this.msg('nameMessage'),
                         }, {
                           validator(rule, value, callback) {
                             if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
                             nk.toUpperCase() === value.toUpperCase()).length > 0) {
-                              return callback(new Error(formatMsg(intl, 'unallowDefaultName')));
+                              return callback(new Error(this.msg('unallowDefaultName')));
                             }
                             return callback();
                           },
                         }],
                         initialValue: name,
                       }}
-                    />
-                  </Col>
-                  <Col span={8}>
-                    <FormItem label={<span>
-                      是否管理层&nbsp;<Tooltip title="What do you want others to call you?">
-                        <Icon type="question-circle-o" />
-                      </Tooltip></span>}
-                    >
-                      <Switch checked={bureauChecked} onChange={this.handelBureauChange} />
-                    </FormItem>
-                  </Col>
-                  <Col span={24}>
-                    <FormInputItem
-                      labelName={formatMsg(intl, 'descColumn')}
-                      labelSpan={8}
-                      field="desc"
-                      options={{ getFieldDecorator, initialValue: desc }}
-                    />
-                  </Col>
-                </Row>
-              </Card>
+                  />
+                </Col>
+                <Col span={8}>
+                  <FormItem label={<span>
+                    {this.msg('isManagerLevel')}&nbsp;<Tooltip title="What do you want others to call you?">
+                      <Icon type="question-circle-o" />
+                    </Tooltip></span>}
+                  >
+                    <Switch checked={bureauChecked} onChange={this.handelBureauChange} />
+                  </FormItem>
+                </Col>
+                <Col span={24}>
+                  <FormInputItem
+                    labelName={this.gmsg('descColumn')}
+                    labelSpan={8}
+                    field="desc"
+                    options={{ getFieldDecorator, initialValue: desc }}
+                  />
+                </Col>
+              </Row>
             </Panel>
             {tenantModules.map(tnm => (
-              <Panel header={`「${this.gmsg(tnm.text)}」权限`} key={tnm.text}>
+              <Panel header={`「${this.gmsg(tnm.text)}」${this.msg('privilege')}`} key={tnm.text}>
                 <Card bodyStyle={{ padding: 0 }}>
                   <Table size="small" dataSource={tnm.features} pagination={false}>
                     <Column
-                      title={formatMsg(intl, 'featureName')}
+                      title={this.gmsg('featureName')}
                       dataIndex="text"
                       key="text"
                       width={200}
                     />
                     <Column
-                      title={formatMsg(intl, 'allFull')}
+                      title={this.gmsg('allFull')}
                       dataIndex="allFull"
                       key="allFull"
                       width={100}
@@ -273,7 +271,7 @@ export default class RolePrivilegesForm extends React.Component {
                       />)}
                     />
                     <Column
-                      title={formatMsg(intl, 'actionName')}
+                      title={this.gmsg('actionName')}
                       key="action"
                       render={(o, feat) => (<CheckboxGroup
                         options={feat.actions.map(act => ({

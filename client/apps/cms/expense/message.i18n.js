@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   searchPlaceholder: {
@@ -32,15 +33,27 @@ const messages = defineMessages({
   },
   cusDeclCharges: {
     id: 'cms.expense.cus.decl.charges',
-    defaultMessage: '报关费用',
+    defaultMessage: '报关收费',
   },
   ciqDeclCharges: {
     id: 'cms.expense.ciq.decl.charges',
-    defaultMessage: '报检费用',
+    defaultMessage: '报检收费',
   },
   certsCharges: {
     id: 'cms.expense.certs.charges',
-    defaultMessage: '鉴定办证',
+    defaultMessage: '鉴定办证收费',
+  },
+  cusDeclExpense: {
+    id: 'cms.expense.cus.decl.expense',
+    defaultMessage: '报关费用',
+  },
+  ciqDeclExpense: {
+    id: 'cms.expense.ciq.decl.expense',
+    defaultMessage: '报检费用',
+  },
+  certsExpense: {
+    id: 'cms.expense.certs.expense',
+    defaultMessage: '鉴定办证费用',
   },
   statusClosed: {
     id: 'cms.expense.status.closed',
@@ -110,9 +123,9 @@ const messages = defineMessages({
     id: 'cms.expense.revenue',
     defaultMessage: '应收',
   },
-  serviceRevenue: {
-    id: 'cms.expense.revenue.service',
-    defaultMessage: '服务应收',
+  serviceCharges: {
+    id: 'cms.expense.service.charges',
+    defaultMessage: '服务收费',
   },
   cushBill: {
     id: 'cms.expense.cushion.bill',
@@ -126,13 +139,13 @@ const messages = defineMessages({
     id: 'cms.expense.cost',
     defaultMessage: '应付',
   },
-  servCost: {
-    id: 'cms.expense.service.cost',
-    defaultMessage: '服务应付',
+  serviceExpense: {
+    id: 'cms.expense.service.expense',
+    defaultMessage: '服务费用',
   },
   cushCost: {
     id: 'cms.expense.cushion.cost',
-    defaultMessage: '代垫应付',
+    defaultMessage: '代垫费用',
   },
   allCost: {
     id: 'cms.expense.all.cost',
@@ -247,5 +260,7 @@ const messages = defineMessages({
     defaultMessage: '操作',
   },
 });
+
 export default messages;
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);
