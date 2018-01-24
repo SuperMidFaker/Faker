@@ -78,6 +78,7 @@ FormInputItem.propTypes = {
     tenantId: state.account.tenantId,
     submitting: state.role.submitting,
     tenantModules: state.role.modules,
+    formData: state.role.formData,
   }),
   { loadTenantModules, updateRole }
 )
@@ -87,8 +88,13 @@ export default class RolePrivilegesForm extends React.Component {
     intl: intlShape.isRequired,
     mode: PropTypes.oneOf(['updateRole', 'create']).isRequired,
     tenantId: PropTypes.number.isRequired,
-    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
-    formData: PropTypes.shape({ name: PropTypes.string }).isRequired,
+    form: PropTypes.shape({
+      getFieldDecorator: PropTypes.func,
+    }).isRequired,
+    formData: PropTypes.shape({
+      name: PropTypes.string,
+      desc: PropTypes.string,
+    }).isRequired,
     submitting: PropTypes.bool.isRequired,
     tenantModules: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -100,6 +106,7 @@ export default class RolePrivilegesForm extends React.Component {
   }
   state = {
     editPrivilegeMap: {},
+    bureauChecked: false,
   }
   componentWillMount() {
     this.props.loadTenantModules(this.props.tenantId);
@@ -108,6 +115,11 @@ export default class RolePrivilegesForm extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData.privileges !== this.props.formData.privileges) {
       this.setState({ editPrivilegeMap: nextProps.formData.privileges });
+    }
+    if (nextProps.formData.bureau !== this.props.formData.bureau) {
+      this.setState({
+        bureauChecked: !!nextProps.formData.bureau,
+      });
     }
   }
   handleFeatureFullCheck(moduleId, featId, checked) {
@@ -164,6 +176,7 @@ export default class RolePrivilegesForm extends React.Component {
           ...this.props.formData,
           ...this.props.form.getFieldsValue(),
           privileges: this.state.editPrivilegeMap,
+          bureau: this.state.bureauChecked,
           tenantId: this.props.mode === 'create' ? this.props.tenantId : undefined,
         };
         this.props.updateRole(form).then((result) => {
@@ -176,12 +189,17 @@ export default class RolePrivilegesForm extends React.Component {
       }
     });
   }
+  handelBureauChange = (checked) => {
+    this.setState({
+      bureauChecked: checked,
+    });
+  }
   render() {
     const {
-      formData: { name }, tenantModules, intl,
+      formData: { name, desc }, tenantModules, intl,
       submitting, form: { getFieldDecorator },
     } = this.props;
-    const { editPrivilegeMap: privileges } = this.state;
+    const { editPrivilegeMap: privileges, bureauChecked } = this.state;
     return (
       <Form layout="vertical" onSubmit={this.handleSubmit}>
         <Card
@@ -190,38 +208,48 @@ export default class RolePrivilegesForm extends React.Component {
         >
           <Collapse accordion bordered={false} defaultActiveKey={['profile']}>
             <Panel header="角色信息" key="profile">
-              <Row gutter={16}>
-                <Col span={16}>
-                  <FormInputItem
-                    labelName={formatMsg(intl, 'nameColumn')}
-                    field="name"
-                    options={{
-                      getFieldDecorator,
-                      rules: [{
-                        required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
-                      }, {
-                        validator(rule, value, callback) {
-                          if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
-                          nk.toUpperCase() === value.toUpperCase()).length > 0) {
-                            return callback(new Error(formatMsg(intl, 'unallowDefaultName')));
-                          }
-                          return callback();
-                        },
-                      }],
-                      initialValue: name,
-                    }}
-                  />
-                </Col>
-                <Col span={8}>
-                  <FormItem label={<span>
-                    是否管理层&nbsp;<Tooltip title="What do you want others to call you?">
-                      <Icon type="question-circle-o" />
-                    </Tooltip></span>}
-                  >
-                    {getFieldDecorator('bureau', { initialValue: false })(<Switch />)}
-                  </FormItem>
-                </Col>
-              </Row>
+              <Card>
+                <Row gutter={16}>
+                  <Col span={16}>
+                    <FormInputItem
+                      labelName={formatMsg(intl, 'nameColumn')}
+                      field="name"
+                      options={{
+                        getFieldDecorator,
+                        rules: [{
+                          required: true, min: 2, messages: formatMsg(intl, 'nameMessage'),
+                        }, {
+                          validator(rule, value, callback) {
+                            if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>
+                            nk.toUpperCase() === value.toUpperCase()).length > 0) {
+                              return callback(new Error(formatMsg(intl, 'unallowDefaultName')));
+                            }
+                            return callback();
+                          },
+                        }],
+                        initialValue: name,
+                      }}
+                    />
+                  </Col>
+                  <Col span={8}>
+                    <FormItem label={<span>
+                      是否管理层&nbsp;<Tooltip title="What do you want others to call you?">
+                        <Icon type="question-circle-o" />
+                      </Tooltip></span>}
+                    >
+                      <Switch checked={bureauChecked} onChange={this.handelBureauChange} />
+                    </FormItem>
+                  </Col>
+                  <Col span={24}>
+                    <FormInputItem
+                      labelName={formatMsg(intl, 'descColumn')}
+                      labelSpan={8}
+                      field="desc"
+                      options={{ getFieldDecorator, initialValue: desc }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
             </Panel>
             {tenantModules.map(tnm => (
               <Panel header={`「${formatGlobalMsg(intl, tnm.text)}」权限`} key={tnm.text}>
