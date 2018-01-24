@@ -48,12 +48,6 @@ export default class CMSNodeCard extends React.Component {
     const link = `/clearance/${this.props.node.kind}/manifest/`;
     this.context.router.push(`${link}${this.props.node.biz_no}`);
   }
-  handleNodeEnterTrigger = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    const { node: { uuid, kind } } = this.props;
-    this.props.manualEnterFlowInstance(uuid, kind);
-  }
   render() {
     const {
       /* children, */ node: {
