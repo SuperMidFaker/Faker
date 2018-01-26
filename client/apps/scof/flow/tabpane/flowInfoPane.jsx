@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Form, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateFlowInfo } from 'common/reducers/scofFlow';
+import { updateFlowInfo, loadFlowList, openFlow } from 'common/reducers/scofFlow';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -15,8 +15,10 @@ const { Option } = Select;
   state => ({
     customerPartners: state.partner.partners,
     currentFlow: state.scofFlow.currentFlow,
+    listFilter: state.scofFlow.listFilter,
+    flowList: state.scofFlow.flowList,
   }),
-  { updateFlowInfo }
+  { updateFlowInfo, loadFlowList, openFlow }
 )
 export default class InfoPane extends Component {
   static propTypes = {
@@ -42,12 +44,32 @@ export default class InfoPane extends Component {
       ).then((result) => {
         if (!result.error) {
           message.success('保存成功');
+          this.props.loadFlowList({
+            filter: JSON.stringify(this.props.listFilter),
+            pageSize: this.props.flowList.pageSize,
+            current: this.props.flowList.current,
+          }).then((re) => {
+            if (re.error) {
+              const flow = re.data.find(da => da.id === currentFlow.id);
+              this.props.openFlow(flow);
+            }
+          });
         }
       });
     } else {
       this.props.updateFlowInfo(data.name, -1, -1, data.customer || '', currentFlow.id).then((result) => {
         if (!result.error) {
           message.success('保存成功');
+          this.props.loadFlowList({
+            filter: JSON.stringify(this.props.listFilter),
+            pageSize: this.props.flowList.pageSize,
+            current: this.props.flowList.current,
+          }).then((re) => {
+            if (re.error) {
+              const flow = re.data.find(da => da.id === currentFlow.id);
+              this.props.openFlow(flow);
+            }
+          });
         }
       });
     }
