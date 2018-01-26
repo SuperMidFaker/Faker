@@ -125,6 +125,14 @@ const messages = defineMessages({
     id: 'root.nextStep',
     defaultMessage: '下一步',
   },
+  total: {
+    id: 'root.pagination.total',
+    defaultMessage: '共',
+  },
+  items: {
+    id: 'root.pagination.items',
+    defaultMessage: '条',
+  },
   CUS: {
     id: 'root.partnership.customer',
     defaultMessage: '客户',

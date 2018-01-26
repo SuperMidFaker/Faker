@@ -159,6 +159,26 @@ const messages = defineMessages({
     id: 'cms.expense.statementEn',
     defaultMessage: '是否结单',
   },
+  ccdCount: {
+    id: 'cms.expense.ccd.count',
+    defaultMessage: '报关单数量',
+  },
+  ccsCount: {
+    id: 'cms.expense.ccs.count',
+    defaultMessage: '报关单联数',
+  },
+  itemCount: {
+    id: 'cms.expense.item.count',
+    defaultMessage: '品项数',
+  },
+  prdtCount: {
+    id: 'cms.expense.prdt.count',
+    defaultMessage: '料号数',
+  },
+  declValue: {
+    id: 'cms.expense.decl.value',
+    defaultMessage: '申报货值',
+  },
   acptTime: {
     id: 'cms.expense.accept.time',
     defaultMessage: '接单时间',

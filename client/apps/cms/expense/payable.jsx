@@ -216,6 +216,26 @@ export default class ExpenseList extends Component {
         return <Badge status="default" />;
       },
     }, {
+      title: this.msg('ccdCount'),
+      dataIndex: 'ccd_count',
+      width: 70,
+    }, {
+      title: this.msg('ccsCount'),
+      dataIndex: 'ccs_count',
+      width: 70,
+    }, {
+      title: this.msg('itemCount'),
+      dataIndex: 'item_count',
+      width: 70,
+    }, {
+      title: this.msg('prdtCount'),
+      dataIndex: 'prdt_count',
+      width: 70,
+    }, {
+      title: this.msg('declValue'),
+      dataIndex: 'decl_value',
+      width: 100,
+    }, {
       title: this.msg('acptTime'),
       dataIndex: 'acpt_time',
       width: 120,
@@ -421,12 +441,6 @@ export default class ExpenseList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="download" onClick={this.handleAdvModelEpt}>
-              {this.msg('eptAdvModel')}
-            </Button>
-            <Button icon="upload" onClick={this.handleAdvFeesImport}>
-              {this.msg('incExp')}
-            </Button>
             <Button icon="file-excel" onClick={this.handleExpExport}>
               {this.msg('eptExp')}
             </Button>

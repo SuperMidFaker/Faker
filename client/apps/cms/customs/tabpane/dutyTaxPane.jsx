@@ -8,7 +8,7 @@ import { getDeclTax } from 'common/reducers/cmsCustomsDeclare';
 import { taxRecalculate } from 'common/reducers/cmsDelegationDock';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { formatMsg } from '../../common/message.i18n';
+import { formatMsg } from '../message.i18n';
 
 
 @injectIntl
