@@ -295,6 +295,12 @@ export default class ManifestEditor extends React.Component {
             sort_customs: formData.sort_customs,
             sort_dectotal: formData.sort_dectotal,
             sort_hscode: formData.sort_hscode,
+            gen_invoice: formData.gen_invoice,
+            invoice_template_id: formData.invoice_template_id,
+            gen_packing_list: formData.gen_packing_list,
+            packing_list_template_id: formData.packing_list_template_id,
+            gen_contract: formData.gen_contract,
+            contract_template_id: formData.contract_template_id,
           };
           this.props.saveBillRules({ rules, billSeqNo: this.props.billHead.bill_seq_no });
           message.success('制单规则加载成功');

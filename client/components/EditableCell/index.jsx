@@ -70,9 +70,15 @@ export default class EditableCell extends React.Component {
   }
   handleSelectChange = (value) => {
     this.setState({ value });
+    if (this.props.onSave) {
+      this.props.onSave(value, this.state.field);
+    }
   }
   handleDateChange = (date) => {
     this.setState({ value: date && date.valueOf() });
+    if (this.props.onSave) {
+      this.props.onSave(date && date.valueOf(), this.state.field);
+    }
   }
   handleRegionValueChange = (region) => {
     const [code, province, city, district, street] = region; // eslint-disable-line no-unused-vars

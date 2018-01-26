@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
-
+import { loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { formatMsg } from '../../message.i18n';
 
 
@@ -52,8 +52,11 @@ function fetchData({ state, dispatch }) {
     billSeqNo: state.cmsManifest.billHead.bill_seq_no,
     hscodeCategories: state.cmsHsCode.hscodeCategories,
     billRule: state.cmsManifest.billRule,
+    billMeta: state.cmsManifest.billMeta,
+    tenantId: state.account.tenantId,
+    invTemplates: state.cmsInvoice.invTemplates,
   }),
-  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody }
+  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody, loadInvTemplates }
 )
 @Form.create()
 export default class MergeSplitModal extends React.Component {
@@ -63,6 +66,7 @@ export default class MergeSplitModal extends React.Component {
     manualDecl: PropTypes.bool.isRequired,
     billSeqNo: PropTypes.string,
     hscodeCategories: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf(['split', 'merge']) })).isRequired,
+    invTemplates: PropTypes.array.isRequired,
   }
   state = {
     mergeOpt: {
@@ -91,13 +95,33 @@ export default class MergeSplitModal extends React.Component {
       decPriceDesc: false,
       hsCodeAsc: false,
     },
+    invGen: {
+      gen_invoice: false,
+      invoice_template_id: null,
+      gen_contract: false,
+      contract_template_id: null,
+      gen_packing_list: false,
+      packing_list_template_id: null,
+    },
     mergeOptArr: [],
     splitCategories: [],
     mergeCategories: [],
     alertTitle: '',
     alertMsg: '',
+    invoiceTemplates: [],
+    packingListTemplates: [],
+    contractTemplates: [],
+  }
+  componentDidMount() {
+    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: [0, 1, 2], partnerId: this.props.billMeta.customerId });
   }
   componentWillReceiveProps(nextProps) {
+    if (nextProps.invTemplates !== this.props.invTemplates) {
+      const invoiceTemplates = nextProps.invTemplates.filter(tp => tp.docu_type === 0);
+      const contractTemplates = nextProps.invTemplates.filter(tp => tp.docu_type === 1);
+      const packingListTemplates = nextProps.invTemplates.filter(tp => tp.docu_type === 2);
+      this.setState({ invoiceTemplates, contractTemplates, packingListTemplates });
+    }
     if (nextProps.billRule !== this.props.billRule) {
       const rule = nextProps.billRule;
       const mergeOptArr = [];
@@ -162,6 +186,14 @@ export default class MergeSplitModal extends React.Component {
           customControl: rule.sort_customs,
           decTotal: String(rule.sort_dectotal),
           hsCodeAsc: rule.sort_hscode,
+        },
+        invGen: {
+          gen_invoice: rule.gen_invoice,
+          invoice_template_id: rule.invoice_template_id,
+          gen_contract: rule.gen_contract,
+          contract_template_id: rule.contract_template_id,
+          gen_packing_list: rule.gen_packing_list,
+          packing_list_template_id: rule.packing_list_template_id,
         },
         mergeOptArr,
       });
@@ -244,7 +276,7 @@ export default class MergeSplitModal extends React.Component {
   }
   handleOk = () => {
     const { billSeqNo } = this.props;
-    const { splitOpt, mergeOpt, sortOpt } = this.state;
+    const { splitOpt, mergeOpt, sortOpt, invGen } = this.state;
     if (mergeOpt.checked) {
       if (!(mergeOpt.byHsCode || mergeOpt.byGName || mergeOpt.byCurr ||
         mergeOpt.byCountry || mergeOpt.byCopGNo || mergeOpt.byEmGNo)) {
@@ -260,8 +292,17 @@ export default class MergeSplitModal extends React.Component {
     if (splitOpt.byHsCode) {
       splitOpt.hsCategory = this.props.form.getFieldValue('specialSort');
     }
+    if (invGen.gen_invoice) {
+      invGen.invoice_template_id = this.props.form.getFieldValue('invoice_template_id');
+    }
+    if (invGen.gen_packing_list) {
+      invGen.packing_list_template_id = this.props.form.getFieldValue('packing_list_template_id');
+    }
+    if (invGen.gen_contract) {
+      invGen.contract_template_id = this.props.form.getFieldValue('contract_template_id');
+    }
     this.props.submitBillMegeSplit({
-      billSeqNo, splitOpt, mergeOpt, sortOpt,
+      billSeqNo, splitOpt, mergeOpt, sortOpt, invGen
     }).then((result) => {
       if (result.error) {
         if (result.error.message.key === 'ftz-detail-splited') {
@@ -296,7 +337,7 @@ export default class MergeSplitModal extends React.Component {
   }
   render() {
     const {
-      alertMsg, alertTitle, mergeOpt, splitOpt, splitCategories, mergeCategories,
+      alertMsg, alertTitle, mergeOpt, splitOpt, invGen, splitCategories, mergeCategories,
       invoiceTemplates, packingListTemplates, contractTemplates,
     } = this.state;
     const { form: { getFieldDecorator, getFieldValue } } = this.props;
@@ -496,45 +537,57 @@ export default class MergeSplitModal extends React.Component {
               <Row gutter={8}>
                 <Col span={8}>
                   <FormItem>
-                    {getFieldDecorator('gen_invoice', {
-                })(<Checkbox>{this.msg('生成发票')}</Checkbox>)}
-                    {getFieldValue('gen_invoice') &&
+                    <MSCheckbox
+                      fieldOpt="invGen"
+                      field="gen_invoice"
+                      text={this.msg('生成发票')}
+                      onChange={this.handleCheckChange}
+                      state={this.state}
+                    />
+                    {invGen.gen_invoice &&
                     <div>
-                      {getFieldDecorator('invoice_template', {
-                    rules: [{ type: 'array' }],
+                      {getFieldDecorator('invoice_template_id', { initialValue: invGen.invoice_template_id
                   })(<Select placeholder={this.msg('选择发票模板')}>
                     {invoiceTemplates && invoiceTemplates.map(ct =>
-                      <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
+                      <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
                   </Select>)}
                     </div>}
                   </FormItem>
                 </Col>
                 <Col span={8}>
                   <FormItem>
-                    {getFieldDecorator('gen_packing_list', {
-                })(<Checkbox>{this.msg('生成箱单')}</Checkbox>)}
-                    {getFieldValue('gen_packing_list') &&
+                    <MSCheckbox
+                      fieldOpt="invGen"
+                      field="gen_packing_list"
+                      text={this.msg('生成箱单')}
+                      onChange={this.handleCheckChange}
+                      state={this.state}
+                    />
+                    {invGen.gen_packing_list &&
                     <div>
-                      {getFieldDecorator('packing_list_template', {
-                    rules: [{ type: 'array' }],
+                      {getFieldDecorator('packing_list_template_id', { initialValue: invGen.packing_list_template_id
                   })(<Select placeholder={this.msg('选择箱单模板')}>
                     {packingListTemplates && packingListTemplates.map(ct =>
-                      <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
+                      <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
                   </Select>)}
                     </div>}
                   </FormItem>
                 </Col>
                 <Col span={8}>
                   <FormItem>
-                    {getFieldDecorator('gen_contract', {
-                })(<Checkbox>{this.msg('生成合同')}</Checkbox>)}
-                    {getFieldValue('gen_contract') &&
+                    <MSCheckbox
+                      fieldOpt="invGen"
+                      field="gen_contract"
+                      text={this.msg('生成合同')}
+                      onChange={this.handleCheckChange}
+                      state={this.state}
+                    />
+                    {invGen.gen_contract &&
                     <div>
-                      {getFieldDecorator('contract_template', {
-                    rules: [{ type: 'array' }],
+                      {getFieldDecorator('contract_template_id', { initialValue: invGen.contract_template_id
                   })(<Select placeholder={this.msg('选择合同模板')}>
                     {contractTemplates && contractTemplates.map(ct =>
-                      <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
+                      <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
                   </Select>)}
                     </div>}
                   </FormItem>
