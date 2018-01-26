@@ -15,6 +15,9 @@ import { Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import PageHeader from 'client/components/PageHeader';
 import { PARTNER_ROLES } from 'common/constants';
+import update from 'immutability-helper';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import FlowSettingModal from './modal/flowSettingModal';
 import AddTriggerModal from './panel/compose/addTriggerModal';
 import FlowEdgePanel from './panel/flowEdgePanel';
@@ -23,6 +26,7 @@ import BizObjTMSPanel from './panel/bizObjTMSPanel';
 import BizObjCWMRecPanel from './panel/bizObjCWMRecPanel';
 import BizObjCWMShipPanel from './panel/bizObjCWMShipPanel';
 import { formatMsg } from './message.i18n';
+import DragItem from './dragItem';
 
 const { Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
@@ -71,6 +75,7 @@ function fetchData({ state, dispatch }) {
     loadScvTrackings,
   }
 )
+@DragDropContext(HTML5Backend)
 export default class FlowDesigner extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -100,6 +105,7 @@ export default class FlowDesigner extends React.Component {
       })),
       trackings: [],
       trackingId: null,
+      nodes: [],
     };
     this.trackingFieldTypeMapNodeKinds = {
       cms: ['import', 'export'],
@@ -146,7 +152,13 @@ export default class FlowDesigner extends React.Component {
         contentHeight: window.innerHeight - 150,
       });
     }
-    this.props.loadFlowGraph(currentFlow.id, currentFlow.main_flow_id);
+    this.props.loadFlowGraph(currentFlow.id, currentFlow.main_flow_id).then((result) => {
+      if (!result.error) {
+        this.setState({
+          nodes: result.data.nodes,
+        });
+      }
+    });
     if (currentFlow.customer_tenant_id && currentFlow.customer_tenant_id !== -1) {
       this.props.loadScvTrackings(currentFlow.customer_tenant_id).then((result) => {
         if (!result.error) {
@@ -518,6 +530,20 @@ export default class FlowDesigner extends React.Component {
   handleSubFlowAuth = () => {
     this.props.openSubFlowAuthModal(this.props.currentFlow);
   }
+  moveCard = (dragIndex, hoverIndex) => {
+    const { nodes } = this.state;
+    const dragCard = nodes[dragIndex];
+    const state = update(this.state, {
+      nodes: {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard],
+        ],
+      },
+
+    });
+    this.setState({ ...state });
+  }
   handleSave = () => {
     const { activeItem } = this.state;
     if (activeItem && this.formhoc) {
@@ -662,7 +688,16 @@ export default class FlowDesigner extends React.Component {
           >
             <div className="right-sider-panel">
               <Collapse accordion defaultActiveKey="nodeOrdering">
-                <Panel header={this.msg('nodeOrdering')} key="nodeOrdering" />
+                <Panel header={this.msg('nodeOrdering')} key="nodeOrdering">
+                  {this.state.nodes.map((node, index) => (
+                    <DragItem
+                      index={index}
+                      id={node.id}
+                      name={node.name}
+                      moveCard={this.moveCard}
+                    />
+                  ))}
+                </Panel>
                 <Panel header={this.msg('tracking')} key="tracking">
                   <Table
                     size="middle"
