@@ -8,7 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead } from 'common/reducers/cmsManifest';
-import { loadDocuDatas } from 'common/reducers/cmsInvoice';
+import { loadDocuDatas, loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { CMS_DECL_STATUS } from 'common/constants';
 
@@ -66,6 +66,7 @@ const { confirm } = Modal;
     loadBillMeta,
     showPreviewer,
     loadDocuDatas,
+    loadInvTemplates,
     resetBillHead,
   }
 )
@@ -137,7 +138,7 @@ export default class ManifestEditor extends React.Component {
     });
   }
   generateEntry = () => {
-    const { billHead } = this.props;
+    const { billHead, tenantId, billMeta } = this.props;
     this.setState({ generating: true });
     this.props.validateBillDatas({
       billSeqNo: this.props.billHead.bill_seq_no,
@@ -169,6 +170,7 @@ export default class ManifestEditor extends React.Component {
         }
       } else {
         this.setState({ generating: false });
+        this.props.loadInvTemplates({ tenantId, docuType: [0, 1, 2], partnerId: billMeta.customerId });
         this.props.openMergeSplitModal();
       }
     });

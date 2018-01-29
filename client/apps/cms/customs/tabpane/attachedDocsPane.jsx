@@ -47,12 +47,12 @@ function ColumnSelect(props) {
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
           options.map(opt =>
-            <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
+            <Option value={opt.value} key={opt.value}>{opt.value} | {opt.text}</Option>)
         }
       </Select>
     );
   }
-  const option = options.find(item => item.text === record[field]);
+  const option = options.find(item => item.value === record[field]);
   return <span>{option ? option.text : ''}</span>;
 }
 

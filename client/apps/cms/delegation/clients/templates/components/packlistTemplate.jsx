@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
+import { Breadcrumb, Layout, Collapse, Checkbox, Form, Input, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PackinglistContent from './packlistContent';
 import { formatMsg } from './message.i18n';
@@ -12,6 +12,8 @@ import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/redu
 const Sider = Layout.Sider;
 const { Panel } = Collapse;
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 function MSCheckbox(props) {
   const {
@@ -22,7 +24,7 @@ function MSCheckbox(props) {
   }
   return (
     <div>
-      <Checkbox style={{ 'font-size': 14 }} onChange={handleChange} checked={checked}>
+      <Checkbox style={{ 'fontSize': 14 }} onChange={handleChange} checked={checked}>
         {text}
       </Checkbox>
     </div>
@@ -70,6 +72,9 @@ export default class PackinglistTemplate extends React.Component {
     if (value !== '') {
       this.props.saveTempChange({ [field]: value }, this.props.invData.id);
     }
+  }
+  handleRadioChange = (ev) => {
+    this.props.saveTempChange({ packlist_mode: ev.target.value }, this.props.invData.id);
   }
   render() {
     const { invData } = this.props;
@@ -131,6 +136,12 @@ export default class PackinglistTemplate extends React.Component {
                   onChange={this.handleCheckChange}
                   checked={invData.remark_en}
                 />
+              </Panel>
+              <Panel header="Setting" key="setting">
+                <RadioGroup value={invData.packlist_mode} onChange={this.handleRadioChange}>
+                  <RadioButton value="0">{this.msg('按清单出箱单')}</RadioButton>
+                  <RadioButton value="1">{this.msg('按报关单出箱单')}</RadioButton>
+                </RadioGroup>
               </Panel>
             </Collapse>
           </div>

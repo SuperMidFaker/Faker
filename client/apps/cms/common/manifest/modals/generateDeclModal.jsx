@@ -7,7 +7,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
-import { loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { formatMsg } from '../../message.i18n';
 
 
@@ -56,7 +55,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     invTemplates: state.cmsInvoice.invTemplates,
   }),
-  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody, loadInvTemplates }
+  { closeMergeSplitModal, submitBillMegeSplit, loadBillBody }
 )
 @Form.create()
 export default class MergeSplitModal extends React.Component {
@@ -111,9 +110,6 @@ export default class MergeSplitModal extends React.Component {
     invoiceTemplates: [],
     packingListTemplates: [],
     contractTemplates: [],
-  }
-  componentDidMount() {
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: [0, 1, 2], partnerId: this.props.billMeta.customerId });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.invTemplates !== this.props.invTemplates) {
