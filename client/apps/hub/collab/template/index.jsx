@@ -6,8 +6,10 @@ import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleAppCreateModal, loadDevApps } from 'common/reducers/hubDevApp';
+import { toggleTemplateModal } from 'common/reducers/template';
 import RowAction from 'client/components/RowAction';
 import HubSiderMenu from '../../menu';
+import CreateModal from './modal/createModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -19,7 +21,7 @@ const { Content } = Layout;
     pageSize: state.hubDevApp.apps.pageSize,
     filter: state.hubDevApp.filter,
   }),
-  { toggleAppCreateModal, loadDevApps }
+  { toggleAppCreateModal, loadDevApps, toggleTemplateModal }
 )
 export default class NoticeTemplateList extends React.Component {
   static propTypes = {
@@ -68,8 +70,8 @@ export default class NoticeTemplateList extends React.Component {
   handleConfig = (appId) => {
     this.context.router.push(`/hub/dev/${appId}`);
   }
-  handleCreateApp = () => {
-    this.props.toggleAppCreateModal(true);
+  toggleTemplateModal = () => {
+    this.props.toggleTemplateModal(true);
   }
   handleSearch = (value) => {
     const filter = { ...this.props.filter, searchText: value };
@@ -110,7 +112,7 @@ export default class NoticeTemplateList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
+              <Button type="primary" icon="plus" onClick={this.toggleTemplateModal}>
                 {this.msg('create')}
               </Button>
             </PageHeader.Actions>
@@ -136,6 +138,7 @@ export default class NoticeTemplateList extends React.Component {
                   )}
               />
             </Card>
+            <CreateModal/>
           </Content>
         </Layout>
       </Layout>
