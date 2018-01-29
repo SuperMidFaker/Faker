@@ -5,7 +5,7 @@ import { Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { toggleTemplateModal, loadTemplates } from 'common/reducers/template';
+import { toggleTemplateModal, loadTemplates, deleteTemplate } from 'common/reducers/template';
 import RowAction from 'client/components/RowAction';
 import HubSiderMenu from '../../menu';
 import CreateModal from './modal/createModal';
@@ -21,7 +21,7 @@ const { Content } = Layout;
     current: state.template.templates.current,
     filter: state.template.filter,
   }),
-  { toggleTemplateModal, loadTemplates }
+  { toggleTemplateModal, loadTemplates, deleteTemplate }
 )
 export default class NoticeTemplateList extends React.Component {
   static propTypes = {
@@ -59,6 +59,13 @@ export default class NoticeTemplateList extends React.Component {
   }
   handleClick = (row) => {
     this.props.toggleTemplateModal(true, row);
+  }
+  handleDel = (row) => {
+    this.props.deleteTemplate(row.id).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+      }
+    });
   }
   render() {
     const { templates, filter } = this.props;
@@ -102,7 +109,10 @@ export default class NoticeTemplateList extends React.Component {
                 renderItem={item => (
                   <List.Item
                     key={item.id}
-                    actions={[<RowAction size="default" onClick={() => this.handleClick(item)} icon="setting" label={this.msg('config')} />]}
+                    actions={[
+                      <RowAction size="default" onClick={() => this.handleClick(item)} icon="setting" label={this.msg('config')} />,
+                      <RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={this.handleDel} row={item} />,
+                  ]}
                   >
                     <List.Item.Meta
                       title={item.name}

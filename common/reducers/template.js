@@ -6,6 +6,7 @@ const actionTypes = createActionTypes('@@welogix/hub/collab/template', [
   'CREATE_TEMPLATE', 'CREATE_TEMPLATE_SUCCEED', 'CREATE_TEMPLATE_FAIL',
   'LOAD_TEMPLATES', 'LOAD_TEMPLATES_SUCCEED', 'LOAD_TEMPLATES_FAIL',
   'UPDATE_TEMPLATE', 'UPDATE_TEMPLATE_SUCCEED', 'UPDATE_TEMPLATE_FAIL',
+  'DELETE_TEMPLATE', 'DELETE_TEMPLATE_SUCCEED', 'DELETE_TEMPLATE_FAIL',
 ]);
 
 const initialState = {
@@ -96,6 +97,21 @@ export function loadTemplates({ pageSize, current, filter }) {
       endpoint: 'v1/hub/templates/load',
       method: 'get',
       params: { pageSize, current, filter },
+    },
+  };
+}
+
+export function deleteTemplate(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_TEMPLATE,
+        actionTypes.DELETE_TEMPLATE_SUCCEED,
+        actionTypes.DELETE_TEMPLATE_FAIL,
+      ],
+      endpoint: 'v1/hub/template/delete',
+      method: 'post',
+      data: { id },
     },
   };
 }
