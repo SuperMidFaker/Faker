@@ -4,13 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Steps, Modal, Form, Select, DatePicker, Progress } from 'antd';
 import { closeTrialModal, trialQuote } from 'common/reducers/cmsQuote';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
-const Step = Steps.Step;
-const RangePicker = DatePicker.RangePicker;
+const { Option } = Select;
+const { Step } = Steps;
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -33,8 +31,8 @@ export default class TrialModal extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     trialBegin: PropTypes.bool.isRequired,
-    form: PropTypes.object.isRequired,
-    quoteForm: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    quoteForm: PropTypes.shape({ getFieldsValue: PropTypes.func.isRequired }).isRequired,
   }
   state = {
     curStep: 0,
@@ -90,7 +88,7 @@ export default class TrialModal extends React.Component {
       curStep: 2,
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     const {

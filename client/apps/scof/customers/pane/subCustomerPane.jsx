@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import SubCustomerModal from '../modals/subCustomerModal';
-import { showSubCustomerModal } from 'common/reducers/crmCustomers';
+import { showSubCustomerModal } from 'common/reducers/sofCustomers';
 
 const formatMsg = format(messages);
 
@@ -50,8 +50,13 @@ export default class SubCustomerList extends React.Component {
           <Button onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</Button>
         </div>
         <div className="panel-body table-panel table-fixed-layout">
-          <Table size="small" dataSource={customer.subCustomers} columns={columns} showHeader={false}
-            pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="id"
+          <Table
+            size="small"
+            dataSource={customer.subCustomers}
+            columns={columns}
+            showHeader={false}
+            pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+            rowKey="id"
           />
         </div>
         <SubCustomerModal onOk={() => {}} />

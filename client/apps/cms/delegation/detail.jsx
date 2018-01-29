@@ -5,14 +5,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Col, Button, Popconfirm, Row, message, Layout } from 'antd';
 import { editDelegation } from 'common/reducers/cmsDelegation';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
 import UploadGroup from './forms/attachmentUpload';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
@@ -45,7 +44,7 @@ export default class EditDelegation extends Component {
     addedFiles: [],
     removedFiles: [],
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = ({ isAccepted }) => {
     this.props.form.validateFields((errors) => {
       if (!errors) {

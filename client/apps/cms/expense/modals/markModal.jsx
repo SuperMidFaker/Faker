@@ -4,10 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Checkbox, message } from 'antd';
 import { closeMarkModal, saveMarkstate } from 'common/reducers/cmsExpense';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
 
 function ColumnCheckbox(props) {
   const { record, field, onChange } = props;
@@ -23,7 +22,8 @@ function ColumnCheckbox(props) {
   const label = `${checkStatus ? '已结单' : '未结单'}`;
   return (
     <p style={{ marginBottom: '20px' }}>
-      <Checkbox checked={checkStatus}
+      <Checkbox
+        checked={checkStatus}
         onChange={handleChange}
       >
         {label}
@@ -52,7 +52,7 @@ export default class MarkModal extends Component {
     closeMarkModal: PropTypes.func.isRequired,
     data: PropTypes.array.isRequired,
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor);
+  msg = formatMsg(this.props.intl)
   columns = [
     {
       title: this.msg('delgNo'),

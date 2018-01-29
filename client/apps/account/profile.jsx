@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import connectNav from 'client/common/decorators/connect-nav';
 import { Avatar, Button, Card, Upload, Form, Input, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateProfile } from 'common/reducers/account';
 import { validatePhone } from 'common/validater';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
+import messages from './message.i18n';
 import './account.less';
 
 const formatMsg = format(messages);
@@ -34,8 +33,11 @@ function FormInput(props) {
     },
   };
   return (
-    <FormItem {...formItemLayout} label={label}
-      hasFeedback={hasFeedback} required={required}
+    <FormItem
+      {...formItemLayout}
+      label={label}
+      hasFeedback={hasFeedback}
+      required={required}
     >
       {
         getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" addonAfter={addonAfter} placeholder={placeholder} />)
@@ -67,10 +69,6 @@ FormInput.propTypes = {
   }),
   { updateProfile }
 )
-@connectNav({
-  depth: 3,
-  jumpOut: true,
-})
 @Form.create()
 export default class MyProfile extends React.Component {
   static propTypes = {
@@ -164,22 +162,33 @@ export default class MyProfile extends React.Component {
               {this.state.avatar ? <Avatar src={this.state.avatar} size="large" /> : <Icon type="plus" className="avatar-uploader-trigger" />}
             </Upload>
           </FormItem>
-          <FormInput label={cmsg('fullName')} field="name" rules={
+          <FormInput
+            label={cmsg('fullName')}
+            field="name"
+            rules={
                   [{ required: true, min: 2, message: cmsg('fullNameMessage') }]
-                } fieldProps={{ initialValue: profile.name }} hasFeedback
+                }
+            fieldProps={{ initialValue: profile.name }}
+            hasFeedback
             getFieldDecorator={getFieldDecorator}
           />
-          <FormInput label={cmsg('phone')} field="phone" hasFeedback
+          <FormInput
+            label={cmsg('phone')}
+            field="phone"
+            hasFeedback
             rules={[{
               validator: (rule, value, callback) => validatePhone(
                     value, callback,
                     (msgs, descriptor) => format(msgs)(intl, descriptor)
                   ),
-}]}
+                }]}
             fieldProps={{ initialValue: profile.phone }}
             getFieldDecorator={getFieldDecorator}
           />
-          <FormInput label="Email" field="email" getFieldDecorator={getFieldDecorator}
+          <FormInput
+            label="Email"
+            field="email"
+            getFieldDecorator={getFieldDecorator}
             rules={[{ type: 'email', message: cmsg('emailError') }]}
             fieldProps={{ initialValue: profile.email }}
           />

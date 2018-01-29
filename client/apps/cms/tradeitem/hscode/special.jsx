@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Tabs, Popover } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+
 import PageHeader from 'client/components/PageHeader';
 import NavLink from 'client/components/NavLink';
 import ExcelUploader from 'client/components/ExcelUploader';
@@ -14,9 +14,9 @@ import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHs
   loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import HSCodeSpecialList from './specialList';
 
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
+
 const { Content, Sider } = Layout;
 const { TabPane } = Tabs;
 
@@ -72,7 +72,7 @@ export default class HSCodeSpecial extends React.Component {
     }
     this.setState({ hscodeCategories });
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,

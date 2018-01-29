@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
+const messages = defineMessages({
   delgNo: {
     id: 'cms.forms.delg.no',
     defaultMessage: '委托编号',
@@ -545,4 +546,204 @@ export default defineMessages({
     id: 'cms.forms.inspection',
     defaultMessage: '检验检疫类别',
   },
+  importClearance: {
+    id: 'cms.manifest.import.clearance',
+    defaultMessage: '进口申报',
+  },
+  exportClearance: {
+    id: 'cms.manifest.export.clearance',
+    defaultMessage: '出口申报',
+  },
+  declManifest: {
+    id: 'cms.manifest.decl.manifest',
+    defaultMessage: '申报清单',
+  },
+  searchPlaceholder: {
+    id: 'cms.manifest.search.placeholder',
+    defaultMessage: '清单编号/委托编号',
+  },
+  all: {
+    id: 'cms.manifest.filter.all',
+    defaultMessage: '全部',
+  },
+  filterWIP: {
+    id: 'cms.manifest.filter.wip',
+    defaultMessage: '制单中',
+  },
+  filterGenerated: {
+    id: 'cms.manifest.filter.generated',
+    defaultMessage: '制单完成',
+  },
+  generateCDP: {
+    id: 'cms.manifest.generate.cdp',
+    defaultMessage: '生成报关建议书',
+  },
+  saveAsTemplate: {
+    id: 'cms.manifest.saveas.template',
+    defaultMessage: '保存为模板',
+  },
+  relationCodeSearch: {
+    id: 'cms.manifest.form.relation.code.search',
+    defaultMessage: '代码搜索',
+  },
+  importBody: {
+    id: 'cms.manifest.table.import',
+    defaultMessage: '导入清单',
+  },
+  docuTemplate: {
+    id: 'cms.manifest.modal.docu.template',
+    defaultMessage: '单据模板',
+  },
+  mergeSpecialHscode: {
+    id: 'cms.manifest.modal.merge.special.hscode',
+    defaultMessage: '特殊商品编码合并',
+  },
+  mergeSpecialNo: {
+    id: 'cms.manifest.modal.merge.special.productno',
+    defaultMessage: '特殊商品货号合并',
+  },
+  specialHscodeSort: {
+    id: 'cms.manifest.modal.split.special.hscode.sort',
+    defaultMessage: '特殊商品编码分类:',
+  },
+
+  currencySplit: {
+    id: 'cms.manifest.modal.split.currency',
+    defaultMessage: '不同币制独立报关',
+  },
+  byCiqDeclSplit: {
+    id: 'cms.manifest.modal.split.ciq.decl',
+    defaultMessage: '报检独立报关',
+  },
+  byApplCertSplit: {
+    id: 'cms.manifest.modal.split.appl.cert',
+    defaultMessage: '报检出证独立报关',
+  },
+  inspectOnTop: {
+    id: 'cms.manifest.modal.sort.inspect.ontop',
+    defaultMessage: '检验检疫项优先',
+  },
+  deleteConfirm: {
+    id: 'cms.app.settings.delete.confirm',
+    defaultMessage: '确定删除该关联客户？',
+  },
+  billTemplates: {
+    id: 'cms.app.settings.bill.templates',
+    defaultMessage: '制单规则',
+  },
+  relatedCustomers: {
+    id: 'cms.app.settings.related.customers',
+    defaultMessage: '关联客户',
+  },
+  addRelatedCustomers: {
+    id: 'cms.app.settings.add.related.customers',
+    defaultMessage: '添加关联客户',
+  },
+  preEntryNo: {
+    id: 'cms.manifest.customs.decl.preentry.no',
+    defaultMessage: '预录入海关编号',
+  },
+  declType: {
+    id: 'cms.manifest.customs.decl.declType',
+    defaultMessage: '单证类型',
+  },
+  sendAllPackets: {
+    id: 'cms.manifest.customs.send.all.packets',
+    defaultMessage: '批量发送申报',
+  },
+  containerId: {
+    id: 'cms.manifest.tabpanes.container.id',
+    defaultMessage: '集装箱号',
+  },
+  containerWt: {
+    id: 'cms.manifest.tabpanes.container.wt',
+    defaultMessage: '集装箱自重',
+  },
+  containerSpec: {
+    id: 'cms.manifest.tabpanes.container.spec',
+    defaultMessage: '集装箱规格-报关',
+  },
+  containerSpecCiq: {
+    id: 'cms.manifest.tabpanes.container.spec.ciq',
+    defaultMessage: '集装箱规格-报检',
+  },
+  containerQty: {
+    id: 'cms.manifest.tabpanes.container.qty',
+    defaultMessage: '数量',
+  },
+  docuSpec: {
+    id: 'cms.manifest.tabpanes.document.spec',
+    defaultMessage: '随附单据文件类别',
+  },
+  docuCode: {
+    id: 'cms.manifest.tabpanes.document.code',
+    defaultMessage: '随附单据编号',
+  },
+  certSpec: {
+    id: 'cms.manifest.tabpanes.cert.spec',
+    defaultMessage: '单证类型',
+  },
+  certNum: {
+    id: 'cms.manifest.tabpanes.cert.num',
+    defaultMessage: '单证编号',
+  },
+  invoiceDate: {
+    id: 'cms.manifest.tabpanes.invoice.date',
+    defaultMessage: '发票日期',
+  },
+  orderNo: {
+    id: 'cms.manifest.tabpanes.invoice.order.no',
+    defaultMessage: '订单号',
+  },
+  invoiceType: {
+    id: 'cms.manifest.tabpanes.invoice.type',
+    defaultMessage: '发票类型',
+  },
+  invoiceStatus: {
+    id: 'cms.manifest.tabpanes.invoice.status',
+    defaultMessage: '发票状态',
+  },
+  totalAmount: {
+    id: 'cms.manifest.tabpanes.invoice.total.amount',
+    defaultMessage: '总金额',
+  },
+  totalQuant: {
+    id: 'cms.manifest.tabpanes.invoice.total.quant',
+    defaultMessage: '总数量',
+  },
+  totalNetWt: {
+    id: 'cms.manifest.tabpanes.invoice.total.net.wt',
+    defaultMessage: '总净重',
+  },
+  pieces: {
+    id: 'cms.manifest.tabpanes.invoice.pieces',
+    defaultMessage: '件数',
+  },
+  grossWt: {
+    id: 'cms.manifest.tabpanes.invoice.gross.wt',
+    defaultMessage: '毛重',
+  },
+  add: {
+    id: 'cms.manifest.tabpanes.add',
+    defaultMessage: '添加',
+  },
+  invoice: {
+    id: 'cms.docus.invoice',
+    defaultMessage: '发票',
+  },
+  contract: {
+    id: 'cms.docus.contract',
+    defaultMessage: '合同',
+  },
+  packingList: {
+    id: 'cms.docus.packing.list',
+    defaultMessage: '箱单',
+  },
+  print: {
+    id: 'cms.docus.print',
+    defaultMessage: '打印',
+  },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

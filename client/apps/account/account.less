@@ -1,14 +1,22 @@
 .avatar-uploader,
 .avatar-uploader-trigger,
 .avatar {
-  width: 120px;
-  height: 120px;
+  width: 144px;
+  height: 144px;
 }
 .avatar-uploader {
   display: block;
-  border: 1px dashed #d9d9d9;
+  /*border: 1px dashed #d9d9d9;*/
   border-radius: 50%;
+  .ant-upload.ant-upload-select-picture-card {
+    width: 144px;
+    height: 144px;
+  }
   cursor: pointer;
+  img {
+    width: 128px;
+    height: 128px;
+  }
 }
 .avatar-uploader-trigger {
   display: table-cell;

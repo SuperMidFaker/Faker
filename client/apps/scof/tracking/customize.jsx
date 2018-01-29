@@ -5,17 +5,16 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Input, Table, Tooltip, Layout, Popconfirm, Icon } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import { loadTrackings, addTracking, removeTracking, updateTracking,
+  loadTrackingFields, toggleTrackingModal, loadTrackingItems } from 'common/reducers/sofTracking';
 import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import { loadTrackings, addTracking, removeTracking, updateTracking, loadTrackingFields, toggleTrackingModal, loadTrackingItems } from 'common/reducers/scvTracking';
+import SearchBox from 'client/components/SearchBox';
+import { formatMsg } from './message.i18n';
 import TrackingModal from './modals/trackingModal';
 import TrackingItems from './trackingItems';
 
-const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   dispatch(loadTrackingFields());
@@ -26,12 +25,17 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    trackings: state.scvTracking.trackings,
-    loading: state.scvTracking.loading,
-    loaded: state.scvTracking.loaded,
+    trackings: state.sofTracking.trackings,
+    loading: state.sofTracking.loading,
+    loaded: state.sofTracking.loaded,
   }),
   {
-    loadTrackings, addTracking, removeTracking, updateTracking, toggleTrackingModal, loadTrackingItems,
+    loadTrackings,
+    addTracking,
+    removeTracking,
+    updateTracking,
+    toggleTrackingModal,
+    loadTrackingItems,
   }
 )
 @connectNav({
@@ -47,7 +51,6 @@ export default class CustomizeTracking extends React.Component {
     trackings: PropTypes.array.isRequired,
     toggleTrackingModal: PropTypes.func.isRequired,
     loadTrackings: PropTypes.func.isRequired,
-    addTracking: PropTypes.func.isRequired,
     removeTracking: PropTypes.func.isRequired,
     updateTracking: PropTypes.func.isRequired,
     loadTrackingItems: PropTypes.func.isRequired,
@@ -62,7 +65,8 @@ export default class CustomizeTracking extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.trackings.length !== this.props.trackings.length || !this.state.tracking.id) {
       this.setState({
-        tracking: nextProps.trackings.find(item => item.id === this.state.tracking.id) || nextProps.trackings[0] || {},
+        tracking: nextProps.trackings.find(item =>
+          item.id === this.state.tracking.id) || nextProps.trackings[0] || {},
       });
     }
     this.setState({ trackings: nextProps.trackings });
@@ -70,7 +74,7 @@ export default class CustomizeTracking extends React.Component {
       this.handleTableLoad();
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
 
   toggle = () => {
     this.setState({
@@ -112,7 +116,7 @@ export default class CustomizeTracking extends React.Component {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    let trackings = this.props.trackings;
+    let { trackings } = this.props;
     if (value) {
       trackings = this.props.trackings.filter((item) => {
         const reg = new RegExp(value);
@@ -128,13 +132,14 @@ export default class CustomizeTracking extends React.Component {
       key: 'name',
       render: (o, row) => {
         if (editId === row.id) {
-          return (<Input value={o} onChange={(e) => {
+          return (<Input
+            value={o}
+            onChange={(e) => {
             const ts = this.state.trackings.map((item) => {
               if (item.id === row.id) {
                 return { ...item, name: e.target.value };
-              } else {
-                return item;
               }
+              return item;
             });
             this.setState({ trackings: ts });
           }}
@@ -165,7 +170,11 @@ export default class CustomizeTracking extends React.Component {
     }];
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -185,15 +194,25 @@ export default class CustomizeTracking extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search
+              <SearchBox
                 placeholder={this.msg('searchPlaceholder')}
                 onSearch={this.handleSearch}
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.trackings} columns={columns} showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === tracking.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+              <Table
+                size="middle"
+                dataSource={this.state.trackings}
+                columns={columns}
+                showHeader={false}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 15,
+                  onChange: this.handlePageChange,
+                }}
+                rowClassName={record => ((record.id === tracking.id) ? 'table-row-selected' : '')}
+                rowKey="id"
+                loading={this.props.loading}
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}
@@ -206,7 +225,8 @@ export default class CustomizeTracking extends React.Component {
           <PageHeader>
             <PageHeader.Title>
               <ButtonToggle
-                iconOn="menu-fold" iconOff="menu-unfold"
+                iconOn="menu-fold"
+                iconOff="menu-unfold"
                 onClick={this.toggle}
                 toggle
               />

@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
@@ -80,7 +80,7 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'ftz_rel_no',
     width: 200,
     fixed: 'left',
-    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>,
+    render: (o, record) => (o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>),
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -163,9 +163,9 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 1 ?
+    render: (o, record) => (record.status < 1 ?
       <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
-      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />),
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
@@ -243,10 +243,17 @@ export default class SHFTZReleaseList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBox placeholder={this.msg('releaseSearchPlaceholder')} onSearch={this.handleSearch} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
-        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
         {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}

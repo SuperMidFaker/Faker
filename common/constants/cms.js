@@ -1,3 +1,13 @@
+export const CMS_PLUGINS = [
+  { key: 'ciqdecl', name: '报检申报' },
+  { key: 'tradeitem', name: '商品归类', desc: '企业级归类数据库' },
+  { key: 'permit', name: '涉证资料' },
+  { key: 'manual', name: '电子账册' },
+  { key: 'receivable', name: '费用应收' },
+  { key: 'payable', name: '费用应付' },
+  { key: 'analytics', name: '统计分析' },
+];
+
 export const RELATION_TYPES = [
   { key: 'trade', value: '收发货人' },
   { key: 'owner_consumer', value: '消费使用单位' },
@@ -899,4 +909,13 @@ export const CMS_HSCODE_EXPORT_PREFER = [
   { value: '1', text: '出口货物在最终目的国（地区）享受优惠关税' },
   { value: '2', text: '出口货物不能确定在最终目的国（地区）享受优惠关税' },
   { value: '3', text: '不适用于进口报关单' },
+];
+
+export const CMS_DOC_TYPE = [
+  { value: 'CUS_CERT', text: '海关随附单证' },
+  { value: 'CUS_DOCU', text: '海关随附单据' },
+  { value: 'CIQ_CERT', text: '国检企业、产品资质证书' },
+  { value: 'CIQ_DOCU', text: '国检随附单据' },
+  { value: 'CCD', text: '报关单' },
+  { value: 'CID', text: '报检单' },
 ];

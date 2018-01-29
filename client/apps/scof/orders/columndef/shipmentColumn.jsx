@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Row, Col, Tag } from 'antd';
-import { WRAP_TYPE, GOODSTYPES, SCOF_ORDER_TRANSMODES } from 'common/constants';
+import { WRAP_TYPE, GOODSTYPES, TRANS_MODES } from 'common/constants';
 
 @injectIntl
 export default class ShipmentColumn extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
-    shipment: PropTypes.object.isRequired,
+    shipment: PropTypes.shape({
+      cust_shipmt_bill_lading: PropTypes.string,
+    }).isRequired,
   }
 
   render() {
@@ -24,7 +25,7 @@ export default class ShipmentColumn extends React.Component {
         }
       }
       let transModeDom = '';
-      const transMode = SCOF_ORDER_TRANSMODES.filter(sot => sot.value === shipment.cust_shipmt_trans_mode)[0];
+      const transMode = TRANS_MODES.filter(sot => sot.value === shipment.cust_shipmt_trans_mode)[0];
       if (transMode) {
         transModeDom = <i className={transMode.icon} />;
       }
@@ -39,8 +40,7 @@ export default class ShipmentColumn extends React.Component {
           <Col className="col-flex-secondary" />
         </Row>
       );
-    } else {
-      return <div />;
     }
+    return <div />;
   }
 }

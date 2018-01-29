@@ -9,10 +9,10 @@ import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt,
   showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
 import { toggleDeclImportModal } from 'common/reducers/cmsManifestImport';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
-import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
+
 import { createFilename } from 'client/util/dataTransform';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
@@ -25,9 +25,9 @@ import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
 import AmountModel from '../modals/amountDivid';
 import RelateImportRuleModal from '../modals/relateImportRules';
 import { dividGrossWt } from './helper';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
+
 const { Option } = Select;
 
 function ColumnInput(props) {
@@ -191,7 +191,7 @@ function calculateTotal(bodies, currencies) {
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
     billMeta: state.cmsManifest.billMeta,
-    adaptors: state.saasLineFileAdaptor.adaptors,
+    adaptors: state.hubDataAdapter.modelAdaptors,
   }),
   {
     loadBill,
@@ -212,7 +212,7 @@ function calculateTotal(bodies, currencies) {
     updateBillBody,
     getElementByHscode,
     toggleDeclImportModal,
-    loadAdaptors,
+    loadModelAdaptors,
   }
 )
 export default class ManifestBodyPane extends React.Component {
@@ -268,10 +268,9 @@ export default class ManifestBodyPane extends React.Component {
     };
   }
   componentDidMount() {
-    this.props.loadAdaptors(
+    this.props.loadModelAdaptors(
       this.props.billHead.owner_cuspartner_id,
       [LINE_FILE_ADAPTOR_MODELS.CMS_MANIFEST_BODY.key],
-      true
     );
   }
   componentWillReceiveProps(nextProps) {
@@ -643,7 +642,7 @@ export default class ManifestBodyPane extends React.Component {
       }
     });
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handlePageChange = (current) => {
     this.setState({
       pagination: {

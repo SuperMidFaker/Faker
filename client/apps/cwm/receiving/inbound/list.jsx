@@ -7,7 +7,7 @@ import moment from 'moment';
 import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -251,7 +251,7 @@ export default class ReceivingInboundList extends React.Component {
       remotes: this.props.inbound,
     });
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('inboundPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBox placeholder={this.msg('inboundPlaceholder')} onSearch={this.handleSearch} />
       <span />
       <Select
         showSearch

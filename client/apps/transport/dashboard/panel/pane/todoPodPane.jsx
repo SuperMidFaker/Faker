@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Tooltip, Popconfirm, Radio, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
 import { loadPodTable, loadShipmtDetail, hideDock } from 'common/reducers/shipment';
 import { deliverConfirm } from 'common/reducers/trackingLandStatus';
 import { columnDef } from './columnDef';
 import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
+
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -83,7 +84,7 @@ export default class TodoPODPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadPodTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -136,10 +137,12 @@ export default class TodoPODPane extends Component {
           statusStr = '回单待承运商';
         }
         if (tenantId === record.tenant_id && record.deliver_confirmed === 0) {
-          smsConfirm = (<Badge status="success" text={
-            <Popconfirm title="是否确定短信确认?" onConfirm={() => this.handleDeliverConfirm(record.shipmt_no, record.disp_id)} okText="确定" cancelText="取消">
-              <a>短信确认</a>
-            </Popconfirm>}
+          smsConfirm = (<Badge
+            status="success"
+            text={
+              <Popconfirm title="是否确定短信确认?" onConfirm={() => this.handleDeliverConfirm(record.shipmt_no, record.disp_id)} okText="确定" cancelText="取消">
+                <a>短信确认</a>
+              </Popconfirm>}
           />);
         }
         if (record.pod_status === null || record.pod_status === SHIPMENT_POD_STATUS.unsubmit || record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
@@ -174,8 +177,14 @@ export default class TodoPODPane extends Component {
           </RadioGroup>
         </div>
         <div>
-          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.podList.loading}
+          <DataTable
+            size="middle"
+            dataSource={dataSource}
+            columns={columns}
+            showHeader={false}
+            locale={{ emptyText: '没有待办事项' }}
+            rowKey="id"
+            loading={this.props.podList.loading}
           />
         </div>
       </div>

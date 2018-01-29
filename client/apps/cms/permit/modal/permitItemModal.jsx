@@ -3,9 +3,13 @@ import { Alert, Modal, Form, Input } from 'antd';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { togglePermitItemModal, addPermitModel, loadPermitModels } from 'common/reducers/cmsPermit';
+import { intlShape, injectIntl } from 'react-intl';
 
-const FromItem = Form.Item;
+import { formatMsg } from '../message.i18n';
 
+
+const FormItem = Form.Item;
+@injectIntl
 @connect(
   state => ({
     visible: state.cmsPermit.permitItemModal.visible,
@@ -14,11 +18,13 @@ const FromItem = Form.Item;
 )
 export default class PermitItemModal extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     permitId: PropTypes.number.isRequired,
   }
   state = {
     model: '',
   }
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.togglePermitItemModal(false);
     this.setState({
@@ -54,11 +60,11 @@ export default class PermitItemModal extends Component {
       },
     };
     return (
-      <Modal title="添加型号系列" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal title={this.msg('addModel')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Alert message="若无特定型号可填写星号: *" type="info" />
-        <FromItem label="型号" {...formItemLayout}>
+        <FormItem label={this.msg('model')} {...formItemLayout}>
           <Input value={model} placeholder="例: MODEL-1234XXX (X代表字母、数字或空白)" onChange={this.handleChange} />
-        </FromItem>
+        </FormItem>
       </Modal>
     );
   }

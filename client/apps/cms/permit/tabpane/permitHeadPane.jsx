@@ -5,15 +5,14 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, DatePicker, Form, Icon, Input, Select, Switch, Radio, Row, Upload, Col, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+
 import FormPane from 'client/components/FormPane';
 import { Logixon } from 'client/components/FontIcon';
 import { loadPermit } from 'common/reducers/cmsPermit';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
 
-const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
@@ -66,7 +65,7 @@ export default class PermitHeadPane extends Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleCategoryChange = (e) => {
     this.setState({
       permitCategory: e.target.value,
@@ -154,7 +153,7 @@ export default class PermitHeadPane extends Component {
       withCredentials: true,
       onChange(info) {
         if (info.file.response && info.file.response.status === 200) {
-          message.success('上传成功');
+          message.success(this.msg('updateSuccess'));
           me.props.onFileChange(info.file.response.data);
           me.setState({
             permit_file: info.file.response.data,
@@ -173,7 +172,7 @@ export default class PermitHeadPane extends Component {
                     initialValue: action === 'edit' && currentPermit.owner_partner_id,
                   })(<Select
                     showSearch
-                    placeholder="选择关联货主"
+                    placeholder={this.msg('relPartner')}
                     optionFilterProp="children"
                     onChange={this.handleSelectChange}
                     disabled={action !== 'create'}
@@ -189,7 +188,7 @@ export default class PermitHeadPane extends Component {
               (
                 <FormItem {...formItemLayout} label={this.msg('permitFile')}>
                   <Button onClick={this.handleView}>
-                    <Icon type="eye-o" /> 查看
+                    <Icon type="eye-o" /> {this.msg('check')}
                   </Button>
                 </FormItem>
               ) :
@@ -197,7 +196,7 @@ export default class PermitHeadPane extends Component {
                 <FormItem {...formItemLayout} label={this.msg('permitFile')}>
                   <Upload {...props}>
                     <Button>
-                      <Icon type="upload" /> 上传
+                      <Icon type="upload" /> {this.msg('update')}
                     </Button>
                   </Upload>
                 </FormItem>
@@ -212,8 +211,8 @@ export default class PermitHeadPane extends Component {
                 {getFieldDecorator('permit_category', {
                     initialValue: action === 'edit' ? currentPermit.permit_category : permitCategory,
                     })(<RadioGroup disabled={action !== 'create'} onChange={this.handleCategoryChange}>
-                      <RadioButton value="customs"><Logixon type="customs" /> 海关标准</RadioButton>
-                      <RadioButton value="ciq"><Logixon type="ciq" /> 国检标准</RadioButton>
+                      <RadioButton value="customs"><Logixon type="customs" />{this.msg('customs')}</RadioButton>
+                      <RadioButton value="ciq"><Logixon type="ciq" />{this.msg('ciq')}</RadioButton>
                     </RadioGroup>)}
               </FormItem>
             </Col>
@@ -249,7 +248,7 @@ export default class PermitHeadPane extends Component {
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('usageControl')}>
                 {getFieldDecorator('usage_control', {
-                  })(<Switch checked={usageControl} onChange={this.handleUsageChange} checkedChildren="开启" unCheckedChildren="关闭" />)}
+                  })(<Switch checked={usageControl} onChange={this.handleUsageChange} checkedChildren={this.msg('turnOn')} unCheckedChildren={this.msg('close')} />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>
@@ -269,7 +268,7 @@ export default class PermitHeadPane extends Component {
             <Col {...colSpan}>
               <FormItem {...formItemLayout} label={this.msg('expiryControl')}>
                 {getFieldDecorator('expiry_control', {
-                  })(<Switch checked={expiryControl} onChange={this.handleExpiryChange} checkedChildren="开启" unCheckedChildren="关闭" />)}
+                  })(<Switch checked={expiryControl} onChange={this.handleExpiryChange} checkedChildren={this.msg('turnOn')} unCheckedChildren={this.msg('close')} />)}
               </FormItem>
             </Col>
             <Col {...colSpan}>

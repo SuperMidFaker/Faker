@@ -17,53 +17,13 @@ const messages = defineMessages({
     id: 'cms.module.ciq.decl',
     defaultMessage: '报检申报',
   },
-  import: {
-    id: 'cms.module.import',
-    defaultMessage: '进口申报',
-  },
-  importManifest: {
-    id: 'cms.module.import.manifest',
-    defaultMessage: '申报清单',
-  },
-  importCustomsDecl: {
-    id: 'cms.module.import.decl.customs',
-    defaultMessage: '进口报关申报',
-  },
-  importCiqDecl: {
-    id: 'cms.module.import.decl.ciq',
-    defaultMessage: '入境报检申报',
-  },
-  export: {
-    id: 'cms.module.export',
-    defaultMessage: '出口申报',
-  },
-  exportManifest: {
-    id: 'cms.module.export.manifest',
-    defaultMessage: '申报清单',
-  },
-  exportCustomsDecl: {
-    id: 'cms.module.export.decl.customs',
-    defaultMessage: '出口报关申报',
-  },
-  exportCiqDecl: {
-    id: 'cms.module.export.decl.ciq',
-    defaultMessage: '出境报检申报',
-  },
-  compliance: {
-    id: 'cms.module.compliance',
+  complianceGroup: {
+    id: 'cms.module.group.compliance',
     defaultMessage: '合规管理',
   },
   tradeItem: {
     id: 'cms.module.compliance.trade.item',
     defaultMessage: '商品归类',
-  },
-  hscode: {
-    id: 'cms.module.compliance.hscode',
-    defaultMessage: 'HS编码查询',
-  },
-  specialCategory: {
-    id: 'cms.module.compliance.special.category',
-    defaultMessage: '特殊商品编码分类',
   },
   permit: {
     id: 'cms.module.compliance.permit',
@@ -73,17 +33,21 @@ const messages = defineMessages({
     id: 'cms.module.compliance.ebook',
     defaultMessage: '电子帐册',
   },
-  billing: {
-    id: 'cms.module.billing',
-    defaultMessage: '费收',
-  },
-  expense: {
-    id: 'cms.module.billing.expense',
+  expenseGroup: {
+    id: 'cms.module.group.expense',
     defaultMessage: '费用管理',
   },
+  payableExpense: {
+    id: 'cms.module.expense.payable',
+    defaultMessage: '应付费用',
+  },
+  receivableExpense: {
+    id: 'cms.module.expense.receivable',
+    defaultMessage: '应收费用',
+  },
   quote: {
-    id: 'cms.module.billing.quote',
-    defaultMessage: '费率设置',
+    id: 'cms.module.quote',
+    defaultMessage: '报价费率',
   },
   analytics: {
     id: 'cms.module.analytics',
@@ -93,17 +57,9 @@ const messages = defineMessages({
     id: 'cms.module.settings',
     defaultMessage: '设置',
   },
-  clients: {
-    id: 'cms.module.settings.clients',
-    defaultMessage: '委托方设置',
-  },
-  brokers: {
-    id: 'cms.module.settings.brokers',
-    defaultMessage: '申报代理',
-  },
-  preferences: {
-    id: 'cms.module.settings.preferences',
-    defaultMessage: '参数设定',
+  moreGroup: {
+    id: 'cms.module.group.more',
+    defaultMessage: '更多应用',
   },
 });
 export default messages;

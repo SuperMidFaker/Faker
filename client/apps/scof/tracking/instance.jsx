@@ -4,20 +4,18 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Button, Input } from 'antd';
+import { Breadcrumb, Layout, Button } from 'antd';
 import EditableCell from 'client/components/EditableCell';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/scvTracking';
+import SearchBox from 'client/components/SearchBox';
+import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/sofTracking';
 import { makeExcel } from 'common/reducers/common';
 import { createFilename } from 'client/util/dataTransform';
-import { format } from 'client/common/i18n/helpers';
 import RangePickerPopover from './modals/rangePickerPopover';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
-const { Search } = Input;
 
 function momentDateArg(itemDate) {
   let momentArg = itemDate;
@@ -34,9 +32,9 @@ function momentDateArg(itemDate) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    trackings: state.scvTracking.trackings,
-    trackingItems: state.scvTracking.trackingItems,
-    orders: state.scvTracking.orderList,
+    trackings: state.sofTracking.trackings,
+    trackingItems: state.sofTracking.trackingItems,
+    orders: state.sofTracking.orderList,
   }),
   {
     loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom, makeExcel,
@@ -76,6 +74,7 @@ export default class Instance extends Component {
         item.id === Number(nextProps.params.trackingId)),
     });
   }
+  msg = formatMsg(this.props.intl)
   handleTableload = (props) => {
     props.loadTrackingOrders({
       searchValue: props.orders.searchValue,
@@ -89,7 +88,6 @@ export default class Instance extends Component {
       filters: JSON.stringify(this.state.filters),
     });
   }
-  msg = key => formatMsg(this.props.intl, key)
   handleSave = (id, field, value, source) => {
     this.props.upsertTrackingOrderCustom(id, field, value, source);
   }
@@ -219,7 +217,7 @@ export default class Instance extends Component {
         table.push([...row, items.shipmt_order_no]);
       });
       const sheets = [{ name: 'sheet1', data: table }];
-      this.props.makeExcel(sheets, `${createFilename('scvTracking')}.xlsx`).then((result1) => {
+      this.props.makeExcel(sheets, `${createFilename('sofTracking')}.xlsx`).then((result1) => {
         window.open(`${API_ROOTS.default}v1/common/excel/${result1.data.filename}`);
         this.setState({ exportLoading: false });
       });
@@ -243,8 +241,7 @@ export default class Instance extends Component {
     this.dataSource.remotes = orders;
     const tableWidth = trackingItems.map(item => item.width).reduce((a, b) => a + b, 0);
     const toolbarActions = (<span>
-      <Search
-        style={{ width: 240 }}
+      <SearchBox
         placeholder="搜索"
         onSearch={this.handleSearch}
       />

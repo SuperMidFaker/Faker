@@ -6,7 +6,7 @@ import { Icon, Col, Row, Tabs, Button, Menu, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
 import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid, getShipmtOrderNo, cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import ASNPane from './tabpane/asnPane';
@@ -210,7 +210,10 @@ export default class ReceivingDockPanel extends React.Component {
     const { visible } = this.props;
     const { asnHead } = this.state;
     return (
-      <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
+      <DockPanel
+        size="large"
+        visible={visible}
+        onClose={this.props.hideDock}
         title={this.renderTitle()}
         status={this.renderStatus(asnHead.status)}
         statusText={this.renderStatusMsg(asnHead.status)}

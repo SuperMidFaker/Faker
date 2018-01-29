@@ -5,14 +5,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Table, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { loadPartners } from 'common/reducers/partner';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../../message.i18n';
 import AddTemplateModal from './modal/addTemplateModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
-import { loadCustomers } from 'common/reducers/crmCustomers';
+import { loadCustomers } from 'common/reducers/sofCustomers';
 
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
@@ -38,7 +37,7 @@ export default class ManifestTemplateList extends React.Component {
     this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: this.props.ietype });
     this.props.loadCustomers(this.props.tenantId);
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleDetail = (record) => {
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
     this.context.router.push(`/clearance/${ietype}/manifest/rules/view/${record.id}`);

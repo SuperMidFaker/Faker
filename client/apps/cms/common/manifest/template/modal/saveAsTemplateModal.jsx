@@ -6,12 +6,10 @@ import { Modal, Form, Mention, message, Steps, Button, Row, Col, Input } from 'a
 import { setStepVisible, createGeneratedTemplate, validateTempName } from 'common/reducers/cmsManifest';
 import ImportRuleForm from '../../form/bodyImportRuleForm';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-const formatMsg = format(messages);
+import { formatMsg } from '../../../message.i18n';
 
 const FormItem = Form.Item;
-const Step = Steps.Step;
+const { Step } = Steps;
 
 function getFieldInits(formData) {
   const init = {
@@ -65,7 +63,8 @@ function getFieldInits(formData) {
     ['merge_checked', 'sort_customs'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 1;
     });
-    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
+    init.sort_dectotal = formData.sort_dectotal || '0';
+    ['sort_hscode', 'split_hscode', 'split_curr', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
     init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
@@ -106,16 +105,16 @@ export default class SaveAsTemplateModal extends React.Component {
   handlenext = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        let current = this.state.current;
+        let { current } = this.state;
         if (current === 0) {
           const name = this.props.form.getFieldValue('template_name');
           this.props.validateTempName({ name, tenantId: this.props.tenantId }).then((result) => {
             if (result.error) {
-              return message.error(result.error.message, 10);
-            } else {
-              current += 1;
-              this.setState({ current });
+              message.error(result.error.message, 10);
+              return;
             }
+            current += 1;
+            this.setState({ current });
           });
         } else {
           current += 1;
@@ -145,7 +144,12 @@ export default class SaveAsTemplateModal extends React.Component {
     const { formData } = this.state;
     const ieType = ietype === 'import' ? 0 : 1;
     const params = {
-      template_name: formData.template_name, i_e_type: ieType, tenant_id: tenantId, tenantName, modify_id: loginId, modify_name: loginName,
+      template_name: formData.template_name,
+      i_e_type: ieType,
+      tenant_id: tenantId,
+      tenantName,
+      modify_id: loginId,
+      modify_name: loginName,
     };
     let element = formData.rule_element;
     if (typeof formData.rule_element !== 'string') {
@@ -156,9 +160,14 @@ export default class SaveAsTemplateModal extends React.Component {
     const splHsMergeArr = this.props.form.getFieldValue('merge_spl_hs');
     const splNoMergeArr = this.props.form.getFieldValue('merge_spl_no');
     const mergeObj = {
-      merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0,
+      merge_byhscode: 0,
+      merge_bygname: 0,
+      merge_bycurr: 0,
+      merge_bycountry: 0,
+      merge_bycopgno: 0,
+      merge_byengno: 0,
     };
-    for (const mergeOpt of mergeOptArr) {
+    Object.keys(mergeOptArr).forEach((mergeOpt) => {
       if (mergeOpt === 'byHsCode') {
         mergeObj.merge_byhscode = 1;
       } else if (mergeOpt === 'byGName') {
@@ -172,7 +181,7 @@ export default class SaveAsTemplateModal extends React.Component {
       } else if (mergeOpt === 'byEmGNo') {
         mergeObj.merge_byengno = 1;
       }
-    }
+    });
     mergeObj.merge_checked = this.props.form.getFieldValue('merge_checked') || formData.merge_checked;
     let specialHsSorts = '';
     if (specialHsSortArr) {
@@ -205,7 +214,7 @@ export default class SaveAsTemplateModal extends React.Component {
       }
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form, form: { getFieldDecorator }, visibleStepModal } = this.props;
     const { current, formData } = this.state;
@@ -222,7 +231,8 @@ export default class SaveAsTemplateModal extends React.Component {
     return (
       <Modal maskClosable={false} title="保存为模板" width={800} visible={visibleStepModal} onCancel={this.handleCancel} footer={null}>
         <Steps size="small" current={current}>
-          {steps.map(item => <Step key={item.title} title={item.title} description={item.description} />)}
+          {steps.map(item =>
+            <Step key={item.title} title={item.title} description={item.description} />)}
         </Steps>
         <Form layout="horizontal" style={{ marginTop: 24 }}>
           { this.state.current === 0 &&
@@ -243,7 +253,8 @@ export default class SaveAsTemplateModal extends React.Component {
         <Row type="flex">
           <Col className="col-flex-primary" />
           <Col className="col-flex-secondary">
-            {this.state.current > 0 && <Button style={{ marginRight: 8 }} onClick={this.handleprev}>上一步</Button>}
+            {this.state.current > 0 &&
+            <Button style={{ marginRight: 8 }} onClick={this.handleprev}>上一步</Button>}
             {this.state.current < steps.length - 1 && <Button type="primary" onClick={this.handlenext}>下一步</Button>}
             {this.state.current === steps.length - 1 && <Button type="primary" onClick={this.handleOk}>保存</Button>}
           </Col>

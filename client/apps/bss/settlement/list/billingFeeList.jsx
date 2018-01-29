@@ -11,7 +11,7 @@ import TrimSpan from 'client/components/trimSpan';
 import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
 // import OrderDockPanel from '../../orders/docks/orderDockPanel';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -199,12 +199,12 @@ export default class BillingFeeList extends React.Component {
       title: '报关服务费',
       key: 'ccb_server_charge',
       dataIndex: 'ccb_server_charge',
-      render: o => o ? o.toFixed(2) : '',
+      render: o => (o ? o.toFixed(2) : ''),
     }, {
       title: '报关代垫费用',
       key: 'ccb_cush_charge',
       dataIndex: 'ccb_cush_charge',
-      render: o => o ? o.toFixed(2) : '',
+      render: o => (o ? o.toFixed(2) : ''),
     }, {
       title: '报关费用合计',
       key: 'ccbTotalCharge',
@@ -223,17 +223,17 @@ export default class BillingFeeList extends React.Component {
       title: '基本运费',
       key: 'trs_freight_charge',
       dataIndex: 'trs_freight_charge',
-      render: o => o ? o.toFixed(2) : '',
+      render: o => (o ? o.toFixed(2) : ''),
     }, {
       title: '特殊费用',
       key: 'trs_excp_charge',
       dataIndex: 'trs_excp_charge',
-      render: o => o ? o.toFixed(2) : '',
+      render: o => (o ? o.toFixed(2) : ''),
     }, {
       title: '运输代垫费用',
       key: 'trs_advance_charge',
       dataIndex: 'trs_advance_charge',
-      render: o => o ? o.toFixed(2) : '',
+      render: o => (o ? o.toFixed(2) : ''),
     }, {
       title: '运输费用合计',
       key: 'trsTotalCharge',
@@ -246,7 +246,7 @@ export default class BillingFeeList extends React.Component {
       title: '订单总费用',
       key: 'total_charge',
       dataIndex: 'total_charge',
-      render: o => o ? o.toFixed(2) : '',
+      render: o => (o ? o.toFixed(2) : ''),
     }, {
       title: '调整金额',
       dataIndex: 'adjust_charge',

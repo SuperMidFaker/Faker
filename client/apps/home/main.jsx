@@ -6,12 +6,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import HeaderNavBar from 'client/components/HeaderNavBar';
 import NavLink from 'client/components/NavLink';
 import ModuleLayout from 'client/components/ModuleLayout';
-import NotificationDockPanel from './notificationDockPanel';
-import PreferenceDockPanel from './preferenceDockPanel';
-import ActivitiesDockPanel from './activitiesDockPanel';
+import { Logixon } from 'client/components/FontIcon';
 import { findForemostRoute } from 'client/common/decorators/withPrivilege';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
+import NotificationDockPanel from './notificationDockPanel';
+import PreferenceDockPanel from './preferenceDockPanel';
+import ActivitiesDockPanel from './activitiesDockPanel';
 import messages from './message.i18n';
 import './home.less';
 
@@ -33,7 +34,11 @@ export default class Home extends React.Component {
     intl: intlShape.isRequired,
     logo: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    privileges: PropTypes.object.isRequired,
+    privileges: PropTypes.shape({
+      module_id: PropTypes.string,
+      feature_id: PropTypes.string,
+      action_id: PropTypes.string,
+    }).isRequired,
     setNavTitle: PropTypes.func.isRequired,
   };
   state = {
@@ -44,9 +49,6 @@ export default class Home extends React.Component {
       depth: 1,
     });
     const link = findForemostRoute(this.props.privileges, 'corp', [{
-      feat: 'overview',
-      route: 'overview',
-    }, {
       feat: 'info',
       route: 'info',
     }, {
@@ -67,18 +69,18 @@ export default class Home extends React.Component {
     const { intl, logo, name } = this.props;
     const tenantMenus = [
       <MenuItem key="home">
-        <i className="zmdi zmdi-apps" /> {formatMsg(intl, 'applications')}
+        <Logixon type="grid" /> {formatMsg(intl, 'applications')}
       </MenuItem>,
     ];
     if (this.state.corpMenuLink) {
       tenantMenus.push(<MenuItem key="hub">
         <NavLink to="/hub">
-          <i className="icon-fontello-puzzle" /> {formatMsg(intl, 'openPlatform')}
+          <Logixon type="collab" /> {formatMsg(intl, 'openPlatform')}
         </NavLink>
       </MenuItem>);
       tenantMenus.push(<MenuItem key="corp">
-        <NavLink to={`${this.state.corpMenuLink}`}>
-          <i className="zmdi zmdi-city-alt" /> {formatMsg(intl, 'corp')}
+        <NavLink to="/corp">
+          <Logixon type="admin" /> {formatMsg(intl, 'corp')}
         </NavLink>
       </MenuItem>);
     }

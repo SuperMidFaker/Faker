@@ -8,14 +8,16 @@ import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Sel
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave,
+  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getMasterTradeItem, toggleExportModal } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
 import ItemDiffModal from '../workspace/modal/itemDiffModal';
+import ExportModal from './modal/exportModal';
 
 import { formatMsg } from '../message.i18n';
 
@@ -24,6 +26,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
 const { Option } = Select;
+
 
 @injectIntl
 @connect(
@@ -58,6 +61,8 @@ const { Option } = Select;
     showDeclElementsModal,
     toggleHistoryItemsDecl,
     toggleItemDiffModal,
+    getMasterTradeItem,
+    toggleExportModal,
   }
 )
 @connectNav({
@@ -402,7 +407,14 @@ export default class RepoContent extends Component {
     });
   }
   handleItemDiff = (record) => {
-    this.props.toggleItemDiffModal(true, record);
+    const { params: { repoId } } = this.props;
+    let master = null;
+    this.props.getMasterTradeItem(repoId, record.cop_product_no).then((result) => {
+      if (!result.error) {
+        master = result.data;
+        this.props.toggleItemDiffModal(true, master, record);
+      }
+    });
   }
   handleItemListLoad = (currentPage, filter) => {
     const { listFilter, tradeItemlist: { pageSize, current } } = this.props;
@@ -501,6 +513,9 @@ export default class RepoContent extends Component {
       }
     });
   }
+  toggleExportModal = () => {
+    this.props.toggleExportModal(true);
+  }
   render() {
     const {
       tradeItemlist, repo, listFilter, submitting, tenantId,
@@ -527,7 +542,7 @@ export default class RepoContent extends Component {
       }
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={listFilter.search} key="searchbar" />];
+    const toolbarActions = [<SearchBox placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} key="searchbar" />];
     if (listFilter.status === 'versioned') {
       toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
     }
@@ -566,6 +581,9 @@ export default class RepoContent extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
+            <Button icon="export" onClick={this.toggleExportModal}>
+              {this.msg('export')}
+            </Button>
             { repo.mode === 'master' &&
             <Popover
               placement="left"
@@ -613,6 +631,7 @@ export default class RepoContent extends Component {
           />
           <DeclElementsModal onOk={null} />
           <ItemDiffModal />
+          <ExportModal repoId={this.props.params.repoId} />
         </Content>
       </Layout>
     );

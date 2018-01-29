@@ -10,7 +10,7 @@ import { loadFeesBeforeTime, alterBillingFees, loadClearanceFeesBeforeTime, load
 import TrimSpan from 'client/components/trimSpan';
 import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import { CRM_ORDER_MODE } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -83,16 +83,14 @@ export default class BeforeFeesModal extends React.Component {
   renderTransportCharge = (o, record) => {
     if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.transport) >= 0) {
       return o ? o.toFixed(2) : '';
-    } else {
-      return '';
     }
+    return '';
   }
   renderClearanceCharge = (o, record) => {
     if (record.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
       return o ? o.toFixed(2) : '';
-    } else {
-      return '';
     }
+    return '';
   }
   render() {
     const columns = [{
@@ -161,7 +159,11 @@ export default class BeforeFeesModal extends React.Component {
       render: (o, record) => (<a onClick={() => this.handleAdd(record)}>入帐</a>),
     }];
     return (
-      <Modal maskClosable={false} visible={this.props.visible} width="85%" title="未入账运单"
+      <Modal
+        maskClosable={false}
+        visible={this.props.visible}
+        width="85%"
+        title="未入账运单"
         onOk={() => this.props.showBeforeFeesModal(false)}
         onCancel={() => this.props.showBeforeFeesModal(false)}
       >

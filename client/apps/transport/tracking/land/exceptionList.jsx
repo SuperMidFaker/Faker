@@ -16,9 +16,10 @@ import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+
 const formatMsg = format(messages);
 
 function fetchData({
@@ -30,9 +31,8 @@ function fetchData({
         name: 'type',
         value: params.state,
       };
-    } else {
-      return flt;
     }
+    return flt;
   });
   if (!newfilters.find(item => item.name === 'loginId')) {
     newfilters.push({
@@ -58,15 +58,13 @@ function renderActDate(recordActDate, recordEstDate) {
         <span className="mdc-text-red">
           {moment(recordActDate).format('YYYY.MM.DD')}
         </span>);
-    } else {
-      return (
-        <span className="mdc-text-green">
-          {moment(recordActDate).format('YYYY.MM.DD')}
-        </span>);
     }
-  } else {
-    return <span />;
+    return (
+      <span className="mdc-text-green">
+        {moment(recordActDate).format('YYYY.MM.DD')}
+      </span>);
   }
+  return <span />;
 }
 
 @connectFetch()(fetchData)
@@ -123,9 +121,8 @@ export default class TrackingExceptionList extends React.Component {
             name: 'type',
             value: nextProps.params.state,
           };
-        } else {
-          return flt;
         }
+        return flt;
       });
     } else if (JSON.stringify(this.props.filters) !== JSON.stringify(nextProps.filters)) {
       newfilters = nextProps.filters;
@@ -229,9 +226,8 @@ export default class TrackingExceptionList extends React.Component {
         return <Tag color="green">{this.msg('deliveredShipmt')}</Tag>;
       } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
         return <Tag color="green">{this.msg('proofOfDelivery')}</Tag>;
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     title: this.msg('shipmtPrevTrack'),
@@ -278,12 +274,10 @@ export default class TrackingExceptionList extends React.Component {
               <TrimSpan text={record.sp_name} maxLen={10} />
             </span>
           );
-        } else {
-          return record.sp_name;
         }
-      } else {
-        return this.msg('ownFleet');
+        return record.sp_name;
       }
+      return this.msg('ownFleet');
     },
     filters: this.props.carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
@@ -338,7 +332,7 @@ export default class TrackingExceptionList extends React.Component {
     title: this.msg('shipmtPrmDeliveryDate'),
     dataIndex: 'deliver_prm_date',
     width: 100,
-    render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+    render: o => (o ? moment(o).format('YYYY.MM.DD') : ''),
   }, {
     title: this.msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
@@ -370,9 +364,8 @@ export default class TrackingExceptionList extends React.Component {
         return <Icon type="tags-o" />;
       } else if (record.pod_type === 'ePOD') {
         return <Icon type="tags" />;
-      } else {
-        return <Icon type="qrcode" />;
       }
+      return <Icon type="qrcode" />;
     },
   }, {
     title: this.msg('spDispLoginName'),
@@ -460,9 +453,7 @@ export default class TrackingExceptionList extends React.Component {
     };
     const columns = this.columns();
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-        value={this.state.searchInput}
-      />
+      <SearchBox placeholder={this.msg('searchShipmtPH')} onSearch={this.handleSearchInput} />
       <span />
       <CustomerSelect onChange={this.handleCustomerChange} />
       <span />
@@ -473,8 +464,14 @@ export default class TrackingExceptionList extends React.Component {
     return (
       <div>
         <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-        <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} scroll={{ x: 2780 }} selectedRowKeys={this.state.selectedRowKeys}
+        <DataTable
+          toolbarActions={toolbarActions}
+          rowSelection={rowSelection}
+          columns={columns}
+          loading={loading}
+          dataSource={this.dataSource}
+          scroll={{ x: 2780 }}
+          selectedRowKeys={this.state.selectedRowKeys}
           handleDeselectRows={this.handleSelectionClear}
         />
       </div>

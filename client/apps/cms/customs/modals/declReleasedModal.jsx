@@ -5,10 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Modal, Input, DatePicker, message } from 'antd';
 import { closeDeclReleasedModal, setDeclReleased, validateEntryId } from 'common/reducers/cmsCustomsDeclare';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 
 @injectIntl
@@ -41,6 +39,7 @@ export default class DeclReleasedModal extends React.Component {
       });
     }
   }
+  msg = formatMsg(this.props.intl)
   handleEntryNoChange = (ev) => {
     if (ev.target.value) {
       const declno = ev.target.value.trim();
@@ -106,7 +105,7 @@ export default class DeclReleasedModal extends React.Component {
       }
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  
   render() {
     const { visible } = this.props;
     const { entryNo, validateStatus } = this.state;

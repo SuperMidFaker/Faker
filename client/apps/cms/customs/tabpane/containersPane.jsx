@@ -5,10 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Input, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import DataPane from 'client/components/DataPane';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 function ColumnInput(props) {
   const {
@@ -61,7 +58,7 @@ export default class ContainersPane extends React.Component {
       this.setState({ datas: nextProps.containers });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();

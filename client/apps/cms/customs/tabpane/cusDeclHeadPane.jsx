@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { fillEntryId } from 'common/reducers/cmsManifest';
 import { updateMark } from 'common/reducers/cmsCustomsDeclare';
-import { format } from 'client/common/i18n/helpers';
+
 import InfoItem from 'client/components/InfoItem';
 import FormPane from 'client/components/FormPane';
 import EditableCell from 'client/components/EditableCell';
@@ -15,10 +15,8 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../common/form/headFormItems';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 
 @injectIntl
@@ -38,8 +36,7 @@ export default class CusDeclHeadPane extends React.Component {
     fillEntryId: PropTypes.func.isRequired,
     updateMark: PropTypes.func.isRequired,
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-
+  msg = formatMsg(this.props.intl)
   handleEntryFill = (entryNo) => {
     const { formData } = this.props;
     this.props.fillEntryId({

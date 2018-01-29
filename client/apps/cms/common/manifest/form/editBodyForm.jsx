@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Select, Input, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
+
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
+
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -195,7 +195,7 @@ export default class EditBodyForm extends Component {
       this.props.form.setFieldsValue({ trade_total: tradeTot });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const {
       form: { getFieldDecorator }, editBody, currencies, units, tradeCountries, hscodes, exemptions,

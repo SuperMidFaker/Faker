@@ -5,16 +5,16 @@ import { connect } from 'react-redux';
 import { Button, Card, DatePicker, Form, Icon, Input, Select, Rate, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
-import { format } from 'client/common/i18n/helpers';
+
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { toggleApplyCertsModal } from 'common/reducers/cmsTradeitem';
 import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE, TRADE_ITEM_APPLY_CERTS } from 'common/constants';
 import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import ApplyCertsModal from '../modal/applyCertsModal';
-import messages from '../../../message.i18n';
+import { formatMsg } from '../../../message.i18n';
 
-const formatMsg = format(messages);
+
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -23,7 +23,8 @@ function getFieldInits(formData) {
   if (formData) {
     ['cop_product_no', 'src_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'g_unit_1', 'g_unit_2', 'g_unit_3',
       'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
-      'currency', 'pre_classify_no', 'remark', 'appl_cert_code',
+      'currency', 'pre_classify_no', 'remark', 'appl_cert_code', 'item_type', 'cop_uom', 'proc_method', 'material_ingred', 'use',
+      'confidence',
     ].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
@@ -119,7 +120,7 @@ export default class ItemMasterPane extends React.Component {
       this.setState({ fieldInits });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleHscodeChange = (value) => {
     const { hscodes, form } = this.props;
     form.setFieldsValue({ g_model: '' });
@@ -239,7 +240,12 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('copUOM')}>
                 {getFieldDecorator('cop_uom', {
                   initialValue: fieldInits.cop_uom,
-                })(<Input />)}
+                })(<Select showSearch showArrow optionFilterProp="search">
+                  {
+                    units.map(gt =>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
+                  }
+                </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -252,7 +258,7 @@ export default class ItemMasterPane extends React.Component {
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('materialIngredient')}>
                 {getFieldDecorator('material_ingred', {
-                  initialValue: fieldInits.ingredient,
+                  initialValue: fieldInits.material_ingred,
                 })(<Input />)}
               </FormItem>
             </Col>

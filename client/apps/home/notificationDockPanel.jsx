@@ -4,13 +4,14 @@ import { Avatar, Button, Popconfirm, Tooltip } from 'antd';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { hideNotificationDock, loadMessages, markMessages, markMessage } from 'common/reducers/notification';
 import { MESSAGE_STATUS } from 'common/constants';
 import DockPanel from 'client/components/DockPanel';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+
 const formatMsg = format(messages);
 
 function fetchData({ state, dispatch, cookie }) {
@@ -101,7 +102,7 @@ export default class NotificationDockPanel extends React.Component {
         render: o => moment(o).fromNow(),
       },
     ];
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadMessages(null, params),
       resolve: result => result.data,
       getPagination: (result, resolve) => {
@@ -132,7 +133,9 @@ export default class NotificationDockPanel extends React.Component {
       remotes: this.props.messages,
     });
     return (
-      <DockPanel visible={visible} onClose={this.props.hideNotificationDock}
+      <DockPanel
+        visible={visible}
+        onClose={this.props.hideNotificationDock}
         title={<span>{this.msg('notification')}</span>}
       >
         <div className="toolbar">
@@ -147,7 +150,7 @@ export default class NotificationDockPanel extends React.Component {
             </Popconfirm>
           </div>
         </div>
-        <Table columns={columns} dataSource={dataSource} rowKey="id" locale={{ emptyText: this.msg('emptyNew') }} showHeader={false} scrollOffset={170} />
+        <DataTable columns={columns} dataSource={dataSource} rowKey="id" locale={{ emptyText: this.msg('emptyNew') }} showHeader={false} scrollOffset={170} />
       </DockPanel>
     );
   }

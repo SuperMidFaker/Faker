@@ -5,13 +5,13 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Col, Layout, Row } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+
 import StatsCard from './card/statsCard';
 import ClassificationStatsCard from './card/classificationStatsCard';
 import TaxStatsCard from './card/taxStatsCard';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
+
 const { Header, Content } = Layout;
 
 @injectIntl
@@ -27,7 +27,7 @@ export default class CMSDashboard extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>

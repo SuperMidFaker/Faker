@@ -5,15 +5,16 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Transfer } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers } from 'common/reducers/crmCustomers';
+import { hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers } from 'common/reducers/sofCustomers';
+
 const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.crmCustomers.serviceTeamModal.visible,
-    tenantUsers: state.crmCustomers.serviceTeamModal.tenantUsers,
+    visible: state.sofCustomers.serviceTeamModal.visible,
+    tenantUsers: state.sofCustomers.serviceTeamModal.tenantUsers,
   }),
   {
     hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers,

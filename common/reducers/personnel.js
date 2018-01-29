@@ -14,7 +14,7 @@ const actionTypes = createActionTypes('@@welogix/personnel/', [
   'LOAD_ROLES', 'LOAD_ROLES_SUCCEED', 'LOAD_ROLES_FAIL',
   'SAVE_DEPM', 'SAVE_DEPM_SUCCEED', 'SAVE_DEPM_FAIL',
   'LOAD_NONDEPTM', 'LOAD_NONDEPTM_SUCCEED', 'LOAD_NONDEPTM_FAIL',
-  'OPEN_AMM', 'CLOSE_AMM',
+  'OPEN_AMM', 'CLOSE_AMM', 'TOGGLE_USER_MODAL',
   'LOAD_DEPARTMENT_MEMBERS', 'LOAD_DEPARTMENT_MEMBERS_SUCCEED', 'LOAD_DEPARTMENT_MEMBERS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/personnel/', actionTypes);
@@ -39,6 +39,10 @@ const initialState = {
   visibleMemberModal: false,
   departmentMembers: [],
   roles: [],
+  userModal: {
+    visible: false,
+    pid: '',
+  },
 };
 export default function reducer(state = initialState, action) {
   switch (action.type) {
@@ -69,6 +73,15 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleMemberModal: false };
     case actionTypes.LOAD_ROLES_SUCCEED:
       return { ...state, roles: action.result.data };
+    case actionTypes.TOGGLE_USER_MODAL:
+      return {
+        ...state,
+        userModal: {
+          ...state.userModal,
+          visible: action.visible,
+          pid: action.pid,
+        },
+      };
     default:
       return formReducer(
         actionTypes, state, action, { key: null },
@@ -80,7 +93,11 @@ export default function reducer(state = initialState, action) {
 export function loadMembers(params) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.LOAD_MEMBERS, actionTypes.LOAD_MEMBERS_SUCCEED, actionTypes.LOAD_MEMBERS_FAIL],
+      types: [
+        actionTypes.LOAD_MEMBERS,
+        actionTypes.LOAD_MEMBERS_SUCCEED,
+        actionTypes.LOAD_MEMBERS_FAIL,
+      ],
       endpoint: 'v1/personnel/members',
       method: 'get',
       params,
@@ -91,7 +108,11 @@ export function loadMembers(params) {
 export function loadDepartments(tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.LOAD_DEPARTMENTS, actionTypes.LOAD_DEPARTMENTS_SUCCEED, actionTypes.LOAD_DEPARTMENTS_FAIL],
+      types: [
+        actionTypes.LOAD_DEPARTMENTS,
+        actionTypes.LOAD_DEPARTMENTS_SUCCEED,
+        actionTypes.LOAD_DEPARTMENTS_FAIL,
+      ],
       endpoint: 'v1/personnel/departments',
       method: 'get',
       params: { tenantId },
@@ -102,7 +123,11 @@ export function loadDepartments(tenantId) {
 export function loadDepartmentMembers(departmentId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.LOAD_DEPARTMENT_MEMBERS, actionTypes.LOAD_DEPARTMENT_MEMBERS_SUCCEED, actionTypes.LOAD_DEPARTMENT_MEMBERS_FAIL],
+      types: [
+        actionTypes.LOAD_DEPARTMENT_MEMBERS,
+        actionTypes.LOAD_DEPARTMENT_MEMBERS_SUCCEED,
+        actionTypes.LOAD_DEPARTMENT_MEMBERS_FAIL,
+      ],
       endpoint: 'v1/personnel/department/members',
       method: 'get',
       params: { departmentId },
@@ -113,7 +138,11 @@ export function loadDepartmentMembers(departmentId) {
 export function createDepartment(tenantId, name) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.CREATE_DEPT, actionTypes.CREATE_DEPT_SUCCEED, actionTypes.CREATE_DEPT_FAIL],
+      types: [
+        actionTypes.CREATE_DEPT,
+        actionTypes.CREATE_DEPT_SUCCEED,
+        actionTypes.CREATE_DEPT_FAIL,
+      ],
       endpoint: 'v1/personnel/new/department',
       method: 'post',
       data: { name, tenantId },
@@ -124,7 +153,11 @@ export function createDepartment(tenantId, name) {
 export function delMember(pid, loginId, tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.DEL_MEMBER, actionTypes.DEL_MEMBER_SUCCEED, actionTypes.DEL_MEMBER_FAIL],
+      types: [
+        actionTypes.DEL_MEMBER,
+        actionTypes.DEL_MEMBER_SUCCEED,
+        actionTypes.DEL_MEMBER_FAIL,
+      ],
       endpoint: 'v1/personnel/del/member',
       method: 'del',
       data: { pid, loginId, tenantId },
@@ -135,7 +168,11 @@ export function delMember(pid, loginId, tenantId) {
 export function edit(personnel, code, tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.EDIT_MEMBER, actionTypes.EDIT_MEMBER_SUCCEED, actionTypes.EDIT_MEMBER_FAIL],
+      types: [
+        actionTypes.EDIT_MEMBER,
+        actionTypes.EDIT_MEMBER_SUCCEED,
+        actionTypes.EDIT_MEMBER_FAIL,
+      ],
       endpoint: 'v1/personnel/edit/member',
       method: 'put',
       data: { personnel, code, tenantId },
@@ -146,7 +183,11 @@ export function edit(personnel, code, tenantId) {
 export function submit(personnel, code, tenantId, parentTenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.SUBMIT_MEMBER, actionTypes.SUBMIT_MEMBER_SUCCEED, actionTypes.SUBMIT_MEMBER_FAIL],
+      types: [
+        actionTypes.SUBMIT_MEMBER,
+        actionTypes.SUBMIT_MEMBER_SUCCEED,
+        actionTypes.SUBMIT_MEMBER_FAIL,
+      ],
       endpoint: 'v1/personnel/new/member',
       method: 'post',
       data: {
@@ -174,7 +215,11 @@ export function clearForm() {
 export function switchStatus(index, pid, status) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.SWITCH_STATUS, actionTypes.SWITCH_STATUS_SUCCEED, actionTypes.SWITCH_STATUS_FAIL],
+      types: [
+        actionTypes.SWITCH_STATUS,
+        actionTypes.SWITCH_STATUS_SUCCEED,
+        actionTypes.SWITCH_STATUS_FAIL,
+      ],
       endpoint: 'v1/personnel/member/status',
       method: 'put',
       index,
@@ -186,7 +231,11 @@ export function switchStatus(index, pid, status) {
 export function loadRoles(tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.LOAD_ROLES, actionTypes.LOAD_ROLES_SUCCEED, actionTypes.LOAD_ROLES_FAIL],
+      types: [
+        actionTypes.LOAD_ROLES,
+        actionTypes.LOAD_ROLES_SUCCEED,
+        actionTypes.LOAD_ROLES_FAIL,
+      ],
       endpoint: 'v1/user/roles',
       method: 'get',
       params: { tenantId },
@@ -205,7 +254,11 @@ export function closeMemberModal() {
 export function loadNonDepartmentMembers(deptId, tenantId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.LOAD_NONDEPTM, actionTypes.LOAD_NONDEPTM_SUCCEED, actionTypes.LOAD_NONDEPTM_FAIL],
+      types: [
+        actionTypes.LOAD_NONDEPTM,
+        actionTypes.LOAD_NONDEPTM_SUCCEED,
+        actionTypes.LOAD_NONDEPTM_FAIL,
+      ],
       endpoint: 'v1/personnel/nondepartment/members',
       method: 'get',
       params: { deptId, tenantId },
@@ -216,10 +269,22 @@ export function loadNonDepartmentMembers(deptId, tenantId) {
 export function saveDepartMember(deptId, userId) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.SAVE_DEPM, actionTypes.SAVE_DEPM_SUCCEED, actionTypes.SAVE_DEPM_FAIL],
+      types: [
+        actionTypes.SAVE_DEPM,
+        actionTypes.SAVE_DEPM_SUCCEED,
+        actionTypes.SAVE_DEPM_FAIL,
+      ],
       endpoint: 'v1/personnel/add/department/member',
       method: 'post',
       data: { deptId, userId },
     },
+  };
+}
+
+export function toggleUserModal(visible, pid = '') {
+  return {
+    type: actionTypes.TOGGLE_USER_MODAL,
+    visible,
+    pid,
   };
 }

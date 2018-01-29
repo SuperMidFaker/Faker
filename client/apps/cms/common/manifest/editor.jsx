@@ -11,7 +11,7 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
 import { loadDocuDatas } from 'common/reducers/cmsInvoice';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { CMS_DECL_STATUS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
+
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
@@ -21,13 +21,13 @@ import ContainersPane from './tabpane/containersPane';
 import InvoicesPane from './tabpane/invoicesPane';
 import GenerateDeclModal from './modals/generateDeclModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
-import messages from './message.i18n';
+import { formatMsg } from '../message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import DeclTreePopover from '../popover/declTreePopover';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -117,7 +117,7 @@ export default class ManifestEditor extends React.Component {
       });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -295,6 +295,12 @@ export default class ManifestEditor extends React.Component {
             sort_customs: formData.sort_customs,
             sort_dectotal: formData.sort_dectotal,
             sort_hscode: formData.sort_hscode,
+            gen_invoice: formData.gen_invoice,
+            invoice_template_id: formData.invoice_template_id,
+            gen_packing_list: formData.gen_packing_list,
+            packing_list_template_id: formData.packing_list_template_id,
+            gen_contract: formData.gen_contract,
+            contract_template_id: formData.contract_template_id,
           };
           this.props.saveBillRules({ rules, billSeqNo: this.props.billHead.bill_seq_no });
           message.success('制单规则加载成功');

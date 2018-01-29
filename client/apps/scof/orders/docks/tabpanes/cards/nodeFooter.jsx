@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Steps } from 'antd';
-import { loadOrderNodesTriggers } from 'common/reducers/crmOrders';
+import { loadOrderNodesTriggers } from 'common/reducers/sofOrders';
 
 const { Step } = Steps;
 

@@ -2,9 +2,17 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  flow: {
+    id: 'scof.flow',
+    defaultMessage: '流程',
+  },
   flowName: {
     id: 'scof.flow.name',
-    defaultMessage: '流程',
+    defaultMessage: '流程名称',
+  },
+  flowDesigner: {
+    id: 'scof.flow.designer',
+    defaultMessage: '流程设计器',
   },
   createFlow: {
     id: 'scof.flow.create',
@@ -12,11 +20,15 @@ const messages = defineMessages({
   },
   flowCustomer: {
     id: 'scof.flow.customer',
-    defaultMessage: '客户',
+    defaultMessage: '关联客户',
   },
   customerTracking: {
     id: 'scof.flow.customer.tracking',
     defaultMessage: '客户追踪表',
+  },
+  nodeOrdering: {
+    id: 'scof.flow.node.ordering',
+    defaultMessage: '节点次序',
   },
   flowRelationGraph: {
     id: 'scof.flow.relation.graph',
@@ -73,6 +85,10 @@ const messages = defineMessages({
   saveFlow: {
     id: 'scof.flow.graph.save',
     defaultMessage: '保存',
+  },
+  flowSetting: {
+    id: 'scof.flow.setting',
+    defaultMessage: '流程设置',
   },
   bizObject: {
     id: 'scof.flow.biz.object',
@@ -202,6 +218,14 @@ const messages = defineMessages({
     id: 'scof.flow.biz.node.name',
     defaultMessage: '节点名称',
   },
+  nodeDemander: {
+    id: 'scof.flow.biz.node.demander',
+    defaultMessage: '需求方',
+  },
+  nodeProvider: {
+    id: 'scof.flow.biz.node.provider',
+    defaultMessage: '业务提供方',
+  },
   nodeExecutor: {
     id: 'scof.flow.biz.node.executor',
     defaultMessage: '执行者',
@@ -212,7 +236,11 @@ const messages = defineMessages({
   },
   bizProperties: {
     id: 'scof.flow.biz.properites',
-    defaultMessage: '属性',
+    defaultMessage: '业务属性',
+  },
+  nodeProperties: {
+    id: 'scof.flow.node.properites',
+    defaultMessage: '节点属性',
   },
   nodeEvents: {
     id: 'scof.flow.node.events',
@@ -297,6 +325,10 @@ const messages = defineMessages({
   onSoFinished: {
     id: 'scof.flow.biz.event.so.finished',
     defaultMessage: '已发货',
+  },
+  onSoDecl: {
+    id: 'scof.flow.biz.event.so.decl',
+    defaultMessage: '出库清关',
   },
   onRegFinished: {
     id: 'scof.flow.biz.event.reg.finished',
@@ -413,6 +445,10 @@ const messages = defineMessages({
   deleteConfirm: {
     id: 'scof.flow.trigger.action.confirm.delete',
     defaultMessage: '确定删除该动作',
+  },
+  design: {
+    id: 'scof.flow.list.action.design',
+    defaultMessage: '设计',
   },
 });
 

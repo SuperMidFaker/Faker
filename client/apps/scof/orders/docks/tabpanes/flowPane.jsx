@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 // import moment from 'moment';
 import { Timeline } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import { loadOrderNodes } from 'common/reducers/crmOrders';
+import { loadOrderNodes } from 'common/reducers/sofOrders';
 import { Logixon } from 'client/components/FontIcon';
 import CMSNodeCard from './cards/cmsNodeCard';
 import TMSNodeCard from './cards/tmsNodeCard';
@@ -18,8 +18,8 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    shipmtOrderNo: state.crmOrders.dock.order.shipmt_order_no,
-    bizObjects: state.crmOrders.orderBizObjects,
+    shipmtOrderNo: state.sofOrders.dock.order.shipmt_order_no,
+    bizObjects: state.sofOrders.orderBizObjects,
   }),
   { loadOrderNodes }
 )

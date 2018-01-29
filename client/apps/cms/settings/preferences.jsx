@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Form, Radio, Layout } from 'antd';
+import { Breadcrumb, Card, Collapse, List, Radio, Layout, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { switchNavOption } from 'common/reducers/cmsPreferences';
-import { CMS_DECL_CHANNEL } from 'common/constants';
+import { CMS_DECL_CHANNEL, CMS_PLUGINS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import PageHeader from 'client/components/PageHeader';
+import SettingMenu from './menu';
+import { formatMsg } from './message.i18n';
 
-
-const { Content } = Layout;
+const { Content, Sider } = Layout;
+const { Panel } = Collapse;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -34,29 +35,20 @@ const FormItem = Form.Item;
 export default class Preferences extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    navOption: 'CC',
     declChannel: '',
   }
   componentWillMount() {
     if (window.localStorage) {
-      const navOption = window.localStorage.getItem('cms-nav-option');
       const declChannel = window.localStorage.getItem('decl-channel');
-      this.setState({ navOption, declChannel });
+      this.setState({ declChannel });
     }
   }
-  handleNavOptionChange = (ev) => {
-    this.props.switchNavOption(ev.target.value);
-    if (window.localStorage) {
-      window.localStorage.setItem('cms-nav-option', ev.target.value);
-      this.setState({ navOption: ev.target.value });
-    }
-  }
+  msg = formatMsg(this.props.intl)
   handleDeclChannelChange = (ev) => {
     if (window.localStorage) {
       window.localStorage.setItem('decl-channel', ev.target.value);
@@ -64,61 +56,97 @@ export default class Preferences extends Component {
     }
   }
   render() {
-    const radioStyle = {
-      display: 'block',
-      height: '30px',
-      lineHeight: '30px',
+    const customPanelStyle = {
+      background: 'transparent',
+      border: 0,
     };
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
+    const cusDeclPrefList = [
+      {
+        key: 'declChannel',
+        name: '默认申报通道',
+        actions: [<RadioGroup
+          value={this.state.declChannel}
+          onChange={this.handleDeclChannelChange}
+        >
+          {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
+          const channel = CMS_DECL_CHANNEL[declChannel];
+          return (<RadioButton
+            value={channel.value}
+            key={channel.value}
+            disabled={channel.disabled}
+          >
+            {channel.text}
+          </RadioButton>);
+        })}
+        </RadioGroup>,
+        ],
       },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
-    };
+    ];
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
+        <Sider width={200} className="menu-sider" key="sider">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-              设置
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-              参数设定
+                {this.msg('settings')}
               </Breadcrumb.Item>
             </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
-        <Content className="page-content layout-fixed-width">
-          <Card title="导航菜单">
-            <RadioGroup value={this.state.navOption} onChange={this.handleNavOptionChange} disabled>
-              <Radio style={radioStyle} value="CC">按报关、报检</Radio>
-              <Radio style={radioStyle} value="IE">按进口、出口</Radio>
-              <Radio style={radioStyle} value="ALL">同时显示</Radio>
-            </RadioGroup>
-          </Card>
-          <Card title="报关">
-            <FormItem label="默认申报通道" {...formItemLayout}>
-              <RadioGroup value={this.state.declChannel} onChange={this.handleDeclChannelChange}>
-                {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
-                  const channel = CMS_DECL_CHANNEL[declChannel];
-                  return (<RadioButton
-                    value={channel.value}
-                    key={channel.value}
-                    disabled={channel.disabled}
-                  >
-                    {channel.text}
-                  </RadioButton>);
-                })}
-              </RadioGroup>
-            </FormItem>
-          </Card>
-          <Card title="报检" />
-        </Content>
+          </div>
+          <div className="left-sider-panel">
+            <SettingMenu currentKey="preferences" />
+          </div>
+        </Sider>
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('preferences')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+          </PageHeader>
+          <Content className="page-content layout-fixed-width">
+            <Collapse bordered={false} defaultActiveKey={['pluginsPref', 'cusDeclPref']}>
+              <Panel header={this.msg('pluginsPref')} key="pluginsPref" style={customPanelStyle}>
+                <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 0 }} >
+                  <List
+                    dataSource={CMS_PLUGINS}
+                    renderItem={plugin => (
+                      <List.Item
+                        key={plugin.key}
+                        actions={[<Switch checkedChildren="开启" unCheckedChildren="关闭" />]}
+                      >
+                        <List.Item.Meta
+                          title={plugin.name}
+                          description={plugin.desc}
+                        />
+                      </List.Item>
+                      )}
+                  />
+                </Card>
+              </Panel>
+              <Panel header={this.msg('cusDeclPref')} key="cusDeclPref" style={customPanelStyle}>
+                <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 0 }} >
+                  <List
+                    dataSource={cusDeclPrefList}
+                    renderItem={pref => (
+                      <List.Item
+                        key={pref.key}
+                        actions={pref.actions}
+                      >
+                        <List.Item.Meta
+                          title={pref.name}
+                          description={pref.desc}
+                        />
+                      </List.Item>
+                      )}
+                  />
+                </Card>
+              </Panel>
+            </Collapse>
+          </Content>
+        </Layout>
       </Layout>
     );
   }

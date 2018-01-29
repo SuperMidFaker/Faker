@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { Modal, Input } from 'antd';
+import { Modal } from 'antd';
 import { connect } from 'react-redux';
 import { toggleTradeItemModal, loadTradeItems, addPermitTradeItem, loadPermitModels } from 'common/reducers/cmsPermit';
 import DataTable from 'client/components/DataTable';
+import SearchBox from 'client/components/SearchBox';
+import { intlShape, injectIntl } from 'react-intl';
 
-const { Search } = Input;
+import { formatMsg } from '../message.i18n';
 
+
+@injectIntl
 @connect(
   state => ({
     visible: state.cmsPermit.tradeItemModal.visible,
@@ -21,23 +25,27 @@ const { Search } = Input;
   }
 )
 export default class PermitItemModal extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+  }
   state = {
     searchText: '',
     selectedRowKeys: [],
     selectedRows: [],
   }
+  msg = formatMsg(this.props.intl)
   columns = [{
-    title: '序号',
+    title: this.msg('no'),
     width: 45,
     render: (o, record, index) => index + 1,
   }, {
-    title: '商品货号',
+    title: this.msg('productNo'),
     dataIndex: 'cop_product_no',
   }, {
-    title: 'HS编码',
+    title: this.msg('hscode'),
     dataIndex: 'hscode',
   }, {
-    title: '中文品名',
+    title: this.msg('gName'),
     dataIndex: 'g_name',
   }]
   handleCancel = () => {
@@ -107,7 +115,7 @@ export default class PermitItemModal extends Component {
     };
     return (
       <Modal
-        title="关联商品货号"
+        title={this.msg('relProductNo')}
         width={800}
         visible={this.props.visible}
         onCancel={this.handleCancel}
@@ -123,10 +131,7 @@ export default class PermitItemModal extends Component {
           loading={this.props.loading}
           rowSelection={rowSelection}
           toolbarActions={
-            <Search
-              style={{ width: 200 }}
-              value={this.state.searchText}
-              onChange={this.handleChange}
+            <SearchBox
               onSearch={this.handleSearch}
             />
           }

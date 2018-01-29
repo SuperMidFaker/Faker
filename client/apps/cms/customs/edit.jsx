@@ -10,7 +10,6 @@ import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsMani
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog, uploadDecl } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
-import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
@@ -30,9 +29,8 @@ import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import CusDeclLogsPanel from './panel/cusDeclLogsPanel';
 import { StandardDocDef } from './print/docDef';
 import DeclMsgModal from './modals/declMsgModal';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -126,7 +124,7 @@ export default class CustomsDeclEditor extends React.Component {
       this.props.setNavTitle(navObj);
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -343,8 +341,8 @@ export default class CustomsDeclEditor extends React.Component {
     tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
       <AttachedDocsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
-    tabs.push(<TabPane tab="预估税金" key="dutyTax" head={head}>
-      <DutyTaxPane fullscreen={this.state.fullscreen} />
+    tabs.push(<TabPane tab="预估税金" key="dutyTax">
+      <DutyTaxPane fullscreen={this.state.fullscreen} head={head} />
     </TabPane>);
     tabs.push(<TabPane tab="申报清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />

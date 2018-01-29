@@ -1,40 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import { Avatar, Badge, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
+import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import { toggleAppCreateModal, loadDevApps } from 'common/reducers/hubDevApp';
+import RowAction from 'client/components/RowAction';
+import HubSiderMenu from '../menu';
+import AppCreateModal from './modal/appCreateModal';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 
 @injectIntl
-@connect(state => ({
-  profile: state.account.profile,
-  role: state.account.role_name,
-  tenantId: state.account.tenantId,
-  parentTenantId: state.account.parentTenantId,
-  code: state.account.code,
-}), )
-
+@connect(
+  state => ({
+    apps: state.hubDevApp.apps,
+    pageSize: state.hubDevApp.apps.pageSize,
+    filter: state.hubDevApp.filter,
+  }),
+  { toggleAppCreateModal, loadDevApps }
+)
 export default class DevAppList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    avatar: '',
+  componentDidMount() {
+    this.props.loadDevApps({
+      pageSize: this.props.apps.pageSize,
+      current: 1,
+      filter: JSON.stringify({}),
+    });
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
-  handleCancel = () => {
-    this.context.router.goBack();
-  }
+  msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('appName'),
     dataIndex: 'app_name',
@@ -61,46 +63,86 @@ export default class DevAppList extends React.Component {
     ),
   }];
 
-  mockDataSource = [{
-    app_name: '夸微制单系统',
-    scope: '全局',
-    api_key: 'a530318f6f6890a68dc6efeadb623926',
-    api_secret: '62740c97bf7868964b58e314cc8205c8',
-  },
-  ];
-
+  handleCancel = () => {
+    this.context.router.goBack();
+  }
+  handleConfig = (appId) => {
+    this.context.router.push(`/hub/dev/${appId}`);
+  }
+  handleCreateApp = () => {
+    this.props.toggleAppCreateModal(true);
+  }
+  handleSearch = (value) => {
+    const filter = { ...this.props.filter, searchText: value };
+    this.props.loadDevApps({
+      pageSize: this.props.apps.pageSize,
+      current: 1,
+      filter: JSON.stringify(filter),
+    });
+  }
+  handleOpenApiDocs = () => {
+    window.open('https://docs.welogix.cn');
+  }
   render() {
+    const { apps, filter } = this.props;
+    const pagination = {
+      hideOnSinglePage: true,
+      pageSize: Number(apps.pageSize),
+      current: Number(apps.current),
+      total: apps.total,
+      showTotal: total => `共 ${total} 条`,
+      onChange: (page, pageSize) => {
+        this.props.loadDevApps({
+          pageSize,
+          current: page,
+          filter: JSON.stringify(filter),
+        });
+      },
+    };
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="code-o" /> 自建应用
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Actions>
-            <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
-              {this.msg('create')}
-            </Button>
-          </PageHeader.Actions>
-        </PageHeader>
-        <Content className="page-content">
-          <List
-            grid={{ gutter: 16, column: 3 }}
-            dataSource={this.mockDataSource}
-            renderItem={item => (
-              <List.Item>
-                <Card title={item.app_name} className="app-card">
-                  <div className="app-logo" />
-                  <div className="app-desc">{item.scope}</div>
-                </Card>
-              </List.Item>
-              )}
-          />
-        </Content>
-      </div>
+      <Layout>
+        <HubSiderMenu currentKey="dev" />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Icon type="code-o" /> {this.msg('dev')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
+              <Button icon="book" onClick={this.handleOpenApiDocs}>{this.msg('apiDocs')}</Button>
+              <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
+                {this.msg('create')}
+              </Button>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content layout-fixed-width">
+            <Card bodyStyle={{ padding: 16 }} >
+              <List
+                dataSource={this.props.apps.data}
+                header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
+                pagination={pagination}
+                renderItem={item => (
+                  <List.Item
+                    key={item.app_id}
+                    actions={[<RowAction size="default" onClick={() => this.handleConfig(item.app_id)} icon="setting" label={this.msg('config')} />]}
+                  >
+                    <List.Item.Meta
+                      avatar={<Avatar shape="square" src={item.app_logo} />}
+                      title={item.app_name}
+                      description={item.app_desc}
+                    />
+                    {item.status ? <Badge status="success" text="已上线" /> : <Badge status="default" text="未上线" />}
+                  </List.Item>
+                  )}
+              />
+            </Card>
+          </Content>
+          <AppCreateModal />
+        </Layout>
+      </Layout>
     );
   }
 }

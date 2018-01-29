@@ -28,7 +28,9 @@ module.exports = function create(options) {
 
   app.use(kLogger());
   if (opts.public) {
-    app.use(assets(path.resolve(__dirname, '../..', 'public')));
+    app.use(assets(path.resolve(__dirname, '../..', 'public'), {
+      maxage: 604800000,
+    }));
   }
   if (opts.middlewares && isArray(opts.middlewares)) {
     opts.middlewares.forEach(m => app.use(m));

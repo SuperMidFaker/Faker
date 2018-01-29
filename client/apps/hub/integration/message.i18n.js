@@ -6,21 +6,45 @@ const messages = defineMessages({
     id: 'hub.integration.parent',
     defaultMessage: '协作平台',
   },
-  integration: {
-    id: 'hub.integration',
-    defaultMessage: '整合管理',
+  searchTip: {
+    id: 'hub.integration.search.tip',
+    defaultMessage: '搜索已安装应用',
   },
-  integrationDesc: {
-    id: 'hub.integration.desc',
-    defaultMessage: '微骆平台提供了与主流关务软件、口岸信息平台的对接能力，企业用户可以通过配置对接参数，快速实现系统整合。',
+  allApps: {
+    id: 'hub.integration.all.apps',
+    defaultMessage: '全部应用',
+  },
+  categories: {
+    id: 'hub.integration.categories',
+    defaultMessage: '应用分类',
+  },
+  catEnt: {
+    id: 'hub.integration.cat.ent',
+    defaultMessage: '企业关务',
+  },
+  catCus: {
+    id: 'hub.integration.cat.cus',
+    defaultMessage: '海关申报',
+  },
+  catSup: {
+    id: 'hub.integration.cat.sup',
+    defaultMessage: '辅助监管',
+  },
+  catLog: {
+    id: 'hub.integration.cat.log',
+    defaultMessage: '物流平台',
   },
   appsStore: {
     id: 'hub.integration.apps.store',
-    defaultMessage: '系统整合',
+    defaultMessage: '应用市场',
   },
   installedApps: {
     id: 'hub.integration.installed.apps',
     defaultMessage: '已安装应用',
+  },
+  appName: {
+    id: 'hub.integration.app.name',
+    defaultMessage: '应用名称',
   },
   appAmberRoadCTM: {
     id: 'hub.integration.app.arctm',
@@ -66,17 +90,33 @@ const messages = defineMessages({
     id: 'hub.integration.opcolumn',
     defaultMessage: '操作',
   },
-  installApp: {
-    id: 'hub.integration.install.app',
+  install: {
+    id: 'hub.integration.install',
     defaultMessage: '安装',
   },
-  saveApp: {
-    id: 'hub.integration.save.app',
+  save: {
+    id: 'hub.integration.save',
     defaultMessage: '保存',
   },
-  cancel: {
-    id: 'hub.integration.cancel',
-    defaultMessage: '取消',
+  close: {
+    id: 'hub.integration.close',
+    defaultMessage: '关闭',
+  },
+  enable: {
+    id: 'hub.integration.enable',
+    defaultMessage: '启用',
+  },
+  disable: {
+    id: 'hub.integration.disable',
+    defaultMessage: '停用',
+  },
+  installApp: {
+    id: 'hub.integration.install.app',
+    defaultMessage: '安装应用',
+  },
+  deleteApp: {
+    id: 'hub.integration.delete.app',
+    defaultMessage: '删除应用',
   },
   integrationNameRequired: {
     id: 'hub.integration.name.required',
@@ -173,6 +213,18 @@ const messages = defineMessages({
   sfexpressCustid: {
     id: 'hub.integration.sfexpress.custid',
     defaultMessage: '月结卡号',
+  },
+  appEnabled: {
+    id: 'hub.integration.msg.app.enabled',
+    defaultMessage: '已启用',
+  },
+  appDisabled: {
+    id: 'hub.integration.msg.app.disabled',
+    defaultMessage: '已停用',
+  },
+  appDeleted: {
+    id: 'hub.integration.msg.app.deleted',
+    defaultMessage: '应用已删除',
   },
 });
 

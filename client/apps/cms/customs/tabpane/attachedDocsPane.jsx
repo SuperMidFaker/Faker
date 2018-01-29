@@ -7,10 +7,8 @@ import { loadDocuMarks, saveDocuMark, delDocumark, addCmsDeclDocu } from 'common
 import { CMS_DECL_DOCU, CMS_DECL_STATUS } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Option } = Select;
 
 function ColumnInput(props) {
@@ -119,7 +117,7 @@ export default class AttachedDocsPane extends React.Component {
       this.setState({ datas: nextProps.docuMarks });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();

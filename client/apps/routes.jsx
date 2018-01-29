@@ -10,27 +10,25 @@ import * as Home from './home';
 import SSO from './sso/pack-sso';
 import Login from './sso/login';
 import Forgot from './sso/forgot';
-import PackAccount from './account/pack-account';
+import PackAccount from './account/packAccount';
 import MyProfile from './account/profile';
 import Password from './account/password';
-import Corp from './corp/pack-corp';
-import * as CorpOverview from './corp/overview';
-import CorpInfo from './corp/info';
-import * as Organization from './corp/organization';
+import PackCorp from './corp/packCorp';
+import * as Corp from './corp';
 import * as CorpMembers from './corp/members';
 import * as CorpRole from './corp/role';
 import * as CorpLogs from './corp/logs';
-import PackDataHub from './hub/packDataHub';
+import PackCollabHub from './hub/packCollabHub';
 import * as Collab from './hub/collab';
 import * as HubDev from './hub/dev';
 import * as HubAdapter from './hub/adapter';
-import * as OpenIntegration from './hub/integration';
-import * as IntegraionArCTM from './hub/integration/arctm';
-import * as IntegraionQuickPass from './hub/integration/quickpass';
-import * as IntegraionEasipassEDI from './hub/integration/easipass';
-import * as IntegraionSingleWindow from './hub/integration/singlewindow';
-import * as IntegraionSHFTZ from './hub/integration/shftz';
-import * as IntegraionSFExpress from './hub/integration/sfexpress';
+import * as HubIntegration from './hub/integration';
+import * as HubArCTM from './hub/integration/arctm';
+import * as HubQuickPass from './hub/integration/quickpass';
+import * as HubEasipassEDI from './hub/integration/easipass';
+import * as HubSingleWindow from './hub/integration/singlewindow';
+import * as HubSHFTZ from './hub/integration/shftz';
+import * as HubSFExpress from './hub/integration/sfexpress';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -48,15 +46,14 @@ import * as Template from './pub/template';
 import CMS from './cms/module-clearance';
 import * as CMSDashboard from './cms/dashboard';
 import * as CMSDelegation from './cms/delegation';
+import * as CMSClients from './cms/delegation/clients';
 import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
-import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
-import * as CMSClients from './cms/settings/clients';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
 import * as CMSTradeItemRepo from './cms/tradeitem/repo';
@@ -91,8 +88,6 @@ import * as CWMSupSHFTZBatchDecl from './cwm/supervision/shftz/decl/batch';
 import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
 import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbonded';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
-import SCV from './scv/module-scv';
-import * as SCVDashboard from './scv/dashboard';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
@@ -100,6 +95,7 @@ import * as SCOFTracking from './scof/tracking';
 import * as SCOFCustomers from './scof/customers';
 import * as SCOFVendors from './scof/vendors';
 import * as SCOFFlow from './scof/flow';
+import * as SCOFSettings from './scof/settings';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
 import * as BSSFeeSummary from './bss/fee/summary';
@@ -166,60 +162,49 @@ export default(store) => {
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
         </Route>
-        <Route path="hub" component={PackDataHub}>
-          <IndexRedirect to="/hub/integration/installed" />
+        <Route path="hub" component={PackCollabHub}>
+          <IndexRedirect to="/hub/integration/apps" />
           <Route path="dev">
             <IndexRoute component={HubDev.List} />
-            {/* <Route path=":appId" component={HubDev.Profile} /> */}
+            <Route path=":appId" component={HubDev.Config} />
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">
-            <Route path="apps" component={OpenIntegration.AppsList} />
-            <Route path="installed" component={OpenIntegration.InstalledList} />
+            <Route path="apps" component={HubIntegration.AppsList} />
+            <Route path="installed" component={HubIntegration.InstalledList} />
             <Route path="arctm">
-              <Route path="install" component={IntegraionArCTM.Install} />
-              <Route path="config/:uuid" component={IntegraionArCTM.Config} />
+              <Route path="config/:uuid" component={HubArCTM.Config} />
             </Route>
             <Route path="quickpass">
-              <Route path="install" component={IntegraionQuickPass.Install} />
-              <Route path="config/:uuid" component={IntegraionQuickPass.Config} />
+              <Route path="config/:uuid" component={HubQuickPass.Config} />
             </Route>
             <Route path="easipass">
-              <Route path="install" component={IntegraionEasipassEDI.Install} />
-              <Route path="config/:uuid" component={IntegraionEasipassEDI.Config} />
+              <Route path="config/:uuid" component={HubEasipassEDI.Config} />
             </Route>
             <Route path="singlewindow">
-              <Route path="install" component={IntegraionSingleWindow.Install} />
-              <Route path="config/:uuid" component={IntegraionSingleWindow.Config} />
+              <Route path="config/:uuid" component={HubSingleWindow.Config} />
             </Route>
             <Route path="shftz">
-              <Route path="install" component={IntegraionSHFTZ.Install} />
-              <Route path="config/:uuid" component={IntegraionSHFTZ.Config} />
+              <Route path="config/:uuid" component={HubSHFTZ.Config} />
             </Route>
             <Route path="sfexpress">
-              <Route path="install" component={IntegraionSFExpress.Install} />
-              <Route path="config/:uuid" component={IntegraionSFExpress.Config} />
+              <Route path="config/:uuid" component={HubSFExpress.Config} />
             </Route>
           </Route>
           <Route path="collab">
-            <Route path="partners" component={Collab.Partners} />
+            <Route path="invitation" component={Collab.Invitation} />
+            <Route path="template" component={Collab.Template} />
           </Route>
         </Route>
-        <Route path="corp" component={Corp}>
-          <IndexRedirect to="/corp/overview" />
-          <Route path="overview" component={CorpOverview.Index} />
-          <Route path="info" component={CorpInfo} />
-          <Route path="organization" component={Organization.Wrapper}>
-            <IndexRoute component={Organization.List} />
-            <Route path="new" component={Organization.Edit} />
-            <Route path="edit/:id" component={Organization.Edit} />
-          </Route>
+        <Route path="corp" component={PackCorp}>
+          <IndexRedirect to="/corp/info" />
+          <Route path="info" component={Corp.Info} />
           <Route path="members">
             <IndexRoute component={CorpMembers.List} />
             <Route path="new" component={CorpMembers.Edit} />
             <Route path="edit/:id" component={CorpMembers.Edit} />
           </Route>
-          <Route path="role" component={CorpRole.Wrapper}>
+          <Route path="role">
             <IndexRoute component={CorpRole.List} />
             <Route path="new" component={CorpRole.Create} />
             <Route path="edit/:id" component={CorpRole.Edit} />
@@ -299,7 +284,13 @@ export default(store) => {
             <Route path="delegation">
               <IndexRoute component={CMSDelegation.List} />
               <Route path="create" component={CMSDelegation.Create} />
-              <Route path=":delgNo" component={CMSDelegation.Detail} />
+              <Route path="clients">
+                <IndexRoute component={CMSClients.List} />
+                <Route path="templates/invoice/:id" component={CMSClients.InvoiceTemplate} />
+                <Route path="templates/contract/:id" component={CMSClients.ContractTemplate} />
+                <Route path="templates/packinglist/:id" component={CMSClients.PackingListTemplate} />
+              </Route>
+              <Route path="edit/:delgNo" component={CMSDelegation.Detail} />
             </Route>
             <Route path="cusdecl">
               <IndexRoute component={CMSCusDecl.List} />
@@ -338,43 +329,29 @@ export default(store) => {
               <Route path="add" component={CMSPermit.Add} />
               <Route path=":id" component={CMSPermit.Detail} />
             </Route>
-            <Route path="billing">
-              <IndexRedirect to="/clearance/billing/expense" />
-              <Route path="expense" component={CMSExpense.List} />
+            <Route path="expense">
               <Route path="receivable">
-                <IndexRoute component={CMSBilling.ReceivableList} />
-                <Route path="create" component={CMSBilling.CreateReceivableBilling} />
-                <Route path="check/:billingId" component={CMSBilling.CheckReceivableBilling} />
-                <Route path="view/:billingId" component={CMSBilling.ViewReceivableBilling} />
-                <Route path="edit/:billingId" component={CMSBilling.EditReceivableBilling} />
+                <IndexRoute component={CMSExpense.ReceivableList} />
               </Route>
               <Route path="payable">
-                <IndexRoute component={CMSBilling.PayableList} />
-                <Route path="create" component={CMSBilling.CreatePayableBilling} />
-                <Route path="check/:billingId" component={CMSBilling.CheckPayableBilling} />
-                <Route path="view/:billingId" component={CMSBilling.ViewPayableBilling} />
-                <Route path="edit/:billingId" component={CMSBilling.EditPayableBilling} />
+                <IndexRoute component={CMSExpense.PayableList} />
               </Route>
-              <Route path="quote">
-                <IndexRoute component={CMSQuote.List} />
-                <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
-                <Route path="view/:quoteno/:version" component={CMSQuote.View} />
-                <Route path="template" component={CMSQuote.Template} />
-              </Route>
+              <Route path=":prType/:delgNo" component={CMSExpense.Detail} />
+            </Route>
+            <Route path="quote">
+              <IndexRoute component={CMSQuote.List} />
+              <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
+              <Route path="view/:quoteno/:version" component={CMSQuote.View} />
+              <Route path="template" component={CMSQuote.Template} />
             </Route>
             <Route path="analytics">
               <IndexRoute component={CMSAnalytics.List} />
               <Route path="report/:id" component={CMSAnalytics.Report} />
             </Route>
             <Route path="settings">
-              <Route path="brokers" component={CMSBrokers.List} />
-              <Route path="clients">
-                <IndexRoute component={CMSClients.List} />
-                <Route path="templates/invoice/:id" component={CMSClients.InvoiceTemplate} />
-                <Route path="templates/contract/:id" component={CMSClients.ContractTemplate} />
-                <Route path="templates/packinglist/:id" component={CMSClients.PackingListTemplate} />
-              </Route>
+              <IndexRedirect to="/clearance/settings/preferences" />
               <Route path="preferences" component={CMSSettings.Preferences} />
+              <Route path="brokers" component={CMSBrokers.List} />
             </Route>
             <Route path="tradeitem">
               <IndexRedirect to="/clearance/tradeitem/repo" />
@@ -406,10 +383,6 @@ export default(store) => {
                 <Route path="changes" component={CMSTradeItemHSCode.Changes} />
               </Route>
             </Route>
-          </Route>
-          <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
-            <IndexRedirect to="/scv/dashboard" />
-            <Route path="dashboard" component={SCVDashboard.Index} />
           </Route>
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
             <IndexRedirect to="/cwm/dashboard" />
@@ -513,8 +486,7 @@ export default(store) => {
             <Route path="orders" >
               <IndexRoute component={SCOFOrders.List} />
               <Route path="create" component={SCOFOrders.Create} />
-              <Route path="view" component={SCOFOrders.View} />
-              <Route path="edit" component={SCOFOrders.Edit} />
+              <Route path="edit/:orderNo" component={SCOFOrders.Edit} />
             </Route>
             <Route path="tracking">
               <Route path="customize">
@@ -525,6 +497,10 @@ export default(store) => {
             <Route path="customers" component={SCOFCustomers.List} />
             <Route path="vendors" component={SCOFVendors.List} />
             <Route path="flow" component={SCOFFlow.ListPanel} />
+            <Route path="settings">
+              <IndexRedirect to="/scof/settings/preferences" />
+              <Route path="preferences" component={SCOFSettings.Preferences} />
+            </Route>
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
             <IndexRedirect to="/bss/dashboard" />

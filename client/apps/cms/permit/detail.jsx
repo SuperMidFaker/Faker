@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
+
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -11,10 +11,9 @@ import { updatePermit } from 'common/reducers/cmsPermit';
 import PermitHeadPane from './tabpane/permitHeadPane';
 import PermitItemsPane from './tabpane/permitItemsPane';
 import PermitUsagePane from './tabpane/permitUsagePane';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -42,7 +41,7 @@ export default class PermitDetail extends Component {
   state = {
     permit_file: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
@@ -50,8 +49,8 @@ export default class PermitDetail extends Component {
         data.permit_file = this.state.permit_file;
         this.props.updatePermit({ ...data, id: this.context.router.params.id }).then((result) => {
           if (!result.error) {
-            message.info('更新成功');
-            this.context.router.push('clearance/permit');
+            message.info(this.msg('updateSuccess'));
+            this.context.router.push('/clearance/permit');
           }
         });
       }

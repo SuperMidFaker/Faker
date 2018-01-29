@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Tooltip, Tag, Radio } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import * as Location from 'client/util/location';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
@@ -11,6 +11,7 @@ import { formatMsg } from '../../message.i18n';
 import { loadTransitTable, loadShipmtDetail, hideDock } from 'common/reducers/shipment';
 import RevokeModal from '../../../common/modal/revokeModal';
 import { columnDef } from './columnDef';
+
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -73,7 +74,7 @@ export default class TodoTrackingPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadTransitTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -235,8 +236,14 @@ export default class TodoTrackingPane extends Component {
           </RadioGroup>
         </div>
         <div>
-          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.trackingList.loading}
+          <DataTable
+            size="middle"
+            dataSource={dataSource}
+            columns={columns}
+            showHeader={false}
+            locale={{ emptyText: '没有待办事项' }}
+            rowKey="id"
+            loading={this.props.trackingList.loading}
           />
           <RevokeModal reload={this.handleTableReload} />
         </div>

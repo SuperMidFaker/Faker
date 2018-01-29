@@ -5,8 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Transfer } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { loadTenantUsers } from 'common/reducers/crmCustomers';
+import { loadTenantUsers } from 'common/reducers/sofCustomers';
 import { hideStaffModal, addStaff, loadStaffs } from 'common/reducers/cwmWarehouse';
+
 const formatMsg = format(messages);
 
 @injectIntl
@@ -14,7 +15,7 @@ const formatMsg = format(messages);
   state => ({
     visible: state.cwmWarehouse.staffModal.visible,
     loginId: state.account.loginId,
-    tenantUsers: state.crmCustomers.serviceTeamModal.tenantUsers,
+    tenantUsers: state.sofCustomers.serviceTeamModal.tenantUsers,
   }),
   {
     hideStaffModal, addStaff, loadStaffs, loadTenantUsers,

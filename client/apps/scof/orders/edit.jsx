@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
-import OrderForm from './forms/orderForm';
 import PageHeader from 'client/components/PageHeader';
-import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/crmOrders';
+import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/sofOrders';
+import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { format } from 'client/common/i18n/helpers';
+import OrderForm from './forms/orderForm';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -17,14 +18,17 @@ const { Content } = Layout;
 const VALIDATE_MSG = {
   no_customer: '请选择客户',
   no_goods_type: '请选择货物类型',
+  no_order_type: '请选择订单类型',
+  no_order_type_attr: '请填写订单类型扩展属性',
   no_flowid: '请选择流程',
   cust_order_no_exist: '客户订单号已存在',
 };
 
-function fetchData({ state, location, dispatch }) {
+function fetchData({ state, params, dispatch }) {
   const proms = [
     dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
-    dispatch(loadOrder(location.query.shipmtOrderNo)),
+    dispatch(loadRequireOrderTypes()),
+    dispatch(loadOrder(params.orderNo)),
   ];
   return Promise.all(proms);
 }
@@ -38,8 +42,8 @@ function fetchData({ state, location, dispatch }) {
 @connect(
   state => ({
     tenantName: state.account.tenantName,
-    formData: state.crmOrders.formData,
-    saving: state.crmOrders.orderSaving,
+    formData: state.sofOrders.formData,
+    saving: state.sofOrders.orderSaving,
   }),
   { editOrder, validateOrder }
 )
@@ -47,7 +51,7 @@ export default class EditOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
+    formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     editOrder: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -96,7 +100,7 @@ export default class EditOrder extends Component {
         notification.error({
           message: '错误信息',
           description: result.error.message,
-        }, );
+        });
       } else {
         message.success('保存成功');
         this.context.router.push('/scof/orders');
@@ -108,7 +112,7 @@ export default class EditOrder extends Component {
   }
   render() {
     return (
-      <div>
+      <Layout>
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
@@ -132,7 +136,7 @@ export default class EditOrder extends Component {
         <Content className="page-content">
           <OrderForm operation="edit" />
         </Content>
-      </div>
+      </Layout>
     );
   }
 }

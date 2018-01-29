@@ -14,7 +14,7 @@ import { SHIPMENT_BILLING_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import ExportBillingExcel from '../modals/exportBillingsExcel';
 
 const formatMsg = format(messages);
@@ -308,9 +308,7 @@ export default class BillingList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-        value={this.props.billings.searchValue}
-      />
+      <SearchBox placeholder="输入账单名称搜索" onSearch={this.handleSearchInput} />
     </span>);
     return (
       <div>
@@ -329,13 +327,24 @@ export default class BillingList extends React.Component {
           </div>
         </Header>
         <Content className="main-content">
-          <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} dataSource={dataSource}
-            columns={columns} rowKey="id"
-            loading={loading} scroll={{ x: 1500 }} selectedRowKeys={this.state.selectedRowKeys}
+          <DataTable
+            toolbarActions={toolbarActions}
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            columns={columns}
+            rowKey="id"
+            loading={loading}
+            scroll={{ x: 1500 }}
+            selectedRowKeys={this.state.selectedRowKeys}
           />
           <BillingForm type={type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
-          <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
-            billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
+          <CancelChargeModal
+            visible={this.state.cancelChargeModalVisible}
+            toggle={this.toggleCancelChargeModal}
+            billingId={this.state.billingId}
+            fromId={this.state.fromId}
+            totalCharge={this.state.totalCharge}
+            handleOk={this.handleTableLoad}
           />
         </Content>
       </div>

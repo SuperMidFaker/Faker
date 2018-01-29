@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Row, Col } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
-import { showCustomerModal } from 'common/reducers/crmCustomers';
+import { showCustomerModal } from 'common/reducers/sofCustomers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);

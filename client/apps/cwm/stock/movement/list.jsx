@@ -9,7 +9,7 @@ import QueueAnim from 'rc-queue-anim';
 import { CWM_MOVEMENT_TYPE } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Logixon } from 'client/components/FontIcon';
@@ -223,7 +223,7 @@ export default class MovementList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
         optionFilterProp="children"

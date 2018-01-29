@@ -5,14 +5,14 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Button, DatePicker, Input, Layout, Select, Tag } from 'antd';
-import QueueAnim from 'rc-queue-anim';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadOperationLogs } from 'common/reducers/operationLog';
 import { SAAS_OPLOG_BEHAVIORS, SCOF_BIZ_OBJECT_KEY } from 'common/constants';
-import { formatMsg } from './message.i18n';
+import CorpSiderMenu from '../menu';
+import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
 const { Content } = Layout;
@@ -133,7 +133,7 @@ export default class LogsList extends React.Component {
       <Select
         placeholder="操作人员"
         value={searchFilter.user}
-        style={{ width: 150 }}
+        style={{ width: 120 }}
         showArrow={false}
         showSearch
         onChange={value => this.handleFilterChange('user', value)}
@@ -145,7 +145,7 @@ export default class LogsList extends React.Component {
       <Select
         showSearch
         placeholder="行为"
-        style={{ width: 100 }}
+        style={{ width: 80 }}
         value={searchFilter.behavior}
         onChange={value => this.handleFilterChange('behavior', value)}
         allowClear
@@ -177,34 +177,38 @@ export default class LogsList extends React.Component {
       <RangePicker
         ranges={searchFilter.daterange}
         onChange={range => this.handleFilterChange('daterange', range)}
+        style={{ width: 256 }}
       />
       <Button type="primary" onClick={this.handleSearch}>查询</Button>
       <Button onClick={this.handleReset}>重置</Button>
     </span>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('logs')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Actions>
-            <Button icon="file-excel">导出</Button>
-          </PageHeader.Actions>
-        </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            toolbarActions={toolbarActions}
-            columns={this.columns}
-            dataSource={dataSource}
-            rowKey="id"
-            loading={logList.loading}
-          />
-        </Content>
-      </QueueAnim>
+      <Layout>
+        <CorpSiderMenu currentKey="logs" />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('corpLogs')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
+              <Button icon="file-excel">导出</Button>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              columns={this.columns}
+              dataSource={dataSource}
+              rowKey="id"
+              loading={logList.loading}
+            />
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

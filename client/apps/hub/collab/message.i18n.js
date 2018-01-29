@@ -1,6 +1,11 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  collab: {
+    id: 'network.collab',
+    defaultMessage: '协作邀请',
+  },
   partnerName: {
     id: 'network.partner.name',
     defaultMessage: '合作伙伴',
@@ -17,21 +22,25 @@ const messages = defineMessages({
     id: 'network.tenant.type',
     defaultMessage: '类型',
   },
-  volume: {
-    id: 'network.business.volume',
-    defaultMessage: '业务量',
+  activate: {
+    id: 'network.business.activate',
+    defaultMessage: '申请开通',
   },
-  revenue: {
-    id: 'network.business.revenue',
-    defaultMessage: '营收',
+  accept: {
+    id: 'network.business.accept',
+    defaultMessage: '接受',
   },
-  cost: {
-    id: 'network.business.cost',
-    defaultMessage: '成本',
+  reject: {
+    id: 'network.business.reject',
+    defaultMessage: '拒绝',
   },
-  sendInvitation: {
-    id: 'network.send.invitation',
-    defaultMessage: '发送邀请',
+  revoke: {
+    id: 'network.business.revoke',
+    defaultMessage: '撤回',
+  },
+  invite: {
+    id: 'network.send.invite',
+    defaultMessage: '邀请协作',
   },
   searchPlaceholder: {
     id: 'network.search.placeholder',
@@ -40,6 +49,14 @@ const messages = defineMessages({
   newPartner: {
     id: 'network.table.new.partner',
     defaultMessage: '添加合作伙伴',
+  },
+  invitationSent: {
+    id: 'network.invitation.sent',
+    defaultMessage: '已发送协作邀请',
+  },
+  invitationRevoked: {
+    id: 'network.invitation.revoked',
+    defaultMessage: '已撤回协作邀请',
   },
   acceptFailed: {
     id: 'network.invitation.accept.failed',
@@ -120,3 +137,4 @@ const messages = defineMessages({
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { format } from 'client/common/i18n/helpers';
+import { Select, Button, Input, Switch, message, Mention } from 'antd';
 import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote } from 'common/reducers/cmsQuote';
-import messages from './message.i18n';
 import RowAction from 'client/components/RowAction';
+import DataTable from 'client/components/DataTable';
+import SearchBox from 'client/components/SearchBox';
 import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
-import { Select, Table, Button, Input, Switch, message, Mention } from 'antd';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
-const Nav = Mention.Nav;
+import { formatMsg } from './message.i18n';
+
+const { Option } = Select;
+const { Nav } = Mention;
 
 function getRowKey(row) {
   return row.id;
@@ -31,14 +32,13 @@ function ColumnInput(props) {
   }
   if (record.fee_style === 'advance' && field !== 'fee_name') {
     return <span />;
-  } else {
-    return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
-      : <span style={style}>{record[field] || ''}</span>;
   }
+  return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
+    : <span style={style}>{record[field] || ''}</span>;
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
@@ -63,7 +63,7 @@ function CustomInput(props) {
     : <span style={style}>{record[field] || ''}</span>;
 }
 CustomInput.propTypes = {
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   placeholder: PropTypes.string.isRequired,
@@ -86,7 +86,7 @@ function TaxInput(props) {
 }
 TaxInput.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
@@ -105,14 +105,13 @@ function ColumnSwitch(props) {
   }
   if (inEdit) {
     return <Switch size="small" disabled={(!record.enabled && field !== 'enabled')} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
-  } else {
-    const val = record[field] ? '是' : '否';
-    return <span style={style}>{val}</span>;
   }
+  const val = record[field] ? '是' : '否';
+  return <span style={style}>{val}</span>;
 }
 ColumnSwitch.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
@@ -136,23 +135,22 @@ function ColumnSelect(props) {
         }
       </Select>
     );
-  } else {
-    let style = {};
-    if (!record.enabled) {
-      style = { color: '#CCCCCC' };
-    }
-    const foundOpts = options.filter(opt => opt.value === record[field]);
-    const label = foundOpts.length === 1 ? foundOpts[0].text : '';
-    return <span style={style}>{label}</span>;
   }
+  let style = {};
+  if (!record.enabled) {
+    style = { color: '#CCCCCC' };
+  }
+  const foundOpts = options.filter(opt => opt.value === record[field]);
+  const label = foundOpts.length === 1 ? foundOpts[0].text : '';
+  return <span style={style}>{label}</span>;
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({ })),
 };
 @injectIntl
 @connect(
@@ -169,7 +167,7 @@ ColumnSelect.proptypes = {
 export default class FeesTable extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    quoteData: PropTypes.object.isRequired,
+    quoteData: PropTypes.shape({ quote_no: PropTypes.string }).isRequired,
     action: PropTypes.string.isRequired,
     editable: PropTypes.bool.isRequired,
     feeUpdate: PropTypes.func.isRequired,
@@ -182,7 +180,6 @@ export default class FeesTable extends Component {
   }
   state = {
     addedit: false,
-    coops: [],
     editIndex: -1,
     count: 0,
     dataSource: [],
@@ -419,36 +416,41 @@ export default class FeesTable extends Component {
   handleonChange = (record, editorState) => {
     record.formula_factor = Mention.toString(editorState); // eslint-disable-line no-param-reassign
   }
-  renderToolbar = () => {
+  renderToolbar() {
     const { action } = this.props;
-    const msg = key => formatMsg(this.props.intl, key);
+    const msg = formatMsg(this.props.intl);
     if (action === 'edit') {
       return (
-        <div className="toolbar">
+        <span>
           <Button type="default" icon="plus-circle-o" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
-          {this.state.batchSaved === 0 && <Button icon="edit" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
+          {this.state.batchSaved === 0 && <Button icon="form" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
           {this.state.batchSaved === 1 && <Button type="primary" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('confirm')}</Button>}
           {this.state.batchSaved === 1 && <Button type="ghost" onClick={this.handlebatchCancel}>{msg('cancel')}</Button>}
-        </div>
+        </span>
       );
     } else if (action === 'model') {
       return (
-        <div className="toolbar">
+        <span>
           <Button type="primary" onClick={this.handleModelSave}>{msg('save')}</Button>
-        </div>
+        </span>
       );
     }
+    return (<span>
+      <SearchBox />
+    </span>);
   }
   render() {
     const { quoteData, action } = this.props;
     const {
       editIndex, addedit, dataSource, editable, batchSaved,
     } = this.state;
-    const msg = key => formatMsg(this.props.intl, key);
+    const msg = formatMsg(this.props.intl);
     const columns = [
       {
         title: msg('serialNo'),
         width: 50,
+        align: 'center',
+        className: 'table-col-seq',
         render: (o, record, index) => <span>{index + 1}</span>,
       }, {
         title: msg('feeName'),
@@ -474,8 +476,12 @@ export default class FeesTable extends Component {
         ],
         width: 150,
         render: (o, record, index) =>
-          (<ColumnSelect field="category" inEdit={editable || (index === editIndex)} record={record}
-            onChange={this.handleEditChange} options={FEE_CATEGORY}
+          (<ColumnSelect
+            field="category"
+            inEdit={editable || (index === editIndex)}
+            record={record}
+            onChange={this.handleEditChange}
+            options={FEE_CATEGORY}
           />),
       }, {
         title: msg('feeStyle'),
@@ -486,30 +492,44 @@ export default class FeesTable extends Component {
         ],
         width: 150,
         render: (o, record, index) =>
-          (<ColumnSelect field="fee_style" inEdit={editable || (index === editIndex)} record={record}
-            onChange={this.handleEditChange} options={FEE_STYLE}
+          (<ColumnSelect
+            field="fee_style"
+            inEdit={editable || (index === editIndex)}
+            record={record}
+            onChange={this.handleEditChange}
+            options={FEE_STYLE}
           />),
       }, {
         title: msg('chargeParam'),
         dataIndex: 'charge_param',
         width: 150,
         render: (o, record, index) =>
-          (<ColumnSelect field="charge_param" inEdit={editable || (index === editIndex)} record={record}
-            onChange={this.handleEditChange} options={CHARGE_PARAM}
+          (<ColumnSelect
+            field="charge_param"
+            inEdit={editable || (index === editIndex)}
+            record={record}
+            onChange={this.handleEditChange}
+            options={CHARGE_PARAM}
           />),
       }, {
         title: msg('formulaFactor'),
         dataIndex: 'formula_factor',
-        width: 150,
+        width: 200,
         render: (o, record, index) => {
           const inEdit = editable || (index === editIndex);
           if (record.charge_param === '$formula' && inEdit) {
-            return (<Mention suggestions={this.state.suggestions} prefix="$" onSearchChange={this.handleSearch} defaultValue={Mention.toContentState(o)}
-              placeholder="$公式" onChange={editorState => this.handleonChange(record, editorState)} multiLines style={{ width: '100%', height: '100%' }}
+            return (<Mention
+              suggestions={this.state.suggestions}
+              prefix="$"
+              onSearchChange={this.handleSearch}
+              defaultValue={Mention.toContentState(o)}
+              placeholder="$公式"
+              onChange={editorState => this.handleonChange(record, editorState)}
+              multiLines
+              style={{ width: '100%', height: '100%' }}
             />);
-          } else {
-            return <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />;
           }
+          return <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />;
         },
       }, {
         title: (
@@ -547,54 +567,57 @@ export default class FeesTable extends Component {
         render: (o, record, index) => {
           if (record.category === 'custom' && action === 'create') {
             return (
-              <RowAction onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
+              <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleDelete} row={record} index={index} />
             );
           } else if (action === 'edit' && batchSaved === 0) {
             if (index === editIndex) {
               return (
                 <span>
-                  <RowAction onClick={this.handleSave} label={msg('confirm')} row={record} index={index} />
-                  <span className="ant-divider" />
-                  <RowAction onClick={this.handleCancel} label={msg('cancel')} />
+                  <RowAction icon="check" tooltip={msg('confirm')} onClick={this.handleSave} row={record} index={index} />
+                  <RowAction icon="close" tooltip={msg('cancel')} onClick={this.handleCancel} />
                 </span>
               );
             } else if (record.category === 'custom') {
               return (
                 <span>
-                  <RowAction onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
-                  <span className="ant-divider" />
-                  <RowAction onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
+                  <RowAction icon="edit" tooltip={msg('modify')} onClick={this.handleModify} row={record} index={index} />
+                  <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleDelete} row={record} index={index} />
                 </span>
               );
             } else if (record.category !== 'custom') {
               return (
-                <RowAction onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
+                <RowAction icon="edit" tooltip={msg('modify')} onClick={this.handleModify} row={record} index={index} />
               );
             }
           } else if (action === 'edit' && batchSaved === 1) {
             if (record.category === 'custom') {
               return (
-                <RowAction onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
+                <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleDelete} row={record} index={index} />
               );
             }
           } else if (record.category === 'custom' && action === 'model') {
             return (
-              <RowAction onClick={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
+              <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleMdlFeeDelete} row={record} index={index} />
             );
           } else {
             return <span />;
           }
+          return null;
         },
       });
     }
     return (
-      <div>
-        {this.renderToolbar()}
-        <Table pagination={false} rowKey={getRowKey} columns={columns} dataSource={dataSource}
-          loading={quoteData.loading} onChange={this.handleTableChange} scroll={{ y: 450 }}
-          footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
-        />
-      </div>
+      <DataTable
+        noBorder
+        toolbarActions={this.renderToolbar()}
+        pagination={false}
+        rowKey={getRowKey}
+        columns={columns}
+        dataSource={dataSource}
+        loading={quoteData.loading}
+        onChange={this.handleTableChange}
+        footer={() => (action === 'model') && <Button type="primary" onClick={this.handleAddFees}>{msg('addCosts')}</Button>}
+      />
     );
   }
 }

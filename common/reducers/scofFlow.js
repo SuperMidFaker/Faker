@@ -3,7 +3,11 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'TOGGLE_FLOW_LIST',
+  'LOAD_ESTABVENDORS', 'LOAD_ESTABVENDORS_SUCCEED', 'LOAD_ESTABVENDORS_FAIL',
   'OPEN_CREATE_FLOW_MODAL', 'CLOSE_CREATE_FLOW_MODAL',
+  'OPEN_SUBFLOW_AUTHMODAL', 'CLOSE_SUBFLOW_AUTHMODAL',
+  'CREATE_SUBFLOW', 'CREATE_SUBFLOW_SUCCEED', 'CREATE_SUBFLOW_FAIL',
+  'DEL_SUBFLOW', 'DEL_SUBFLOW_SUCCEED', 'DEL_SUBFLOW_FAIL',
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
@@ -29,6 +33,9 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'IS_LINE_IN_TARIFF', 'IS_LINE_IN_TARIFF_SUCCEED', 'IS_LINE_IN_TARIFF_FAIL',
   'TOGGLE_ADD_LOCATION_MODAL',
   'SEARCH_RATE_ENDS', 'SEARCH_RATE_ENDS_SUCCEED', 'SEARCH_RATE_ENDS_FAIL',
+  'TOGGLE_FLOW_DESIGNER',
+  'TOGGLE_FLOW_STATUS', 'TOGGLE_FLOW_STATUS_SUCCEED', 'TOGGLE_FLOW_STATUS_FAIL',
+  'UPDATE_FLOW_INFO', 'UPDATE_FLOW_INFO_SUCCEED', 'UPDATE_FLOW_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -45,17 +52,24 @@ const initialState = {
   partnerFlows: [],
   flowList: {
     totalCount: 0,
-    pageSize: 50,
+    pageSize: 20,
     current: 1,
     data: [],
+  },
+  flowProviderModal: {
+    visible: false,
+    flow: {},
   },
   flowListLoading: false,
   reloadFlowList: false,
   submitting: false,
-  listFilter: { name: '' },
+  listFilter: { name: '', ownerPartnerId: 'all' },
   trackingFields: [],
   currentFlow: null,
-  flowGraph: { nodes: [], edges: [], tracking: {} },
+  flowGraph: {
+    providerFlows: [], nodes: [], edges: [], tracking: {},
+  },
+  vendorTenants: [],
   nodeActions: [],
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
@@ -81,24 +95,54 @@ const initialState = {
     type: 0,
     tariffId: '',
   },
+  flowDesigner: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TOGGLE_FLOW_LIST:
       return { ...state, listCollapsed: !state.listCollapsed };
+    case actionTypes.LOAD_ESTABVENDORS_SUCCEED:
+      return { ...state, vendorTenants: action.result.data };
     case actionTypes.OPEN_CREATE_FLOW_MODAL:
       return { ...state, visibleFlowModal: true };
     case actionTypes.CLOSE_CREATE_FLOW_MODAL:
       return { ...state, visibleFlowModal: false };
+    case actionTypes.OPEN_SUBFLOW_AUTHMODAL:
+      return {
+        ...state,
+        flowProviderModal: {
+          ...state.flowProviderModal,
+          flow: action.data,
+          visible: true,
+        },
+      };
+    case actionTypes.CLOSE_SUBFLOW_AUTHMODAL:
+      return { ...state, flowProviderModal: initialState.flowProviderModal };
+    case actionTypes.CREATE_SUBFLOW:
+    case actionTypes.DEL_SUBFLOW:
     case actionTypes.SAVE_FLOW:
       return { ...state, submitting: true };
+    case actionTypes.CREATE_SUBFLOW_FAIL:
+    case actionTypes.DEL_SUBFLOW_FAIL:
     case actionTypes.SAVE_FLOW_FAIL:
       return { ...state, submitting: false };
     case actionTypes.SAVE_FLOW_SUCCEED:
       return {
         ...state, reloadFlowList: true, submitting: false, currentFlow: action.result.data,
       };
+    case actionTypes.CREATE_SUBFLOW_SUCCEED: {
+      const providerFlows = [...state.flowGraph.providerFlows];
+      providerFlows.push({ id: action.result.data.id, tenant_id: action.result.data.tenant_id });
+      return { ...state, submitting: false, flowGraph: { ...state.flowGraph, providerFlows } };
+    }
+    case actionTypes.DEL_SUBFLOW_SUCCEED: {
+      const providerFlows = state.flowGraph.providerFlows.filter(pf =>
+        pf.id !== action.result.data.id);
+      return { ...state, submitting: false, flowGraph: { ...state.flowGraph, providerFlows } };
+    }
     case actionTypes.OPEN_ADD_TRIGGER_MODAL:
       return { ...state, visibleTriggerModal: true, triggerModal: action.data };
     case actionTypes.CLOSE_ADD_TRIGGER_MODAL:
@@ -156,7 +200,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EMPTY_FLOWS:
       return { ...state, partnerFlows: [], cmsQuotes: [] };
     case actionTypes.EDIT_FLOW_SUCCEED:
-      return { ...state, currentFlow: state.currentFlow && { ...state.currentFlow, ...action.data.flow } };
+      return {
+        ...state,
+        currentFlow: state.currentFlow &&
+        { ...state.currentFlow, ...action.data.flow },
+      };
     case actionTypes.LOAD_FLTRACK_SUCCEED:
       return { ...state, trackingFields: action.result.data };
     case actionTypes.TOGGLE_ADD_LINE_MODAL:
@@ -167,6 +215,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, needLoadTariff: action.data };
     case actionTypes.TOGGLE_ADD_LOCATION_MODAL:
       return { ...state, addLocationModal: { ...state.addLocationModal, ...action.data } };
+    case actionTypes.TOGGLE_FLOW_DESIGNER:
+      return { ...state, flowDesigner: { ...state.flowDesigner, visible: action.visible } };
     default:
       return state;
   }
@@ -223,6 +273,20 @@ export function toggleFlowList() {
   };
 }
 
+export function loadVendorTenants() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ESTABVENDORS,
+        actionTypes.LOAD_ESTABVENDORS_SUCCEED,
+        actionTypes.LOAD_ESTABVENDORS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partner/vendor/tenants',
+      method: 'get',
+    },
+  };
+}
+
 export function openCreateFlowModal() {
   return {
     type: actionTypes.OPEN_CREATE_FLOW_MODAL,
@@ -232,6 +296,49 @@ export function openCreateFlowModal() {
 export function closeCreateFlowModal() {
   return {
     type: actionTypes.CLOSE_CREATE_FLOW_MODAL,
+  };
+}
+
+export function openSubFlowAuthModal(flow) {
+  return {
+    type: actionTypes.OPEN_SUBFLOW_AUTHMODAL,
+    data: flow,
+  };
+}
+
+export function closeSubFlowAuthModal() {
+  return {
+    type: actionTypes.CLOSE_SUBFLOW_AUTHMODAL,
+  };
+}
+
+export function createProviderFlow(flowId, providerTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_SUBFLOW,
+        actionTypes.CREATE_SUBFLOW_SUCCEED,
+        actionTypes.CREATE_SUBFLOW_FAIL,
+      ],
+      endpoint: 'v1/scof/create/provider/flow',
+      method: 'post',
+      data: { flowId, providerTenantId },
+    },
+  };
+}
+
+export function deleteProviderFlow(subFlowId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_SUBFLOW,
+        actionTypes.DEL_SUBFLOW_SUCCEED,
+        actionTypes.DEL_SUBFLOW_FAIL,
+      ],
+      endpoint: 'v1/scof/del/provider/flow',
+      method: 'post',
+      data: { subFlowId },
+    },
   };
 }
 
@@ -376,7 +483,7 @@ export function loadCwmBizParams(tenantId, ownerPid) {
   };
 }
 
-export function loadFlowGraph(flowid) {
+export function loadFlowGraph(flowid, mainFlowId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -386,7 +493,7 @@ export function loadFlowGraph(flowid) {
       ],
       endpoint: 'v1/scof/flow/graph',
       method: 'get',
-      params: { flow: flowid },
+      params: { id: flowid, main_flow_id: mainFlowId },
     },
   };
 }
@@ -528,6 +635,12 @@ export function toggleAddLocationModal(data) {
     data,
   };
 }
+export function toggleFlowDesigner(visible) {
+  return {
+    type: actionTypes.TOGGLE_FLOW_DESIGNER,
+    visible,
+  };
+}
 
 export function searchRateEnds(params) {
   return {
@@ -541,6 +654,38 @@ export function searchRateEnds(params) {
       method: 'get',
       params,
       origin: 'mongo',
+    },
+  };
+}
+
+export function toggleFlowStatus(status, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.TOGGLE_FLOW_STATUS,
+        actionTypes.TOGGLE_FLOW_STATUS_SUCCEED,
+        actionTypes.TOGGLE_FLOW_STATUS_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/status/toggle',
+      method: 'post',
+      data: { status, id },
+    },
+  };
+}
+
+export function updateFlowInfo(name, partnerTenantId, partnerId, partnerName, flowId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_FLOW_INFO,
+        actionTypes.UPDATE_FLOW_INFO_SUCCEED,
+        actionTypes.UPDATE_FLOW_INFO_FAIL,
+      ],
+      endpoint: 'v1/scof/flow/info/update',
+      method: 'post',
+      data: {
+        name, partnerTenantId, partnerId, partnerName, flowId,
+      },
     },
   };
 }

@@ -7,7 +7,7 @@ import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -166,7 +166,7 @@ export default class AcceptList extends React.Component {
   columns = [{
     title: this.msg('shipNo'),
     dataIndex: 'shipmt_no',
-    width: 150,
+    width: 160,
     fixed: 'left',
     render: (o, record) => {
       let style;
@@ -502,7 +502,7 @@ export default class AcceptList extends React.Component {
       </PrivilegeCover>
     );
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} />
+      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <span />
       <CustomerSelect onChange={this.handleCustomerChange} />
       <span />

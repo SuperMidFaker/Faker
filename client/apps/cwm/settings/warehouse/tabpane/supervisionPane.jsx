@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Button, Form, Select, message } from 'antd';
 import { formatMsg } from '../message.i18n';
 import { updateWhse, loadCustoms } from 'common/reducers/cwmWarehouse';
-import { loadWhseSupervisionApps } from 'common/reducers/openIntegration';
+import { loadWhseSupervisionApps } from 'common/reducers/hubIntegration';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -35,7 +35,7 @@ const tailFormItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    whseSupervisonApps: state.openIntegration.whseSupervisonApps,
+    whseSupervisonApps: state.hubIntegration.whseSupervisonApps,
     customs: state.cwmWarehouse.customs,
   }),
   { loadWhseSupervisionApps, updateWhse, loadCustoms }
@@ -123,8 +123,11 @@ export default class SupervisionPane extends Component {
             </Select>
           </FormItem>
           <FormItem label="保税监管系统" {...formItemLayout}>
-            <Select placeholder="请选择保税监管系统" allowClear
-              value={this.state.ftzAppId} onSelect={this.handleFtzAppSelect}
+            <Select
+              placeholder="请选择保税监管系统"
+              allowClear
+              value={this.state.ftzAppId}
+              onSelect={this.handleFtzAppSelect}
             >
               {whseSupervisonApps.map(wsa =>
                 <Option key={wsa.uuid} value={wsa.uuid}>{wsa.name}</Option>)}

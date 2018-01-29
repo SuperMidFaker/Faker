@@ -6,10 +6,8 @@ import { clearingOption } from 'common/constants';
 import { delgDispSave, setDispStatus, loadciqSups, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Option } = Select;
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
@@ -45,10 +43,19 @@ function getFieldInits(delgDisp, dispatch) {
     delgDispShow: state.cmsDelegation.assign.delgDispShow,
     previewer: state.cmsDelegationDock.previewer,
     tabKey: state.cmsDelegationDock.tabKey,
-    fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
+    fieldInits: getFieldInits(
+      state.cmsDelegation.assign.delgDisp,
+      state.cmsDelegation.assign.dispatch
+    ),
   }),
   {
-    delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel, reloadDelegationList,
+    delgDispSave,
+    setDispStatus,
+    loadciqSups,
+    loadBasicInfo,
+    loadCustPanel,
+    loadDeclCiqPanel,
+    reloadDelegationList,
   }
 )
 @Form.create()
@@ -70,7 +77,7 @@ export default class DelgDispModal extends Component {
     appoint: false,
     ciqSups: [],
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = () => {
     const {
       delgDisp, dispatch, partners, ciqSups, loginId, loginName,

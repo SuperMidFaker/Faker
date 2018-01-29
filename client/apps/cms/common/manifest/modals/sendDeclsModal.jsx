@@ -5,12 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Select, message, Table } from 'antd';
 import { getEasipassList, sendMutiDecl } from 'common/reducers/cmsCustomsDeclare';
 import { showSendDeclsModal } from 'common/reducers/cmsManifest';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../../message.i18n';
 import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+
+const { Option } = Select;
 
 function ColumnSelect(props) {
   const {
@@ -30,7 +30,7 @@ function ColumnSelect(props) {
   );
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   record: PropTypes.object.isRequired,
   index: PropTypes.number,
   field: PropTypes.string.isRequired,
@@ -117,7 +117,7 @@ export default class SendDeclsModal extends React.Component {
     bodies[index] = record;
     this.setState({ bodies });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { visible, ietype } = this.props;
     const easipassOpt = this.state.easipassList.map(easi => ({

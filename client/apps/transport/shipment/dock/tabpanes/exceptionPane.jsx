@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Card, Alert } from 'antd';
 import moment from 'moment';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { loadExceptions, showDealExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../..//message.i18n';
@@ -51,7 +51,7 @@ export default class ExceptionPane extends React.Component {
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadExceptions(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -158,7 +158,7 @@ export default class ExceptionPane extends React.Component {
     return (
       <div className="pane-content tab-pane table-list">
         <Card bodyStyle={{ padding: 16 }} >
-          <Table size="middle" showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
+          <DataTable size="middle" showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
           <ResolveExceptionModal />
         </Card>
       </div>

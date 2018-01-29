@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Select, Modal, Radio, Checkbox, Upload, Button, Col, message } from 'antd';
 import { advExpImport, showAdvImpTempModal } from 'common/reducers/cmsExpense';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
+
+
 const FormItem = Form.Item;
 const { Option } = Select;
 const RadioGroup = Radio.Group;

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Steps } from 'antd';
-import { loadOrderProgress } from 'common/reducers/crmOrders';
+import { loadOrderProgress } from 'common/reducers/sofOrders';
 import { CRM_ORDER_STATUS, NODE_BIZ_OBJECTS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -37,19 +37,21 @@ export default class ProgressColumn extends React.Component {
         currentStep = index + 1;
       }
     });
+    const stepWidth = 120;
+    const gapWidth = 80;
     let progWidth = '';
     switch (progress.length) {
       case 1:
-        progWidth = 160;
+        progWidth = stepWidth;
         break;
       case 2:
-        progWidth = (160 * 2) + 100;
+        progWidth = (stepWidth * 2) + gapWidth;
         break;
       case 3:
-        progWidth = (160 * 3) + (100 * 2);
+        progWidth = (stepWidth * 3) + (gapWidth * 2);
         break;
       case 4:
-        progWidth = (160 * 4) + (100 * 3);
+        progWidth = (stepWidth * 4) + (gapWidth * 3);
         break;
       default:
         progWidth = '100%';

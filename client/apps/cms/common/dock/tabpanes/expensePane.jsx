@@ -3,15 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Spin, Card, Collapse, Table, Tag } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import { EXPENSE_CATEGORIES, CMS_EXPENSE_TYPES } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
-const Column = Table.Column;
-const Panel = Collapse.Panel;
-const CheckableTag = Tag.CheckableTag;
+const { Column } = Table;
+const { Panel } = Collapse;
+const { CheckableTag } = Tag;
 const SERVER_CATEGORY_MAP = {
   misc_expenses: 'customdecl',
   customs_expenses: 'customdecl',
@@ -59,7 +57,7 @@ export default class ExpensePane extends React.Component {
       nextProps.loadPaneExp(nextProps.delgNo, this.props.tenantId);
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   columnFields = [{
     title: this.msg('feeName'),
     dataIndex: 'fee_name',

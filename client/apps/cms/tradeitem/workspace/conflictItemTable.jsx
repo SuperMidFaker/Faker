@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button, Select, notification } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { delWorkspaceItem, resolveWorkspaceItem, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
 import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
@@ -13,6 +13,7 @@ import ItemDiffModal from './modal/itemDiffModal';
 import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
+
 
 @injectIntl
 @connect(
@@ -138,7 +139,12 @@ export default class ConflictItemTable extends React.Component {
     });
   }
   handleItemDiff = (record) => {
-    this.props.toggleItemDiffModal(true, record);
+    this.props.toggleItemDiffModal(true, {
+      hscode: record.item_hscode,
+      g_name: record.item_g_name,
+      element: record.item_element,
+      g_model: record.item_g_model,
+    }, record);
   }
   handleConflictResolve = (item, index, props) => {
     this.props.resolveWorkspaceItem([item.id], props.action).then((result) => {
@@ -250,7 +256,7 @@ export default class ConflictItemTable extends React.Component {
         {repos.map(rep => (<Option value={String(rep.id)} key={rep.owner_name}>
           {rep.owner_name}</Option>))}
       </Select>}
-      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('商品货号/HS编码/品名')} onSearch={this.handleSearch} />
     </span>);
     const bulkActions = (<span>
       <Button icon="pushpin-o" onClick={this.handleBatchMakeStandard}>批量设为标准值</Button>

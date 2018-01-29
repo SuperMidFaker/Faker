@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
@@ -119,9 +119,8 @@ export default class FeeSummaryList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      } else {
-        return (<span><RowAction onClick={this.handleDetail} label="费用明细" row={record} /> </span>);
       }
+      return (<span><RowAction onClick={this.handleDetail} label="费用明细" row={record} /> </span>);
     },
   }]
   handleStatusChange = (ev) => {
@@ -207,9 +206,14 @@ export default class FeeSummaryList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
-      <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
+      <Select
+        showSearch
+        placeholder="结算对象"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       />
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
@@ -253,10 +257,18 @@ export default class FeeSummaryList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="id" loading={loading}
-            locale={{ emptyText: '当前没有待结算的费用' }} total={totCol}
+          <DataTable
+            toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={mockData}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
+            locale={{ emptyText: '当前没有待结算的费用' }}
+            total={totCol}
           />
         </Content>
       </QueueAnim>

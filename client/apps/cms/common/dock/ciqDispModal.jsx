@@ -5,12 +5,9 @@ import { Modal, Select, Form, message } from 'antd';
 import { ciqDispSave, setDispStatus } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from './message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
-
-const Option = Select.Option;
+const { Option } = Select;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -40,7 +37,7 @@ export default class CiqDispModal extends Component {
     dispatch: PropTypes.object.isRequired,
     tabKey: PropTypes.string,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = () => {
     const { dispatch, ciqSups } = this.props;
     const recv = this.props.form.getFieldsValue();

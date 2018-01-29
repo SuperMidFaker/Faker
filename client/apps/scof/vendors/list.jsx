@@ -2,22 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Input, Row, Table, Tooltip, Layout } from 'antd';
+import { Breadcrumb, Button, Form, Row, Table, Tooltip, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import VendorModal from './modals/vendorModal';
 import { loadVendors, showVendorModal, deleteVendor } from 'common/reducers/sofVendors';
 import { PARTNER_ROLES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
+import SearchBox from 'client/components/SearchBox';
 import OverviewCard from './cards/overviewCard';
 import ResourcesCard from './cards/resourcesCard';
+import messages from './message.i18n';
+import VendorModal from './modals/vendorModal';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadVendors(state.account.tenantId));
@@ -117,7 +117,11 @@ export default class VendorList extends React.Component {
     }];
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -137,15 +141,21 @@ export default class VendorList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search
+              <SearchBox
                 placeholder={this.msg('searchPlaceholder')}
                 onSearch={this.handleSearch}
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.vendors} columns={columns} showHeader={false}
+              <Table
+                size="middle"
+                dataSource={this.state.vendors}
+                columns={columns}
+                showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === vendor.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+                rowClassName={record => (record.id === vendor.id ? 'table-row-selected' : '')}
+                rowKey="id"
+                loading={this.props.loading}
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}
@@ -165,7 +175,8 @@ export default class VendorList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>}
             <ButtonToggle
-              iconOn="menu-fold" iconOff="menu-unfold"
+              iconOn="menu-fold"
+              iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />

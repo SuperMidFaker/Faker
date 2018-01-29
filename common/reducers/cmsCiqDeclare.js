@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'SEARCH_WORLDPORTS', 'SEARCH_WORLDPORTS_SUCCEED', 'SEARCH_WORLDPORTS_FAIL',
   'SEARCH_CHINAPORTS', 'SEARCH_CHINAPORTS_SUCCEED', 'SEARCH_CHINAPORTS_FAIL',
   'SEARCH_COUNTRIES', 'SEARCH_COUNTRIES_SUCCEED', 'SEARCH_COUNTRIES_FAIL',
+  'SEARCH_CN_CITY', 'SEARCH_CN_CITY_SUCCEED', 'SEARCH_CN_CITY_FAIL',
   'UPDATE_CIQ_HEAD', 'UPDATE_CIQ_HEAD_SUCCEED', 'UPDATE_CIQ_HEAD_FAIL',
   'SET_FIXED_COUNTRY', 'SET_FIXED_ORGANIZATIONS', 'SET_FIXED_WORLDPORTS',
   'UPDATE_CIQ_HEAD_FIELD', 'UPDATE_CIQ_HEAD_FIELD_SUCCEED', 'UPDATE_CIQ_HEAD_FIELD_FAIL',
@@ -62,6 +63,7 @@ const initialState = {
     currencies: [],
     units: [],
     customs: [],
+    cnCities: [],
     fixedCountries: [],
     fixedOrganizations: [],
     fixedWorldPorts: [],
@@ -71,7 +73,7 @@ const initialState = {
     data: {},
   },
   ciqDeclHead: {
-    head: [],
+    head: {},
     entries: [],
     ciqs: [],
   },
@@ -129,6 +131,7 @@ export default function reducer(state = initialState, action) {
           ],
           countries: [...action.result.data.countries, ...state.ciqParams.countries],
           worldPorts: [...action.result.data.worldPorts, ...state.ciqParams.worldPorts],
+          cnCities: [...action.result.data.cnCities],
         },
       };
     case actionTypes.SHOW_GOODS_MODAL:
@@ -174,6 +177,8 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.SEARCH_CHINAPORTS_SUCCEED:
       return { ...state, ciqParams: { ...state.ciqParams, chinaPorts: [...action.result.data] } };
+    case actionTypes.SEARCH_CN_CITY_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, cnCities: [...action.result.data] } };
     case actionTypes.SEARCH_COUNTRIES_SUCCEED:
       return {
         ...state,
@@ -399,6 +404,21 @@ export function searchCustoms(searchText) {
         actionTypes.SEARCH_CUSTOMS_FAIL,
       ],
       endpoint: 'v1/cms/ciq/customs/search',
+      method: 'get',
+      params: { searchText },
+    },
+  };
+}
+
+export function searchCnCities(searchText) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_CN_CITY,
+        actionTypes.SEARCH_CN_CITY_SUCCEED,
+        actionTypes.SEARCH_CN_CITY_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/cn/city/search',
       method: 'get',
       params: { searchText },
     },

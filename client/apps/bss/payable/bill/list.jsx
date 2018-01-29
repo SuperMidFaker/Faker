@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Layout, Radio } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
@@ -127,9 +127,8 @@ export default class PayableBillList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      } else {
-        return (<span><RowAction onClick={this.handleDetail} label="账单详情" row={record} /> </span>);
       }
+      return (<span><RowAction onClick={this.handleDetail} label="账单详情" row={record} /> </span>);
     },
   }]
   handleStatusChange = (ev) => {
@@ -210,7 +209,7 @@ export default class PayableBillList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
     </span>);
     const totCol = (
       <Summary>
@@ -243,9 +242,15 @@ export default class PayableBillList extends React.Component {
           </PageHeader.Nav>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={mockData}
+            rowSelection={rowSelection}
+            rowKey="id"
+            loading={loading}
             total={totCol}
           />
         </Content>

@@ -11,7 +11,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import TrackingItem from './trackingItem';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/scvTracking';
+import { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/sofTracking';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -20,8 +20,8 @@ const colStyle = { paddingTop: 0, paddingBottom: 0 };
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    trackingItems: state.scvTracking.trackingItems,
-    trackingFields: state.scvTracking.trackingFields,
+    trackingItems: state.sofTracking.trackingItems,
+    trackingFields: state.sofTracking.trackingFields,
   }),
   {
     loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition,

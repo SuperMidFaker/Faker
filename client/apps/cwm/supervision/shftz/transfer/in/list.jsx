@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
@@ -85,7 +85,7 @@ export default class SHFTZTransferInList extends React.Component {
   }, {
     title: '监管类型',
     dataIndex: 'ftz_ent_type',
-    width: 80,
+    width: 100,
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
       return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
@@ -116,7 +116,7 @@ export default class SHFTZTransferInList extends React.Component {
     title: '收货单位',
     width: 280,
     dataIndex: 'owner_name',
-    render: (o, record) => record.owner_cus_code ? <TrimSpan text={`${record.owner_cus_code}|${o}`} maxLen={30} /> : o,
+    render: (o, record) => (record.owner_cus_code ? <TrimSpan text={`${record.owner_cus_code}|${o}`} maxLen={30} /> : o),
   }, {
     title: '收货仓库号',
     width: 100,
@@ -125,7 +125,7 @@ export default class SHFTZTransferInList extends React.Component {
     title: '发货单位',
     width: 280,
     dataIndex: 'sender_name',
-    render: (o, record) => record.sender_cus_code ? <TrimSpan text={`${record.sender_cus_code}|${o}`} maxLen={30} /> : o,
+    render: (o, record) => (record.sender_cus_code ? <TrimSpan text={`${record.sender_cus_code}|${o}`} maxLen={30} /> : o),
   }, {
     title: '发货仓库号',
     width: 100,
@@ -158,9 +158,9 @@ export default class SHFTZTransferInList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 2 ?
+    render: (o, record) => (record.status < 2 ?
       <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
-      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />),
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -241,10 +241,17 @@ export default class SHFTZTransferInList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('entrySearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBox placeholder={this.msg('entrySearchPlaceholder')} onSearch={this.handleSearch} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
-        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <OptGroup>
           <Option value="all">全部货主</Option>

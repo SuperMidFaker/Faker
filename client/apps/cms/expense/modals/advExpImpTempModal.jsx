@@ -4,12 +4,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Tabs, Alert, Popconfirm, Icon, message, Tooltip, Tag } from 'antd';
 import { showAdvImpTempModal, saveImptAdvFees } from 'common/reducers/cmsExpense';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../message.i18n';
 import { INVOICE_TYPE } from 'common/constants';
 
 const TabPane = Tabs.TabPane;
-const formatMsg = format(messages);
+
 
 @injectIntl
 @connect(
@@ -67,7 +67,7 @@ export default class AdvExpsImpTempModal extends Component {
       this.setState({ ptDatas });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -75,9 +75,8 @@ export default class AdvExpsImpTempModal extends Component {
     render: (o, record) => {
       if (record.feedback === 'wrong') {
         return (<Tooltip title="导入错误"><Tag color="red">{o}</Tag></Tooltip>);
-      } else {
-        return <span>{o}</span>;
       }
+      return <span>{o}</span>;
     },
   }, {
     title: this.msg('billSeqNo'),
@@ -86,9 +85,8 @@ export default class AdvExpsImpTempModal extends Component {
     render: (o, record) => {
       if (record.feedback === 'wrong') {
         return (<Tag color="red">{o}</Tag>);
-      } else {
-        return <span>{o}</span>;
       }
+      return <span>{o}</span>;
     },
   }, {
     title: this.msg('entryId'),
@@ -97,9 +95,8 @@ export default class AdvExpsImpTempModal extends Component {
     render: (o, record) => {
       if (record.feedback === 'wrong') {
         return (<Tag color="red">{o}</Tag>);
-      } else {
-        return <span>{o}</span>;
       }
+      return <span>{o}</span>;
     },
   }, {
     title: this.msg('orderNo'),
@@ -108,9 +105,8 @@ export default class AdvExpsImpTempModal extends Component {
     render: (o, record) => {
       if (record.feedback === 'wrong') {
         return (<Tag color="red">{o}</Tag>);
-      } else {
-        return <span>{o}</span>;
       }
+      return <span>{o}</span>;
     },
   }, {
     title: this.msg('totalValue'),

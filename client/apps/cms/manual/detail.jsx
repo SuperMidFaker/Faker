@@ -5,16 +5,16 @@ import { Breadcrumb, Card, Form, Tabs, Row, Col, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
+
+import { loadManualHead } from 'common/reducers/cmsTradeManual';
 import { intlShape, injectIntl } from 'react-intl';
 import ImpGoodsPane from './tabpane/impGoodsPane';
 import ExpGoodsPane from './tabpane/expGoodsPane';
-import { loadManualHead } from 'common/reducers/cmsTradeManual';
-import messages from './message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -51,7 +51,7 @@ export default class ManualDetail extends Component {
       }
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { manualHead } = this.state;
     const { customs } = this.props;
@@ -73,31 +73,31 @@ export default class ManualDetail extends Component {
           <Card bodyStyle={{ padding: 16 }} >
             <Row gutter={16} className="info-group-underline">
               <Col sm={12} lg={8}>
-                <InfoItem label="企业内部编号" field={manualHead.cop_manaul_no} />
+                <InfoItem label={this.msg('copManaulNo')} field={manualHead.cop_manaul_no} />
               </Col>
               <Col sm={12} lg={8}>
-                <InfoItem label="手册编号" field={manualHead.manual_no} />
+                <InfoItem label={this.msg('manualNo')} field={manualHead.manual_no} />
               </Col>
               <Col sm={12} lg={8}>
-                <InfoItem label="手册类型" field={manualHead.manual_type} />
+                <InfoItem label={this.msg('manualType')} field={manualHead.manual_type} />
               </Col>
               <Col sm={12} lg={8}>
-                <InfoItem label="主管海关" field={manualHead.master_customs_code && customs.find(cs => cs.value === manualHead.master_customs_code).text} />
+                <InfoItem label={this.msg('masterCustomsCode')} field={manualHead.master_customs_code && customs.find(cs => cs.value === manualHead.master_customs_code).text} />
               </Col>
               <Col sm={12} lg={8}>
-                <InfoItem label="经营单位" field={manualHead.trade_name} />
+                <InfoItem label={this.msg('tradeName')} field={manualHead.trade_name} />
               </Col>
               <Col sm={12} lg={8}>
-                <InfoItem label="加工单位" field={manualHead.manufact_name} />
+                <InfoItem label={this.msg('manufactName')} field={manualHead.manufact_name} />
               </Col>
             </Row>
           </Card>
           <Card bodyStyle={{ padding: 0 }} >
             <Tabs defaultActiveKey="imgoods">
-              <TabPane tab="料件表" key="imgoods">
+              <TabPane tab={this.msg('imgoods')} key="imgoods">
                 <ImpGoodsPane manualNo={this.props.params.id} />
               </TabPane>
-              <TabPane tab="成品表" key="exgoods">
+              <TabPane tab={this.msg('exgoods')} key="exgoods">
                 <ExpGoodsPane manualNo={this.props.params.id} />
               </TabPane>
             </Tabs>

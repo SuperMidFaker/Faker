@@ -1,42 +1,59 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   searchPlaceholder: {
     id: 'cms.expense.search',
-    defaultMessage: '委托编号/发票号/提运单号',
+    defaultMessage: '委托编号/提运单号',
   },
-  billing: {
-    id: 'cms.expense.billing',
-    defaultMessage: '账务中心',
-  },
-  expense: {
-    id: 'cms.expense',
-    defaultMessage: '费用管理',
-  },
-  both: {
-    id: 'cms.expense.both',
-    defaultMessage: '收入/支出结算',
-  },
-  receivable: {
-    id: 'cms.expense.receivable',
-    defaultMessage: '收入结算',
-  },
-  payable: {
+  payableExpense: {
     id: 'cms.expense.payable',
-    defaultMessage: '支出结算',
+    defaultMessage: '应付费用',
   },
-  allStatus: {
-    id: 'cms.expense.all.status',
-    defaultMessage: '全部状态',
+  receivableExpense: {
+    id: 'cms.expense.receivable',
+    defaultMessage: '应收费用',
   },
-  statusPending: {
-    id: 'cms.expense.status.pending',
-    defaultMessage: '待计费',
+  byDelegation: {
+    id: 'cms.expense.by.delegation',
+    defaultMessage: '按委托汇总',
   },
-  statusEstimated: {
-    id: 'cms.expense.status.estimated',
-    defaultMessage: '已预估',
+  byCustomer: {
+    id: 'cms.expense.by.customer',
+    defaultMessage: '按客户汇总',
+  },
+  byVendor: {
+    id: 'cms.expense.by.vendor',
+    defaultMessage: '按供应商汇总',
+  },
+  byItem: {
+    id: 'cms.expense.by.item',
+    defaultMessage: '按商品分摊',
+  },
+  cusDeclCharges: {
+    id: 'cms.expense.cus.decl.charges',
+    defaultMessage: '报关收费',
+  },
+  ciqDeclCharges: {
+    id: 'cms.expense.ciq.decl.charges',
+    defaultMessage: '报检收费',
+  },
+  certsCharges: {
+    id: 'cms.expense.certs.charges',
+    defaultMessage: '鉴定办证收费',
+  },
+  cusDeclExpense: {
+    id: 'cms.expense.cus.decl.expense',
+    defaultMessage: '报关费用',
+  },
+  ciqDeclExpense: {
+    id: 'cms.expense.ciq.decl.expense',
+    defaultMessage: '报检费用',
+  },
+  certsExpense: {
+    id: 'cms.expense.certs.expense',
+    defaultMessage: '鉴定办证费用',
   },
   statusClosed: {
     id: 'cms.expense.status.closed',
@@ -106,9 +123,9 @@ const messages = defineMessages({
     id: 'cms.expense.revenue',
     defaultMessage: '应收',
   },
-  serviceRevenue: {
-    id: 'cms.expense.revenue.service',
-    defaultMessage: '服务应收',
+  serviceCharges: {
+    id: 'cms.expense.service.charges',
+    defaultMessage: '服务收费',
   },
   cushBill: {
     id: 'cms.expense.cushion.bill',
@@ -122,13 +139,13 @@ const messages = defineMessages({
     id: 'cms.expense.cost',
     defaultMessage: '应付',
   },
-  servCost: {
-    id: 'cms.expense.service.cost',
-    defaultMessage: '服务应付',
+  serviceExpense: {
+    id: 'cms.expense.service.expense',
+    defaultMessage: '服务费用',
   },
   cushCost: {
     id: 'cms.expense.cushion.cost',
-    defaultMessage: '代垫应付',
+    defaultMessage: '代垫费用',
   },
   allCost: {
     id: 'cms.expense.all.cost',
@@ -141,6 +158,26 @@ const messages = defineMessages({
   statementEn: {
     id: 'cms.expense.statementEn',
     defaultMessage: '是否结单',
+  },
+  ccdCount: {
+    id: 'cms.expense.ccd.count',
+    defaultMessage: '报关单数量',
+  },
+  ccsCount: {
+    id: 'cms.expense.ccs.count',
+    defaultMessage: '报关单联数',
+  },
+  itemCount: {
+    id: 'cms.expense.item.count',
+    defaultMessage: '品项数',
+  },
+  prdtCount: {
+    id: 'cms.expense.prdt.count',
+    defaultMessage: '料号数',
+  },
+  declValue: {
+    id: 'cms.expense.decl.value',
+    defaultMessage: '申报货值',
   },
   acptTime: {
     id: 'cms.expense.accept.time',
@@ -243,5 +280,7 @@ const messages = defineMessages({
     defaultMessage: '操作',
   },
 });
+
 export default messages;
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);

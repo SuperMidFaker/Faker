@@ -10,7 +10,7 @@ import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ModuleMenu from '../menu';
@@ -268,7 +268,7 @@ export default class SHFTZStockList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder="搜索备件号/商品编码" onInputSearch={this.handleSearch} />
+      <SearchBox placeholder="搜索备件号/商品编码" onSearch={this.handleSearch} />
     </span>);
     return (
       <Layout>

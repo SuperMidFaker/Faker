@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Popover, Form, Select, Button, Icon, message } from 'antd';
-import { loadOperators } from 'common/reducers/crmCustomers';
+import { loadOperators } from 'common/reducers/sofCustomers';
 import messages from './root.i18n';
 import { format } from './i18n/helpers';
 
@@ -15,7 +15,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    operators: state.crmCustomers.operators,
+    operators: state.sofCustomers.operators,
   }),
   { loadOperators }
 )
@@ -84,16 +84,20 @@ export default class OperatorsPopover extends React.Component {
       button = (<span style={{ color: '#108ee9', background: 'transparent' }}><Icon type="check-square-o" />{this.msg('accepting')}</span>);
     }
     return (
-      <Popover visible={visible} onVisibleChange={this.handlePopVisibleChange} trigger="click" content={
-        <div style={{ width: 140 }}>
-          <FormItem label={this.msg(label)} >
-            <Select labelInValue style={{ width: '100%' }} onSelect={this.handleSelect}>
-              {operators.map(op => <Option key={`${op.lid}${op.name}`} value={op.lid}>{op.name}</Option>)}
-            </Select>
-          </FormItem>
-          <Button type="primary" onClick={this.handleOk}>确定</Button>
-          <Button style={{ marginLeft: 8 }} onClick={this.handleCancel}>取消</Button>
-        </div>
+      <Popover
+        visible={visible}
+        onVisibleChange={this.handlePopVisibleChange}
+        trigger="click"
+        content={
+          <div style={{ width: 140 }}>
+            <FormItem label={this.msg(label)} >
+              <Select labelInValue style={{ width: '100%' }} onSelect={this.handleSelect}>
+                {operators.map(op => <Option key={`${op.lid}${op.name}`} value={op.lid}>{op.name}</Option>)}
+              </Select>
+            </FormItem>
+            <Button type="primary" onClick={this.handleOk}>确定</Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleCancel}>取消</Button>
+          </div>
       }
       >
         {button}

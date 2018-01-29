@@ -5,6 +5,8 @@ import { Modal, Form, Select, Row, Col, Input, Button, Table } from 'antd';
 import { toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_ENT_QUALIFY_TYPE } from 'common/constants';
 import RowAction from 'client/components/RowAction';
+import { intlShape, injectIntl } from 'react-intl';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -18,12 +20,15 @@ const { Option } = Select;
     toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif,
   }
 )
+@injectIntl
 @Form.create()
 export default class EntQualifyModal extends Component {
   static propTypes = {
-    customerPartnerId: PropTypes.number.isRequired,
+    intl: intlShape.isRequired,
+    customerPartnerId: PropTypes.number,
     ciqCode: PropTypes.string,
   }
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleEntQualifiModal(false);
   }
@@ -64,33 +69,33 @@ export default class EntQualifyModal extends Component {
       },
     };
     const columns = [{
-      title: '企业资质类别编号',
+      title: this.msg('entQualifTypeCode'),
       dataIndex: 'ent_qualif_type_code',
     }, {
-      title: '资质名称',
+      title: this.msg('entQualifName'),
       render: (o, record) => CIQ_ENT_QUALIFY_TYPE.find(type =>
         type.value === Number(record.ent_qualif_type_code)) &&
        CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(record.ent_qualif_type_code)).text,
     }, {
-      title: '企业资质编号',
+      title: this.msg('entQualifNo'),
       dataIndex: 'ent_qualif_no',
     }, {
-      title: '企业组织机构代码',
+      title: this.msg('entOrgCode'),
       dataIndex: 'ent_org_code',
     }, {
-      title: '企业名称',
+      title: this.msg('entName'),
       dataIndex: 'ent_name',
     }, {
       dataIndex: 'OPS_COL',
       width: 45,
-      render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
+      render: (o, record) => <RowAction danger confirm={this.msg('ensureDelete')} onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />,
     }];
     return (
-      <Modal width={1200} title="企业资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
+      <Modal width={1200} title={this.msg('entQualif')} visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
           <Row>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="企业资质类别">
+              <FormItem {...formItemLayout} label={this.msg('entQualifTypeCode')}>
                 {getFieldDecorator('ent_qualif_type_code', {
                   required: true,
                 })(<Select>
@@ -101,23 +106,23 @@ export default class EntQualifyModal extends Component {
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="企业资质编号">
+              <FormItem {...formItemLayout} label={this.msg('entQualifNo')}>
                 {getFieldDecorator('ent_qualif_no')(<Input />)}
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="企业名称">
+              <FormItem {...formItemLayout} label={this.msg('entName')}>
                 {getFieldDecorator('ent_name')(<Input />)}
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="企业组织机构代码">
+              <FormItem {...formItemLayout} label={this.msg('entOrgCode')}>
                 {getFieldDecorator('ent_org_code')(<Input />)}
               </FormItem>
             </Col>
           </Row>
           <Row style={{ marginBottom: 8, textAlign: 'right' }}>
-            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>添加</Button>
+            <Button type="primary" icon="plus-circle-o" onClick={this.handleSave}>{this.msg('save')}</Button>
           </Row>
         </Form>
         <Table size="small" columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />

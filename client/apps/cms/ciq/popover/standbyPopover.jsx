@@ -3,9 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Popover, Button, Form, Input, Row, Col, Icon } from 'antd';
 import { updateStandbyInfo, loadStandbyInfo } from 'common/reducers/cmsCiqDeclare';
+import { intlShape, injectIntl } from 'react-intl';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 
+@injectIntl
 @Form.create()
 @connect(
   () => ({}),
@@ -13,6 +16,7 @@ const FormItem = Form.Item;
 )
 export default class StandbyPopover extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     goodsId: PropTypes.number.isRequired,
   }
   state = {
@@ -40,6 +44,7 @@ export default class StandbyPopover extends Component {
       });
     }
   }
+  msg = formatMsg(this.props.intl)
   handleVisibleChange = (visible) => {
     this.setState({ visible });
   }
@@ -61,26 +66,26 @@ export default class StandbyPopover extends Component {
     };
     const content = (
       <Form className="form-layout-compact">
-        <FormItem {...formItemLayout} colon={false} label="备用一">
+        <FormItem {...formItemLayout} colon={false} label={this.msg('standby1')}>
           {getFieldDecorator('standby_1', {
             initialValue: info.standby_1,
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} colon={false} label="备用二">
+        <FormItem {...formItemLayout} colon={false} label={this.msg('standby2')}>
           {getFieldDecorator('standby_2', {
             initialValue: info.standby_2,
           })(<Input />)}
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" style={{ float: 'right' }} onClick={this.handleOk}>确定</Button>
+            <Button type="primary" style={{ float: 'right' }} onClick={this.handleOk}>{this.msg('ensure')}</Button>
           </Col>
         </Row>
       </Form>
     );
     return (
       <Popover
-        title="备用信息"
+        title={this.msg('standbyInfo')}
         content={content}
         trigger="click"
         visible={this.state.visible}

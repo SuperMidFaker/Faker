@@ -110,6 +110,10 @@ const messages = defineMessages({
     id: 'cwm.module.settings',
     defaultMessage: '设置',
   },
+  devApps: {
+    id: 'cwm.module.dev.apps',
+    defaultMessage: '更多应用',
+  },
   settingsResources: {
     id: 'cwm.module.settings.resources',
     defaultMessage: '资源设置',

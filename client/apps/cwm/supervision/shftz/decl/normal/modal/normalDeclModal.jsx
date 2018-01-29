@@ -6,13 +6,13 @@ import moment from 'moment';
 import { Button, Card, Row, Col, Table, Form, Modal, Radio, Select, Tag, Input, message } from 'antd';
 import { getSuppliers } from 'common/reducers/cwmReceive';
 import TrimSpan from 'client/components/trimSpan';
+import SearchBox from 'client/components/SearchBox';
 import { format } from 'client/common/i18n/helpers';
 import { loadBrokers } from 'common/reducers/cwmWarehouse';
 import { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
 import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
-const { Search } = Input;
 const { Option } = Select;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -304,8 +304,8 @@ export default class NormalDeclModal extends Component {
   handleRelRangeChange = (relDateRange) => {
     this.setState({ relDateRange });
   }
-  handleFtzRelNoChange = (ev) => {
-    this.setState({ ftzRelNo: ev.target.value });
+  handleFtzRelNoChange = (value) => {
+    this.setState({ ftzRelNo: value });
   }
   handleNormalOutsQuery = () => {
     const {
@@ -653,7 +653,7 @@ export default class NormalDeclModal extends Component {
               <Card title="出库报关明细" bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} />
+                    <SearchBox placeholder="出库单号" onSearch={this.handleFtzRelNoChange} />
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                       {this.state.selectedRowKeys.length !== 0 &&

@@ -1,14 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 
 @injectIntl
+@connect(
+  state => ({
+    bssApps: state.account.apps.bss,
+  }),
+  {}
+)
 export default class ModuleBMS extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -17,10 +24,12 @@ export default class ModuleBMS extends React.Component {
   };
   state = {
     linkMenus: [],
+    appMenus: [],
   }
   componentWillMount() {
-    const { intl } = this.props;
+    const { intl, bssApps } = this.props;
     const linkMenus = [];
+    const appMenus = [];
     linkMenus.push({
       single: true,
       key: 'bss-0',
@@ -84,16 +93,48 @@ export default class ModuleBMS extends React.Component {
     });
     linkMenus.push({
       single: true,
+      bottom: true,
       key: 'bss-settings',
       path: '/bss/settings',
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
     });
-    this.setState({ linkMenus });
+    if (bssApps.length > 0) {
+      if (bssApps.length === 1) {
+        appMenus.push({
+          single: true,
+          key: bssApps[0].app_id,
+          path: bssApps[0].url,
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, bssApps[0].app_name),
+        });
+      } else {
+        appMenus.push({
+          single: false,
+          key: 'bss-app',
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
+          sublinks: [],
+        });
+        bssApps.forEach((b, index) => {
+          appMenus[0].sublinks.push({
+            key: `bss-app-${index}`,
+            path: b.url,
+            text: formatMsg(intl, b.app_name),
+          });
+        });
+      }
+    }
+    this.setState({ linkMenus, appMenus });
   }
   render() {
     return (
-      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout
+        links={this.state.linkMenus}
+        appMenus={this.state.appMenus}
+        childContent={this.props.children}
+        location={this.props.location}
+      />
     );
   }
 }

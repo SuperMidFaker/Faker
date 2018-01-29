@@ -11,7 +11,7 @@ import InboundCard from '../card/inboundCard';
 @injectIntl
 @connect(
   state => ({
-    order: state.crmOrders.dock.order,
+    order: state.sofOrders.dock.order,
   }),
   { loadAsnInbounds }
 )

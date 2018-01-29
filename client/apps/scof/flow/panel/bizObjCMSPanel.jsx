@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Tabs } from 'antd';
+import { Card, Form, Row, Col, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadCmsBizParams, loadCustomerCmsQuotes } from 'common/reducers/scofFlow';
 import FlowNodePanel from './compose/flowNodePanel';
@@ -10,7 +10,7 @@ import DeclManifestPane from './bizpane/cmsDeclManifestPane';
 import CustomsDeclPane from './bizpane/cmsCustomsDeclPane';
 import { formatMsg } from '../message.i18n';
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -24,8 +24,7 @@ const TabPane = Tabs.TabPane;
 export default class FlowCmsNodePanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    partnerId: PropTypes.number.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
     onFormInit: PropTypes.func.isRequired,
   }
   componentWillMount() {
@@ -52,14 +51,14 @@ export default class FlowCmsNodePanel extends Component {
     const title = model.kind === 'export' ? this.msg('flowNodeExport') : this.msg('flowNodeImport');
     return (
       <Form layout="vertical" className="form-layout-compact">
-        <Row gutter={16}>
+        <Row gutter={8}>
           <Col sm={24} md={8}>
             <Card title={title} bodyStyle={{ padding: 0 }}>
               <FlowNodePanel form={form} node={node} graph={graph} />
             </Card>
           </Col>
           <Col sm={24} md={16}>
-            <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
+            <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="objDelegation">
                 <TabPane tab={this.msg('cmsDelegation')} key="objDelegation">
                   <DelegationPane form={form} model={model} />

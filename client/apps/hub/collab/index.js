@@ -1,1 +1,2 @@
-export Partners from './containers/MainContainer';
+export Invitation from './invitation';
+export Template from './template';

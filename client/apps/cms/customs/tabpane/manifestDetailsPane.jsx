@@ -5,10 +5,7 @@ import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../common/message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../../common/message.i18n';
 
 function calculateTotal(bodies, currencies) {
   let totGrossWt = 0;
@@ -67,7 +64,7 @@ export default class ManifestDetailsPane extends React.Component {
       totTrade: calresult.totTrade,
     };
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { billDetails } = this.props;
     const { totGrossWt, totWetWt, totTrade } = this.state;
