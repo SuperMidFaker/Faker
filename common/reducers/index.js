@@ -66,6 +66,7 @@ import transportSettings from './transportSettings';
 import transportTariff from './transportTariff';
 import transportBilling from './transportBilling';
 import transportKpi from './transportKpi';
+import template from './template';
 
 export default combineReducers({
   activities,
@@ -135,4 +136,5 @@ export default combineReducers({
   cmsCiqDeclare,
   cmsPermit,
   hubDevApp,
+  template,
 });
