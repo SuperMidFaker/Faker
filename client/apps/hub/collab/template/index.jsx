@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Badge, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import { Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { toggleAppCreateModal, loadDevApps } from 'common/reducers/hubDevApp';
-import { toggleTemplateModal } from 'common/reducers/template';
+import { toggleTemplateModal, loadTemplates } from 'common/reducers/template';
 import RowAction from 'client/components/RowAction';
 import HubSiderMenu from '../../menu';
 import CreateModal from './modal/createModal';
@@ -17,11 +16,12 @@ const { Content } = Layout;
 @injectIntl
 @connect(
   state => ({
-    apps: state.hubDevApp.apps,
-    pageSize: state.hubDevApp.apps.pageSize,
-    filter: state.hubDevApp.filter,
+    templates: state.template.templates,
+    pageSize: state.template.templates.pageSize,
+    current: state.template.templates.current,
+    filter: state.template.filter,
   }),
-  { toggleAppCreateModal, loadDevApps, toggleTemplateModal }
+  { toggleTemplateModal, loadTemplates }
 )
 export default class NoticeTemplateList extends React.Component {
   static propTypes = {
@@ -31,68 +31,44 @@ export default class NoticeTemplateList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    this.props.loadDevApps({
-      pageSize: this.props.apps.pageSize,
+    this.props.loadTemplates({
+      pageSize: this.props.pageSize,
       current: 1,
       filter: JSON.stringify({}),
     });
   }
   msg = formatMsg(this.props.intl);
-  columns = [{
-    title: this.msg('appName'),
-    dataIndex: 'app_name',
-  }, {
-    title: this.msg('scope'),
-    dataIndex: 'scope',
-  }, {
-    title: this.msg('apiKey'),
-    width: 400,
-    dataIndex: 'api_key',
-  }, {
-    title: this.msg('apiSecret'),
-    dataIndex: 'api_secret',
-    width: 400,
-  }, {
-    title: this.msg('opColumn'),
-    width: 100,
-    render: () => (
-      <span>
-        <a href="#">修改</a>
-        <span className="ant-divider" />
-        <a href="#"><Icon type="delete" /></a>
-      </span>
-    ),
-  }];
-
-  handleCancel = () => {
-    this.context.router.goBack();
-  }
-  handleConfig = (appId) => {
-    this.context.router.push(`/hub/dev/${appId}`);
-  }
   toggleTemplateModal = () => {
     this.props.toggleTemplateModal(true);
   }
   handleSearch = (value) => {
     const filter = { ...this.props.filter, searchText: value };
-    this.props.loadDevApps({
-      pageSize: this.props.apps.pageSize,
+    this.props.loadTemplates({
+      pageSize: this.props.pageSize,
       current: 1,
       filter: JSON.stringify(filter),
     });
   }
-  handleOpenApiDocs = () => {
-    window.open('https://docs.welogix.cn');
+  handleReload = () => {
+    const { filter } = this.props;
+    this.props.loadTemplates({
+      pageSize: this.props.pageSize,
+      current: this.props.current,
+      filter: JSON.stringify(filter),
+    });
+  }
+  handleClick = (row) => {
+    this.props.toggleTemplateModal(true, row);
   }
   render() {
-    const { apps, filter } = this.props;
+    const { templates, filter } = this.props;
     const pagination = {
-      pageSize: Number(apps.pageSize),
-      current: Number(apps.current),
-      total: apps.total,
+      pageSize: Number(templates.pageSize),
+      current: Number(templates.current),
+      total: templates.total,
       showTotal: total => `共 ${total} 条`,
       onChange: (page, pageSize) => {
-        this.props.loadDevApps({
+        this.props.loadTemplates({
           pageSize,
           current: page,
           filter: JSON.stringify(filter),
@@ -120,25 +96,23 @@ export default class NoticeTemplateList extends React.Component {
           <Content className="page-content layout-fixed-width">
             <Card bodyStyle={{ padding: 16 }} >
               <List
-                dataSource={this.props.apps.data}
+                dataSource={this.props.templates.data}
                 header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
                 pagination={pagination}
                 renderItem={item => (
                   <List.Item
-                    key={item.app_id}
-                    actions={[<RowAction size="default" onClick={() => this.handleConfig(item.app_id)} icon="setting" label={this.msg('config')} />]}
+                    key={item.id}
+                    actions={[<RowAction size="default" onClick={() => this.handleClick(item)} icon="setting" label={this.msg('config')} />]}
                   >
                     <List.Item.Meta
-                      avatar={<Avatar shape="square" src={item.app_logo} />}
-                      title={item.app_name}
-                      description={item.app_desc}
+                      title={item.name}
+                      description={item.title}
                     />
-                    {item.status ? <Badge status="success" text="已上线" /> : <Badge status="default" text="未上线" />}
                   </List.Item>
                   )}
               />
             </Card>
-            <CreateModal/>
+            <CreateModal reload={this.handleReload} />
           </Content>
         </Layout>
       </Layout>
