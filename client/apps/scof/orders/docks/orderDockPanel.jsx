@@ -1,22 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Icon, Col, Row, Tabs, Tooltip, message } from 'antd';
+import { Icon, Col, Menu, Modal, Row, Tabs, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER } from 'common/constants';
 import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
+import { Logixon } from 'client/components/FontIcon';
 import OrderPane from './tabpanes/orderPane';
 import FlowPane from './tabpanes/flowPane';
-import BillingPane from './tabpanes/billingPane';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import AttachmentPane from './tabpanes/attachmentPane';
+import { formatMsg } from '../message.i18n';
 import '../orders.less';
 
-const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
+function renderStatus(status) {
+  switch (status) {
+    case CRM_ORDER_STATUS.created: return 'default';
+    case CRM_ORDER_STATUS.processing: return 'processing';
+    case CRM_ORDER_STATUS.finished: return 'success';
+    default: return 'default';
+  }
+}
 
 @injectIntl
 @connect(
@@ -36,18 +43,39 @@ export default class OrderDockPanel extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
-    tabKey: PropTypes.string,
-    dock: PropTypes.object.isRequired,
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
-    order: PropTypes.object.isRequired,
+    order: PropTypes.shape({
+      shipmt_order_no: PropTypes.string,
+    }).isRequired,
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleTabChange = (tabKey) => {
     this.props.changeDockTab(tabKey);
   }
   handleClose = () => {
     this.props.hideDock();
+  }
+  handleMenuClick = (e) => {
+    if (e.key === 'cancel') {
+      Modal.confirm({
+        title: '确认取消订单?',
+        content: '取消订单后，该订单将会被删除',
+        onOk: () => {
+          this.handleCancelOrder();
+        },
+        onCancel() {},
+      });
+    } else if (e.key === 'close') {
+      Modal.confirm({
+        title: '确认关闭订单?',
+        content: '关闭订单后订单会被提前结束，但是订单不会被删除',
+        onOk: () => {
+          this.handleCloseOrder();
+        },
+        onCancel() {},
+      });
+    }
   }
   handleCancelOrder = () => {
     this.props.cancelOrder(this.props.order.shipmt_order_no, this.props.tenantId).then((result) => {
@@ -68,13 +96,15 @@ export default class OrderDockPanel extends React.Component {
       }
     });
   }
-  renderStatus(status) {
-    switch (status) {
-      case CRM_ORDER_STATUS.created: return 'default';
-      case CRM_ORDER_STATUS.processing: return 'processing';
-      case CRM_ORDER_STATUS.finished: return 'success';
-      default: return 'default';
+  renderMenu() {
+    const { order } = this.props;
+    const menuItems = [];
+    if (order.order_status === CRM_ORDER_STATUS.processing) {
+      menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消订单</Menu.Item>);
+      menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭订单</Menu.Item>);
     }
+    menuItems.push(<Menu.Item key="share"><Icon type="share-alt" /><span onClick={this.handleExportExcel}>共享订单</span></Menu.Item>);
+    return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
   renderStatusMsg(status) {
     switch (status) {
@@ -85,40 +115,23 @@ export default class OrderDockPanel extends React.Component {
     }
   }
   renderTabs() {
-    const { order } = this.props;
     return (
       <Tabs defaultActiveKey="flow" onChange={this.handleTabChange}>
         <TabPane tab={this.msg('tabOrder')} key="order">
           <OrderPane />
-          {
-            order.order_status === CRM_ORDER_STATUS.processing ? (
-              <div className="pane-content order-action-btn">
-                <Tooltip title="取消订单后，该订单将会被删除">
-                  <Button onClick={this.handleCancelOrder}>取消订单</Button>
-                </Tooltip>
-                <Tooltip title="关闭订单后订单会被提前结束，但是订单不会被删除">
-                  <Button onClick={this.handleCloseOrder}>关闭订单</Button>
-                </Tooltip>
-              </div>) : null
-          }
         </TabPane>
         <TabPane tab={this.msg('tabFlow')} key="flow">
           <FlowPane />
         </TabPane>
-        <TabPane tab={this.msg('tabBilling')} key="billing" disabled>
-          <BillingPane />
+        <TabPane tab={this.msg('tabAttachment')} key="attachment">
+          <AttachmentPane />
         </TabPane>
       </Tabs>
     );
   }
-  renderAlert() {
-    return (<Button type="primary">创建清单</Button>);
-  }
   renderExtra() {
     const { order } = this.props;
     const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === order.cust_shipmt_transfer)[0];
-    // const transMode = TRANS_MODE.filter(tm => tm.value === order.cust_shipmt_trans_mode)[0];
-    // const wbNo = order.cust_shipmt_bill_lading || (order.cust_shipmt_hawb ? `${order.cust_shipmt_mawb}_${order.cust_shipmt_hawb}` : order.cust_shipmt_mawb);
     return (
       <Row>
         <Col span="8">
@@ -128,7 +141,7 @@ export default class OrderDockPanel extends React.Component {
           <InfoItem label="客户单号" field={order.cust_order_no} />
         </Col>
         <Col span="4">
-          <InfoItem label="货物流向" addonBefore={transfer && <Icon type={transfer.icon} />} field={transfer && transfer.text} />
+          <InfoItem label="订单类型" addonBefore={transfer && <Icon type={transfer.icon} />} field={transfer && transfer.text} />
         </Col>
         <Col span="6">
           <InfoItem label="订单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />
@@ -143,11 +156,11 @@ export default class OrderDockPanel extends React.Component {
         size="large"
         visible={visible}
         onClose={this.props.hideDock}
-        title={`订单关联号:${order.shipmt_order_no}`}
-        status={this.renderStatus(order.order_status)}
+        title={<span><Logixon type="dan" /> {order.shipmt_order_no}</span>}
+        overlay={this.renderMenu()}
+        status={renderStatus(order.order_status)}
         statusText={this.renderStatusMsg(order.order_status)}
         extra={this.renderExtra()}
-        // alert={this.renderAlert()}
       >
         {visible && this.renderTabs()}
       </DockPanel>

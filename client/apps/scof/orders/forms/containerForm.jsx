@@ -36,7 +36,7 @@ export default class ContainerForm extends Component {
     dataIndex: 'cntnr_spec',
   }, {
     title: '是否拼箱',
-    dataIndex: 'is_consolidated',
+    dataIndex: 'is_lcl',
   }, {
     dataIndex: 'OPS_COL',
     width: 45,

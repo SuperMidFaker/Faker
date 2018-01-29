@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Row, Col, Card, Icon, Menu } from 'antd';
-import { format } from 'client/common/i18n/helpers';
+import { Row, Col, Card, Collapse, Menu } from 'antd';
 import { GOODSTYPES, TRANS_MODE, WRAP_TYPE } from 'common/constants';
 import InfoItem from 'client/components/InfoItem';
 import { MdIcon } from 'client/components/FontIcon';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
+const { Panel } = Collapse;
 
 @injectIntl
 @connect(state => ({
@@ -19,9 +18,11 @@ const formatMsg = format(messages);
 export default class OrderPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    order: PropTypes.object.isRequired,
+    order: PropTypes.shape({
+      shipmt_order_no: PropTypes.string,
+    }).isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { order } = this.props;
     const goods = GOODSTYPES.filter(gt => gt.value === order.cust_shipmt_goods_type)[0];
@@ -29,35 +30,55 @@ export default class OrderPane extends React.Component {
     const wrapType = WRAP_TYPE.filter(wt => wt.value === order.cust_shipmt_wrap_type)[0];
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row gutter={16} className="info-group-underline">
-            <Col span="8">
-              <InfoItem
-                label="客户单号"
-                field={order.cust_order_no}
-                placeholder="添加客户单号"
-                editable
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem
-                label="发票号"
-                field={order.cust_invoice_no}
-                placeholder="添加发票号"
-                editable
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem
-                label="合同号"
-                field={order.cust_contract_no}
-                placeholder="添加合同号"
-                editable
-              />
-            </Col>
-          </Row>
-          <Row gutter={16} className="info-group-underline">
-            {
+        <Card bodyStyle={{ padding: 0 }}>
+          <Collapse accordion bordered={false} defaultActiveKey={['basic']}>
+            <Panel header="基本信息" key="basic">
+              <Row gutter={16} className="info-group-underline">
+                <Col span="8">
+                  <InfoItem
+                    label="客户单号"
+                    field={order.cust_order_no}
+                    placeholder="添加客户单号"
+                    editable
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem
+                    type="dropdown"
+                    label="货物类型"
+                    field={goods ? goods.text : ''}
+                    placeholder="选择货物类型"
+                    editable
+                    overlay={<Menu>
+                      <Menu.Item>Menu</Menu.Item>
+                    </Menu>
+                    }
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem
+                    label="总件数"
+                    field={order.cust_shipmt_pieces}
+                    addonAfter={wrapType && wrapType.text}
+                    editable
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem
+                    type="number"
+                    label="总重量"
+                    field={order.cust_shipmt_weight}
+                    addonAfter="千克"
+                    placeholder="设置总重量"
+                    editable
+                  />
+                </Col>
+              </Row>
+
+            </Panel>
+            <Panel header="SHIPMENT" key="shipment">
+              <Row gutter={16} className="info-group-underline">
+                {
                 (order.cust_shipmt_transfer !== 'DOM') &&
                 <Col span="8">
                   <InfoItem
@@ -67,7 +88,7 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-            {
+                {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
                 <Col span="8">
                   <InfoItem
@@ -78,7 +99,7 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-            {
+                {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '5') &&
                 <Col span="8">
                   <InfoItem
@@ -89,7 +110,7 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-            {
+                {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
                 <Col span="8">
                   <InfoItem
@@ -100,7 +121,7 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-            {
+                {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '5') &&
                 <Col span="8">
                   <InfoItem
@@ -111,7 +132,7 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-            {
+                {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
                 <Col span="8">
                   <InfoItem
@@ -122,7 +143,7 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-            {
+                {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '5') &&
                 <Col span="8">
                   <InfoItem
@@ -133,7 +154,7 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-            {
+                {
                 (order.cust_shipmt_transfer !== 'DOM' && order.cust_shipmt_trans_mode === '2') &&
                 <Col span="8">
                   <InfoItem
@@ -144,40 +165,12 @@ export default class OrderPane extends React.Component {
                   />
                 </Col>
                 }
-          </Row>
-          <Row gutter={16} className="info-group-underline">
-            <Col span="8">
-              <InfoItem
-                type="dropdown"
-                label="货物类型"
-                field={goods ? goods.text : ''}
-                placeholder="选择货物类型"
-                editable
-                overlay={<Menu>
-                  <Menu.Item>Menu</Menu.Item>
-                </Menu>
-                    }
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem
-                label="总件数"
-                field={order.cust_shipmt_pieces}
-                addonAfter={wrapType && wrapType.text}
-                editable
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem
-                type="number"
-                label="总重量"
-                field={order.cust_shipmt_weight}
-                addonAfter="千克"
-                placeholder="设置总重量"
-                editable
-              />
-            </Col>
-          </Row>
+              </Row>
+
+            </Panel>
+            <Panel header="集装箱" key="container" />
+            <Panel header="发票" key="invoice" />
+          </Collapse>
         </Card>
       </div>
     );

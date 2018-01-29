@@ -690,9 +690,9 @@ const messages = defineMessages({
     id: 'scof.orders.dock.tab.flow',
     defaultMessage: '流程节点',
   },
-  tabBilling: {
-    id: 'scof.orders.dock.tab.billing',
-    defaultMessage: '计费结算',
+  tabAttachment: {
+    id: 'scof.orders.dock.tab.attachment',
+    defaultMessage: '附件',
   },
 });
 

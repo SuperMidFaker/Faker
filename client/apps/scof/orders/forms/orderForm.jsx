@@ -644,7 +644,7 @@ export default class OrderForm extends Component {
             <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
               <ContainerForm />
             </TabPane>
-            <TabPane tab="发票合同" key="invoice">
+            <TabPane tab="发票" key="invoice">
               <InvoiceForm />
             </TabPane>
           </Tabs>

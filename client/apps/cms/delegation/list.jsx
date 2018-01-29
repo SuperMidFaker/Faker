@@ -18,7 +18,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 
 import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
-import { Logixon, MdIcon } from 'client/components/FontIcon';
+import { MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal, loadFormRequire } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
@@ -99,7 +99,7 @@ export default class DelegationList extends Component {
   }
   state = {
     selectedRowKeys: [],
-    filterName: null,
+    // filterName: null,
   }
   componentDidMount() {
     const filters = this.initializeFilters();
@@ -143,6 +143,7 @@ export default class DelegationList extends Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
+  /*
     title: <Logixon type="dan" />,
     dataIndex: 'order_rel_no',
     width: 36,
@@ -156,6 +157,7 @@ export default class DelegationList extends Component {
       return <Logixon type="circle" color="gray" />;
     },
   }, {
+    */
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 160,
@@ -393,9 +395,11 @@ export default class DelegationList extends Component {
       }
     });
   }
+  /*
   handleSearchChange = (ev) => {
     this.setState({ filterName: ev.target.value });
   }
+  */
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] };
     if (value !== -1) {
@@ -433,7 +437,8 @@ export default class DelegationList extends Component {
     const {
       delegationlist, listFilter, tenantId, avatar, loginName,
     } = this.props;
-    const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
+    // const filterName = this.state.filterName === null ?
+    // listFilter.filterNo : this.state.filterName;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadDelegationList(params),
       resolve: result => result.data,

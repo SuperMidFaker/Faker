@@ -14,16 +14,16 @@ export default class DockPanel extends PureComponent {
     currentDepth: 1,
   }
   static propTypes = {
-    prefixCls: PropTypes.string.isRequired,
+    prefixCls: PropTypes.string,
     visible: PropTypes.bool.isRequired,
     size: PropTypes.string,
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    title: PropTypes.any,
+    title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+    uppperLevel: PropTypes.node,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,
     overlay: PropTypes.node,
     extra: PropTypes.node,
-    children: PropTypes.any,
+    children: PropTypes.node,
     loading: PropTypes.bool,
     onClose: PropTypes.func,
     className: PropTypes.string,
@@ -41,9 +41,6 @@ export default class DockPanel extends PureComponent {
     window.$(document).unbind('click');
   }
   handleClose = (e) => {
-    this.setState({
-      closing: false,
-    });
     (this.props.onClose || noop)(e);
   }
   handleForward = (e) => {
@@ -68,7 +65,7 @@ export default class DockPanel extends PureComponent {
   }
   render() {
     const {
-      prefixCls, size = '', className, visible, title, status, statusText, overlay, extra, loading, alert, alertType, children,
+      prefixCls, size = '', className, visible, title, uppperLevel, status, statusText, overlay, extra, loading, alert, alertType, children,
     } = this.props;
     const sizeCls = ({
       large: 'lg',
@@ -90,12 +87,16 @@ export default class DockPanel extends PureComponent {
               <div className={`${prefixCls}-head-title`}>
                 {this.state.depth > 1 && <Button icon="left" onClick={this.handleBackward} />}
                 <Breadcrumb>
+                  {uppperLevel && <Breadcrumb.Item>{uppperLevel}</Breadcrumb.Item>}
                   <Breadcrumb.Item>{title}</Breadcrumb.Item>
                 </Breadcrumb>
                 {status ? <Badge status={status} text={statusText} /> : null}
                 {overlay &&
                 <div className={`${prefixCls}-head-overlay`}>
-                  <Popover placement="bottomRight" title="更多操作" visible={this.state.overlayVisible}
+                  <Popover
+                    placement="bottomRight"
+                    title="更多操作"
+                    visible={this.state.overlayVisible}
                     onVisibleChange={this.handleVisibleChange}
                     content={<div className={`${prefixCls}-popover`} onClick={this.hideOverlay}>{overlay}</div>}
                     trigger="click"
