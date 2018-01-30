@@ -71,6 +71,8 @@ const initialState = {
     containerPackagings: [],
     declPorts: [],
     customsCurrency: [],
+    customsBrokers: [],
+    ciqBrokers: [],
   },
   orders: {
     totalCount: 0,
