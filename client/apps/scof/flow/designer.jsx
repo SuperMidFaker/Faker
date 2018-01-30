@@ -343,6 +343,7 @@ export default class FlowDesigner extends React.Component {
         demander_tenant_id: currentFlow.customer_tenant_id || tenantId,
         demander_partner_id: currentFlow.partner_id,
         provider_tenant_id: tenantId,
+        tenant_id: tenantId,
       });
       this.graph.refresh();
     }

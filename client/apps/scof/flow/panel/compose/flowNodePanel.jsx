@@ -43,9 +43,13 @@ export default class FlowNodePanel extends Component {
       this.props.graph.update(this.props.node, { person: person.name });
     }
   }
+  handleProviderChange = (provider) => {
+    this.props.graph.update(this.props.node, { provider_tenant_id: provider });
+  }
   render() {
     const {
-      form: { getFieldDecorator }, customerPartners, node, serviceTeam, tenantId, tenantName,
+      form: { getFieldDecorator }, customerPartners,
+      node, serviceTeam, tenantId, tenantName,
       vendorTenants, providerFlows, mainFlow,
     } = this.props;
     const formItemLayout = {
@@ -80,6 +84,7 @@ export default class FlowNodePanel extends Component {
         <FormItem label={this.msg('nodeProvider')} key="provider" {...formItemLayout}>
           {getFieldDecorator('provider_tenant_id', {
               initialValue: model.provider_tenant_id,
+            onChange: this.handleProviderChange,
             })(<Select allowClear showSearch>
               {providers.map(st => <Option key={st.id} value={st.id}>{st.name}</Option>)}
             </Select>)}
