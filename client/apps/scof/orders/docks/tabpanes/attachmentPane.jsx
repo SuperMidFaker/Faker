@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button } from 'antd';
+import { Button, Upload, message } from 'antd';
 import moment from 'moment';
-import { loadCmsFiles } from 'common/reducers/cmsManifest';
+import { uploadAttachment, loadOrderAttachments } from 'common/reducers/sofOrders';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import { formatMsg } from '../../message.i18n';
@@ -12,13 +12,10 @@ import { formatMsg } from '../../message.i18n';
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    tabKey: state.cmsDelegationDock.tabKey,
-    ciqSpinning: state.cmsDelegationDock.ciqPanelLoading,
-    delegation: state.cmsDelegationDock.previewer.delegation,
+    order: state.sofOrders.dock.order,
     userMembers: state.account.userMembers,
   }),
-  { loadCmsFiles }
+  { uploadAttachment, loadOrderAttachments }
 )
 export default class AttachmentPane extends React.Component {
   static propTypes = {
@@ -27,8 +24,8 @@ export default class AttachmentPane extends React.Component {
   state = {
     records: [],
   }
-  componentDidMount() {
-    this.props.loadCmsFiles(this.props.delegation.delg_no).then((result) => {
+  componentWillMount() {
+    this.props.loadOrderAttachments(this.props.order.shipmt_order_no).then((result) => {
       if (!result.error) {
         this.setState({
           records: result.data,
@@ -37,8 +34,8 @@ export default class AttachmentPane extends React.Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.tabKey === 'ciqDecl' && nextProps.delegation.delg_no !== this.props.delegation.delg_no) {
-      this.props.loadCmsFiles(nextProps.delegation.delg_no).then((result) => {
+    if (nextProps.order.shipmt_order_no !== this.props.order.shipmt_order_no) {
+      this.props.loadOrderAttachments(nextProps.order.shipmt_order_no).then((result) => {
         if (!result.error) {
           this.setState({
             records: result.data,
@@ -57,6 +54,10 @@ export default class AttachmentPane extends React.Component {
     a.download = row.doc_name;
     a.click();
   }
+  handleUploaded = (name, url) => {
+    const { order } = this.props;
+    this.props.uploadAttachment(url, name, order.shipmt_order_no);
+  }
   render() {
     const { records } = this.state;
     const columns = [{
@@ -64,12 +65,12 @@ export default class AttachmentPane extends React.Component {
       dataIndex: 'doc_name',
     }, {
       title: '创建人',
-      dataIndex: 'creater_login_id',
+      dataIndex: 'created_by',
       width: 100,
       render: o => this.props.userMembers.find(user => user.login_id === o) &&
        this.props.userMembers.find(user => user.login_id === o).name,
     }, {
-      title: '更新时间',
+      title: '创建时间',
       dataIndex: 'created_date',
       width: 150,
       render: date => (date ? moment(date).format('YYYY.MM.DD HH:mm') : '-'),
@@ -81,7 +82,24 @@ export default class AttachmentPane extends React.Component {
         <RowAction shape="circle" onClick={this.handleDownload} icon="download" tooltip={this.msg('download')} row={row} />
       </span>),
     }];
-    const toolbarActions = (<Button type="primary" icon="upload">上传</Button>);
+    const me = this;
+    const props = {
+      action: `${API_ROOTS.default}v1/upload/img/`,
+      multiple: false,
+      showUploadList: false,
+      withCredentials: true,
+      onChange(info) {
+        if (info.file.response && info.file.response.status === 200) {
+          me.handleUploaded(info.file.name, info.file.response.data);
+          message.success('上传成功');
+        }
+      },
+    };
+    const toolbarActions = (
+      <Upload {...props}>
+        <Button type="primary" icon="upload">上传</Button>
+      </Upload>
+    );
     return (
       <div className="pane-content tab-pane">
         <DataTable size="middle" toolbarActions={toolbarActions} columns={columns} dataSource={records} noSetting />

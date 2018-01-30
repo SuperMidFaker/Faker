@@ -22,6 +22,8 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_FLOWASN', 'LOAD_FLOWASN_SUCCEED', 'LOAD_FLOWASN_FAIL',
   'LOAD_FLOWSO', 'LOAD_FLOWSO_SUCCEED', 'LOAD_FLOWSO_FAIL',
   'MANUAL_ENTFI', 'MANUAL_ENTFI_SUCCEED', 'MANUAL_ENTFI_FAIL',
+  'ATTACHMENT_UPLOAD', 'ATTACHMENT_UPLOAD_SUCCEED', 'ATTACHMENT_UPLOAD_FAIL',
+  'LOAD_ATTACHMENTS', 'LOAD_ATTACHMENTS_SUCCEED', 'LOAD_ATTACHMENTS_FAIL',
 ]);
 
 const initialState = {
@@ -489,6 +491,36 @@ export function manualEnterFlowInstance(uuid, kind) {
       endpoint: 'v1/sof/order/node/manual/enter',
       method: 'post',
       data: { uuid, kind },
+    },
+  };
+}
+
+export function uploadAttachment(url, name, orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ATTACHMENT_UPLOAD,
+        actionTypes.ATTACHMENT_UPLOAD_SUCCEED,
+        actionTypes.ATTACHMENT_UPLOAD_FAIL,
+      ],
+      endpoint: 'v1/sof/order/attachement/upload',
+      method: 'post',
+      data: { url, name, orderNo },
+    },
+  };
+}
+
+export function loadOrderAttachments(orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ATTACHMENTS,
+        actionTypes.LOAD_ATTACHMENTS_SUCCEED,
+        actionTypes.LOAD_ATTACHMENTS_FAIL,
+      ],
+      endpoint: 'v1/sof/order/attachements/load',
+      method: 'get',
+      params: { orderNo },
     },
   };
 }
