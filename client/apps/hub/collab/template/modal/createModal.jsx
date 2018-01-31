@@ -116,7 +116,7 @@ export default class CreateModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal width={800} title="创建通知模版" visible={visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
+      <Modal width={800} style={{ top: 24 }} title="创建通知模版" visible={visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
         <FormItem label="模版名称" {...formItemLayout}>
           {getFieldDecorator('name', {
             required: true,
