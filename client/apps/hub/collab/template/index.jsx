@@ -112,7 +112,7 @@ export default class NoticeTemplateList extends React.Component {
                     key={item.id}
                     actions={[
                       <RowAction size="default" onClick={() => this.handleClick(item)} icon="setting" label={this.msg('config')} />,
-                      <RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={this.handleDel} row={item} />,
+                      <RowAction danger size="default" icon="delete" confirm={this.msg('ensureDelete')} onConfirm={this.handleDel} row={item} />,
                   ]}
                   >
                     <List.Item.Meta
