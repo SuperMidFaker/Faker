@@ -6,6 +6,7 @@ import { Modal, Form, Input, message, Menu } from 'antd';
 import { toggleTemplateModal, createTemplate, updateTemplate } from 'common/reducers/template';
 import BraftEditor from 'braft-editor';
 import 'braft-editor/dist/braft.css';
+import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 
@@ -46,6 +47,7 @@ export default class CreateModal extends Component {
       content: html,
     });
   }
+  msg = formatMsg(this.props.intl);
   handleSubmit = () => {
     if (!this.state.content) {
       message.error('内容不能为空');
@@ -93,10 +95,10 @@ export default class CreateModal extends Component {
     const { visible, form: { getFieldDecorator }, record } = this.props;
     const menu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="$业务编号">业务编号</Menu.Item>
-        <Menu.Item key="$订单号">订单号</Menu.Item>
-        <Menu.Item key="$发票号">发票号</Menu.Item>
-        <Menu.Item key="$合同号">合同号</Menu.Item>
+        <Menu.Item key="$业务编号">{this.msg('shipmtOrderNo')}</Menu.Item>
+        <Menu.Item key="$订单号">{this.msg('custOrderNo')}</Menu.Item>
+        <Menu.Item key="$发票号">{this.msg('invoiceNo')}</Menu.Item>
+        <Menu.Item key="$合同号">{this.msg('contractNo')}</Menu.Item>
       </Menu>
     );
     const editorProps = {
@@ -106,7 +108,7 @@ export default class CreateModal extends Component {
       extendControls: [
         {
           type: 'dropdown',
-          text: <span>下拉菜单</span>,
+          text: <span>{this.msg('dropdown')}</span>,
           component: menu,
         },
       ],
@@ -116,19 +118,19 @@ export default class CreateModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal width={800} title="创建通知模版" visible={visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
-        <FormItem label="模版名称" {...formItemLayout}>
+      <Modal width={800} title={this.msg('create')} visible={visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
+        <FormItem label={this.msg('templateName')} {...formItemLayout}>
           {getFieldDecorator('name', {
             required: true,
             initialValue: record.name,
           })(<Input />)}
         </FormItem>
-        <FormItem label="发送方" {...formItemLayout}>
+        <FormItem label={this.msg('sender')} {...formItemLayout}>
           {getFieldDecorator('sender', {
             initialValue: record.sender,
           })(<Input />)}
         </FormItem>
-        <FormItem label="标题" {...formItemLayout}>
+        <FormItem label={this.msg('title')} {...formItemLayout}>
           {getFieldDecorator('title', {
             required: true,
             initialValue: record.title,

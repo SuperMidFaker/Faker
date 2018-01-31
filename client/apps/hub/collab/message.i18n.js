@@ -6,6 +6,46 @@ const messages = defineMessages({
     id: 'network.collab',
     defaultMessage: '协作邀请',
   },
+  ensureDelete: {
+    id: 'network.collab.ensureDelete',
+    defaultMessage: '确定删除?',
+  },
+  create: {
+    id: 'network.collab.create',
+    defaultMessage: '创建通知模版',
+  },
+  templateName: {
+    id: 'network.collab.templateName',
+    defaultMessage: '模版名称',
+  },
+  sender: {
+    id: 'network.collab.sender',
+    defaultMessage: '发送方',
+  },
+  title: {
+    id: 'network.collab.sender',
+    defaultMessage: '标题',
+  },
+  dropdown: {
+    id: 'network.collab.dropdown',
+    defaultMessage: '下拉菜单',
+  },
+  shipmtOrderNo: {
+    id: 'network.collab.shipmtOrderNo',
+    defaultMessage: '业务编号',
+  },
+  custOrderNo: {
+    id: 'network.collab.custOrderNo',
+    defaultMessage: '订单号',
+  },
+  invoiceNo: {
+    id: 'network.collab.invoiceNo',
+    defaultMessage: '发票号',
+  },
+  contractNo: {
+    id: 'network.collab.contractNo',
+    defaultMessage: '合同号',
+  },
   partnerName: {
     id: 'network.partner.name',
     defaultMessage: '合作伙伴',
@@ -25,14 +65,6 @@ const messages = defineMessages({
   activate: {
     id: 'network.business.activate',
     defaultMessage: '申请开通',
-  },
-  accept: {
-    id: 'network.business.accept',
-    defaultMessage: '接受',
-  },
-  reject: {
-    id: 'network.business.reject',
-    defaultMessage: '拒绝',
   },
   revoke: {
     id: 'network.business.revoke',
@@ -99,11 +131,11 @@ const messages = defineMessages({
     defaultMessage: '已取消',
   },
   accept: {
-    id: 'network.invitation.accept',
+    id: 'network.accept',
     defaultMessage: '接受',
   },
   reject: {
-    id: 'network.invitation.reject',
+    id: 'network.reject',
     defaultMessage: '拒绝',
   },
   selectProviderType: {
