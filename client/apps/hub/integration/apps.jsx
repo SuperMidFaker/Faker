@@ -108,7 +108,9 @@ export default class IntegrationAppsList extends React.Component {
                 </SubMenu>
               </Menu>
               <List
-                grid={{ gutter: 16, column: 6 }}
+                grid={{
+                  gutter: 16, xs: 1, sm: 2, md: 2, lg: 3, xl: 6,
+                }}
                 dataSource={this.state.appList}
                 renderItem={item => (
                   <List.Item>
