@@ -2,17 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
 import { Badge, Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
   Tag, Dropdown, Menu, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
+import { string2Bytes } from 'client/util/dataTransform';
 import { Logixon } from 'client/components/FontIcon';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR } from 'common/constants';
-import { loadOutboundHead, updateOutboundMode, toggleSFExpressModal, loadSFExpressConfig } from 'common/reducers/cwmOutbound';
+import { loadOutboundHead, updateOutboundMode, toggleSFExpressModal, loadSFExpressConfig, loadPrintPickDetails } from 'common/reducers/cwmOutbound';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
@@ -46,6 +49,7 @@ const { TabPane } = Tabs;
     updateOutboundMode,
     toggleSFExpressModal,
     loadSFExpressConfig,
+    loadPrintPickDetails,
   }
 )
 @connectNav({
@@ -60,6 +64,7 @@ export default class OutboundDetail extends Component {
     toggleSFExpressModal: PropTypes.func.isRequired,
     outboundProducts: PropTypes.arrayOf(PropTypes.shape({ seq_no: PropTypes.string.isRequired })),
     loadSFExpressConfig: PropTypes.func.isRequired,
+    loadPrintPickDetails: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -92,6 +97,63 @@ export default class OutboundDetail extends Component {
   }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
+  }
+
+  handlePackistExport = () => {
+    const { defaultWhse, outboundHead, params } = this.props;
+    this.props.loadPrintPickDetails(params.outboundNo).then((result) => {
+      if (!result.error) {
+        const pickDetails = result.data;
+        let csvData = pickDetails.map((dv, index) => {
+          const out = {};
+          out['项'] = index + 1;
+          out['货号'] = dv.product_no;
+          out['产品名称'] = dv.name;
+          out['批次号'] = dv.external_lot_no;
+          out['客户属性'] = dv.attrib_1_string;
+          out['库位'] = dv.location;
+          out['待拣数'] = dv.alloc_qty;
+          out['余量数'] = dv.stock_qty - dv.alloc_qty + dv.shipped_qty;
+          out['实拣数'] = dv.picked_qty === 0 ? '' : dv.picked_qty;
+          return out;
+        });
+        var _headers = ['项', '货号', '产品名称', '批次号', '客户属性', '库位', '待拣数', '余量数', '实拣数'];
+        var _data = csvData;
+        var headers = _headers.map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 5 }))
+          .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        var data = _data.map((v, i) => _headers.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+6) })))
+          .reduce((prev, next) => prev.concat(next))
+          .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
+        var output = Object.assign({}, headers, data);
+        var outputPos = Object.keys(output);
+        var ref = 'A1' + ':' + outputPos[outputPos.length -1 ];
+        var ws = Object.assign({}, output, { '!ref': ref });
+        const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+        const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+        ws["E1"] = { t: "s", v: "拣货单" };
+        ws["A2"] = { v: `出库单号:  ${params.outboundNo || ''}` };
+        ws["D2"] = { v: `客户单号:  ${outboundHead.cust_order_no || ''}` };
+        ws["G2"] = { v: `订单数量:  ${outboundHead.total_alloc_qty || ''}` };
+        ws["A3"] = { v: `货物属性:  ${outboundHead.bonded ? '保税' : '非保税'}` };
+        ws["D3"] = { v: `客户:  ${outboundHead.owner_name || ''}` };
+        ws["G3"] = { v: `仓库:  ${defaultWhse.name || ''}` };
+        ws["A4"] = { v: '备注: ' };
+        ws[`A${csvData.length + 6}`] = { v: '合计' };
+        ws[`G${csvData.length + 6}`] = { v: `${outboundHead.total_alloc_qty}` };
+        var merge = { s: {r:0, c:0}, e: {r:0, c:10} };
+        if(!ws['!merges']) {
+          ws['!merges'] = [];
+        }
+        ws['!merges'].push(merge);
+        wb.Sheets.Sheet1 = ws;
+        FileSaver.saveAs(
+          new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
+          `拣货单_${params.outboundNo}_${Date.now()}.xlsx`
+        );
+      } else {
+        message.error(result.error.message);
+      }
+    });
   }
   showExpressModal = () => {
     this.props.loadSFExpressConfig().then((result) => {
@@ -219,6 +281,13 @@ export default class OutboundDetail extends Component {
             {this.state.tabKey === 'pickingDetails' && <Dropdown overlay={printMenu}>
               <Button icon="printer" />
             </Dropdown>}
+            {this.state.tabKey === 'pickingDetails' &&
+              <Tooltip title="导出拣货单Excel" placement="bottom">
+                <Button onClick={this.handlePackistExport} >
+                  <Logixon type="export" />
+                </Button>
+              </Tooltip>
+            }
             <Tooltip title="打印顺丰速运面单" placement="bottom">
               <Button onClick={this.showExpressModal} >
                 <Logixon type="sf-express" />
