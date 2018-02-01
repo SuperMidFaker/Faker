@@ -118,7 +118,7 @@ export default class CreateModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal width={800} title={this.msg('create')} visible={visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
+      <Modal width={800} style={{ top: 24 }} title={this.msg('create')} visible={visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
         <FormItem label={this.msg('templateName')} {...formItemLayout}>
           {getFieldDecorator('name', {
             required: true,

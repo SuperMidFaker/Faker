@@ -108,10 +108,6 @@ export default class ModuleCWM extends React.Component {
         key: 'cwm-shipping-2',
         path: '/cwm/shipping/outbound',
         text: formatMsg(intl, 'shippingOutbound'),
-      }, {
-        key: 'cwm-shipping-3',
-        path: '/cwm/shipping/load',
-        text: formatMsg(intl, 'shippingLoad'),
       },
       ],
     });

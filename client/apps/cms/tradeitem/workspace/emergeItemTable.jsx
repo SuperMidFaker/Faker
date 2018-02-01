@@ -161,6 +161,7 @@ export default class EmergeItemTable extends React.Component {
         style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
+        allowClear
         onChange={this.handleRepoSelect}
       >
         {repos.map(rep =>

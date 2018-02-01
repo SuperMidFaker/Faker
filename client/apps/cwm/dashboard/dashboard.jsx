@@ -7,12 +7,13 @@ import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import StatsCard from './card/statsCard';
+import InboundStatsCard from './card/inboundStatsCard';
+import OutboundStatsCard from './card/outboundStatsCard';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -45,7 +46,8 @@ export default class CWMDashboard extends React.Component {
               <Breadcrumb.Item>
                 <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
-                    whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
+                  whses.map(warehouse =>
+                    (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
                   }
                 </Select>
               </Breadcrumb.Item>
@@ -58,7 +60,10 @@ export default class CWMDashboard extends React.Component {
         <Content className="page-content" key="main">
           <Row gutter={16}>
             <Col sm={24}>
-              <StatsCard />
+              <InboundStatsCard />
+            </Col>
+            <Col sm={24}>
+              <OutboundStatsCard />
             </Col>
           </Row>
         </Content>

@@ -84,6 +84,7 @@ export default class RepoContent extends Component {
     selectedRowKeys: [],
     linkedSlaves: [],
     masterReplica: {
+      visible: false,
       source: '',
       slave: null,
     },
@@ -498,6 +499,11 @@ export default class RepoContent extends Component {
     masterReplica.slave = slave;
     this.setState({ masterReplica });
   }
+  handleMasterReplicaVisibleChange = (visible) => {
+    const masterReplica = { ...this.state.masterReplica };
+    masterReplica.visible = visible;
+    this.setState({ masterReplica });
+  }
   handleMasterSlaveReplica = () => {
     this.props.replicaMasterSlave({
       masterRepo: this.props.params.repoId,
@@ -510,6 +516,7 @@ export default class RepoContent extends Component {
         } else if (this.state.masterReplica.source === 'master') {
           message.info('主库已开始向从库同步物料归类', 10);
         }
+        this.setState({ masterReplica: { visible: false, source: '', slave: null } });
       }
     });
   }
@@ -520,7 +527,7 @@ export default class RepoContent extends Component {
     const {
       tradeItemlist, repo, listFilter, submitting, tenantId,
     } = this.props;
-    const { linkedSlaves } = this.state;
+    const { linkedSlaves, masterReplica } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -595,13 +602,14 @@ export default class RepoContent extends Component {
                     showSearch
                     onChange={this.handleReplicaSlave}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
+                    value={masterReplica.slave}
                   >{linkedSlaves.map(slv =>
                     (<Option key={slv.creator_name} value={String(slv.id)}>
                       {slv.creator_name}</Option>))}
                   </Select>
                 </FormItem>
                 <FormItem label="同步源">
-                  <RadioGroup onChange={this.handleReplicaSource} value={listFilter.status}>
+                  <RadioGroup onChange={this.handleReplicaSource} value={masterReplica.source}>
                     <RadioButton value="master">主库</RadioButton>
                     <RadioButton value="slave">从库</RadioButton>
                   </RadioGroup>
@@ -609,6 +617,8 @@ export default class RepoContent extends Component {
                 <Button type="primary" onClick={this.handleMasterSlaveReplica}>确定</Button>
               </Form>}
               trigger="click"
+              visible={masterReplica.visible}
+              onVisibleChange={this.handleMasterReplicaVisibleChange}
             >
               <Button loading={submitting}>同步数据</Button>
             </Popover>

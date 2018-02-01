@@ -70,6 +70,7 @@ export default class NoticeTemplateList extends React.Component {
   render() {
     const { templates, filter } = this.props;
     const pagination = {
+      hideOnSinglePage: true,
       pageSize: Number(templates.pageSize),
       current: Number(templates.current),
       total: templates.total,

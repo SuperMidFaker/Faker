@@ -251,6 +251,7 @@ export default class ConflictItemTable extends React.Component {
         style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
+        allowClear
         onChange={this.handleRepoSelect}
       >
         {repos.map(rep => (<Option value={String(rep.id)} key={rep.owner_name}>
