@@ -69,7 +69,7 @@ export default class AdaptorDetailModal extends Component {
               for (let i = 0; i < modelKeys.length; i++) {
                 const model = modelKeys[i];
                 if (LINE_FILE_ADAPTOR_MODELS[model].key === nextProps.adaptor.biz_model) {
-                  columns = LINE_FILE_ADAPTOR_MODELS[model].columns;
+                  ({ columns } = LINE_FILE_ADAPTOR_MODELS[model]);
                   break;
                 }
               }

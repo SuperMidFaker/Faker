@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
   'CLOSE_ASN', 'CLOSE_ASN_SUCCEED', 'CLOSE_ASN_FAIL',
   'SHOW_BATCH_RECEIVING_MODAL', 'HIDE_BATCH_RECEIVING_MODAL',
+  'VIEW_SUBARSCAN_MODAL',
   'RECEIVE_PRODUCT', 'RECEIVE_PRODUCT_SUCCEED', 'RECEIVE_PRODUCT_FAIL',
   'RECEIVE_EXPRESS', 'RECEIVE_EXPRESS_SUCCEED', 'RECEIVE_EXPRESS_FAIL',
   'RECEIVE_BATCH', 'RECEIVE_BATCH_SUCCEED', 'RECEIVE_BATCH_FAIL',
@@ -95,6 +96,9 @@ const initialState = {
   batchReceivingModal: {
     visible: false,
   },
+  suBarScanModal: {
+    visible: false,
+  },
   puttingAwayModal: {
     visible: false,
     details: [],
@@ -107,7 +111,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:
-      return { ...state, dock: { ...state.dock, visible: true, asn: { ...state.dock.asn, asn_no: action.asnNo, status: 0 } } };
+      return {
+        ...state,
+        dock: {
+          ...state.dock,
+          visible: true,
+          asn: { ...state.dock.asn, asn_no: action.asnNo, status: 0 },
+        },
+      };
     case actionTypes.CHANGE_DOCK_TAB:
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.OPEN_RECEIVE_MODAL:
@@ -119,7 +130,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DETAIL_MODAL:
       return { ...state, detailModal: { ...state.detailModal, visible: false } };
     case actionTypes.ADD_TEMPORARY:
-      return { ...state, temporaryDetails: Array.isArray(action.data) ? state.temporaryDetails.concat(action.data) : [...state.temporaryDetails, action.data] };
+      return {
+        ...state,
+        temporaryDetails: Array.isArray(action.data) ?
+          state.temporaryDetails.concat(action.data) : [...state.temporaryDetails, action.data],
+      };
     case actionTypes.CLEAR_TEMPORARY:
       return { ...state, temporaryDetails: [] };
     case actionTypes.DELETE_TEMPORARY: {
@@ -133,16 +148,26 @@ export default function reducer(state = initialState, action) {
       return { ...state, temporaryDetails };
     }
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
-      return { ...state, productNos: action.result.data.productNos, products: action.result.data.products };
+      return {
+        ...state,
+        productNos: action.result.data.productNos,
+        products: action.result.data.products,
+      };
     case actionTypes.LOAD_ASN_LISTS:
       return {
-        ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true }, dock: { ...state.dock, visible: false },
+        ...state,
+        asnFilters: JSON.parse(action.params.filters),
+        asnlist: { ...state.asnlist, loading: true },
+        dock: { ...state.dock, visible: false },
       };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
       return { ...state, asnlist: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_INBOUNDS:
       return {
-        ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true }, dock: { ...state.dock, visible: false },
+        ...state,
+        inboundFilters: JSON.parse(action.params.filters),
+        inbound: { ...state.inbound, loading: true },
+        dock: { ...state.dock, visible: false },
       };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: { ...action.result.data, loading: false, loaded: true } };
@@ -158,17 +183,42 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_INBPUTAWAYS:
       return { ...state, inboundPutaways: { ...state.inboundPutaways, loading: true } };
     case actionTypes.LOAD_INBPUTAWAYS_SUCCEED:
-      return { ...state, inboundPutaways: { ...state.inboundPutaways, list: action.result.data, loading: false }, inboundReload: false };
+      return {
+        ...state,
+        inboundPutaways: {
+          ...state.inboundPutaways,
+          list: action.result.data,
+          loading: false,
+        },
+        inboundReload: false,
+      };
     case actionTypes.LOAD_INBPUTAWAYS_FAIL:
-      return { ...state, inboundPutaways: { ...state.inboundPutaways, list: action.result.data, loading: false }, inboundReload: false };
+      return {
+        ...state,
+        inboundPutaways: {
+          ...state.inboundPutaways,
+          list: action.result.data,
+          loading: false,
+        },
+        inboundReload: false,
+      };
     case actionTypes.UPDATE_INBMODE_SUCCEED:
       return { ...state, inboundFormHead: { ...state.inboundFormHead, ...action.data.mode } };
     case actionTypes.SHOW_BATCH_RECEIVING_MODAL:
       return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: true } };
     case actionTypes.HIDE_BATCH_RECEIVING_MODAL:
       return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: false } };
+    case actionTypes.VIEW_SUBARSCAN_MODAL:
+      return { ...state, suBarScanModal: { ...state.suBarScanModal, ...action.data } };
     case actionTypes.SHOW_PUTTING_AWAY_MODAL:
-      return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true, details: action.data } };
+      return {
+        ...state,
+        puttingAwayModal: {
+          ...state.puttingAwayModal,
+          visible: true,
+          details: action.data,
+        },
+      };
     case actionTypes.HIDE_PUTTING_AWAY_MODAL:
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: false } };
     case actionTypes.ADD_ASN:
@@ -208,16 +258,31 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_INBPRDTVOL_SUCCEED:
       return { ...state, submitting: false, inboundReload: true };
     case actionTypes.GET_ASN_UUID_SUCCEED:
-      return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
+      return {
+        ...state,
+        dock: {
+          ...state.dock,
+          asn: {
+            ...state.dock.asn,
+            uuid: action.result.data.flow_instance_uuid,
+          },
+        },
+      };
     case actionTypes.CLEAR_PRODUCT_NOS:
       return { ...state, productNos: [] };
     case actionTypes.CANCEL_ASN_SUCCEED:
       return {
-        ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false },
+        ...state,
+        dock: { ...state.dock, visible: false },
+        asnlist: { ...state.asnlist, loaded: false },
+        inbound: { ...state.inbound, loaded: false },
       };
     case actionTypes.CLOSE_ASN_SUCCEED:
       return {
-        ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false },
+        ...state,
+        dock: { ...state.dock, visible: false },
+        asnlist: { ...state.asnlist, loaded: false },
+        inbound: { ...state.inbound, loaded: false },
       };
     case actionTypes.GET_SUPPLIERS_SUCCEED:
       return { ...state, suppliers: action.result.data };
@@ -548,6 +613,13 @@ export function hideBatchReceivingModal() {
   };
 }
 
+export function viewSuBarcodeScanModal(info) {
+  return {
+    type: actionTypes.VIEW_SUBARSCAN_MODAL,
+    data: info,
+  };
+}
+
 export function showPuttingAwayModal(details) {
   return {
     type: actionTypes.SHOW_PUTTING_AWAY_MODAL,
@@ -625,7 +697,10 @@ export function expressReceive(inboundNo, loginId, loginName, receivedDate) {
   };
 }
 
-export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate, priority) {
+export function batchReceive(
+  seqNos, location, damageLevel, asnNo,
+  inboundNo, loginName, receivedDate, priority
+) {
   return {
     [CLIENT_API]: {
       types: [
