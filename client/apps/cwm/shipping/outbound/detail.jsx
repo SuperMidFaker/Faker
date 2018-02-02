@@ -118,19 +118,16 @@ export default class OutboundDetail extends Component {
           return out;
         });
         var _headers = ['项', '货号', '产品名称', '批次号', '客户属性', '库位', '待拣数', '余量数', '实拣数'];
-        var _data = csvData;
         var headers = _headers.map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 5 }))
           .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
-        var data = _data.map((v, i) => _headers.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+6) })))
+        var data = csvData.map((v, i) => _headers.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+6) })))
           .reduce((prev, next) => prev.concat(next))
           .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
-        var output = Object.assign({}, headers, data);
-        var outputPos = Object.keys(output);
-        var ref = 'A1' + ':' + outputPos[outputPos.length -1 ];
-        var ws = Object.assign({}, output, { '!ref': ref });
+        var ref = 'A1' + ':' + `I${csvData.length + 8}`;
+        var ws = Object.assign({}, headers, data, { '!ref': ref });
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
         const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-        ws["E1"] = { t: "s", v: "拣货单" };
+        ws["A1"] = { v: "拣货单", s: { alignment: {horizontal: "center"}, font: {sz: 20}} };
         ws["A2"] = { v: `出库单号:  ${params.outboundNo || ''}` };
         ws["D2"] = { v: `客户单号:  ${outboundHead.cust_order_no || ''}` };
         ws["G2"] = { v: `订单数量:  ${outboundHead.total_alloc_qty || ''}` };
@@ -140,11 +137,17 @@ export default class OutboundDetail extends Component {
         ws["A4"] = { v: '备注: ' };
         ws[`A${csvData.length + 6}`] = { v: '合计' };
         ws[`G${csvData.length + 6}`] = { v: `${outboundHead.total_alloc_qty}` };
+        ws[`I${csvData.length + 7}`] = { v: `${moment(new Date()).format('YYYY/MM/DD')}` };
+        ws[`A${csvData.length + 8}`] = { v: '计划:' };
+        ws[`C${csvData.length + 8}`] = { v: '收货:' };
+        ws[`E${csvData.length + 8}`] = { v: '上架:' };
+        ws[`G${csvData.length + 8}`] = { v: '归档:' };
         var merge = { s: {r:0, c:0}, e: {r:0, c:10} };
-        if(!ws['!merges']) {
-          ws['!merges'] = [];
-        }
+        if(!ws['!merges']) { ws['!merges'] = []; }
         ws['!merges'].push(merge);
+        ws['!rows'] = [
+          {hpx: 25}, // "pixels"
+        ];
         wb.Sheets.Sheet1 = ws;
         FileSaver.saveAs(
           new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),

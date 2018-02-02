@@ -181,6 +181,18 @@ export default class AttachedDocsPane extends React.Component {
   handleView = (row) => {
     window.open(row.docu_file);
   }
+  handleDownloadAll = () => {
+    const link = document.createElement('a');
+    link.setAttribute('download', null);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    for (var i = 0; i < this.state.datas.length; i++) {
+      link.setAttribute('href', this.state.datas[i].docu_file);
+      link.click();
+    }
+    document.body.removeChild(link);
+  }
+
   render() {
     const { head } = this.props;
     const columns = [{
