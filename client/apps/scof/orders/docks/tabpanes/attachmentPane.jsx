@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Upload, message } from 'antd';
+import { Button, Upload, notification, Progress } from 'antd';
 import moment from 'moment';
 import { uploadAttachment, loadOrderAttachments } from 'common/reducers/sofOrders';
 import DataTable from 'client/components/DataTable';
@@ -23,25 +23,14 @@ export default class AttachmentPane extends React.Component {
   }
   state = {
     records: [],
+    key: '', // eslint-disable-line
   }
   componentWillMount() {
-    this.props.loadOrderAttachments(this.props.order.shipmt_order_no).then((result) => {
-      if (!result.error) {
-        this.setState({
-          records: result.data,
-        });
-      }
-    });
+    this.handleLoad(this.props.order.shipmt_order_no);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.order.shipmt_order_no !== this.props.order.shipmt_order_no) {
-      this.props.loadOrderAttachments(nextProps.order.shipmt_order_no).then((result) => {
-        if (!result.error) {
-          this.setState({
-            records: result.data,
-          });
-        }
-      });
+      this.handleLoad(nextProps.order.shipmt_order_no);
     }
   }
   msg = formatMsg(this.props.intl)
@@ -56,7 +45,20 @@ export default class AttachmentPane extends React.Component {
   }
   handleUploaded = (name, url) => {
     const { order } = this.props;
-    this.props.uploadAttachment(url, name, order.shipmt_order_no);
+    this.props.uploadAttachment(url, name, order.shipmt_order_no).then((result) => {
+      if (!result.error) {
+        this.handleLoad(this.props.order.shipmt_order_no);
+      }
+    });
+  }
+  handleLoad = (orderNo) => {
+    this.props.loadOrderAttachments(orderNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          records: result.data,
+        });
+      }
+    });
   }
   render() {
     const { records } = this.state;
@@ -88,10 +90,33 @@ export default class AttachmentPane extends React.Component {
       multiple: false,
       showUploadList: false,
       withCredentials: true,
+      beforeUpload() {
+        const key = new Date();
+        notification.info({
+          message: '文件上传中',
+          description: <Progress type="dashboard" percent={50} />,
+          duration: null,
+          key,
+          style: {
+            width: 240,
+          },
+        });
+        me.setState({
+          key,
+        });
+        return true;
+      },
       onChange(info) {
         if (info.file.response && info.file.response.status === 200) {
+          notification.close(me.state.key);
+          notification.success({
+            message: '文件上传成功',
+            description: <Progress type="dashboard" percent={100} />,
+            style: {
+              width: 240,
+            },
+          });
           me.handleUploaded(info.file.name, info.file.response.data);
-          message.success('上传成功');
         }
       },
     };
