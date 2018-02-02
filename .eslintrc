@@ -19,7 +19,12 @@
     "API_ROOTS": false,
     "Notification": true,
     "window": true,
-    "document": true
+    "document": true,
+    "jest": true,
+    "describe": true,
+    "beforeEach": true,
+    "it": true,
+    "expect": true,
   },
   "rules": {
     "no-underscore-dangle": 0,
