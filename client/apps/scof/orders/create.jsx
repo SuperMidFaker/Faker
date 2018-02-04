@@ -9,7 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
-import OrderForm from './forms/orderForm';
+import OrderForm from './order';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);

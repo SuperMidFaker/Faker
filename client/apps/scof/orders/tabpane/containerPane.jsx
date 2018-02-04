@@ -113,12 +113,12 @@ export default class ContainerForm extends Component {
       <FormPane>
         <Row>
           <Col span={6}>
-            <FormItem label="集装箱号" {...formItemLayout}>
+            <FormItem label="集装箱号" {...formItemLayout} required>
               <Input value={cntnrNo} onChange={this.handleChange} />
             </FormItem>
           </Col>
           <Col span={6}>
-            <FormItem label="集装箱规格" {...formItemLayout}>
+            <FormItem label="集装箱规格" {...formItemLayout} required>
               <Select value={cntnrSpec} onSelect={this.handleSelect}>
                 {CMS_CNTNR_SPEC_CUS.map(item =>
                   <Option key={item.value} value={item.value}>{item.text}</Option>)}
@@ -136,7 +136,7 @@ export default class ContainerForm extends Component {
         </Row>
         <Card bodyStyle={{ padding: 0 }}>
           <Table
-            size="small"
+            size="middle"
             columns={this.containerColumns}
             dataSource={containers.map((con, index) => ({
             index, ...con,

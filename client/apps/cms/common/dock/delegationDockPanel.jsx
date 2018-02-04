@@ -99,7 +99,7 @@ export default class DelegationDockPanel extends React.Component {
     const { delgDispatch, delegation } = previewer;
     const clearType = delegation.i_e_type === 0 ? 'import' : 'export';
     const tabs = [];
-    tabs.push(<TabPane tab="SHIPMENT" key="shipment"><ShipmentPane /></TabPane>);
+    tabs.push(<TabPane tab="货运信息" key="shipment"><ShipmentPane /></TabPane>);
     /*
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
       if (delgDispatch.recv_services.indexOf('ciq') !== -1) {

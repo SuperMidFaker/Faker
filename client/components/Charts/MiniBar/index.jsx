@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import equal from '../equal';
-import styles from '../index.less';
+import '../index.less';
 
 class MiniBar extends PureComponent {
   componentDidMount() {
@@ -76,8 +76,8 @@ class MiniBar extends PureComponent {
     const { height } = this.props;
 
     return (
-      <div className={styles.miniChart} style={{ height }}>
-        <div className={styles.chartContent}>
+      <div className="miniChart" style={{ height }}>
+        <div className="chartContent">
           <div ref={this.handleRef} />
         </div>
       </div>

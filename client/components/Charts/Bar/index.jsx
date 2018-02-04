@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import Debounce from 'lodash-decorators/debounce';
 import equal from '../equal';
-import styles from '../index.less';
+import '../index.less';
 
 class Bar extends PureComponent {
   state = {
@@ -136,7 +136,7 @@ class Bar extends PureComponent {
     const { height, title } = this.props;
 
     return (
-      <div className={styles.chart} style={{ height }}>
+      <div className="chart" style={{ height }}>
         <div>
           { title && <h4>{title}</h4>}
           <div ref={this.handleRef} />

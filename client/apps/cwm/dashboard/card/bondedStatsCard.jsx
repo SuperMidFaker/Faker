@@ -20,7 +20,7 @@ const formatMsg = format(messages);
   { loadStatsCard }
 )
 
-export default class InboundStatsCard extends Component {
+export default class BondedStatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     statsCard: PropTypes.shape({
@@ -46,46 +46,39 @@ export default class InboundStatsCard extends Component {
     const { statsCard } = this.props;
     return (
       <Card
-        title={this.msg('inboundStats')}
+        title={this.msg('bondedStats')}
         bodyStyle={{ padding: 0 }}
       >
         <ChartCard
-          title={this.msg('totalInbound')}
-          avatar={(
-            <img
-              alt="indicator"
-              style={{ width: 56, height: 56 }}
-              src="https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"
-            />
-            )}
+          title={this.msg('entryToSync')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.inbounds}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
-          title={this.msg('pending')}
+          title={this.msg('normalToClear')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.creates}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
-          title={this.msg('toReceive')}
+          title={this.msg('normalToExit')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.creates}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
-          title={this.msg('toPutAway')}
+          title={this.msg('portionToSync')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.creates}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
-          title={this.msg('inboundCompleted')}
+          title={this.msg('portionToClear')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.received}
           style={{ width: '20%' }}

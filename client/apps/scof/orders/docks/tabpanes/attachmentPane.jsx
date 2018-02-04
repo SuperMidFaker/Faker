@@ -94,12 +94,10 @@ export default class AttachmentPane extends React.Component {
         const key = new Date();
         notification.info({
           message: '文件上传中',
-          description: <Progress type="dashboard" percent={50} />,
+          description: <Progress percent={100} size="small" status="active" showInfo={false} />,
           duration: null,
+          placement: 'bottomRight',
           key,
-          style: {
-            width: 240,
-          },
         });
         me.setState({
           key,
@@ -111,10 +109,8 @@ export default class AttachmentPane extends React.Component {
           notification.close(me.state.key);
           notification.success({
             message: '文件上传成功',
-            description: <Progress type="dashboard" percent={100} />,
-            style: {
-              width: 240,
-            },
+            description: <Progress percent={100} size="small" status="success" />,
+            placement: 'bottomRight',
           });
           me.handleUploaded(info.file.name, info.file.response.data);
         }

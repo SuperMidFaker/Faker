@@ -1,7 +1,7 @@
 export const CMS_PLUGINS = [
   { key: 'ciqdecl', name: '报检申报' },
   { key: 'tradeitem', name: '商品归类', desc: '企业级归类数据库' },
-  { key: 'permit', name: '涉证资料' },
+  { key: 'permit', name: '许可证件' },
   { key: 'manual', name: '电子账册' },
   { key: 'receivable', name: '费用应收' },
   { key: 'payable', name: '费用应付' },

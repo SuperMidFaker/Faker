@@ -9,7 +9,7 @@ import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { format } from 'client/common/i18n/helpers';
-import OrderForm from './forms/orderForm';
+import OrderForm from './order';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);

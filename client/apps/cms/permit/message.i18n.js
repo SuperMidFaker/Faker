@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   permit: {
     id: 'cms.permit',
-    defaultMessage: '涉证资料',
+    defaultMessage: '许可证件',
   },
   filterValid: {
     id: 'cms.permit.filter.valid',
