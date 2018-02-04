@@ -37,10 +37,24 @@ export default class ModuleSCOF extends React.Component {
     const appMenus = [];
     linkMenus.push({
       single: true,
+      key: 'scof-dashboard',
+      path: '/scof/dashboard',
+      icon: 'logixon icon-dashboard-o',
+      text: formatMsg(intl, 'dashboard'),
+    });
+    linkMenus.push({
+      single: true,
       key: 'scof-order',
       path: '/scof/orders',
       icon: 'logixon icon-order-mng',
       text: formatMsg(intl, 'orders'),
+    });
+    linkMenus.push({
+      single: true,
+      key: 'scof-invoice',
+      path: '/scof/invoices',
+      icon: 'logixon icon-bill-mng',
+      text: formatMsg(intl, 'invoices'),
     });
     linkMenus.push({
       single: false,
@@ -123,7 +137,7 @@ export default class ModuleSCOF extends React.Component {
     if (trackingSublinks.length > 0) {
       const { intl } = this.props;
       const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'scof-tracking');
-      linkMenus.splice(1, 0, {
+      linkMenus.splice(3, 0, {
         single: false,
         key: 'scof-tracking',
         icon: 'logixon icon-monitor',

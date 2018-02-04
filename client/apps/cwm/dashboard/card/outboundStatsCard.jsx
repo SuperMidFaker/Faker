@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, DatePicker, Icon, Tooltip } from 'antd';
+import { Card, Icon, Tooltip } from 'antd';
 import ChartCard from 'client/components/ChartCard';
 import { loadStatsCard } from 'common/reducers/cwmDashboard';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -45,19 +44,9 @@ export default class OutboundStatsCard extends Component {
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { statsCard } = this.props;
-    const datePicker = (
-      <div>
-        <RangePicker
-          onChange={this.onDateChange}
-          defaultValue={[moment(new Date(), 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
-          ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-          allowClear={false}
-        />
-      </div>);
     return (
       <Card
         title={this.msg('outboundStats')}
-        extra={datePicker}
         bodyStyle={{ padding: 0 }}
       >
         <ChartCard

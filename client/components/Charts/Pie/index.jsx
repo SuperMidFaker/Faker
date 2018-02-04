@@ -110,9 +110,8 @@ class Pie extends Component {
       formatColor = (value) => {
         if (value === '占比') {
           return color || 'rgba(24, 144, 255, 0.85)';
-        } else {
-          return '#F0F2F5';
         }
+        return '#F0F2F5';
       };
 
       /* eslint no-param-reassign: */

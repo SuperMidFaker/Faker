@@ -10,12 +10,12 @@ import { loadOperators } from 'common/reducers/sofCustomers';
 import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
 import UserAvatar from 'client/components/UserAvatar';
-import CMSDelegateForm from './cmsDelegateForm';
-import TMSConsignForm from './tmsConsignForm';
-import CwmReceivingForm from './cwmReceivingForm';
-import CwmShippingForm from './cwmShippingForm';
-import ContainerForm from './containerForm';
-import InvoiceForm from './invoiceForm';
+import CMSDelegateForm from './forms/cmsDelegateForm';
+import TMSConsignForm from './forms/tmsConsignForm';
+import CwmReceivingForm from './forms/cwmReceivingForm';
+import CwmShippingForm from './forms/cwmShippingForm';
+import ContainerPane from './tabpane/containerPane';
+import InvoicePane from './tabpane/invoicePane';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -288,10 +288,10 @@ export default class OrderForm extends Component {
     */
     const shipmentDisabled = !formData.cust_shipmt_transfer || formData.cust_shipmt_transfer === 'DOM';
     const shipmentActiveKey = shipmentDisabled ? [] : ['shipment'];
-    let ext1Label = { label: '扩展单号1' };
-    let ext2Label = { label: '扩展单号2' };
-    let ext3Label = { label: '扩展单号3' };
-    let ext4Label = { label: '扩展单号4' };
+    let ext1Label = { label: '扩展字段1' };
+    let ext2Label = { label: '扩展字段2' };
+    let ext3Label = { label: '扩展字段3' };
+    let ext4Label = { label: '扩展字段4' };
     if (formData.cust_shipmt_order_type) {
       const orderType = orderTypes.filter(ort =>
         ort.id === Number(formData.cust_shipmt_order_type))[0];
@@ -458,7 +458,7 @@ export default class OrderForm extends Component {
                       </FormItem>
                     </Col>
                     <Col span={6}>
-                      <FormItem label="紧急程度" {...formItemLayout}>
+                      <FormItem label="加急状态" {...formItemLayout}>
                         <Select value={formData.cust_shipmt_expedited} onChange={value => this.handleChange('cust_shipmt_expedited', value)}>
                           <Option value={EXPEDITED_TYPES[0].value}>
                             <Tag>{EXPEDITED_TYPES[0].text}</Tag></Option>
@@ -514,7 +514,7 @@ export default class OrderForm extends Component {
                 </Card>
                 <Card bodyStyle={{ padding: 0 }} >
                   <Collapse bordered={false} activeKey={shipmentActiveKey}>
-                    <Panel header="SHIPMENT" key="shipment" style={{ borderBottom: 'none' }} >
+                    <Panel header="货运信息" key="shipment" style={{ borderBottom: 'none' }} disabled={shipmentDisabled}>
                       <Row>
                         <Col span={6}>
                           <FormItem label="运输方式" {...formItemLayout}>
@@ -542,25 +542,21 @@ export default class OrderForm extends Component {
                               value={formData.cust_shipmt_bill_lading}
                               onChange={e => this.handleChange('cust_shipmt_bill_lading', e.target.value)}
                             />
-                          </FormItem>
-                    }
+                          </FormItem>}
                           { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
                           <FormItem label="主运单号" {...formItemLayout}>
                             <Input value={formData.cust_shipmt_mawb} onChange={e => this.handleChange('cust_shipmt_mawb', e.target.value)} />
-                          </FormItem>
-                    }
+                          </FormItem>}
                         </Col>
                         <Col span={6}>
                           { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
                           <FormItem label="海运单号" {...formItemLayout}>
                             <Input value={formData.cust_shipmt_bill_lading_no} onChange={e => this.handleChange('cust_shipmt_bill_lading_no', e.target.value)} />
-                          </FormItem>
-                    }
+                          </FormItem>}
                           { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
                           <FormItem label="分运单号" {...formItemLayout}>
                             <Input value={formData.cust_shipmt_hawb} onChange={e => this.handleChange('cust_shipmt_hawb', e.target.value)} />
-                          </FormItem>
-                    }
+                          </FormItem>}
                         </Col>
                         <Col span={6}>
                           { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
@@ -584,6 +580,26 @@ export default class OrderForm extends Component {
                               />
                             </InputGroup>
                           </FormItem>}
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="承运人" {...formItemLayout}>
+                            <Input value={formData.cust_shipmt_carrier} onChange={e => this.handleChange('cust_shipmt_carrier', e.target.value)} />
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="进出口岸" {...formItemLayout}>
+                            <Input value={formData.cust_shipmt_i_e_port} onChange={e => this.handleChange('cust_shipmt_i_e_port', e.target.value)} />
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="起运/运抵国" {...formItemLayout}>
+                            <Input value={formData.cust_shipmt_orig_dest_country} onChange={e => this.handleChange('cust_shipmt_orig_dest_country', e.target.value)} />
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="ETA" {...formItemLayout}>
+                            <Input value={formData.cust_shipmt_eta} onChange={e => this.handleChange('cust_shipmt_eta', e.target.value)} />
+                          </FormItem>
                         </Col>
                         <Col span={6}>
                           <FormItem label="货运代理" {...formItemLayout}>
@@ -641,11 +657,11 @@ export default class OrderForm extends Component {
                 </Card>
               </FormPane>
             </TabPane>
-            <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
-              <ContainerForm />
+            <TabPane tab="商业发票" key="invoice">
+              <InvoicePane />
             </TabPane>
-            <TabPane tab="发票" key="invoice">
-              <InvoiceForm />
+            <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
+              <ContainerPane />
             </TabPane>
           </Tabs>
         </Card>

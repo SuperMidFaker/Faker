@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   shipmentOrders: {
     id: 'scof.orders',
-    defaultMessage: '订单',
+    defaultMessage: '订单管理',
   },
   orderImport: {
     id: 'scof.orders.import.order',
@@ -272,7 +272,7 @@ const messages = defineMessages({
   },
   personResponsible: {
     id: 'scof.orders.responsible.person',
-    defaultMessage: '执行者',
+    defaultMessage: '跟单人员',
   },
   addMore: {
     id: 'scof.orders.delg.addMore',

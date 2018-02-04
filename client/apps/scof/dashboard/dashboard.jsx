@@ -1,49 +1,58 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Layout } from 'antd';
+import moment from 'moment';
+import { Breadcrumb, DatePicker, Row, Col, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
+import OrderStatsCard from './card/orderStatsCard';
+import InvoiceStatsCard from './card/invoiceStatsCard';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
+const { RangePicker } = DatePicker;
 
 @injectIntl
-@connect(state => ({
-  tenantId: state.account.tenantId,
-}), )
 @connectNav({
   depth: 2,
   moduleName: 'scof',
 })
-export default class SCOFDashboard extends React.Component {
+export default class SOFDashboard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
-
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-
-    }
-  }
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <div className="toolbar-right" />
-          <span>{this.msg('dashboardTitle')}</span>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body card-wrapper">
-            <Card>
-              hello
-            </Card>
-          </div>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('dashboard')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
+            <RangePicker
+              onChange={this.onDateChange}
+              defaultValue={[moment(new Date(), 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
+              ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+              allowClear={false}
+            />
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <Row gutter={16}>
+            <Col sm={24}>
+              <OrderStatsCard />
+            </Col>
+            <Col sm={24}>
+              <InvoiceStatsCard />
+            </Col>
+          </Row>
         </Content>
       </QueueAnim>
     );

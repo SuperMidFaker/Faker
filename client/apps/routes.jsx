@@ -91,6 +91,7 @@ import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
+import * as SCOFInvoices from './scof/invoices';
 import * as SCOFTracking from './scof/tracking';
 import * as SCOFCustomers from './scof/customers';
 import * as SCOFVendors from './scof/vendors';
@@ -481,13 +482,14 @@ export default(store) => {
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>
-            <IndexRedirect to="/scof/orders" />
+            <IndexRedirect to="/scof/dashboard" />
             <Route path="dashboard" component={SCOFDashboard.Index} />
             <Route path="orders" >
               <IndexRoute component={SCOFOrders.List} />
               <Route path="create" component={SCOFOrders.Create} />
               <Route path="edit/:orderNo" component={SCOFOrders.Edit} />
             </Route>
+            <Route path="invoices" component={SCOFInvoices.List} />
             <Route path="tracking">
               <Route path="customize">
                 <IndexRoute component={SCOFTracking.Customize} />
@@ -496,7 +498,7 @@ export default(store) => {
             </Route>
             <Route path="customers" component={SCOFCustomers.List} />
             <Route path="vendors" component={SCOFVendors.List} />
-            <Route path="flow" component={SCOFFlow.ListPanel} />
+            <Route path="flow" component={SCOFFlow.List} />
             <Route path="settings">
               <IndexRedirect to="/scof/settings/preferences" />
               <Route path="preferences" component={SCOFSettings.Preferences} />

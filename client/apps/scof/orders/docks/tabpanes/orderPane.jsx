@@ -76,7 +76,7 @@ export default class OrderPane extends React.Component {
               </Row>
 
             </Panel>
-            <Panel header="SHIPMENT" key="shipment">
+            <Panel header="货运信息" key="shipment">
               <Row gutter={16} className="info-group-underline">
                 {
                 (order.cust_shipmt_transfer !== 'DOM') &&
@@ -168,8 +168,8 @@ export default class OrderPane extends React.Component {
               </Row>
 
             </Panel>
-            <Panel header="集装箱" key="container" />
             <Panel header="发票" key="invoice" />
+            <Panel header="集装箱" key="container" />
           </Collapse>
         </Card>
       </div>

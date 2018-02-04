@@ -49,7 +49,7 @@ const ChartCard = ({
   );
 
   return grid ? (
-    <Card.Grid {...rest}>
+    <Card.Grid {...rest} className="chartCardGrid">
       {<Spin spinning={loading}>{content}</Spin>}
     </Card.Grid>) :
     (

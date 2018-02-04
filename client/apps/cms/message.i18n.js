@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   permit: {
     id: 'cms.module.compliance.permit',
-    defaultMessage: '涉证资料',
+    defaultMessage: '许可证件',
   },
   manual: {
     id: 'cms.module.compliance.ebook',
