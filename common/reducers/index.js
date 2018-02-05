@@ -67,6 +67,7 @@ import transportTariff from './transportTariff';
 import transportBilling from './transportBilling';
 import transportKpi from './transportKpi';
 import template from './template';
+import sofDashboard from './sofDashboard';
 
 export default combineReducers({
   activities,
@@ -137,4 +138,5 @@ export default combineReducers({
   cmsPermit,
   hubDevApp,
   template,
+  sofDashboard,
 });
