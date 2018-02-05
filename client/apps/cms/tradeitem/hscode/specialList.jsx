@@ -7,8 +7,7 @@ import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'com
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-
-import { formatMsg } from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 import { hscodeColumns } from './hscodeColumns';
 
 
@@ -26,8 +25,8 @@ export default class HSCodeSpecialList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    categoryHscodes: PropTypes.object.isRequired,
-    hscodeCategory: PropTypes.object.isRequired,
+    categoryHscodes: PropTypes.shape({ categoryId: PropTypes.number }).isRequired,
+    hscodeCategory: PropTypes.shape({ id: PropTypes.number }).isRequired,
     loadCategoryHsCode: PropTypes.func.isRequired,
     removeCategoryHsCode: PropTypes.func.isRequired,
     addCategoryHsCode: PropTypes.func.isRequired,

@@ -23,7 +23,7 @@ const messages = defineMessages({
     defaultMessage: '发送方',
   },
   title: {
-    id: 'network.collab.sender',
+    id: 'network.collab.title',
     defaultMessage: '标题',
   },
   dropdown: {
