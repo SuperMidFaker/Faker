@@ -72,6 +72,7 @@ export default class OutboundDetail extends Component {
   state = {
     tabKey: 'orderDetails',
     fullscreen: true,
+    expLoad: false,
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -101,6 +102,7 @@ export default class OutboundDetail extends Component {
 
   handlePackistExport = () => {
     const { defaultWhse, outboundHead, params } = this.props;
+    this.setState({ expLoad: true });
     this.props.loadPrintPickDetails(params.outboundNo).then((result) => {
       if (!result.error) {
         const pickDetails = result.data;
@@ -112,9 +114,9 @@ export default class OutboundDetail extends Component {
           out['批次号'] = dv.external_lot_no;
           out['客户属性'] = dv.attrib_1_string;
           out['库位'] = dv.location;
-          out['待拣数'] = dv.alloc_qty;
-          out['余量数'] = dv.stock_qty - dv.alloc_qty + dv.shipped_qty;
-          out['实拣数'] = dv.picked_qty === 0 ? '' : dv.picked_qty;
+          out['待拣数'] = Number(dv.alloc_qty);
+          out['余量数'] = Number(dv.stock_qty - dv.alloc_qty + dv.shipped_qty);
+          out['实拣数'] = Number(dv.picked_qty === 0 ? '' : dv.picked_qty);
           return out;
         });
         var _headers = ['项', '货号', '产品名称', '批次号', '客户属性', '库位', '待拣数', '余量数', '实拣数'];
@@ -127,7 +129,7 @@ export default class OutboundDetail extends Component {
         var ws = Object.assign({}, headers, data, { '!ref': ref });
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
         const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-        ws["A1"] = { v: "拣货单", s: { alignment: {horizontal: "center"}, font: {sz: 20}} };
+        ws["A1"] = { v: "拣货单" };
         ws["A2"] = { v: `出库单号:  ${params.outboundNo || ''}` };
         ws["D2"] = { v: `客户单号:  ${outboundHead.cust_order_no || ''}` };
         ws["G2"] = { v: `订单数量:  ${outboundHead.total_alloc_qty || ''}` };
@@ -148,13 +150,24 @@ export default class OutboundDetail extends Component {
         ws['!rows'] = [
           {hpx: 25}, // "pixels"
         ];
+        /* change cell format of range G6:I~ to number */
+        const irow = csvData.length + 5;
+        var range = { s: {r:5, c:6}, e: {r:irow, c:8} };
+        for(var R = range.s.r; R <= range.e.r; ++R) {
+          for(var C = range.s.c; C <= range.e.c; ++C) {
+            var cell = ws[XLSX.utils.encode_cell({r:R,c:C})];
+            if(cell) cell.t = 'n';
+          }
+        }
         wb.Sheets.Sheet1 = ws;
         FileSaver.saveAs(
           new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
           `拣货单_${params.outboundNo}_${Date.now()}.xlsx`
         );
+        this.setState({ expLoad: false });
       } else {
         message.error(result.error.message);
+        this.setState({ expLoad: false });
       }
     });
   }
@@ -286,7 +299,7 @@ export default class OutboundDetail extends Component {
             </Dropdown>}
             {this.state.tabKey === 'pickingDetails' &&
               <Tooltip title="导出拣货单Excel" placement="bottom">
-                <Button onClick={this.handlePackistExport} >
+                <Button onClick={this.handlePackistExport} loading={this.state.expLoad}>
                   <Logixon type="export" />
                 </Button>
               </Tooltip>
