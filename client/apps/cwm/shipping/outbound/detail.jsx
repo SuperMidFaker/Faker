@@ -72,6 +72,7 @@ export default class OutboundDetail extends Component {
   state = {
     tabKey: 'orderDetails',
     fullscreen: true,
+    expLoad: false,
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -101,6 +102,7 @@ export default class OutboundDetail extends Component {
 
   handlePackistExport = () => {
     const { defaultWhse, outboundHead, params } = this.props;
+    this.setState({ expLoad: true });
     this.props.loadPrintPickDetails(params.outboundNo).then((result) => {
       if (!result.error) {
         const pickDetails = result.data;
@@ -127,7 +129,7 @@ export default class OutboundDetail extends Component {
         var ws = Object.assign({}, headers, data, { '!ref': ref });
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
         const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-        ws["A1"] = { v: "拣货单", s: { alignment: {horizontal: "center"}, font: {sz: 20}} };
+        ws["A1"] = { v: "拣货单" };
         ws["A2"] = { v: `出库单号:  ${params.outboundNo || ''}` };
         ws["D2"] = { v: `客户单号:  ${outboundHead.cust_order_no || ''}` };
         ws["G2"] = { v: `订单数量:  ${outboundHead.total_alloc_qty || ''}` };
@@ -153,8 +155,10 @@ export default class OutboundDetail extends Component {
           new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
           `拣货单_${params.outboundNo}_${Date.now()}.xlsx`
         );
+        this.setState({ expLoad: false });
       } else {
         message.error(result.error.message);
+        this.setState({ expLoad: false });
       }
     });
   }
@@ -286,7 +290,7 @@ export default class OutboundDetail extends Component {
             </Dropdown>}
             {this.state.tabKey === 'pickingDetails' &&
               <Tooltip title="导出拣货单Excel" placement="bottom">
-                <Button onClick={this.handlePackistExport} >
+                <Button onClick={this.handlePackistExport} loading={this.state.expLoad}>
                   <Logixon type="export" />
                 </Button>
               </Tooltip>
