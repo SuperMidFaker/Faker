@@ -42,23 +42,20 @@ export default class WorkItemPage extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-        const value = this.props.form.getFieldsValue();
-        const specialMark = value.specialMark.join('/');
-        const pass = value.pass === true ? 'Y' : null;
-        const item = {
-          ...this.props.itemData, ...value, special_mark: specialMark, pass,
-        };
-        this.props.saveWorkspaceItem(item).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.success('保存成功');
-            this.props.notifyFormChanged(false);
-            this.context.router.goBack();
-          }
-        });
+    // work item donot validate
+    const value = this.props.form.getFieldsValue();
+    const specialMark = value.specialMark.join('/');
+    const pass = value.pass === true ? 'Y' : null;
+    const item = {
+      ...this.props.itemData, ...value, special_mark: specialMark, pass,
+    };
+    this.props.saveWorkspaceItem(item).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.success('保存成功');
+        this.props.notifyFormChanged(false);
+        this.context.router.goBack();
       }
     });
   }

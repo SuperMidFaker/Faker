@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { notification, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
+import { Alert, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { viewSuBarcodeScanModal, receiveProduct } from 'common/reducers/cwmReceive';
 import { formatMsg } from '../../message.i18n';
@@ -18,7 +18,6 @@ const FormItem = Form.Item;
     visible: state.cwmReceive.suBarScanModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,
     inboundProducts: state.cwmReceive.inboundProducts,
-    inboundNo: state.cwmReceive.receiveModal.inboundNo,
     saveLoading: state.cwmReceive.submitting,
   }),
   { viewSuBarcodeScanModal, receiveProduct }
@@ -26,7 +25,6 @@ const FormItem = Form.Item;
 export default class SuBarcodeScanModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    inboundNo: PropTypes.string.isRequired,
     inboundProducts: PropTypes.arrayOf(PropTypes.shape({
       product_no: PropTypes.string.isRequired,
       expect_qty: PropTypes.number.isRequired,
@@ -35,6 +33,7 @@ export default class SuBarcodeScanModal extends Component {
   }
   state = {
     inboundProductSeqMap: null,
+    alertMsg: null,
     dataSource: [],
     scanRecv: {
       su_barcode: null,
@@ -44,11 +43,6 @@ export default class SuBarcodeScanModal extends Component {
       attrib_1_string: null,
       qty: null,
     },
-  }
-  componentDidMount() {
-    if (this.suInputRef) {
-      this.suInputRef.focus();
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -69,6 +63,20 @@ export default class SuBarcodeScanModal extends Component {
       this.setState({
         inboundProductSeqMap,
       });
+      if (window.localStorage) {
+        const subarDataSource = window.localStorage.getItem('subarcode-data');
+        if (subarDataSource) {
+          const dataSource = JSON.parse(subarDataSource);
+          if (dataSource && dataSource.length > 0) {
+            this.setState({ dataSource }); // todo set received_qty inbooundseqmap
+          }
+        }
+      }
+      if (this.suInputRef) {
+        setTimeout(() => {
+          this.suInputRef.focus();
+        }, 100);
+      }
     }
   }
   msg = formatMsg(this.props.intl)
@@ -86,264 +94,254 @@ export default class SuBarcodeScanModal extends Component {
         qty: null,
       },
     });
-  }
-  handleProductPutAway = (index, value, location) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource[index].location = value;
-    if (location) {
-      dataSource[index].priority = Number(location.status);
+    if (window.localStorage) {
+      window.localStorage.setItem('subarcode-data', null);
     }
-    this.setState({ dataSource });
-  }
-  handleConveyChange = (index, value) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource[index].convey_no = value;
-    this.setState({ dataSource });
-  }
-  handleReceiverChange = (index, value) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource[index].received_by = value;
-    this.setState({ dataSource });
-  }
-  handleProductReceive = (index, value) => {
-    const receivePack = Number(parseFloat(value));
-    if (!Number.isNaN(receivePack)) {
-      const inboundProduct = this.props.inboundProduct;
-      let { receivedQty, receivedPackQty } = this.state;
-      const dataSource = [...this.state.dataSource];
-      const remainQty = inboundProduct.expect_qty - receivedQty;
-      const remainPackQty = inboundProduct.expect_pack_qty - receivedPackQty;
-      const changeQty = receivePack * inboundProduct.sku_pack_qty - dataSource[index].inbound_qty;
-      const changePackQty = receivePack - dataSource[index].inbound_pack_qty;
-      dataSource[index].avail = remainQty >= 0;
-      if (remainQty < 0 && changeQty < 0 && changeQty <= remainQty) {
-        for (let i = 0; i < dataSource.length; i++) {
-          dataSource[i].avail = true;
-        }
-      }
-      if (changeQty > remainQty && remainQty >= 0) {
-        dataSource[index].inbound_pack_qty += remainPackQty;
-        dataSource[index].inbound_qty += remainQty;
-        dataSource.push(Object.assign({}, dataSource[index], {
-          inbound_qty: changeQty - remainQty,
-          inbound_pack_qty: changePackQty - remainPackQty,
-          avail: false,
-        }));
-        if (dataSource[index].inbound_pack_qty === 0) {
-          dataSource.splice(index, 1);
-        }
-      } else {
-        dataSource[index].inbound_pack_qty = receivePack;
-        dataSource[index].inbound_qty = receivePack * inboundProduct.sku_pack_qty;
-      }
-      receivedQty += changeQty;
-      receivedPackQty += changePackQty;
-      this.setState({
-        dataSource,
-        receivedQty,
-        receivedPackQty,
-      });
-    }
-  }
-  handleDamageLevelChange = (index, value) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource[index].damage_level = value;
-    this.setState({ dataSource });
-  }
-  handleReceivedDateChange = (date) => {
-    this.setState({ receivedDate: date.toDate() });
-  }
-  handleAvailChange = (index, value) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource[index].avail = value === 'avail';
-    this.setState({ dataSource });
-  }
-  handleAdd = () => {
-    const dataSource = [...this.state.dataSource];
-    const newDetail = {
-      id: `${this.props.productNo}${dataSource.length + 1}`,
-      inbound_qty: 0,
-      inbound_pack_qty: 0,
-      location: '',
-      priority: null,
-      damage_level: 0,
-      avail: this.props.inboundProduct.expect_qty > this.state.receivedQty,
-      received_by: this.props.username,
-    };
-    dataSource.push(newDetail);
-    this.setState({ dataSource });
   }
   handleDeleteDetail = (index) => {
     const dataSource = [...this.state.dataSource];
-    let { receivedQty, receivedPackQty } = this.state;
-    receivedQty -= dataSource[index].inbound_qty;
-    receivedPackQty -= dataSource[index].inbound_pack_qty;
+    const data = dataSource[index];
+    const inboundProductSeqMap = new Map(this.state.inboundProductSeqMap);
+    const productSeqMap = inboundProductSeqMap.get(dataSource.product_no);
+    const seqQty = productSeqMap.get(dataSource.asn_seq_no);
+    seqQty.received_qty -= data.qty;
     dataSource.splice(index, 1);
-    this.setState({ dataSource, receivedQty, receivedPackQty });
+    inboundProductSeqMap.set(dataSource.product_no, productSeqMap);
+    this.setState({ dataSource, inboundProductSeqMap });
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
-    if (dataSource.find(data => data.inbound_pack_qty === 0)) {
-      message.error('收货数量不能等于零');
-      return;
-    }
-    const notificationkey = 'unexpect-receive';
-    const btn = (
-      <Button
-        type="primary"
-        size="small"
-        onClick={() => {
-        notification.close(notificationkey);
-        this.handleConfirmReceive();
-      }}
-      >
-        确定
-      </Button>
-    );
-    if (this.state.receivedQty > this.props.inboundProduct.expect_qty) {
-      notification.warning({
-        message: '实收数量大于预期数量',
-        description: '确定按超量完成收货?',
-        btn,
-        key: notificationkey,
-      });
-    } else if (this.state.receivedQty < this.props.inboundProduct.expect_qty) {
-      notification.warning({
-        message: '实收数量少于预期数量',
-        description: '确定按缺量完成收货?',
-        btn,
-        key: notificationkey,
-      });
-    } else {
-      this.handleConfirmReceive();
-    }
-  }
-  handleConfirmReceive = () => {
     const {
-      loginId, inboundNo, inboundProduct, inboundHead,
+      loginId, inboundHead, username,
     } = this.props;
-    this.props.receiveProduct(this.state.dataSource.filter(data => !data.trace_id).map(data => ({
-      location: data.location,
-      damage_level: data.damage_level,
-      inbound_qty: data.inbound_qty,
-      inbound_pack_qty: data.inbound_pack_qty,
-      convey_no: data.convey_no,
-      avail: data.avail,
-      received_by: data.received_by,
-      serial_no: data.serial_no,
-      attrib_1_string: data.attrib_1_string,
-      attrib_2_string: data.attrib_2_string,
-      attrib_3_string: data.attrib_3_string,
-      attrib_4_string: data.attrib_4_string,
-      priority: data.priority,
-    })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId, this.state.receivedDate).then((result) => {
+    const seqDataSource = new Map();
+    dataSource.forEach((ds) => {
+      let seqDatas = [];
+      if (seqDataSource.has(ds.asn_seq_no)) {
+        seqDatas = seqDataSource.get(ds.asn_seq_no);
+      }
+      seqDatas.push(ds);
+      seqDataSource.set(ds.asn_seq_no, seqDatas);
+    });
+    const recvProductPromises = [];
+    seqDataSource.forEach((seqDatas, seqNo) => {
+      recvProductPromises.push(this.props.receiveProduct(seqDatas.map(data => ({
+        inbound_qty: data.qty,
+        inbound_pack_qty: data.qty,
+        received_by: username,
+        serial_no: data.serial_no,
+        attrib_1_string: data.attrib_1_string,
+        expiry_date: data.expiry_date,
+      })), inboundHead.inbound_no, seqNo, inboundHead.asn_no, loginId, new Date()));
+    });
+    Promise.all(recvProductPromises).then((result) => {
       if (!result.error) {
-        message.success('收货确认成功');
-        this.props.hideReceiveModal();
+        message.success('条码收货确认成功');
+        this.handleCancel();
       } else {
         message.error('操作失败');
       }
     });
   }
-  handleSerialNoChange = (index, value) => {
+  handleScanReceive = () => {
+    const suScan = { ...this.state.scanRecv };
+    const inboundProductSeqMap = new Map(this.state.inboundProductSeqMap);
+    const productSeqMap = inboundProductSeqMap.get(suScan.product_no);
+    if (!productSeqMap) {
+      return;
+    }
+    const seqNoKeys = Array.from(productSeqMap.keys());
+    let remainQty = suScan.qty;
     const dataSource = [...this.state.dataSource];
-    dataSource[index].serial_no = value;
-    this.setState({ dataSource });
+    for (let i = 0; i < seqNoKeys.length; i++) {
+      const seqNo = seqNoKeys[i];
+      const seqQty = productSeqMap.get(seqNo);
+      if (seqQty.received_qty < seqQty.expect_qty) {
+        if (seqQty.received_qty + remainQty <= seqQty.expect_qty) {
+          dataSource.push({
+            product_no: suScan.product_no,
+            serial_no: suScan.serial_no,
+            expiry_date: suScan.expiry_date,
+            attrib_1_string: suScan.attrib_1_string,
+            qty: remainQty,
+            asn_seq_no: seqNo,
+          });
+          seqQty.received_qty += remainQty;
+          productSeqMap.set(seqNo, seqQty);
+          remainQty = 0;
+          break;
+        } else {
+          const recvQty = seqQty.expect_qty - seqQty.received_qty;
+          dataSource.push({
+            product_no: suScan.product_no,
+            serial_no: suScan.serial_no,
+            expiry_date: suScan.expiry_date,
+            attrib_1_string: suScan.attrib_1_string,
+            qty: recvQty,
+            asn_seq_no: seqNo,
+          });
+          remainQty -= recvQty;
+          seqQty.received_qty = seqQty.expect_qty;
+          productSeqMap.set(seqNo, seqQty);
+        }
+      }
+    }
+    if (window.localStorage) {
+      window.localStorage.setItem('subarcode-data', JSON.stringify(dataSource));
+    }
+    inboundProductSeqMap.set(suScan.product_no, productSeqMap);
+    this.setState({
+      scanRecv: {
+        su_barcode: null,
+        product_no: null,
+        serial_no: null,
+        expiry_date: null,
+        attrib_1_string: null,
+        qty: null,
+      },
+      dataSource,
+      inboundProductSeqMap,
+      alertMsg: remainQty > 0 ? `${suScan.product_no}收货数量大于订单数量` : null,
+    });
+    this.suInputRef.focus();
   }
-  handleAttrChange = (index, value, dataIndex) => {
-    const dataSource = [...this.state.dataSource];
-    dataSource[index][dataIndex] = value;
-    this.setState({ dataSource });
+  handleSuInputRef = (input) => {
+    this.suInputRef = input;
+    if (input) {
+      setTimeout(() => {
+        this.suInputRef.focus();
+      }, 100);
+    }
   }
-  handleSuInputRef = (input) => { this.suInputRef = input; }
   handleQtyInputRef = (input) => { this.qtyInputRef = input; }
   handleScanSuChange = (ev) => {
     /* SUD1107973470|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01004|14D2019.12.12|
      * SUD1107973469|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
-    console.log(ev);
     const barcode = ev.target.value;
     const suScan = { ...this.state.scanRecv };
-    suScan.su_barcode = barcode;
-    suScan.serial_no = barcode.slice(3, 14);
-    suScan.product_no = barcode.slice(18, 31);
-    suScan.attrib_1_string = barcode.slice(35, 46);
-    let splitDates = suScan.attrib_1_string.split('.');
-    suScan.attrib_1_string = `${splitDates[2]}.${splitDates[1]}.${splitDates[0]}`;
-    suScan.expiry_date = barcode.slice(70, 81);
-    splitDates = suScan.expiry_date.split('.');
-    suScan.expiry_date = new Date(
-      Number(splitDates[0]),
-      Number(splitDates[1]) - 1, Number(splitDates[2])
-    );
-    if (suScan.qty) {
-      this.handleScanReceive();
-      this.setState({
-        scanRecv: {
-          su_barcode: null,
-          product_no: null,
-          serial_no: null,
-          expiry_date: null,
-          attrib_1_string: null,
-          qty: null,
-        },
-      });
-      this.suInputRef.focus();
+    if (barcode) {
+      suScan.su_barcode = barcode;
     } else {
-      this.setState({
-        scanRecv: suScan,
-      });
-      this.qtyInputRef.focus();
+      suScan.su_barcode = null;
+      suScan.product_no = null;
+      suScan.serial_no = null;
+      suScan.expiry_date = null;
+      suScan.attrib_1_string = null;
+    }
+    this.setState({
+      scanRecv: suScan,
+    });
+  }
+  handleSuBarKeyDown = (ev) => {
+    if (ev.key === 'Enter') {
+      const suScan = { ...this.state.scanRecv };
+      const barcode = suScan.su_barcode;
+      suScan.serial_no = barcode.slice(3, 13);
+      suScan.product_no = barcode.slice(17, 30);
+      suScan.attrib_1_string = barcode.slice(34, 44);
+      let splitDates = suScan.attrib_1_string.split('.');
+      suScan.attrib_1_string = `${splitDates[2]}.${splitDates[1]}.${splitDates[0]}`;
+      suScan.expiry_date = barcode.slice(69, 79);
+      splitDates = suScan.expiry_date.split('.');
+      suScan.expiry_date = new Date(
+        Number(splitDates[0]),
+        Number(splitDates[1]) - 1, Number(splitDates[2])
+      );
+      if (!suScan.serial_no || !suScan.product_no) {
+        return;
+      }
+      if (!this.state.inboundProductSeqMap.has(suScan.product_no)) {
+        this.setState({
+          scanRecv: suScan,
+          alertMsg: `订单明细无此货号:${suScan.product_no}`,
+        });
+        return;
+      }
+      /*
+      if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
+        this.setState({
+          scanRecv: {
+            su_barcode: null,
+            product_no: null,
+            serial_no: null,
+            expiry_date: null,
+            attrib_1_string: null,
+            qty: null,
+          },
+          alertMsg: `序列号${suScan.serial_no}已经扫描`,
+        });
+        return;
+      }
+      */
+      if (suScan.qty) {
+        this.handleScanReceive();
+      } else {
+        this.setState({
+          scanRecv: suScan,
+          alertMsg: null,
+        });
+        this.qtyInputRef.focus();
+      }
     }
   }
   handleScanQtyChange = (ev) => {
-    console.log(ev);
-    const qty = ev.target.value;
-    const suScan = { ...this.state.scanRecv };
-    suScan.qty = Number(qty);
-    if (suScan.su_barcode) {
-      this.handleScanReceive();
-    } else {
+    const qty = parseFloat(ev.target.value);
+    if (!Number.isNaN(qty)) {
+      const suScan = { ...this.state.scanRecv };
+      suScan.qty = Number(qty);
       this.setState({
         scanRecv: suScan,
       });
-      this.suInputRef.focus();
+    }
+  }
+  handleQtyKeyEnter = (ev) => {
+    if (ev.key === 'Enter') {
+      const suScan = { ...this.state.scanRecv };
+      if (suScan.su_barcode) {
+        this.handleScanReceive();
+      } else {
+        this.setState({
+          scanRecv: suScan,
+        });
+        this.suInputRef.focus();
+      }
     }
   }
   barColumns = [{
+    title: '行号',
+    dataIndex: 'asn_seq_no',
+    width: 100,
+  }, {
     title: '货号',
     dataIndex: 'product_no',
-    width: 200,
-    render: o => (<Input className="readonly" value={o} disabled />),
+    width: 350,
   }, {
     title: '序列号',
-    width: 150,
     dataIndex: 'serial_no',
-    render: o => (<Input className="readonly" prefix={<Icon type="barcode" />} value={o} />),
   }, {
     title: '收货数量',
-    dataIndex: 'inbound_qty',
-    width: 220,
-    render: o => (<Input className="readonly" value={o} />),
+    dataIndex: 'qty',
+    width: 300,
   }, {
     title: '生产日期',
-    width: 100,
+    width: 200,
     dataIndex: 'attrib_1_string',
-    render: o => <Input value={o} className="readonly" />,
   }, {
     title: '失效日期',
-    width: 100,
+    width: 200,
     dataIndex: 'expiry_date',
-    render: expiry => <Input value={expiry && moment(expiry).format('YYYY.MM.DD')} className="readonly" />,
+    render: expiry => expiry && moment(expiry).format('YYYY.MM.DD'),
   }, {
     title: '操作',
-    width: 50,
+    width: 100,
     fixed: 'right',
     render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
     const { saveLoading } = this.props;
-    const { dataSource, scanRecv } = this.state;
+    const { alertMsg, dataSource, scanRecv } = this.state;
     const title = (<div>
+      <span>条码扫描数量确认</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button disabled={dataSource.length === 0} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
@@ -352,14 +350,14 @@ export default class SuBarcodeScanModal extends Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 },
+        sm: { span: 4 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 20 },
       },
     };
-    const formButtonLayout = {
+    /* const formButtonLayout = {
       wrapperCol: {
         xs: {
           span: 24,
@@ -367,10 +365,10 @@ export default class SuBarcodeScanModal extends Component {
         },
         sm: {
           span: 16,
-          offset: 8,
+          offset: 4,
         },
       },
-    };
+    }; */
     return (
       <Modal
         maskClosable={false}
@@ -383,34 +381,44 @@ export default class SuBarcodeScanModal extends Component {
       >
         <Card bodyStyle={{ paddingBottom: 16 }} >
           <Form>
+            {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
             <FormItem label="商品条码" {...formItemLayout}>
-              <Input prefix={<Icon type="qrcode" />} type="textarea" row={2} value={scanRecv.su_barcode} ref={this.handleSuInputRef} onChange={this.handleScanSuChange} />
+              <Input
+                type="textarea"
+                row={2}
+                prefix={<Icon type="qrcode" />}
+                value={scanRecv.su_barcode}
+                ref={this.handleSuInputRef}
+                onChange={this.handleScanSuChange}
+                onKeyDown={this.handleSuBarKeyDown}
+              />
             </FormItem>
             <FormItem label="商品货号" {...formItemLayout}>
-              <Input value={scanRecv.product_no} className="readonly" />
+              <Input value={scanRecv.product_no} readOnly />
             </FormItem>
             <FormItem label="序列号" {...formItemLayout}>
-              <Input value={scanRecv.serial_no} className="readonly" />
+              <Input value={scanRecv.serial_no} readOnly />
             </FormItem>
             <FormItem label="生产日期" {...formItemLayout}>
-              <Input value={scanRecv.attrib_1_string} className="readonly" />
+              <Input value={scanRecv.attrib_1_string} readOnly />
             </FormItem>
             <FormItem label="失效日期" {...formItemLayout}>
-              <Input value={scanRecv.expiry_date && moment(scanRecv.expiry_date).format('YYYY.MM.DD')} className="readonly" />
+              <Input value={scanRecv.expiry_date && moment(scanRecv.expiry_date).format('YYYY.MM.DD')} readOnly />
             </FormItem>
             <FormItem label="收货数量" {...formItemLayout}>
               <Input
                 ref={this.handleQtyInputRef}
                 value={scanRecv.qty}
                 onChange={this.handleScanQtyChange}
+                onKeyDown={this.handleQtyKeyEnter}
               />
             </FormItem>
             <FormItem label="收货时间" {...formItemLayout}>
               <Input disabled defaultValue={moment().format('YYYY.MM.DD')} />
             </FormItem>
-            <FormItem {...formButtonLayout}>
+            {/* <FormItem {...formButtonLayout}>
               <Button type="primary">保存</Button>
-            </FormItem>
+            </FormItem> */}
           </Form>
         </Card>
         <Card bodyStyle={{ padding: 0 }} >
@@ -419,7 +427,10 @@ export default class SuBarcodeScanModal extends Component {
             columns={this.barColumns}
             dataSource={dataSource}
             rowKey="id"
-            scroll={{ x: this.barColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
+            scroll={{
+              x: this.barColumns.reduce((acc, cur) =>
+              acc + (cur.width ? cur.width : 240), 0),
+            }}
           />
         </Card>
       </Modal>
