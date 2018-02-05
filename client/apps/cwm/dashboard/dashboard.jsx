@@ -36,7 +36,7 @@ export default class CWMDashboard extends React.Component {
     intl: intlShape.isRequired,
   }
   state = {
-    startDate: new Date(),
+    startDate: new Date(new Date().setDate(1)),
     endDate: new Date(),
   }
   componentWillMount() {
@@ -88,7 +88,7 @@ export default class CWMDashboard extends React.Component {
           <PageHeader.Actions>
             <RangePicker
               onChange={this.onDateChange}
-              defaultValue={[moment(new Date(), 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
+              defaultValue={[moment(startDate, 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
               value={[moment(startDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')]}
               ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
               allowClear={false}
