@@ -6,6 +6,8 @@ import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
+import { connect } from 'react-redux';
+import { loadStatsCard } from 'common/reducers/sofDashboard';
 import OrderStatsCard from './card/orderStatsCard';
 import InvoiceStatsCard from './card/invoiceStatsCard';
 import messages from './message.i18n';
@@ -19,12 +21,29 @@ const { RangePicker } = DatePicker;
   depth: 2,
   moduleName: 'scof',
 })
+@connect(
+  () => ({
+
+  }),
+  { loadStatsCard }
+)
 export default class SOFDashboard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
+  state = {
+    startDate: new Date(new Date().setDate(1)),
+  }
+  componentWillMount() {
+    const { startDate } = this.state;
+    this.props.loadStatsCard(moment(startDate).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'));
+  }
+  onDateChange = (data, dataString) => {
+    this.props.loadStatsCard(dataString[0], dataString[1]);
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
+    const { startDate } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>
@@ -38,7 +57,7 @@ export default class SOFDashboard extends React.Component {
           <PageHeader.Actions>
             <RangePicker
               onChange={this.onDateChange}
-              defaultValue={[moment(new Date(), 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
+              defaultValue={[moment(startDate, 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
               ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
               allowClear={false}
             />
