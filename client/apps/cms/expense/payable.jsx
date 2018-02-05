@@ -218,22 +218,27 @@ export default class ExpenseList extends Component {
     }, {
       title: this.msg('ccdCount'),
       dataIndex: 'ccd_count',
+      align: 'center',
       width: 70,
     }, {
       title: this.msg('ccsCount'),
       dataIndex: 'ccs_count',
+      align: 'center',
       width: 70,
     }, {
       title: this.msg('itemCount'),
       dataIndex: 'item_count',
+      align: 'center',
       width: 70,
     }, {
       title: this.msg('prdtCount'),
       dataIndex: 'prdt_count',
+      align: 'center',
       width: 70,
     }, {
       title: this.msg('declValue'),
       dataIndex: 'decl_value',
+      align: 'right',
       width: 100,
     }, {
       title: this.msg('acptTime'),

@@ -319,7 +319,7 @@ export default class InvalidItemsList extends React.Component {
             <PageHeader.Actions>
               <WsItemExportButton {...listFilter} onUploaded={this.handleReload} />
               {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
-              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
+              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>整批提交</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

@@ -51,6 +51,7 @@ export default class OrderStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={orderStats.pending || 0}
           style={{ width: '20%' }}
+          type="warning"
           grid
         />
         <ChartCard
@@ -58,6 +59,7 @@ export default class OrderStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={orderStats.processing || 0}
           style={{ width: '20%' }}
+          type="processing"
           grid
         />
         <ChartCard
@@ -65,6 +67,7 @@ export default class OrderStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={orderStats.urgent || 0}
           style={{ width: '20%' }}
+          type="error"
           grid
         />
         <ChartCard
@@ -72,6 +75,7 @@ export default class OrderStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={orderStats.completed || 0}
           style={{ width: '20%' }}
+          type="success"
           grid
         />
       </Card>

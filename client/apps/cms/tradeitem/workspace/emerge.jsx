@@ -113,7 +113,7 @@ export default class NewItemsList extends React.Component {
             <PageHeader.Actions>
               <WsItemExportButton {...this.state.filter} onUploaded={this.handleReload} />
               { emergeStat.master && <Button type="primary" ghost icon="cloud-upload-o" loading={submitting} onClick={this.handleMasterAudit}>提交主库</Button>}
-              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit} loading={submitting}>提交审核</Button>
+              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit} loading={submitting}>整批提交</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

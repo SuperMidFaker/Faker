@@ -40,7 +40,7 @@ export default class InboundStatsCard extends Component {
             <img
               alt="indicator"
               style={{ width: 56, height: 56 }}
-              src="https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"
+              src={`${__CDN__}/assets/img/icon-inbound.svg`}
             />
             )}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
@@ -53,6 +53,7 @@ export default class InboundStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.asnPendings}
           style={{ width: '20%' }}
+          type="warning"
           grid
         />
         <ChartCard
@@ -60,6 +61,7 @@ export default class InboundStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.creates}
           style={{ width: '20%' }}
+          type="processing"
           grid
         />
         <ChartCard
@@ -67,6 +69,7 @@ export default class InboundStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.toPutAways}
           style={{ width: '20%' }}
+          type="processing"
           grid
         />
         <ChartCard
@@ -74,6 +77,7 @@ export default class InboundStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.inboundCompleted}
           style={{ width: '20%' }}
+          type="success"
           grid
         />
       </Card>

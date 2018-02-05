@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, DatePicker, Radio, Select } from 'antd';
+import { Card, DatePicker, Radio, Select, Icon, Tooltip } from 'antd';
+import ChartCard from 'client/components/ChartCard';
 import moment from 'moment';
-import { Link } from 'react-router';
-import currencyFormatter from 'currency-formatter';
-
+// import { Link } from 'react-router';
+// import currencyFormatter from 'currency-formatter';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadCmsStatistics } from 'common/reducers/cmsDashboard';
 import { loadPartnersByTypes } from 'common/reducers/partner';
@@ -50,13 +50,15 @@ function fetchData({ state, dispatch }) {
 export default class StatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    statistics: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
+    statistics: PropTypes.shape({
+      startDate: PropTypes.string,
+      endDate: PropTypes.string,
+    }).isRequired,
   }
   state = {
-    totalValue: 0,
-    sumImportValue: 0,
-    sumExportValue: 0,
+    // totalValue: 0,
+    // sumImportValue: 0,
+    // sumExportValue: 0,
     currency: 'USD',
   }
   componentDidMount() {
@@ -77,15 +79,15 @@ export default class StatsCard extends Component {
     if (nextProps.statistics !== this.props.statistics) {
       if (this.state.currency === 'USD') {
         this.setState({
-          totalValue: nextProps.statistics.totVals.total_usd,
-          sumImportValue: nextProps.statistics.totImVals.total_usd,
-          sumExportValue: nextProps.statistics.totExVals.total_usd,
+          // totalValue: nextProps.statistics.totVals.total_usd,
+          // sumImportValue: nextProps.statistics.totImVals.total_usd,
+          // sumExportValue: nextProps.statistics.totExVals.total_usd,
         });
       } else if (this.state.currency === 'CNY') {
         this.setState({
-          totalValue: nextProps.statistics.totVals.total_cny,
-          sumImportValue: nextProps.statistics.totImVals.total_cny,
-          sumExportValue: nextProps.statistics.totExVals.total_cny,
+          // totalValue: nextProps.statistics.totVals.total_cny,
+          // sumImportValue: nextProps.statistics.totImVals.total_cny,
+          // sumExportValue: nextProps.statistics.totExVals.total_cny,
         });
       }
     }
@@ -137,26 +139,33 @@ export default class StatsCard extends Component {
     }
   }
   handleCurrencyChange = (ev) => {
-    const { totVals, totImVals, totExVals } = this.props.statistics;
+    // const { totVals, totImVals, totExVals } = this.props.statistics;
     if (ev.target.value === 'USD') {
       this.setState({
-        currency: 'USD', totalValue: totVals.total_usd, sumImportValue: totImVals.total_usd, sumExportValue: totExVals.total_usd,
+        currency: 'USD',
+        // totalValue: totVals.total_usd,
+        // sumImportValue: totImVals.total_usd,
+        // sumExportValue: totExVals.total_usd,
       });
     } else if (ev.target.value === 'CNY') {
       this.setState({
-        currency: 'CNY', totalValue: totVals.total_cny, sumImportValue: totImVals.total_cny, sumExportValue: totExVals.total_cny,
+        currency: 'CNY',
+        // totalValue: totVals.total_cny,
+        // sumImportValue: totImVals.total_cny,
+        // sumExportValue: totExVals.total_cny,
       });
     }
   }
   msg = formatMsg(this.props.intl)
   render() {
     const {
-      startDate, endDate, total, sumImport, sumExport, processing,
-      declared, released, inspected, declcount,
+      startDate, endDate, total, processing,
+      declared, released, inspected,
+      // sumImport, sumExport, declcount,
     } = this.props.statistics;
-    const {
-      totalValue, sumImportValue, sumExportValue, currency,
-    } = this.state;
+    // const {
+    //  totalValue, sumImportValue, sumExportValue, currency,
+    // } = this.state;
     const clients = [{
       name: '全部客户',
       partner_id: -1,
@@ -197,12 +206,55 @@ export default class StatsCard extends Component {
         extra={datePicker}
         bodyStyle={{ padding: 0 }}
       >
-        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
+        <ChartCard
+          title={this.msg('total')}
+          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+          total={total}
+          style={{ width: '20%' }}
+          grid
+          onChartClick={() => this.handleLinkClick('total')}
+        />
+        <ChartCard
+          title={this.msg('processing')}
+          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+          total={processing}
+          style={{ width: '20%' }}
+          type="warning"
+          grid
+        />
+        <ChartCard
+          title={this.msg('declared')}
+          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+          total={declared}
+          style={{ width: '20%' }}
+          type="processing"
+          grid
+        />
+        <ChartCard
+          title={this.msg('inspected')}
+          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+          total={inspected}
+          style={{ width: '20%' }}
+          type="error"
+          grid
+        />
+        <ChartCard
+          title={this.msg('released')}
+          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
+          total={released}
+          style={{ width: '20%' }}
+          type="success"
+          grid
+        />
+        {
+          /*
+          <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('total')}</h4>
             <div className="data">
               <div className="data-num lg text-emphasis">
-                <Link to="/clearance/delegation?from='dashboard'" onClick={() => this.handleLinkClick('total')} >{total}</Link>
+                <Link to="/clearance/delegation?from='dashboard'" onClick={() =>
+                  this.handleLinkClick('total')} >{total}</Link>
               </div>
               <div className="data-extra">
                 {currencyFormatter.format(totalValue, { code: currency })}
@@ -216,7 +268,8 @@ export default class StatsCard extends Component {
             <h4>{this.msg('sumImport')}</h4>
             <div className="data">
               <div className="data-num lg text-normal">
-                <Link to="/clearance/delegation?from='dashboard'" onClick={() => this.handleLinkClick('sumImport')} >{sumImport}</Link>
+                <Link to="/clearance/delegation?from='dashboard'" onClick={() =>
+                  this.handleLinkClick('sumImport')} >{sumImport}</Link>
               </div>
               <div className="data-extra">
                 {currencyFormatter.format(sumImportValue, { code: currency })}
@@ -228,7 +281,8 @@ export default class StatsCard extends Component {
             <h4>{this.msg('sumExport')}</h4>
             <div className="data">
               <div className="data-num lg text-normal">
-                <Link to="/clearance/delegation?from='dashboard'" onClick={() => this.handleLinkClick('sumExport')} >{sumExport}</Link>
+                <Link to="/clearance/delegation?from='dashboard'" onClick={() =>
+                  this.handleLinkClick('sumExport')} >{sumExport}</Link>
               </div>
               <div className="data-extra">
                 {currencyFormatter.format(sumExportValue, { code: currency })}
@@ -242,7 +296,8 @@ export default class StatsCard extends Component {
             <h4>{this.msg('processing')}</h4>
             <div className="data">
               <div className="data-num lg text-warning">
-                <Link to="/clearance/delegation?from='dashboard'" onClick={() => this.handleLinkClick('processing')} >{processing}</Link>
+                <Link to="/clearance/delegation?from='dashboard'" onClick={() =>
+                  this.handleLinkClick('processing')} >{processing}</Link>
               </div>
             </div>
           </div>
@@ -251,7 +306,8 @@ export default class StatsCard extends Component {
             <h4>{this.msg('declared')}</h4>
             <div className="data">
               <div className="data-num lg text-info">
-                <Link to="/clearance/delegation?from='dashboard'" onClick={() => this.handleLinkClick('declared')} >{declared}</Link>
+                <Link to="/clearance/delegation?from='dashboard'" onClick={() =>
+                  this.handleLinkClick('declared')} >{declared}</Link>
               </div>
             </div>
           </div>
@@ -259,7 +315,8 @@ export default class StatsCard extends Component {
             <h4>{this.msg('released')}</h4>
             <div className="data">
               <div className="data-num lg text-success">
-                <Link to="/clearance/delegation?from='dashboard'" onClick={() => this.handleLinkClick('released')}>{released}</Link>
+                <Link to="/clearance/delegation?from='dashboard'" onClick={() =>
+                  this.handleLinkClick('released')}>{released}</Link>
               </div>
             </div>
           </div>
@@ -269,7 +326,8 @@ export default class StatsCard extends Component {
             <h4>{this.msg('inspected')}</h4>
             <div className="data">
               <div className="data-num lg text-error">
-                <Link to="/clearance/cusdecl?status='inspect'" onClick={() => this.handleLinkClick('inspected')}>{inspected}</Link>
+                <Link to="/clearance/cusdecl?status='inspect'" onClick={() =>
+                  this.handleLinkClick('inspected')}>{inspected}</Link>
               </div>
               <div className="data-extra">
                 {declcount > 0 ? ((inspected / declcount) * 100).toFixed(2) : 0}%
@@ -278,6 +336,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
+        */}
       </Card>
     );
   }
