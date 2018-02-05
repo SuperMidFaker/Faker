@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tooltip } from 'antd';
 import ChartCard from 'client/components/ChartCard';
@@ -27,20 +26,6 @@ export default class BondedStatsCard extends Component {
       inbounds: PropTypes.number,
     }),
   }
-  componentWillMount() {
-    const { defaultWhse } = this.props;
-    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const { defaultWhse } = nextProps;
-      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
-    }
-  }
-  onDateChange = (data, dataString) => {
-    const { defaultWhse } = this.props;
-    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code);
-  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { statsCard } = this.props;
@@ -52,35 +37,35 @@ export default class BondedStatsCard extends Component {
         <ChartCard
           title={this.msg('entryToSync')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.inbounds}
+          total={statsCard.entryToSync}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
           title={this.msg('normalToClear')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.normalToClear}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
           title={this.msg('normalToExit')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.normalToExit}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
           title={this.msg('portionToSync')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.portionToSync}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
           title={this.msg('portionToClear')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.received}
+          total={statsCard.portionToClear}
           style={{ width: '20%' }}
           grid
         />

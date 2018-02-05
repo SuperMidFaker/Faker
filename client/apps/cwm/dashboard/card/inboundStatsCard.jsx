@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tooltip } from 'antd';
 import ChartCard from 'client/components/ChartCard';
@@ -26,20 +25,6 @@ export default class InboundStatsCard extends Component {
     statsCard: PropTypes.shape({
       inbounds: PropTypes.number,
     }),
-  }
-  componentWillMount() {
-    const { defaultWhse } = this.props;
-    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const { defaultWhse } = nextProps;
-      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
-    }
-  }
-  onDateChange = (data, dataString) => {
-    const { defaultWhse } = this.props;
-    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code);
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
@@ -66,7 +51,7 @@ export default class InboundStatsCard extends Component {
         <ChartCard
           title={this.msg('pending')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.asnPendings}
           style={{ width: '20%' }}
           grid
         />
@@ -80,14 +65,14 @@ export default class InboundStatsCard extends Component {
         <ChartCard
           title={this.msg('toPutAway')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.toPutAways}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
           title={this.msg('inboundCompleted')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.received}
+          total={statsCard.inboundCompleted}
           style={{ width: '20%' }}
           grid
         />
