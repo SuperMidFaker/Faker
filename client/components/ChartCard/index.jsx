@@ -5,7 +5,7 @@ import './index.less';
 
 
 const ChartCard = ({
-  loading = false, grid = false, contentHeight, title, avatar, action,
+  loading = false, grid = false, contentHeight, title, avatar, action, type, onChartClick,
   total, footer, children, ...rest
 }) => {
   const content = (
@@ -25,7 +25,7 @@ const ChartCard = ({
           </div>
           {
             // eslint-disable-next-line
-            (total !== undefined) && (<div className="total" dangerouslySetInnerHTML={{ __html: total }} />)
+            (total !== undefined) && (<div onClick={onChartClick} className={`total ${type}`} dangerouslySetInnerHTML={{ __html: total }} />)
           }
         </div>
       </div>

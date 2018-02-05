@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tooltip } from 'antd';
 import ChartCard from 'client/components/ChartCard';
@@ -27,20 +26,6 @@ export default class OutboundStatsCard extends Component {
       inbounds: PropTypes.number,
     }),
   }
-  componentWillMount() {
-    const { defaultWhse } = this.props;
-    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const { defaultWhse } = nextProps;
-      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
-    }
-  }
-  onDateChange = (data, dataString) => {
-    const { defaultWhse } = this.props;
-    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code);
-  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { statsCard } = this.props;
@@ -55,47 +40,52 @@ export default class OutboundStatsCard extends Component {
             <img
               alt="indicator"
               style={{ width: 56, height: 56 }}
-              src="https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"
+              src={`${__CDN__}/assets/img/icon-outbound.svg`}
             />
             )}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.inbounds}
+          total={statsCard.outbounds}
           style={{ width: '20%' }}
           grid
         />
         <ChartCard
           title={this.msg('pending')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.soPendings}
           style={{ width: '16%' }}
+          type="warning"
           grid
         />
         <ChartCard
           title={this.msg('toAllocate')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.unallocated}
           style={{ width: '16%' }}
+          type="processing"
           grid
         />
         <ChartCard
           title={this.msg('toPick')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.allocated}
           style={{ width: '16%' }}
+          type="processing"
           grid
         />
         <ChartCard
           title={this.msg('toShip')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.creates}
+          total={statsCard.picked}
           style={{ width: '16%' }}
+          type="processing"
           grid
         />
         <ChartCard
           title={this.msg('outboundCompleted')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-          total={statsCard.received}
+          total={statsCard.outboundCompleted}
           style={{ width: '16%' }}
+          type="success"
           grid
         />
       </Card>

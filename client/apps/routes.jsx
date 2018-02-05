@@ -489,7 +489,11 @@ export default(store) => {
               <Route path="create" component={SCOFOrders.Create} />
               <Route path="edit/:orderNo" component={SCOFOrders.Edit} />
             </Route>
-            <Route path="invoices" component={SCOFInvoices.List} />
+            <Route path="invoices">
+              <IndexRoute component={SCOFInvoices.List} />
+              <Route path="create" component={SCOFInvoices.Create} />
+              <Route path="edit/:invoiceNo" component={SCOFInvoices.Edit} />
+            </Route>
             <Route path="tracking">
               <Route path="customize">
                 <IndexRoute component={SCOFTracking.Customize} />

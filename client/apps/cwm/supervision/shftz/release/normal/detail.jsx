@@ -487,10 +487,12 @@ export default class SHFTZNormalRelRegDetail extends Component {
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,
       total_net_wt: acc.total_net_wt + regd.net_wt,
+      total_grosswt: acc.total_grosswt + regd.gross_wt,
     }), {
       total_qty: 0,
       total_amount: 0,
       total_net_wt: 0,
+      total_grosswt: 0,
     });
     return (
       <div>
@@ -623,6 +625,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                       <DataPane.Extra>
                         <Summary>
                           <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>
+                          <Summary.Item label="总毛重" addonAfter="KG">{stat && stat.total_grosswt.toFixed(3)}</Summary.Item>
                           <Summary.Item label="总净重" addonAfter="KG">{stat && stat.total_net_wt.toFixed(3)}</Summary.Item>
                           <Summary.Item label="总金额">{stat && stat.total_amount.toFixed(3)}</Summary.Item>
                         </Summary>

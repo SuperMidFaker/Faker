@@ -4,7 +4,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Collapse, Input, Modal, Form, Layout, Select, Table } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
-import EditableCell from 'client/components/EditableCell';
 import { hideAdaptorDetailModal, updateColumnField, updateStartLine, delAdaptor } from 'common/reducers/hubDataAdapter';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -32,6 +31,8 @@ export default class AdaptorDetailModal extends Component {
   state = {
     lineColumns: [],
     lineData: [],
+    fieldColumns: [],
+    fieldData: [],
     rightSidercollapsed: true,
   }
   componentWillMount() {
@@ -49,13 +50,28 @@ export default class AdaptorDetailModal extends Component {
         fixed: 'left',
       }];
       const lineData = [{
-        keyall: '示例1',
+        keyall: '行1',
       }, {
-        keyall: '示例2',
+        keyall: '行2',
       }, {
-        keyall: '导入字段',
+        keyall: '对应字段',
+      }, {
+        keyall: '转换规则',
+      }, {
+        keyall: '映射关系',
+      }];
+      const fieldColumns = [{
+        dataIndex: 'keyall',
+        width: 100,
+        fixed: 'left',
+      }];
+      const fieldData = [{
+        keyall: '字段名称',
+      }, {
+        keyall: '默认值',
       }];
       let scrollX = 100;
+      const fieldsScrollX = 100;
       nextProps.adaptor.columns.forEach((col, index) => {
         const dataIndex = `key${index}`;
         lineColumns.push({
@@ -74,13 +90,26 @@ export default class AdaptorDetailModal extends Component {
                 }
               }
               return (
+                <Select
+                  showSearch
+                  allowClear
+                  style={{ width: 160 }}
+                  placeholder="选择字段"
+                  optionFilterProp="children"
+                  onChange={field => this.handleFieldMap(col.id, field)}
+                >
+                  {columns.map(acol => <Option value={acol.field}>{acol.label}</Option>)}
+                </Select>
+                /*
                 <EditableCell
                   value={value}
                   cellTrigger
                   type="select"
                   options={columns.map(acol => ({ key: acol.field, text: acol.label }))}
                   onSave={field => this.handleFieldMap(col.id, field)}
-                />);
+                />
+              */
+              );
             }
             return value;
           },
@@ -91,7 +120,9 @@ export default class AdaptorDetailModal extends Component {
         lineData[2].editable = true;
         scrollX += 200;
       });
-      this.setState({ lineColumns, lineData, scrollX });
+      this.setState({
+        lineColumns, lineData, scrollX, fieldColumns, fieldData, fieldsScrollX,
+      });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -130,7 +161,9 @@ export default class AdaptorDetailModal extends Component {
     const {
       form: { getFieldDecorator }, visible, adaptor, customers,
     } = this.props;
-    const { lineColumns, lineData, scrollX } = this.state;
+    const {
+      lineColumns, lineData, scrollX, fieldColumns, fieldData, fieldsScrollX,
+    } = this.state;
     return (
       <Modal
         maskClosable={false}
@@ -162,11 +195,26 @@ export default class AdaptorDetailModal extends Component {
           </PageHeader>
           <Layout>
             <Content style={{ padding: 16, height: this.state.contentHeight }} >
-              <Card bodyStyle={{ padding: 0 }} >
+              <Card title="数据导入表格" bodyStyle={{ padding: 0 }} >
                 <Table
                   dataSource={lineData}
                   columns={lineColumns}
-                  scroll={{ x: scrollX, y: 600 }}
+                  scroll={{ x: scrollX }}
+                  pagination={false}
+                />
+              </Card>
+              <Card
+                title={<span>适配数据对象
+                  <Select value={adaptor.biz_model} style={{ width: 160 }} disabled>
+                    {impModels.map(mod =>
+                      <Option key={mod.key} value={mod.key}>{mod.name}</Option>)}
+                  </Select></span>}
+                bodyStyle={{ padding: 0 }}
+              >
+                <Table
+                  dataSource={fieldData}
+                  columns={fieldColumns}
+                  scroll={{ x: fieldsScrollX }}
                   pagination={false}
                 />
               </Card>
@@ -189,15 +237,6 @@ export default class AdaptorDetailModal extends Component {
                           initialValue: adaptor.name,
                           rules: [{ required: true, message: this.msg('nameRequired') }],
                         })(<Input />)}
-                      </FormItem>
-                      <FormItem label={this.msg('adapterBizModel')}>
-                        {getFieldDecorator('biz_model', {
-                          initialValue: adaptor.biz_model,
-                          rules: [{ required: true, message: this.msg('bizModelRequired') }],
-                        })(<Select disabled>
-                          {impModels.map(mod =>
-                            <Option key={mod.key} value={mod.key}>{mod.name}</Option>)}
-                        </Select>)}
                       </FormItem>
                       <FormItem label={this.msg('relatedPartner')} >
                         {getFieldDecorator('owner_partner_id', {

@@ -92,7 +92,8 @@ export default class BSSDashboard extends React.Component {
                 action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
                 total={yuan(8846)}
                 footer={<Field label="支付税金" value={`￥${numeral(12423).format('0,0')}`} />}
-                contentHeight={46} canvas
+                contentHeight={46}
+                canvas
               >
                 <MiniArea
                   color="#975FE4"
@@ -108,7 +109,7 @@ export default class BSSDashboard extends React.Component {
                 action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
                 total={yuan(6560)}
                 footer={<Field label="回款比例" value="60%" />}
-                contentHeight={46} canvas
+                contentHeight={46}
               >
                 <MiniBar
                   height={46}

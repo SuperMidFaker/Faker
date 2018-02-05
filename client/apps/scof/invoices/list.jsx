@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Select } from 'antd';
+import { Breadcrumb, Button, Layout, Select, Tag } from 'antd';
 import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList,
   editFlow, toggleFlowDesigner, toggleFlowStatus } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -62,6 +63,9 @@ export default class InvoiceList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   componentWillMount() {
     this.props.loadFlowTrackingFields();
   }
@@ -95,22 +99,53 @@ export default class InvoiceList extends React.Component {
     title: '发票日期',
     dataIndex: 'invoice_date',
   }, {
-    title: '订单号',
+    title: '状态',
+    dataIndex: 'status',
+    render: (o) => {
+      switch (o) {
+        case 0:
+          return <Tag>{this.msg('toShip')}</Tag>;
+        case 1:
+          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
+        case 2:
+          return <Tag color="green">{this.msg('shipped')}</Tag>;
+        default:
+          return null;
+      }
+    },
+  }, {
+    title: '购买方',
+    dataIndex: 'buyer',
+  }, {
+    title: '销售方',
+    dataIndex: 'seller',
+  }, {
+    title: '采购订单号',
     dataIndex: 'order_no',
   }, {
-    title: '总价',
+    title: '总金额',
     dataIndex: 'total_amount',
   }, {
     title: '币制',
     dataIndex: 'currency',
+  }, {
+    title: '总数量',
+    dataIndex: 'total_qty',
   }, {
     title: '总净重',
     dataIndex: 'total_net_wt',
   }, {
     dataIndex: 'OPS_COL',
     width: 45,
+    fixed: 'right',
     render: (o, record) => <RowAction onClick={this.handleDetail} icon="form" tooltip="明细" row={record} />,
   }]
+  handleCreate = () => {
+    this.context.router.push('/scof/invoices/create');
+  }
+  handleDetail = (row) => {
+    this.context.router.push(`/scof/invoices/edit/${row.invoice_no}`);
+  }
 
   render() {
     const {
