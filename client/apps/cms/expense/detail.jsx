@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import moment from 'moment';
 import { Breadcrumb, Layout, Tabs } from 'antd';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -10,18 +10,30 @@ import MagicCard from 'client/components/MagicCard';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
+import { loadExpsDetails } from 'common/reducers/cmsExpense';
+import { FEE_STYLE, FEE_CATEGORY } from 'common/constants';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
+function fetchData({ dispatch, params, state }) {
+  return dispatch(loadExpsDetails({
+    delgNo: params.delgNo,
+    tenantId: state.account.tenantId,
+    prType: params.prType
+  }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-
+    expDetails: state.cmsExpense.expDetails,
   }),
-  { }
+  { loadExpsDetails }
 )
 @connectNav({
   depth: 3,
@@ -37,27 +49,54 @@ export default class ExpenseDetail extends Component {
   }
   state = {
     fullscreen: true,
+    datas: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.expDetails !== nextProps.expDetails) {
+      if (nextProps.expDetails && nextProps.expDetails.charges.length > 0) {
+        this.setState({ datas: nextProps.expDetails.charges });
+      } else {
+        this.setState({ datas: [] });
+      }
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
+
+  handleTabChange = (key) => {
+    this.props.loadExpsDetails({
+      delgNo: this.props.params.delgNo,
+      tenantId: this.props.tenantId,
+      prType: key,
+    });
+  }
+
   recColumns = [{
     title: '业务流水号',
     dataIndex: 'biz_seq_no',
     width: 180,
   }, {
     title: '费用名称',
-    dataIndex: 'fee',
+    dataIndex: 'fee_name',
   }, {
     title: '费用种类',
-    dataIndex: 'fee_category',
+    dataIndex: 'category',
     width: 100,
+    render: (o) => {
+      const category = FEE_CATEGORY.filter(fe => fe.value === o)[0];
+      return category ? <span>{category.text}</span> : <span />;
+    },
   }, {
     title: '费用类型',
-    dataIndex: 'fee_type',
+    dataIndex: 'fee_style',
     width: 100,
+    render: (o) => {
+      const type = FEE_STYLE.filter(fe => fe.value === o)[0];
+      return type ? <span>{type.text}</span> : <span />;
+    },
   }, {
     title: '营收金额(人民币)',
-    dataIndex: 'amount_rmb',
+    dataIndex: 'total_fee',
     width: 150,
   }, {
     title: '外币金额',
@@ -100,18 +139,26 @@ export default class ExpenseDetail extends Component {
     width: 180,
   }, {
     title: '费用名称',
-    dataIndex: 'fee',
+    dataIndex: 'fee_name',
   }, {
     title: '费用种类',
-    dataIndex: 'fee_category',
+    dataIndex: 'category',
     width: 100,
+    render: (o) => {
+      const category = FEE_CATEGORY.filter(fe => fe.value === o)[0];
+      return category ? <span>{category.text}</span> : <span />;
+    },
   }, {
     title: '费用类型',
-    dataIndex: 'fee_type',
+    dataIndex: 'fee_style',
     width: 100,
+    render: (o) => {
+      const type = FEE_STYLE.filter(fe => fe.value === o)[0];
+      return type ? <span>{type.text}</span> : <span />;
+    },
   }, {
     title: '成本金额(人民币)',
-    dataIndex: 'amount_rmb',
+    dataIndex: 'total_fee',
     width: 150,
   }, {
     title: '外币金额',
@@ -151,24 +198,7 @@ export default class ExpenseDetail extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-
   render() {
-    const mockData = [{
-      order_rel_no: '5',
-      fee: '报关费',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    }, {
-      order_rel_no: '4',
-      fee: '报检费',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    }, {
-      order_rel_no: '2',
-      fee: '入库费',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    }];
     return (
       <div>
         <PageHeader>
@@ -185,12 +215,12 @@ export default class ExpenseDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey={this.props.params.prType}>
+            <Tabs defaultActiveKey={this.props.params.prType}  onChange={this.handleTabChange}>
               <TabPane tab="应收明细" key="receivable" >
                 <DataPane
                   fullscreen={this.state.fullscreen}
                   columns={this.recColumns}
-                  dataSource={mockData}
+                  dataSource={this.state.datas}
                   rowKey="id"
                   loading={this.state.loading}
                 >
@@ -201,7 +231,7 @@ export default class ExpenseDetail extends Component {
                 <DataPane
                   fullscreen={this.state.fullscreen}
                   columns={this.payColumns}
-                  dataSource={mockData}
+                  dataSource={this.state.datas}
                   rowKey="id"
                   loading={this.state.loading}
                 >

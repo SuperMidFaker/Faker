@@ -54,6 +54,7 @@ export default class InboundStatsCard extends Component {
           total={statsCard.asnPendings}
           style={{ width: '20%' }}
           type="warning"
+          link="/cwm/receiving/asn"
           grid
         />
         <ChartCard

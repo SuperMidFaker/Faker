@@ -5,7 +5,7 @@ import moment from 'moment';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import { Badge, Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
-  Tag, Dropdown, Menu, notification } from 'antd';
+  Tag, Dropdown, Menu, notification, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -100,43 +100,45 @@ export default class OutboundDetail extends Component {
     this.setState({ fullscreen });
   }
 
-  handlePackistExport = () => {
+  handleExportPickingListXLS = () => {
     const { defaultWhse, outboundHead, params } = this.props;
     this.setState({ expLoad: true });
     this.props.loadPrintPickDetails(params.outboundNo).then((result) => {
       if (!result.error) {
         const pickDetails = result.data;
-        let csvData = pickDetails.map((dv, index) => {
+        const csvData = pickDetails.map((dv, index) => {
           const out = {};
           out['项'] = index + 1;
           out['货号'] = dv.product_no;
-          out['产品名称'] = dv.name;
-          out['批次号'] = dv.external_lot_no;
-          out['客户属性'] = dv.attrib_1_string;
-          out['库位'] = dv.location;
+          out['产品名称'] = dv.name || '';
+          out['批次号'] = dv.external_lot_no || '';
+          out['客户属性'] = dv.attrib_1_string || '';
+          out['库位'] = dv.location || '';
           out['待拣数'] = Number(dv.alloc_qty);
-          out['余量数'] = Number(dv.stock_qty - dv.alloc_qty + dv.shipped_qty);
+          out['余量数'] = Number((dv.stock_qty - dv.alloc_qty) + dv.shipped_qty);
           out['实拣数'] = Number(dv.picked_qty === 0 ? '' : dv.picked_qty);
           return out;
         });
-        var _headers = ['项', '货号', '产品名称', '批次号', '客户属性', '库位', '待拣数', '余量数', '实拣数'];
-        var headers = _headers.map((v, i) => Object.assign({}, {v: v, position: String.fromCharCode(65+i) + 5 }))
-          .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
-        var data = csvData.map((v, i) => _headers.map((k, j) => Object.assign({}, { v: v[k], position: String.fromCharCode(65+j) + (i+6) })))
+        const _headers = ['项', '货号', '产品名称', '批次号', '客户属性', '库位', '待拣数', '余量数', '实拣数'];
+        const headers = _headers.map((v, i) =>
+          Object.assign({}, { v, position: String.fromCharCode(65 + i) + 5 }))
+          .reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
+        const data = csvData.map((v, i) => _headers.map((k, j) =>
+          Object.assign({}, { v: v[k], position: String.fromCharCode(65 + j) + (i + 6) })))
           .reduce((prev, next) => prev.concat(next))
-          .reduce((prev, next) => Object.assign({}, prev, {[next.position]: {v: next.v}}), {});
-        var ref = 'A1' + ':' + `I${csvData.length + 8}`;
-        var ws = Object.assign({}, headers, data, { '!ref': ref });
+          .reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
+        const ref = 'A1' + ':' + `I${csvData.length + 8}`;
+        const ws = Object.assign({}, headers, data, { '!ref': ref });
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
         const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-        ws["A1"] = { v: "拣货单" };
-        ws["A2"] = { v: `出库单号:  ${params.outboundNo || ''}` };
-        ws["D2"] = { v: `客户单号:  ${outboundHead.cust_order_no || ''}` };
-        ws["G2"] = { v: `订单数量:  ${outboundHead.total_alloc_qty || ''}` };
-        ws["A3"] = { v: `货物属性:  ${outboundHead.bonded ? '保税' : '非保税'}` };
-        ws["D3"] = { v: `客户:  ${outboundHead.owner_name || ''}` };
-        ws["G3"] = { v: `仓库:  ${defaultWhse.name || ''}` };
-        ws["A4"] = { v: '备注: ' };
+        ws.A1 = { v: '拣货单' };
+        ws.A2 = { v: `出库单号:  ${params.outboundNo || ''}` };
+        ws.D2 = { v: `客户单号:  ${outboundHead.cust_order_no || ''}` };
+        ws.G2 = { v: `订单数量:  ${outboundHead.total_alloc_qty || ''}` };
+        ws.A3 = { v: `货物属性:  ${outboundHead.bonded ? '保税' : '非保税'}` };
+        ws.D3 = { v: `客户:  ${outboundHead.owner_name || ''}` };
+        ws.G3 = { v: `仓库:  ${defaultWhse.name || ''}` };
+        ws.A4 = { v: '备注: ' };
         ws[`A${csvData.length + 6}`] = { v: '合计' };
         ws[`G${csvData.length + 6}`] = { v: `${outboundHead.total_alloc_qty}` };
         ws[`I${csvData.length + 7}`] = { v: `${moment(new Date()).format('YYYY/MM/DD')}` };
@@ -144,19 +146,19 @@ export default class OutboundDetail extends Component {
         ws[`C${csvData.length + 8}`] = { v: '收货:' };
         ws[`E${csvData.length + 8}`] = { v: '上架:' };
         ws[`G${csvData.length + 8}`] = { v: '归档:' };
-        var merge = { s: {r:0, c:0}, e: {r:0, c:10} };
-        if(!ws['!merges']) { ws['!merges'] = []; }
+        const merge = { s: { r: 0, c: 0 }, e: { r: 0, c: 10 } };
+        if (!ws['!merges']) { ws['!merges'] = []; }
         ws['!merges'].push(merge);
         ws['!rows'] = [
-          {hpx: 25}, // "pixels"
+          { hpx: 25 }, // "pixels"
         ];
         /* change cell format of range G6:I~ to number */
         const irow = csvData.length + 5;
-        var range = { s: {r:5, c:6}, e: {r:irow, c:8} };
-        for(var R = range.s.r; R <= range.e.r; ++R) {
-          for(var C = range.s.c; C <= range.e.c; ++C) {
-            var cell = ws[XLSX.utils.encode_cell({r:R,c:C})];
-            if(cell) cell.t = 'n';
+        const range = { s: { r: 5, c: 6 }, e: { r: irow, c: 8 } };
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+          for (let C = range.s.c; C <= range.e.c; ++C) {
+            const cell = ws[XLSX.utils.encode_cell({ r: R, c: C })];
+            if (cell) cell.t = 'n';
           }
         }
         wb.Sheets.Sheet1 = ws;
@@ -299,7 +301,7 @@ export default class OutboundDetail extends Component {
             </Dropdown>}
             {this.state.tabKey === 'pickingDetails' &&
               <Tooltip title="导出拣货单Excel" placement="bottom">
-                <Button onClick={this.handlePackistExport} loading={this.state.expLoad}>
+                <Button onClick={this.handleExportPickingListXLS} loading={this.state.expLoad}>
                   <Logixon type="export" />
                 </Button>
               </Tooltip>

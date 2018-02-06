@@ -212,7 +212,8 @@ export default class StatsCard extends Component {
           total={total}
           style={{ width: '20%' }}
           grid
-          onChartClick={() => this.handleLinkClick('total')}
+          link="/clearance/delegation?from=dashboard"
+          onClick={() => this.handleLinkClick('total')}
         />
         <ChartCard
           title={this.msg('processing')}
@@ -221,6 +222,8 @@ export default class StatsCard extends Component {
           style={{ width: '20%' }}
           type="warning"
           grid
+          link="/clearance/delegation?from=dashboard"
+          onClick={() => this.handleLinkClick('processing')}
         />
         <ChartCard
           title={this.msg('declared')}
@@ -229,6 +232,8 @@ export default class StatsCard extends Component {
           style={{ width: '20%' }}
           type="processing"
           grid
+          link="/clearance/delegation?from=dashboard"
+          onClick={() => this.handleLinkClick('declared')}
         />
         <ChartCard
           title={this.msg('inspected')}
@@ -237,6 +242,8 @@ export default class StatsCard extends Component {
           style={{ width: '20%' }}
           type="error"
           grid
+          link="/clearance/cusdecl?status=inspect"
+          onClick={() => this.handleLinkClick('inspected')}
         />
         <ChartCard
           title={this.msg('released')}
@@ -245,6 +252,8 @@ export default class StatsCard extends Component {
           style={{ width: '20%' }}
           type="success"
           grid
+          link="/clearance/delegation?from=dashboard"
+          onClick={() => this.handleLinkClick('released')}
         />
         {
           /*

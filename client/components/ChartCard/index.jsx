@@ -1,11 +1,12 @@
 import React from 'react';
 import { Card, Spin } from 'antd';
 import classNames from 'classnames';
+import { Link } from 'react-router';
 import './index.less';
 
 
 const ChartCard = ({
-  loading = false, grid = false, contentHeight, title, avatar, action, type, onChartClick,
+  loading = false, grid = false, contentHeight, title, avatar, action, type, link, onClick,
   total, footer, children, ...rest
 }) => {
   const content = (
@@ -25,7 +26,7 @@ const ChartCard = ({
           </div>
           {
             // eslint-disable-next-line
-            (total !== undefined) && (<div onClick={onChartClick} className={`total ${type}`} dangerouslySetInnerHTML={{ __html: total }} />)
+            (total !== undefined) && (<div className={`total ${type}`} dangerouslySetInnerHTML={{ __html: total }} />)
           }
         </div>
       </div>
@@ -50,16 +51,14 @@ const ChartCard = ({
 
   return grid ? (
     <Card.Grid {...rest} className="chartCardGrid">
-      {<Spin spinning={loading}>{content}</Spin>}
-    </Card.Grid>) :
-    (
+      <Spin spinning={loading}><Link to={link} onClick={onClick}>{content}</Link></Spin>
+    </Card.Grid>) : (
       <Card
         bodyStyle={{ padding: '20px 24px 8px 24px' }}
         {...rest}
       >
-        {<Spin spinning={loading}>{content}</Spin>}
-      </Card>
-    );
+        <Spin spinning={loading}>{content}</Spin>
+      </Card>);
 };
 
 export default ChartCard;

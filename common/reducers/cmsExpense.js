@@ -16,6 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
   // 'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
   'LOAD_ADVPARTIES', 'LOAD_ADVPARTIES_SUCCEED', 'LOAD_ADVPARTIES_FAIL',
+  'LOAD_EXPS_DETAILS', 'LOAD_EXPS_DETAILS_SUCCEED', 'LOAD_EXPS_DETAILS_FAIL',
   /*
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
   'HIDE_PREVIEWER', */
@@ -52,7 +53,8 @@ const initialState = {
   },
   listFilter: {
     status: 'all',
-    viewStatus: 'both',
+    mode: 'receivable',
+    tabkey: 'byDelegation',
     acptDate: { en: false },
     cleanDate: { en: false },
   },
@@ -109,6 +111,7 @@ const initialState = {
     calculateAll: false,
   },
   advImpTempVisible: false,
+  expDetails: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -214,6 +217,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
       */
+    case actionTypes.LOAD_EXPS_DETAILS_SUCCEED:
+      return { ...state, expDetails: action.result.data };
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
     case actionTypes.COMPUTE_DELGADVFEES_SUCCEED:
@@ -354,6 +359,22 @@ export function loadCurrencies() {
       ],
       endpoint: 'v1/cms/expense/currencies',
       method: 'get',
+    },
+  };
+}
+
+export function loadExpsDetails(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EXPS_DETAILS,
+        actionTypes.LOAD_EXPS_DETAILS_SUCCEED,
+        actionTypes.LOAD_EXPS_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/expenseDetails/load',
+      method: 'get',
+      params,
+      origin: 'mongo',
     },
   };
 }
