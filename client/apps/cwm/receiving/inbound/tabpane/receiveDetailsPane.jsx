@@ -131,7 +131,10 @@ export default class ReceiveDetailsPane extends React.Component {
     this.props.updateInbProductVol(inbPrdId, vol);
   }
   handleSuBarcodeScanReceive = () => {
-    this.props.viewSuBarcodeScanModal({ visible: true });
+    this.props.viewSuBarcodeScanModal({
+      visible: true,
+      inboundNo: this.props.inboundNo,
+    });
   }
   columns = [{
     title: '行号',

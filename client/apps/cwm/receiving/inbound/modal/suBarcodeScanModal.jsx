@@ -17,6 +17,7 @@ const FormItem = Form.Item;
     username: state.account.username,
     visible: state.cwmReceive.suBarScanModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,
+    inboundNo: state.cwmReceive.suBarScanModal.inboundNo,
     inboundProducts: state.cwmReceive.inboundProducts,
     saveLoading: state.cwmReceive.submitting,
   }),
@@ -60,18 +61,31 @@ export default class SuBarcodeScanModal extends Component {
         });
         inboundProductSeqMap.set(inbPrd.product_no, productSeqMap);
       });
-      this.setState({
-        inboundProductSeqMap,
-      });
+      const dataSource = [];
       if (window.localStorage) {
         const subarDataSource = window.localStorage.getItem('subarcode-data');
         if (subarDataSource) {
-          const dataSource = JSON.parse(subarDataSource);
-          if (dataSource && dataSource.length > 0) {
-            this.setState({ dataSource }); // todo set received_qty inbooundseqmap
+          const suDataSource = JSON.parse(subarDataSource);
+          if (suDataSource && suDataSource.length > 0) {
+            suDataSource.forEach((sds) => {
+              if (inboundProductSeqMap.has(sds.product_no)) {
+                const productSeqMap = inboundProductSeqMap.get(sds.product_no);
+                const productSeqQty = productSeqMap.get(sds.asn_seq_no);
+                if (productSeqQty) {
+                  productSeqQty.received_qty += sds.qty;
+                  productSeqMap.set(sds.asn_seq_no, productSeqQty);
+                  inboundProductSeqMap.set(sds.product_no, productSeqMap);
+                  dataSource.push(sds);
+                }
+              }
+            });
           }
         }
       }
+      this.setState({
+        inboundProductSeqMap,
+        dataSource,
+      });
       if (this.suInputRef) {
         setTimeout(() => {
           this.suInputRef.focus();
@@ -95,24 +109,24 @@ export default class SuBarcodeScanModal extends Component {
       },
     });
     if (window.localStorage) {
-      window.localStorage.setItem('subarcode-data', null);
+      window.localStorage.removeItem('subarcode-data');
     }
   }
   handleDeleteDetail = (index) => {
     const dataSource = [...this.state.dataSource];
     const data = dataSource[index];
     const inboundProductSeqMap = new Map(this.state.inboundProductSeqMap);
-    const productSeqMap = inboundProductSeqMap.get(dataSource.product_no);
-    const seqQty = productSeqMap.get(dataSource.asn_seq_no);
+    const productSeqMap = inboundProductSeqMap.get(data.product_no);
+    const seqQty = productSeqMap.get(data.asn_seq_no);
     seqQty.received_qty -= data.qty;
     dataSource.splice(index, 1);
-    inboundProductSeqMap.set(dataSource.product_no, productSeqMap);
+    inboundProductSeqMap.set(data.product_no, productSeqMap);
     this.setState({ dataSource, inboundProductSeqMap });
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
     const {
-      loginId, inboundHead, username,
+      loginId, inboundHead, username, inboundNo,
     } = this.props;
     const seqDataSource = new Map();
     dataSource.forEach((ds) => {
@@ -132,7 +146,7 @@ export default class SuBarcodeScanModal extends Component {
         serial_no: data.serial_no,
         attrib_1_string: data.attrib_1_string,
         expiry_date: data.expiry_date,
-      })), inboundHead.inbound_no, seqNo, inboundHead.asn_no, loginId, new Date()));
+      })), inboundNo, seqNo, inboundHead.asn_no, loginId, new Date()));
     });
     Promise.all(recvProductPromises).then((result) => {
       if (!result.error) {
@@ -157,8 +171,10 @@ export default class SuBarcodeScanModal extends Component {
       const seqNo = seqNoKeys[i];
       const seqQty = productSeqMap.get(seqNo);
       if (seqQty.received_qty < seqQty.expect_qty) {
+        const id = `${suScan.serial_no}${seqNo}`;
         if (seqQty.received_qty + remainQty <= seqQty.expect_qty) {
           dataSource.push({
+            id,
             product_no: suScan.product_no,
             serial_no: suScan.serial_no,
             expiry_date: suScan.expiry_date,
@@ -173,6 +189,7 @@ export default class SuBarcodeScanModal extends Component {
         } else {
           const recvQty = seqQty.expect_qty - seqQty.received_qty;
           dataSource.push({
+            id,
             product_no: suScan.product_no,
             serial_no: suScan.serial_no,
             expiry_date: suScan.expiry_date,
@@ -257,7 +274,6 @@ export default class SuBarcodeScanModal extends Component {
         });
         return;
       }
-      /*
       if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
         this.setState({
           scanRecv: {
@@ -272,7 +288,6 @@ export default class SuBarcodeScanModal extends Component {
         });
         return;
       }
-      */
       if (suScan.qty) {
         this.handleScanReceive();
       } else {
