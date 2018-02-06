@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Spin } from 'antd';
 import classNames from 'classnames';
-import NavLink from '../NavLink';
+import { Link } from 'react-router';
 import './index.less';
 
 
@@ -51,7 +51,7 @@ const ChartCard = ({
 
   return grid ? (
     <Card.Grid {...rest} className="chartCardGrid">
-      <Spin spinning={loading}><NavLink to={link} onClick={onClick}>{content}</NavLink></Spin>
+      <Spin spinning={loading}><Link to={link} onClick={onClick}>{content}</Link></Spin>
     </Card.Grid>) : (
       <Card
         bodyStyle={{ padding: '20px 24px 8px 24px' }}
