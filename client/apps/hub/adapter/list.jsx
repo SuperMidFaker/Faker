@@ -37,7 +37,7 @@ const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
   }
 )
 
-export default class ApiAuthList extends React.Component {
+export default class LineFileAdapterList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -128,7 +128,7 @@ export default class ApiAuthList extends React.Component {
                       formData={{ data: JSON.stringify({ code: item.code }) }}
                       onUploaded={this.handleUploaded}
                     >
-                      <RowAction size="default" icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
+                      <RowAction size="default" icon="cloud-upload-o" tooltip="上传至少有两行示例内容的Excel文件" />
                     </ExcelUploader>);
                   }
                   const bizModel = impModels.find(model => model.key === item.biz_model);
@@ -148,7 +148,7 @@ export default class ApiAuthList extends React.Component {
             </Card>
           </Content>
           <AdaptorModal />
-          <AdaptorDetailModal />
+          <AdaptorDetailModal reload={this.handleReload} />
         </Layout>
       </Layout>
     );

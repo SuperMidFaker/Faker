@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Collapse, Input, Modal, Form, Layout, Select, Table } from 'antd';
+import { message, Icon, Breadcrumb, Button, Card, Collapse, Input, Modal, Form, Layout, Select, Table, Tooltip } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
-import { hideAdaptorDetailModal, updateColumnField, updateStartLine, delAdaptor } from 'common/reducers/hubDataAdapter';
+import EditableCell from 'client/components/EditableCell';
+import { hideAdaptorDetailModal, updateColumnField, updateColumnDefault, updateAdaptor, delAdaptor } from 'common/reducers/hubDataAdapter';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -13,7 +14,6 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { Panel } = Collapse;
 const { confirm } = Modal;
-const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
 
 @injectIntl
 @connect(state => ({
@@ -21,7 +21,7 @@ const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
   visible: state.hubDataAdapter.adaptorDetailModal.visible,
   customers: state.partner.partners,
 }), {
-  hideAdaptorDetailModal, updateColumnField, updateStartLine, delAdaptor,
+  hideAdaptorDetailModal, updateColumnField, updateColumnDefault, updateAdaptor, delAdaptor,
 })
 @Form.create()
 export default class AdaptorDetailModal extends Component {
@@ -31,9 +31,12 @@ export default class AdaptorDetailModal extends Component {
   state = {
     lineColumns: [],
     lineData: [],
-    fieldColumns: [],
-    fieldData: [],
+    columnDefaults: [],
     rightSidercollapsed: true,
+    mappingModal: {
+      visible: false,
+      mappings: [],
+    },
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -50,45 +53,39 @@ export default class AdaptorDetailModal extends Component {
         fixed: 'left',
       }];
       const lineData = [{
+        id: 'example1',
         keyall: '行1',
       }, {
+        id: 'example2',
         keyall: '行2',
       }, {
+        id: 'field',
         keyall: '对应字段',
       }, {
+        id: 'converter',
         keyall: '转换规则',
       }, {
+        id: 'mapping',
         keyall: '映射关系',
       }];
-      const fieldColumns = [{
-        dataIndex: 'keyall',
-        width: 100,
-        fixed: 'left',
-      }];
-      const fieldData = [{
-        keyall: '字段名称',
-      }, {
-        keyall: '默认值',
-      }];
       let scrollX = 100;
-      const fieldsScrollX = 100;
+      let modelColumns = [];
+      const modelKeys = Object.keys(LINE_FILE_ADAPTOR_MODELS);
+      for (let i = 0; i < modelKeys.length; i++) {
+        const model = modelKeys[i];
+        if (LINE_FILE_ADAPTOR_MODELS[model].key === nextProps.adaptor.biz_model) {
+          modelColumns = LINE_FILE_ADAPTOR_MODELS[model].columns;
+          break;
+        }
+      }
       nextProps.adaptor.columns.forEach((col, index) => {
         const dataIndex = `key${index}`;
         lineColumns.push({
           title: `列${index}`,
           dataIndex,
           width: 200,
-          render: (value, row) => {
-            if (row.editable) {
-              let columns = [];
-              const modelKeys = Object.keys(LINE_FILE_ADAPTOR_MODELS);
-              for (let i = 0; i < modelKeys.length; i++) {
-                const model = modelKeys[i];
-                if (LINE_FILE_ADAPTOR_MODELS[model].key === nextProps.adaptor.biz_model) {
-                  ({ columns } = LINE_FILE_ADAPTOR_MODELS[model]);
-                  break;
-                }
-              }
+          render: (value, row, rowIndex) => {
+            if (rowIndex === 2) {
               return (
                 <Select
                   showSearch
@@ -96,20 +93,24 @@ export default class AdaptorDetailModal extends Component {
                   style={{ width: 160 }}
                   placeholder="选择字段"
                   optionFilterProp="children"
-                  onChange={field => this.handleFieldMap(col.id, field)}
+                  onChange={field => this.handleFieldMap(col.id, field, dataIndex)}
+                  value={value}
                 >
-                  {columns.map(acol => <Option value={acol.field}>{acol.label}</Option>)}
+                  {modelColumns.map(acol =>
+                    <Option value={acol.field} key={acol.field}>{acol.label}</Option>)}
                 </Select>
-                /*
+              );
+            } else if (rowIndex === 3) {
+              return (
                 <EditableCell
                   value={value}
                   cellTrigger
-                  type="select"
-                  options={columns.map(acol => ({ key: acol.field, text: acol.label }))}
-                  onSave={field => this.handleFieldMap(col.id, field)}
+                  placeholder={`C${index}`}
+                  onSave={field => this.handleConvertMap(col.id, field)}
                 />
-              */
               );
+            } else if (rowIndex === 4) {
+              return <Tooltip title="编辑映射"><Button icon="edit" onClick={() => this.handleMappingEditBegin(col.id, value)} /></Tooltip>;
             }
             return value;
           },
@@ -117,11 +118,12 @@ export default class AdaptorDetailModal extends Component {
         lineData[0][dataIndex] = col.desc1;
         lineData[1][dataIndex] = col.desc2;
         lineData[2][dataIndex] = col.field;
-        lineData[2].editable = true;
+        lineData[3][dataIndex] = col.converter;
+        lineData[4][dataIndex] = col.mapping;
         scrollX += 200;
       });
       this.setState({
-        lineColumns, lineData, scrollX, fieldColumns, fieldData, fieldsScrollX,
+        lineColumns, lineData, scrollX, columnDefaults: nextProps.adaptor.columnDefaults,
       });
     }
   }
@@ -134,8 +136,69 @@ export default class AdaptorDetailModal extends Component {
   handleCancel = () => {
     this.props.hideAdaptorDetailModal();
   }
-  handleFieldMap = (columnId, field) => {
-    this.props.updateColumnField(columnId, field);
+  handleFieldMap = (columnId, field, dataIndex) => {
+    this.props.updateColumnField(columnId, { field });
+    const lineData = [...this.state.lineData];
+    lineData[2][dataIndex] = field;
+    this.setState({ lineData });
+  }
+  handleConvertMap = (columnId, converter) => {
+    this.props.updateColumnField(columnId, { converter });
+  }
+  handleMappingEditBegin = (columnId, mappingJson) => {
+    this.setState({
+      mappingModal: {
+        visible: true,
+        columnId,
+        mappings: mappingJson ? JSON.parse(mappingJson) : [],
+      },
+    });
+  }
+  handleMappingEditCancel = () => {
+    this.setState({
+      mappingModal: {
+        visible: false,
+        mappings: [],
+      },
+    });
+  }
+  handleAdaptorUpdate = () => {
+    const adaptorValues = this.props.form.getFieldsValue();
+    const customer = this.props.customers.filter(cust =>
+      cust.id === adaptorValues.owner_partner_id)[0];
+    if (customer) {
+      adaptorValues.owner_tenant_id = customer.partner_tenant_id;
+    } else {
+      adaptorValues.owner_tenant_id = null;
+      adaptorValues.owner_partner_id = null;
+    }
+    this.props.updateAdaptor(this.props.adaptor.code, adaptorValues).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        message.success('保存成功');
+      }
+    });
+  }
+  handleColDefaultChange = (colDefault, field, value) => {
+    this.props.updateColumnDefault(colDefault && colDefault.id, {
+      field, default: value,
+    }, this.props.adaptor.code).then((result) => {
+      if (!result.error) {
+        const colDefaults = [...this.state.columnDefaults];
+        if (colDefault) {
+          const existColDef = colDefaults.filter(cldef => cldef.id === colDefault.id)[0];
+          existColDef.default = value;
+        } else {
+          colDefaults.push({
+            id: result.data.id,
+            field,
+            default: value,
+          });
+        }
+        this.setState({ columnDefaults: colDefaults });
+      }
+    });
   }
   handleDeleteAdapter = () => {
     const self = this;
@@ -149,7 +212,9 @@ export default class AdaptorDetailModal extends Component {
         self.props.delAdaptor(self.props.adaptor.code).then((result) => {
           if (!result.error) {
             self.handleCancel();
-            // TODO reload adapter list
+            if (this.props.reload) {
+              this.props.reload();
+            }
           }
         });
       },
@@ -162,8 +227,64 @@ export default class AdaptorDetailModal extends Component {
       form: { getFieldDecorator }, visible, adaptor, customers,
     } = this.props;
     const {
-      lineColumns, lineData, scrollX, fieldColumns, fieldData, fieldsScrollX,
+      lineColumns, lineData, scrollX, columnDefaults, mappingModal,
     } = this.state;
+    let adaptorModel;
+    const modelKeys = Object.keys(LINE_FILE_ADAPTOR_MODELS);
+    for (let i = 0; i < modelKeys.length; i++) {
+      const model = modelKeys[i];
+      if (LINE_FILE_ADAPTOR_MODELS[model].key === adaptor.biz_model) {
+        adaptorModel = LINE_FILE_ADAPTOR_MODELS[model];
+        break;
+      }
+    }
+    if (!adaptorModel) {
+      return null;
+    }
+    const fieldColumns = [{
+      dataIndex: 'keyall',
+      width: 100,
+      fixed: 'left',
+    }];
+    const fieldData = [{
+      key: 'field',
+      keyall: '字段名称',
+    }, {
+      key: 'default',
+      keyall: '默认值',
+    }];
+    let fieldsScrollX = 100;
+    const mappedFieldsMap = new Map();
+    if (lineData[2]) {
+      Object.values(lineData[2]).forEach((ld) => {
+        if (ld) {
+          mappedFieldsMap.set(ld, true);
+        }
+      });
+    }
+    const defaultColumns = adaptorModel.columns.filter(col => !mappedFieldsMap.has(col.field));
+    defaultColumns.forEach((defc, index) => {
+      const colDefault = columnDefaults.filter(cold => cold.field === defc.field)[0];
+      const dataIndex = `key${index}`;
+      fieldColumns.push({
+        dataIndex,
+        width: 200,
+        render: (value, row, rowIndex) => {
+          if (rowIndex === 1) {
+            return (<EditableCell
+              value={value}
+              cellTrigger
+              onSave={defaultValue =>
+                  this.handleColDefaultChange(colDefault, defc.field, defaultValue)}
+            />);
+          }
+          return value;
+        },
+      });
+      fieldData[0][dataIndex] = defc.label;
+      fieldData[1][dataIndex] = colDefault && colDefault.default;
+      fieldsScrollX += 200;
+    });
     return (
       <Modal
         maskClosable={false}
@@ -185,7 +306,7 @@ export default class AdaptorDetailModal extends Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button type="primary" icon="save" onClick={this.handleSubFlowAuth}>{this.msg('save')}</Button>
+              <Button type="primary" icon="save" onClick={this.handleAdaptorUpdate}>{this.msg('save')}</Button>
               <ButtonToggle
                 iconOn="menu-unfold"
                 iconOff="menu-fold"
@@ -201,14 +322,11 @@ export default class AdaptorDetailModal extends Component {
                   columns={lineColumns}
                   scroll={{ x: scrollX }}
                   pagination={false}
+                  rowKey="id"
                 />
               </Card>
               <Card
-                title={<span>适配数据对象
-                  <Select value={adaptor.biz_model} style={{ width: 160 }} disabled>
-                    {impModels.map(mod =>
-                      <Option key={mod.key} value={mod.key}>{mod.name}</Option>)}
-                  </Select></span>}
+                title={<span>适配数据对象: {adaptorModel.name}</span>}
                 bodyStyle={{ padding: 0 }}
               >
                 <Table
@@ -219,6 +337,30 @@ export default class AdaptorDetailModal extends Component {
                 />
               </Card>
             </Content>
+            <Modal
+              title="映射关系编辑"
+              maskClosable={false}
+              onCancel={this.handleMappingEditCancel}
+              onOk={this.handleMappingEditOk}
+              visible={mappingModal.visible}
+            >
+              <Form>
+                <FormItem>
+                  <Input placeholder="输入名称" style={{ width: '40%', marginRight: 8 }} />
+                  <Input placeholder="转换名称" style={{ width: '40%', marginRight: 8 }} />
+                  <Icon
+                    className="dynamic-delete-button"
+                    type="minus-circle-o"
+                    onClick={() => this.remove()}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+                    <Icon type="plus" /> 添加映射
+                  </Button>
+                </FormItem>
+              </Form>
+            </Modal>
             <Sider
               trigger={null}
               defaultCollapsed
@@ -241,7 +383,7 @@ export default class AdaptorDetailModal extends Component {
                       <FormItem label={this.msg('relatedPartner')} >
                         {getFieldDecorator('owner_partner_id', {
                           initialValue: adaptor.owner_partner_id,
-                        })(<Select>
+                        })(<Select allowClear>
                           {customers.map(cus =>
                             <Option value={cus.id} key={cus.id}>{cus.name}</Option>)}
                         </Select>)}
