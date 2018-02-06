@@ -10,37 +10,57 @@ const messages = defineMessages({
     id: 'cwm.dashboard.stats',
     defaultMessage: '数据统计',
   },
+  inboundStats: {
+    id: 'cwm.dashboard.stats.inbound',
+    defaultMessage: '入库统计',
+  },
   totalInbound: {
     id: 'cwm.dashboard.stats.inbound.total.asn',
-    defaultMessage: '入库单总数',
+    defaultMessage: '入库单量',
+  },
+  asnPending: {
+    id: 'cwm.dashboard.stats.asn.pending',
+    defaultMessage: '待释放ASN',
   },
   toReceive: {
     id: 'cwm.dashboard.stats.inbound.to.receive',
-    defaultMessage: '待入库数',
+    defaultMessage: '待收货',
   },
-  received: {
-    id: 'cwm.dashboard.stats.inbound.received',
-    defaultMessage: '入库完成数',
+  toPutAway: {
+    id: 'cwm.dashboard.stats.inbound.to.putAway',
+    defaultMessage: '待上架',
+  },
+  inboundCompleted: {
+    id: 'cwm.dashboard.stats.inbound.complete',
+    defaultMessage: '入库完成',
+  },
+  outboundStats: {
+    id: 'cwm.dashboard.stats.outbound',
+    defaultMessage: '入库统计',
   },
   totalOutbound: {
     id: 'cwm.dashboard.stats.outbound.total.so',
-    defaultMessage: '出库单总数',
+    defaultMessage: '出库单量',
+  },
+  soPending: {
+    id: 'cwm.dashboard.stats.so.pending',
+    defaultMessage: '待释放SO',
   },
   toAllocate: {
     id: 'cwm.dashboard.stats.outbound.to.allocate',
-    defaultMessage: '待分配数',
+    defaultMessage: '待分配',
   },
   toPick: {
     id: 'cwm.dashboard.stats.outbound.to.pick',
-    defaultMessage: '待拣货数',
+    defaultMessage: '待拣货',
   },
   toShip: {
     id: 'cwm.dashboard.stats.outbound.to.ship',
-    defaultMessage: '待发货数',
+    defaultMessage: '待发货',
   },
-  shippingCompleted: {
+  outboundCompleted: {
     id: 'cwm.dashboard.stats.outbound.completed',
-    defaultMessage: '出库完成数',
+    defaultMessage: '出库完成',
   },
   tasksTotal: {
     id: 'cwm.dashboard.stats.tasks.total',
@@ -69,6 +89,30 @@ const messages = defineMessages({
   replenishments: {
     id: 'cwm.dashboard.stats.tasks.replenishments',
     defaultMessage: '补货',
+  },
+  bondedStats: {
+    id: 'cwm.dashboard.stats.bonded',
+    defaultMessage: '保税监管统计',
+  },
+  entryToSync: {
+    id: 'cwm.dashboard.stats.bonded.entryToSync',
+    defaultMessage: '进区备案待同步',
+  },
+  normalToClear: {
+    id: 'cwm.dashboard.stats.bonded.normalToClear',
+    defaultMessage: '普通出库待清关',
+  },
+  normalToExit: {
+    id: 'cwm.dashboard.stats.bonded.normalToExit',
+    defaultMessage: '普通出库待出区',
+  },
+  portionToSync: {
+    id: 'cwm.dashboard.stats.bonded.portionToSync',
+    defaultMessage: '分拨出库待同步',
+  },
+  portionToClear: {
+    id: 'cwm.dashboard.stats.bonded.portionToClear',
+    defaultMessage: '分拨出库待清关',
   },
 });
 
