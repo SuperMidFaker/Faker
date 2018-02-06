@@ -50,7 +50,8 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     filter: JSON.stringify({
       status: 'all',
-      viewStatus: 'both',
+      mode: 'payable',
+      tabkey: 'byDelegation',
       acptDate: { en: false, firstDay, endDay },
       cleanDate: { en: false, firstDay, endDay },
     }),
@@ -324,13 +325,6 @@ export default class ExpenseList extends Component {
       }
     });
   }
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleExpListLoad(1, filter);
-  }
   handleSearch = (searchVal) => {
     const filters = mergeFilters(this.props.listFilter, searchVal);
     this.handleExpListLoad(1, filters);
@@ -385,8 +379,18 @@ export default class ExpenseList extends Component {
     };
     this.handleExpListLoad(1, filter);
   }
-  handleViewChange = (value) => {
-    const filter = { ...this.props.listFilter, viewStatus: value };
+  handleStatusChange = (value) => {
+    if (value === this.props.listFilter.status) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, status: value };
+    this.handleExpListLoad(1, filter);
+  }
+  handleTabChange = (key) => {
+    if (key === this.props.listFilter.tabkey) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, tabkey: key };
     this.handleExpListLoad(1, filter);
   }
   handleAdvModelEpt = () => {
@@ -425,6 +429,7 @@ export default class ExpenseList extends Component {
         style={{ width: 160 }}
         onChange={this.handleStatusChange}
       >
+        <Option value="all">全部</Option>
         <Option value="pending">未提交结算</Option>
         <Option value="submitted">已提交结算</Option>
       </Select>

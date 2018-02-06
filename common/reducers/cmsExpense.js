@@ -52,7 +52,8 @@ const initialState = {
   },
   listFilter: {
     status: 'all',
-    viewStatus: 'both',
+    mode: 'receivable',
+    tabkey: 'byDelegation',
     acptDate: { en: false },
     cleanDate: { en: false },
   },
