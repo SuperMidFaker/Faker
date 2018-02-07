@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Layout, Select, Tag } from 'antd';
-import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList,
-  editFlow, toggleFlowDesigner, toggleFlowStatus } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -12,6 +11,8 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import { loadPartners } from 'common/reducers/partner';
+import { loadCmsParams } from 'common/reducers/cmsManifest';
+import { loadInvoices } from 'common/reducers/sofInvoice';
 import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from './message.i18n';
 
@@ -20,11 +21,13 @@ const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
-  promises.push(dispatch(loadFlowList({
-    filter: JSON.stringify({ ...state.scofFlow.listFilter, name: '', status: '' }),
-    pageSize: state.scofFlow.flowList.pageSize,
-    current: state.scofFlow.flowList.current,
+  promises.push(dispatch(loadCmsParams()));
+  promises.push(dispatch(loadInvoices({
+    filter: JSON.stringify({ ...state.sofInvoice.filter, searchText: '' }),
+    pageSize: state.sofInvoice.invoiceList.pageSize,
+    current: state.sofInvoice.invoiceList.current,
   })));
+
   promises.push(dispatch(loadPartners({
     tenantId: state.account.tenantId,
     role: PARTNER_ROLES.CUS,
@@ -36,23 +39,14 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    reload: state.scofFlow.reloadFlowList,
-    loading: state.scofFlow.flowListLoading,
-    listFilter: state.scofFlow.listFilter,
-    flowList: state.scofFlow.flowList,
-    designerVisible: state.scofFlow.flowDesigner.visible,
+    filter: state.sofInvoice.filter,
+    invoiceList: state.sofInvoice.invoiceList,
     partners: state.partner.partners,
-    users: state.account.userMembers,
+    currencies: state.cmsManifest.params.currencies,
+    loading: state.sofInvoice.loading,
   }),
   {
-    openCreateFlowModal,
-    loadFlowList,
-    loadFlowTrackingFields,
-    openFlow,
-    reloadFlowList,
-    editFlow,
-    toggleFlowDesigner,
-    toggleFlowStatus,
+    loadInvoices,
   }
 )
 @connectNav({
@@ -66,23 +60,20 @@ export default class InvoiceList extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentWillMount() {
-    this.props.loadFlowTrackingFields();
-  }
   msg = formatMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadFlowList(params),
+    fetcher: params => this.props.loadInvoices(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
+      current: Number(resolve(result.totalCount, result.current, result.pageSize)),
       showSizeChanger: true,
       showQuickJumper: false,
-      pageSize: result.pageSize,
+      pageSize: Number(result.pageSize),
       showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination, tblfilters) => {
-      const newfilters = { ...this.props.listFilter, ...tblfilters[0] };
+      const newfilters = { ...this.props.filter, ...tblfilters[0] };
       const params = {
         pageSize: pagination.pageSize,
         current: pagination.current,
@@ -90,7 +81,7 @@ export default class InvoiceList extends React.Component {
       };
       return params;
     },
-    remotes: this.props.flowList,
+    remotes: this.props.invoiceList,
   })
   columns = [{
     title: '发票号',
@@ -98,9 +89,10 @@ export default class InvoiceList extends React.Component {
   }, {
     title: '发票日期',
     dataIndex: 'invoice_date',
+    render: o => o && moment(o).format('YYYY-MM-DD'),
   }, {
     title: '状态',
-    dataIndex: 'status',
+    dataIndex: 'invoice_status',
     render: (o) => {
       switch (o) {
         case 0:
@@ -116,18 +108,24 @@ export default class InvoiceList extends React.Component {
   }, {
     title: '购买方',
     dataIndex: 'buyer',
+    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
+    this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
     title: '销售方',
     dataIndex: 'seller',
+    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
+    this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
     title: '采购订单号',
-    dataIndex: 'order_no',
+    dataIndex: 'po_no',
   }, {
     title: '总金额',
     dataIndex: 'total_amount',
   }, {
     title: '币制',
     dataIndex: 'currency',
+    render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
+    this.props.currencies.find(curr => curr.curr_code === o).curr_name,
   }, {
     title: '总数量',
     dataIndex: 'total_qty',
@@ -146,12 +144,22 @@ export default class InvoiceList extends React.Component {
   handleDetail = (row) => {
     this.context.router.push(`/scof/invoices/edit/${row.invoice_no}`);
   }
-
+  handleSearch = (value) => {
+    const filter = { ...this.props.filter, searchText: value };
+    this.handleReload(filter);
+  }
+  handleReload = (filter) => {
+    this.props.loadInvoices({
+      filter: JSON.stringify(filter),
+      pageSize: this.props.invoiceList.pageSize,
+      current: this.props.invoiceList.current,
+    });
+  }
   render() {
     const {
-      flowList, loading, partners, listFilter,
+      invoiceList, partners, loading,
     } = this.props;
-    this.dataSource.remotes = flowList;
+    this.dataSource.remotes = invoiceList;
     const toolbarActions = (<span>
       <SearchBox
         placeholder={this.msg('searchPlaceholder')}
@@ -161,8 +169,6 @@ export default class InvoiceList extends React.Component {
         showSearch
         optionFilterProp="children"
         style={{ width: 200 }}
-        onChange={this.handleClientSelectChange}
-        value={listFilter.ownerPartnerId}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >

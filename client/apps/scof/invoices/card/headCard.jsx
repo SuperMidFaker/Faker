@@ -4,11 +4,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, DatePicker, Card, Col, Row } from 'antd';
-import { WRAP_TYPE } from 'common/constants';
 import moment from 'moment';
 import FormPane from 'client/components/FormPane';
-import { loadSkuParams } from 'common/reducers/cwmSku';
-import { getSuppliers } from 'common/reducers/cwmReceive';
+import { loadPartners } from 'common/reducers/partner';
+import { PARTNER_ROLES, WRAP_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -19,42 +18,35 @@ const InputGroup = Input.Group;
 @injectIntl
 @connect(
   state => ({
-    owners: state.cwmContext.whseAttrs.owners,
-    defaultWhse: state.cwmContext.defaultWhse,
-    suppliers: state.cwmReceive.suppliers,
+    tenantId: state.account.tenantId,
+    partners: state.partner.partners,
+    trxModes: state.cmsManifest.params.trxModes,
+    invoiceHead: state.sofInvoice.invoiceHead,
   }),
-  { loadSkuParams, getSuppliers }
+  { loadPartners }
 )
 export default class HeadCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
-    handleOwnerChange: PropTypes.func,
+    handlePackageSelect: PropTypes.func.isRequired,
+    packageType: PropTypes.string,
+    editable: PropTypes.bool.isRequired,
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.invoiceHead !== this.props.invoiceHead) {
-      const { invoiceHead } = nextProps;
-      if (invoiceHead) {
-        this.props.loadSkuParams(invoiceHead.owner_partner_id);
-        this.props.getSuppliers(this.props.defaultWhse.code, invoiceHead.owner_partner_id);
-      }
-    }
+  componentWillMount() {
+    this.props.loadPartners({
+      tenantId: this.props.tenantId,
+      role: PARTNER_ROLES.CUS,
+    });
+  }
+  handleSelect = (value) => {
+    this.props.handlePackageSelect(value);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  handleBondedChange = (ev) => {
-    if (ev.target.value === 0) {
-      this.props.form.setFieldsValue({ reg_type: null });
-    }
-  }
-  handleSelect = (value) => {
-    this.props.handleOwnerChange(true, value);
-    this.props.loadSkuParams(value);
-    this.props.getSuppliers(this.props.defaultWhse.code, value);
-  }
   render() {
     const {
-      form: { getFieldDecorator }, owners, invoiceHead,
+      form: { getFieldDecorator }, invoiceHead, partners, trxModes, packageType, editable,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -74,9 +66,9 @@ export default class HeadCard extends Component {
             <Col span={6}>
               <FormItem label="发票号" {...formItemLayout}>
                 {getFieldDecorator('invoice_no', {
-                rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+                rules: [{ type: 'string', required: true, message: 'Please select time!' }],
                 initialValue: invoiceHead && invoiceHead.invoice_no,
-              })(<Input />)}
+              })(<Input disabled={!editable} />)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -90,29 +82,32 @@ export default class HeadCard extends Component {
             <Col span={6}>
               <FormItem label="购买方" {...formItemLayout}>
                 {getFieldDecorator('buyer', {
-                initialValue: invoiceHead && invoiceHead.buyer,
-              })(<Select placeholder="选择货主" onSelect={this.handleSelect}>
-                {
-                    owners.map(owner =>
-                      <Option value={owner.id} key={owner.id}>{owner.name}</Option>)
-                  }
+                initialValue: invoiceHead.buyer &&
+                partners.find(partner => partner.id === Number(invoiceHead.buyer)) &&
+                partners.find(partner => partner.id === Number(invoiceHead.buyer)).name,
+              })(<Select
+                allowClear
+                showSearch
+                showArrow
+                optionFilterProp="children"
+              >
+                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="销售方" {...formItemLayout}>
                 {getFieldDecorator('seller', {
-                initialValue: invoiceHead && invoiceHead.seller,
+                initialValue: invoiceHead.seller &&
+                partners.find(partner => partner.id === Number(invoiceHead.seller)) &&
+                partners.find(partner => partner.id === Number(invoiceHead.seller)).name,
               })(<Select
                 allowClear
                 showSearch
                 showArrow
-                optionFilterProp="searchText"
-                notFoundContent={<a onClick={() =>
-                  this.props.toggleSupplierModal(true)}
-                >+ 添加供货商</a>}
+                optionFilterProp="children"
               >
-                {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}
+                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>)}
               </FormItem>
             </Col>
@@ -126,13 +121,17 @@ export default class HeadCard extends Component {
             <Col span={6}>
               <FormItem label="件数/包装" {...formItemLayout}>
                 <InputGroup compact>
-                  <Input
-                    type="number"
-                    style={{ width: '50%' }}
-                  />
+                  {getFieldDecorator('package_number', {
+                  initialValue: invoiceHead && invoiceHead.package_number,
+                })(<Input
+                  type="number"
+                  style={{ width: '50%' }}
+                />)}
                   <Select
                     style={{ width: '50%' }}
                     placeholder="选择包装方式"
+                    onSelect={this.handleSelect}
+                    value={packageType}
                   >
                     {WRAP_TYPE.map(wt => (<Option value={wt.value} key={wt.value}>
                       {wt.text}</Option>))}
@@ -142,15 +141,24 @@ export default class HeadCard extends Component {
             </Col>
             <Col span={6}>
               <FormItem label="总毛重" {...formItemLayout}>
-                <Input
-                  type="number"
-                  addonAfter="KG"
-                />
+                {getFieldDecorator('gross_wt', {
+                initialValue: invoiceHead && invoiceHead.gross_wt,
+              })(<Input
+                type="number"
+                addonAfter="KG"
+              />)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="贸易方式" {...formItemLayout}>
-                <Select />
+              <FormItem label="成交方式" {...formItemLayout}>
+                {getFieldDecorator('trade_mode', {
+                initialValue: invoiceHead && invoiceHead.trade_mode,
+              })(<Select>
+                {trxModes.map(mode =>
+                  (<Option key={mode.trx_mode} vaule={mode.trx_mode}>
+                    {mode.trx_mode} | {mode.trx_spec}
+                  </Option>))}
+              </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
