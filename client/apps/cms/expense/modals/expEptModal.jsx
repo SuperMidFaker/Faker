@@ -35,7 +35,7 @@ export default class BillingForm extends React.Component {
     endDate: endDay,
     chooseModel: '',
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  msg = formatMsg(this.props.intl)
   handleOk = () => {
     const fieldsValue = this.props.form.getFieldsValue();
     const { beginDate, endDate } = this.state;

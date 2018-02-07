@@ -350,18 +350,21 @@ export default class ExpenseList extends Component {
     this.setState({ advUploadVisible: !this.state.advUploadVisible });
   }
   handleAcptDateChange = (dates) => {
-    const acptDate = {
-      en: true,
-      firstDay: dates[0].toDate(),
-      endDay: dates[1].toDate(),
-    };
-    const { sortedInfo } = this.state;
-    const filter = {
-      ...this.props.listFilter,
-      sortField: sortedInfo.field,
-      sortOrder: sortedInfo.order,
-      acptDate,
-    };
+    let filter = this.props.listFilter;
+    if (dates.length > 0) {
+      const acptDate = {
+        en: true,
+        firstDay: dates[0].toDate(),
+        endDay: dates[1].toDate(),
+      };
+      const { sortedInfo } = this.state;
+      filter = {
+        ...this.props.listFilter,
+        sortField: sortedInfo.field,
+        sortOrder: sortedInfo.order,
+        acptDate,
+      };
+    }
     this.handleExpListLoad(1, filter);
   }
   handleCleanDateChange = (dates) => {
@@ -435,7 +438,7 @@ export default class ExpenseList extends Component {
       </Select>
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-        onChange={this.handleDateRangeChange}
+        onChange={this.handleAcptDateChange}
         style={{ width: 256 }}
       />
     </span>);
