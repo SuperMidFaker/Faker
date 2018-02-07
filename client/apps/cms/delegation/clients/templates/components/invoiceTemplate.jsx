@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
+import { Button, Breadcrumb, Layout, Collapse, Checkbox, Form, Input, Tooltip } from 'antd';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import InvoiceContent from './invoiceContent';
 import { formatMsg } from './message.i18n';
+import PageHeader from 'client/components/PageHeader';
 
 const { Sider } = Layout;
 const { Panel } = Collapse;
@@ -113,16 +114,16 @@ export default class InvoiceTemplate extends React.Component {
               </Panel>
               <Panel header="Footer" key="footer">
                 <MSCheckbox
-                  field="insurance_en"
-                  text={this.msg('insurance')}
+                  field="packages_en"
+                  text={this.msg('packages')}
                   onChange={this.handleCheckChange}
-                  checked={invData.insurance_en}
+                  checked={invData.packages_en}
                 />
                 <MSCheckbox
-                  field="dest_port_en"
-                  text={this.msg('destPort')}
+                  field="gross_wt_en"
+                  text={this.msg('grossWt')}
                   onChange={this.handleCheckChange}
-                  checked={invData.dest_port_en}
+                  checked={invData.gross_wt_en}
                 />
                 <MSCheckbox
                   field="remark_en"
@@ -134,7 +135,17 @@ export default class InvoiceTemplate extends React.Component {
             </Collapse>
           </div>
         </Sider>
-        <InvoiceContent />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Actions>
+              <Tooltip title={'预览'} placement="bottom">
+                <Button icon="printer" onClick={this.handlePreview}>
+                </Button>
+              </Tooltip>
+            </PageHeader.Actions>
+          </PageHeader>
+          <InvoiceContent />
+        </Layout>
       </Layout>
     );
   }
