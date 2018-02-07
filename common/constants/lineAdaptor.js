@@ -308,10 +308,10 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '征免方式',
     }, {
       field: 'country',
-      label: '目的国',
+      label: '原产国',
     }, {
       field: 'dest_country',
-      label: '原产国',
+      label: '目的国',
     }, {
       field: 'version_no',
       label: '版本号',

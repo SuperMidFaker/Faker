@@ -7,7 +7,6 @@ export default class ExcelUploader extends React.Component {
   static propTypes = {
     endpoint: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
-    formData: PropTypes.object,
     onUploaded: PropTypes.func,
   }
   state = {
@@ -22,8 +21,13 @@ export default class ExcelUploader extends React.Component {
     } = this.props;
     const { importInfo } = this.state;
     return (
-      <Upload accept=".xls,.xlsx" action={endpoint} showUploadList={false}
-        data={formData} onChange={this.handleImport} withCredentials
+      <Upload
+        accept=".xls,.xlsx,.csv"
+        action={endpoint}
+        showUploadList={false}
+        data={formData}
+        onChange={this.handleImport}
+        withCredentials
       >
         {children}
         <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />

@@ -110,7 +110,7 @@ export default class AdaptorDetailModal extends Component {
                 />
               );
             } else if (rowIndex === 4) {
-              return <Tooltip title="编辑映射"><Button icon="edit" onClick={() => this.handleMappingEditBegin(col.id, value)} /></Tooltip>;
+              return <Tooltip title="编辑映射"><Button icon="edit" onClick={() => this.handleMappingEditBegin(col.id, value, dataIndex)} /></Tooltip>;
             }
             return value;
           },
@@ -145,12 +145,13 @@ export default class AdaptorDetailModal extends Component {
   handleConvertMap = (columnId, converter) => {
     this.props.updateColumnField(columnId, { converter });
   }
-  handleMappingEditBegin = (columnId, mappingJson) => {
+  handleMappingEditBegin = (columnId, mappingJson, dataIndex) => {
     this.setState({
       mappingModal: {
         visible: true,
         columnId,
-        mappings: mappingJson ? JSON.parse(mappingJson) : [],
+        dataIndex,
+        mappings: mappingJson ? JSON.parse(mappingJson) : [{ key: null, value: null }],
       },
     });
   }
@@ -162,6 +163,47 @@ export default class AdaptorDetailModal extends Component {
       },
     });
   }
+  handleMappingInputKey = (value, index) => {
+    const mappingModal = { ...this.state.mappingModal };
+    mappingModal.mappings[index].key = value;
+    this.setState({ mappingModal });
+  }
+  handleMappingInputVal = (value, index) => {
+    const mappingModal = { ...this.state.mappingModal };
+    mappingModal.mappings[index].value = value;
+    this.setState({ mappingModal });
+  }
+  handleMappingInputRem = (index) => {
+    const mappingModal = { ...this.state.mappingModal };
+    if (mappingModal.mappings.length === 1) {
+      mappingModal.mappings[0].key = null;
+      mappingModal.mappings[0].value = null;
+    } else {
+      mappingModal.mappings.splice(index, 1);
+    }
+    this.setState({ mappingModal });
+  }
+  handleMappingInputAdd = () => {
+    const mappingModal = { ...this.state.mappingModal };
+    mappingModal.mappings.push({
+      key: null,
+      value: null,
+    });
+    this.setState({ mappingModal });
+  }
+  handleMappingEditOk = () => {
+    const mappings = this.state.mappingModal.mappings.filter(mapp => mapp.key && mapp.value);
+    let mappingJson = null;
+    if (mappings.length > 0) {
+      mappingJson = JSON.stringify(mappings);
+    }
+    const { columnId, dataIndex } = this.state.mappingModal;
+    this.props.updateColumnField(columnId, { mapping: mappingJson });
+    const lineData = [...this.state.lineData];
+    lineData[4][dataIndex] = mappingJson;
+    this.setState({ lineData });
+    this.handleMappingEditCancel();
+  }
   handleAdaptorUpdate = () => {
     const adaptorValues = this.props.form.getFieldsValue();
     const customer = this.props.customers.filter(cust =>
@@ -171,6 +213,11 @@ export default class AdaptorDetailModal extends Component {
     } else {
       adaptorValues.owner_tenant_id = null;
       adaptorValues.owner_partner_id = null;
+    }
+    if (adaptorValues.delimiter && this.props.adaptor.csv_option) {
+      const option = JSON.parse(this.props.adaptor.csv_option);
+      option.delimiter = adaptorValues.delimiter;
+      adaptorValues.csv_option = JSON.stringify(option);
     }
     this.props.updateAdaptor(this.props.adaptor.code, adaptorValues).then((result) => {
       if (result.error) {
@@ -285,6 +332,13 @@ export default class AdaptorDetailModal extends Component {
       fieldData[1][dataIndex] = colDefault && colDefault.default;
       fieldsScrollX += 200;
     });
+    let isCsv = false;
+    let csvOption;
+    if (adaptor.file_format &&
+      String(adaptor.file_format).toLowerCase() === 'csv' && adaptor.csv_option) {
+      isCsv = true;
+      csvOption = JSON.parse(adaptor.csv_option);
+    }
     return (
       <Modal
         maskClosable={false}
@@ -345,17 +399,19 @@ export default class AdaptorDetailModal extends Component {
               visible={mappingModal.visible}
             >
               <Form>
+                { mappingModal.mappings.map((mapp, index) => (
+                  <FormItem>
+                    <Input placeholder="输入名称" style={{ width: '40%', marginRight: 8 }} value={mapp.key} onChange={ev => this.handleMappingInputKey(ev.target.value, index)} />
+                    <Input placeholder="转换名称" style={{ width: '40%', marginRight: 8 }} value={mapp.value} onChange={ev => this.handleMappingInputVal(ev.target.value, index)} />
+                    {((mapp.key && mapp.value) || mappingModal.mappings.length > 1) && <Icon
+                      type="minus-circle-o"
+                      onClick={() => this.handleMappingInputRem(index)}
+                    />}
+                  </FormItem>
+                ))
+                }
                 <FormItem>
-                  <Input placeholder="输入名称" style={{ width: '40%', marginRight: 8 }} />
-                  <Input placeholder="转换名称" style={{ width: '40%', marginRight: 8 }} />
-                  <Icon
-                    className="dynamic-delete-button"
-                    type="minus-circle-o"
-                    onClick={() => this.remove()}
-                  />
-                </FormItem>
-                <FormItem>
-                  <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
+                  <Button type="dashed" onClick={this.handleMappingInputAdd} style={{ width: '80%' }}>
                     <Icon type="plus" /> 添加映射
                   </Button>
                 </FormItem>
@@ -380,6 +436,15 @@ export default class AdaptorDetailModal extends Component {
                           rules: [{ required: true, message: this.msg('nameRequired') }],
                         })(<Input />)}
                       </FormItem>
+                      <FormItem label={this.msg('adapterFileFormat')}>
+                        <Input value={adaptor.file_format} readOnly />
+                      </FormItem>
+                      {isCsv && csvOption &&
+                      <FormItem label={this.msg('csvDelimiter')}>
+                        {getFieldDecorator('delimiter', {
+                          initialValue: csvOption.delimiter,
+                        })(<Input />)}
+                      </FormItem>}
                       <FormItem label={this.msg('relatedPartner')} >
                         {getFieldDecorator('owner_partner_id', {
                           initialValue: adaptor.owner_partner_id,
