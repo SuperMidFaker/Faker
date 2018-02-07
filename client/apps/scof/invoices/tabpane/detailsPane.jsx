@@ -6,55 +6,55 @@ import { Button, Tag } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
-import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
+import { toggleDetailModal, setTemporary } from 'common/reducers/sofInvoice';
+import { loadCmsParams } from 'common/reducers/cmsManifest';
 import ExcelUploader from 'client/components/ExcelUploader';
+import DetailModal from '../modal/detailModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
-    temporaryDetails: state.cwmReceive.temporaryDetails,
-    loginId: state.account.loginId,
-    units: state.cwmSku.params.units,
-    currencies: state.cwmSku.params.currencies,
+    temporaryDetails: state.sofInvoice.temporaryDetails,
+    currencies: state.cmsManifest.params.currencies,
+    countries: state.cmsManifest.params.tradeCountries,
   }),
   {
-    showDetailModal, addTemporary, deleteTemporary, clearTemporary,
+    toggleDetailModal, loadCmsParams, setTemporary,
   }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ getFieldValue: PropTypes.func }).isRequired,
-    editable: PropTypes.bool,
   }
   state = {
     selectedRowKeys: [],
   };
-  componentWillReceiveProps(nextProps) {
-    const { asnBody } = nextProps;
-    if (asnBody && (nextProps.asnBody !== this.props.asnBody)) {
-      this.props.addTemporary(asnBody);
-    }
+  componentWillMount() {
+    this.props.loadCmsParams();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleDelete = (index) => {
-    this.props.deleteTemporary(index);
+    const temporaryDetails = [...this.props.temporaryDetails];
+    temporaryDetails.splice(index, 1);
+    this.props.setTemporary(temporaryDetails);
   }
-  asnDetailsUploaded = (data) => {
-    this.props.addTemporary(data);
+  handleEdit = (row) => {
+    this.props.toggleDetailModal(true, row);
+  }
+  asnDetailsUploaded = () => {
   }
   handleBatchDelete = () => {
     const { selectedRowKeys } = this.state;
     const { temporaryDetails } = this.props;
     const newTemporary = temporaryDetails.filter((temporary, index) =>
       selectedRowKeys.findIndex(key => key === index) === -1);
-    this.props.clearTemporary();
-    this.props.addTemporary(newTemporary);
     this.setState({
       selectedRowKeys: [],
     });
+    this.props.setTemporary(newTemporary);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -62,11 +62,13 @@ export default class DetailsPane extends Component {
   handleTemplateDownload = () => {
     window.open(`${XLSX_CDN}/ASN明细导入模板_20170901.xlsx`);
   }
+  toggleDetailModal = () => {
+    this.props.toggleDetailModal(true);
+  }
   render() {
     const {
-      editable, temporaryDetails, form, units, currencies,
+      temporaryDetails, currencies, countries,
     } = this.props;
-    const ownerPartnerId = form.getFieldValue('owner_partner_id');
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -90,7 +92,7 @@ export default class DetailsPane extends Component {
       width: 200,
     }, {
       title: '商品描述',
-      dataIndex: 'product_desc',
+      dataIndex: 'description',
       width: 200,
     }, {
       title: '数量',
@@ -99,15 +101,8 @@ export default class DetailsPane extends Component {
       align: 'right',
     }, {
       title: '计量单位',
-      dataIndex: 'uom',
+      dataIndex: 'unit',
       align: 'center',
-      render: (un) => {
-        const unitParam = units.find(unit => unit.code === un);
-        if (unitParam) {
-          return unitParam.name;
-        }
-        return un;
-      },
     }, {
       title: '单价',
       dataIndex: 'unit_price',
@@ -123,16 +118,18 @@ export default class DetailsPane extends Component {
       align: 'center',
       width: 100,
       render: (o) => {
-        const currency = currencies.find(curr => Number(curr.code) === Number(o));
+        const currency = currencies.find(curr => Number(curr.curr_code) === Number(o));
         if (currency) {
-          return <span>{currency.name}</span>;
+          return <span>{currency.curr_name}</span>;
         }
         return o;
       },
     }, {
       title: '原产国',
-      dataIndex: 'origin_country',
+      dataIndex: 'orig_country',
       width: 100,
+      render: o => countries.find(coun => coun.cntry_co === o) &&
+      countries.find(coun => coun.cntry_co === o).cntry_name_cn,
     }, {
       title: '净重',
       dataIndex: 'net_wt',
@@ -173,18 +170,16 @@ export default class DetailsPane extends Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          {editable && <Button type="primary" icon="plus-circle-o" onClick={this.showDetailModal}>{this.gmsg('add')}</Button>}
+          {<Button type="primary" icon="plus-circle-o" onClick={this.toggleDetailModal}>{this.gmsg('add')}</Button>}
           <ExcelUploader
             endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
             formData={{
               data: JSON.stringify({
-                loginId: this.props.loginId,
-                ownerPartnerId,
               }),
             }}
             onUploaded={this.asnDetailsUploaded}
           >
-            {editable && <Button icon="upload">{this.gmsg('import')}</Button>}
+            {<Button icon="upload">{this.gmsg('import')}</Button>}
           </ExcelUploader>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
@@ -193,6 +188,7 @@ export default class DetailsPane extends Component {
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
+        <DetailModal headForm={this.props.form} />
       </DataPane>
     );
   }

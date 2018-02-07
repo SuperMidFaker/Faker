@@ -49,7 +49,7 @@ export default class InboundStatsCard extends Component {
           grid
         />
         <ChartCard
-          title={this.msg('pending')}
+          title={this.msg('asnPending')}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.asnPendings}
           style={{ width: '20%' }}
