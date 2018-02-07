@@ -7,10 +7,11 @@ const actionTypes = createActionTypes('@@welogix/saas/lineadaptor/', [
   'LOAD_ADAPTOR', 'LOAD_ADAPTOR_SUCCEED', 'LOAD_ADAPTOR_FAIL',
   'ADD_ADAPTOR', 'ADD_ADAPTOR_SUCCEED', 'ADD_ADAPTOR_FAIL',
   'UPDATE_COLFD', 'UPDATE_COLFD_SUCCEED', 'UPDATE_COLFD_FAIL',
+  'UPDATE_COLDEF', 'UPDATE_COLDEF_SUCCEED', 'UPDATE_COLDEF_FAIL',
   'DEL_ADAPTOR', 'DEL_ADAPTOR_SUCCEED', 'DEL_ADAPTOR_FAIL',
   'SHOW_ADAPTOR_MODAL', 'HIDE_ADAPTOR_MODAL',
   'SHOW_ADAPTOR_DETAIL_MODAL', 'HIDE_ADAPTOR_DETAIL_MODAL',
-  'UPDATE_START_LINE', 'UPDATE_START_LINE_SUCCEED', 'UPDATE_START_LINE_FAIL',
+  'UPDATE_ADAPTOR', 'UPDATE_ADAPTOR_SUCCEED', 'UPDATE_ADAPTOR_FAIL',
 ]);
 
 const initState = {
@@ -110,17 +111,17 @@ export function loadAdaptor(code) {
   };
 }
 
-export function updateStartLine(code, value) {
+export function updateAdaptor(code, adaptorValues) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_START_LINE,
-        actionTypes.UPDATE_START_LINE_SUCCEED,
-        actionTypes.UPDATE_START_LINE_FAIL,
+        actionTypes.UPDATE_ADAPTOR,
+        actionTypes.UPDATE_ADAPTOR_SUCCEED,
+        actionTypes.UPDATE_ADAPTOR_FAIL,
       ],
-      endpoint: 'v1/saas/start/line/update',
+      endpoint: 'v1/saas/linefile/adaptor/update',
       method: 'post',
-      data: { code, value },
+      data: { code, values: adaptorValues },
     },
   };
 }
@@ -151,6 +152,21 @@ export function updateColumnField(columnId, field) {
       endpoint: 'v1/saas/linefile/update/col/field',
       method: 'post',
       data: { columnId, field },
+    },
+  };
+}
+
+export function updateColumnDefault(defaultId, defaultFields, adaptorCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_COLDEF,
+        actionTypes.UPDATE_COLDEF_SUCCEED,
+        actionTypes.UPDATE_COLDEF_FAIL,
+      ],
+      endpoint: 'v1/saas/linefile/update/col/default',
+      method: 'post',
+      data: { defaultId, defaultFields, adaptorCode },
     },
   };
 }

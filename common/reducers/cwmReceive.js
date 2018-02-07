@@ -98,6 +98,7 @@ const initialState = {
   },
   suBarScanModal: {
     visible: false,
+    inboundNo: '',
   },
   puttingAwayModal: {
     visible: false,
