@@ -17,6 +17,8 @@ const actionTypes = createActionTypes('@@welogix/cms/invoice/', [
   'LOAD_TEMPLATE_FILE', 'LOAD_TEMPLATE_FILE_SUCCEED', 'LOAD_TEMPLATE_FILE_FAIL',
   'SAVE_TEMPLATE_FILE', 'SAVE_TEMPLATE_FILE_SUCCEED', 'SAVE_TEMPLATE_FILE_FAIL',
   'DELETE_TEMPLATE_FILE', 'DELETE_TEMPLATE_FILE_SUCCEED', 'DELETE_TEMPLATE_FILE_FAIL',
+  'UPLOAD_IMG', 'UPLOAD_IMG_SUCCEED', 'UPLOAD_IMG_FAIL',
+  'REMOVE_IMG', 'REMOVE_IMG_SUCCEED', 'REMOVE_IMG_FAIL',
 ]);
 
 const initialState = {
@@ -160,6 +162,36 @@ export function saveTempChange(change, id) {
       method: 'post',
       data: { change, id },
       payload: { change },
+    },
+  };
+}
+
+export function uploadImages(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPLOAD_IMG,
+        actionTypes.UPLOAD_IMG_SUCCEED,
+        actionTypes.UPLOAD_IMG_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/template/img/upload',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function removeImg(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_IMG,
+        actionTypes.REMOVE_IMG_SUCCEED,
+        actionTypes.REMOVE_IMG_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/template/img/remove',
+      method: 'post',
+      data,
     },
   };
 }

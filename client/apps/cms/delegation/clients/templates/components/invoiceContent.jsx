@@ -1,15 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Form, Layout, Row, Col, Table, Input, Upload, Icon } from 'antd';
+import { Card, Form, Layout, Row, Col, Table, Input, Upload, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from './message.i18n';
 import InfoItem from 'client/components/InfoItem';
-import { saveTempChange } from 'common/reducers/cmsInvoice';
-
+import { saveTempChange, uploadImages, removeImg } from 'common/reducers/cmsInvoice';
 
 const { Content } = Layout;
 const { TextArea } = Input;
+
+function MSTextArea(props) {
+  const {
+    value, field, autosize, onChange,
+  } = props;
+  function handleChange(ev) {
+    onChange(ev.target.value, field);
+  }
+  return (
+    <div>
+      <TextArea onChange={handleChange} value={value} autosize={autosize}/>
+    </div>
+  );
+}
+
+MSTextArea.propTypes = {
+  autosize: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 
 @injectIntl
 @connect(
@@ -19,13 +38,9 @@ const { TextArea } = Input;
       key: tm.trx_mode,
       text: `${tm.trx_mode} | ${tm.trx_spec}`,
     })),
-    customs: state.cmsInvoice.params.customs.map(tm => ({
-      key: tm.customs_code,
-      text: `${tm.customs_code} | ${tm.customs_name}`,
-    })),
     invoice: state.cmsInvoice.invData,
   }),
-  { saveTempChange }
+  { saveTempChange, uploadImages, removeImg }
 )
 
 @Form.create()
@@ -44,15 +59,29 @@ export default class InvoiceContent extends React.Component {
       cop_g_no: '',
       g_name: '',
       en_g_name: '',
-      g_model: '',
       orig_country: '',
       qty: null,
-      amount: null,
       unit_price: '',
-      net_wt: null,
       amount: null,
+      wet_wt: null,
     }],
-    fileList: [],
+    logoImg: [],
+    sealImg: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.invoice !== this.props.invoice) {
+      if (nextProps.invoice.imgs.length > 0) {
+        const logo = nextProps.invoice.imgs.filter(img => img.img_type === 0)[0];
+        if (logo) {
+          this.setState({ logoImg: [{ uid: -1, url: logo.url }] });
+        }
+        const seal = nextProps.invoice.imgs.filter(img => img.img_type === 1)[0];
+        if (seal) {
+          this.setState({ sealImg: [{ uid: -1, url: seal.url }] });
+        }
+      }
+      
+    }
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -73,17 +102,16 @@ export default class InvoiceContent extends React.Component {
     dataIndex: 'g_name',
   }]
   handleFill = (val, field) => {
-    console.log('val', val);
     const change = {};
     change[field] = val;
     this.props.saveTempChange(change, this.props.invoice.id);
   }
-  handleCancel = () => this.setState({ previewVisible: false })
-
-  handleChange = ({ fileList }) => this.setState({ fileList })
-
+  handleUploaded = (data) => {
+    this.props.uploadImages(data);
+  }
   render() {
-    const { invoice, trxModes, customs } = this.props;
+    const { invoice, trxModes } = this.props;
+    const me = this;
     const columns = [...this.columns];
     const totCols = [...this.totCols];
     if (invoice.eng_name_en) {
@@ -117,16 +145,16 @@ export default class InvoiceContent extends React.Component {
       });
     }
     columns.push({
-      title: '净重',
-      dataIndex: 'net_wt',
-    }, {
       title: '金额',
       dataIndex: 'amount',
+    }, {
+      title: '净重',
+      dataIndex: 'wet_wt',
     });
     totCols.push({
-      dataIndex: 'net_wt',
-    }, {
       dataIndex: 'amount',
+    }, {
+      dataIndex: 'wet_wt',
     });
     const uploadButton = (
       <div>
@@ -134,6 +162,52 @@ export default class InvoiceContent extends React.Component {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
+    const uploadLogoProps = {
+      action: `${API_ROOTS.default}v1/upload/img/`,
+      listType: "picture-card",
+      fileList: this.state.logoImg,
+      withCredentials: true,
+      onChange(info) {
+        me.setState({ logoImg: info.fileList });
+        if (info.file.response && info.file.response.status === 200) {
+          me.handleUploaded({
+            template_id: invoice.id,
+            img_type: 0,
+            url: info.file.response.data,
+          });
+          message.success('上传成功');
+        }
+      },
+      onRemove() {
+        me.props.removeImg({
+          template_id: invoice.id,
+          img_type: 0,
+        });
+      },
+    };
+    const uploadSealProps = {
+      action: `${API_ROOTS.default}v1/upload/img/`,
+      listType: "picture-card",
+      fileList: this.state.sealImg,
+      withCredentials: true,
+      onChange(info) {
+        me.setState({ sealImg: info.fileList });
+        if (info.file.response && info.file.response.status === 200) {
+          me.handleUploaded({
+            template_id: invoice.id,
+            img_type: 1,
+            url: info.file.response.data,
+          });
+          message.success('上传成功');
+        }
+      },
+      onRemove() {
+        me.props.removeImg({
+          template_id: invoice.id,
+          img_type: 1,
+        });
+      },
+    };
     return (
       <Content className="page-content layout-fixed-width">
         <Card style={{ width: 650, minHeight: 800 }}>
@@ -141,22 +215,20 @@ export default class InvoiceContent extends React.Component {
             <Row>
               <Col sm={8}>
                 <Upload
-                  action={`${API_ROOTS.default}v1/upload/img/`}
-                  listType="picture-card"
-                  fileList={this.state.fileList}
-                  onChange={this.handleChange}
+                  {...uploadLogoProps}
                 >
-                  {this.state.fileList.length >= 1 ? null : uploadButton}
+                  {this.state.logoImg.length >= 1 ? null : uploadButton}
                 </Upload>
               </Col>
               <Col sm={16}>
                 <Row><h4>INVOICE</h4></Row>
                 <Row>
                   <Col sm={11}>
-                    <TextArea value={invoice.subtitle} autosize={{ minRows: 2, maxRows: 4 }} onChange={this.handleFill}/>
+                  <MSTextArea value={invoice.subtitle} field='subtitle' autosize={{ minRows: 2, maxRows: 4 }} onChange={this.handleFill}/>
                   </Col>
                   <Col sm={11} offset={1}>
-                    <TextArea value={invoice.subtitle} autosize={{ minRows: 2, maxRows: 4 }} onChange={this.handleFill}/>
+                    <InfoItem label="Invoice No" field={invoice.invoice_no} editable placeholder="输入发票编号" dataIndex="invoice_no" onEdit={this.handleFill} />
+                    <InfoItem label="Invoice Date" type="date" field={invoice.invoice_date} editable placeholder="输入发票日期" dataIndex="invoice_date" onEdit={this.handleFill} />
                   </Col>
                 </Row>
               </Col>
@@ -164,10 +236,12 @@ export default class InvoiceContent extends React.Component {
             <span />
             <Row gutter={16}>
               <Col sm={12}>
-                <InfoItem label="Consignee" type='textarea' field={invoice.seller} editable placeholder="输入Consignee" dataIndex="seller" onEdit={this.handleFill} />
+                <span>Consignee</span>
+                <MSTextArea value={invoice.consignee} field='consignee' autosize={{ minRows: 2, maxRows: 4 }} onChange={this.handleFill} />
               </Col>
               <Col sm={12}>
-                <InfoItem label="Buyer" type='textarea' field={invoice.buyer} editable placeholder="输入buyer" dataIndex="seller" onEdit={this.handleFill} />
+                <span>Buyer</span>
+                <MSTextArea value={invoice.buyer} field='buyer' autosize={{ minRows: 2, maxRows: 4 }} onChange={this.handleFill} />
               </Col>
             </Row>
             <span />
@@ -195,17 +269,17 @@ export default class InvoiceContent extends React.Component {
                   />
                 </Row>
                 <Row>
-                    <InfoItem label="Insurance" field={invoice.insurance} editable placeholder="输入保险" dataIndex="insurance" onEdit={this.handleFill} />
+                  <InfoItem label="Insurance" field={invoice.insurance} editable placeholder="输入保险" dataIndex="insurance" onEdit={this.handleFill} />
                 </Row>
               </Col>
               <Col sm={12}>
                 <span>Notify contacts</span>
-                <TextArea autosize={{ minRows: 6, maxRows: 10 }} />
+                <MSTextArea value={invoice.notify} field='notify' autosize={{ minRows: 6, maxRows: 10 }} onChange={this.handleFill} />
               </Col>
             </Row>
             <Row gutter={16}>
               {!!invoice.smarks_en && <span>Shipping Marks</span>}
-              {!!invoice.smarks_en && <TextArea value={invoice.subtitle} autosize={{ minRows: 2, maxRows: 6 }} onChange={this.handleFill}/>}
+              {!!invoice.smarks_en && <MSTextArea value={invoice.shipping_marks} field='shipping_marks' autosize={{ minRows: 2, maxRows: 6 }} onChange={this.handleFill} />}
             </Row>
             <Row>
               <span />
@@ -213,13 +287,21 @@ export default class InvoiceContent extends React.Component {
               {!!invoice.sub_total_en && <Table showHeader={false} pagination={false} columns={totCols} dataSource={this.state.sumval} />}
             </Row>
             <Row>
+              <Upload
+                {...uploadSealProps}
+              >
+                {this.state.sealImg.length >= 1 ? null : uploadButton}
+              </Upload>
+            </Row>
+            <Row>
               { !!invoice.packages_en && <span>Number Of Packages:</span>}
             </Row>
             <Row>
-              { !!invoice.gross_wt_en && <span>Gross Weight:          Kgs</span>}
+              { !!invoice.gross_wt_en && <span>Gross Weight: Kgs</span>}
             </Row>
             <Row>
-              {!!invoice.remark_en && <InfoItem label="备注 Remark" field={invoice.remark} editable placeholder="输入备注" dataIndex="remark" onEdit={this.handleFill} />}
+              {!!invoice.remark_en && <span>Remarks</span>}
+              {!!invoice.remark_en && <MSTextArea value={invoice.remark} field='remark' autosize={{ minRows: 1, maxRows: 6 }} onChange={this.handleFill} />}
             </Row>
           </div>
         </Card>
