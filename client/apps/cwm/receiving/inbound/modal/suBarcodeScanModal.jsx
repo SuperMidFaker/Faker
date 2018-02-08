@@ -258,15 +258,9 @@ export default class SuBarcodeScanModal extends Component {
       suScan.serial_no = barcode.slice(3, 13);
       suScan.product_no = barcode.slice(17, 30);
       suScan.attrib_1_string = barcode.slice(34, 44);
-      let splitDates = suScan.attrib_1_string.split('.');
-      suScan.attrib_1_string = `${splitDates[2]}.${splitDates[1]}.${splitDates[0]}`;
       suScan.expiry_date = barcode.slice(69, 79);
-      splitDates = suScan.expiry_date.split('.');
-      suScan.expiry_date = new Date(
-        Number(splitDates[0]),
-        Number(splitDates[1]) - 1, Number(splitDates[2])
-      );
-      if (!suScan.serial_no || !suScan.product_no) {
+      if (!suScan.serial_no || !suScan.product_no ||
+        !suScan.attrib_1_string || !suScan.expiry_date) {
         this.setState({
           scanRecv: {
             su_barcode: null,
@@ -279,6 +273,13 @@ export default class SuBarcodeScanModal extends Component {
         });
         return;
       }
+      let splitDates = suScan.attrib_1_string.split('.');
+      suScan.attrib_1_string = `${splitDates[2]}.${splitDates[1]}.${splitDates[0]}`;
+      splitDates = suScan.expiry_date.split('.');
+      suScan.expiry_date = new Date(
+        Number(splitDates[0]),
+        Number(splitDates[1]) - 1, Number(splitDates[2])
+      );
       if (!this.state.inboundProductSeqMap.has(suScan.product_no)) {
         this.setState({
           scanRecv: suScan,
@@ -411,9 +412,7 @@ export default class SuBarcodeScanModal extends Component {
             {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
             <FormItem label="商品条码" {...formItemLayout}>
               <Input
-                type="textarea"
-                row={2}
-                prefix={<Icon type="qrcode" />}
+                addonBefore={<Icon type="barcode" />}
                 value={scanRecv.su_barcode}
                 ref={this.handleSuInputRef}
                 onChange={this.handleScanSuChange}
@@ -434,6 +433,7 @@ export default class SuBarcodeScanModal extends Component {
             </FormItem>
             <FormItem label="收货数量" {...formItemLayout}>
               <Input
+                addonBefore={<Icon type="barcode" />}
                 ref={this.handleQtyInputRef}
                 value={scanRecv.qty}
                 onChange={this.handleScanQtyChange}

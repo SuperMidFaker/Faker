@@ -24,7 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
   'CLOSE_ASN', 'CLOSE_ASN_SUCCEED', 'CLOSE_ASN_FAIL',
   'SHOW_BATCH_RECEIVING_MODAL', 'HIDE_BATCH_RECEIVING_MODAL',
-  'VIEW_SUBARSCAN_MODAL',
+  'VIEW_SUBARSCAN_MODAL', 'VIEW_SUBARPUTAWAY_MODAL',
   'RECEIVE_PRODUCT', 'RECEIVE_PRODUCT_SUCCEED', 'RECEIVE_PRODUCT_FAIL',
   'RECEIVE_EXPRESS', 'RECEIVE_EXPRESS_SUCCEED', 'RECEIVE_EXPRESS_FAIL',
   'RECEIVE_BATCH', 'RECEIVE_BATCH_SUCCEED', 'RECEIVE_BATCH_FAIL',
@@ -97,6 +97,10 @@ const initialState = {
     visible: false,
   },
   suBarScanModal: {
+    visible: false,
+    inboundNo: '',
+  },
+  suBarPutawayModal: {
     visible: false,
     inboundNo: '',
   },
@@ -211,6 +215,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: false } };
     case actionTypes.VIEW_SUBARSCAN_MODAL:
       return { ...state, suBarScanModal: { ...state.suBarScanModal, ...action.data } };
+    case actionTypes.VIEW_SUBARPUTAWAY_MODAL:
+      return { ...state, suBarPutawayModal: { ...state.suBarPutawayModal, ...action.data } };
     case actionTypes.SHOW_PUTTING_AWAY_MODAL:
       return {
         ...state,
@@ -617,6 +623,13 @@ export function hideBatchReceivingModal() {
 export function viewSuBarcodeScanModal(info) {
   return {
     type: actionTypes.VIEW_SUBARSCAN_MODAL,
+    data: info,
+  };
+}
+
+export function viewSuBarPutawayModal(info) {
+  return {
+    type: actionTypes.VIEW_SUBARPUTAWAY_MODAL,
     data: info,
   };
 }
