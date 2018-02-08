@@ -34,6 +34,14 @@ const messages = defineMessages({
     id: 'hub.adapter.name',
     defaultMessage: '适配器名称',
   },
+  adapterFileFormat: {
+    id: 'hub.adapter.file.format',
+    defaultMessage: '文件类型',
+  },
+  csvDelimiter: {
+    id: 'hub.adapter.csv.delimiter',
+    defaultMessage: 'CSV分隔符',
+  },
   adapterBizModel: {
     id: 'hub.adapter.biz.model',
     defaultMessage: '适配数据对象',

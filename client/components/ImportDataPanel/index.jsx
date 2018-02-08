@@ -84,7 +84,7 @@ export default class ImportDataPanel extends React.Component {
         }
         <div style={{ height: 300, marginBottom: 24 }}>
           <Dragger
-            accept=".xls,.xlsx"
+            accept=".xls,.xlsx,.csv"
             action={endpoint}
             showUploadList={false}
             data={{ data: JSON.stringify(formData) }}
