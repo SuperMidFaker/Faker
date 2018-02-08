@@ -279,6 +279,10 @@ const messages = defineMessages({
     id: 'cms.modals.expense.operation',
     defaultMessage: '操作',
   },
+  expenseDetail: {
+    id: 'cms.modals.expense.detail',
+    defaultMessage: '费用明细',
+  },
 });
 
 export default messages;
