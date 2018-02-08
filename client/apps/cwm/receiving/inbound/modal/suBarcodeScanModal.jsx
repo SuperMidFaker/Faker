@@ -107,6 +107,7 @@ export default class SuBarcodeScanModal extends Component {
         attrib_1_string: null,
         qty: null,
       },
+      alertMsg: null,
     });
     if (window.localStorage) {
       window.localStorage.removeItem('subarcode-data');
@@ -146,6 +147,7 @@ export default class SuBarcodeScanModal extends Component {
         serial_no: data.serial_no,
         attrib_1_string: data.attrib_1_string,
         expiry_date: data.expiry_date,
+        avail: true,
       })), inboundNo, seqNo, inboundHead.asn_no, loginId, new Date()));
     });
     Promise.all(recvProductPromises).then((result) => {
@@ -265,6 +267,16 @@ export default class SuBarcodeScanModal extends Component {
         Number(splitDates[1]) - 1, Number(splitDates[2])
       );
       if (!suScan.serial_no || !suScan.product_no) {
+        this.setState({
+          scanRecv: {
+            su_barcode: null,
+            product_no: null,
+            serial_no: null,
+            expiry_date: null,
+            attrib_1_string: null,
+            qty: null,
+          },
+        });
         return;
       }
       if (!this.state.inboundProductSeqMap.has(suScan.product_no)) {
