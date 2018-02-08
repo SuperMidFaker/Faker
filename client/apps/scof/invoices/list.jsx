@@ -11,6 +11,7 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import { loadPartners } from 'common/reducers/partner';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { loadInvoices } from 'common/reducers/sofInvoice';
 import { PARTNER_ROLES } from 'common/constants';
@@ -23,7 +24,7 @@ function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadCmsParams()));
   promises.push(dispatch(loadInvoices({
-    filter: JSON.stringify({ ...state.sofInvoice.filter, searchText: '' }),
+    filter: JSON.stringify({ ...state.sofInvoice.filter, searchText: '', partner: 'all' }),
     pageSize: state.sofInvoice.invoiceList.pageSize,
     current: state.sofInvoice.invoiceList.current,
   })));
@@ -59,6 +60,9 @@ export default class InvoiceList extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  state = {
+    importPanelVisible: false,
   }
   msg = formatMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
@@ -155,6 +159,22 @@ export default class InvoiceList extends React.Component {
       current: this.props.invoiceList.current,
     });
   }
+  handleImport = () => {
+    this.setState({
+      importPanelVisible: true,
+    });
+  }
+  handleSelect = (value) => {
+    const filter = { ...this.props.filter, partner: value };
+    this.handleReload(filter);
+  }
+  invoicesUploaded = () => {
+    const { filter } = this.props;
+    this.handleReload(filter);
+    this.setState({
+      importPanelVisible: false,
+    });
+  }
   render() {
     const {
       invoiceList, partners, loading,
@@ -171,6 +191,7 @@ export default class InvoiceList extends React.Component {
         style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
+        onSelect={this.handleSelect}
       >
         <Option value="all" key="all">全部</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
@@ -200,6 +221,15 @@ export default class InvoiceList extends React.Component {
             columns={this.columns}
             loading={loading}
             rowKey="id"
+          />
+          <ImportDataPanel
+            visible={this.state.importPanelVisible}
+            endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
+            formData={{
+          }}
+            onClose={() => { this.setState({ importPanelVisible: false }); }}
+            onUploaded={this.invoicesUploaded}
+            template={`${XLSX_CDN}/发票导入模板.xlsx`}
           />
         </Content>
       </Layout>
