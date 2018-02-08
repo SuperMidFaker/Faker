@@ -39,12 +39,17 @@ export default class DetailsPane extends Component {
   handleDelete = (index) => {
     const temporaryDetails = [...this.props.temporaryDetails];
     temporaryDetails.splice(index, 1);
+    this.handleCalculate(temporaryDetails);
     this.props.setTemporary(temporaryDetails);
   }
   handleEdit = (row) => {
     this.props.toggleDetailModal(true, row);
   }
-  asnDetailsUploaded = () => {
+  invoiceDetailsUploaded = (data) => {
+    const { temporaryDetails } = this.props;
+    const newTemporaryDetails = temporaryDetails.concat(data);
+    this.handleCalculate(newTemporaryDetails);
+    this.props.setTemporary(newTemporaryDetails);
   }
   handleBatchDelete = () => {
     const { selectedRowKeys } = this.state;
@@ -54,7 +59,19 @@ export default class DetailsPane extends Component {
     this.setState({
       selectedRowKeys: [],
     });
+    this.handleCalculate(newTemporary);
     this.props.setTemporary(newTemporary);
+  }
+  handleCalculate = (temporaryDetails) => {
+    const { form } = this.props;
+    const totalQty = temporaryDetails.reduce((prev, next) => prev + Number(next.qty), 0);
+    const totalAmount = temporaryDetails.reduce((prev, next) => prev + Number(next.amount), 0);
+    const totalNetWt = temporaryDetails.reduce((prev, next) => prev + Number(next.net_wt), 0);
+    form.setFieldsValue({
+      total_qty: totalQty,
+      total_amount: totalAmount,
+      total_net_wt: totalNetWt,
+    });
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -172,12 +189,12 @@ export default class DetailsPane extends Component {
         <DataPane.Toolbar>
           {<Button type="primary" icon="plus-circle-o" onClick={this.toggleDetailModal}>{this.gmsg('add')}</Button>}
           <ExcelUploader
-            endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
+            endpoint={`${API_ROOTS.default}v1/scof/invoice/details/import`}
             formData={{
               data: JSON.stringify({
               }),
             }}
-            onUploaded={this.asnDetailsUploaded}
+            onUploaded={this.invoiceDetailsUploaded}
           >
             {<Button icon="upload">{this.gmsg('import')}</Button>}
           </ExcelUploader>

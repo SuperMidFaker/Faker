@@ -48,13 +48,13 @@ export default class DetailModal extends Component {
   msg = formatMsg(this.props.intl)
   submit = () => {
     const { record, temporaryDetails } = this.props;
-    const { amount, unit, currency } = this.state;
+    const { unit, currency, amount = 0 } = this.state;
     const totalQty = temporaryDetails.reduce((prev, next) => prev + Number(next.qty), 0);
     const totalAmount = temporaryDetails.reduce((prev, next) => prev + Number(next.amount), 0);
     const totalNetWt = temporaryDetails.reduce((prev, next) => prev + Number(next.net_wt), 0);
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        if (!record.index) {
+        if (!record.index && record.index !== 0) {
           this.props.addTemporary({
             unit,
             amount,
@@ -191,7 +191,7 @@ export default class DetailModal extends Component {
           </FormItem>
           <FormItem label="状态" {...formItemLayout}>
             {getFieldDecorator('status', {
-              initialValue: record.status || '',
+              initialValue: record.status || 0,
             })(<Select>
               <Option key={0} value={0}>未发货</Option>
               <Option key={1} value={1}>已发货</Option>
