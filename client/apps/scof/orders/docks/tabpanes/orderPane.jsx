@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Col, Card, Collapse, Menu } from 'antd';
 import { GOODSTYPES, TRANS_MODE, WRAP_TYPE } from 'common/constants';
+import DataTable from 'client/components/DataTable';
 import InfoItem from 'client/components/InfoItem';
 import { MdIcon } from 'client/components/FontIcon';
 import { formatMsg } from '../../message.i18n';
@@ -23,6 +24,93 @@ export default class OrderPane extends React.Component {
     }).isRequired,
   }
   msg = formatMsg(this.props.intl)
+  productColumns = [{
+    title: '货号',
+    width: 150,
+    dataIndex: 'product_no',
+    fixed: 'left',
+  }, {
+    title: '名称',
+    dataIndex: 'name',
+    width: 160,
+  }, {
+    title: '英文名称',
+    width: 120,
+    dataIndex: 'en_name',
+  }, {
+    title: '数量',
+    width: 140,
+    dataIndex: 'qty',
+  }, {
+    title: '单价',
+    width: 140,
+    dataIndex: 'unit_price',
+  }, {
+    title: '金额',
+    width: 140,
+    dataIndex: 'amount',
+  }, {
+    title: '净重',
+    width: 140,
+    dataIndex: 'net_wt',
+  }, {
+    title: '原产国',
+    width: 180,
+    dataIndex: 'country',
+  }, {
+    title: '币制',
+    width: 140,
+    dataIndex: 'currency',
+  }, {
+    title: '发票号',
+    width: 140,
+    dataIndex: 'invoice_no',
+  }, {
+    title: '采购订单号',
+    width: 140,
+    dataIndex: 'po_no',
+  }, {
+    title: '批次号',
+    width: 140,
+    dataIndex: 'external_lot_no',
+  }, {
+    title: '扩展属性1',
+    width: 140,
+    dataIndex: 'attrib_1_string',
+  }, {
+    title: '扩展属性2',
+    width: 140,
+    dataIndex: 'attrib_2_string',
+  }, {
+    title: '扩展属性3',
+    width: 140,
+    dataIndex: 'attrib_3_string',
+  }, {
+    title: '扩展属性4',
+    width: 140,
+    dataIndex: 'attrib_3_string',
+  }]
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadProductCargo(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        orderNo: this.props.order.shipmt_order_no,
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      return params;
+    },
+    remotes: this.props.cargolist,
+  })
   render() {
     const { order } = this.props;
     const goods = GOODSTYPES.filter(gt => gt.value === order.cust_shipmt_goods_type)[0];
@@ -166,7 +254,14 @@ export default class OrderPane extends React.Component {
                 </Col>
                 }
               </Row>
-
+            </Panel>
+            <Panel header="货品明细" key="products">
+              <DataTable
+                columns={this.productColumns}
+                dataSource={this.dataSource}
+                rowKey="id"
+                scroll={{ x: 800 }}
+              />
             </Panel>
             <Panel header="发票" key="invoice" />
             <Panel header="集装箱" key="container" />

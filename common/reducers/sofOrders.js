@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'EDIT_ORDER', 'EDIT_ORDER_SUCCEED', 'EDIT_ORDER_FAIL',
   'ACCEPT_ORDER', 'ACCEPT_ORDER_SUCCEED', 'ACCEPT_ORDER_FAIL',
   'LOAD_DETAIL', 'LOAD_DETAIL_SUCCEED', 'LOAD_DETAIL_FAIL',
+  'LOAD_ORDPRODUCTS', 'LOAD_ORDPRODUCTS_SUCCEED', 'LOAD_ORDPRODUCTS_FAILED',
   'LOAD_CLEARANCE_FEES', 'LOAD_CLEARANCE_FEES_SUCCEED', 'LOAD_CLEARANCE_FEES_FAIL',
   'LOAD_FLOWNODE', 'LOAD_FLOWNODE_SUCCEED', 'LOAD_FLOWNODE_FAILED',
   'LOAD_ORDERPROG', 'LOAD_ORDERPROG_SUCCEED', 'LOAD_ORDERPROG_FAILED',
@@ -34,6 +35,13 @@ const initialState = {
     visible: false,
     tabKey: null,
     order: {},
+    orderProductLoading: false,
+    orderProducts: {
+      totalCount: 0,
+      current: 1,
+      pageSize: 20,
+      data: [],
+    },
   },
   dockInstMap: {},
   formData: {
@@ -127,6 +135,26 @@ export default function reducer(state = initialState, action) {
         orderBizObjects: [],
       };
     }
+    case actionTypes.LOAD_ORDPRODUCTS:
+      return {
+        ...state,
+        dock: {
+          ...state.dock,
+          orderProductLoading: true,
+          orderProducts: initialState.dock.orderProducts,
+        },
+      };
+    case actionTypes.LOAD_ORDPRODUCTS_SUCCEED:
+      return {
+        ...state,
+        dock: {
+          ...state.dock,
+          orderProductLoading: false,
+          orderProducts: action.result.data,
+        },
+      };
+    case actionTypes.LOAD_ORDPRODUCTS_FAILED:
+      return { ...state, dock: { ...state.dock, orderProductLoading: false } };
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
       return {
         ...state,
@@ -312,17 +340,17 @@ export function loadOrderDetail(shipmtOrderNo, tenantId, tabKey = '') {
   };
 }
 
-export function loadClearanceDetail({ delgNos, tenantId }) {
+export function loadOrderProducts(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_CLEARANCE_DETAIL,
-        actionTypes.LOAD_CLEARANCE_DETAIL_SUCCEED,
-        actionTypes.LOAD_CLEARANCE_DETAIL_FAILED,
+        actionTypes.LOAD_ORDPRODUCTS,
+        actionTypes.LOAD_ORDPRODUCTS_SUCCEED,
+        actionTypes.LOAD_ORDPRODUCTS_FAILED,
       ],
-      endpoint: 'v1/crm/delegation/detail',
+      endpoint: 'v1/sof/order/products',
       method: 'get',
-      params: { delgNos, tenantId },
+      params,
     },
   };
 }
