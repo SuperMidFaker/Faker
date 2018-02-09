@@ -229,7 +229,7 @@ export default class InvoiceList extends React.Component {
           }}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
-            template={`${XLSX_CDN}/发票导入模版.xlsx`}
+            template={`${XLSX_CDN}/发票导入模板.xlsx`}
           />
         </Content>
       </Layout>
