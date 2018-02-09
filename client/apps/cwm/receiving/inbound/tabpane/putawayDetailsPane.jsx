@@ -244,7 +244,7 @@ export default class PutawayDetailsPane extends React.Component {
             </Button>
           </DataPane.BulkActions>
           <DataPane.Actions>
-            {inboundHead.rec_mode === 'manual' &&
+            {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
               dataSource.filter(ds => ds.serial_no && ds.result === 0).length > 0 &&
               <Button onClick={this.handleSuBarcodePutaway}>
               条码上架

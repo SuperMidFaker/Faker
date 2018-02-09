@@ -284,7 +284,7 @@ export default class ReceiveDetailsPane extends React.Component {
             </Button>}
           </DataPane.BulkActions>
           <DataPane.Actions>
-            {inboundHead.rec_mode === 'manual' &&
+            {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
             <Button onClick={this.handleSuBarcodeScanReceive}>
             条码收货确认
             </Button>}

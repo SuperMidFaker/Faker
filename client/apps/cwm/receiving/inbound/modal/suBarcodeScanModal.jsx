@@ -9,6 +9,17 @@ import { viewSuBarcodeScanModal, receiveProduct } from 'common/reducers/cwmRecei
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
+const NullSuScan = {
+  su_barcode: null,
+  product_no: null,
+  serial_no: null,
+  expiry_date: null,
+  attrib_1_string: null,
+  attrib_2_string: null,
+  attrib_3_string: null,
+  attrib_4_string: null,
+  qty: null,
+};
 
 @injectIntl
 @connect(
@@ -36,14 +47,7 @@ export default class SuBarcodeScanModal extends Component {
     inboundProductSeqMap: null,
     alertMsg: null,
     dataSource: [],
-    scanRecv: {
-      su_barcode: null,
-      product_no: null,
-      serial_no: null,
-      expiry_date: null,
-      attrib_1_string: null,
-      qty: null,
-    },
+    scanRecv: NullSuScan,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -99,14 +103,7 @@ export default class SuBarcodeScanModal extends Component {
     this.setState({
       inboundProductSeqMap: null,
       dataSource: [],
-      scanRecv: {
-        su_barcode: null,
-        product_no: null,
-        serial_no: null,
-        expiry_date: null,
-        attrib_1_string: null,
-        qty: null,
-      },
+      scanRecv: NullSuScan,
       alertMsg: null,
     });
     if (window.localStorage) {
@@ -145,8 +142,11 @@ export default class SuBarcodeScanModal extends Component {
         inbound_pack_qty: data.qty,
         received_by: username,
         serial_no: data.serial_no,
-        attrib_1_string: data.attrib_1_string,
         expiry_date: data.expiry_date,
+        attrib_1_string: data.attrib_1_string,
+        attrib_2_string: data.attrib_2_string,
+        attrib_3_string: data.attrib_3_string,
+        attrib_4_string: data.attrib_4_string,
         avail: true,
       })), inboundNo, seqNo, inboundHead.asn_no, loginId, new Date()));
     });
@@ -173,32 +173,28 @@ export default class SuBarcodeScanModal extends Component {
       const seqNo = seqNoKeys[i];
       const seqQty = productSeqMap.get(seqNo);
       if (seqQty.received_qty < seqQty.expect_qty) {
-        const id = `${suScan.serial_no}${seqNo}`;
+        const suData = {
+          id: `${suScan.serial_no}${seqNo}`,
+          product_no: suScan.product_no,
+          serial_no: suScan.serial_no,
+          expiry_date: suScan.expiry_date,
+          attrib_1_string: suScan.attrib_1_string,
+          attrib_2_string: suScan.attrib_2_string,
+          attrib_3_string: suScan.attrib_3_string,
+          attrib_4_string: suScan.attrib_4_string,
+          asn_seq_no: seqNo,
+        };
         if (seqQty.received_qty + remainQty <= seqQty.expect_qty) {
-          dataSource.push({
-            id,
-            product_no: suScan.product_no,
-            serial_no: suScan.serial_no,
-            expiry_date: suScan.expiry_date,
-            attrib_1_string: suScan.attrib_1_string,
-            qty: remainQty,
-            asn_seq_no: seqNo,
-          });
+          suData.qty = remainQty;
+          dataSource.push(suData);
           seqQty.received_qty += remainQty;
           productSeqMap.set(seqNo, seqQty);
           remainQty = 0;
           break;
         } else {
           const recvQty = seqQty.expect_qty - seqQty.received_qty;
-          dataSource.push({
-            id,
-            product_no: suScan.product_no,
-            serial_no: suScan.serial_no,
-            expiry_date: suScan.expiry_date,
-            attrib_1_string: suScan.attrib_1_string,
-            qty: recvQty,
-            asn_seq_no: seqNo,
-          });
+          suData.qty = recvQty;
+          dataSource.push(suData);
           remainQty -= recvQty;
           seqQty.received_qty = seqQty.expect_qty;
           productSeqMap.set(seqNo, seqQty);
@@ -210,14 +206,7 @@ export default class SuBarcodeScanModal extends Component {
     }
     inboundProductSeqMap.set(suScan.product_no, productSeqMap);
     this.setState({
-      scanRecv: {
-        su_barcode: null,
-        product_no: null,
-        serial_no: null,
-        expiry_date: null,
-        attrib_1_string: null,
-        qty: null,
-      },
+      scanRecv: NullSuScan,
       dataSource,
       inboundProductSeqMap,
       alertMsg: remainQty > 0 ? `${suScan.product_no}收货数量大于订单数量` : null,
@@ -237,49 +226,50 @@ export default class SuBarcodeScanModal extends Component {
     /* SUD1107973470|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01004|14D2019.12.12|
      * SUD1107973469|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
     const barcode = ev.target.value;
-    const suScan = { ...this.state.scanRecv };
     if (barcode) {
+      const suScan = { ...this.state.scanRecv };
       suScan.su_barcode = barcode;
+      this.setState({
+        scanRecv: suScan,
+      });
     } else {
-      suScan.su_barcode = null;
-      suScan.product_no = null;
-      suScan.serial_no = null;
-      suScan.expiry_date = null;
-      suScan.attrib_1_string = null;
+      this.setState({
+        scanRecv: NullSuScan,
+      });
     }
-    this.setState({
-      scanRecv: suScan,
-    });
   }
   handleSuBarKeyDown = (ev) => {
     if (ev.key === 'Enter') {
       const suScan = { ...this.state.scanRecv };
+      const suSetting = this.props.inboundHead.su_setting;
+      const suKeys = ['serial_no', 'product_no'];
+      Object.keys(suSetting).forEach((suKey) => {
+        if (suSetting[suKey].enabled) {
+          suKeys.push(suKey);
+        }
+      });
       const barcode = suScan.su_barcode;
-      suScan.serial_no = barcode.slice(3, 13);
-      suScan.product_no = barcode.slice(17, 30);
-      suScan.attrib_1_string = barcode.slice(34, 44);
-      suScan.expiry_date = barcode.slice(69, 79);
-      if (!suScan.serial_no || !suScan.product_no ||
-        !suScan.attrib_1_string || !suScan.expiry_date) {
-        this.setState({
-          scanRecv: {
-            su_barcode: null,
-            product_no: null,
-            serial_no: null,
-            expiry_date: null,
-            attrib_1_string: null,
-            qty: null,
-          },
-        });
-        return;
+      for (let i = 0; i < suKeys.length; i++) {
+        const suKey = suKeys[i];
+        const suConf = suSetting[suKey];
+        suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        if (!suScan[suKey]) {
+          this.setState({ scanRecv: NullSuScan });
+          return;
+        } else if (suConf.time_format) {
+          const yearIndex = suConf.time_format.indexOf('YYYY');
+          const monthIndex = suConf.time_format.indexOf('MM');
+          const dayIndex = suConf.time_format.indexOf('DD');
+          const year = suScan[suKey].slice(yearIndex, yearIndex + 4);
+          const month = suScan[suKey].slice(monthIndex, monthIndex + 2);
+          const day = suScan[suKey].slice(dayIndex, dayIndex + 2);
+          if (suKey === 'expiry_date') {
+            suScan[suKey] = new Date(Number(year), Number(month) - 1, Number(day));
+          } else {
+            suScan[suKey] = `${year}.${month}.${day}`;
+          }
+        }
       }
-      let splitDates = suScan.attrib_1_string.split('.');
-      suScan.attrib_1_string = `${splitDates[2]}.${splitDates[1]}.${splitDates[0]}`;
-      splitDates = suScan.expiry_date.split('.');
-      suScan.expiry_date = new Date(
-        Number(splitDates[0]),
-        Number(splitDates[1]) - 1, Number(splitDates[2])
-      );
       if (!this.state.inboundProductSeqMap.has(suScan.product_no)) {
         this.setState({
           scanRecv: suScan,
@@ -289,14 +279,7 @@ export default class SuBarcodeScanModal extends Component {
       }
       if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
         this.setState({
-          scanRecv: {
-            su_barcode: null,
-            product_no: null,
-            serial_no: null,
-            expiry_date: null,
-            attrib_1_string: null,
-            qty: null,
-          },
+          scanRecv: NullSuScan,
           alertMsg: `序列号${suScan.serial_no}已经扫描`,
         });
         return;
@@ -314,12 +297,15 @@ export default class SuBarcodeScanModal extends Component {
   }
   handleScanQtyChange = (ev) => {
     const qty = parseFloat(ev.target.value);
+    const suScan = { ...this.state.scanRecv };
     if (!Number.isNaN(qty)) {
-      const suScan = { ...this.state.scanRecv };
       suScan.qty = Number(qty);
       this.setState({
         scanRecv: suScan,
       });
+    } else {
+      suScan.qty = null;
+      this.setState({ scanRecv: suScan });
     }
   }
   handleQtyKeyEnter = (ev) => {
@@ -335,39 +321,45 @@ export default class SuBarcodeScanModal extends Component {
       }
     }
   }
-  barColumns = [{
-    title: '行号',
-    dataIndex: 'asn_seq_no',
-    width: 100,
-  }, {
-    title: '货号',
-    dataIndex: 'product_no',
-    width: 350,
-  }, {
-    title: '序列号',
-    dataIndex: 'serial_no',
-  }, {
-    title: '收货数量',
-    dataIndex: 'qty',
-    width: 300,
-  }, {
-    title: '生产日期',
-    width: 200,
-    dataIndex: 'attrib_1_string',
-  }, {
-    title: '失效日期',
-    width: 200,
-    dataIndex: 'expiry_date',
-    render: expiry => expiry && moment(expiry).format('YYYY.MM.DD'),
-  }, {
-    title: '操作',
-    width: 100,
-    fixed: 'right',
-    render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
-  }]
   render() {
-    const { saveLoading } = this.props;
+    const { saveLoading, inboundHead: { su_setting: suSetting } } = this.props;
     const { alertMsg, dataSource, scanRecv } = this.state;
+    const barColumns = [{
+      title: '行号',
+      dataIndex: 'asn_seq_no',
+      width: 100,
+    }, {
+      title: '货号',
+      dataIndex: 'product_no',
+      width: 350,
+    }, {
+      title: '序列号',
+      dataIndex: 'serial_no',
+    }, {
+      title: '收货数量',
+      dataIndex: 'qty',
+      width: 300,
+    }].concat(Object.keys(suSetting).filter(suKey => suSetting[suKey].enabled).map((suKey) => {
+      const suConf = suSetting[suKey];
+      if (suKey === 'expiry_date') {
+        return {
+          title: '失效日期',
+          width: 200,
+          dataIndex: 'expiry_date',
+          render: expiry => expiry && moment(expiry).format('YYYY.MM.DD'),
+        };
+      }
+      return {
+        title: suConf.display,
+        width: 200,
+        dataIndex: suKey,
+      };
+    })).concat({
+      title: '操作',
+      width: 100,
+      fixed: 'right',
+      render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
+    });
     const title = (<div>
       <span>条码扫描数量确认</span>
       <div className="toolbar-right">
@@ -425,12 +417,17 @@ export default class SuBarcodeScanModal extends Component {
             <FormItem label="序列号" {...formItemLayout}>
               <Input value={scanRecv.serial_no} readOnly />
             </FormItem>
-            <FormItem label="生产日期" {...formItemLayout}>
-              <Input value={scanRecv.attrib_1_string} readOnly />
-            </FormItem>
-            <FormItem label="失效日期" {...formItemLayout}>
-              <Input value={scanRecv.expiry_date && moment(scanRecv.expiry_date).format('YYYY.MM.DD')} readOnly />
-            </FormItem>
+            {Object.keys(suSetting).filter(suKey => suSetting[suKey].enabled).map((suKey) => {
+              const suConf = suSetting[suKey];
+              if (suKey === 'expiry_date') {
+                return (<FormItem label="失效日期" {...formItemLayout} key={suKey}>
+                  <Input value={scanRecv.expiry_date && moment(scanRecv.expiry_date).format('YYYY.MM.DD')} readOnly />
+                </FormItem>);
+              }
+              return (<FormItem label={suConf.display} {...formItemLayout} key={suKey}>
+                <Input value={scanRecv[suKey]} readOnly />
+              </FormItem>);
+            })}
             <FormItem label="收货数量" {...formItemLayout}>
               <Input
                 addonBefore={<Icon type="barcode" />}
@@ -451,11 +448,11 @@ export default class SuBarcodeScanModal extends Component {
         <Card bodyStyle={{ padding: 0 }} >
           <Table
             size="middle"
-            columns={this.barColumns}
+            columns={barColumns}
             dataSource={dataSource}
             rowKey="id"
             scroll={{
-              x: this.barColumns.reduce((acc, cur) =>
+              x: barColumns.reduce((acc, cur) =>
               acc + (cur.width ? cur.width : 240), 0),
             }}
           />

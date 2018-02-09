@@ -134,19 +134,25 @@ export default class SuBarPutawayModal extends Component {
   handleSuBarKeyDown = (ev) => {
     if (ev.key === 'Enter') {
       const barcode = this.state.subarcode;
-      const suScan = {
-        serial_no: barcode.slice(3, 13),
-        product_no: barcode.slice(17, 30),
-        attrib_1_string: barcode.slice(34, 44),
-        expiry_date: barcode.slice(69, 79),
-      };
-      if (!suScan.serial_no || !suScan.product_no ||
-        !suScan.attrib_1_string || !suScan.expiry_date) {
-        this.setState({
-          subarcode: null,
-          alertMsg: '错误条码',
-        });
-        return;
+      const suSetting = this.props.inboundHead.su_setting;
+      const suKeys = ['serial_no', 'product_no'];
+      Object.keys(suSetting).forEach((suKey) => {
+        if (suSetting[suKey].enabled) {
+          suKeys.push(suKey);
+        }
+      });
+      const suScan = {};
+      for (let i = 0; i < suKeys.length; i++) {
+        const suKey = suKeys[i];
+        const suConf = suSetting[suKey];
+        suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        if (!suScan[suKey]) {
+          this.setState({
+            subarcode: null,
+            alertMsg: '错误条码',
+          });
+          return;
+        }
       }
       if (!this.state.serialDetailMap.has(suScan.serial_no)) {
         this.setState({
