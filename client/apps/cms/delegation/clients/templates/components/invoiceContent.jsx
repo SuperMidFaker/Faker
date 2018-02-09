@@ -300,9 +300,23 @@ export default class InvoiceContent extends React.Component {
               { !!invoice.gross_wt_en && <span>Gross Weight: Kgs</span>}
             </Row>
             <Row>
-              {!!invoice.remark_en && <span>Remarks</span>}
-              {!!invoice.remark_en && <MSTextArea value={invoice.remark} field='remark' autosize={{ minRows: 1, maxRows: 6 }} onChange={this.handleFill} />}
+              { !!invoice.remark_en && <span>Remarks</span>}
+              { !!invoice.remark_en && <MSTextArea value={invoice.remark} field='remark' autosize={{ minRows: 1, maxRows: 6 }} onChange={this.handleFill} />}
             </Row>
+            <span />
+            <div style={{ 'padding-top': 20 }}>
+              <Row>
+                <Col sm={7}>
+                  <MSTextArea value={invoice.footer1} field='footer1' autosize={{ minRows: 3, maxRows: 6 }} onChange={this.handleFill} />
+                </Col>
+                <Col sm={7} offset={1}>
+                  <MSTextArea value={invoice.footer2} field='footer2' autosize={{ minRows: 3, maxRows: 6 }} onChange={this.handleFill} />
+                </Col>
+                <Col sm={8} offset={1}>
+                  <MSTextArea value={invoice.footer3} field='footer3' autosize={{ minRows: 3, maxRows: 6 }} onChange={this.handleFill} />
+                </Col>
+              </Row>
+            </div>
           </div>
         </Card>
       </Content>
