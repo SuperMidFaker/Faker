@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Tag, Button, Modal, Input, message } from 'antd';
+import { Tag, Button, Modal, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
+import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways, viewSuBarPutawayModal } from 'common/reducers/cwmReceive';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
-import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
-
+import SuBarPutawayModal from '../modal/suBarPutawayModal';
+import { formatMsg } from '../../message.i18n';
 
 @injectIntl
 @connect(
@@ -25,14 +26,14 @@ import PuttingAwayModal from '../modal/puttingAwayModal';
     submitting: state.cwmReceive.submitting,
   }),
   {
-    loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways,
+    loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways, viewSuBarPutawayModal,
   }
 )
 export default class PutawayDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     inboundNo: PropTypes.string.isRequired,
-    inboundHead: PropTypes.object.isRequired,
+    inboundHead: PropTypes.shape({ owner_partner_id: PropTypes.number }).isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -41,11 +42,6 @@ export default class PutawayDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleLoad();
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -53,6 +49,7 @@ export default class PutawayDetailsPane extends React.Component {
       this.setState({ selectedRowKeys: [], selectedRows: [] });
     }
   }
+  msg =formatMsg(this.props.intl)
   handleLoad = () => {
     this.props.loadInboundPutaways(this.props.inboundNo);
   }
@@ -114,10 +111,11 @@ export default class PutawayDetailsPane extends React.Component {
           <RowAction onClick={this.handleUndoReceive} icon="close-circle-o" tooltip="取消收货" row={record} />
         </span>);
       }
+      return null;
     },
   }]
   handleExpressPutAway = () => {
-    const props = this.props;
+    const { props } = this;
     Modal.confirm({
       title: '是否确认上架完成?',
       content: '默认将收货库位设为最终储存库位，确认上架后不能操作取消收货',
@@ -135,11 +133,20 @@ export default class PutawayDetailsPane extends React.Component {
     }
     this.props.showPuttingAwayModal(details);
   }
+  handleSuBarcodePutaway = () => {
+    this.props.viewSuBarPutawayModal({
+      visible: true,
+      inboundNo: this.props.inboundNo,
+    });
+  }
   handleBatchPutAways = () => {
     this.props.showPuttingAwayModal(this.state.selectedRows);
   }
   handleUndoReceive = (row) => {
-    this.props.undoReceives(this.props.inboundNo, this.props.loginId, [row.trace_id]).then((result) => {
+    this.props.undoReceives(
+      this.props.inboundNo,
+      this.props.loginId, [row.trace_id]
+    ).then((result) => {
       if (!result.error) {
         message.success('操作成功');
       } else {
@@ -148,7 +155,10 @@ export default class PutawayDetailsPane extends React.Component {
     });
   }
   handleBatchUndoReceives = () => {
-    this.props.undoReceives(this.props.inboundNo, this.props.loginId, this.state.selectedRows.map(sr => sr.trace_id)).then((result) => {
+    this.props.undoReceives(
+      this.props.inboundNo, this.props.loginId,
+      this.state.selectedRows.map(sr => sr.trace_id)
+    ).then((result) => {
       if (!result.error) {
         message.success('操作成功');
       } else {
@@ -191,7 +201,8 @@ export default class PutawayDetailsPane extends React.Component {
         key: 'opposite-data',
         text: '反选全部项',
         onSelect: () => {
-          const fDataSource = dataSource.filter(item => !(item.result === 1) && !this.state.selectedRowKeys.find(item1 => item1 === item.id));
+          const fDataSource = dataSource.filter(item => !(item.result === 1) &&
+            !this.state.selectedRowKeys.find(item1 => item1 === item.id));
           const selectedRowKeys = fDataSource.map(item => item.id);
           this.setState({
             selectedRowKeys,
@@ -203,7 +214,7 @@ export default class PutawayDetailsPane extends React.Component {
         disabled: record.result === 1,
       }),
     };
-    let columns = this.columns;
+    let { columns } = this;
     if (inboundHead.rec_mode === 'scan') {
       columns = [...columns];
       columns.splice(9, 10);
@@ -221,7 +232,10 @@ export default class PutawayDetailsPane extends React.Component {
       >
         <DataPane.Toolbar>
           <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             <Button onClick={this.handleBatchPutAways} icon="check">
           批量上架确认
             </Button>
@@ -231,6 +245,12 @@ export default class PutawayDetailsPane extends React.Component {
           </DataPane.BulkActions>
           <DataPane.Actions>
             {inboundHead.rec_mode === 'manual' &&
+              dataSource.filter(ds => ds.serial_no && ds.result === 0).length > 0 &&
+              <Button onClick={this.handleSuBarcodePutaway}>
+              条码上架
+              </Button>
+            }
+            {inboundHead.rec_mode === 'manual' &&
               dataSource.filter(ds => ds.receive_location && ds.result === 0).length > 0 &&
               <Button loading={submitting} type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
@@ -239,6 +259,7 @@ export default class PutawayDetailsPane extends React.Component {
           </DataPane.Actions>
         </DataPane.Toolbar>
         <PuttingAwayModal inboundNo={this.props.inboundNo} />
+        <SuBarPutawayModal />
       </DataPane>
     );
   }

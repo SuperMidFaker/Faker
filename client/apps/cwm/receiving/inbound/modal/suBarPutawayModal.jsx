@@ -1,0 +1,287 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { intlShape, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { Alert, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
+import RowAction from 'client/components/RowAction';
+import { viewSuBarPutawayModal, batchPutaways } from 'common/reducers/cwmReceive';
+import { formatMsg } from '../../message.i18n';
+
+const FormItem = Form.Item;
+
+@injectIntl
+@connect(
+  state => ({
+    loginId: state.account.loginId,
+    username: state.account.username,
+    visible: state.cwmReceive.suBarPutawayModal.visible,
+    inboundHead: state.cwmReceive.inboundFormHead,
+    inboundNo: state.cwmReceive.suBarPutawayModal.inboundNo,
+    putawayList: state.cwmReceive.inboundPutaways.list,
+    saveLoading: state.cwmReceive.submitting,
+  }),
+  { viewSuBarPutawayModal, batchPutaways }
+)
+export default class SuBarPutawayModal extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+    putawayList: PropTypes.arrayOf(PropTypes.shape({
+      product_no: PropTypes.string.isRequired,
+      trace_id: PropTypes.string.isRequired,
+      serial_no: PropTypes.string.isRequired,
+      inbound_qty: PropTypes.number.isRequired,
+      result: PropTypes.oneOf([0, 1]),
+    })).isRequired,
+  }
+  state = {
+    serialDetailMap: null,
+    alertMsg: null,
+    dataSource: [],
+    subarcode: null,
+    location: null,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && !this.props.visible) {
+      const serialDetailMap = new Map();
+      nextProps.putawayList.forEach((putaway) => {
+        let details = [{
+          trace_id: putaway.trace_id,
+          qty: putaway.inbound_qty,
+          result: putaway.result,
+        }];
+        if (putaway.children) {
+          details = details.concat(putaway.children.map(putad => ({
+            trace_id: putad.trace_id,
+            qty: putad.inbound_qty,
+            result: putad.result,
+          })));
+        }
+        if (serialDetailMap.has(putaway.serial_no)) {
+          details = details.concat(serialDetailMap.get(putaway.serial_no));
+        }
+        serialDetailMap.set(putaway.serial_no, details);
+      });
+      let dataSource = [];
+      if (window.localStorage) {
+        const subarDataSource = window.localStorage.getItem('subarcode-putaway');
+        if (subarDataSource) {
+          const suDataSource = JSON.parse(subarDataSource);
+          if (suDataSource && suDataSource.length > 0) {
+            dataSource = suDataSource;
+          }
+        }
+      }
+      this.setState({ serialDetailMap, dataSource });
+      if (this.suInputRef) {
+        setTimeout(() => {
+          this.suInputRef.focus();
+        }, 100);
+      }
+    }
+  }
+  msg = formatMsg(this.props.intl)
+  handleCancel = () => {
+    this.props.viewSuBarPutawayModal({ visible: false });
+    this.setState({
+      serialDetailMap: null,
+      dataSource: [],
+      subarcode: null,
+      location: null,
+      alertMsg: null,
+    });
+    if (window.localStorage) {
+      window.localStorage.removeItem('subarcode-putaway');
+    }
+  }
+  handleDeleteDetail = (index) => {
+    let dataSource = [...this.state.dataSource];
+    const data = dataSource[index];
+    dataSource = dataSource.filter(ds => ds.serial_no !== data.serial_no);
+    this.setState({ dataSource });
+  }
+  handleSubmit = () => {
+    const {
+      username, inboundNo,
+    } = this.props;
+    const traceIds = this.state.dataSource.map(ds => ds.trace_id);
+    this.props.batchPutaways(
+      traceIds, this.state.location, username,
+      new Date(), username, inboundNo
+    ).then((result) => {
+      if (!result.error) {
+        message.success('条码上架成功');
+        this.handleCancel();
+      } else {
+        message.error('操作失败');
+      }
+    });
+  }
+  handleSuInputRef = (input) => {
+    this.suInputRef = input;
+    if (input) {
+      setTimeout(() => {
+        this.suInputRef.focus();
+      }, 100);
+    }
+  }
+  handleLocationInputRef = (input) => { this.locationInputRef = input; }
+  handleScanSuChange = (ev) => {
+    /* SUD1107973470|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01004|14D2019.12.12|
+     * SUD1107973469|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
+    const barcode = ev.target.value;
+    this.setState({ subarcode: barcode });
+  }
+  handleSuBarKeyDown = (ev) => {
+    if (ev.key === 'Enter') {
+      const barcode = this.state.subarcode;
+      const suScan = {
+        serial_no: barcode.slice(3, 13),
+        product_no: barcode.slice(17, 30),
+        attrib_1_string: barcode.slice(34, 44),
+        expiry_date: barcode.slice(69, 79),
+      };
+      if (!suScan.serial_no || !suScan.product_no ||
+        !suScan.attrib_1_string || !suScan.expiry_date) {
+        this.setState({
+          subarcode: null,
+          alertMsg: '错误条码',
+        });
+        return;
+      }
+      if (!this.state.serialDetailMap.has(suScan.serial_no)) {
+        this.setState({
+          subarcode: null,
+          alertMsg: `收货明细无此序列号:${suScan.serial_no}`,
+        });
+        return;
+      }
+      if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
+        this.setState({
+          subarcode: null,
+          alertMsg: `序列号${suScan.serial_no}已经扫描`,
+        });
+        return;
+      }
+      const serialDetails = this.state.serialDetailMap.get(suScan.serial_no);
+      const unputawayDetails = serialDetails.filter(srd => srd.result === 0);
+      if (unputawayDetails.length === 0) {
+        this.setState({
+          subarcode: null,
+          alertMsg: `序列号${suScan.serial_no}已上架`,
+        });
+        return;
+      }
+      const dataSource = this.state.dataSource.concat(unputawayDetails.map(pd => ({
+        trace_id: pd.trace_id,
+        serial_no: suScan.serial_no,
+        product_no: suScan.product_no,
+        qty: pd.qty,
+      })));
+      this.setState({
+        subarcode: null,
+        alertMsg: null,
+        dataSource,
+      });
+      this.suInputRef.focus();
+      if (window.localStorage) {
+        window.localStorage.setItem('subarcode-putaway', JSON.stringify(dataSource));
+      }
+    }
+  }
+  handleScanLocationChange = (ev) => {
+    this.setState({
+      location: ev.target.value,
+    });
+  }
+  barColumns = [{
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 300,
+  }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+  }, {
+    title: '货号',
+    dataIndex: 'product_no',
+    width: 350,
+  }, {
+    title: '数量',
+    dataIndex: 'qty',
+    width: 300,
+  }, {
+    title: '操作',
+    width: 100,
+    fixed: 'right',
+    render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
+  }]
+  render() {
+    const { saveLoading } = this.props;
+    const {
+      alertMsg, dataSource, subarcode, location,
+    } = this.state;
+    const title = (<div>
+      <span>条码扫描上架</span>
+      <div className="toolbar-right">
+        <Button onClick={this.handleCancel}>取消</Button>
+        <Button disabled={dataSource.length === 0 || !location} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
+      </div>
+    </div>);
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 20 },
+      },
+    };
+    return (
+      <Modal
+        maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        visible={this.props.visible}
+        footer={null}
+      >
+        <Card bodyStyle={{ paddingBottom: 16 }} >
+          <Form>
+            {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
+            <FormItem label="商品条码" {...formItemLayout}>
+              <Input
+                addonBefore={<Icon type="barcode" />}
+                value={subarcode}
+                ref={this.handleSuInputRef}
+                onChange={this.handleScanSuChange}
+                onKeyDown={this.handleSuBarKeyDown}
+              />
+            </FormItem>
+            <FormItem label="库位" {...formItemLayout}>
+              <Input
+                addonBefore={<Icon type="barcode" />}
+                ref={this.handleLocationInputRef}
+                value={location}
+                onChange={this.handleScanLocationChange}
+              />
+            </FormItem>
+          </Form>
+        </Card>
+        <Card bodyStyle={{ padding: 0 }} >
+          <Table
+            size="middle"
+            columns={this.barColumns}
+            dataSource={dataSource}
+            rowKey="trace_id"
+            scroll={{
+              x: this.barColumns.reduce((acc, cur) =>
+              acc + (cur.width ? cur.width : 240), 0),
+            }}
+          />
+        </Card>
+      </Modal>
+    );
+  }
+}
+

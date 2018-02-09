@@ -107,6 +107,7 @@ export default class SuBarcodeScanModal extends Component {
         attrib_1_string: null,
         qty: null,
       },
+      alertMsg: null,
     });
     if (window.localStorage) {
       window.localStorage.removeItem('subarcode-data');
@@ -146,6 +147,7 @@ export default class SuBarcodeScanModal extends Component {
         serial_no: data.serial_no,
         attrib_1_string: data.attrib_1_string,
         expiry_date: data.expiry_date,
+        avail: true,
       })), inboundNo, seqNo, inboundHead.asn_no, loginId, new Date()));
     });
     Promise.all(recvProductPromises).then((result) => {
@@ -256,17 +258,28 @@ export default class SuBarcodeScanModal extends Component {
       suScan.serial_no = barcode.slice(3, 13);
       suScan.product_no = barcode.slice(17, 30);
       suScan.attrib_1_string = barcode.slice(34, 44);
+      suScan.expiry_date = barcode.slice(69, 79);
+      if (!suScan.serial_no || !suScan.product_no ||
+        !suScan.attrib_1_string || !suScan.expiry_date) {
+        this.setState({
+          scanRecv: {
+            su_barcode: null,
+            product_no: null,
+            serial_no: null,
+            expiry_date: null,
+            attrib_1_string: null,
+            qty: null,
+          },
+        });
+        return;
+      }
       let splitDates = suScan.attrib_1_string.split('.');
       suScan.attrib_1_string = `${splitDates[2]}.${splitDates[1]}.${splitDates[0]}`;
-      suScan.expiry_date = barcode.slice(69, 79);
       splitDates = suScan.expiry_date.split('.');
       suScan.expiry_date = new Date(
         Number(splitDates[0]),
         Number(splitDates[1]) - 1, Number(splitDates[2])
       );
-      if (!suScan.serial_no || !suScan.product_no) {
-        return;
-      }
       if (!this.state.inboundProductSeqMap.has(suScan.product_no)) {
         this.setState({
           scanRecv: suScan,
@@ -399,9 +412,7 @@ export default class SuBarcodeScanModal extends Component {
             {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
             <FormItem label="商品条码" {...formItemLayout}>
               <Input
-                type="textarea"
-                row={2}
-                prefix={<Icon type="qrcode" />}
+                addonBefore={<Icon type="barcode" />}
                 value={scanRecv.su_barcode}
                 ref={this.handleSuInputRef}
                 onChange={this.handleScanSuChange}
@@ -422,6 +433,7 @@ export default class SuBarcodeScanModal extends Component {
             </FormItem>
             <FormItem label="收货数量" {...formItemLayout}>
               <Input
+                addonBefore={<Icon type="barcode" />}
                 ref={this.handleQtyInputRef}
                 value={scanRecv.qty}
                 onChange={this.handleScanQtyChange}

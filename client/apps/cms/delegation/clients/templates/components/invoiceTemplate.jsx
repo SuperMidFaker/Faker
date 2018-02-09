@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
+import { Button, Breadcrumb, Layout, Collapse, Checkbox, Form, Input, Tooltip } from 'antd';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import InvoiceContent from './invoiceContent';
 import { formatMsg } from './message.i18n';
+import PageHeader from 'client/components/PageHeader';
+import { invTempPdfDef } from './previewPdfs/invTemplatePdf';
 
 const { Sider } = Layout;
 const { Panel } = Collapse;
@@ -22,7 +24,7 @@ function MSCheckbox(props) {
   }
   return (
     <div>
-      <Checkbox style={{ 'font-size': 14 }} onChange={handleChange} checked={checked}>
+      <Checkbox style={{ 'fontSize': 14 }} onChange={handleChange} checked={checked}>
         {text}
       </Checkbox>
     </div>
@@ -52,6 +54,10 @@ function fetchData({ dispatch, state, params }) {
     tenantId: state.account.tenantId,
     template: state.cmsInvoice.template,
     invData: state.cmsInvoice.invData,
+    trxModes: state.cmsInvoice.params.trxModes.map(tm => ({
+      key: tm.trx_mode,
+      text: `${tm.trx_mode} | ${tm.trx_spec}`,
+    })),
   }),
   { saveTempChange }
 )
@@ -63,12 +69,44 @@ export default class InvoiceTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     invData: PropTypes.object.isRequired,
+    trxModes: PropTypes.array.isRequired,
+  }
+  componentDidMount() {
+    let script;
+    if (!document.getElementById('pdfmake-min')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-min';
+      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    if (!document.getElementById('pdfmake-vfsfont')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-vfsfont';
+      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }
   msg = formatMsg(this.props.intl)
   handleCheckChange = (field, value) => {
     if (value !== '') {
       this.props.saveTempChange({ [field]: value }, this.props.invData.id);
     }
+  }
+  handlePreview = () => {
+    const { invData, trxModes } = this.props;
+    const docuBody = [];
+    const docDefinition = invTempPdfDef(invData, trxModes, docuBody);
+    window.pdfMake.fonts = {
+      yahei: {
+        normal: 'msyh.ttf',
+        bold: 'msyh.ttf',
+        italics: 'msyh.ttf',
+        bolditalics: 'msyh.ttf',
+      },
+    };
+    window.pdfMake.createPdf(docDefinition).open();
   }
   render() {
     const { invData } = this.props;
@@ -88,6 +126,12 @@ export default class InvoiceTemplate extends React.Component {
                 <FormItem label="发票日期：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
                   <Input value={invData.days_ago} addonBefore="生成发票前" addonAfter="天" onChange={ev => this.handleCheckChange('days_ago', ev.target.value)} />
                 </FormItem>
+                <MSCheckbox
+                  field="smarks_en"
+                  text='Shipping Marks'
+                  onChange={this.handleCheckChange}
+                  checked={invData.smarks_en}
+                />
               </Panel>
               <Panel header="Item Table" key="item">
                 <MSCheckbox
@@ -113,16 +157,16 @@ export default class InvoiceTemplate extends React.Component {
               </Panel>
               <Panel header="Footer" key="footer">
                 <MSCheckbox
-                  field="insurance_en"
-                  text={this.msg('insurance')}
+                  field="packages_en"
+                  text={this.msg('packages')}
                   onChange={this.handleCheckChange}
-                  checked={invData.insurance_en}
+                  checked={invData.packages_en}
                 />
                 <MSCheckbox
-                  field="dest_port_en"
-                  text={this.msg('destPort')}
+                  field="gross_wt_en"
+                  text={this.msg('grossWt')}
                   onChange={this.handleCheckChange}
-                  checked={invData.dest_port_en}
+                  checked={invData.gross_wt_en}
                 />
                 <MSCheckbox
                   field="remark_en"
@@ -134,7 +178,17 @@ export default class InvoiceTemplate extends React.Component {
             </Collapse>
           </div>
         </Sider>
-        <InvoiceContent />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Actions>
+              <Tooltip title={'预览'} placement="bottom">
+                <Button icon="printer" onClick={this.handlePreview}>
+                </Button>
+              </Tooltip>
+            </PageHeader.Actions>
+          </PageHeader>
+          <InvoiceContent />
+        </Layout>
       </Layout>
     );
   }

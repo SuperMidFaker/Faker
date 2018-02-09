@@ -45,7 +45,7 @@ export default class AdvUploadModal extends React.Component {
     importMode: 'recpt',
     attachments: [],
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values)
+  msg = formatMsg(this.props.intl)
   handleOk = () => {
     const fieldsValue = this.props.form.getFieldsValue();
     let partner = {};

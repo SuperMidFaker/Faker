@@ -301,8 +301,7 @@ export default class OutboundDetail extends Component {
             </Dropdown>}
             {this.state.tabKey === 'pickingDetails' &&
               <Tooltip title="导出拣货单Excel" placement="bottom">
-                <Button onClick={this.handleExportPickingListXLS} loading={this.state.expLoad}>
-                  <Logixon type="export" />
+                <Button icon="export" onClick={this.handleExportPickingListXLS} loading={this.state.expLoad}>
                 </Button>
               </Tooltip>
             }

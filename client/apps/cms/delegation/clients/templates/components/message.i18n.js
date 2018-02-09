@@ -30,13 +30,13 @@ const messages = defineMessages({
     id: 'cms.document.component.sub.total',
     defaultMessage: '小计',
   },
-  insurance: {
-    id: 'cms.document.component.insurance',
-    defaultMessage: '保险',
+  packages: {
+    id: 'cms.document.component.packages',
+    defaultMessage: '件数',
   },
-  destPort: {
-    id: 'cms.document.component.destination.port',
-    defaultMessage: '目的口岸',
+  grossWt: {
+    id: 'cms.document.component.gross.weight',
+    defaultMessage: '毛重',
   },
   remark: {
     id: 'cms.document.component.remark',
