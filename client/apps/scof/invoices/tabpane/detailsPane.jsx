@@ -77,7 +77,7 @@ export default class DetailsPane extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleTemplateDownload = () => {
-    window.open(`${XLSX_CDN}/ASN明细导入模板_20170901.xlsx`);
+    window.open(`${XLSX_CDN}/发票明细导入模版.xlsx`);
   }
   toggleDetailModal = () => {
     this.props.toggleDetailModal(true);
@@ -198,6 +198,7 @@ export default class DetailsPane extends Component {
           >
             {<Button icon="upload">{this.gmsg('import')}</Button>}
           </ExcelUploader>
+          <Button icon="download" onClick={this.handleTemplateDownload} style={{ marginLeft: 8 }}>模版下载</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}
