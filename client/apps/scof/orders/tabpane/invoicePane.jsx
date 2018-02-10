@@ -4,7 +4,6 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { setClientForm, toggleInvoiceModal } from 'common/reducers/sofOrders';
-import { loadCmsParams } from 'common/reducers/cmsManifest';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
 import InvoiceModal from '../modal/invoiceModal';
@@ -20,7 +19,7 @@ const formatMsg = format(messages);
     currencies: state.cmsManifest.params.currencies,
     formData: state.sofOrders.formData,
   }),
-  { setClientForm, toggleInvoiceModal, loadCmsParams }
+  { setClientForm, toggleInvoiceModal }
 )
 export default class InvoicePane extends Component {
   static propTypes = {
@@ -30,7 +29,6 @@ export default class InvoicePane extends Component {
     dataSource: [],
   }
   componentWillMount() {
-    this.props.loadCmsParams();
     this.setState({
       dataSource: this.props.formData.invoices,
     });

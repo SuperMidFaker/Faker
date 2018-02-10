@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ATTACHMENTS', 'LOAD_ATTACHMENTS_SUCCEED', 'LOAD_ATTACHMENTS_FAIL',
   'TOGGLE_INVOICE_MODAL',
   'LOAD_UNSHIPPED_INVOICES', 'LOAD_UNSHIPPED_INVOICES_SUCCEED', 'LOAD_UNSHIPPED_INVOICES_FAIL',
+  'GET_ORDER_DETAILS', 'GET_ORDER_DETAILS_SUCCEED', 'GET_ORDER_DETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -73,6 +74,7 @@ const initialState = {
     containers: [],
     subOrders: [],
     invoices: [],
+    orderDetails: [],
   },
   formRequires: {
     orderTypes: [],
@@ -192,6 +194,8 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.TOGGLE_INVOICE_MODAL:
       return { ...state, invoiceModal: { ...state.invoiceModal, visible: action.visible } };
+    case actionTypes.GET_ORDER_DETAILS_SUCCEED:
+      return { ...state, formData: { ...state.formData, orderDetails: action.result.data } };
     default:
       return state;
   }
@@ -581,6 +585,21 @@ export function loadUnshippedInvoices(partnerId) {
       endpoint: 'v1/sof/invoices/unshipped/load',
       method: 'get',
       params: { partnerId },
+    },
+  };
+}
+
+export function getOrderDetails(invoiceNos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_ORDER_DETAILS,
+        actionTypes.GET_ORDER_DETAILS_SUCCEED,
+        actionTypes.GET_ORDER_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/sof/invoice/details/get',
+      method: 'get',
+      params: { invoiceNos },
     },
   };
 }

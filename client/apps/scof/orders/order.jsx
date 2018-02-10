@@ -16,6 +16,7 @@ import CwmReceivingForm from './forms/cwmReceivingForm';
 import CwmShippingForm from './forms/cwmShippingForm';
 import ContainerPane from './tabpane/containerPane';
 import InvoicePane from './tabpane/invoicePane';
+import OrderDetailsPane from './tabpane/orderDetailsPane';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -684,6 +685,9 @@ export default class OrderForm extends Component {
             </TabPane>
             <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
               <ContainerPane />
+            </TabPane>
+            <TabPane tab="订单明细" key="details">
+              <OrderDetailsPane />
             </TabPane>
           </Tabs>
         </Card>

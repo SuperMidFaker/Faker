@@ -8,6 +8,7 @@ import { Breadcrumb, Button, Layout, message, notification } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
+import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import OrderForm from './order';
 import messages from './message.i18n';
@@ -29,6 +30,7 @@ function fetchData({ state, params, dispatch }) {
     dispatch(loadFormRequires({ tenantId: state.account.tenantId })),
     dispatch(loadRequireOrderTypes()),
     dispatch(loadOrder(params.orderNo)),
+    dispatch(loadCmsParams()),
   ];
   return Promise.all(proms);
 }
