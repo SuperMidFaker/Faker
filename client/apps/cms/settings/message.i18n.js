@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   brokers: {
     id: 'cms.settings.brokers',
-    defaultMessage: '清关服务商',
+    defaultMessage: '服务商',
   },
   addBroker: {
     id: 'cms.settings.brokers.add',

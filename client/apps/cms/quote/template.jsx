@@ -50,13 +50,10 @@ export default class QuoteTemplate extends Component {
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('billing')}
+              {this.msg('expense')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('quotation')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              报价模板
+              费用项设置
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>

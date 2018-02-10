@@ -9,9 +9,9 @@ import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { formatMsg, formatGlobalMsg } from './message.i18n';
 import { loadExpsDetails } from 'common/reducers/cmsExpense';
 import { FEE_STYLE, FEE_CATEGORY } from 'common/constants';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -20,7 +20,7 @@ function fetchData({ dispatch, params, state }) {
   return dispatch(loadExpsDetails({
     delgNo: params.delgNo,
     tenantId: state.account.tenantId,
-    prType: params.prType
+    prType: params.prType,
   }));
 }
 
@@ -215,7 +215,7 @@ export default class ExpenseDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey={this.props.params.prType}  onChange={this.handleTabChange}>
+            <Tabs defaultActiveKey={this.props.params.prType} onChange={this.handleTabChange}>
               <TabPane tab="应收明细" key="receivable" >
                 <DataPane
                   fullscreen={this.state.fullscreen}

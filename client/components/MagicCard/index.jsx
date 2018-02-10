@@ -19,7 +19,7 @@ export default class MagicCard extends React.Component {
     this.setState({
       fullscreen: !this.state.fullscreen,
     });
-    const onSizeChange = this.props.onSizeChange;
+    const { onSizeChange } = this.props;
     if (onSizeChange) {
       onSizeChange(this.state.fullscreen);
     }

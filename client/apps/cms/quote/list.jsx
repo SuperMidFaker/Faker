@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Tag, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -371,9 +371,7 @@ export default class QuoteList extends Component {
             <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
               新建报价
             </Button>
-            <Tooltip title="报价模板设置">
-              <Button icon="setting" onClick={this.handleQuoteTemplate} />
-            </Tooltip>
+            <Button icon="setting" onClick={this.handleQuoteTemplate}>费用项设置</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
