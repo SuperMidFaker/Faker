@@ -15,6 +15,18 @@ const messages = defineMessages({
     id: 'scof.invoices.import',
     defaultMessage: '导入发票',
   },
+  toShip: {
+    id: 'scof.invoices.status.to.ship',
+    defaultMessage: '待发货',
+  },
+  partialShipped: {
+    id: 'scof.invoices.status.partial.shipped',
+    defaultMessage: '部分发货',
+  },
+  shipped: {
+    id: 'scof.invoices.status.shipped',
+    defaultMessage: '已发货',
+  },
 });
 
 export default messages;

@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { setClientForm, toggleInvoiceModal } from 'common/reducers/sofOrders';
 import DataPane from 'client/components/DataPane';
+import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
 import InvoiceModal from '../modal/invoiceModal';
 import messages from '../message.i18n';
@@ -68,6 +69,11 @@ export default class InvoicePane extends Component {
   }, {
     title: '总净重',
     dataIndex: 'total_net_wt',
+  }, {
+    dataIndex: 'OPS_COL',
+    width: 45,
+    fixed: 'right',
+    render: (o, record) => <RowAction onClick={this.handleRemove} icon="minus-circle-o" tooltip="移出" row={record} />,
   }];
   render() {
     return (

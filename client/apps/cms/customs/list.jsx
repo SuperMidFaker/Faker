@@ -84,7 +84,6 @@ export default class CustomsList extends Component {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
-    filterName: null,
   }
   componentDidMount() {
     let filters = null;
@@ -277,7 +276,7 @@ export default class CustomsList extends Component {
     render: (o, record) => (record.id ?
       record.i_e_date && moment(record.i_e_date).format('YYYY.MM.DD') : '-'),
   }, {
-    title: '制单时间',
+    title: '生成时间',
     dataIndex: 'created_date',
     width: 100,
     render: createdt => (createdt ? moment(createdt).format('MM.DD HH:mm') : '-'),
@@ -302,7 +301,12 @@ export default class CustomsList extends Component {
     width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: '报关人员',
+    title: '审核人员',
+    dataIndex: 'reviewed_by',
+    width: 120,
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
+  }, {
+    title: '人员',
     dataIndex: 'epsend_login_id',
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
@@ -434,9 +438,6 @@ export default class CustomsList extends Component {
     this.handleDeselectRows();
     this.handleTableLoad(1, filter);
   }
-  handleSearchChange = (ev) => {
-    this.setState({ filterName: ev.target.value });
-  }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] }; // FIXME should not use two ids
     if (value !== -1) {
@@ -546,7 +547,8 @@ export default class CustomsList extends Component {
     const {
       customslist, listFilter, avatar, loginName,
     } = this.props;
-    const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
+    // const filterName = this.state.filterName === null ?
+    // listFilter.filterNo : this.state.filterName;
     this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
