@@ -16,7 +16,7 @@ const formatMsg = format(messages);
   }),
   {}
 )
-export default class ModuleBMS extends React.Component {
+export default class ModuleBSS extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
@@ -39,57 +39,18 @@ export default class ModuleBMS extends React.Component {
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
-      single: false,
-      key: 'bss-fee',
+      single: true,
+      key: 'bss-settlement',
       icon: 'logixon icon-finance-o',
-      text: formatMsg(intl, 'fee'),
-      sublinks: [{
-        key: 'bss-fee-0',
-        path: '/bss/fee/summary',
-        text: formatMsg(intl, 'feeSummary'),
-      }, {
-        key: 'bss-fee-1',
-        path: '/bss/fee/statement',
-        text: formatMsg(intl, 'feeStatement'),
-      }],
+      text: formatMsg(intl, 'settlement'),
+      path: '/bss/settlement',
     });
     linkMenus.push({
-      single: false,
-      key: 'bss-revenue',
-      icon: 'logixon icon-receivable',
-      text: formatMsg(intl, 'revenue'),
-      sublinks: [{
-        key: 'bss-revenue-0',
-        path: '/bss/receivable/bill',
-        text: formatMsg(intl, 'customerBill'),
-      }, {
-        key: 'bss-revenue-1',
-        path: '/bss/receivable/invoice',
-        text: formatMsg(intl, 'receivableInvoice'),
-      }, {
-        key: 'bss-revenue-2',
-        path: '/bss/receivable/payment',
-        text: formatMsg(intl, 'paymentReceived'),
-      }],
-    });
-    linkMenus.push({
-      single: false,
-      key: 'bss-cost',
-      icon: 'logixon icon-payable',
-      text: formatMsg(intl, 'cost'),
-      sublinks: [{
-        key: 'bss-cost-0',
-        path: '/bss/payable/bill',
-        text: formatMsg(intl, 'vendorBill'),
-      }, {
-        key: 'bss-cost-1',
-        path: '/bss/payable/invoice',
-        text: formatMsg(intl, 'payableInvoice'),
-      }, {
-        key: 'bss-cost-2',
-        path: '/bss/payable/payment',
-        text: formatMsg(intl, 'paymentMade'),
-      }],
+      single: true,
+      key: 'bss-bills',
+      icon: 'logixon icon-bill-mng',
+      text: formatMsg(intl, 'bills'),
+      path: '/bss/bills',
     });
     linkMenus.push({
       single: true,

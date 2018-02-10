@@ -10,15 +10,13 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 import './index.less';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -46,7 +44,8 @@ export default class FeeSummaryDetail extends Component {
     summary: {},
   }
 
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   recColumns = [{
     title: '业务流水号',
     dataIndex: 'biz_seq_no',

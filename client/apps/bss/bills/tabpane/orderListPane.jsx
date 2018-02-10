@@ -6,10 +6,7 @@ import { Button, Icon } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
@@ -19,7 +16,7 @@ const formatMsg = format(messages);
   }),
   { }
 )
-export default class InvoiceListPane extends Component {
+export default class OrderListPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
 
@@ -28,8 +25,8 @@ export default class InvoiceListPane extends Component {
     selectedRowKeys: [],
 
   };
-  msg = key => formatMsg(this.props.intl, key);
-
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
@@ -44,56 +41,42 @@ export default class InvoiceListPane extends Component {
       },
     };
     const columns = [{
-      title: '发票号码',
-      dataIndex: 'invoice_no',
+      title: '订单关联号',
+      dataIndex: 'order_rel_no',
       width: 150,
     }, {
-      title: '购买方',
-      dataIndex: 'buyer',
-      width: 250,
+      title: '客户单号',
+      dataIndex: 'cust_order_no',
+      width: 150,
     }, {
-      title: '发票类型',
-      dataIndex: 'invoice_type',
-      width: 200,
-    }, {
-      title: '金额',
-      dataIndex: 'amount',
-      width: 250,
-    }, {
-      title: '税率',
-      width: 100,
-      dataIndex: 'tax_rate',
+      title: '应收金额',
+      dataIndex: 'rec_amount',
+      width: 150,
       align: 'right',
     }, {
-      title: '税金',
-      dataIndex: 'tax_amount',
+      title: '调整金额',
+      dataIndex: 'adjust_amount',
       width: 150,
-    }, {
-      title: '价税合计',
-      dataIndex: 'total_amount',
-      width: 150,
+      align: 'right',
     }, {
       title: '备注',
       dataIndex: 'remark',
     }, {
-      title: '开票申请人',
-      dataIndex: 'applied_by',
+      title: '订单日期',
+      width: 150,
+      dataIndex: 'order_date',
+    }, {
+      title: '结单日期',
+      dataIndex: 'closed_date',
       width: 150,
     }, {
-      title: '申请日期',
-      dataIndex: 'applied_date',
-      width: 100,
-      align: 'right',
+      title: '审核时间',
+      dataIndex: 'auditted_date',
+      width: 150,
     }, {
-      title: '开票人',
-      dataIndex: 'invoiced_by',
-      width: 100,
-      align: 'right',
-    }, {
-      title: '开票日期',
-      dataIndex: 'invoiced_date',
-      width: 100,
-      align: 'right',
+      title: '审核人员',
+      dataIndex: 'auditted_by',
+      width: 150,
     }, {
       title: '操作',
       width: 80,
@@ -117,8 +100,11 @@ export default class InvoiceListPane extends Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Button type="primary" icon="plus-circle-o" onClick={this.handleTemplateDownload}>添加发票</Button>
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <Button icon="download" onClick={this.handleTemplateDownload}>导出</Button>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>

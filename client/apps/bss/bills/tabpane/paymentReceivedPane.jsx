@@ -6,10 +6,7 @@ import { Button, Icon } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
@@ -19,7 +16,7 @@ const formatMsg = format(messages);
   }),
   { }
 )
-export default class OrderListPane extends Component {
+export default class PaymentReceivedPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
 
@@ -28,7 +25,8 @@ export default class OrderListPane extends Component {
     selectedRowKeys: [],
 
   };
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
 
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -44,42 +42,34 @@ export default class OrderListPane extends Component {
       },
     };
     const columns = [{
-      title: '订单关联号',
-      dataIndex: 'order_rel_no',
+      title: '收款流水号',
+      dataIndex: 'seq_no',
+      width: 150,
+      fixed: 'left',
+    }, {
+      title: '发票号码',
+      dataIndex: 'invoice_no',
       width: 150,
     }, {
-      title: '客户单号',
-      dataIndex: 'cust_order_no',
-      width: 150,
+      title: '付款方',
+      dataIndex: 'payer',
+      width: 200,
     }, {
-      title: '应收金额',
-      dataIndex: 'rec_amount',
-      width: 150,
+      title: '金额',
+      dataIndex: 'amount',
+      width: 250,
+    }, {
+      title: '支付方式',
+      width: 100,
+      dataIndex: 'pay_mode',
       align: 'right',
     }, {
-      title: '调整金额',
-      dataIndex: 'adjust_amount',
+      title: '收款日期',
+      dataIndex: 'payment_date',
       width: 150,
-      align: 'right',
     }, {
       title: '备注',
       dataIndex: 'remark',
-    }, {
-      title: '订单日期',
-      width: 150,
-      dataIndex: 'order_date',
-    }, {
-      title: '结单日期',
-      dataIndex: 'closed_date',
-      width: 150,
-    }, {
-      title: '审核时间',
-      dataIndex: 'auditted_date',
-      width: 150,
-    }, {
-      title: '审核人员',
-      dataIndex: 'auditted_by',
-      width: 150,
     }, {
       title: '操作',
       width: 80,
@@ -103,8 +93,11 @@ export default class OrderListPane extends Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Button icon="download" onClick={this.handleTemplateDownload}>导出</Button>
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <Button icon="plus-circle-o" onClick={this.handleTemplateDownload}>记录收款</Button>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>

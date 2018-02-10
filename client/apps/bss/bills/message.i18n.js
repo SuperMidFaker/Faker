@@ -3,14 +3,19 @@ import { formati18n } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
-  fee: {
-    id: 'bss.fee',
-    defaultMessage: '费用',
+  bills: {
+    id: 'bss.bills',
+    defaultMessage: '账单管理',
   },
-  feeSummary: {
-    id: 'bss.fee.summary',
-    defaultMessage: '费用汇总',
+  customerBills: {
+    id: 'bss.bills.customer.bills',
+    defaultMessage: '客户账单',
   },
+  vendorBills: {
+    id: 'bss.bills.vendor.bills',
+    defaultMessage: '供应商账单',
+  },
+
 });
 
 export default messages;

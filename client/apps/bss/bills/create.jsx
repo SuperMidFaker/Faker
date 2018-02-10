@@ -8,14 +8,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -43,7 +41,8 @@ export default class ReceivableBillDetail extends Component {
     summary: {},
   }
 
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
 
   handleTabChange = (activeTab) => {
     this.setState({ activeTab });
@@ -58,10 +57,10 @@ export default class ReceivableBillDetail extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('payable')}
+                {this.msg('fee')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('payableBill')}
+                {this.msg('feeSummary')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.orderRelNo}
@@ -81,7 +80,7 @@ export default class ReceivableBillDetail extends Component {
               <Description term="入库时间">{summary.completed_date && moment(summary.completed_date).format('YYYY.MM.DD HH:mm')}</Description>
             </DescriptionList>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} >
+          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="应收明细" key="receiveDetails" />
               <TabPane tab="应付明细" key="putawayDetails" />

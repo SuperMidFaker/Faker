@@ -99,14 +99,8 @@ import * as SCOFFlow from './scof/flow';
 import * as SCOFSettings from './scof/settings';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
-import * as BSSFeeSummary from './bss/fee/summary';
-import * as BSSFeeStatement from './bss/fee/statement';
-import * as BSSReceivableBill from './bss/receivable/bill';
-import * as BSSReceivableInvoice from './bss/receivable/invoice';
-import * as BSSPaymentReceived from './bss/receivable/payment';
-import * as BSSPayableBill from './bss/payable/bill';
-import * as BSSPayableInvoice from './bss/payable/invoice';
-import * as BSSPaymentMade from './bss/payable/payment';
+import * as BSSSettlement from './bss/settlement';
+import * as BSSBills from './bss/bills';
 
 export default(store) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -511,28 +505,13 @@ export default(store) => {
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
             <IndexRedirect to="/bss/dashboard" />
             <Route path="dashboard" component={BSSDashboard.Index} />
-            <Route path="fee">
-              <Route path="summary" >
-                <IndexRoute component={BSSFeeSummary.List} />
-                <Route path=":orderRelNo" component={BSSFeeSummary.Detail} />
-              </Route>
-              <Route path="statement" component={BSSFeeStatement.List} />
+            <Route path="settlement">
+              <IndexRoute component={BSSSettlement.List} />
+              <Route path=":orderRelNo" component={BSSSettlement.Detail} />
             </Route>
-            <Route path="receivable">
-              <Route path="bill" >
-                <IndexRoute component={BSSReceivableBill.List} />
-                <Route path=":billNo" component={BSSReceivableBill.Detail} />
-              </Route>
-              <Route path="invoice" component={BSSReceivableInvoice.List} />
-              <Route path="payment" component={BSSPaymentReceived.List} />
-            </Route>
-            <Route path="payable">
-              <Route path="bill" >
-                <IndexRoute component={BSSPayableBill.List} />
-                <Route path=":billNo" component={BSSPayableBill.Detail} />
-              </Route>
-              <Route path="invoice" component={BSSPayableInvoice.List} />
-              <Route path="payment" component={BSSPaymentMade.List} />
+            <Route path="bills">
+              <IndexRoute component={BSSBills.List} />
+              <Route path=":billNo" component={BSSBills.Detail} />
             </Route>
           </Route>
         </Route>
