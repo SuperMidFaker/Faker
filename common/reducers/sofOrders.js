@@ -41,7 +41,7 @@ const initialState = {
     tabKey: null,
     order: {},
     orderProductLoading: false,
-    orderProducts: {
+    orderProductList: {
       totalCount: 0,
       current: 1,
       pageSize: 20,
@@ -147,7 +147,7 @@ export default function reducer(state = initialState, action) {
         dock: {
           ...state.dock,
           orderProductLoading: true,
-          orderProducts: initialState.dock.orderProducts,
+          orderProductList: initialState.dock.orderProductList,
         },
       };
     case actionTypes.LOAD_ORDPRODUCTS_SUCCEED:
@@ -156,7 +156,7 @@ export default function reducer(state = initialState, action) {
         dock: {
           ...state.dock,
           orderProductLoading: false,
-          orderProducts: action.result.data,
+          orderProductList: action.result.data,
         },
       };
     case actionTypes.LOAD_ORDPRODUCTS_FAILED:

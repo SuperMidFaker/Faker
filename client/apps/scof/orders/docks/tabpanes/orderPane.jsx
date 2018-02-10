@@ -7,6 +7,7 @@ import { GOODSTYPES, TRANS_MODE, WRAP_TYPE } from 'common/constants';
 import DataTable from 'client/components/DataTable';
 import InfoItem from 'client/components/InfoItem';
 import { MdIcon } from 'client/components/FontIcon';
+import { loadOrderProducts } from 'common/reducers/sofOrders';
 import { formatMsg } from '../../message.i18n';
 
 const { Panel } = Collapse;
@@ -14,14 +15,32 @@ const { Panel } = Collapse;
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
+  dockVisible: state.sofOrders.dock.visible,
   order: state.sofOrders.dock.order,
-}), { })
+  orderProductList: state.sofOrders.dock.orderProductList,
+}), { loadOrderProducts })
 export default class OrderPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     order: PropTypes.shape({
       shipmt_order_no: PropTypes.string,
     }).isRequired,
+  }
+  componentDidMount() {
+    this.props.loadOrderProducts({
+      orderNo: this.props.order.shipmt_order_no,
+      pageSize: this.props.orderProductList.pageSize,
+      current: this.props.orderProductList.current,
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.dockVisible && !this.props.dockVisible) {
+      nextProps.loadOrderProducts({
+        orderNo: nextProps.order.shipmt_order_no,
+        pageSize: nextProps.orderProductList.pageSize,
+        current: nextProps.orderProductList.current,
+      });
+    }
   }
   msg = formatMsg(this.props.intl)
   productColumns = [{
@@ -88,10 +107,10 @@ export default class OrderPane extends React.Component {
   }, {
     title: '扩展属性4',
     width: 140,
-    dataIndex: 'attrib_3_string',
+    dataIndex: 'attrib_4_string',
   }]
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadProductCargo(params),
+    fetcher: params => this.props.loadOrderProducts(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -109,10 +128,11 @@ export default class OrderPane extends React.Component {
       };
       return params;
     },
-    remotes: this.props.cargolist,
+    remotes: this.props.orderProductList,
   })
   render() {
-    const { order } = this.props;
+    const { order, orderProductList } = this.props;
+    this.dataSource.remotes = orderProductList;
     const goods = GOODSTYPES.filter(gt => gt.value === order.cust_shipmt_goods_type)[0];
     const transMode = TRANS_MODE.filter(tm => tm.value === order.cust_shipmt_trans_mode)[0];
     const wrapType = WRAP_TYPE.filter(wt => wt.value === order.cust_shipmt_wrap_type)[0];
