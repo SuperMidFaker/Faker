@@ -119,13 +119,21 @@ const messages = defineMessages({
     id: 'cms.expense.bill.lading.no',
     defaultMessage: '提运单号',
   },
-  revenue: {
-    id: 'cms.expense.revenue',
-    defaultMessage: '应收',
+  receivableTotal: {
+    id: 'cms.expense.receivable.total',
+    defaultMessage: '应收合计',
   },
-  serviceCharges: {
-    id: 'cms.expense.service.charges',
-    defaultMessage: '服务收费',
+  serviceSummary: {
+    id: 'cms.expense.service.summary',
+    defaultMessage: '服务费小计',
+  },
+  forwarderCharge: {
+    id: 'cms.expense.forwarder.charge',
+    defaultMessage: '换单费',
+  },
+  advanceSummary: {
+    id: 'cms.expense.advance.summary',
+    defaultMessage: '代垫费小计',
   },
   cushBill: {
     id: 'cms.expense.cushion.bill',
@@ -161,11 +169,11 @@ const messages = defineMessages({
   },
   ccdCount: {
     id: 'cms.expense.ccd.count',
-    defaultMessage: '报关单数量',
+    defaultMessage: '拼单数',
   },
   ccsCount: {
     id: 'cms.expense.ccs.count',
-    defaultMessage: '报关单联数',
+    defaultMessage: '联单数',
   },
   itemCount: {
     id: 'cms.expense.item.count',
@@ -177,7 +185,7 @@ const messages = defineMessages({
   },
   declValue: {
     id: 'cms.expense.decl.value',
-    defaultMessage: '申报货值',
+    defaultMessage: '进出口金额',
   },
   acptTime: {
     id: 'cms.expense.accept.time',

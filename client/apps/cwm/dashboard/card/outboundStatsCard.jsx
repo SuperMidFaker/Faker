@@ -50,7 +50,6 @@ export default class OutboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('soPending')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.soPendings}
           style={{ width: '16%' }}
           type="warning"
@@ -58,7 +57,6 @@ export default class OutboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('toAllocate')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.unallocated}
           style={{ width: '16%' }}
           type="processing"
@@ -66,7 +64,6 @@ export default class OutboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('toPick')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.allocated}
           style={{ width: '16%' }}
           type="processing"
@@ -74,7 +71,6 @@ export default class OutboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('toShip')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.picked}
           style={{ width: '16%' }}
           type="processing"
@@ -82,7 +78,6 @@ export default class OutboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('outboundCompleted')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.outboundCompleted}
           style={{ width: '16%' }}
           type="success"

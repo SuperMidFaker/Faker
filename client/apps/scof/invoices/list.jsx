@@ -15,7 +15,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { loadInvoices } from 'common/reducers/sofInvoice';
 import { PARTNER_ROLES } from 'common/constants';
-import { formatMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -63,8 +63,11 @@ export default class InvoiceList extends React.Component {
   }
   state = {
     importPanelVisible: false,
+    selectedRows: [],
+    selectedRowKeys: [],
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadInvoices(params),
     resolve: result => result.data,
@@ -90,13 +93,16 @@ export default class InvoiceList extends React.Component {
   columns = [{
     title: '发票号',
     dataIndex: 'invoice_no',
+    width: 150,
   }, {
     title: '发票日期',
     dataIndex: 'invoice_date',
     render: o => o && moment(o).format('YYYY-MM-DD'),
+    width: 100,
   }, {
     title: '状态',
     dataIndex: 'invoice_status',
+    width: 100,
     render: (o) => {
       switch (o) {
         case 0:
@@ -112,11 +118,13 @@ export default class InvoiceList extends React.Component {
   }, {
     title: '购买方',
     dataIndex: 'buyer',
+    width: 250,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
     title: '销售方',
     dataIndex: 'seller',
+    width: 250,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
@@ -125,22 +133,32 @@ export default class InvoiceList extends React.Component {
   }, {
     title: '总金额',
     dataIndex: 'total_amount',
+    align: 'right',
+    width: 120,
   }, {
     title: '币制',
     dataIndex: 'currency',
+    width: 100,
     render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
     this.props.currencies.find(curr => curr.curr_code === o).curr_name,
   }, {
     title: '总数量',
     dataIndex: 'total_qty',
+    align: 'right',
+    width: 120,
   }, {
     title: '总净重',
     dataIndex: 'total_net_wt',
+    align: 'right',
+    width: 120,
   }, {
     dataIndex: 'OPS_COL',
-    width: 45,
+    width: 100,
     fixed: 'right',
-    render: (o, record) => <RowAction onClick={this.handleDetail} icon="form" tooltip="明细" row={record} />,
+    render: (o, record) => (<span>
+      <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />
+      <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />
+    </span>),
   }]
   handleCreate = () => {
     this.context.router.push('/scof/invoices/create');
@@ -168,6 +186,9 @@ export default class InvoiceList extends React.Component {
     const filter = { ...this.props.filter, partner: value };
     this.handleReload(filter);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [], selectedRows: [] });
+  }
   invoicesUploaded = () => {
     const { filter } = this.props;
     this.handleReload(filter);
@@ -180,6 +201,13 @@ export default class InvoiceList extends React.Component {
       invoiceList, partners, loading,
     } = this.props;
     this.dataSource.remotes = invoiceList;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      selectedRows: this.state.selectedRows,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys, selectedRows });
+      },
+    };
     const toolbarActions = (<span>
       <SearchBox
         placeholder={this.msg('searchPlaceholder')}
@@ -218,6 +246,9 @@ export default class InvoiceList extends React.Component {
           <DataTable
             toolbarActions={toolbarActions}
             dataSource={this.dataSource}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             loading={loading}
             rowKey="id"

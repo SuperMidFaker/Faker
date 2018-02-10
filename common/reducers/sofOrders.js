@@ -25,9 +25,15 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'MANUAL_ENTFI', 'MANUAL_ENTFI_SUCCEED', 'MANUAL_ENTFI_FAIL',
   'ATTACHMENT_UPLOAD', 'ATTACHMENT_UPLOAD_SUCCEED', 'ATTACHMENT_UPLOAD_FAIL',
   'LOAD_ATTACHMENTS', 'LOAD_ATTACHMENTS_SUCCEED', 'LOAD_ATTACHMENTS_FAIL',
+  'TOGGLE_INVOICE_MODAL',
+  'LOAD_UNSHIPPED_INVOICES', 'LOAD_UNSHIPPED_INVOICES_SUCCEED', 'LOAD_UNSHIPPED_INVOICES_FAIL',
+  'GET_ORDER_DETAILS', 'GET_ORDER_DETAILS_SUCCEED', 'GET_ORDER_DETAILS_FAIL',
 ]);
 
 const initialState = {
+  invoiceModal: {
+    visible: false,
+  },
   loaded: true,
   loading: false,
   orderSaving: false,
@@ -36,7 +42,7 @@ const initialState = {
     tabKey: null,
     order: {},
     orderProductLoading: false,
-    orderProducts: {
+    orderProductList: {
       totalCount: 0,
       current: 1,
       pageSize: 20,
@@ -67,6 +73,8 @@ const initialState = {
     ccb_need_exchange: 0,
     containers: [],
     subOrders: [],
+    invoices: [],
+    orderDetails: [],
   },
   formRequires: {
     orderTypes: [],
@@ -141,7 +149,7 @@ export default function reducer(state = initialState, action) {
         dock: {
           ...state.dock,
           orderProductLoading: true,
-          orderProducts: initialState.dock.orderProducts,
+          orderProductList: initialState.dock.orderProductList,
         },
       };
     case actionTypes.LOAD_ORDPRODUCTS_SUCCEED:
@@ -150,7 +158,7 @@ export default function reducer(state = initialState, action) {
         dock: {
           ...state.dock,
           orderProductLoading: false,
-          orderProducts: action.result.data,
+          orderProductList: action.result.data,
         },
       };
     case actionTypes.LOAD_ORDPRODUCTS_FAILED:
@@ -184,6 +192,10 @@ export default function reducer(state = initialState, action) {
           [action.params.uuid]: action.result.data,
         },
       };
+    case actionTypes.TOGGLE_INVOICE_MODAL:
+      return { ...state, invoiceModal: { ...state.invoiceModal, visible: action.visible } };
+    case actionTypes.GET_ORDER_DETAILS_SUCCEED:
+      return { ...state, formData: { ...state.formData, orderDetails: action.result.data } };
     default:
       return state;
   }
@@ -551,6 +563,43 @@ export function loadOrderAttachments(orderNo) {
       endpoint: 'v1/sof/order/attachements/load',
       method: 'get',
       params: { orderNo },
+    },
+  };
+}
+
+export function toggleInvoiceModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_INVOICE_MODAL,
+    visible,
+  };
+}
+
+export function loadUnshippedInvoices(partnerId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_UNSHIPPED_INVOICES,
+        actionTypes.LOAD_UNSHIPPED_INVOICES_SUCCEED,
+        actionTypes.LOAD_UNSHIPPED_INVOICES_FAIL,
+      ],
+      endpoint: 'v1/sof/invoices/unshipped/load',
+      method: 'get',
+      params: { partnerId },
+    },
+  };
+}
+
+export function getOrderDetails(invoiceNos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_ORDER_DETAILS,
+        actionTypes.GET_ORDER_DETAILS_SUCCEED,
+        actionTypes.GET_ORDER_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/sof/invoice/details/get',
+      method: 'get',
+      params: { invoiceNos },
     },
   };
 }

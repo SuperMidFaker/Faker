@@ -50,7 +50,6 @@ export default class InboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('asnPending')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.asnPendings}
           style={{ width: '20%' }}
           type="warning"
@@ -59,7 +58,6 @@ export default class InboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('toReceive')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.creates}
           style={{ width: '20%' }}
           type="processing"
@@ -67,7 +65,6 @@ export default class InboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('toPutAway')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.toPutAways}
           style={{ width: '20%' }}
           type="processing"
@@ -75,7 +72,6 @@ export default class InboundStatsCard extends Component {
         />
         <ChartCard
           title={this.msg('inboundCompleted')}
-          action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.inboundCompleted}
           style={{ width: '20%' }}
           type="success"

@@ -16,6 +16,7 @@ import CwmReceivingForm from './forms/cwmReceivingForm';
 import CwmShippingForm from './forms/cwmShippingForm';
 import ContainerPane from './tabpane/containerPane';
 import InvoicePane from './tabpane/invoicePane';
+import OrderDetailsPane from './tabpane/orderDetailsPane';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -384,7 +385,7 @@ export default class OrderForm extends Component {
                       </FormItem>
                     </Col>
                     <Col span={6}>
-                      <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
+                      <FormItem label={this.msg('跟单人员')} {...formItemLayout}>
                         <Select value={formData.exec_login_id} onChange={value => this.handleChange('exec_login_id', value)}>
                           {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
                         </Select>
@@ -655,6 +656,28 @@ export default class OrderForm extends Component {
                     </Panel>
                   </Collapse>
                 </Card>
+                <Card
+                  title={<span>流程
+                    <Select
+                      placeholder="请选择流程规则"
+                      showSearch
+                      allowClear
+                      optionFilterProp="children"
+                      value={formData.flow_id}
+                      onChange={this.handleFlowChange}
+                      style={{ width: '50%', marginLeft: 24 }}
+                    >
+                      {flows.map(data =>
+                        <Option key={data.id} value={data.id}>{data.name}</Option>)}
+                    </Select>
+                  </span>}
+                  loading={this.props.graphLoading}
+                  bodyStyle={{ padding: 16 }}
+                >
+                  <Steps direction="vertical" current={current}>
+                    {this.renderSteps(formData.subOrders, orderShipment)}
+                  </Steps>
+                </Card>
               </FormPane>
             </TabPane>
             <TabPane tab="商业发票" key="invoice">
@@ -663,28 +686,10 @@ export default class OrderForm extends Component {
             <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
               <ContainerPane />
             </TabPane>
+            <TabPane tab="订单明细" key="details">
+              <OrderDetailsPane />
+            </TabPane>
           </Tabs>
-        </Card>
-        <Card
-          title={<span>流程
-            <Select
-              placeholder="请选择流程规则"
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              value={formData.flow_id}
-              onChange={this.handleFlowChange}
-              style={{ width: '50%', marginLeft: 24 }}
-            >
-              {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
-            </Select>
-          </span>}
-          loading={this.props.graphLoading}
-          bodyStyle={{ padding: 16 }}
-        >
-          <Steps direction="vertical" current={current}>
-            {this.renderSteps(formData.subOrders, orderShipment)}
-          </Steps>
         </Card>
       </div>
     );
