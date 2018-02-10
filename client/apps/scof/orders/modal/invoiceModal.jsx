@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Transfer } from 'antd';
-import { toggleInvoiceModal, loadUnshippedInvoices, setClientForm } from 'common/reducers/sofOrders';
+import { toggleInvoiceModal, loadUnshippedInvoices, setClientForm, getOrderDetails } from 'common/reducers/sofOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -14,8 +14,11 @@ const formatMsg = format(messages);
   state => ({
     visible: state.sofOrders.invoiceModal.visible,
     formData: state.sofOrders.formData,
+    orderDetails: state.sofOrders.formData.orderDetails,
   }),
-  { loadUnshippedInvoices, toggleInvoiceModal, setClientForm }
+  {
+    loadUnshippedInvoices, toggleInvoiceModal, setClientForm, getOrderDetails,
+  }
 )
 export default class InvoiceModal extends Component {
   static propTypes = {
@@ -53,10 +56,11 @@ export default class InvoiceModal extends Component {
     this.props.toggleInvoiceModal(false);
   }
   handleOk = () => {
-    const { targetKeys, origInvoices } = this.state;
+    const { targetKeys, origInvoices, orderDetails } = this.state;
     const data = origInvoices.filter(inv => targetKeys.find(key => key === inv.invoice_no));
     this.props.handleOk(data);
-    this.props.setClientForm(-1, { invoices: data });
+    this.props.getOrderDetails(targetKeys.join(','));
+    this.props.setClientForm(-1, { invoices: data, orderDetails });
     this.handleCancel();
   }
   handleChange = (nextTargetKeys) => {
