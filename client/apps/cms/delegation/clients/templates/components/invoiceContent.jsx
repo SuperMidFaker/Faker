@@ -304,7 +304,7 @@ export default class InvoiceContent extends React.Component {
               { !!invoice.remark_en && <MSTextArea value={invoice.remark} field='remark' autosize={{ minRows: 1, maxRows: 6 }} onChange={this.handleFill} />}
             </Row>
             <span />
-            <div style={{ 'padding-top': 20 }}>
+            <div style={{ 'paddingTop': 20 }}>
               <Row>
                 <Col sm={7}>
                   <MSTextArea value={invoice.footer1} field='footer1' autosize={{ minRows: 3, maxRows: 6 }} onChange={this.handleFill} />

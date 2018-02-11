@@ -9,7 +9,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import InvoiceContent from './invoiceContent';
 import { formatMsg } from './message.i18n';
 import PageHeader from 'client/components/PageHeader';
-import { invTempPdfDef } from './previewPdfs/invTemplatePdf';
+import PreviewPdf from './previewPdfs/invTemplatePdf';
 
 const { Sider } = Layout;
 const { Panel } = Collapse;
@@ -71,23 +71,7 @@ export default class InvoiceTemplate extends React.Component {
     invData: PropTypes.object.isRequired,
     trxModes: PropTypes.array.isRequired,
   }
-  componentDidMount() {
-    let script;
-    if (!document.getElementById('pdfmake-min')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-min';
-      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-    if (!document.getElementById('pdfmake-vfsfont')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-vfsfont';
-      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }
+  
   msg = formatMsg(this.props.intl)
   handleCheckChange = (field, value) => {
     if (value !== '') {
@@ -181,10 +165,7 @@ export default class InvoiceTemplate extends React.Component {
         <Layout>
           <PageHeader>
             <PageHeader.Actions>
-              <Tooltip title={'预览'} placement="bottom">
-                <Button icon="printer" onClick={this.handlePreview}>
-                </Button>
-              </Tooltip>
+              <PreviewPdf />
             </PageHeader.Actions>
           </PageHeader>
           <InvoiceContent />
