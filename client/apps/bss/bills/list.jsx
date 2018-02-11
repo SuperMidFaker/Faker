@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, DatePicker, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
@@ -13,13 +13,10 @@ import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { formatMsg } from '../message.i18n';
-
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
-
+const { RangePicker } = DatePicker;
 
 @connectFetch()()
 @injectIntl
@@ -36,7 +33,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'bss',
 })
-export default class PayableBillList extends React.Component {
+export default class BillsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -46,7 +43,6 @@ export default class PayableBillList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
@@ -54,6 +50,7 @@ export default class PayableBillList extends React.Component {
     }
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
     title: '账单编号',
     dataIndex: 'bill_no',
@@ -71,7 +68,7 @@ export default class PayableBillList extends React.Component {
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
-    title: '供应商',
+    title: '客户',
     width: 240,
     dataIndex: 'billing_party',
     render: o => <TrimSpan text={o} maxLen={16} />,
@@ -92,11 +89,11 @@ export default class PayableBillList extends React.Component {
     dataIndex: 'bill_amount',
     width: 150,
   }, {
-    title: '发票金额',
+    title: '开票金额',
     dataIndex: 'invoiced_amount',
     width: 150,
   }, {
-    title: '实付金额',
+    title: '实收金额',
     dataIndex: 'payment_rec_amount',
     width: 150,
   }, {
@@ -157,7 +154,7 @@ export default class PayableBillList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/payable/bill/${row.order_rel_no}`;
+    const link = `/bss/receivable/bill/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -176,7 +173,16 @@ export default class PayableBillList extends React.Component {
       age: 42,
       address: '西湖区湖底公园1号',
     }];
-
+    const tabList = [
+      {
+        key: 'customerBills',
+        tab: this.msg('customerBills'),
+      },
+      {
+        key: 'vendorBills',
+        tab: this.msg('vendorBills'),
+      },
+    ];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -210,36 +216,42 @@ export default class PayableBillList extends React.Component {
     */
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
+      <Select
+        showSearch
+        placeholder="结算对象"
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+      />
+      <RangePicker
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      />
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="应收合计">{10000}</Summary.Item>
-        <Summary.Item label="应付合计">{6666}</Summary.Item>
-        <Summary.Item label="利润合计">{3334}</Summary.Item>
+        <Summary.Item label="账单金额合计">{10000}</Summary.Item>
+        <Summary.Item label="确认金额合计">{6666}</Summary.Item>
+        <Summary.Item label="开票金额合计">{3334}</Summary.Item>
+        <Summary.Item label="收款金额合计">{3334}</Summary.Item>
       </Summary>
     );
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
+        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('payable')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('payableBill')}
+                {this.msg('bills')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
-          <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">未对账</RadioButton>
-              <RadioButton value="confirmed">已对账</RadioButton>
-              <RadioButton value="applied">已申请</RadioButton>
-              <RadioButton value="paid">已付款</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
+              {this.msg('新建账单')}
+            </Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable

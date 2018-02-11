@@ -6,9 +6,9 @@ const messages = defineMessages({
     id: 'bss.module.dashboard',
     defaultMessage: '工作台',
   },
-  fee: {
-    id: 'bss.module.fee',
-    defaultMessage: '收支费用',
+  settlement: {
+    id: 'bss.module.settlement',
+    defaultMessage: '费用结算',
   },
   feeSummary: {
     id: 'bss.module.fee.summary',
@@ -18,13 +18,9 @@ const messages = defineMessages({
     id: 'bss.module.fee.statement',
     defaultMessage: '费用明细',
   },
-  revenue: {
-    id: 'bss.module.revenue',
-    defaultMessage: '营业收入',
-  },
-  customerBill: {
-    id: 'bss.module.revenue.customer.bill',
-    defaultMessage: '客户账单',
+  bills: {
+    id: 'bss.module.bills',
+    defaultMessage: '账单管理',
   },
   receivableInvoice: {
     id: 'bss.module.revenue.invoice',
@@ -37,10 +33,6 @@ const messages = defineMessages({
   cost: {
     id: 'bss.module.cost',
     defaultMessage: '成本支出',
-  },
-  vendorBill: {
-    id: 'bss.module.cost.vendor.bill',
-    defaultMessage: '供应商账单',
   },
   payableInvoice: {
     id: 'bss.module.cost.invoice',

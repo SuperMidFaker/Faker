@@ -10,10 +10,10 @@ import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
+import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { formatMsg } from '../message.i18n';
-
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -36,7 +36,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'bss',
 })
-export default class PaymentReceivedList extends React.Component {
+export default class SettlementList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -46,43 +46,63 @@ export default class PaymentReceivedList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
-  }
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
-      // this.handleListReload();
-    }
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
-    title: '收款流水号',
-    dataIndex: 'seq_no',
+    title: '订单关联号',
+    dataIndex: 'order_rel_no',
     width: 150,
     fixed: 'left',
+    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '发票号码',
-    dataIndex: 'invoice_no',
-    width: 150,
-  }, {
-    title: '付款方',
-    dataIndex: 'payer',
+    title: '客户',
     width: 200,
+    dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
-    title: '金额',
-    dataIndex: 'amount',
-    width: 250,
+    title: '客户单号',
+    width: 180,
+    dataIndex: 'cust_order_no',
   }, {
-    title: '支付方式',
+    title: '状态',
     width: 100,
-    dataIndex: 'pay_mode',
+    dataIndex: 'status',
   }, {
-    title: '收款日期',
-    dataIndex: 'payment_date',
+    title: '应收营收',
+    dataIndex: 'rec_amount',
     width: 150,
-    render: date => date && moment(date).format('MM.DD HH:mm'),
   }, {
-    title: '备注',
-    dataIndex: 'remark',
+    title: '应付成本',
+    dataIndex: 'pay_amount',
+    width: 150,
+  }, {
+    title: '利润',
+    dataIndex: 'profit',
+    width: 150,
+  }, {
+    title: '毛利率',
+    dataIndex: 'profit_rate',
+    width: 100,
+  }, {
+    title: '订单日期',
+    dataIndex: 'order_date',
+    width: 120,
+    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
+  }, {
+    title: '结单日期',
+    dataIndex: 'received_date',
+    width: 120,
+    render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
+  }, {
+    title: '审核时间',
+    dataIndex: 'created_date',
+    width: 120,
+    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
+  }, {
+    title: '审核人员',
+    dataIndex: 'created_by',
+    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -92,7 +112,7 @@ export default class PaymentReceivedList extends React.Component {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       }
-      return (<span><RowAction onClick={this.handleDetail} label="核销确认" row={record} /> </span>);
+      return (<span><RowAction onClick={this.handleDetail} label="费用明细" row={record} /> </span>);
     },
   }]
   handleStatusChange = (ev) => {
@@ -121,7 +141,7 @@ export default class PaymentReceivedList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/receivable/bill/${row.order_rel_no}`;
+    const link = `/bss/fee/summary/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -130,13 +150,18 @@ export default class PaymentReceivedList extends React.Component {
   render() {
     const { loading } = this.props;
     const mockData = [{
-      order_rel_no: '1',
-      name: '胡彦斌',
+      order_rel_no: '5',
+      status: '未审核',
       age: 32,
       address: '西湖区湖底公园1号',
     }, {
+      order_rel_no: '4',
+      status: '审核通过',
+      age: 42,
+      address: '西湖区湖底公园1号',
+    }, {
       order_rel_no: '2',
-      name: '胡彦祖',
+      status: '已入账单',
       age: 42,
       address: '西湖区湖底公园1号',
     }];
@@ -187,9 +212,16 @@ export default class PaymentReceivedList extends React.Component {
         onChange={this.handleDateRangeChange}
       />
     </span>);
+    const bulkActions = (<span>
+      <Button icon="check-circle-o" onClick={this.handleBatchRelease}>批量审核</Button>
+      <Button icon="plus-square-o" onClick={this.handleBatchRelease}>加入账单</Button>
+      <Button icon="plus" onClick={this.handleBatchRelease}>新建账单</Button>
+    </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="收款金额合计">{10000}</Summary.Item>
+        <Summary.Item label="应收合计">{10000}</Summary.Item>
+        <Summary.Item label="应付合计">{6666}</Summary.Item>
+        <Summary.Item label="利润合计">{3334}</Summary.Item>
       </Summary>
     );
     return (
@@ -198,29 +230,28 @@ export default class PaymentReceivedList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('receivable')}
+                {this.msg('fee')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('paymentReceived')}
+                {this.msg('feeSummary')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">未核销</RadioButton>
-              <RadioButton value="writtenOff">已核销</RadioButton>
+              <RadioButton value="all">按订单汇总</RadioButton>
+              <RadioButton value="pending">按客户汇总</RadioButton>
+              <RadioButton value="inbound">按供应商汇总</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
-              {this.msg('收款记录')}
-            </Button>
+            <Button icon="file-excel">导出</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable
             toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}
             columns={this.columns}
@@ -228,6 +259,7 @@ export default class PaymentReceivedList extends React.Component {
             rowSelection={rowSelection}
             rowKey="id"
             loading={loading}
+            locale={{ emptyText: '当前没有待结算的费用' }}
             total={totCol}
           />
         </Content>

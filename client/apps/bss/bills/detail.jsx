@@ -12,14 +12,12 @@ import FeeDetailPane from './tabpane/feeDetailPane';
 import OrderListPane from './tabpane/orderListPane';
 import InvoiceListPane from './tabpane/invoiceListPane';
 import PaymentReceivedPane from './tabpane/paymentReceivedPane';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -43,20 +41,11 @@ export default class ReceivableBillDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    printed: false,
-    activeTab: '',
-    fullscreen: true,
     summary: {},
   }
 
-  msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
-
-  handleTabChange = (activeTab) => {
-    this.setState({ activeTab });
-  }
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
 
   render() {
     const { summary } = this.state;

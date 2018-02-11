@@ -8,10 +8,8 @@ import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
-import RowAction from 'client/components/RowAction';
-import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import Summary from 'client/components/Summary';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
 
@@ -37,7 +35,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'bss',
 })
-export default class ReceivableBillList extends React.Component {
+export default class FeeSummaryList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -47,7 +45,6 @@ export default class ReceivableBillList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
@@ -56,81 +53,71 @@ export default class ReceivableBillList extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: '账单编号',
-    dataIndex: 'bill_no',
+    title: '订单关联号',
+    dataIndex: 'order_rel_no',
     width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '开始日期',
-    dataIndex: 'start_date',
+    title: '业务类型',
+    width: 100,
+    dataIndex: 'biz_type',
+  }, {
+    title: '业务流水号',
+    width: 150,
+    dataIndex: 'biz_seq_no',
+  }, {
+    title: '收/付',
+    dataIndex: 'rec_pay',
+    width: 50,
+  }, {
+    title: '费用类目',
+    width: 100,
+    dataIndex: 'fee_category',
+  }, {
+    title: '费用名称',
+    width: 120,
+    dataIndex: 'fee',
+  }, {
+    title: '费用类型',
+    width: 100,
+    dataIndex: 'fee_type',
+  }, {
+    title: '金额(人民币)',
+    dataIndex: 'amount_rmb',
+    width: 100,
+  }, {
+    title: '外币金额',
+    dataIndex: 'amount_forc',
+    width: 100,
+  }, {
+    title: '外币币制',
+    dataIndex: 'currency',
+    width: 100,
+  }, {
+    title: '汇率',
+    dataIndex: 'currency_rate',
+    width: 100,
+  }, {
+    title: '订单日期',
+    dataIndex: 'expect_receive_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
-    title: '结束日期',
-    dataIndex: 'end_date',
-    width: 120,
-    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-  }, {
-    title: '客户',
-    width: 240,
-    dataIndex: 'billing_party',
-    render: o => <TrimSpan text={o} maxLen={16} />,
-  }, {
-    title: '账单类型',
-    dataIndex: 'bill_type',
-    width: 150,
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 100,
-  }, {
-    title: '总单数',
-    dataIndex: 'order_count',
-    width: 100,
-  }, {
-    title: '账单金额',
-    dataIndex: 'bill_amount',
-    width: 150,
-  }, {
-    title: '开票金额',
-    dataIndex: 'invoiced_amount',
-    width: 150,
-  }, {
-    title: '实收金额',
-    dataIndex: 'payment_rec_amount',
-    width: 150,
-  }, {
-    title: '对账时间',
-    dataIndex: 'confirmed_date',
-    width: 150,
-    render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
-    sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
-  }, {
-    title: '对账人员',
-    dataIndex: 'confirmed_by',
-    width: 80,
-  }, {
-    title: '销账时间',
-    dataIndex: 'written_date',
+    title: '创建时间',
+    dataIndex: 'created_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
-    sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
-    title: '销账人员',
-    dataIndex: 'written_by',
+    title: '创建人员',
+    dataIndex: 'created_by',
     width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      }
-      return (<span><RowAction onClick={this.handleDetail} label="账单详情" row={record} /> </span>);
-    },
+
   }]
   handleStatusChange = (ev) => {
     const filters = { ...this.props.filters, status: ev.target.value };
@@ -157,27 +144,39 @@ export default class ReceivableBillList extends React.Component {
       filters,
     });
   }
-  handleDetail = (row) => {
-    const link = `/bss/receivable/bill/${row.order_rel_no}`;
-    this.context.router.push(link);
-  }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
     const { loading } = this.props;
     const mockData = [{
-      order_rel_no: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
+      order_rel_no: '5',
+      biz_type: '清关',
+      biz_seq_no: 'ID170923455',
+      rec_pay: '收',
+      fee_category: '报关费',
+      fee: '联单费',
+      fee_type: '服务费',
+      amount_rmb: 250.00,
     }, {
-      order_rel_no: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
+      order_rel_no: '5',
+      biz_type: '清关',
+      biz_seq_no: 'ID170923455',
+      rec_pay: '收',
+      fee_category: '报关费',
+      fee: '联单费',
+      fee_type: '服务费',
+      amount_rmb: 250.00,
+    }, {
+      order_rel_no: '5',
+      biz_type: '清关',
+      biz_seq_no: 'ID170923455',
+      rec_pay: '收',
+      fee_category: '报关费',
+      fee: '联单费',
+      fee_type: '服务费',
+      amount_rmb: 250.00,
     }];
-
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -226,10 +225,9 @@ export default class ReceivableBillList extends React.Component {
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="账单金额合计">{10000}</Summary.Item>
-        <Summary.Item label="确认金额合计">{6666}</Summary.Item>
-        <Summary.Item label="开票金额合计">{3334}</Summary.Item>
-        <Summary.Item label="收款金额合计">{3334}</Summary.Item>
+        <Summary.Item label="应收合计">{10000}</Summary.Item>
+        <Summary.Item label="应付合计">{6666}</Summary.Item>
+        <Summary.Item label="利润合计">{3334}</Summary.Item>
       </Summary>
     );
     return (
@@ -238,25 +236,28 @@ export default class ReceivableBillList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('receivable')}
+                {this.msg('fee')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('receivableBill')}
+                {this.msg('feeStatement')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} >
+            <RadioGroup onChange={this.handleTypeChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">未对账</RadioButton>
-              <RadioButton value="confirmed">已对账</RadioButton>
-              <RadioButton value="invoiced">已开票</RadioButton>
-              <RadioButton value="writtenOff">已销账</RadioButton>
+              <RadioButton value="revenue">应收营收</RadioButton>
+              <RadioButton value="cost">应付成本</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup onChange={this.handleStatusChange} >
+              <RadioButton value="abnormal">异常费用</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
-              {this.msg('新建账单')}
+            <Button icon="file-excel">导出</Button>
+            <Button type="primary" icon="upload" onClick={this.handleCreateASN}>
+              {this.msg('导入费用')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
@@ -268,8 +269,9 @@ export default class ReceivableBillList extends React.Component {
             columns={this.columns}
             dataSource={mockData}
             rowSelection={rowSelection}
-            rowKey="id"
+            rowKey="asn_no"
             loading={loading}
+            locale={{ emptyText: '当前没有待结算的费用' }}
             total={totCol}
           />
         </Content>
