@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cms/invoice/', [
   'DELETE_TEMPLATE_FILE', 'DELETE_TEMPLATE_FILE_SUCCEED', 'DELETE_TEMPLATE_FILE_FAIL',
   'UPLOAD_IMG', 'UPLOAD_IMG_SUCCEED', 'UPLOAD_IMG_FAIL',
   'REMOVE_IMG', 'REMOVE_IMG_SUCCEED', 'REMOVE_IMG_FAIL',
+  'LOAD_INV_IMGS', 'LOAD_INV_IMGS_SUCCEED', 'LOAD_INV_IMGS_FAIL',
 ]);
 
 const initialState = {
@@ -37,6 +38,8 @@ const initialState = {
   docuDatas: [],
   docuBody: [],
   tempFile: { doc_name: '', url: '' },
+  logo: '',
+  seal: '',
 };
 
 export default function reducer(state = initialState, action) {
@@ -51,6 +54,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...action.result.data } };
     case actionTypes.SAVE_TEMP_CHANGE_SUCCEED:
       return { ...state, invData: { ...state.invData, ...action.payload.change } };
+    case actionTypes.LOAD_INV_IMGS_SUCCEED:
+      return { ...state, logo: action.result.data.logo, seal: action.result.data.seal }
     case actionTypes.LOAD_DOCU_DATAS_SUCCEED:
       return { ...state, docuDatas: action.result.data };
     case actionTypes.LOAD_DOCU_BODY_SUCCEED:
@@ -66,6 +71,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function loadInvImgs(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INV_IMGS,
+        actionTypes.LOAD_INV_IMGS_SUCCEED,
+        actionTypes.LOAD_INV_IMGS_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/imgs/load',
+      method: 'get',
+      params,
+    },
+  };
 }
 
 export function loadInvTemplates(params) {
