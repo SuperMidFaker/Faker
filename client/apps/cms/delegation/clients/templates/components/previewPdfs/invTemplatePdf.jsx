@@ -45,8 +45,8 @@ export default class PreviewPdf extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.invData.imgs !== this.props.invData.imgs) {
-      let logoUrl = '';
-      let sealUrl = '';
+      let logoUrl = 'https://suso-img.b0.upaiyun.com/2018/2/9/52982a4fd0b22b6db28a6628c3268527-1518173100678.png';
+      let sealUrl = 'https://suso-img.b0.upaiyun.com/2018/2/9/40%E6%B5%B7%E5%85%B3-%E7%BA%BF%E6%80%A7-1518173262699.png';
       if (nextProps.invData.imgs.filter(img => img.img_type === 0)[0]) {
         logoUrl = nextProps.invData.imgs.filter(img => img.img_type === 0)[0].url;
       }
@@ -71,22 +71,21 @@ export default class PreviewPdf extends Component {
         { text: `Terms Of Payment :`, style: 'subheader' },
         { text: `${docu.payment_terms || ''}`, style: 'headContent' },
         { text: 'Terms Of Delivery :', style: 'subheader' },
-        { text: `${trxText}`, style: 'headContent' },
+        { text: `${trxText}` , style: 'headContent'},
         { text: 'Insurance :', style: 'subheader' },
-        { text: `${docu.insurance || ''}`, style: 'headContent' },
-      ],
-    }, {
-      stack: [
-        { text: 'Notify contacts', style: 'subheader' },
-        { text: `${docu.notify || ''}`, style: 'headContent' },
-      ],
-    }],
-  ];
-  if (docu.smarks_en) {
-    body.push([{ text: `Shipping Marks\n ${docu.shipping_marks || ''}`, style: 'subheader', colSpan: 2 }, '']);
+        { text: `${docu.insurance || ''}` , style: 'headContent'}
+      ]},{
+        stack: [
+          { text: 'Notify contacts', style: 'subheader' },
+          { text: `${docu.notify || ''}` , style: 'headContent'}
+        ]
+      }]
+    ];
+    if (docu.smarks_en) {
+      body.push([{ text: `Shipping Marks\n ${docu.shipping_marks || ''}`, style: 'subheader', colSpan: 2, },'']);
+    }
+    return body;
   }
-  return body;
-}
 
   pdfBody = (docu, docuBody) => {
     const pdf = [];
@@ -94,12 +93,17 @@ export default class PreviewPdf extends Component {
     let widths = ['8%', '10%', '15%'];
     header.push({ text: '序号', style: 'tableHeader' }, { text: '货号', style: 'tableHeader' }, { text: '中文品名', style: 'tableHeader' });
     if (docu.eng_name_en) {
-      body.push(`${dbody.en_name || ''}`);
+      header.push({ text: '英文品名', style: 'tableHeader' });
+      widths.push('*');
     }
-    body.push(`${dbody.orig_country}`);
-    body.push({ text: `${dbody.g_qty || 0}`, alignment: 'right' });
+    header.push(
+      { text: '原产国', style: 'tableHeader' },
+      { text: '数量', style: 'tableHeader' },
+    );
+    widths.push('10%', '10%');
     if (docu.unit_price_en) {
-      body.push({ text: `${dbody.dec_price || 0}`, alignment: 'right' });
+      header.push({ text: '单价', style: 'tableHeader' });
+      widths.push('*');
     }
     header.push(
       { text: '金额', style: 'tableHeader' },
@@ -141,15 +145,16 @@ export default class PreviewPdf extends Component {
         footer.push('');
       }
       footer.push('');
+      footer.push({ text: `${(sumval.g_qty).toFixed(3)}`, alignment: 'right' });
+      if (docu.unit_price_en) {
+        footer.push({ text: `${(sumval.dec_price).toFixed(3)}`, alignment: 'right' });
+      }
+      footer.push({ text: `${(sumval.trade_total).toFixed(3)}`, alignment: 'right' });
+      footer.push({ text: `${(sumval.wet_wt).toFixed(3)}`, alignment: 'right' });
+      pdf.push(footer);
     }
-    footer.push('');
-    footer.push({ text: `${(sumval.g_qty).toFixed(3)}`, alignment: 'right' });
-    if (docu.unit_price_en) {
-      footer.push({ text: `${(sumval.dec_price).toFixed(3)}`, alignment: 'right' });
-    }
-    footer.push({ text: `${(sumval.trade_total).toFixed(3)}`, alignment: 'right' });
-    footer.push({ text: `${(sumval.wet_wt).toFixed(3)}`, alignment: 'right' });
-    pdf.push(footer);
+    const bodytable = { headerRows: 1, widths, body: pdf };
+    return bodytable;
   }
   invTempPdfDef = (docu, trxModes, docuBody) => {
     const trxmode = trxModes.find(trx => trx.key === docu.trxn_mode);
