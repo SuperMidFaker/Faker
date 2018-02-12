@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Alert, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
+import { Alert, Card, Col, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { viewSuBarcodeScanModal, receiveProduct } from 'common/reducers/cwmReceive';
 import { formatMsg } from '../../message.i18n';
@@ -186,7 +186,7 @@ export default class SuBarcodeScanModal extends Component {
         };
         if (seqQty.received_qty + remainQty <= seqQty.expect_qty) {
           suData.qty = remainQty;
-          dataSource.push(suData);
+          dataSource.unshift(suData);
           seqQty.received_qty += remainQty;
           productSeqMap.set(seqNo, seqQty);
           remainQty = 0;
@@ -194,7 +194,7 @@ export default class SuBarcodeScanModal extends Component {
         } else {
           const recvQty = seqQty.expect_qty - seqQty.received_qty;
           suData.qty = recvQty;
-          dataSource.push(suData);
+          dataSource.unshift(suData);
           remainQty -= recvQty;
           seqQty.received_qty = seqQty.expect_qty;
           productSeqMap.set(seqNo, seqQty);
@@ -325,20 +325,21 @@ export default class SuBarcodeScanModal extends Component {
     const { saveLoading, inboundHead: { su_setting: suSetting } } = this.props;
     const { alertMsg, dataSource, scanRecv } = this.state;
     const barColumns = [{
-      title: '行号',
-      dataIndex: 'asn_seq_no',
-      width: 100,
+      title: '序号',
+      dataIndex: 'id',
+      width: 50,
+      render: (id, row, index) => index + 1,
     }, {
       title: '货号',
       dataIndex: 'product_no',
-      width: 350,
+      width: 250,
     }, {
       title: '序列号',
       dataIndex: 'serial_no',
     }, {
       title: '收货数量',
       dataIndex: 'qty',
-      width: 300,
+      width: 200,
     }].concat(Object.keys(suSetting).filter(suKey => suSetting[suKey].enabled).map((suKey) => {
       const suConf = suSetting[suKey];
       if (suKey === 'expiry_date') {
@@ -370,11 +371,11 @@ export default class SuBarcodeScanModal extends Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 4 },
+        sm: { span: 3 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 20 },
+        sm: { span: 21 },
       },
     };
     /* const formButtonLayout = {
@@ -385,7 +386,7 @@ export default class SuBarcodeScanModal extends Component {
         },
         sm: {
           span: 16,
-          offset: 4,
+          offset: 3,
         },
       },
     }; */
@@ -399,25 +400,26 @@ export default class SuBarcodeScanModal extends Component {
         visible={this.props.visible}
         footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} >
-          <Form>
-            {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
-            <FormItem label="商品条码" {...formItemLayout}>
-              <Input
-                addonBefore={<Icon type="barcode" />}
-                value={scanRecv.su_barcode}
-                ref={this.handleSuInputRef}
-                onChange={this.handleScanSuChange}
-                onKeyDown={this.handleSuBarKeyDown}
-              />
-            </FormItem>
-            <FormItem label="商品货号" {...formItemLayout}>
-              <Input value={scanRecv.product_no} readOnly />
-            </FormItem>
-            <FormItem label="序列号" {...formItemLayout}>
-              <Input value={scanRecv.serial_no} readOnly />
-            </FormItem>
-            {Object.keys(suSetting).filter(suKey => suSetting[suKey].enabled).map((suKey) => {
+        <Col lg={11} sm={24}>
+          <Card bodyStyle={{ paddingBottom: 16 }} >
+            <Form>
+              {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
+              <FormItem label="商品条码" {...formItemLayout}>
+                <Input
+                  addonBefore={<Icon type="barcode" />}
+                  value={scanRecv.su_barcode}
+                  ref={this.handleSuInputRef}
+                  onChange={this.handleScanSuChange}
+                  onKeyDown={this.handleSuBarKeyDown}
+                />
+              </FormItem>
+              <FormItem label="商品货号" {...formItemLayout}>
+                <Input value={scanRecv.product_no} readOnly />
+              </FormItem>
+              <FormItem label="序列号" {...formItemLayout}>
+                <Input value={scanRecv.serial_no} readOnly />
+              </FormItem>
+              {Object.keys(suSetting).filter(suKey => suSetting[suKey].enabled).map((suKey) => {
               const suConf = suSetting[suKey];
               if (suKey === 'expiry_date') {
                 return (<FormItem label="失效日期" {...formItemLayout} key={suKey}>
@@ -428,24 +430,25 @@ export default class SuBarcodeScanModal extends Component {
                 <Input value={scanRecv[suKey]} readOnly />
               </FormItem>);
             })}
-            <FormItem label="收货数量" {...formItemLayout}>
-              <Input
-                addonBefore={<Icon type="barcode" />}
-                ref={this.handleQtyInputRef}
-                value={scanRecv.qty}
-                onChange={this.handleScanQtyChange}
-                onKeyDown={this.handleQtyKeyEnter}
-              />
-            </FormItem>
-            <FormItem label="收货时间" {...formItemLayout}>
-              <Input disabled defaultValue={moment().format('YYYY.MM.DD')} />
-            </FormItem>
-            {/* <FormItem {...formButtonLayout}>
+              <FormItem label="收货数量" {...formItemLayout}>
+                <Input
+                  addonBefore={<Icon type="barcode" />}
+                  ref={this.handleQtyInputRef}
+                  value={scanRecv.qty}
+                  onChange={this.handleScanQtyChange}
+                  onKeyDown={this.handleQtyKeyEnter}
+                />
+              </FormItem>
+              <FormItem label="收货时间" {...formItemLayout}>
+                <Input disabled defaultValue={moment().format('YYYY.MM.DD')} />
+              </FormItem>
+              {/* <FormItem {...formButtonLayout}>
               <Button type="primary">保存</Button>
             </FormItem> */}
-          </Form>
-        </Card>
-        <Card bodyStyle={{ padding: 0 }} >
+            </Form>
+          </Card>
+        </Col>
+        <Col lg={13} sm={24}>
           <Table
             size="middle"
             columns={barColumns}
@@ -456,7 +459,7 @@ export default class SuBarcodeScanModal extends Component {
               acc + (cur.width ? cur.width : 240), 0),
             }}
           />
-        </Card>
+        </Col>
       </Modal>
     );
   }
