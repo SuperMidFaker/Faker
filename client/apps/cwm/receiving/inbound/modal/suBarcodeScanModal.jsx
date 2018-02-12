@@ -135,9 +135,9 @@ export default class SuBarcodeScanModal extends Component {
       seqDatas.push(ds);
       seqDataSource.set(ds.asn_seq_no, seqDatas);
     });
-    const recvProductPromises = [];
+    let promRes = Promise.resolve();
     seqDataSource.forEach((seqDatas, seqNo) => {
-      recvProductPromises.push(this.props.receiveProduct(seqDatas.map(data => ({
+      promRes = promRes.then(() => this.props.receiveProduct(seqDatas.map(data => ({
         inbound_qty: data.qty,
         inbound_pack_qty: data.qty,
         received_by: username,
@@ -150,7 +150,7 @@ export default class SuBarcodeScanModal extends Component {
         avail: true,
       })), inboundNo, seqNo, inboundHead.asn_no, loginId, new Date()));
     });
-    Promise.all(recvProductPromises).then((result) => {
+    promRes.then((result) => {
       if (!result.error) {
         message.success('条码收货确认成功');
         this.handleCancel();
