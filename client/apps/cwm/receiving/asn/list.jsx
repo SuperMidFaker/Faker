@@ -14,16 +14,16 @@ import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { formatMsg } from '../message.i18n';
-import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const { Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
@@ -69,7 +69,6 @@ export default class ReceivingASNList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
@@ -101,9 +100,13 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'status',
     width: 120,
     render: (o) => {
-      const asnStatusKey = Object.keys(CWM_ASN_STATUS).filter(as => CWM_ASN_STATUS[as].value === o)[0];
+      const asnStatusKey = Object.keys(CWM_ASN_STATUS).filter(as =>
+        CWM_ASN_STATUS[as].value === o)[0];
       if (asnStatusKey) {
-        return (<Badge status={CWM_ASN_STATUS[asnStatusKey].badge} text={CWM_ASN_STATUS[asnStatusKey].text} />);
+        return (<Badge
+          status={CWM_ASN_STATUS[asnStatusKey].badge}
+          text={CWM_ASN_STATUS[asnStatusKey].text}
+        />);
       }
       return '';
     },
@@ -113,7 +116,8 @@ export default class ReceivingASNList extends React.Component {
     width: 100,
     render: (bonded, record) => {
       if (bonded) {
-        const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === record.bonded_intype)[0];
+        const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype =>
+          regtype.value === record.bonded_intype)[0];
         return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
       }
       return (<Tag>非保税</Tag>);
@@ -132,7 +136,7 @@ export default class ReceivingASNList extends React.Component {
           case CWM_SHFTZ_APIREG_STATUS.completed:
             return (<Badge status="success" text="接收完成" />);
           default:
-            break;
+            return null;
         }
       } else {
         switch (o) {
@@ -143,7 +147,7 @@ export default class ReceivingASNList extends React.Component {
           case CWM_SHFTZ_APIREG_STATUS.completed:
             return (<Badge status="success" text="备案完成" />);
           default:
-            break;
+            return null;
         }
       }
     },
@@ -152,7 +156,8 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'expect_receive_date',
     width: 140,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-    sorter: (a, b) => new Date(a.expect_receive_date).getTime() - new Date(b.expect_receive_date).getTime(),
+    sorter: (a, b) => new Date(a.expect_receive_date).getTime()
+    - new Date(b.expect_receive_date).getTime(),
   }, {
     title: '实际入库时间',
     dataIndex: 'received_date',
@@ -169,7 +174,8 @@ export default class ReceivingASNList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o)
+    && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -214,7 +220,7 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   handleListReload = () => {
-    const filters = this.props.filters;
+    const { filters } = this.props;
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
@@ -233,6 +239,11 @@ export default class ReceivingASNList extends React.Component {
           description: `${row.asn_no} 已释放`,
         });
         this.handleListReload();
+      } else if (result.error.message === 'release_null_supplier') {
+        notification.error({
+          message: '释放失败',
+          description: `${row.asn_no} 供货商为空`,
+        });
       }
     });
   }
@@ -249,6 +260,11 @@ export default class ReceivingASNList extends React.Component {
         this.handleListReload();
         this.setState({
           selectedRowKeys: [],
+        });
+      } else if (result.error.message === 'release_null_supplier') {
+        notification.error({
+          message: '释放失败',
+          description: 'ASN存在供货商为空',
         });
       }
     });
@@ -267,7 +283,7 @@ export default class ReceivingASNList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    const filters = this.props.filters;
+    const { filters } = this.props;
     this.props.loadAsnLists({
       whseCode: value,
       pageSize: this.props.asnlist.pageSize,
@@ -354,7 +370,7 @@ export default class ReceivingASNList extends React.Component {
       },
       remotes: this.props.asnlist,
     });
-    let columns = this.columns;
+    let { columns } = this;
     if (!defaultWhse.bonded) {
       columns = [...columns];
       columns.splice(6, 1);
@@ -384,7 +400,9 @@ export default class ReceivingASNList extends React.Component {
       >
         <Option value="all" key="all">全部供货商</Option>
         {suppliers.filter(supplier => (filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true))
-        .map(supplier => (<Option key={supplier.code} value={supplier.code}>{supplier.name}</Option>))}
+            .map(supplier => (
+              <Option key={supplier.code} value={supplier.code}>
+                {supplier.name}</Option>))}
       </Select>
     </span>);
     const bulkActions = filters.status === 'pending' && <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
@@ -399,7 +417,8 @@ export default class ReceivingASNList extends React.Component {
               <Breadcrumb.Item>
                 <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
-                    whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
+                    whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>
+                      {warehouse.name}</Option>))
                   }
                 </Select>
               </Breadcrumb.Item>

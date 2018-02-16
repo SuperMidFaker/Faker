@@ -101,6 +101,7 @@ import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
 import * as BSSSettlement from './bss/settlement';
 import * as BSSBills from './bss/bills';
+import * as BSSSettings from './bss/settings';
 
 export default(store) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -498,8 +499,8 @@ export default(store) => {
             <Route path="vendors" component={SCOFVendors.List} />
             <Route path="flow" component={SCOFFlow.List} />
             <Route path="settings">
-              <IndexRedirect to="/scof/settings/preferences" />
-              <Route path="preferences" component={SCOFSettings.Preferences} />
+              <IndexRedirect to="/scof/settings/ordertypes" />
+              <Route path="ordertypes" component={SCOFSettings.OrderTypes} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
@@ -512,6 +513,10 @@ export default(store) => {
             <Route path="bills">
               <IndexRoute component={BSSBills.List} />
               <Route path=":billNo" component={BSSBills.Detail} />
+            </Route>
+            <Route path="settings">
+              <IndexRedirect to="/bss/settings/fees" />
+              <Route path="fees" component={BSSSettings.Fees} />
             </Route>
           </Route>
         </Route>

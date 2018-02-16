@@ -112,6 +112,10 @@ export default class SuBarPutawayModal extends Component {
         message.success('条码上架成功');
         this.handleCancel();
       } else {
+        if (result.error.message === 'location_not_found') {
+          message.error(`库位${this.state.location}不存在`);
+          return;
+        }
         message.error('操作失败');
       }
     });
@@ -177,12 +181,12 @@ export default class SuBarPutawayModal extends Component {
         });
         return;
       }
-      const dataSource = this.state.dataSource.concat(unputawayDetails.map(pd => ({
+      const dataSource = unputawayDetails.map(pd => ({
         trace_id: pd.trace_id,
         serial_no: suScan.serial_no,
         product_no: suScan.product_no,
         qty: pd.qty,
-      })));
+      })).concat(this.state.dataSource);
       this.setState({
         subarcode: null,
         alertMsg: null,
@@ -200,6 +204,11 @@ export default class SuBarPutawayModal extends Component {
     });
   }
   barColumns = [{
+    title: '序号',
+    dataIndex: 'trace_id',
+    width: 100,
+    render: (id, row, index) => index + 1,
+  }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
     width: 300,

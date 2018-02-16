@@ -6,14 +6,14 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
-import QueueAnim from 'rc-queue-anim';
+import SideDrawer from 'client/components/SideDrawer';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
+
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -26,9 +26,6 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
   }),
   { }
 )
@@ -50,7 +47,7 @@ export default class SettlementList extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
-    title: '订单关联号',
+    title: '业务编号',
     dataIndex: 'order_rel_no',
     width: 150,
     fixed: 'left',
@@ -149,22 +146,7 @@ export default class SettlementList extends React.Component {
   }
   render() {
     const { loading } = this.props;
-    const mockData = [{
-      order_rel_no: '5',
-      status: '未审核',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    }, {
-      order_rel_no: '4',
-      status: '审核通过',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    }, {
-      order_rel_no: '2',
-      status: '已入账单',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    }];
+    const mockData = [];
 
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -217,53 +199,47 @@ export default class SettlementList extends React.Component {
       <Button icon="plus-square-o" onClick={this.handleBatchRelease}>加入账单</Button>
       <Button icon="plus" onClick={this.handleBatchRelease}>新建账单</Button>
     </span>);
-    const totCol = (
-      <Summary>
-        <Summary.Item label="应收合计">{10000}</Summary.Item>
-        <Summary.Item label="应付合计">{6666}</Summary.Item>
-        <Summary.Item label="利润合计">{3334}</Summary.Item>
-      </Summary>
-    );
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('fee')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('feeSummary')}
+                {this.msg('settlement')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
-              <RadioButton value="all">按订单汇总</RadioButton>
-              <RadioButton value="pending">按客户汇总</RadioButton>
-              <RadioButton value="inbound">按供应商汇总</RadioButton>
+              <RadioButton value="all">未入账单</RadioButton>
+              <RadioButton value="pending">已入账单</RadioButton>
+              <RadioButton value="inbound">结算完成</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
             <Button icon="file-excel">导出</Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            toolbarActions={toolbarActions}
-            bulkActions={bulkActions}
-            selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns}
-            dataSource={mockData}
-            rowSelection={rowSelection}
-            rowKey="id"
-            loading={loading}
-            locale={{ emptyText: '当前没有待结算的费用' }}
-            total={totCol}
-          />
-        </Content>
-      </QueueAnim>
+        <Layout>
+          <SideDrawer>
+            list
+          </SideDrawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={mockData}
+              rowSelection={rowSelection}
+              rowKey="id"
+              loading={loading}
+              locale={{ emptyText: <span><Button icon="plus" /></span> }}
+            />
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

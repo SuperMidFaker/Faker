@@ -53,7 +53,7 @@ export default class ModuleSCOF extends React.Component {
       single: true,
       key: 'scof-invoice',
       path: '/scof/invoices',
-      icon: 'logixon icon-bill-mng',
+      icon: 'logixon icon-invoice',
       text: formatMsg(intl, 'invoices'),
     });
     linkMenus.push({
@@ -63,7 +63,7 @@ export default class ModuleSCOF extends React.Component {
       text: formatMsg(intl, 'tracking'),
       sublinks: [{
         key: 'scof-tracking-999',
-        icon: 'zmdi zmdi-wrench',
+        icon: 'logixon icon-install',
         path: '/scof/tracking/customize',
         text: formatMsg(intl, 'customizeTracking'),
       }],
@@ -144,7 +144,7 @@ export default class ModuleSCOF extends React.Component {
         text: formatMsg(intl, 'tracking'),
         sublinks: trackingSublinks.concat([{
           key: 'scof-tracking-999',
-          icon: 'zmdi zmdi-wrench',
+          icon: 'logixon icon-install',
           path: '/scof/tracking/customize',
           text: formatMsg(intl, 'customizeTracking'),
         }]),

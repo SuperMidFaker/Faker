@@ -53,7 +53,7 @@ export default class FeeSummaryList extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: '订单关联号',
+    title: '业务编号',
     dataIndex: 'order_rel_no',
     width: 150,
     fixed: 'left',

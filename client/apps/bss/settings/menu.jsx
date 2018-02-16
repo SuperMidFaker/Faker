@@ -19,9 +19,9 @@ export default class SettingMenu extends React.Component {
     return (
       <div>
         <Menu mode="inline" selectedKeys={[this.props.currentKey]}>
-          <Menu.Item key="ordertypes">
-            <NavLink to="/scof/settings/ordertypes">
-              <Icon type="tool" /> {this.msg('orderTypes')}
+          <Menu.Item key="fees">
+            <NavLink to="/bss/settings/fees">
+              <Icon type="tool" /> {this.msg('fees')}
             </NavLink>
           </Menu.Item>
         </Menu>
