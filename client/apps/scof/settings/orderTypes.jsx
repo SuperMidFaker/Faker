@@ -90,7 +90,7 @@ export default class Preferences extends Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <SettingMenu currentKey="preferences" />
+            <SettingMenu currentKey="ordertypes" />
           </div>
         </Sider>
         <Layout>
@@ -103,7 +103,7 @@ export default class Preferences extends Component {
               </Breadcrumb>
             </PageHeader.Title>
           </PageHeader>
-          <Content className="page-content layout-fixed-width">
+          <Content className="page-content">
             <Card extra={<Button type="primary" ghost icon="plus-circle-o" onClick={this.handleCreate}>添加订单类型</Button>} bodyStyle={{ padding: 16 }} >
               <List
                 loading={orderTypeList.loading}

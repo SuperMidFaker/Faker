@@ -1,1 +1,1 @@
-export Preferences from './preferences';
+export OrderTypes from './orderTypes';

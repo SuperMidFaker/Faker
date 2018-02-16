@@ -41,7 +41,7 @@ export default class OrderListPane extends Component {
       },
     };
     const columns = [{
-      title: '订单关联号',
+      title: '业务编号',
       dataIndex: 'order_rel_no',
       width: 150,
     }, {
