@@ -8,7 +8,7 @@ const { TabPane } = Tabs;
 
 export default class PageHeader extends Component {
   static propTypes = {
-    children: PropTypes.any,
+    children: PropTypes.node,
   }
   onChange = (key) => {
     if (this.props.onTabChange) {

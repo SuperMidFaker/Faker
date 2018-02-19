@@ -24,6 +24,11 @@ export default class SettingMenu extends React.Component {
               <Icon type="tool" /> {this.msg('fees')}
             </NavLink>
           </Menu.Item>
+          <Menu.Item key="exchangerates">
+            <NavLink to="/bss/settings/exchangerates">
+              <Icon type="pay-circle-o" /> {this.msg('exchangeRates')}
+            </NavLink>
+          </Menu.Item>
         </Menu>
       </div>);
   }
