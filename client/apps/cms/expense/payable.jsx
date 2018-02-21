@@ -154,49 +154,25 @@ export default class ExpenseList extends Component {
           {o}
         </a>),
     }, {
-      title: this.msg('cusDeclExpense'),
-      dataIndex: 'cus_decl_charges',
+      title: this.msg('serviceExpense'),
+      dataIndex: 'serv_cost',
+      key: 'serv_cost',
       width: 120,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('ciqDeclExpense'),
-      dataIndex: 'ciq_decl_charges',
+      title: this.msg('cushCost'),
+      dataIndex: 'cush_cost',
+      key: 'cush_cost',
       width: 120,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('certsExpense'),
-      dataIndex: 'certs_charges',
+      title: this.msg('allCost'),
+      dataIndex: 'total_charges',
       width: 120,
       align: 'right',
       render: o => o && o.toFixed(2),
-    }, {
-      title: this.msg('cost'),
-      dataIndex: 'payable',
-      children: [
-        {
-          title: this.msg('serviceExpense'),
-          dataIndex: 'serv_cost',
-          key: 'serv_cost',
-          width: 120,
-          align: 'right',
-          render: o => o && o.toFixed(2),
-        }, {
-          title: this.msg('cushCost'),
-          dataIndex: 'cush_cost',
-          key: 'cush_cost',
-          width: 120,
-          align: 'right',
-          render: o => o && o.toFixed(2),
-        }, {
-          title: this.msg('allCost'),
-          dataIndex: 'total_charges',
-          width: 120,
-          align: 'right',
-          render: o => o && o.toFixed(2),
-        },
-      ],
     }, {
       title: this.msg('agentName'),
       dataIndex: 'agent_name',
@@ -415,16 +391,6 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const tabList = [
-      {
-        key: 'byDelegation',
-        tab: this.msg('byDelegation'),
-      },
-      {
-        key: 'byVendor',
-        tab: this.msg('byVendor'),
-      },
-    ];
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
@@ -445,7 +411,7 @@ export default class ExpenseList extends Component {
     this.dataSource.remotes = expenseList;
     return (
       <Layout>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
+        <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -469,7 +435,6 @@ export default class ExpenseList extends Component {
             dataSource={this.dataSource}
             rowKey="delg_no"
             loading={expenseList.loading}
-            scrollOffset={320}
             bordered
           />
         </Content>

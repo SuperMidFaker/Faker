@@ -49,11 +49,23 @@ export default class Fees extends Component {
   gmsg = formatGlobalMsg(this.props.intl)
   itemsColumns = [{
     title: '费用项代码',
-    dataIndex: 'fee_item_code',
+    dataIndex: 'code',
     width: 150,
   }, {
     title: '费用项名称',
-    dataIndex: 'fee_item_name',
+    dataIndex: 'name',
+    width: 150,
+  }, {
+    title: '描述',
+    dataIndex: 'desc',
+    width: 150,
+  }, {
+    title: '类型',
+    dataIndex: 'type',
+    width: 100,
+  }, {
+    title: '所属分组',
+    dataIndex: 'groups',
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -61,7 +73,7 @@ export default class Fees extends Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 90,
     render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip="删除" row={record} />,
   }]
   groupsColumns = [{
@@ -72,13 +84,9 @@ export default class Fees extends Component {
     title: '费用分组名称',
     dataIndex: 'fee_group_name',
   }, {
-    title: '费用项数量',
-    dataIndex: 'items_count',
-    width: 150,
-  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 90,
     render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip="删除" row={record} />,
   }]
   handleCreate = () => {

@@ -45,8 +45,8 @@ const messages = defineMessages({
     id: 'cms.module.expense.receivable',
     defaultMessage: '应收费用',
   },
-  quote: {
-    id: 'cms.module.quote',
+  rates: {
+    id: 'cms.module.expense.rates',
     defaultMessage: '报价费率',
   },
   analytics: {

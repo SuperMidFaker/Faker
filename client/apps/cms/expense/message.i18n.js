@@ -291,6 +291,18 @@ const messages = defineMessages({
     id: 'cms.modals.expense.detail',
     defaultMessage: '费用明细',
   },
+  rates: {
+    id: 'cms.expense.rates',
+    defaultMessage: '报价费率',
+  },
+  customerRates: {
+    id: 'cms.expense.rates.customer',
+    defaultMessage: '客户费率',
+  },
+  vendorRates: {
+    id: 'cms.expense.rates.vendor',
+    defaultMessage: '服务商费率',
+  },
 });
 
 export default messages;
