@@ -37,7 +37,6 @@ export default class SuBarPutawayModal extends Component {
     serialDetailMap: null,
     alertMsg: null,
     dataSource: [],
-    subarcode: null,
     location: null,
   }
   componentWillReceiveProps(nextProps) {
@@ -85,13 +84,13 @@ export default class SuBarPutawayModal extends Component {
     this.setState({
       serialDetailMap: null,
       dataSource: [],
-      subarcode: null,
       location: null,
       alertMsg: null,
     });
     if (window.localStorage) {
       window.localStorage.removeItem('subarcode-putaway');
     }
+    document.getElementById('su-input-elem').value = '';
   }
   handleDeleteDetail = (index) => {
     let dataSource = [...this.state.dataSource];
@@ -129,30 +128,24 @@ export default class SuBarPutawayModal extends Component {
     }
   }
   handleLocationInputRef = (input) => { this.locationInputRef = input; }
-  handleScanSuChange = (ev) => {
-    /* SUD1107973470|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01004|14D2019.12.12|
-     * SUD1107973469|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
-    const barcode = ev.target.value;
-    this.setState({ subarcode: barcode });
-  }
   handleSuBarKeyDown = (ev) => {
     if (ev.key === 'Enter') {
-      const barcode = this.state.subarcode;
+      const barcode = ev.target.value;
       const suSetting = this.props.inboundHead.su_setting;
       const suKeys = ['serial_no', 'product_no'];
       Object.keys(suSetting).forEach((suKey) => {
-        if (suSetting[suKey].enabled) {
+        if (suSetting[suKey].enabled === true || suSetting[suKey].enabled === 'subarcode') {
           suKeys.push(suKey);
         }
       });
       const suScan = {};
+      document.getElementById('su-input-elem').value = '';
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
         suScan[suKey] = barcode.slice(suConf.start, suConf.end);
         if (!suScan[suKey]) {
           this.setState({
-            subarcode: null,
             alertMsg: '错误条码',
           });
           return;
@@ -160,14 +153,12 @@ export default class SuBarPutawayModal extends Component {
       }
       if (!this.state.serialDetailMap.has(suScan.serial_no)) {
         this.setState({
-          subarcode: null,
           alertMsg: `收货明细无此序列号:${suScan.serial_no}`,
         });
         return;
       }
       if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
         this.setState({
-          subarcode: null,
           alertMsg: `序列号${suScan.serial_no}已经扫描`,
         });
         return;
@@ -176,7 +167,6 @@ export default class SuBarPutawayModal extends Component {
       const unputawayDetails = serialDetails.filter(srd => srd.result === 0);
       if (unputawayDetails.length === 0) {
         this.setState({
-          subarcode: null,
           alertMsg: `序列号${suScan.serial_no}已上架`,
         });
         return;
@@ -188,7 +178,6 @@ export default class SuBarPutawayModal extends Component {
         qty: pd.qty,
       })).concat(this.state.dataSource);
       this.setState({
-        subarcode: null,
         alertMsg: null,
         dataSource,
       });
@@ -232,7 +221,7 @@ export default class SuBarPutawayModal extends Component {
   render() {
     const { saveLoading } = this.props;
     const {
-      alertMsg, dataSource, subarcode, location,
+      alertMsg, dataSource, location,
     } = this.state;
     const title = (<div>
       <span>条码扫描上架</span>
@@ -266,10 +255,9 @@ export default class SuBarPutawayModal extends Component {
             {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
             <FormItem label="商品条码" {...formItemLayout}>
               <Input
+                id="su-input-elem"
                 addonBefore={<Icon type="barcode" />}
-                value={subarcode}
                 ref={this.handleSuInputRef}
-                onChange={this.handleScanSuChange}
                 onKeyDown={this.handleSuBarKeyDown}
               />
             </FormItem>

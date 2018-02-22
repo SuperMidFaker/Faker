@@ -20,27 +20,37 @@ function SuAttribFormItem(props) {
   }
   return (
     <FormItem {...formItemLayout} label={label}>
-      <Switch
-        checked={attribField.enabled}
-        onChange={checked => handleChange('enabled', checked)}
-      />
-      {attribField.enabled &&
-      <Input.Group compact>
+      <RadioGroup
+        value={attribField.enabled === false ? 'false' : attribField.enabled}
+        onChange={(ev) => {
+        let enabledv = ev.target.value;
+        if (enabledv === 'false') {
+          enabledv = false;
+        }
+        handleChange('enabled', enabledv);
+      }}
+      >
+        <RadioButton value="false">不启用</RadioButton>
+        <RadioButton value="subarcode">扫码截取</RadioButton>
+        <RadioButton value="maninput">手工输入</RadioButton>
+      </RadioGroup>
+      {attribField.enabled !== false &&
         <Input
           onChange={ev => handleChange('display', ev.target.value)}
           placeholder="显示名称必填"
           value={attribField.display}
-          style={{ width: '20%' }}
-        />
+        /> }
+      {attribField.enabled === 'subarcode' &&
+      <Input.Group compact>
         <Input
           onChange={ev => handleChange('start', ev.target.value)}
           placeholder="起始位置必填"
           value={attribField.start}
-          style={{ width: '18%' }}
+          style={{ width: '30%' }}
         />
         <Input
           style={{
-            width: 30,
+            width: '5%',
             borderLeft: 0,
             pointerEvents: 'none',
             backgroundColor: '#fff',
@@ -52,13 +62,13 @@ function SuAttribFormItem(props) {
           placeholder="终止位置必填"
           value={attribField.end}
           onChange={ev => handleChange('end', ev.target.value)}
-          style={{ width: '18%', borderLeft: 0 }}
+          style={{ width: '30%', borderLeft: 0 }}
         />
         <Input
           placeholder="时间解析格式YYYYMMDD选填"
           value={attribField.time_format}
           onChange={ev => handleChange('time_format', ev.target.value)}
-          style={{ width: '36%' }}
+          style={{ width: '35%' }}
         />
       </Input.Group>}
     </FormItem>);
@@ -321,7 +331,7 @@ export default class OwnerControlModal extends Component {
                 />
                 <Input
                   style={{
-                    width: 30,
+                    width: '5%',
                     borderLeft: 0,
                     pointerEvents: 'none',
                     backgroundColor: '#fff',
@@ -347,7 +357,7 @@ export default class OwnerControlModal extends Component {
                 />
                 <Input
                   style={{
-                    width: 30,
+                    width: '5%',
                     borderLeft: 0,
                     pointerEvents: 'none',
                     backgroundColor: '#fff',
@@ -378,7 +388,7 @@ export default class OwnerControlModal extends Component {
                 />
                 <Input
                   style={{
-                    width: 30,
+                    width: '5%',
                     borderLeft: 0,
                     pointerEvents: 'none',
                     backgroundColor: '#fff',
@@ -396,7 +406,7 @@ export default class OwnerControlModal extends Component {
                   onChange={ev => this.handleChangeSuField('expiry_date', 'time_format', ev.target.value)}
                   placeholder="解析时间格式YYYYMMDD必填"
                   value={suBarcodeSetting.expiry_date.time_format}
-                  style={{ width: '30%' }}
+                  style={{ width: '35%' }}
                 />
               </Input.Group>}
             </FormItem>

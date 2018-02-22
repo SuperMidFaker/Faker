@@ -331,6 +331,9 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       field: 'external_lot_no',
       label: '批次号',
     }, {
+      field: 'serial_no',
+      label: '序列号',
+    }, {
       field: 'attrib_1_string',
       label: '扩展属性1',
     }, {
