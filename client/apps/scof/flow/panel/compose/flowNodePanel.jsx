@@ -67,11 +67,11 @@ export default class FlowNodePanel extends Component {
     const flowDemandProvider = [];
     if (mainFlow) {
       let demanderName;
-      const demander = customerPartners.filter(cusp => cusp.id === node.demander_partner_id)[0];
+      const demander = customerPartners.filter(cusp => cusp.id === model.demander_partner_id)[0];
       if (!demander) {
         demanderName = tenantName;
       } else {
-        demanderName = demander.partner_name;
+        demanderName = demander.name;
       }
       const providers = providerFlows.map(pf => ({
         id: pf.tenant_id,

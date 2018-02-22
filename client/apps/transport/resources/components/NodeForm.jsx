@@ -49,7 +49,8 @@ export default class NodeForm extends Component {
   }
   render() {
     const {
-      mode, form: { getFieldDecorator }, onSubmitBtnClick, onRegionChange, region, partners, node,
+      mode, form: { getFieldDecorator }, onSubmitBtnClick, onRegionChange, region, partners,
+      node = {},
     } = this.props;
     const regionValues = region || [];
     return (

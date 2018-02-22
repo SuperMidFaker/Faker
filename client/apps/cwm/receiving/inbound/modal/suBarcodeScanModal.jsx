@@ -48,6 +48,7 @@ export default class SuBarcodeScanModal extends Component {
     alertMsg: null,
     dataSource: [],
     scanRecv: NullSuScan,
+    manualInput: {},
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -105,10 +106,12 @@ export default class SuBarcodeScanModal extends Component {
       dataSource: [],
       scanRecv: NullSuScan,
       alertMsg: null,
+      manualInput: {},
     });
     if (window.localStorage) {
       window.localStorage.removeItem('subarcode-data');
     }
+    document.getElementById('su-input-elem').value = '';
   }
   handleDeleteDetail = (index) => {
     const dataSource = [...this.state.dataSource];
@@ -166,6 +169,16 @@ export default class SuBarcodeScanModal extends Component {
     if (!productSeqMap) {
       return;
     }
+    const suSetting = this.props.inboundHead.su_setting;
+    let manualValued = true;
+    Object.keys(suSetting).forEach((suKey) => {
+      if (suSetting[suKey].enabled === 'maninput') {
+        manualValued = !!this.state.manualInput[suKey];
+      }
+    });
+    if (!manualValued) {
+      return;
+    }
     const seqNoKeys = Array.from(productSeqMap.keys());
     let remainQty = suScan.qty;
     const dataSource = [...this.state.dataSource];
@@ -184,6 +197,9 @@ export default class SuBarcodeScanModal extends Component {
           attrib_4_string: suScan.attrib_4_string,
           asn_seq_no: seqNo,
         };
+        Object.keys(this.state.manualInput).forEach((mipKey) => {
+          suData[mipKey] = this.state.manualInput[mipKey];
+        });
         if (seqQty.received_qty + remainQty <= seqQty.expect_qty) {
           suData.qty = remainQty;
           dataSource.unshift(suData);
@@ -212,6 +228,8 @@ export default class SuBarcodeScanModal extends Component {
       alertMsg: remainQty > 0 ? `${suScan.product_no}收货数量大于订单数量` : null,
     });
     this.suInputRef.focus();
+    document.getElementById('su-input-elem').value = '';
+    // this.suInputRef.input.value = '';
   }
   handleSuInputRef = (input) => {
     this.suInputRef = input;
@@ -225,14 +243,7 @@ export default class SuBarcodeScanModal extends Component {
   handleScanSuChange = (ev) => {
     /* SUD1107973470|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01004|14D2019.12.12|
      * SUD1107973469|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
-    const barcode = ev.target.value;
-    if (barcode) {
-      const suScan = { ...this.state.scanRecv };
-      suScan.su_barcode = barcode;
-      this.setState({
-        scanRecv: suScan,
-      });
-    } else {
+    if (!ev.target.value) {
       this.setState({
         scanRecv: NullSuScan,
       });
@@ -241,10 +252,11 @@ export default class SuBarcodeScanModal extends Component {
   handleSuBarKeyDown = (ev) => {
     if (ev.key === 'Enter') {
       const suScan = { ...this.state.scanRecv };
+      suScan.su_barcode = ev.target.value;
       const suSetting = this.props.inboundHead.su_setting;
       const suKeys = ['serial_no', 'product_no'];
       Object.keys(suSetting).forEach((suKey) => {
-        if (suSetting[suKey].enabled) {
+        if (suSetting[suKey].enabled === true || suSetting[suKey].enabled === 'subarcode') {
           suKeys.push(suKey);
         }
       });
@@ -321,9 +333,21 @@ export default class SuBarcodeScanModal extends Component {
       }
     }
   }
+  handleSuKeyManualInput = (key, value) => {
+    const manualInput = { ...this.state.manualInput };
+    manualInput[key] = value;
+    this.setState({ manualInput });
+  }
+  handleAttribKeyEnter = (ev) => {
+    if (ev.key === 'Enter') {
+      this.handleScanReceive();
+    }
+  }
   render() {
     const { saveLoading, inboundHead: { su_setting: suSetting } } = this.props;
-    const { alertMsg, dataSource, scanRecv } = this.state;
+    const {
+      alertMsg, dataSource, scanRecv, manualInput,
+    } = this.state;
     const barColumns = [{
       title: '序号',
       dataIndex: 'id',
@@ -406,8 +430,8 @@ export default class SuBarcodeScanModal extends Component {
               {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
               <FormItem label="商品条码" {...formItemLayout}>
                 <Input
+                  id="su-input-elem"
                   addonBefore={<Icon type="barcode" />}
-                  value={scanRecv.su_barcode}
                   ref={this.handleSuInputRef}
                   onChange={this.handleScanSuChange}
                   onKeyDown={this.handleSuBarKeyDown}
@@ -426,8 +450,21 @@ export default class SuBarcodeScanModal extends Component {
                   <Input value={scanRecv.expiry_date && moment(scanRecv.expiry_date).format('YYYY.MM.DD')} readOnly />
                 </FormItem>);
               }
+                const subarcodeInputProps = {};
+                if (suConf.enabled === 'maninput') {
+                  subarcodeInputProps.value = manualInput[suKey];
+                  subarcodeInputProps.onChange =
+                    ev => this.handleSuKeyManualInput(suKey, ev.target.value);
+                  subarcodeInputProps.onChange =
+                    ev => this.handleSuKeyManualInput(suKey, ev.target.value);
+                  subarcodeInputProps.onKeyDown = this.handleAttribKeyEnter;
+                } else {
+                  subarcodeInputProps.readOnly = true;
+                  subarcodeInputProps.value = scanRecv[suKey];
+                }
+
               return (<FormItem label={suConf.display} {...formItemLayout} key={suKey}>
-                <Input value={scanRecv[suKey]} readOnly />
+                <Input {...subarcodeInputProps} />
               </FormItem>);
             })}
               <FormItem label="收货数量" {...formItemLayout}>
