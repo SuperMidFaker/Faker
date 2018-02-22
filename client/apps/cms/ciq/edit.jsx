@@ -104,7 +104,7 @@ export default class CiqDeclEdit extends React.Component {
             {<DeclTreePopover
               entries={entries}
               ciqs={ciqs}
-              selectedKeys={[`ciq-decl-${this.props.router.params.declNo}`]}
+              currentKey={`ciq-decl-${this.props.router.params.declNo}`}
               billSeqNo={ciqDeclHead.bill_seq_no}
               ietype={this.props.params.ioType === 'in' ? 'import' : 'export'}
             />}

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Table, notification } from 'antd';
+import { Tag, Badge, Breadcrumb, Form, Input, Layout, Tabs, Steps, Button, Card, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -12,7 +12,6 @@ import DescriptionList from 'client/components/DescriptionList';
 import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { format } from 'client/common/i18n/helpers';
@@ -363,7 +362,7 @@ export default class BatchDeclDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <Button icon="link" onClick={this.handleDelgManifest}>关联申报清单 <Badge status="default" text="制单中" /></Button>
+            <Button icon="link" onClick={this.handleDelgManifest}>关联报关清单 <Badge status="default" text="制单中" /></Button>
           </PageHeader.Nav>
           <PageHeader.Actions>
             {sent && <Button icon="check" loading={submitting} onClick={this.handleQuery}>标记申请完成</Button>}
@@ -392,7 +391,17 @@ export default class BatchDeclDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
-                  <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.regColumns}
+                    indentSize={8}
+                    dataSource={regs}
+                    rowKey="ftz_rel_no"
+                  >
+                    <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                    </DataPane.Toolbar>
+                  </DataPane>
                 </TabPane>
                 <TabPane tab="集中报关明细" key="details">
                   <DataPane
@@ -425,7 +434,7 @@ export default class BatchDeclDetail extends Component {
                     >
                       <DataPane.Toolbar>
                         <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
-                        <InfoItem label="报关单号" field={reg.cus_decl_no} width={370} />
+                        <Input addonBefore="报关单号" value={reg.cus_decl_no} style={{ width: 280 }} />
                         <DataPane.Extra>
                           <Summary>
                             <Summary.Item label="总毛重" addonAfter="KG">{reg.gross_wt.toFixed(2)}</Summary.Item>

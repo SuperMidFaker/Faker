@@ -6,10 +6,10 @@ const { TreeNode } = Tree;
 
 export default class DeclTreePopover extends Component {
   static propTypes = {
-    entries: PropTypes.array.isRequired,
-    ciqs: PropTypes.array,
+    entries: PropTypes.arrayOf(PropTypes.shape({ entry_id: PropTypes.string })).isRequired,
+    ciqs: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
     billSeqNo: PropTypes.string,
-    selectedKeys: PropTypes.array,
+    currentKey: PropTypes.string,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -29,7 +29,7 @@ export default class DeclTreePopover extends Component {
     }
   }
   render() {
-    const { entries, ciqs, selectedKeys } = this.props;
+    const { entries, ciqs, currentKey } = this.props;
     const expandedKeys = ['cus-decl'];
     if (ciqs.length > 0) {
       expandedKeys.push('ciq-decl');
@@ -39,9 +39,9 @@ export default class DeclTreePopover extends Component {
         showLine
         defaultExpandedKeys={expandedKeys}
         onSelect={this.handleSelect}
-        selectedKeys={selectedKeys}
+        selectedKeys={[currentKey]}
       >
-        <TreeNode title={<a role="presentation"><Icon type="file-text" /> 申报清单</a>} key="manifest">
+        <TreeNode title={<a role="presentation"><Icon type="file-text" /> 报关清单</a>} key="manifest">
           {entries.length > 0 && (
           <TreeNode title="报关单" key="cus-decl" selectable={false}>
             {entries.map(bme => <TreeNode title={<a role="presentation">{bme.entry_id || bme.pre_entry_seq_no}</a>} key={`cus-decl-${bme.pre_entry_seq_no}`} />)}

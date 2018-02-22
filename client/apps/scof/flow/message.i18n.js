@@ -104,7 +104,7 @@ const messages = defineMessages({
   },
   cmsDeclManifest: {
     id: 'scof.flow.biz.cms.decl.manifest',
-    defaultMessage: '申报清单',
+    defaultMessage: '报关清单',
   },
   cmsCustomsDecl: {
     id: 'scof.flow.biz.cms.customs.decl',

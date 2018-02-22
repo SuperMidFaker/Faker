@@ -108,7 +108,7 @@ const messages = defineMessages({
   },
   declareBill: {
     id: 'cms.forms.bill',
-    defaultMessage: '申报清单',
+    defaultMessage: '报关清单',
   },
   newDeclaration: {
     id: 'cms.forms.new.declaration',
@@ -556,7 +556,7 @@ const messages = defineMessages({
   },
   declManifest: {
     id: 'cms.manifest.decl.manifest',
-    defaultMessage: '申报清单',
+    defaultMessage: '报关清单',
   },
   searchPlaceholder: {
     id: 'cms.manifest.search.placeholder',
