@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button } from 'antd';
-import { setClientForm, toggleInvoiceModal } from 'common/reducers/sofOrders';
+import { Button, Modal, Transfer } from 'antd';
+import { setClientForm, removeOrderInvoice, loadUnshippedInvoices, getOrderDetails } from 'common/reducers/sofOrders';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
-import InvoiceModal from '../modal/invoiceModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -20,7 +19,9 @@ const formatMsg = format(messages);
     currencies: state.cmsManifest.params.currencies,
     formData: state.sofOrders.formData,
   }),
-  { setClientForm, toggleInvoiceModal }
+  {
+    setClientForm, removeOrderInvoice, loadUnshippedInvoices, getOrderDetails,
+  }
 )
 export default class InvoicePane extends Component {
   static propTypes = {
@@ -28,11 +29,29 @@ export default class InvoicePane extends Component {
   }
   state = {
     dataSource: [],
+    origDataSource: [],
+    origInvoices: [],
+    targetKeys: [],
+    selectedKeys: [],
+    visible: false,
   }
   componentWillMount() {
-    this.setState({
-      dataSource: this.props.formData.invoices,
+    this.props.loadUnshippedInvoices(this.props.formData.customer_partner_id).then((result) => {
+      if (!result.error) {
+        this.setState({
+          origInvoices: result.data,
+          dataSource: this.props.formData.invoices,
+          origDataSource: this.props.formData.invoices,
+        });
+      }
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.formData.invoices !== this.props.formData.invoices) {
+      this.setState({
+        dataSource: nextProps.formData.invoices,
+      });
+    }
   }
   handleInvoiceAdd = (data) => {
     this.setState({
@@ -40,7 +59,64 @@ export default class InvoicePane extends Component {
     });
   }
   handleToggleInvoiceModal = () => {
-    this.props.toggleInvoiceModal(true);
+    this.setState({
+      visible: true,
+    });
+  }
+  handleRemove = (row) => {
+    const { invoices, orderDetails } = this.props.formData;
+    const { origDataSource } = this.state;
+    if (row.shipmt_order_no) {
+      this.props.removeOrderInvoice(row.id, row.invoice_no, row.shipmt_order_no).then((result) => {
+        if (!result.error) {
+          const newInvoices = invoices.filter(inv => inv.invoice_no !== row.invoice_no);
+          const newOrderDetails = orderDetails.filter(od => od.invoice_no !== row.invoice_no);
+          const newOrigDataSource = origDataSource.filter(od => od.invoice_no !== row.invoice_no);
+          this.props.setClientForm(-1, { invoices: newInvoices, orderDetails: newOrderDetails });
+          this.props.loadUnshippedInvoices(this.props.formData.customer_partner_id).then((re) => {
+            if (!re.error) {
+              this.setState({
+                origInvoices: re.data,
+                origDataSource: newOrigDataSource,
+              });
+            }
+          });
+        }
+      });
+    } else {
+      const { targetKeys } = this.state;
+      const newTargetKeys = targetKeys.filter(key => key !== row.invoice_no);
+      const newInvoices = invoices.filter(inv => inv.invoice_no !== row.invoice_no);
+      const newOrderDetails = orderDetails.filter(od => od.invoice_no !== row.invoice_no);
+      this.props.setClientForm(-1, { invoices: newInvoices, orderDetails: newOrderDetails });
+      this.setState({
+        targetKeys: newTargetKeys,
+      });
+    }
+  }
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  }
+  handleOk = () => {
+    const { targetKeys, origInvoices, origDataSource } = this.state;
+    const data = origDataSource.concat(origInvoices.filter(inv =>
+      targetKeys.find(key => key === inv.invoice_no)));
+
+    this.setState({
+      dataSource: data,
+    });
+    this.props.getOrderDetails(targetKeys.join(','));
+    this.props.setClientForm(-1, { invoices: data });
+    this.handleCancel();
+  }
+  handleChange = (nextTargetKeys) => {
+    this.setState({ targetKeys: nextTargetKeys });
+  }
+
+  handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+    this.setState({ selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] });
   }
   msg = key => formatMsg(this.props.intl, key)
   invoiceColumns = [{
@@ -73,9 +149,12 @@ export default class InvoicePane extends Component {
     dataIndex: 'OPS_COL',
     width: 45,
     fixed: 'right',
-    render: (o, record) => <RowAction onClick={this.handleRemove} icon="minus-circle-o" tooltip="移出" row={record} />,
+    render: (o, record) => <RowAction confirm={this.msg('确认移除？')} onConfirm={this.handleRemove} icon="minus-circle-o" tooltip="移出" row={record} />,
   }];
   render() {
+    const {
+      origInvoices, targetKeys, selectedKeys, visible,
+    } = this.state;
     return (
       <DataPane
         columns={this.invoiceColumns}
@@ -85,7 +164,19 @@ export default class InvoicePane extends Component {
         <DataPane.Toolbar>
           <Button type="primary" icon="plus-circle-o" onClick={this.handleToggleInvoiceModal}>添加</Button>
         </DataPane.Toolbar>
-        <InvoiceModal handleOk={this.handleInvoiceAdd} />
+        {/* <InvoiceModal handleOk={this.handleInvoiceAdd} /> */}
+        <Modal title="发票" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+          <Transfer
+            dataSource={origInvoices}
+            titles={['Source', 'Target']}
+            targetKeys={targetKeys}
+            selectedKeys={selectedKeys}
+            onChange={this.handleChange}
+            onSelectChange={this.handleSelectChange}
+            render={item => item.invoice_no}
+            rowKey={item => item.invoice_no}
+          />
+        </Modal>
       </DataPane>
     );
   }

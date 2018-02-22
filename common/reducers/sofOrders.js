@@ -25,15 +25,12 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'MANUAL_ENTFI', 'MANUAL_ENTFI_SUCCEED', 'MANUAL_ENTFI_FAIL',
   'ATTACHMENT_UPLOAD', 'ATTACHMENT_UPLOAD_SUCCEED', 'ATTACHMENT_UPLOAD_FAIL',
   'LOAD_ATTACHMENTS', 'LOAD_ATTACHMENTS_SUCCEED', 'LOAD_ATTACHMENTS_FAIL',
-  'TOGGLE_INVOICE_MODAL',
   'LOAD_UNSHIPPED_INVOICES', 'LOAD_UNSHIPPED_INVOICES_SUCCEED', 'LOAD_UNSHIPPED_INVOICES_FAIL',
   'GET_ORDER_DETAILS', 'GET_ORDER_DETAILS_SUCCEED', 'GET_ORDER_DETAILS_FAIL',
+  'REMOVE_ORDER_INVOICE', 'REMOVE_ORDER_INVOICE_SUCCEED', 'REMOVE_ORDER_INVOICE_FAIL',
 ]);
 
 const initialState = {
-  invoiceModal: {
-    visible: false,
-  },
   loaded: true,
   loading: false,
   orderSaving: false,
@@ -192,8 +189,6 @@ export default function reducer(state = initialState, action) {
           [action.params.uuid]: action.result.data,
         },
       };
-    case actionTypes.TOGGLE_INVOICE_MODAL:
-      return { ...state, invoiceModal: { ...state.invoiceModal, visible: action.visible } };
     case actionTypes.GET_ORDER_DETAILS_SUCCEED:
       return { ...state, formData: { ...state.formData, orderDetails: action.result.data } };
     default:
@@ -567,13 +562,6 @@ export function loadOrderAttachments(orderNo) {
   };
 }
 
-export function toggleInvoiceModal(visible) {
-  return {
-    type: actionTypes.TOGGLE_INVOICE_MODAL,
-    visible,
-  };
-}
-
 export function loadUnshippedInvoices(partnerId) {
   return {
     [CLIENT_API]: {
@@ -600,6 +588,21 @@ export function getOrderDetails(invoiceNos) {
       endpoint: 'v1/sof/invoice/details/get',
       method: 'get',
       params: { invoiceNos },
+    },
+  };
+}
+
+export function removeOrderInvoice(id, invoiceNo, shipmtOrderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_ORDER_INVOICE,
+        actionTypes.REMOVE_ORDER_INVOICE_SUCCEED,
+        actionTypes.REMOVE_ORDER_INVOICE_FAIL,
+      ],
+      endpoint: 'v1/sof/invoice/remove',
+      method: 'post',
+      data: { id, invoiceNo, shipmtOrderNo },
     },
   };
 }
