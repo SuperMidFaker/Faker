@@ -56,8 +56,10 @@ export default class InvoiceModal extends Component {
     this.props.toggleInvoiceModal(false);
   }
   handleOk = () => {
+    const { invoices } = this.props.formData;
     const { targetKeys, origInvoices, orderDetails } = this.state;
-    const data = origInvoices.filter(inv => targetKeys.find(key => key === inv.invoice_no));
+    const data = invoices.concat(origInvoices.filter(inv =>
+      targetKeys.find(key => key === inv.invoice_no)));
     this.props.handleOk(data);
     this.props.getOrderDetails(targetKeys.join(','));
     this.props.setClientForm(-1, { invoices: data, orderDetails });
