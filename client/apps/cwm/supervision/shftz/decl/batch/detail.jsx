@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
+import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import InfoItem from 'client/components/InfoItem';
@@ -20,8 +21,8 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const TabPane = Tabs.TabPane;
-const Step = Steps.Step;
+const { TabPane } = Tabs;
+const { Step } = Steps;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -81,13 +82,6 @@ export default class BatchDeclDetail extends Component {
   state = {
     tabKey: 'details',
     fullscreen: true,
-  }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.batchApplies !== this.props.batchApplies && nextProps.batchApplies.length > 0) {
@@ -267,10 +261,10 @@ export default class BatchDeclDetail extends Component {
     width: 200,
   }]
   handleSend = () => {
-    const batchNo = this.props.params.batchNo;
-    const batchDecl = this.props.batchDecl;
+    const { batchNo } = this.props.params;
+    const { batchDecl } = this.props;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const loginId = this.props.loginId;
+    const { loginId } = this.props;
     this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
@@ -299,7 +293,7 @@ export default class BatchDeclDetail extends Component {
     });
   }
   handleQuery = () => {
-    const batchNo = this.props.params.batchNo;
+    const { batchNo } = this.props.params;
     this.props.makeBatchApplied(batchNo).then((result) => {
       if (!result.error) {
         this.props.loadApplyDetails(batchNo);
@@ -411,12 +405,10 @@ export default class BatchDeclDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <Row type="flex">
-                        <Col className="col-flex-primary info-group-inline" />
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <DataPane.Extra>
+                        {totCol}
+                      </DataPane.Extra>
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
@@ -432,17 +424,14 @@ export default class BatchDeclDetail extends Component {
                       loading={this.state.loading}
                     >
                       <DataPane.Toolbar>
-                        <Row type="flex">
-                          <Col className="col-flex-primary info-group-inline">
-                            <InfoItem label="报关单号" field={reg.cus_decl_no} width={370} />
-                          </Col>
-                          <Col className="col-flex-secondary">
-                            <Summary>
-                              <Summary.Item label="总毛重" addonAfter="KG">{reg.gross_wt.toFixed(2)}</Summary.Item>
-                              <Summary.Item label="总净重" addonAfter="KG">{reg.net_wt.toFixed(6)}</Summary.Item>
-                            </Summary>
-                          </Col>
-                        </Row>
+                        <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                        <InfoItem label="报关单号" field={reg.cus_decl_no} width={370} />
+                        <DataPane.Extra>
+                          <Summary>
+                            <Summary.Item label="总毛重" addonAfter="KG">{reg.gross_wt.toFixed(2)}</Summary.Item>
+                            <Summary.Item label="总净重" addonAfter="KG">{reg.net_wt.toFixed(6)}</Summary.Item>
+                          </Summary>
+                        </DataPane.Extra>
                       </DataPane.Toolbar>
                     </DataPane>
                   </TabPane>))}

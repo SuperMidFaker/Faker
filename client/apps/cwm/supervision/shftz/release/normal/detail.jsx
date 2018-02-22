@@ -10,6 +10,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import SearchBox from 'client/components/SearchBox';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
@@ -618,6 +619,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                     rowKey="id"
                   >
                     <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                         <RadioButton value="splitted">拆分明细</RadioButton>
                         <RadioButton value="merged">合并明细</RadioButton>
@@ -642,12 +644,13 @@ export default class SHFTZNormalRelRegDetail extends Component {
                     dataSource={exitDetails}
                     rowKey="id"
                   >
-                    {exitDetails.length > 0 &&
                     <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      {exitDetails.length > 0 &&
                       <DataPane.Actions>
                         <Button type="primary" onClick={this.handleExportExitVoucher}>导出出区凭单</Button>
-                      </DataPane.Actions>
-                    </DataPane.Toolbar>}
+                      </DataPane.Actions>}
+                    </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
               </Tabs>

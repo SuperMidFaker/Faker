@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, message, notification } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import SearchBox from 'client/components/SearchBox';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
@@ -22,8 +23,8 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const TabPane = Tabs.TabPane;
-const Step = Steps.Step;
+const { TabPane } = Tabs;
+const { Step } = Steps;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -81,13 +82,6 @@ export default class SHFTZTransferOutDetail extends Component {
     tabKey: '',
     fullscreen: true,
   }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       if (this.state.tabKey === '') {
@@ -97,7 +91,7 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
-    const soNo = this.props.params.soNo;
+    const { soNo } = this.props.params;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     const relType = CWM_SO_BONDED_REGTYPES[2].text;
@@ -131,7 +125,7 @@ export default class SHFTZTransferOutDetail extends Component {
     });
   }
   handleCancelReg = () => {
-    const soNo = this.props.params.soNo;
+    const { soNo } = this.props.params;
     this.props.cancelRelReg(soNo).then((result) => {
       if (result.error) {
         notification.error({
@@ -199,7 +193,11 @@ export default class SHFTZTransferOutDetail extends Component {
     title: '毛重',
     dataIndex: 'gross_wt',
     width: 130,
-    render: (o, record) => <EditableCell value={o} onSave={value => this.handleWtChange(value, record.id)} />,
+    render: (o, record) => (<EditableCell
+      value={o}
+      onSave={value =>
+      this.handleWtChange(value, record.id)}
+    />),
   }, {
     title: '金额',
     dataIndex: 'amount',
@@ -290,9 +288,11 @@ export default class SHFTZTransferOutDetail extends Component {
       whyunsent = '出库时间或者收货单位未填';
     }
     const recvOpts = receivers.map(recv => ({ key: recv.code, text: `${recv.customs_code} | ${recv.name} | ${recv.ftz_whse_code}` }));
-    const receiver = receivers.filter(recv => recv.customs_code === relReg.receiver_cus_code &&
-      recv.name === relReg.receiver_name && recv.ftz_whse_code === relReg.receiver_ftz_whse_code)[0];
-    const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
+    const receiver = receivers.filter(recv => recv.customs_code === relReg.receiver_cus_code
+      && recv.name === relReg.receiver_name
+      && recv.ftz_whse_code === relReg.receiver_ftz_whse_code)[0];
+    const outStatus = relSo.outbound_no
+      && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     return (
       <div>
         <PageHeader>
@@ -410,14 +410,10 @@ export default class SHFTZTransferOutDetail extends Component {
                         loading={this.state.loading}
                       >
                         <DataPane.Toolbar>
-                          <Row type="flex">
-                            <Col className="col-flex-primary info-group-inline" />
-
-
-                            <Col className="col-flex-secondary">
-                              {totCol}
-                            </Col>
-                          </Row>
+                          <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                          <DataPane.Extra>
+                            {totCol}
+                          </DataPane.Extra>
                         </DataPane.Toolbar>
                       </DataPane>
                     </TabPane>);

@@ -10,7 +10,7 @@ import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, St
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
-// import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -673,6 +673,7 @@ export default class SHFTZEntryDetail extends Component {
                 loading={this.state.loading}
               >
                 <DataPane.Toolbar>
+                  <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
                   <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                     <RadioButton value="splitted">归并前明细</RadioButton>
                     <RadioButton value="merged">归并后明细</RadioButton>
