@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag } from 'antd';
+import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
@@ -20,8 +21,8 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const TabPane = Tabs.TabPane;
-const Step = Steps.Step;
+const { TabPane } = Tabs;
+const { Step } = Steps;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -72,15 +73,7 @@ export default class NormalDeclDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    tabKey: 'details',
     fullscreen: true,
-  }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleFullscreen = (fullscreen) => {
@@ -268,7 +261,7 @@ export default class NormalDeclDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <Button icon="link" onClick={this.handleDelgManifest}>关联申报清单 <Badge status="default" text={declStatusText} /></Button>
+            <Button icon="link" onClick={this.handleDelgManifest}>关联报关清单 <Badge status="default" text={declStatusText} /></Button>
           </PageHeader.Nav>
           <PageHeader.Actions />
         </PageHeader>
@@ -292,7 +285,17 @@ export default class NormalDeclDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
-                  <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.regColumns}
+                    indentSize={8}
+                    dataSource={regs}
+                    rowKey="ftz_rel_no"
+                  >
+                    <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                    </DataPane.Toolbar>
+                  </DataPane>
                 </TabPane>
                 <TabPane tab="出库报关明细" key="details">
                   <DataPane
@@ -305,12 +308,10 @@ export default class NormalDeclDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <Row type="flex">
-                        <Col className="col-flex-primary info-group-inline" />
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <DataPane.Extra>
+                        {totCol}
+                      </DataPane.Extra>
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>

@@ -14,9 +14,9 @@ const messages = defineMessages({
     id: 'cms.delegation.edit',
     defaultMessage: '修改委托',
   },
-  clientSetting: {
-    id: 'cms.delegation.client.setting',
-    defaultMessage: '委托方设置',
+  manifestSetting: {
+    id: 'cms.delegation.manifest.setting',
+    defaultMessage: '制单设置',
   },
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
@@ -252,11 +252,11 @@ const messages = defineMessages({
   },
   viewManifest: {
     id: 'cms.delegation.manifest.view',
-    defaultMessage: '申报清单',
+    defaultMessage: '报关清单',
   },
   editManifest: {
     id: 'cms.delegation.manifest.edit',
-    defaultMessage: '申报清单',
+    defaultMessage: '报关清单',
   },
   trackDecl: {
     id: 'cms.delegation.track.decl',
@@ -272,7 +272,7 @@ const messages = defineMessages({
   },
   declareBill: {
     id: 'cms.delegation.bill',
-    defaultMessage: '申报清单',
+    defaultMessage: '报关清单',
   },
   newDeclaration: {
     id: 'cms.delegation.new.declaration',

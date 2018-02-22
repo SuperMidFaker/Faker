@@ -121,7 +121,7 @@ export default class BatchDeclList extends React.Component {
   }, {
     title: '申请类型',
     dataIndex: 'apply_type',
-    width: 120,
+    width: 140,
     render: (o) => {
       switch (o) {
         case '0':

@@ -160,33 +160,9 @@ export default class ExpenseList extends Component {
       filters: this.state.supeFilter,
       render: o => <TrimSpan text={o} maxLen={12} />,
     }, {
-      title: this.msg('cusDeclCharges'),
-      dataIndex: 'cus_decl_charges',
-      width: 80,
-      align: 'right',
-      render: o => o && o.toFixed(2),
-    }, {
-      title: this.msg('ciqDeclCharges'),
-      dataIndex: 'ciq_decl_charges',
-      width: 80,
-      align: 'right',
-      render: o => o && o.toFixed(2),
-    }, {
-      title: this.msg('certsCharges'),
-      dataIndex: 'certs_charges',
-      width: 80,
-      align: 'right',
-      render: o => o && o.toFixed(2),
-    }, {
       title: this.msg('serviceSummary'),
       dataIndex: 'certs_charges',
       width: 90,
-      align: 'right',
-      render: o => o && o.toFixed(2),
-    }, {
-      title: this.msg('forwarderCharge'),
-      dataIndex: 'forwarder_charges',
-      width: 80,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
@@ -417,16 +393,6 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const tabList = [
-      {
-        key: 'byDelegation',
-        tab: this.msg('byDelegation'),
-      },
-      {
-        key: 'byCustomer',
-        tab: this.msg('byCustomer'),
-      },
-    ];
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
@@ -447,7 +413,7 @@ export default class ExpenseList extends Component {
     this.dataSource.remotes = expenseList;
     return (
       <Layout>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
+        <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -477,7 +443,6 @@ export default class ExpenseList extends Component {
             dataSource={this.dataSource}
             rowKey="delg_no"
             loading={expenseList.loading}
-            scrollOffset={320}
             bordered
           />
         </Content>

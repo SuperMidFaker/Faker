@@ -9,19 +9,19 @@ const messages = defineMessages({
   },
   fees: {
     id: 'bss.settings.fee',
+    defaultMessage: '费用参数',
+  },
+  feeItems: {
+    id: 'bss.settings.fee.items',
     defaultMessage: '费用项',
   },
-  orderConfig: {
-    id: 'bss.settings.order.config',
-    defaultMessage: '订单类型配置',
+  feeGroups: {
+    id: 'sof.settings.fee.groups',
+    defaultMessage: '费用分组',
   },
-  orderTypeInfo: {
-    id: 'sof.settings.order.type.info',
-    defaultMessage: '订单类型信息',
-  },
-  orderTransfer: {
-    id: 'sof.settings.order.type.transfer',
-    defaultMessage: '订单流向',
+  exchangeRates: {
+    id: 'sof.settings.exchange.rates',
+    defaultMessage: '汇率设置',
   },
   extField1: {
     id: 'sof.settings.order.type.extfield1',

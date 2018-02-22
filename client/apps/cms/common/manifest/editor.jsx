@@ -170,7 +170,11 @@ export default class ManifestEditor extends React.Component {
         }
       } else {
         this.setState({ generating: false });
-        this.props.loadInvTemplates({ tenantId, docuType: [0, 1, 2], partnerId: billMeta.customerId });
+        this.props.loadInvTemplates({
+          tenantId,
+          docuType: [0, 1, 2],
+          partnerId: billMeta.customerId,
+        });
         this.props.openMergeSplitModal();
       }
     });
@@ -438,7 +442,7 @@ export default class ManifestEditor extends React.Component {
       filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
     const tabs = [];
-    tabs.push(<TabPane tab="申报清单表头" key="header">
+    tabs.push(<TabPane tab="报关清单表头" key="header">
       <Spin spinning={this.props.templateValLoading}>
         <ManifestHeadPane
           ietype={ietype}
@@ -449,7 +453,7 @@ export default class ManifestEditor extends React.Component {
         />
       </Spin>
     </TabPane>);
-    tabs.push(<TabPane tab="申报清单明细" key="body">
+    tabs.push(<TabPane tab="报关清单明细" key="body">
       <ManifestBodyPane
         ietype={ietype}
         readonly={!editable}
@@ -526,7 +530,7 @@ export default class ManifestEditor extends React.Component {
                 ciqs={billMeta.ciqs}
                 billSeqNo={billMeta.bill_seq_no}
                 ietype={ietype}
-                selectedKeys={['manifest']}
+                currentKey="manifest"
               />}
               {billMeta.docts &&
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>

@@ -108,7 +108,7 @@ export default class ClientsList extends Component {
                 </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('clientSetting')}
+                {this.msg('manifestSetting')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

@@ -93,6 +93,10 @@ export default class OrderPane extends React.Component {
     width: 140,
     dataIndex: 'external_lot_no',
   }, {
+    title: '序列号',
+    width: 140,
+    dataIndex: 'serial_no',
+  }, {
     title: '扩展属性1',
     width: 140,
     dataIndex: 'attrib_1_string',

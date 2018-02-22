@@ -664,7 +664,7 @@ export default class DelegationList extends Component {
               {this.msg('createDelegation')}
             </Button>
             <Button onClick={this.handleClientSetting} icon="setting">
-              {this.msg('clientSetting')}
+              {this.msg('manifestSetting')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

@@ -344,7 +344,7 @@ export default class CustomsDeclEditor extends React.Component {
     tabs.push(<TabPane tab="预估税金" key="dutyTax">
       <DutyTaxPane fullscreen={this.state.fullscreen} head={head} />
     </TabPane>);
-    tabs.push(<TabPane tab="申报清单明细" key="manifestDetails" head={head}>
+    tabs.push(<TabPane tab="报关清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     if (filterProducts.length > 0) {
@@ -380,7 +380,7 @@ export default class CustomsDeclEditor extends React.Component {
               ciqs={billMeta.ciqs}
               ietype={params.ietype}
               billSeqNo={billMeta.bill_seq_no}
-              selectedKeys={[`cus-decl-${head.pre_entry_seq_no}`]}
+              currentKey={`cus-decl-${head.pre_entry_seq_no}`}
             />}
             <Dropdown overlay={printMenu}>
               <Button >
