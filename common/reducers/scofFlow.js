@@ -55,6 +55,7 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    status: true,
   },
   flowProviderModal: {
     visible: false,

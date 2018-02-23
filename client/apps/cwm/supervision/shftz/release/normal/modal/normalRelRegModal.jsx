@@ -6,13 +6,12 @@ import moment from 'moment';
 import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import SearchBox from 'client/components/SearchBox';
+import { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails, loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo } from 'common/reducers/cwmShFtz';
 import messages from '../../../message.i18n';
-import { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails,
-  loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -32,7 +31,15 @@ const Option = Select.Option;
     submitting: state.cwmShFtz.submitting,
   }),
   {
-    closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails, loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo,
+    closeNormalRelRegModal,
+    loadParams,
+    loadNormalSoRegs,
+    loadNormalEntryRegs,
+    loadNormalEntryDetails,
+    loadSoRelDetails,
+    loadNormalEntryRegDetails,
+    newNormalRegByEntryReg,
+    newNormalRegBySo,
   }
 )
 export default class NormalRelRegModal extends Component {
@@ -195,9 +202,10 @@ export default class NormalRelRegModal extends Component {
     render: (o, record) => (<Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} />),
   }]
   handleAddSoDetails = (row) => {
-    this.props.loadSoRelDetails(row.pre_entry_seq_no).then((result) => {
+    this.props.loadSoRelDetails(row.pre_entry_seq_no, true).then((result) => {
       if (!result.error) {
-        const relDetails = this.state.relDetails.filter(reg => reg.so_no !== row.so_no).concat(result.data);
+        const relDetails = this.state.relDetails
+          .filter(reg => reg.so_no !== row.so_no).concat(result.data);
         this.soNormalSrcAddedMap[row.so_no] = true;
         this.setState({ relDetails });
       }
@@ -206,7 +214,8 @@ export default class NormalRelRegModal extends Component {
   handleAddEntryDetails = (row) => {
     this.props.loadNormalEntryRegDetails(row.ftz_ent_no).then((result) => {
       if (!result.error) {
-        const relDetails = this.state.relDetails.filter(reg => reg.ftz_ent_no !== row.ftz_ent_no).concat(result.data);
+        const relDetails = this.state.relDetails
+          .filter(reg => reg.ftz_ent_no !== row.ftz_ent_no).concat(result.data);
         this.entNormalSrcAddedMap[row.ftz_ent_no] = true;
         this.setState({ relDetails });
       }
@@ -324,7 +333,7 @@ export default class NormalRelRegModal extends Component {
     }
     // so rel detail id entry detail id may equal
     let normalRegColumns;
-    let relDetails = this.state.relDetails;
+    let { relDetails } = this.state;
     if (value === 'so_no') {
       normalRegColumns = this.soNormalSrcColumns;
       relDetails = [];
@@ -400,7 +409,7 @@ export default class NormalRelRegModal extends Component {
     const {
       srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType, ownerCusCode,
     } = this.state;
-    let normalRegColumns = this.state.normalRegColumns;
+    let { normalRegColumns } = this.state;
     if (!normalRegColumns) {
       normalRegColumns = this.ftzEntryNormalSrcColumns;
     }
@@ -482,7 +491,9 @@ export default class NormalRelRegModal extends Component {
               <Card
                 title={<div>
                   <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200, fontSize: 16 }} value={ownerCusCode}>
-                    {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                    {owners.map(owner => (
+                      <Option value={owner.customs_code} key={owner.customs_code}>
+                        {owner.name}</Option>))}
                   </Select>
                   <Select
                     size="small"
@@ -507,7 +518,10 @@ export default class NormalRelRegModal extends Component {
                     columns={normalRegColumns}
                     dataSource={this.state.normalSources}
                     rowKey="id"
-                    scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                    scroll={{
+ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0),
+                      y: this.state.scrollY,
+}}
                   />
                 </div>
               </Card>
@@ -519,7 +533,8 @@ export default class NormalRelRegModal extends Component {
                     <SearchBox placeholder="海关入库单号" onSearch={this.handleDetailFilterChange} />
                     <div className={`bulk-actions ${selRelDetailKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{selRelDetailKeys.length}项</h3>
-                      {selRelDetailKeys.length !== 0 && <Button onClick={this.handleRelBatchDelete}>批量删除</Button>}
+                      {selRelDetailKeys.length !== 0 &&
+                      <Button onClick={this.handleRelBatchDelete}>批量删除</Button>}
                     </div>
                   </div>
                   <Table
@@ -527,7 +542,10 @@ export default class NormalRelRegModal extends Component {
                     dataSource={dataSource}
                     rowKey="id"
                     rowSelection={relDetailRowSelection}
-                    scroll={{ x: this.relDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                    scroll={{
+ x: this.relDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0),
+                      y: this.state.scrollY,
+}}
                   />
                 </div>
               </Card>

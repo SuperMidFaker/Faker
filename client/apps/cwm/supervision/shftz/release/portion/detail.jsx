@@ -131,7 +131,10 @@ export default class SHFTZRelDetail extends Component {
           }
         ));
       } else {
-        detailMap.set(detail.ftz_ent_detail_id, detail);
+        detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, detail, {
+          seq_no: null,
+          product_no: null,
+        }));
       }
     }
     return detailMap;
