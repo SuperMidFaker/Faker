@@ -5,9 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import ContractContent from './contractContent';
-import { formatMsg } from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import PageHeader from 'client/components/PageHeader';
+import PreviewPdf from './previewPdfs/invTemplatePdf';
+import { formatMsg } from './message.i18n';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
+
 
 const Sider = Layout.Sider;
 const { Panel } = Collapse;
@@ -22,7 +25,7 @@ function MSCheckbox(props) {
   }
   return (
     <div>
-      <Checkbox style={{ 'font-size': 14 }} onChange={handleChange} checked={checked}>
+      <Checkbox style={{ fontSize: 14 }} onChange={handleChange} checked={checked}>
         {text}
       </Checkbox>
     </div>
@@ -49,7 +52,6 @@ function fetchData({ dispatch, state, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     template: state.cmsInvoice.template,
     invData: state.cmsInvoice.invData,
   }),
@@ -62,7 +64,6 @@ function fetchData({ dispatch, state, params }) {
 export default class ContractTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     invData: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
@@ -114,18 +115,6 @@ export default class ContractTemplate extends React.Component {
               </Panel>
               <Panel header="Footer" key="footer">
                 <MSCheckbox
-                  field="insurance_en"
-                  text={this.msg('insurance')}
-                  onChange={this.handleCheckChange}
-                  checked={invData.insurance_en}
-                />
-                <MSCheckbox
-                  field="dest_port_en"
-                  text={this.msg('destPort')}
-                  onChange={this.handleCheckChange}
-                  checked={invData.dest_port_en}
-                />
-                <MSCheckbox
                   field="remark_en"
                   text={this.msg('remark')}
                   onChange={this.handleCheckChange}
@@ -141,7 +130,14 @@ export default class ContractTemplate extends React.Component {
             </Collapse>
           </div>
         </Sider>
-        <ContractContent />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Actions>
+              <PreviewPdf />
+            </PageHeader.Actions>
+          </PageHeader>
+          <ContractContent />
+        </Layout>
       </Layout>
     );
   }

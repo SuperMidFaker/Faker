@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Breadcrumb, Layout, Collapse, Checkbox, Form, Input, Tooltip } from 'antd';
+import { Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import InvoiceContent from './invoiceContent';
-import { formatMsg } from './message.i18n';
 import PageHeader from 'client/components/PageHeader';
+import InvoiceContent from './invoiceContent';
 import PreviewPdf from './previewPdfs/invTemplatePdf';
+import { formatMsg } from './message.i18n';
 
 const { Sider } = Layout;
 const { Panel } = Collapse;
@@ -24,7 +24,7 @@ function MSCheckbox(props) {
   }
   return (
     <div>
-      <Checkbox style={{ 'fontSize': 14 }} onChange={handleChange} checked={checked}>
+      <Checkbox style={{ fontSize: 14 }} onChange={handleChange} checked={checked}>
         {text}
       </Checkbox>
     </div>
@@ -68,29 +68,15 @@ function fetchData({ dispatch, state, params }) {
 export default class InvoiceTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    template: PropTypes.object.isRequired,
     invData: PropTypes.object.isRequired,
-    trxModes: PropTypes.array.isRequired,
   }
-  
+
   msg = formatMsg(this.props.intl)
   handleCheckChange = (field, value) => {
     if (value !== '') {
       this.props.saveTempChange({ [field]: value }, this.props.invData.id);
     }
-  }
-  handlePreview = () => {
-    const { invData, trxModes } = this.props;
-    const docuBody = [];
-    const docDefinition = invTempPdfDef(invData, trxModes, docuBody);
-    window.pdfMake.fonts = {
-      yahei: {
-        normal: 'msyh.ttf',
-        bold: 'msyh.ttf',
-        italics: 'msyh.ttf',
-        bolditalics: 'msyh.ttf',
-      },
-    };
-    window.pdfMake.createPdf(docDefinition).open();
   }
   render() {
     const { invData } = this.props;
@@ -112,7 +98,7 @@ export default class InvoiceTemplate extends React.Component {
                 </FormItem>
                 <MSCheckbox
                   field="smarks_en"
-                  text='Shipping Marks'
+                  text="Shipping Marks"
                   onChange={this.handleCheckChange}
                   checked={invData.smarks_en}
                 />

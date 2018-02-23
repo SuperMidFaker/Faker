@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-// import { CMS_DOCU_TYPE } from 'common/constants';
+import { CMS_DOCU_TYPE } from 'common/constants';
 import { Button, Tooltip } from 'antd';
 import { injectIntl } from 'react-intl';
 import { loadInvImgs } from 'common/reducers/cmsInvoice';
@@ -11,12 +11,11 @@ import { loadInvImgs } from 'common/reducers/cmsInvoice';
 @connect(
   state => ({
     invData: state.cmsInvoice.invData,
+    template: state.cmsInvoice.template,
     trxModes: state.cmsInvoice.params.trxModes.map(tm => ({
       key: tm.trx_mode,
       text: `${tm.trx_mode} | ${tm.trx_spec}`,
     })),
-    logo: state.cmsInvoice.logo,
-    seal: state.cmsInvoice.seal,
   }),
   { loadInvImgs }
 )
@@ -24,7 +23,12 @@ import { loadInvImgs } from 'common/reducers/cmsInvoice';
 export default class PreviewPdf extends Component {
   static propTypes = {
     invData: PropTypes.object.isRequired,
+    template: PropTypes.object.isRequired,
     trxModes: PropTypes.array.isRequired,
+  }
+  state = {
+    logo: '',
+    seal: '',
   }
   componentDidMount() {
     let script;
@@ -45,15 +49,22 @@ export default class PreviewPdf extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.invData.imgs !== this.props.invData.imgs) {
-      let logoUrl = 'https://suso-img.b0.upaiyun.com/2018/2/9/52982a4fd0b22b6db28a6628c3268527-1518173100678.png';
-      let sealUrl = 'https://suso-img.b0.upaiyun.com/2018/2/9/40%E6%B5%B7%E5%85%B3-%E7%BA%BF%E6%80%A7-1518173262699.png';
       if (nextProps.invData.imgs.filter(img => img.img_type === 0)[0]) {
-        logoUrl = nextProps.invData.imgs.filter(img => img.img_type === 0)[0].url;
+        const logoUrl = nextProps.invData.imgs.filter(img => img.img_type === 0)[0].url;
+        if (logoUrl) {
+          this.props.loadInvImgs({ url: logoUrl }).then((result) => {
+            this.setState({ logo: result.data });
+          });
+        }
       }
       if (nextProps.invData.imgs.filter(img => img.img_type === 1)[0]) {
-        sealUrl = nextProps.invData.imgs.filter(img => img.img_type === 1)[0].url;
+        const sealUrl = nextProps.invData.imgs.filter(img => img.img_type === 1)[0].url;
+        if (sealUrl) {
+          this.props.loadInvImgs({ url: sealUrl }).then((result) => {
+            this.setState({ seal: result.data });
+          });
+        }
       }
-      this.props.loadInvImgs({ logoUrl, sealUrl });
     }
   }
   headBody = (docu, trxText) => {
@@ -66,7 +77,7 @@ export default class PreviewPdf extends Component {
       },
       {
         text: [
-          { text: '买方 Buyer :\n', style: 'subheader' },
+          { text: 'Buyer :\n', style: 'subheader' },
           { text: `${docu.buyer || ''}`, style: 'headContent' },
         ],
       }],
@@ -164,7 +175,7 @@ export default class PreviewPdf extends Component {
       footer.push({ text: `${(sumval.wet_wt).toFixed(3)}`, alignment: 'right' });
       pdf.push(footer);
     }
-    const bodytable = { headerRows: 1, widths, body: pdf };
+    const bodytable = { widths, body: pdf };
     return bodytable;
   }
   invTempPdfDef = (docu, trxModes, docuBody) => {
@@ -172,8 +183,14 @@ export default class PreviewPdf extends Component {
     const trxText = trxmode ? trxmode.text : '';
     const docDefinition = {
       content: [],
-      pageMargins: [40, 120, 40, 120],
+      pageMargins: [40, 110, 40, 120],
       styles: {
+        contractHeader: {
+          fontSize: 15,
+          bold: true,
+          color: 'black',
+          margin: [0, 0, 2, 10],
+        },
         header: {
           fontSize: 13,
           bold: true,
@@ -190,7 +207,7 @@ export default class PreviewPdf extends Component {
           fontSize: 10,
           bold: true,
           color: 'black',
-          margin: [4, 2, 2, 2],
+          margin: [4, 4, 2, 2],
         },
         headContent: {
           fontSize: 9,
@@ -207,124 +224,199 @@ export default class PreviewPdf extends Component {
           margin: [2, 2, 2, 2],
         },
         bottom: {
-          fontSize: 8,
+          fontSize: 10,
           bold: false,
           margin: [10, 10, 2, 10],
+        },
+        footer: {
+          fontSize: 10,
+          color: 'black',
+          margin: [2, 2, 2, 2],
         },
         footTable: {
           fontSize: 8,
           bold: false,
           margin: [40, 40],
         },
+        sign: {
+          fontSize: 11,
+          bold: true,
+          color: 'black',
+          margin: [12, 12, 12, 12],
+        },
       },
       defaultStyle: {
         font: 'yahei',
       },
     };
-    // if (docu.docu_type === CMS_DOCU_TYPE.invoice) {
-    let hbodyHeight = [70, '*'];
-    if (docu.smarks_en) {
-      hbodyHeight = [70, '*', 70];
-    }
-    docDefinition.header = {
-      columns: [
+    if (this.props.template.docu_type === CMS_DOCU_TYPE.contract) {
+      docDefinition.content = [
         {
-          image: this.props.logo,
-          width: 70,
-          margin: [20, 20, 20, 20],
+          columns: [
+            { text: '合同 CONTRACT', style: 'contractHeader' },
+            {
+              stack: [
+                { text: '合同号 Contract No', style: 'subheader' },
+                { text: `${docu.docu_no || ''}`, style: 'headContent' },
+              ],
+            },
+          ],
         },
-        [{ text: 'Invoice', style: 'header' },
+        {
+          columns: [
+            {
+              stack: [
+                { text: '卖方 Seller :', style: 'subheader' },
+                { text: `${docu.consignee || ''}`, style: 'headContent' },
+                { text: '买方 Buyer :', style: 'subheader' },
+                { text: `${docu.buyer || ''}`, style: 'headContent' },
+              ],
+            },
+            {
+              stack: [
+                { text: '日期 Date', style: 'subheader' },
+                { text: `${moment(docu.date).format('YYYY.MM.DD') || ''}`, style: 'headContent' },
+                { text: '成交方式 Terms Of Delivery', style: 'subheader' },
+                { text: `${trxText}`, style: 'headContent' },
+              ],
+            },
+          ],
+        },
+        {
+          style: 'table',
+          table: this.pdfBody(docu, docuBody),
+        },
+      ];
+      docDefinition.content.push({ text: `付款条件 Terms Of Payment : ${docu.payment_terms || ''}`, style: 'bottom' });
+      if (docu.remark_en) {
+        docDefinition.content.push({ text: `备注 Remark\n ${docu.remark || ''}`, style: 'bottom' });
+      }
+      docDefinition.content.push({ text: '本合同一式二份，买卖双方各执一份为证。', style: 'footer' });
+      docDefinition.content.push({ text: 'This contract is mad outin two original copies, one copy to be held by each party in witness thereof.', style: 'footer' });
+      if (docu.sign_en) {
+        docDefinition.content.push({
+          columns: [
+            { text: '买方  THE BUYERS', style: 'sign' },
+            { text: '卖方  THE SELLERS', style: 'sign' },
+          ],
+        });
+      }
+    } else {
+      let title = 'INVOICE';
+      if (this.props.template.docu_type === CMS_DOCU_TYPE.packingList) {
+        title = 'PACKING LIST';
+      }
+      let hbodyHeight = [70, '*'];
+      if (docu.smarks_en) {
+        hbodyHeight = [70, '*', 70];
+      }
+      docDefinition.header = {
+        columns: [
           {
-            columns: [
-              { text: `${docu.subtitle || ''}`, style: 'subtitle' },
-              {
-                stack: [
-                  { text: 'Invoice No :', style: 'subheader' },
-                  { text: `${docu.docu_no || ''}`, style: 'headContent' },
-                  { text: 'Invoice Date :', style: 'subheader' },
-                  { text: `${moment(docu.date).format('YYYY.MM.DD') || ''}`, style: 'headContent' },
-                ],
-              },
-            ],
+            text: '',
+            width: 75,
           },
+          [{ text: `${title}`, style: 'header' },
+            {
+              columns: [
+                { text: `${docu.subtitle || ''}`, style: 'subtitle' },
+                {
+                  stack: [
+                    { text: 'Invoice No :', style: 'subheader' },
+                    { text: `${docu.docu_no || ''}`, style: 'headContent' },
+                    { text: 'Invoice Date :', style: 'subheader' },
+                    { text: `${moment(docu.date).format('YYYY.MM.DD') || ''}`, style: 'headContent' },
+                  ],
+                },
+              ],
+            },
+          ],
         ],
-      ],
-    };
-    docDefinition.content = [
-      {
-        style: 'table',
-        table: {
-          widths: '50%',
-          heights: hbodyHeight,
-          body: this.headBody(docu, trxText),
-        },
-        layout: {
-          hLineWidth(i, node) {
-            return (i === 0 || i === node.table.body.length) ? 1.5 : 1;
+      };
+      if (this.state.logo.length > 23) {
+        docDefinition.header.columns[0] = {
+          image: this.state.logo,
+          width: 75,
+          margin: [20, 20, 20, 20],
+        };
+      }
+      docDefinition.content = [
+        {
+          style: 'table',
+          table: {
+            widths: '50%',
+            heights: hbodyHeight,
+            body: this.headBody(docu, trxText),
           },
-          vLineWidth(i, node) {
-            return (i === 0 || i === node.table.widths.length) ? 0 : 1;
-          },
-          hLineColor(i, node) {
-            return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
-          },
-          vLineColor(i, node) {
-            return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
-          },
-        },
-      },
-      {
-        style: 'table',
-        table: this.pdfBody(docu, docuBody),
-        layout: {
-          hLineWidth(i, node) {
-            return (i === 0 || i === node.table.body.length) ? 1.5 : 1;
-          },
-          vLineWidth(i, node) {
-            return (i === 0 || i === node.table.widths.length) ? 0 : 1;
-          },
-          hLineColor(i, node) {
-            return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
-          },
-          vLineColor(i, node) {
-            return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+          layout: {
+            hLineWidth(i, node) {
+              return (i === 0 || i === node.table.body.length) ? 1.5 : 1;
+            },
+            vLineWidth(i, node) {
+              return (i === 0 || i === node.table.widths.length) ? 0 : 1;
+            },
+            hLineColor(i, node) {
+              return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+            },
+            vLineColor(i, node) {
+              return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+            },
           },
         },
-      },
-    ];
-    docDefinition.content.push({
-      image: this.props.seal,
-      width: 75,
-      relativePosition: { x: 300, y: -20 },
-    });
-    if (docu.packages_en) {
-      docDefinition.content.push({ text: `Number Of Packages:  ${docu.packages || ''}`, style: 'bottom' });
+        {
+          style: 'table',
+          table: this.pdfBody(docu, docuBody),
+          layout: {
+            hLineWidth(i, node) {
+              return (i === 0 || i === node.table.body.length) ? 1.5 : 1;
+            },
+            vLineWidth(i, node) {
+              return (i === 0 || i === node.table.widths.length) ? 0 : 1;
+            },
+            hLineColor(i, node) {
+              return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';
+            },
+            vLineColor(i, node) {
+              return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';
+            },
+          },
+        },
+      ];
+      if (this.state.seal.length > 23) {
+        docDefinition.content.push({
+          image: this.state.seal,
+          width: 75,
+          relativePosition: { x: 300, y: -20 },
+        });
+      }
+      if (docu.packages_en) {
+        docDefinition.content.push({ text: `Number Of Packages:  ${docu.packages || ''}`, style: 'bottom' });
+      }
+      if (docu.gross_wt_en) {
+        docDefinition.content.push({ text: `Gross Weight: ${docu.gross_wt || ''} Kgs`, style: 'bottom' });
+      }
+      if (docu.remark_en) {
+        docDefinition.content.push({ text: `Remark : \n${docu.remark || ''}`, style: 'bottom' });
+      }
+      if (docu.footer1 || docu.footer2 || docu.footer3) {
+        docDefinition.footer = {
+          style: 'footTable',
+          table: {
+            heights: [60],
+            widths: '33%',
+            body: [[
+              { text: `${docu.footer1 || ''}`, border: [false, true, false, false] },
+              { text: `${docu.footer2 || ''}`, border: [false, true, false, false] },
+              { text: `${docu.footer3 || ''}`, border: [false, true, false, false] },
+            ]],
+          },
+        };
+      }
     }
-    if (docu.gross_wt_en) {
-      docDefinition.content.push({ text: `Gross Weight: ${docu.gross_wt || ''} Kgs`, style: 'bottom' });
-    }
-    if (docu.remark_en) {
-      docDefinition.content.push({ text: `Remark :  \n${docu.remark || ''}`, style: 'bottom' });
-    }
-    docDefinition.footer = {
-      style: 'footTable',
-      table: {
-        heights: [60],
-        widths: '33%',
-        body: [[
-          { text: `${docu.footer1 || ''}`, border: [false, true, false, false] },
-          { text: `${docu.footer2 || ''}`, border: [false, true, false, false] },
-          { text: `${docu.footer3 || ''}`, border: [false, true, false, false] },
-        ]],
-      },
-    };
-    // }
     return docDefinition;
   }
   handlePreview = () => {
-    const {
-      invData, trxModes,
-    } = this.props;
+    const { invData, trxModes } = this.props;
     const docuBody = [{
       g_no: 1, g_name: 'example1', g_qty: 2, dec_price: 5, trade_total: 10, wet_wt: 50,
     }, {
