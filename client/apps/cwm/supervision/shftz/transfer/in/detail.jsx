@@ -75,11 +75,16 @@ export default class SHFTZTransferInDetail extends Component {
     comparable: false,
     fullscreen: true,
   }
+  componentWillMount() {
+    this.setState({
+      entryRegs: this.props.entryRegs,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
       const comparable = nextProps.transfInReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      this.setState({ comparable });
+      this.setState({ comparable, entryRegs: nextProps.entryRegs });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -236,10 +241,22 @@ export default class SHFTZTransferInDetail extends Component {
         }
       });
   }
+  handleSearch = (searchText) => {
+    const entryRegs = JSON.parse(JSON.stringify(this.props.entryRegs));
+    if (searchText) {
+      entryRegs[0].details = entryRegs[0].details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
+        || reg.test(item.hscode) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ entryRegs });
+  }
   render() {
     const {
-      transfInReg, entryRegs, whse, submitting,
+      transfInReg, whse, submitting,
     } = this.props;
+    const { entryRegs } = this.state;
     if (entryRegs.length !== 1) {
       return null;
     }
