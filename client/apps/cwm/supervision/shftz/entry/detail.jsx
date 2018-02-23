@@ -538,6 +538,17 @@ export default class SHFTZEntryDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
+  handleSearch = (searchText) => {
+    let [{ details }] = this.props.entryRegs;
+    if (searchText) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.hscode)
+        || reg.test(item.product_no) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ filingDetails: details });
+  }
   render() {
     const {
       primaryEntryReg, entryRegs, whse, submitting,

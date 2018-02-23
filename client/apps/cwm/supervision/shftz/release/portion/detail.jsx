@@ -87,6 +87,7 @@ export default class SHFTZRelDetail extends Component {
   state = {
     reg: {},
     fullscreen: true,
+    origDecl: [],
     decl: [],
     view: 'splitted',
     filingDetails: [],
@@ -105,6 +106,7 @@ export default class SHFTZRelDetail extends Component {
       this.props.loadBatchDecl(nextProps.relRegs[0].ftz_rel_no).then((result) => {
         if (!result.error) {
           this.setState({
+            origDecl: result.data,
             decl: result.data,
           });
         }
@@ -418,6 +420,27 @@ export default class SHFTZRelDetail extends Component {
       }
     },
   }]
+  handleDetailsSearch = (searchText) => {
+    let [{ details }] = this.props.relRegs;
+    if (searchText) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.hscode)
+        || reg.test(item.product_no) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ filingDetails: details });
+  }
+  handleBatchSearch = (searchText) => {
+    let { origDecl } = this.state;
+    if (searchText) {
+      origDecl = origDecl.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_apply_nos) || reg.test(item.cus_decl_nos);
+      });
+    }
+    this.setState({ decl: origDecl });
+  }
   render() {
     const {
       relSo, relRegs, whse, submitting,
@@ -563,7 +586,7 @@ export default class SHFTZRelDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleDetailsSearch} />
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                         <RadioButton value="splitted">拆分明细</RadioButton>
                         <RadioButton value="merged">合并明细</RadioButton>
@@ -588,7 +611,7 @@ export default class SHFTZRelDetail extends Component {
                       loading={this.state.loading}
                     >
                       <DataPane.Toolbar>
-                        <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                        <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleBatchSearch} />
                       </DataPane.Toolbar>
                     </DataPane>
                   </TabPane>

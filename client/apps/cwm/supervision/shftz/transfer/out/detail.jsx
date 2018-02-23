@@ -81,11 +81,20 @@ export default class SHFTZTransferOutDetail extends Component {
   state = {
     tabKey: '',
     fullscreen: true,
+    relRegs: [],
+  }
+  componentWillMount() {
+    this.setState({
+      relRegs: this.props.relRegs,
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       if (this.state.tabKey === '') {
-        this.setState({ tabKey: nextProps.relRegs[0].pre_entry_seq_no });
+        this.setState({
+          tabKey: nextProps.relRegs[0].pre_entry_seq_no,
+          relRegs: nextProps.relRegs,
+        });
       }
     }
   }
@@ -258,10 +267,24 @@ export default class SHFTZTransferOutDetail extends Component {
       ]);
     }
   }
+  handleSearch = (searchText, preEntrySeqNo) => {
+    const relRegs = JSON.parse(JSON.stringify(this.props.relRegs));
+    if (searchText) {
+      const searchOne = relRegs.find(reg => reg.pre_entry_seq_no === preEntrySeqNo);
+      const details = searchOne.details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
+        || reg.test(item.hscode) || reg.test(item.g_name);
+      });
+      searchOne.details = details;
+    }
+    this.setState({ relRegs });
+  }
   render() {
     const {
-      relSo, relRegs, whse, submitting, receivers,
+      relSo, whse, submitting, receivers,
     } = this.props;
+    const { relRegs } = this.state;
     if (relRegs.length !== 1) {
       return null;
     }
@@ -410,7 +433,11 @@ export default class SHFTZTransferOutDetail extends Component {
                         loading={this.state.loading}
                       >
                         <DataPane.Toolbar>
-                          <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                          <SearchBox
+                            placeholder={this.msg('searchPlaceholder')}
+                            onSearch={searchText =>
+                              this.handleSearch(searchText, reg.pre_entry_seq_no)}
+                          />
                           <DataPane.Extra>
                             {totCol}
                           </DataPane.Extra>

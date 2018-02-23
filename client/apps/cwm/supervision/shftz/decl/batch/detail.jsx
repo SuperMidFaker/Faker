@@ -16,6 +16,7 @@ import TrimSpan from 'client/components/trimSpan';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+import './index.less';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -82,10 +83,20 @@ export default class BatchDeclDetail extends Component {
     tabKey: 'details',
     fullscreen: true,
   }
+  componentWillMount() {
+    this.setState({
+      regs: this.props.regs,
+      details: this.props.details,
+      batchApplies: this.props.batchApplies,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.batchApplies !== this.props.batchApplies && nextProps.batchApplies.length > 0) {
       if (this.state.tabKey === 'details') {
-        this.setState({ tabKey: nextProps.batchApplies[0].pre_entry_seq_no });
+        this.setState({
+          tabKey: nextProps.batchApplies[0].pre_entry_seq_no,
+          batchApplies: nextProps.batchApplies,
+        });
       }
     }
   }
@@ -311,10 +322,48 @@ export default class BatchDeclDetail extends Component {
     const ietype = this.props.batchDecl.i_e_type === 0 ? 'import' : 'export';
     this.context.router.push(`/clearance/${ietype}/manifest/${this.props.batchDecl.delg_no}`);
   }
+  handleListSearch = (searchText) => {
+    let { regs } = this.props;
+    if (searchText) {
+      regs = regs.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_rel_no) || reg.test(item.so_no);
+      });
+    }
+    this.setState({ regs });
+  }
+  handleDetailsSearch = (searchText) => {
+    let { details } = this.props;
+    if (searchText) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_rel_no) || reg.test(item.product_no)
+        || reg.test(item.hscode) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ details });
+  }
+  handleAppliesSearch = (searchText, preEntrySeqNo) => {
+    const batchApplies = JSON.parse(JSON.stringify(this.props.batchApplies));
+    if (searchText) {
+      const searchOne = batchApplies.find(apply => apply.pre_entry_seq_no === preEntrySeqNo);
+      const details = searchOne.details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.product_no) || reg.test(item.g_name);
+      });
+      const grossWt = details.reduce((prev, next) => prev + next.gross_wt, 0);
+      const netWt = details.reduce((prev, next) => prev + next.net_wt, 0);
+      searchOne.details = details;
+      searchOne.gross_wt = grossWt;
+      searchOne.net_wt = netWt;
+    }
+    this.setState({ batchApplies });
+  }
   render() {
     const {
-      batchDecl, batchApplies, regs, details, whse, submitting,
+      batchDecl, whse, submitting,
     } = this.props;
+    const { batchApplies, regs, details } = this.state;
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
       gross_wt: acc.gross_wt + det.gross_wt,
@@ -394,12 +443,14 @@ export default class BatchDeclDetail extends Component {
                   <DataPane
                     fullscreen={this.state.fullscreen}
                     columns={this.regColumns}
+                    rowSelection={rowSelection}
                     indentSize={8}
                     dataSource={regs}
                     rowKey="ftz_rel_no"
+                    loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleListSearch} />
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
@@ -414,7 +465,7 @@ export default class BatchDeclDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleDetailsSearch} />
                       <DataPane.Extra>
                         {totCol}
                       </DataPane.Extra>
@@ -433,7 +484,11 @@ export default class BatchDeclDetail extends Component {
                       loading={this.state.loading}
                     >
                       <DataPane.Toolbar>
-                        <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                        <SearchBox
+                          placeholder={this.msg('searchPlaceholder')}
+                          onSearch={searchText =>
+                            this.handleAppliesSearch(searchText, reg.pre_entry_seq_no)}
+                        />
                         <Input addonBefore="报关单号" value={reg.cus_decl_no} style={{ width: 280 }} />
                         <DataPane.Extra>
                           <Summary>

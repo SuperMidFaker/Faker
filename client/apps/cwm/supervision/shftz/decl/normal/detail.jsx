@@ -74,6 +74,16 @@ export default class NormalDeclDetail extends Component {
   }
   state = {
     fullscreen: true,
+    regs: [],
+    details: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.regs !== this.props.regs || nextProps.details !== this.props.details) {
+      this.setState({
+        regs: nextProps.regs,
+        details: nextProps.details,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleFullscreen = (fullscreen) => {
@@ -211,10 +221,30 @@ export default class NormalDeclDetail extends Component {
     const link = `/clearance/${decl.i_e_type}/manifest/`;
     this.context.router.push(`${link}${decl.delg_no}`);
   }
+  handleListSearch = (searchText) => {
+    let { regs } = this.props;
+    if (searchText) {
+      regs = regs.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_rel_no);
+      });
+    }
+    this.setState({ regs });
+  }
+  handleDetailsSearch = (searchText) => {
+    let { details } = this.props;
+    if (searchText) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_rel_no) || reg.test(item.hscode)
+        || reg.test(item.product_no) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ details });
+  }
   render() {
-    const {
-      normalDecl, whse, details, regs, trxModes,
-    } = this.props;
+    const { normalDecl, whse, trxModes } = this.props;
+    const { details, regs } = this.state;
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
       gross_wt: acc.gross_wt + det.gross_wt,
@@ -293,7 +323,7 @@ export default class NormalDeclDetail extends Component {
                     rowKey="ftz_rel_no"
                   >
                     <DataPane.Toolbar>
-                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleListSearch} />
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
@@ -308,7 +338,7 @@ export default class NormalDeclDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleDetailsSearch} />
                       <DataPane.Extra>
                         {totCol}
                       </DataPane.Extra>

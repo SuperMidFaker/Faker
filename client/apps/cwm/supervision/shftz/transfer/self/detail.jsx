@@ -78,6 +78,12 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   state = {
     fullscreen: true,
+    transfSelfReg: {},
+  }
+  componentWillMount() {
+    this.setState({
+      transfSelfReg: this.props.transfSelfReg,
+    });
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleFullscreen = (fullscreen) => {
@@ -304,8 +310,20 @@ export default class SHFTZTransferSelfDetail extends Component {
       }
     });
   }
+  handleSearch = (searchText) => {
+    const transfSelfReg = JSON.parse(JSON.stringify(this.props.transfSelfReg));
+    if (searchText) {
+      transfSelfReg.details = transfSelfReg.details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
+        || reg.test(item.hscode) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ transfSelfReg });
+  }
   render() {
-    const { transfSelfReg, whse, submitting } = this.props;
+    const { whse, submitting } = this.props;
+    const { transfSelfReg } = this.state;
     const stat = transfSelfReg.details ? transfSelfReg.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
