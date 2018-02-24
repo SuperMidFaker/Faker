@@ -1,13 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Form, Layout, Row, Col, Table } from 'antd';
+import { Card, Form, Layout, Row, Col, Table, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import { saveTempChange } from 'common/reducers/cmsInvoice';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
+const { TextArea } = Input;
+
+function MSTextArea(props) {
+  const {
+    value, field, autosize, onChange,
+  } = props;
+  function handleChange(ev) {
+    onChange(ev.target.value, field);
+  }
+  return (
+    <div>
+      <TextArea onChange={handleChange} value={value} autosize={autosize}/>
+    </div>
+  );
+}
+
+MSTextArea.propTypes = {
+  autosize: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 
 @injectIntl
 @connect(
@@ -16,10 +37,6 @@ const { Content } = Layout;
     trxModes: state.cmsInvoice.params.trxModes.map(tm => ({
       key: tm.trx_mode,
       text: `${tm.trx_mode} | ${tm.trx_spec}`,
-    })),
-    customs: state.cmsInvoice.params.customs.map(tm => ({
-      key: tm.customs_code,
-      text: `${tm.customs_code} | ${tm.customs_name}`,
     })),
     invoice: state.cmsInvoice.invData,
   }),
@@ -119,14 +136,14 @@ export default class ContractContent extends React.Component {
       dataIndex: 'wet_wt',
     });
     return (
-      <Content className="main-content layout-fixed-width layout-fixed-width-lg">
-        <Card style={{ margin: 16 }}>
+      <Content className="page-content layout-fixed-width">
+        <Card style={{ width: 650, minHeight: 800 }}>
           <div className="doc-header">
             <h4>合同 CONTRACT</h4>
             <span />
             <Row gutter={16}>
               <Col sm={12}>
-                <InfoItem label="卖方 Seller" field={invoice.seller} editable placeholder="输入卖方" dataIndex="seller" onEdit={this.handleFill} />
+                <InfoItem label="卖方 Seller" field={invoice.consignee} editable placeholder="输入卖方" dataIndex="consignee" onEdit={this.handleFill} />
               </Col>
               <Col sm={12}>
                 <InfoItem label="合同号 Contract No." field={invoice.invoice_no} editable placeholder="输入合同号" dataIndex="invoice_no" onEdit={this.handleFill} />
@@ -137,15 +154,17 @@ export default class ContractContent extends React.Component {
               <Col sm={12}>
                 <InfoItem label="日期 Date" type="date" field={invoice.invoice_date} editable placeholder="输入日期" dataIndex="invoice_date" onEdit={this.handleFill} />
               </Col>
-              <InfoItem
-                type="select"
-                label="成交方式 Terms Of Delivery"
-                placeholder="点击选择"
-                field={invoice.trxn_mode}
-                editable
-                options={trxModes}
-                onEdit={value => this.handleFill(value, 'trxn_mode')}
-              />
+              <Col sm={12}>
+                <InfoItem
+                  type="select"
+                  label="成交方式 Terms Of Delivery"
+                  placeholder="点击选择"
+                  field={invoice.trxn_mode}
+                  editable
+                  options={trxModes}
+                  onEdit={value => this.handleFill(value, 'trxn_mode')}
+                />
+              </Col>
             </Row>
             <span />
             <span>兹经买卖双方同意，由买方购进，卖方出售下列货物，并按下列条款签订本合同：</span>
@@ -157,21 +176,20 @@ export default class ContractContent extends React.Component {
                 <InfoItem label="付款条件 Terms Of Payment" field={invoice.payment_terms} editable placeholder="输入付款条件" dataIndex="payment_terms" onEdit={this.handleFill} />
               </Col>
             </Row>
+            <span />
             <Row gutter={16}>
               <Col sm={24}>
-                {!!invoice.remark_en && <InfoItem label="备注 Remark" field={invoice.remark} editable placeholder="输入备注" dataIndex="remark" onEdit={this.handleFill} />}
+                {!!invoice.remark_en && <span>备注 Remark</span>}
+                {!!invoice.remark_en && <MSTextArea value={invoice.remark} field='remark' autosize={{ minRows: 2, maxRows: 6 }} onChange={this.handleFill} />}
               </Col>
             </Row>
-            <span />
-            <p>本合同一式二份，买卖双方各执一份为证。</p>
-            <p>This contract is mad outin two original copies, one copy to be held by each party in witness thereof.</p>
             {!!invoice.sign_en && <div style={{ margin: 28 }}>
               <Row gutter={16}>
                 <Col sm={12}>
-                  <h3>买方  THE BUYERS</h3>
+                  <h4>买方  THE BUYERS</h4>
                 </Col>
                 <Col sm={12}>
-                  <h3>卖方  THE SELLERS </h3>
+                  <h4>卖方  THE SELLERS </h4>
                 </Col>
               </Row>
             </div>}

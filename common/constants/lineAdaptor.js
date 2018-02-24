@@ -81,7 +81,7 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
   },
   CWM_SHIPPING_ORDER: {
     key: 'CWM_SHIPPING_ORDER',
-    name: 'SO模版',
+    name: 'SO模板',
     columns: [{
       field: 'owner_code',
       label: '客户代码',
@@ -357,6 +357,65 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'attrib_8_date',
       label: '扩展属性8',
+    }],
+  },
+  SCOF_INVOICE: {
+    key: 'SCOF_INVOICE',
+    name: '商业发票模板',
+    columns: [{
+      field: 'invoice_no',
+      label: '发票号',
+    }, {
+      field: 'invoice_date',
+      label: '发票日期',
+    }, {
+      field: 'buyer',
+      label: '购买方',
+    }, {
+      field: 'seller',
+      label: '销售方',
+    }, {
+      field: 'po_no',
+      label: '采购订单号',
+    }, {
+      field: 'package_number',
+      label: '件数',
+    }, {
+      field: 'package_type',
+      label: '包装',
+    }, {
+      field: 'gross_wt',
+      label: '总毛重',
+    }, {
+      field: 'trade_mode',
+      label: '成交方式',
+    }, {
+      field: 'product_no',
+      label: '货号',
+    }, {
+      field: 'description',
+      label: '商品描述',
+    }, {
+      field: 'qty',
+      label: '数量',
+    }, {
+      field: 'unit',
+      label: '计量单位',
+    }, {
+      field: 'unit_price',
+      label: '单价',
+    }, {
+      field: 'amount',
+      label: '总价',
+    }, {
+      field: 'currency',
+      label: '币制',
+    }, {
+      field: 'orig_country',
+      label: '原产国',
+    }, {
+      field: 'net_wt',
+      label: '净重',
     }],
   },
 };

@@ -32,6 +32,7 @@ export default class AdaptorModal extends Component {
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.hideAdaptorModal();
+    this.props.form.resetFields();
   }
   handleAddAdaptor = () => {
     this.props.form.validateFields((error, values) => {
@@ -46,7 +47,7 @@ export default class AdaptorModal extends Component {
           ownerTid,
         }).then((result) => {
           if (!result.error) {
-            this.props.hideAdaptorModal();
+            this.handleCancel();
             this.props.loadAdaptors('', '', this.props.pageSize, this.props.current);
           }
         });

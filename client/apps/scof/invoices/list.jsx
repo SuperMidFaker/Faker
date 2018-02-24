@@ -13,8 +13,9 @@ import SearchBox from 'client/components/SearchBox';
 import { loadPartners } from 'common/reducers/partner';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { loadInvoices } from 'common/reducers/sofInvoice';
-import { PARTNER_ROLES } from 'common/constants';
+import { loadInvoices, deleteSofInvice } from 'common/reducers/sofInvoice';
+import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
+import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -45,9 +46,10 @@ function fetchData({ state, dispatch }) {
     partners: state.partner.partners,
     currencies: state.cmsManifest.params.currencies,
     loading: state.sofInvoice.loading,
+    adaptors: state.hubDataAdapter.modelAdaptors,
   }),
   {
-    loadInvoices,
+    loadInvoices, loadModelAdaptors, deleteSofInvice,
   }
 )
 @connectNav({
@@ -65,6 +67,9 @@ export default class InvoiceList extends React.Component {
     importPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
+  }
+  componentDidMount() {
+    this.props.loadModelAdaptors('', [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -196,6 +201,14 @@ export default class InvoiceList extends React.Component {
       importPanelVisible: false,
     });
   }
+  handleDelete = (row) => {
+    this.props.deleteSofInvice(row.invoice_no).then((result) => {
+      if (!result.error) {
+        const { filter } = this.props;
+        this.handleReload(filter);
+      }
+    });
+  }
   render() {
     const {
       invoiceList, partners, loading,
@@ -255,6 +268,7 @@ export default class InvoiceList extends React.Component {
           />
           <ImportDataPanel
             visible={this.state.importPanelVisible}
+            adaptors={this.props.adaptors}
             endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
             formData={{
           }}
