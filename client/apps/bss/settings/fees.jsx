@@ -123,11 +123,7 @@ export default class Fees extends Component {
     });
   }
   handleTabChange = (key) => {
-    if (key === 'feeItems') {
-      this.setState({ currentTab: 'feeItems' });
-    } else if (key === 'feeGroups') {
-      this.setState({ currentTab: 'feeGroups' });
-    }
+    this.setState({ currentTab: key });
   }
   render() {
     const { currentTab } = this.state;

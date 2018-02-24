@@ -6,7 +6,6 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, DatePicker, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
-import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
@@ -43,11 +42,6 @@ export default class BillsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-  }
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
-      // this.handleListReload();
-    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -233,12 +227,10 @@ export default class BillsList extends React.Component {
       <Summary>
         <Summary.Item label="账单金额合计">{10000}</Summary.Item>
         <Summary.Item label="确认金额合计">{6666}</Summary.Item>
-        <Summary.Item label="开票金额合计">{3334}</Summary.Item>
-        <Summary.Item label="收款金额合计">{3334}</Summary.Item>
       </Summary>
     );
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
           <PageHeader.Title>
             <Breadcrumb>
@@ -251,6 +243,7 @@ export default class BillsList extends React.Component {
             <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('新建账单')}
             </Button>
+            <Button icon="setting">模板设置</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
@@ -266,7 +259,7 @@ export default class BillsList extends React.Component {
             total={totCol}
           />
         </Content>
-      </QueueAnim>
+      </Layout>
     );
   }
 }

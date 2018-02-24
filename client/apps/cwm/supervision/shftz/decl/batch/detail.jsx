@@ -16,7 +16,6 @@ import TrimSpan from 'client/components/trimSpan';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import './index.less';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
