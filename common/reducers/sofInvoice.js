@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'GET_INVOICE', 'GET_INVOICE_SUCCEED', 'GET_INVOICE_FAIL',
   'UPDATE_SOF_INVOICE', 'UPDATE_SOF_INVOICE_SUCCEED', 'UPDATE_SOF_INVOICE_FAIL',
   'CLEAR_INVOICE',
+  'DELETE_SOF_INVOICE', 'DELETE_SOF_INVOICE_SUCCEED', 'DELETE_SOF_INVOICE_FAIL',
 ]);
 
 const initialState = {
@@ -68,7 +69,7 @@ export function addSofInvoice(head, details) {
         actionTypes.ADD_SOF_INVOICE_SUCCEED,
         actionTypes.ADD_SOF_INVOICE_FAIL,
       ],
-      endpoint: 'v1/sof/invouce/add',
+      endpoint: 'v1/sof/invoice/add',
       method: 'post',
       data: { head, details },
     },
@@ -111,7 +112,7 @@ export function loadInvoices({ pageSize, current, filter }) {
         actionTypes.LOAD_INVOICES_SUCCEED,
         actionTypes.LOAD_INVOICES_FAIL,
       ],
-      endpoint: 'v1/sof/invouces/load',
+      endpoint: 'v1/sof/invoices/load',
       method: 'get',
       params: { pageSize, current, filter },
     },
@@ -126,7 +127,7 @@ export function getInvoice(invoiceNo) {
         actionTypes.GET_INVOICE_SUCCEED,
         actionTypes.GET_INVOICE_FAIL,
       ],
-      endpoint: 'v1/sof/invouce/get',
+      endpoint: 'v1/sof/invoice/get',
       method: 'get',
       params: { invoiceNo },
     },
@@ -141,9 +142,24 @@ export function UpdateSofInvoice(head, details, id) {
         actionTypes.UPDATE_SOF_INVOICE_SUCCEED,
         actionTypes.UPDATE_SOF_INVOICE_FAIL,
       ],
-      endpoint: 'v1/sof/invouce/update',
+      endpoint: 'v1/sof/invoice/update',
       method: 'post',
       data: { head, details, id },
+    },
+  };
+}
+
+export function deleteSofInvice(invoiceNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_SOF_INVOICE,
+        actionTypes.DELETE_SOF_INVOICE_SUCCEED,
+        actionTypes.DELETE_SOF_INVOICE_FAIL,
+      ],
+      endpoint: 'v1/sof/invoice/delete',
+      method: 'post',
+      data: { invoiceNo },
     },
   };
 }
