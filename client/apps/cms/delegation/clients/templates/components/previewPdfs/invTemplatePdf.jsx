@@ -257,7 +257,7 @@ export default class PreviewPdf extends Component {
             {
               stack: [
                 { text: '合同号 Contract No', style: 'subheader' },
-                { text: `${docu.docu_no || ''}`, style: 'headContent' },
+                { text: `${docu.invoice_no || ''}`, style: 'headContent' },
               ],
             },
           ],
@@ -291,8 +291,8 @@ export default class PreviewPdf extends Component {
       if (docu.remark_en) {
         docDefinition.content.push({ text: `备注 Remark\n ${docu.remark || ''}`, style: 'bottom' });
       }
-      docDefinition.content.push({ text: '本合同一式二份，买卖双方各执一份为证。', style: 'footer' });
-      docDefinition.content.push({ text: 'This contract is mad outin two original copies, one copy to be held by each party in witness thereof.', style: 'footer' });
+      // docDefinition.content.push({ text: '本合同一式二份，买卖双方各执一份为证。', style: 'footer' });
+      // docDefinition.content.push({ text: 'This contract is mad outin two original copies, one copy to be held by each party in witness thereof.', style: 'footer' });
       if (docu.sign_en) {
         docDefinition.content.push({
           columns: [
