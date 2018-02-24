@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Avatar, Button, Card, Icon, Row, Col } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import InfoItem from 'client/components/InfoItem';
 import { showVendorModal } from 'common/reducers/sofVendors';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 
@@ -18,7 +18,7 @@ const formatMsg = format(messages);
 export default class OverviewCard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    vendor: PropTypes.object.isRequired,
+    vendor: PropTypes.shape({ partner_code: PropTypes.string }).isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
@@ -33,7 +33,7 @@ export default class OverviewCard extends React.Component {
         <Row gutter={16} className="info-group-underline">
           <Col sm={24} lg={8}>
             <InfoItem
-              label="供应商代码"
+              label="服务商代码"
               field={vendor.partner_code}
             />
           </Col>

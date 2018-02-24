@@ -35,20 +35,20 @@ export default class ModuleBSS extends React.Component {
       key: 'bss-0',
       disabled: false,
       path: '/bss/dashboard',
-      icon: 'logixon icon-dashboard-o',
+      icon: 'logixon icon-dashboard',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
-      key: 'bss-settlement',
-      icon: 'logixon icon-finance-o',
-      text: formatMsg(intl, 'settlement'),
-      path: '/bss/settlement',
+      key: 'bss-audit',
+      icon: 'logixon icon-expense-audit',
+      text: formatMsg(intl, 'audit'),
+      path: '/bss/audit',
     });
     linkMenus.push({
       single: true,
       key: 'bss-bills',
-      icon: 'logixon icon-bill-mng',
+      icon: 'logixon icon-expense-bill',
       text: formatMsg(intl, 'bills'),
       path: '/bss/bills',
     });

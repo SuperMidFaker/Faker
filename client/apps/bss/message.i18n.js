@@ -6,9 +6,9 @@ const messages = defineMessages({
     id: 'bss.module.dashboard',
     defaultMessage: '工作台',
   },
-  settlement: {
-    id: 'bss.module.settlement',
-    defaultMessage: '费用确认',
+  audit: {
+    id: 'bss.module.audit',
+    defaultMessage: '费用审核',
   },
   bills: {
     id: 'bss.module.bills',

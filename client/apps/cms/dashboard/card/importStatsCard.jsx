@@ -46,10 +46,10 @@ export default class ImportStatsCard extends Component {
         action={<Dropdown overlay={menu}><Icon type="ellipsis" /></Dropdown>}
         total={yuan(6560)}
         footer={<Field label="进口量" value="600" />}
-        contentHeight={46}
+        contentHeight={64}
       >
         <MiniBar
-          height={46}
+          height={64}
           data={mockData}
         />
       </ChartCard>

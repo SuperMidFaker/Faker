@@ -22,12 +22,12 @@ const messages = defineMessages({
     defaultMessage: '自定义追踪表',
   },
   customers: {
-    id: 'sof.module.customers',
+    id: 'sof.module.partner.customers',
     defaultMessage: '客户',
   },
   vendors: {
-    id: 'sof.module.vendors',
-    defaultMessage: '供应商',
+    id: 'sof.module.partner.vendors',
+    defaultMessage: '服务商',
   },
   flow: {
     id: 'sof.module.flow',

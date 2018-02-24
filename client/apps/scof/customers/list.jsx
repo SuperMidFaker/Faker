@@ -8,14 +8,15 @@ import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBox from 'client/components/SearchBox';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import ProfileCard from './cards/profileCard';
-import CustomerModal from './modals/customerModal';
 import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/sofCustomers';
 import { PARTNER_ROLES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import OverviewCard from './cards/overviewCard';
 import ResourcesCard from './cards/resourcesCard';
+
+import ProfileCard from './cards/profileCard';
+import CustomerModal from './modals/customerModal';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -44,14 +45,13 @@ export default class CustomerList extends React.Component {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    customers: PropTypes.array.isRequired,
+    customers: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
     loadCustomers: PropTypes.func.isRequired,
     deleteCustomer: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
-    customerModalVisible: false,
     customer: {},
     currentPage: 1,
     collapsed: false,
@@ -98,7 +98,7 @@ export default class CustomerList extends React.Component {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    let customers = this.props.customers;
+    let { customers } = this.props;
     if (value) {
       customers = this.props.customers.filter((item) => {
         const reg = new RegExp(value);
@@ -145,6 +145,7 @@ export default class CustomerList extends React.Component {
               <SearchBox
                 placeholder={this.msg('searchPlaceholder')}
                 onSearch={this.handleSearch}
+                width="100%"
               />
             </div>
             <div className="list-body">
@@ -153,7 +154,11 @@ export default class CustomerList extends React.Component {
                 dataSource={this.state.customers}
                 columns={columns}
                 showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 50,
+                  onChange: this.handlePageChange,
+                }}
                 rowClassName={record => (record.id === customer.id ? 'table-row-selected' : '')}
                 rowKey="id"
                 loading={this.props.loading}
