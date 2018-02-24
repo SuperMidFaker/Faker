@@ -12,7 +12,6 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import UserAvatar from 'client/components/UserAvatar';
-import EditableCell from 'client/components/EditableCell';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
 import CreateFlowModal from './modal/createFlowModal';
@@ -100,11 +99,6 @@ export default class FlowList extends React.Component {
   columns = [{
     title: this.msg('流程名称'),
     dataIndex: 'name',
-    render: (o, record) => (<EditableCell
-      value={record.name}
-      cellTrigger={false}
-      onSave={name => this.handleFlowNameChange(record.id, name)}
-    />),
   }, {
     title: this.msg('关联客户'),
     dataIndex: 'customer',

@@ -33,7 +33,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'bss',
 })
-export default class SettlementList extends React.Component {
+export default class AuditList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -205,15 +205,14 @@ export default class SettlementList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('settlement')}
+                {this.msg('audit')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
-              <RadioButton value="all">未入账单</RadioButton>
-              <RadioButton value="pending">已入账单</RadioButton>
-              <RadioButton value="inbound">结算完成</RadioButton>
+              <RadioButton value="pending">待审核</RadioButton>
+              <RadioButton value="confirmed">已确认</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>

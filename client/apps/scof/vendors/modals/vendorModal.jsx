@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Checkbox, Modal, Form, Input, Select, Row, Col, Button, Icon, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { hideVendorModal } from 'common/reducers/sofVendors';
 import { getCompanyInfo } from 'common/reducers/common';
 import { checkPartner, addPartner, editPartner } from 'common/reducers/partner';
 import { BUSINESS_TYPES } from 'common/constants';
+import messages from '../message.i18n';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
 const formatMsg = format(messages);
 
@@ -38,7 +38,7 @@ export default class VendorModal extends React.Component {
     checkPartner: PropTypes.func.isRequired,
     hideVendorModal: PropTypes.func.isRequired,
     editPartner: PropTypes.func.isRequired,
-    vendor: PropTypes.object.isRequired,
+    vendor: PropTypes.shape({ id: PropTypes.number }).isRequired,
     onOk: PropTypes.func,
     getCompanyInfo: PropTypes.func.isRequired,
   }
@@ -125,7 +125,7 @@ export default class VendorModal extends React.Component {
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (businessType === '') {
-      message.error('请选择供应商业务类型');
+      message.error('请选择服务商业务类型');
     } else if (this.props.operation === 'edit') {
       this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'SUP', business, customsCode, businessType, contact, phone, email).then((result) => {
         if (result.error) {
@@ -216,16 +216,22 @@ export default class VendorModal extends React.Component {
     };
     let title = '';
     if (operation === 'add') {
-      title = '新增供应商';
+      title = '新增服务商';
     } else if (operation === 'edit') {
-      title = '修改供应商资料';
+      title = '修改服务商资料';
     }
     return (
-      <Modal maskClosable={false} visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        title={title}
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
+      >
         <Form layout="horizontal">
           <FormItem
             {...formItemLayout}
-            label="供应商名称"
+            label="服务商名称"
             hasFeedback
             required
           >
@@ -252,17 +258,24 @@ export default class VendorModal extends React.Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="供应商代码"
+            label="服务商代码"
             hasFeedback
           >
-            <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
+            <Input
+              value={this.state.partnerCode}
+              onChange={(e) => { this.setState({ partnerCode: e.target.value }); }}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={BUSINESS_TYPES} value={businessArray} onChange={this.handleVendorTypesChange} />
+            <CheckboxGroup
+              options={BUSINESS_TYPES}
+              value={businessArray}
+              onChange={this.handleVendorTypesChange}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}

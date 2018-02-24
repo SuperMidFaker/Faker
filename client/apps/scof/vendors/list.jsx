@@ -43,14 +43,13 @@ export default class VendorList extends React.Component {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    vendors: PropTypes.array.isRequired,
+    vendors: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
     loadVendors: PropTypes.func.isRequired,
     deleteVendor: PropTypes.func.isRequired,
     showVendorModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
-    vendorModalVisible: false,
     vendor: {},
     currentPage: 1,
     collapsed: false,
@@ -97,7 +96,7 @@ export default class VendorList extends React.Component {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    let vendors = this.props.vendors;
+    let { vendors } = this.props;
     if (value) {
       vendors = this.props.vendors.filter((item) => {
         const reg = new RegExp(value);
@@ -134,7 +133,7 @@ export default class VendorList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
-              <Tooltip placement="bottom" title="新增供应商">
+              <Tooltip placement="bottom" title="新增服务商">
                 <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showVendorModal('add')} />
               </Tooltip>
             </div>
@@ -144,6 +143,7 @@ export default class VendorList extends React.Component {
               <SearchBox
                 placeholder={this.msg('searchPlaceholder')}
                 onSearch={this.handleSearch}
+                width="100%"
               />
             </div>
             <div className="list-body">
@@ -152,7 +152,11 @@ export default class VendorList extends React.Component {
                 dataSource={this.state.vendors}
                 columns={columns}
                 showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 50,
+                  onChange: this.handlePageChange,
+                }}
                 rowClassName={record => (record.id === vendor.id ? 'table-row-selected' : '')}
                 rowKey="id"
                 loading={this.props.loading}

@@ -99,7 +99,7 @@ import * as SCOFFlow from './scof/flow';
 import * as SCOFSettings from './scof/settings';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
-import * as BSSSettlement from './bss/settlement';
+import * as BSSAudit from './bss/audit';
 import * as BSSBills from './bss/bills';
 import * as BSSSettings from './bss/settings';
 
@@ -507,9 +507,9 @@ export default(store) => {
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
             <IndexRedirect to="/bss/dashboard" />
             <Route path="dashboard" component={BSSDashboard.Index} />
-            <Route path="settlement">
-              <IndexRoute component={BSSSettlement.List} />
-              <Route path=":orderRelNo" component={BSSSettlement.Detail} />
+            <Route path="audit">
+              <IndexRoute component={BSSAudit.List} />
+              <Route path=":orderRelNo" component={BSSAudit.Detail} />
             </Route>
             <Route path="bills">
               <IndexRoute component={BSSBills.List} />

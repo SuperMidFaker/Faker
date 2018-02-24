@@ -8,11 +8,11 @@ const messages = defineMessages({
   },
   brokers: {
     id: 'cms.settings.brokers',
-    defaultMessage: '服务商',
+    defaultMessage: '关检申报单位',
   },
   addBroker: {
     id: 'cms.settings.brokers.add',
-    defaultMessage: '添加服务商',
+    defaultMessage: '添加',
   },
   preferences: {
     id: 'cms.settings.preferences',

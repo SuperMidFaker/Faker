@@ -135,7 +135,7 @@ export default class BrokerList extends Component {
         key: 'ciq_code',
         width: 150,
       }, {
-        title: '是否供应商',
+        title: '是否服务商',
         dataIndex: 'comp_partner_id',
         key: 'comp_partner_id',
         render(o) {
