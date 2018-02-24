@@ -35,7 +35,7 @@ export default class ModuleBSS extends React.Component {
       key: 'bss-0',
       disabled: false,
       path: '/bss/dashboard',
-      icon: 'logixon icon-dashboard',
+      icon: 'logixon icon-dashboard-o',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({

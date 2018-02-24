@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   settlement: {
     id: 'bss.module.settlement',
-    defaultMessage: '费用结算',
+    defaultMessage: '费用确认',
   },
   bills: {
     id: 'bss.module.bills',

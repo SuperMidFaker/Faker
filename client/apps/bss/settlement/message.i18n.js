@@ -5,7 +5,7 @@ import globalMessages from 'client/common/root.i18n';
 const messages = defineMessages({
   settlement: {
     id: 'bss.settlement',
-    defaultMessage: '费用结算',
+    defaultMessage: '费用确认',
   },
 });
 

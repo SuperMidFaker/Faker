@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, DatePicker, Radio, Select, Icon, Tooltip } from 'antd';
+import { Card, DatePicker, Select, Icon, Tooltip } from 'antd';
 import ChartCard from 'client/components/ChartCard';
 import moment from 'moment';
 // import { Link } from 'react-router';
@@ -16,8 +16,6 @@ import { formatMsg } from '../message.i18n';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
   const firstDay = new Date();
@@ -172,10 +170,6 @@ export default class StatsCard extends Component {
     }].concat(this.props.clients);
     const datePicker = (
       <div>
-        <RadioGroup defaultValue="USD" onChange={this.handleCurrencyChange}>
-          <RadioButton value="USD">USD</RadioButton>
-          <RadioButton value="CNY">CNY</RadioButton>
-        </RadioGroup>
         <Select
           showSearch
           optionFilterProp="children"
