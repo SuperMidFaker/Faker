@@ -54,8 +54,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...action.result.data } };
     case actionTypes.SAVE_TEMP_CHANGE_SUCCEED:
       return { ...state, invData: { ...state.invData, ...action.payload.change } };
-    case actionTypes.LOAD_INV_IMGS_SUCCEED:
-      return { ...state, logo: action.result.data.logo, seal: action.result.data.seal }
     case actionTypes.LOAD_DOCU_DATAS_SUCCEED:
       return { ...state, docuDatas: action.result.data };
     case actionTypes.LOAD_DOCU_BODY_SUCCEED:

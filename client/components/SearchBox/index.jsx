@@ -10,7 +10,7 @@ export default class SearchBox extends React.Component {
   }
   static propTypes = {
     placeholder: PropTypes.string,
-    width: PropTypes.number,
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onSearch: PropTypes.func.isRequired,
     enterButton: PropTypes.bool,
   }

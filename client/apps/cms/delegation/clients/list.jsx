@@ -114,7 +114,7 @@ export default class ClientsList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <SearchBox onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} />
+              <SearchBox onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} width="100%" />
             </div>
             <div className="list-body">
               <Table

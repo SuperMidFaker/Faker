@@ -542,7 +542,7 @@ export function loadNormalEntryDetails(query) {
   };
 }
 
-export function loadSoRelDetails(soNo) {
+export function loadSoRelDetails(soNo, tbdSo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -552,7 +552,7 @@ export function loadSoRelDetails(soNo) {
       ],
       endpoint: 'v1/cwm/shftz/release/load',
       method: 'get',
-      params: { soNo },
+      params: { soNo, tbdSo },
     },
   };
 }

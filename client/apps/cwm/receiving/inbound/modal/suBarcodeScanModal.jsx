@@ -340,7 +340,12 @@ export default class SuBarcodeScanModal extends Component {
   }
   handleAttribKeyEnter = (ev) => {
     if (ev.key === 'Enter') {
-      this.handleScanReceive();
+      const suScan = { ...this.state.scanRecv };
+      if (suScan.su_barcode) {
+        this.handleScanReceive();
+      } else {
+        this.suInputRef.focus();
+      }
     }
   }
   render() {
@@ -455,8 +460,7 @@ export default class SuBarcodeScanModal extends Component {
                   subarcodeInputProps.value = manualInput[suKey];
                   subarcodeInputProps.onChange =
                     ev => this.handleSuKeyManualInput(suKey, ev.target.value);
-                  subarcodeInputProps.onChange =
-                    ev => this.handleSuKeyManualInput(suKey, ev.target.value);
+                  subarcodeInputProps.placeholder = '手工输入,按Enter保存';
                   subarcodeInputProps.onKeyDown = this.handleAttribKeyEnter;
                 } else {
                   subarcodeInputProps.readOnly = true;

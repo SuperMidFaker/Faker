@@ -16,35 +16,35 @@ const messages = defineMessages({
     defaultMessage: '费用项',
   },
   feeGroups: {
-    id: 'sof.settings.fee.groups',
+    id: 'bss.settings.fee.groups',
     defaultMessage: '费用分组',
   },
   exchangeRates: {
-    id: 'sof.settings.exchange.rates',
-    defaultMessage: '汇率设置',
+    id: 'bss.settings.exchange.rates',
+    defaultMessage: '汇率',
   },
-  extField1: {
-    id: 'sof.settings.order.type.extfield1',
-    defaultMessage: '扩展字段1',
+  taxRates: {
+    id: 'bss.settings.tax.rates',
+    defaultMessage: '税率',
   },
   extField2: {
-    id: 'sof.settings.order.type.extfield2',
+    id: 'bss.settings.order.type.extfield2',
     defaultMessage: '扩展字段2',
   },
   extField3: {
-    id: 'sof.settings.order.type.extfield3',
+    id: 'bss.settings.order.type.extfield3',
     defaultMessage: '扩展字段3',
   },
   extField4: {
-    id: 'sof.settings.order.type.extfield4',
+    id: 'bss.settings.order.type.extfield4',
     defaultMessage: '扩展字段4',
   },
   extField5: {
-    id: 'sof.settings.order.type.extfield5',
+    id: 'bss.settings.order.type.extfield5',
     defaultMessage: '扩展字段5',
   },
   extField6: {
-    id: 'sof.settings.order.type.extfield6',
+    id: 'bss.settings.order.type.extfield6',
     defaultMessage: '扩展字段6',
   },
 });

@@ -5,7 +5,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Switch, Breadcrumb, Button, Icon, Menu, Modal, Layout, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadRepos, openAddModal, switchRepoMode, switchRepoVersionKeep, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
+import { loadRepos, openAddModal, deleteRepo, switchRepoMode, switchRepoVersionKeep, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
 import { loadCustomers } from 'common/reducers/sofCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -31,6 +31,7 @@ const { Sider, Content } = Layout;
   {
     loadRepos,
     openAddModal,
+    deleteRepo,
     switchRepoMode,
     switchRepoVersionKeep,
     showLinkSlaveModal,
@@ -143,6 +144,9 @@ export default class RepoList extends React.Component {
             <a onClick={() => this.handleLinkSlave(repo)}>关联从库</a>
           </Menu.Item>);
         }
+        menuItems.push(<Menu.Item key="repodel">
+          <a onClick={() => this.handleRepoDel(repo)}><Tag color="red">删除</Tag></a>
+        </Menu.Item>);
       } else if (repo.owner_tenant_id === this.props.tenantId) {
         menuItems.push(<Menu.Item key="remslave">
           <a onClick={() => this.handleUnlinkSlave(repo.id)}>删除关联</a>
@@ -176,6 +180,21 @@ export default class RepoList extends React.Component {
       title: `确定切换为【${targetMode}】?`,
       onOk() {
         self.props.switchRepoMode(repo.id);
+      },
+      onCancel() {
+      },
+    });
+  }
+  handleRepoDel = (repo) => {
+    const self = this;
+    Modal.confirm({
+      title: `确定删除物料库【${repo.owner_name}】所有信息?`,
+      onOk() {
+        self.props.deleteRepo(repo.id).then((result) => {
+          if (!result.error) {
+            self.handleRepoReload();
+          }
+        });
       },
       onCancel() {
       },
