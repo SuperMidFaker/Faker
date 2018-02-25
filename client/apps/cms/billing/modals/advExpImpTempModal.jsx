@@ -4,11 +4,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Tabs, Alert, Popconfirm, Icon, message, Tooltip, Tag } from 'antd';
 import { showAdvImpTempModal, saveImptAdvFees } from 'common/reducers/cmsExpense';
-
-import { formatMsg } from '../message.i18n';
 import { INVOICE_TYPE } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 
 @injectIntl
@@ -37,7 +36,7 @@ export default class AdvExpsImpTempModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.advImport.advbodies !== this.props.advImport.advbodies) {
-      const advbodies = nextProps.advImport.advbodies;
+      const { advbodies } = nextProps.advImport;
       const datas = [];
       for (let i = 0; i < advbodies.length; i++) {
         const advbody = advbodies[i];
@@ -52,7 +51,7 @@ export default class AdvExpsImpTempModal extends Component {
       this.setState({ datas });
     }
     if (nextProps.advImport.ptAdvbodies !== this.props.advImport.ptAdvbodies) {
-      const ptAdvbodies = nextProps.advImport.ptAdvbodies;
+      const { ptAdvbodies } = nextProps.advImport;
       const ptDatas = [];
       for (let i = 0; i < ptAdvbodies.length; i++) {
         const advbody = ptAdvbodies[i];
@@ -131,7 +130,7 @@ export default class AdvExpsImpTempModal extends Component {
     });
   }
   handleRemove = (idx) => {
-    const datas = this.state.datas;
+    const { datas } = this.state;
     datas.splice(idx, 1);
     this.setState({ datas });
   }

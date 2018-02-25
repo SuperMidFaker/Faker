@@ -7,7 +7,6 @@ import { closeCreateModal, loadPartners, createQuote } from 'common/reducers/cms
 import { TARIFF_KINDS, PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
-
 const { Option } = Select;
 const FormItem = Form.Item;
 const formItemLayout = {

@@ -4,10 +4,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Select, DatePicker, Modal } from 'antd';
-
-import { formatMsg } from '../message.i18n';
 import { createFilename } from 'client/util/dataTransform';
-
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -18,7 +16,7 @@ firstDay.setDate(1);
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
-}), )
+}), {})
 @Form.create()
 export default class BillingForm extends React.Component {
   static propTypes = {
@@ -33,7 +31,6 @@ export default class BillingForm extends React.Component {
   state = {
     beginDate: firstDay,
     endDate: endDay,
-    chooseModel: '',
   }
   msg = formatMsg(this.props.intl)
   handleOk = () => {
@@ -83,7 +80,10 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            <RangePicker value={[moment(beginDate), moment(endDate)]} onChange={this.handleDateChange} />
+            <RangePicker
+              value={[moment(beginDate), moment(endDate)]}
+              onChange={this.handleDateChange}
+            />
           </FormItem>
         </Form>
       </Modal>
