@@ -101,18 +101,18 @@ export default class Clearance extends React.Component {
         single: false,
         key: 'cms-billing',
         icon: 'logixon icon-finance',
-        text: formatMsg(intl, 'expenseGroup'),
+        text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'cms-billing-0',
-          path: '/clearance/expense/receivable',
+          path: '/clearance/billing/receivable',
           text: formatMsg(intl, 'receivableExpense'),
         }, {
           key: 'cms-billing-1',
-          path: '/clearance/expense/payable',
+          path: '/clearance/billing/payable',
           text: formatMsg(intl, 'payableExpense'),
         }, {
           key: 'cms-billing-3',
-          path: '/clearance/expense/rates',
+          path: '/clearance/billing/rates',
           text: formatMsg(intl, 'rates'),
         }],
       });

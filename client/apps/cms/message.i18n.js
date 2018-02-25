@@ -33,21 +33,21 @@ const messages = defineMessages({
     id: 'cms.module.compliance.ebook',
     defaultMessage: '电子帐册',
   },
-  expenseGroup: {
-    id: 'cms.module.group.expense',
-    defaultMessage: '费用管理',
+  billing: {
+    id: 'cms.module.billing',
+    defaultMessage: '费收管理',
   },
   payableExpense: {
-    id: 'cms.module.expense.payable',
+    id: 'cms.module.billing.payable',
     defaultMessage: '应付费用',
   },
   receivableExpense: {
-    id: 'cms.module.expense.receivable',
+    id: 'cms.module.billing.receivable',
     defaultMessage: '应收费用',
   },
   rates: {
-    id: 'cms.module.expense.rates',
-    defaultMessage: '报价费率',
+    id: 'cms.module.billing.rates',
+    defaultMessage: '价格协议',
   },
   analytics: {
     id: 'cms.module.analytics',

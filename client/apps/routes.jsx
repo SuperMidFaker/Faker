@@ -52,7 +52,7 @@ import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSQuote from './cms/quote';
-import * as CMSExpense from './cms/expense';
+import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
@@ -325,15 +325,15 @@ export default(store) => {
               <Route path="add" component={CMSPermit.Add} />
               <Route path=":id" component={CMSPermit.Detail} />
             </Route>
-            <Route path="expense">
+            <Route path="billing">
               <Route path="receivable">
-                <IndexRoute component={CMSExpense.ReceivableList} />
+                <IndexRoute component={CMSBilling.ReceivableList} />
               </Route>
               <Route path="payable">
-                <IndexRoute component={CMSExpense.PayableList} />
+                <IndexRoute component={CMSBilling.PayableList} />
               </Route>
-              <Route path=":prType/:delgNo" component={CMSExpense.Detail} />
-              <Route path="rates" component={CMSExpense.Rates} />
+              <Route path=":prType/:delgNo" component={CMSBilling.Detail} />
+              <Route path="rates" component={CMSBilling.Rates} />
             </Route>
             <Route path="quote">
               <IndexRoute component={CMSQuote.List} />
@@ -516,8 +516,11 @@ export default(store) => {
               <Route path=":billNo" component={BSSBills.Detail} />
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/bss/settings/fees" />
+              <IndexRedirect to="/bss/settings/preferences" />
+              <Route path="preferences" component={BSSSettings.Preferences} />
               <Route path="fees" component={BSSSettings.Fees} />
+              <Route path="exchangerates" component={BSSSettings.ExchangeRates} />
+              <Route path="taxrates" component={BSSSettings.TaxRates} />
             </Route>
           </Route>
         </Route>

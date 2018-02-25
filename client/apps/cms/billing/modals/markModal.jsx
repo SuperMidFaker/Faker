@@ -4,9 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Checkbox, message } from 'antd';
 import { closeMarkModal, saveMarkstate } from 'common/reducers/cmsExpense';
-
 import { formatMsg } from '../message.i18n';
-
 
 function ColumnCheckbox(props) {
   const { record, field, onChange } = props;
@@ -85,7 +83,13 @@ export default class MarkModal extends Component {
   render() {
     const { showMarkModal, data } = this.props;
     return (
-      <Modal maskClosable={false} visible={showMarkModal} title={this.msg('markState')} onCancel={this.handleCancel} onOk={this.handleSave}>
+      <Modal
+        maskClosable={false}
+        visible={showMarkModal}
+        title={this.msg('markState')}
+        onCancel={this.handleCancel}
+        onOk={this.handleSave}
+      >
         <Table columns={this.columns} dataSource={data} pagination={false} scroll={{ y: 200 }} />
       </Modal>
     );

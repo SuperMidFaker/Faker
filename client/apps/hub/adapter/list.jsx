@@ -113,7 +113,7 @@ export default class LineFileAdapterList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content layout-fixed-width" key="main">
-            <Card bodyStyle={{ padding: 16 }} >
+            <Card bodyStyle={{ padding: 0 }} >
               <List
                 dataSource={this.props.adaptors.data}
                 header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
