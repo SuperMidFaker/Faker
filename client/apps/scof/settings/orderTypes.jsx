@@ -104,7 +104,7 @@ export default class Preferences extends Component {
             </PageHeader.Title>
           </PageHeader>
           <Content className="page-content">
-            <Card extra={<Button type="primary" ghost icon="plus-circle-o" onClick={this.handleCreate}>添加订单类型</Button>} bodyStyle={{ padding: 16 }} >
+            <Card extra={<Button type="primary" ghost icon="plus-circle-o" onClick={this.handleCreate}>添加订单类型</Button>} bodyStyle={{ padding: 0 }} >
               <List
                 loading={orderTypeList.loading}
                 pagination={{

@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Layout } from 'antd';
+import { Breadcrumb, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/reducers/sofOrderPref';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
-import DataTable from 'client/components/DataTable';
-import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import SettingMenu from './menu';
-import { formatMsg, formatGlobalMsg } from './message.i18n';
+import PluginsCard from './card/pluginsCard';
+import AuditRuleCard from './card/auditRuleCard';
+import SettingMenu from '../menu';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
 
@@ -36,7 +36,7 @@ export default class Fees extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    currentTab: 'feeItems',
+    currentTab: 'plugins',
   }
   componentDidMount() {
     const { orderTypeList } = this.props;
@@ -47,35 +47,6 @@ export default class Fees extends Component {
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  itemsColumns = [{
-    title: '费用项代码',
-    dataIndex: 'code',
-    width: 150,
-  }, {
-    title: '费用项名称',
-    dataIndex: 'name',
-    width: 150,
-  }, {
-    title: '描述',
-    dataIndex: 'desc',
-    width: 150,
-  }, {
-    title: '类型',
-    dataIndex: 'type',
-    width: 100,
-  }, {
-    title: '所属分组',
-    dataIndex: 'groups',
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 100,
-  }, {
-    title: '操作',
-    dataIndex: 'OPS_COL',
-    width: 90,
-    render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip="删除" row={record} />,
-  }]
   groupsColumns = [{
     title: '费用分组代码',
     dataIndex: 'fee_group_code',
@@ -129,22 +100,14 @@ export default class Fees extends Component {
     const { currentTab } = this.state;
     const tabList = [
       {
-        key: 'feeItems',
-        tab: this.msg('feeItems'),
+        key: 'plugins',
+        tab: this.msg('prefPlugins'),
       },
       {
-        key: 'feeGroups',
-        tab: this.msg('feeGroups'),
+        key: 'auditRule',
+        tab: this.msg('prefAuditRule'),
       },
     ];
-    const itemsActions = <SearchBox placeholder={this.msg('itemsSearchTip')} onSearch={this.handleSearchItems} />;
-    const groupsActions = <SearchBox placeholder={this.msg('groupsSearchTip')} onSearch={this.handleSearchGroups} />;
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
-      },
-    };
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -156,37 +119,14 @@ export default class Fees extends Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <SettingMenu currentKey="fees" />
+            <SettingMenu currentKey="preferences" />
           </div>
         </Sider>
         <Layout>
-          <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
-            <PageHeader.Actions>
-              {currentTab === 'feeItems' && <Button type="primary" icon="plus" onClick={this.handleCreateFeeItem}>
-                {this.msg('新建费用项')}
-              </Button>}
-              {currentTab === 'feeGroups' && <Button type="primary" icon="plus" onClick={this.handleCreateFeeItem}>
-                {this.msg('新建费用分组')}
-              </Button>}
-            </PageHeader.Actions>
-          </PageHeader>
+          <PageHeader tabList={tabList} onTabChange={this.handleTabChange} />
           <Content className="page-content">
-            {currentTab === 'feeItems' && <DataTable
-              toolbarActions={itemsActions}
-              selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
-              columns={this.itemsColumns}
-              rowSelection={rowSelection}
-              rowKey="id"
-            />}
-            {currentTab === 'feeGroups' && <DataTable
-              toolbarActions={groupsActions}
-              selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
-              columns={this.groupsColumns}
-              rowSelection={rowSelection}
-              rowKey="id"
-            />}
+            {currentTab === 'plugins' && <PluginsCard />}
+            {currentTab === 'auditRule' && <AuditRuleCard />}
           </Content>
         </Layout>
       </Layout>

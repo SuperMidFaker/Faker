@@ -8,8 +8,8 @@ import { CMS_DECL_CHANNEL, CMS_PLUGINS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import PageHeader from 'client/components/PageHeader';
-import SettingMenu from './menu';
-import { formatMsg } from './message.i18n';
+import SettingMenu from '../menu';
+import { formatMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
 const { Panel } = Collapse;

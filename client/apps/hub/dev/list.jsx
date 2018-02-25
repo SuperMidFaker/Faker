@@ -119,7 +119,7 @@ export default class DevAppList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content layout-fixed-width">
-            <Card bodyStyle={{ padding: 16 }} >
+            <Card bodyStyle={{ padding: 0 }} >
               <List
                 dataSource={this.props.apps.data}
                 header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}

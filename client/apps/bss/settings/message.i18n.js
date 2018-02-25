@@ -7,16 +7,28 @@ const messages = defineMessages({
     id: 'bss.settings',
     defaultMessage: '设置',
   },
+  preferences: {
+    id: 'bss.settings.preferences',
+    defaultMessage: '偏好设置',
+  },
+  prefPlugins: {
+    id: 'bss.settings.preferences.plugins',
+    defaultMessage: '应用插件',
+  },
+  prefAuditRule: {
+    id: 'bss.settings.preferences.audit.rule',
+    defaultMessage: '审核规则',
+  },
   fees: {
-    id: 'bss.settings.fee',
+    id: 'bss.settings.fees',
     defaultMessage: '费用参数',
   },
   feeItems: {
-    id: 'bss.settings.fee.items',
+    id: 'bss.settings.fees.items',
     defaultMessage: '费用项',
   },
   feeGroups: {
-    id: 'bss.settings.fee.groups',
+    id: 'bss.settings.fees.groups',
     defaultMessage: '费用分组',
   },
   exchangeRates: {

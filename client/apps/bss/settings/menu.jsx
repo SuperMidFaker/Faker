@@ -20,9 +20,14 @@ export default class SettingMenu extends React.Component {
     return (
       <div>
         <Menu mode="inline" selectedKeys={[this.props.currentKey]}>
+          <Menu.Item key="preferences">
+            <NavLink to="/bss/settings/preferences">
+              <Logixon type="rule" /> {this.msg('preferences')}
+            </NavLink>
+          </Menu.Item>
           <Menu.Item key="fees">
             <NavLink to="/bss/settings/fees">
-              <Logixon type="rule" /> {this.msg('fees')}
+              <Logixon type="finance-o" /> {this.msg('fees')}
             </NavLink>
           </Menu.Item>
           <Menu.Item key="exchangerates">

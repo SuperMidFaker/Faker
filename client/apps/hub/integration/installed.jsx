@@ -137,7 +137,7 @@ export default class InstalledAppsList extends React.Component {
             </PageHeader.Title>
           </PageHeader>
           <Content className="page-content layout-fixed-width">
-            <Card bodyStyle={{ padding: 16 }} >
+            <Card bodyStyle={{ padding: 0 }} >
               <List
                 dataSource={installedAppsList.data}
                 header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
