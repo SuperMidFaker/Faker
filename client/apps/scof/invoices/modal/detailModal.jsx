@@ -60,6 +60,8 @@ export default class DetailModal extends Component {
             amount,
             currency,
             ...values,
+            splitQty: values.qty,
+            disabled: true,
           });
           this.props.headForm.setFieldsValue({
             total_qty: totalQty + Number(values.qty),
