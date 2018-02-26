@@ -6,7 +6,7 @@ import { Button, Input, Tag } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
-import { toggleDetailModal, setTemporary } from 'common/reducers/sofInvoice';
+import { toggleDetailModal, setTemporary, splitInvoice, getInvoice } from 'common/reducers/sofInvoice';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import ExcelUploader from 'client/components/ExcelUploader';
 import DetailModal from '../modal/detailModal';
@@ -20,19 +20,34 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     countries: state.cmsManifest.params.tradeCountries,
   }),
   {
-    toggleDetailModal, loadCmsParams, setTemporary,
+    toggleDetailModal, loadCmsParams, setTemporary, splitInvoice, getInvoice,
   }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ getFieldValue: PropTypes.func }).isRequired,
+    invoiceNo: PropTypes.string,
   }
   state = {
     selectedRowKeys: [],
   };
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadCmsParams();
+    const temporaryDetails = [...this.props.temporaryDetails];
+    const newTemporary = temporaryDetails.map(td => ({ ...td, splitQty: td.qty, disabled: true }));
+    this.props.setTemporary(newTemporary);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.temporaryDetails.length === 0 && nextProps.temporaryDetails.length !== 0) {
+      const temporaryDetails = [...nextProps.temporaryDetails];
+      const newTemporary =
+      temporaryDetails.map(td => ({ ...td, splitQty: td.qty, disabled: true }));
+      this.props.setTemporary(newTemporary);
+    }
+  }
+  componentWillUnmount() {
+    this.props.setTemporary([]);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -82,6 +97,32 @@ export default class DetailsPane extends Component {
   toggleDetailModal = () => {
     this.props.toggleDetailModal(true);
   }
+  handleSplitChange = (e, record) => {
+    const temporaryDetails = [...this.props.temporaryDetails];
+    const changedOne = temporaryDetails.find(td => td.id === record.id);
+    if (e.target.value > changedOne.qty) {
+      changedOne.splitQty = changedOne.qty;
+    } else {
+      changedOne.splitQty = e.target.value;
+    }
+    this.props.setTemporary(temporaryDetails);
+  }
+  handleSplit = () => {
+    const temporaryDetails = [...this.props.temporaryDetails];
+    const splitDetails = temporaryDetails.filter(td => !td.disabled);
+    this.props.splitInvoice(this.props.invoiceNo, splitDetails).then((result) => {
+      if (!result.error) {
+        this.setState({ selectedRowKeys: [] });
+        this.props.getInvoice(this.props.invoiceNo).then((re) => {
+          if (!re.error) {
+            const newTemporaryDetails =
+            re.data.details.map(de => ({ ...de, splitQty: de.qty, disabled: true }));
+            this.props.setTemporary(newTemporaryDetails);
+          }
+        });
+      }
+    });
+  }
   render() {
     const {
       temporaryDetails, currencies, countries,
@@ -90,6 +131,17 @@ export default class DetailsPane extends Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
+      },
+      onSelect: (record, selected) => {
+        const tempDetails = [...this.props.temporaryDetails];
+        const selectOne = tempDetails.find(td => td.id === record.id);
+        if (selected) {
+          selectOne.disabled = false;
+        } else {
+          selectOne.disabled = true;
+          selectOne.splitQty = selectOne.qty;
+        }
+        this.props.setTemporary(tempDetails);
       },
     };
     const columns = [{
@@ -118,10 +170,10 @@ export default class DetailsPane extends Component {
       align: 'right',
     }, {
       title: '拆分数量',
+      dataIndex: 'splitQty',
       width: 100,
-      dataIndex: 'qty',
       align: 'right',
-      render: o => <Input size="small" value={o} disabled />,
+      render: (o, record, index) => <Input size="small" value={o} disabled={record.disabled} onChange={e => this.handleSplitChange(e, record, index)} />,
     }, {
       title: '计量单位',
       dataIndex: 'unit',

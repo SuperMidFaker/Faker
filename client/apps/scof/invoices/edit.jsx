@@ -127,6 +127,7 @@ export default class EditInvoice extends Component {
                 <TabPane tab="发票明细" key="invoiceDetails">
                   <DetailsPane
                     form={form}
+                    invoiceNo={this.props.params.invoiceNo}
                     fullscreen={this.state.fullscreen}
                   />
                 </TabPane>
