@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Tag } from 'antd';
+import { Button, Input, Tag } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
@@ -117,6 +117,12 @@ export default class DetailsPane extends Component {
       dataIndex: 'qty',
       align: 'right',
     }, {
+      title: '拆分数量',
+      width: 100,
+      dataIndex: 'qty',
+      align: 'right',
+      render: o => <Input size="small" value={o} disabled />,
+    }, {
       title: '计量单位',
       dataIndex: 'unit',
       align: 'center',
@@ -203,6 +209,7 @@ export default class DetailsPane extends Component {
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}
           >
+            <Button onClick={this.handleSplit}>拆分发票</Button>
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
