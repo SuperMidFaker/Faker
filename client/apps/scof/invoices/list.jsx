@@ -99,6 +99,7 @@ export default class InvoiceList extends React.Component {
     title: '发票号',
     dataIndex: 'invoice_no',
     width: 150,
+    fixed: 'left',
   }, {
     title: '发票日期',
     dataIndex: 'invoice_date',
@@ -238,6 +239,10 @@ export default class InvoiceList extends React.Component {
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
     </span>);
+    const bulkActions = (<span>
+      <Button icon="download" onClick={this.handleExport}>{this.gmsg('export')}</Button>
+      <Button type="danger" icon="delete" onClick={this.handleBatchDelete}>{this.gmsg('batchDelete')}</Button>
+    </span>);
     return (
       <Layout>
         <PageHeader>
@@ -250,7 +255,7 @@ export default class InvoiceList extends React.Component {
           </PageHeader.Title>
           <PageHeader.Actions>
             <Button icon="upload" onClick={this.handleImport}>
-              {this.msg('importInvoices')}
+              {this.gmsg('batchImport')}
             </Button>
             <Button type="primary" icon="plus" onClick={this.handleCreate} >{this.msg('createInvoice')}</Button>
           </PageHeader.Actions>
@@ -258,6 +263,7 @@ export default class InvoiceList extends React.Component {
         <Content className="page-content">
           <DataTable
             toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
             dataSource={this.dataSource}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
@@ -267,6 +273,7 @@ export default class InvoiceList extends React.Component {
             rowKey="id"
           />
           <ImportDataPanel
+            title={this.msg('batchImportInvoices')}
             visible={this.state.importPanelVisible}
             adaptors={this.props.adaptors}
             endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}

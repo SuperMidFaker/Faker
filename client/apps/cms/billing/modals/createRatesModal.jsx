@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, message, Form, Select } from 'antd';
+import { Input, Modal, message, Form, Radio, Select } from 'antd';
 import { closeCreateModal, loadPartners, createQuote } from 'common/reducers/cmsQuote';
 import { TARIFF_KINDS, PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
 const FormItem = Form.Item;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
@@ -52,7 +54,7 @@ export default class CreateRatesModal extends React.Component {
     const field = this.props.form.getFieldsValue();
     if (field.partner.name) {
       const selpartners = this.props.partners.filter(pt => pt.name === field.partner.name);
-      quoteData.partner = selpartners[0];
+      [quoteData.partner] = selpartners;
     }
     if (field.tariff_kind === 'salesBase') {
       quoteData.recv_tenant_id = this.props.tenantId;
@@ -82,13 +84,13 @@ export default class CreateRatesModal extends React.Component {
         message.error(result.error.message, 10);
       } else {
         this.props.closeCreateModal();
-        const { quoteNo, version } = result.data;
-        this.context.router.push(`/clearance/quote/edit/${quoteNo}/${version}`);
+        const { quoteNo } = result.data;
+        this.context.router.push(`/clearance/billing/rates/${quoteNo}`);
       }
     });
   }
-  handleKindSelect = (value) => {
-    const tariffKind = value;
+  handleKindSelect = (ev) => {
+    const tariffKind = ev.target.value;
     if (tariffKind === 'sales') {
       this.props.loadPartners(this.props.tenantId, PARTNER_ROLES.CUS);
       this.setState({ disBase: false });
@@ -128,12 +130,12 @@ export default class CreateRatesModal extends React.Component {
           <FormItem label={this.msg('tariffKinds')} {...formItemLayout}>
             {getFieldDecorator('tariff_kind', {
               rules: [{ required: true, message: '报价类型必选' }],
-            })(<Select style={{ width: '100%' }} onSelect={this.handleKindSelect}>
+            })(<RadioGroup onChange={this.handleKindSelect}>
               {
                 TARIFF_KINDS.map(qt =>
-                  <Option value={qt.value} key={qt.value}>{qt.text}</Option>)
+                  <RadioButton value={qt.value} key={qt.value}>{qt.text}</RadioButton>)
               }
-            </Select>)}
+            </RadioGroup>)}
           </FormItem>
           <FormItem label={this.msg('partnerLabel')} {...formItemLayout}>
             {getFieldDecorator('partner.name', {
@@ -156,6 +158,11 @@ export default class CreateRatesModal extends React.Component {
                   </Option>))
               }
             </Select>)}
+          </FormItem>
+          <FormItem label={this.msg('quoteName')} {...formItemLayout}>
+            {getFieldDecorator('quote_name', {
+              rules: [{ required: true, message: '报价名称必填' }],
+            })(<Input />)}
           </FormItem>
         </div>
       </Modal>

@@ -47,7 +47,7 @@ const messages = defineMessages({
   },
   rates: {
     id: 'cms.module.billing.rates',
-    defaultMessage: '价格协议',
+    defaultMessage: '报价费率',
   },
   analytics: {
     id: 'cms.module.analytics',

@@ -15,22 +15,6 @@ const messages = defineMessages({
     id: 'cms.expense.receivable',
     defaultMessage: '应收费用',
   },
-  byDelegation: {
-    id: 'cms.expense.by.delegation',
-    defaultMessage: '按委托汇总',
-  },
-  byCustomer: {
-    id: 'cms.expense.by.customer',
-    defaultMessage: '按客户汇总',
-  },
-  byVendor: {
-    id: 'cms.expense.by.vendor',
-    defaultMessage: '按供应商汇总',
-  },
-  byItem: {
-    id: 'cms.expense.by.item',
-    defaultMessage: '按商品分摊',
-  },
   cusDeclCharges: {
     id: 'cms.expense.cus.decl.charges',
     defaultMessage: '报关收费',
@@ -297,11 +281,11 @@ const messages = defineMessages({
   },
   customerRates: {
     id: 'cms.expense.rates.customer',
-    defaultMessage: '客户费率',
+    defaultMessage: '客户报价',
   },
   vendorRates: {
     id: 'cms.expense.rates.vendor',
-    defaultMessage: '服务商费率',
+    defaultMessage: '服务商报价',
   },
 });
 

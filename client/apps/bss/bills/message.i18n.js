@@ -13,7 +13,7 @@ const messages = defineMessages({
   },
   vendorBills: {
     id: 'bss.bills.vendor.bills',
-    defaultMessage: '供应商账单',
+    defaultMessage: '服务商账单',
   },
 
 });

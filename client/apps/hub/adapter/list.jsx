@@ -121,7 +121,7 @@ export default class LineFileAdapterList extends React.Component {
                 renderItem={(item) => {
                   let action = null;
                   if (item.active) {
-                    action = <RowAction size="default" onClick={this.handleEditBtnClick} icon="setting" label={this.msg('config')} row={item} />;
+                    action = <RowAction size="default" onClick={this.handleEditBtnClick} icon="setting" tooltip={this.msg('config')} row={item} />;
                   } else {
                     action = (<ExcelUploader
                       endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}

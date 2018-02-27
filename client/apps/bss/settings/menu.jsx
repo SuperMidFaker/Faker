@@ -35,7 +35,7 @@ export default class SettingMenu extends React.Component {
               <Logixon type="exchange-rate" /> {this.msg('exchangeRates')}
             </NavLink>
           </Menu.Item>
-          <Menu.Item key="taxrates">
+          <Menu.Item key="taxrates" disabled>
             <NavLink to="/bss/settings/taxrates">
               <Logixon type="tax-rate" /> {this.msg('taxRates')}
             </NavLink>

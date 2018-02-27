@@ -46,24 +46,26 @@ export default class ExchangeRates extends Component {
   itemsColumns = [{
     title: '币制',
     dataIndex: 'src_currency',
-    width: 150,
+    width: 200,
   }, {
     title: '本币',
     dataIndex: 'base_currency',
-    width: 150,
+    width: 200,
   }, {
     title: '汇率',
     dataIndex: 'exchange_rate',
     width: 150,
   }, {
-    title: '日期',
-    dataIndex: 'exchange_date',
-    width: 100,
+    title: '更新日期',
+    dataIndex: 'updated_date',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 90,
-    render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip="删除" row={record} />,
+    render: (o, record) => (<span>
+      <RowAction onClick={this.handleEdit} icon="edit" row={record} />
+      <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
+    </span>),
   }]
   handleCreate = () => {
     this.props.toggleOrderTypeModal(true, {});
@@ -76,6 +78,15 @@ export default class ExchangeRates extends Component {
     });
   }
   render() {
+    const mockData = [{
+      src_currency: '502|USD|美元',
+      base_currency: '142|CNY|人民币',
+      exchange_rate: '6.342',
+    }, {
+      src_currency: '300|EUR|欧元',
+      base_currency: '142|CNY|人民币',
+      exchange_rate: '6.132',
+    }];
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -101,6 +112,7 @@ export default class ExchangeRates extends Component {
           <Content className="page-content">
             <DataTable
               columns={this.itemsColumns}
+              dataSource={mockData}
               rowKey="id"
             />
           </Content>

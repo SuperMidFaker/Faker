@@ -45,17 +45,16 @@ export default class TaxRates extends Component {
   gmsg = formatGlobalMsg(this.props.intl)
   itemsColumns = [{
     title: '税种',
-    dataIndex: 'src_currency',
-    width: 150,
+    dataIndex: 'tax_name',
+    width: 200,
   }, {
-    title: '税率',
-    dataIndex: 'exchange_rate',
-    width: 150,
+    title: '税率%',
+    dataIndex: 'tax_rate',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 90,
-    render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip="删除" row={record} />,
+    render: (o, record) => <RowAction onClick={this.handleEdit} icon="edit" row={record} />,
   }]
   handleCreate = () => {
     this.props.toggleOrderTypeModal(true, {});
@@ -67,6 +66,13 @@ export default class TaxRates extends Component {
     });
   }
   render() {
+    const mockData = [{
+      tax_name: '增值税(专用发票)',
+      tax_rate: '11%',
+    }, {
+      tax_name: '增值税(普通发票)',
+      tax_rate: '6%',
+    }];
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -92,6 +98,7 @@ export default class TaxRates extends Component {
           <Content className="page-content">
             <DataTable
               columns={this.itemsColumns}
+              dataSource={mockData}
               rowKey="id"
             />
           </Content>

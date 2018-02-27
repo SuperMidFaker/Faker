@@ -46,11 +46,19 @@ export default class ModuleBSS extends React.Component {
       path: '/bss/audit',
     });
     linkMenus.push({
-      single: true,
+      single: false,
       key: 'bss-bills',
       icon: 'logixon icon-expense-bill',
       text: formatMsg(intl, 'bills'),
-      path: '/bss/bills',
+      sublinks: [{
+        key: 'bss-bills-0',
+        path: '/bss/bills/customer',
+        text: formatMsg(intl, 'customerBills'),
+      }, {
+        key: 'bss-bills-1',
+        path: '/bss/bills/vendor',
+        text: formatMsg(intl, 'vendorBills'),
+      }],
     });
     linkMenus.push({
       single: true,
