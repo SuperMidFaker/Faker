@@ -21,11 +21,11 @@ const messages = defineMessages({
   },
   fees: {
     id: 'bss.settings.fees',
-    defaultMessage: '费用参数',
+    defaultMessage: '费用',
   },
   feeItems: {
     id: 'bss.settings.fees.items',
-    defaultMessage: '费用项',
+    defaultMessage: '费用元素',
   },
   feeGroups: {
     id: 'bss.settings.fees.groups',

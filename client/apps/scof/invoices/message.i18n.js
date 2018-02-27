@@ -11,9 +11,9 @@ const messages = defineMessages({
     id: 'scof.invoices.create',
     defaultMessage: '新建发票',
   },
-  importInvoices: {
-    id: 'scof.invoices.import',
-    defaultMessage: '导入发票',
+  batchImportInvoices: {
+    id: 'scof.invoices.batch.import',
+    defaultMessage: '批量导入发票',
   },
   toShip: {
     id: 'scof.invoices.status.to.ship',

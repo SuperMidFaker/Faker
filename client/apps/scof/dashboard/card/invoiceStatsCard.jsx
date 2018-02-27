@@ -52,13 +52,6 @@ export default class InvoiceStatsCard extends Component {
       >
         <ChartCard
           title={this.msg('totalInvoices')}
-          avatar={(
-            <img
-              alt="indicator"
-              style={{ width: 56, height: 56 }}
-              src="https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png"
-            />
-            )}
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={statsCard.inbounds}
           style={{ width: '20%' }}

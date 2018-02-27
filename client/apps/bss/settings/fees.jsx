@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Layout } from 'antd';
+import { Button, Breadcrumb, Dropdown, Icon, Menu, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/reducers/sofOrderPref';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -48,16 +48,12 @@ export default class Fees extends Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   itemsColumns = [{
-    title: '费用项代码',
+    title: '费用元素代码',
     dataIndex: 'code',
     width: 150,
   }, {
-    title: '费用项名称',
+    title: '费用元素名称',
     dataIndex: 'name',
-    width: 150,
-  }, {
-    title: '描述',
-    dataIndex: 'desc',
     width: 150,
   }, {
     title: '类型',
@@ -65,16 +61,15 @@ export default class Fees extends Component {
     width: 100,
   }, {
     title: '所属分组',
-    dataIndex: 'groups',
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 100,
+    dataIndex: 'group',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 90,
-    render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip="删除" row={record} />,
+    render: (o, record) => (<span>
+      <RowAction onClick={this.handleAdd} icon="plus-circle-o" tooltip="添加子费用元素" row={record} />
+      <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
+    </span>),
   }]
   groupsColumns = [{
     title: '费用分组代码',
@@ -87,7 +82,7 @@ export default class Fees extends Component {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 90,
-    render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip="删除" row={record} />,
+    render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />,
   }]
   handleCreate = () => {
     this.props.toggleOrderTypeModal(true, {});
@@ -145,6 +140,43 @@ export default class Fees extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const moreMenu = (
+      <Menu onClick={this.handleMoreMenuClick}>
+        <Menu.Item key="import"><Icon type="upload" /> 导入费用元素</Menu.Item>
+        <Menu.Item key="export"><Icon type="download" /> 导出费用元素</Menu.Item>
+      </Menu>
+    );
+    const mockData = [{
+      code: '10',
+      name: '报关费',
+      type: 'SC',
+      group: '清关费用',
+    }, {
+      code: '20',
+      name: '联单费',
+      type: 'SC',
+      group: '清关费用',
+    }, {
+      code: '100',
+      name: '港杂费',
+      type: 'AP',
+      group: '清关费用',
+      children: [
+        {
+          code: '1001',
+          name: '污箱费',
+          type: 'AP',
+          group: '清关费用',
+        },
+        {
+          code: '1002',
+          name: '滞箱费',
+          type: 'AP',
+          group: '清关费用',
+        },
+      ],
+    }];
+
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -163,8 +195,11 @@ export default class Fees extends Component {
           <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
             <PageHeader.Actions>
               {currentTab === 'feeItems' && <Button type="primary" icon="plus" onClick={this.handleCreateFeeItem}>
-                {this.msg('新建费用项')}
+                {this.msg('新建费用元素')}
               </Button>}
+              {currentTab === 'feeItems' && <Dropdown overlay={moreMenu}>
+                <Button icon="ellipsis" />
+              </Dropdown>}
               {currentTab === 'feeGroups' && <Button type="primary" icon="plus" onClick={this.handleCreateFeeItem}>
                 {this.msg('新建费用分组')}
               </Button>}
@@ -176,8 +211,9 @@ export default class Fees extends Component {
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
               columns={this.itemsColumns}
+              dataSource={mockData}
               rowSelection={rowSelection}
-              rowKey="id"
+              rowKey="code"
             />}
             {currentTab === 'feeGroups' && <DataTable
               toolbarActions={groupsActions}

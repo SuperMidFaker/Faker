@@ -24,11 +24,11 @@ const messages = defineMessages({
   },
   toReceive: {
     id: 'cwm.dashboard.stats.inbound.to.receive',
-    defaultMessage: '待收货',
+    defaultMessage: '收货',
   },
   toPutAway: {
     id: 'cwm.dashboard.stats.inbound.to.putAway',
-    defaultMessage: '待上架',
+    defaultMessage: '上架',
   },
   inboundCompleted: {
     id: 'cwm.dashboard.stats.inbound.complete',
@@ -48,15 +48,15 @@ const messages = defineMessages({
   },
   toAllocate: {
     id: 'cwm.dashboard.stats.outbound.to.allocate',
-    defaultMessage: '待分配',
+    defaultMessage: '分配',
   },
   toPick: {
     id: 'cwm.dashboard.stats.outbound.to.pick',
-    defaultMessage: '待拣货',
+    defaultMessage: '拣货',
   },
   toShip: {
     id: 'cwm.dashboard.stats.outbound.to.ship',
-    defaultMessage: '待发货',
+    defaultMessage: '发货',
   },
   outboundCompleted: {
     id: 'cwm.dashboard.stats.outbound.completed',

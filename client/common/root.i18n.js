@@ -77,6 +77,10 @@ const messages = defineMessages({
     id: 'root.create',
     defaultMessage: '新建',
   },
+  import: {
+    id: 'root.import',
+    defaultMessage: '导入',
+  },
   export: {
     id: 'root.export',
     defaultMessage: '导出',
@@ -112,6 +116,14 @@ const messages = defineMessages({
   revoke: {
     id: 'root.revoke',
     defaultMessage: '撤销',
+  },
+  batchImport: {
+    id: 'root.batch.import',
+    defaultMessage: '批量导入',
+  },
+  batchDelete: {
+    id: 'root.batch.delete',
+    defaultMessage: '批量删除',
   },
   deleteConfirm: {
     id: 'root.delete.confirm',

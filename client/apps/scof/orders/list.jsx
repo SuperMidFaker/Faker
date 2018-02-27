@@ -379,6 +379,7 @@ export default class OrderList extends React.Component {
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleProgressChange} value={filters.progress}>
               <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="pending">待处理</RadioButton>
               <RadioButton value="active">进行中</RadioButton>
               <RadioButton value="completed">已完成</RadioButton>
             </RadioGroup>

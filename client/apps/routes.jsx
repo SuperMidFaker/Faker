@@ -53,6 +53,7 @@ import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSQuote from './cms/quote';
 import * as CMSBilling from './cms/billing';
+import * as CMSRates from './cms/billing/rates';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
@@ -328,12 +329,16 @@ export default(store) => {
             <Route path="billing">
               <Route path="receivable">
                 <IndexRoute component={CMSBilling.ReceivableList} />
+                <Route path=":delgNo" component={CMSBilling.Detail} />
               </Route>
               <Route path="payable">
                 <IndexRoute component={CMSBilling.PayableList} />
+                <Route path=":delgNo" component={CMSBilling.Detail} />
               </Route>
-              <Route path=":prType/:delgNo" component={CMSBilling.Detail} />
-              <Route path="rates" component={CMSBilling.Rates} />
+              <Route path="rates">
+                <IndexRoute component={CMSRates.List} />
+                <Route path=":id" component={CMSRates.Edit} />
+              </Route>
             </Route>
             <Route path="quote">
               <IndexRoute component={CMSQuote.List} />
@@ -512,7 +517,8 @@ export default(store) => {
               <Route path=":orderRelNo" component={BSSAudit.Detail} />
             </Route>
             <Route path="bills">
-              <IndexRoute component={BSSBills.List} />
+              <Route path="customer" component={BSSBills.CustomerList} />
+              <Route path="vendor" component={BSSBills.VendorList} />
               <Route path=":billNo" component={BSSBills.Detail} />
             </Route>
             <Route path="settings">

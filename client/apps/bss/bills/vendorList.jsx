@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, DatePicker, Layout, Select } from 'antd';
+import { Breadcrumb, DatePicker, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -32,7 +32,7 @@ const { RangePicker } = DatePicker;
   depth: 2,
   moduleName: 'bss',
 })
-export default class BillsList extends React.Component {
+export default class VendorBillsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -167,16 +167,6 @@ export default class BillsList extends React.Component {
       age: 42,
       address: '西湖区湖底公园1号',
     }];
-    const tabList = [
-      {
-        key: 'customerBills',
-        tab: this.msg('customerBills'),
-      },
-      {
-        key: 'vendorBills',
-        tab: this.msg('vendorBills'),
-      },
-    ];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -231,20 +221,14 @@ export default class BillsList extends React.Component {
     );
     return (
       <Layout>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
+        <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('bills')}
+                {this.msg('vendorBills')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
-          <PageHeader.Actions>
-            <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
-              {this.msg('新建账单')}
-            </Button>
-            <Button icon="setting">模板设置</Button>
-          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable
