@@ -17,7 +17,11 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
   }),
   {
-    installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleInstallAppModal,
+    installSFExpressApp,
+    installArCtmApp,
+    installShftzApp,
+    installEasipassApp,
+    toggleInstallAppModal,
   }
 )
 @Form.create()
@@ -37,22 +41,22 @@ export default class InstallAppModal extends Component {
       if (!err) {
         const uuid = uuidWithoutDash();
         const { type } = this.props;
-        let todo = null;
+        let installApp = null;
         let appType = null;
         if (type === 'SFEXPRESS') {
-          todo = this.props.installSFExpressApp;
+          installApp = this.props.installSFExpressApp;
           appType = 'sfexpress';
         } else if (type === 'ARCTM') {
-          todo = this.props.installArCtmApp;
+          installApp = this.props.installArCtmApp;
           appType = 'arctm';
         } else if (type === 'SHFTZ') {
-          todo = this.props.installShftzApp;
+          installApp = this.props.installShftzApp;
           appType = 'shftz';
         } else {
-          todo = this.props.installEasipassApp;
+          installApp = this.props.installEasipassApp;
           appType = 'easipass';
         }
-        todo({
+        installApp({
           ...values, uuid, app_type: type, tenant_id: this.props.tenantId,
         }).then((result) => {
           if (result.error) {

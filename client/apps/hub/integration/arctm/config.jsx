@@ -42,8 +42,8 @@ export default class ConfigAmberRoadCTM extends React.Component {
   }
   render() {
     const { arctm, app } = this.props;
-    const formPartners = [{ id: arctm.customer_partner_id, name: arctm.customer_name }];
     const formData = {
+      flow_id: arctm.flow_id,
       customer_partner_id: arctm.customer_partner_id,
       user: arctm.user,
       password: arctm.password,
@@ -79,7 +79,7 @@ export default class ConfigAmberRoadCTM extends React.Component {
                 <ProfileForm app={arctm} />
               </Panel>
               <Panel header="参数配置" key="params">
-                <ParamsForm partners={formPartners} formData={formData} />
+                <ParamsForm formData={formData} />
               </Panel>
             </Collapse>
           </Card>
