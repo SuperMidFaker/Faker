@@ -7,7 +7,7 @@ import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadE
 import RowAction from 'client/components/RowAction';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
-import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
+import { BILLING_METHOD, FEE_TYPE, FEE_CATEGORY } from 'common/constants';
 
 import { formatMsg } from './message.i18n';
 
@@ -497,7 +497,7 @@ export default class FeesTable extends Component {
             inEdit={editable || (index === editIndex)}
             record={record}
             onChange={this.handleEditChange}
-            options={FEE_STYLE}
+            options={FEE_TYPE}
           />),
       }, {
         title: msg('chargeParam'),
@@ -509,7 +509,7 @@ export default class FeesTable extends Component {
             inEdit={editable || (index === editIndex)}
             record={record}
             onChange={this.handleEditChange}
-            options={CHARGE_PARAM}
+            options={BILLING_METHOD}
           />),
       }, {
         title: msg('formulaFactor'),

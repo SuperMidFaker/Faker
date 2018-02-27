@@ -1,9 +1,25 @@
-export const TARIFF_KINDS = [{
+export const QUOTE_TYPE = [{
   value: 'sales',
   text: '客户报价',
 }, {
   value: 'cost',
   text: '服务商报价',
+}];
+
+export const TARIFF_KINDS = [{
+  value: 'sales',
+  text: '销售价',
+}, {
+  value: 'cost',
+  text: '成本价',
+}, {
+  value: 'salesBase',
+  text: '销售基准价',
+  isBase: true,
+}, {
+  value: 'costBase',
+  text: '成本基准价',
+  isBase: true,
 }];
 
 export const TARIFF_METER_METHODS = [{

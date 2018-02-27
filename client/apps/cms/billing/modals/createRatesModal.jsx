@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Input, Modal, message, Form, Radio, Select } from 'antd';
 import { closeCreateModal, loadPartners, createQuote } from 'common/reducers/cmsQuote';
-import { TARIFF_KINDS, PARTNER_ROLES } from 'common/constants';
+import { QUOTE_TYPE, PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
@@ -132,7 +132,7 @@ export default class CreateRatesModal extends React.Component {
               rules: [{ required: true, message: '报价类型必选' }],
             })(<RadioGroup onChange={this.handleKindSelect}>
               {
-                TARIFF_KINDS.map(qt =>
+                QUOTE_TYPE.map(qt =>
                   <RadioButton value={qt.value} key={qt.value}>{qt.text}</RadioButton>)
               }
             </RadioGroup>)}

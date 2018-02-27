@@ -73,7 +73,7 @@ export const CIQ_SUP_STATUS = [
   { value: 4, text: '已完成' },
 ];
 
-export const FEE_STYLE = [
+export const FEE_TYPE = [
   { value: 'service', text: '服务费' },
   { value: 'advance', text: '代垫费' },
 ];
@@ -83,20 +83,21 @@ export const FEE_CATEGORY = [
   { value: 'ciq_expenses', text: '报检' },
   { value: 'certs_expenses', text: '鉴定办证' },
 ];
-export const CHARGE_PARAM = [
-  { value: '$formula', text: '自定义公式' },
-  { value: 'shipmt_qty', text: '运单数量' },
-  { value: 'decl_qty', text: '报关单数量' },
-  { value: 'decl_sheet_qty', text: '报关单联数' },
-  { value: 'decl_item_qty', text: '品名数量' },
-  { value: 'trade_item_qty', text: '料件数量' },
-  { value: 'trade_amt', text: '货值' },
-  { value: 'jdz_qty', text: '机电证数量' },
-  { value: 'zgz_qty', text: '重工证数量' },
-  { value: 'xkz_qty', text: '许可证数量' },
-  { value: 'm3csq_qty', text: '免3C申请数量' },
-  { value: 'mnxsq_qty', text: '免能效申请数量' },
-  { value: 'xc_qty', text: '消磁数量' },
+export const BILLING_METHOD = [
+  {
+    label: '自动计费',
+    key: '$formula',
+    value: '$formula',
+    children: [
+      { key: 'shipmt_qty', value: 'shipmt_qty', label: '按货运数量' },
+      { key: 'decl_qty', value: 'decl_qty', label: '按报关单数量' },
+      { key: 'decl_sheet_qty', value: 'decl_sheet_qty', label: '按联单数量' },
+      { key: 'decl_item_qty', value: 'decl_item_qty', label: '按品名数量' },
+      { key: 'trade_item_qty', value: 'trade_item_qty', label: '按料件数量' },
+    ],
+  },
+  { key: '$manual', value: '$manual', label: '手动计费' },
+  { key: '$included', value: '$included', label: '包干不计费' },
 ];
 
 export const CERTS = [

@@ -10,7 +10,7 @@ import MagicCard from 'client/components/MagicCard';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { loadExpsDetails } from 'common/reducers/cmsExpense';
-import { FEE_STYLE, FEE_CATEGORY } from 'common/constants';
+import { FEE_TYPE, FEE_CATEGORY } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -91,7 +91,7 @@ export default class ExpenseDetail extends Component {
     dataIndex: 'fee_style',
     width: 100,
     render: (o) => {
-      const type = FEE_STYLE.filter(fe => fe.value === o)[0];
+      const type = FEE_TYPE.filter(fe => fe.value === o)[0];
       return type ? <span>{type.text}</span> : <span />;
     },
   }, {
@@ -153,7 +153,7 @@ export default class ExpenseDetail extends Component {
     dataIndex: 'fee_style',
     width: 100,
     render: (o) => {
-      const type = FEE_STYLE.filter(fe => fe.value === o)[0];
+      const type = FEE_TYPE.filter(fe => fe.value === o)[0];
       return type ? <span>{type.text}</span> : <span />;
     },
   }, {

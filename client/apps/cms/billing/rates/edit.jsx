@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, message, Icon, Button, Menu, Dropdown } from 'antd';
+import { Breadcrumb, Form, Layout, Tabs, message, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -11,7 +11,7 @@ import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import TariffPane from './tabpane/tariffPane';
 import SettingPane from './tabpane/settingPane';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -56,6 +56,8 @@ export default class QuotingEdit extends Component {
   state = {
     tabKey: 'tariff',
   }
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleFormError = () => {
     this.setState({
       tabKey: 'setting',
@@ -64,7 +66,6 @@ export default class QuotingEdit extends Component {
   handleTabChange = (key) => {
     this.setState({ tabKey: key });
   }
-  msg = formatMsg(this.props.intl)
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -131,12 +132,6 @@ export default class QuotingEdit extends Component {
   }
   render() {
     const { form, saving } = this.props;
-    const menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="trial">{this.msg('trial')}</Menu.Item>
-        <Menu.Item key="copyQuote">{this.msg('copy')}</Menu.Item>
-      </Menu>
-    );
     return (
       <Layout>
         <PageHeader>
@@ -148,9 +143,7 @@ export default class QuotingEdit extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Dropdown overlay={menu}>
-              <Button >{this.msg('more')} <Icon type="down" /></Button>
-            </Dropdown>
+            <Button icon="copy">{this.msg('clone')}</Button>
             <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
           </PageHeader.Actions>
         </PageHeader>
