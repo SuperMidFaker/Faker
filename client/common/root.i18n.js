@@ -133,8 +133,28 @@ const messages = defineMessages({
     id: 'root.saved.success',
     defaultMessage: '保存成功',
   },
+  seqNo: {
+    id: 'root.seq.no',
+    defaultMessage: '序号',
+  },
+  createdBy: {
+    id: 'root.created.by',
+    defaultMessage: '创建者',
+  },
+  createdDate: {
+    id: 'root.created.date',
+    defaultMessage: '创建日期',
+  },
+  lastUpdatedBy: {
+    id: 'root.last.updated.by',
+    defaultMessage: '最近更新者',
+  },
+  lastUpdatedDate: {
+    id: 'root.last.updated.date',
+    defaultMessage: '最近更新时间',
+  },
   nextStep: {
-    id: 'root.nextStep',
+    id: 'root.next.step',
     defaultMessage: '下一步',
   },
   total: {

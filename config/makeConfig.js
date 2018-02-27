@@ -46,9 +46,9 @@ module.exports = (serverPort, dirName, appName) => {
   config.set('API_ROOTS', {// todo how to make the port configurable
     default: `http://${host}:3030/`,
     mongo: `http://${host}:3032/`,
-    scv: `http://${host}:3034/`,
     notify: `http://${host}:3100/`,
     self: '/',
+    openapi: `http://${host}:3031/`,
   });
 
   // ------------------------------------
@@ -68,7 +68,7 @@ module.exports = (serverPort, dirName, appName) => {
     config.set('API_ROOTS', {
       default: 'https://api.welogix.cn/',
       mongo: 'https://api1.welogix.cn/',
-      scv: 'https://api2.welogix.cn/',
+      openapi: 'https://openapi.welogix.cn/',
       notify: 'https://notify.welogix.cn/',
       self: '/',
     });
@@ -80,7 +80,7 @@ module.exports = (serverPort, dirName, appName) => {
     config.set('API_ROOTS', {
       default: 'http://api.welogix.co/',
       mongo: 'http://api1.welogix.co/',
-      scv: 'http://api2.welogix.co/',
+      openapi: 'https://openapi.welogix.co/',
       notify: 'http://notify.welogix.co/',
       self: '/',
     });

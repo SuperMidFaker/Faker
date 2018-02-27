@@ -11,14 +11,12 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
 import { loadDocuDatas, loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { CMS_DECL_STATUS } from 'common/constants';
-
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
-import InvoicesPane from './tabpane/invoicesPane';
 import GenerateDeclModal from './modals/generateDeclModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
 import { formatMsg } from '../message.i18n';
@@ -470,9 +468,6 @@ export default class ManifestEditor extends React.Component {
     }
     tabs.push(<TabPane tab="集装箱" key="containers">
       <ContainersPane fullscreen={this.state.fullscreen} />
-    </TabPane>);
-    tabs.push(<TabPane tab="商业发票" key="invoices">
-      <InvoicesPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     /*
       tabs.push(<TabPane tab="随附单据" key="attachedDocs" >

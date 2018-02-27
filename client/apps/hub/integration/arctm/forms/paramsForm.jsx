@@ -4,19 +4,26 @@ import { connect } from 'react-redux';
 import { Button, Form, Select, Input, Col, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateArCtmApp } from 'common/reducers/hubIntegration';
+import { loadPartners } from 'common/reducers/partner';
+import { loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
+import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const ButtonGroup = Button.Group;
 
+const OpenapiHost = API_ROOTS.openapi;
+
 @injectIntl
 @connect(
   state => ({
     app: state.hubIntegration.arctm,
+    flows: state.scofFlow.partnerFlows,
+    partners: state.partner.partners,
   }),
-  { updateArCtmApp }
+  { updateArCtmApp, loadPartners, loadPartnerFlowList }
 )
 @Form.create()
 export default class ParamsForm extends Component {
@@ -30,13 +37,28 @@ export default class ParamsForm extends Component {
       name: PropTypes.string.isRequired,
     })),
   }
+  componentDidMount() {
+    this.props.loadPartners({ role: PARTNER_ROLES.CUS });
+    const customerPartnerId = this.props.formData.customer_partner_id;
+    if (customerPartnerId) {
+      this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
+    }
+  }
   msg = formatMsg(this.props.intl)
+  handleCustomerChange = (customerPartnerId) => {
+    this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
+  }
   handleSave = () => {
     this.props.form.validateFields((err, values) => {
+      const customer = this.props.partners.filter(pt => pt.id === values.customer_partner_id)[0];
       const arctm = {
+        customer_partner_id: values.customer_partner_id,
+        customer_tenant_id: customer && customer.partner_tenant_id,
+        customer_name: customer && customer.name,
         user: values.username,
         password: values.password,
         webservice_url: values.webservice_url,
+        flow_id: values.flow_id,
         uuid: values.uuid,
       };
       this.props.updateArCtmApp(arctm).then((result) => {
@@ -51,11 +73,13 @@ export default class ParamsForm extends Component {
   handleGenUuid = () => {
     if (!this.props.formData.uuid) {
       const uuid = uuidWithoutDash();
-      this.props.form.setFieldsValue({ uuid, hook_url: `https://openapi.welogix.cn/ar/hook/${uuid}` });
+      this.props.form.setFieldsValue({ uuid, hook_url: `${OpenapiHost}ar/hook/${uuid}` });
     }
   }
   render() {
-    const { partners, formData, form: { getFieldDecorator } } = this.props;
+    const {
+      partners, flows, formData, form: { getFieldDecorator },
+    } = this.props;
     return (
       <Form>
         <Row gutter={16}>
@@ -64,13 +88,20 @@ export default class ParamsForm extends Component {
               {getFieldDecorator('customer_partner_id', {
                 rules: [{ required: true, message: 'CTM客户必填' }],
                 initialValue: formData.customer_partner_id,
-              })(<Select optionFilterProp="search" placeholder="选择客户">
-                {
-                      partners.map(pt => (
-                        <Option key={pt.code} value={pt.id} search={`${pt.code}${pt.name}`}>
-                          {pt.code}|{pt.name}
-                        </Option>))
-                    }
+              })(<Select optionFilterProp="children" placeholder="选择客户" onChange={this.handleCustomerChange}>
+                {partners.map(pt => (<Option key={String(pt.id)} value={pt.id}>
+                  {pt.partner_code}|{pt.name}
+                </Option>))}
+              </Select>)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={24}>
+            <FormItem label="订单流程参数">
+              {getFieldDecorator('flow_id', {
+                rules: [{ required: true, message: '客户流程必填' }],
+                initialValue: formData.flow_id,
+              })(<Select showSearch allowClear>
+                {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
               </Select>)}
             </FormItem>
           </Col>
@@ -95,7 +126,7 @@ export default class ParamsForm extends Component {
             <FormItem label={this.msg('hookUrl')} >
               {getFieldDecorator('hook_url', {
                 rules: [{ required: true, message: '输入接口地址需要生成' }],
-                initialValue: formData.uuid && `https://openapi.welogix.cn/ar/hook/${formData.uuid}`,
+                initialValue: formData.uuid && `${OpenapiHost}ar/hook/${formData.uuid}`,
               })(<Input
                 addonAfter={
                   <ButtonGroup size="small">

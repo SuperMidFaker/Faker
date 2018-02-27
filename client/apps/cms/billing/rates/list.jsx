@@ -13,7 +13,7 @@ import UserAvatar from 'client/components/UserAvatar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 import CreateQtModal from '../modals/createRatesModal';
 
 const { Content } = Layout;
@@ -65,6 +65,7 @@ export default class RatesList extends Component {
     selectedRowKeys: [],
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadQuoteTable(params),
     resolve: result => result.data,
@@ -203,19 +204,19 @@ export default class RatesList extends Component {
           return partnerName;
         },
       }, {
-        title: this.msg('lastUpdatedDate'),
+        title: this.gmsg('lastUpdatedDate'),
         dataIndex: 'last_updated_date',
         key: 'last_updated_date',
         width: 140,
         render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
       }, {
-        title: this.msg('lastUpdatedBy'),
+        title: this.gmsg('lastUpdatedBy'),
         dataIndex: 'last_updated_by',
         key: 'last_updated_by',
         width: 100,
         render: lid => lid && <UserAvatar size="small" loginId={lid} showName />,
       }, {
-        title: this.msg('createdDate'),
+        title: this.gmsg('createdDate'),
         dataIndex: 'created_date',
         width: 120,
         render: o => o && moment(o).format('YYYY.MM.DD'),

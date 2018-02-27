@@ -124,7 +124,7 @@ export default class Fees extends Component {
         </Sider>
         <Layout>
           <PageHeader tabList={tabList} onTabChange={this.handleTabChange} />
-          <Content className="page-content">
+          <Content className="page-content layout-fixed-width">
             {currentTab === 'plugins' && <PluginsCard />}
             {currentTab === 'auditRule' && <AuditRuleCard />}
           </Content>

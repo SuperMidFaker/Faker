@@ -4,227 +4,235 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   searchPlaceholder: {
-    id: 'cms.expense.search',
+    id: 'cms.billing.search',
     defaultMessage: '委托编号/提运单号',
   },
   payableExpense: {
-    id: 'cms.expense.payable',
+    id: 'cms.billing.payable',
     defaultMessage: '应付费用',
   },
   receivableExpense: {
-    id: 'cms.expense.receivable',
+    id: 'cms.billing.receivable',
     defaultMessage: '应收费用',
   },
   cusDeclCharges: {
-    id: 'cms.expense.cus.decl.charges',
+    id: 'cms.billing.cus.decl.charges',
     defaultMessage: '报关收费',
   },
   ciqDeclCharges: {
-    id: 'cms.expense.ciq.decl.charges',
+    id: 'cms.billing.ciq.decl.charges',
     defaultMessage: '报检收费',
   },
   certsCharges: {
-    id: 'cms.expense.certs.charges',
+    id: 'cms.billing.certs.charges',
     defaultMessage: '鉴定办证收费',
   },
   cusDeclExpense: {
-    id: 'cms.expense.cus.decl.expense',
+    id: 'cms.billing.cus.decl.expense',
     defaultMessage: '报关费用',
   },
   ciqDeclExpense: {
-    id: 'cms.expense.ciq.decl.expense',
+    id: 'cms.billing.ciq.decl.expense',
     defaultMessage: '报检费用',
   },
   certsExpense: {
-    id: 'cms.expense.certs.expense',
+    id: 'cms.billing.certs.expense',
     defaultMessage: '鉴定办证费用',
   },
   statusClosed: {
-    id: 'cms.expense.status.closed',
+    id: 'cms.billing.status.closed',
     defaultMessage: '已关单',
   },
   statusSettled: {
-    id: 'cms.expense.status.settled',
+    id: 'cms.billing.status.settled',
     defaultMessage: '已结算',
   },
   advModel: {
-    id: 'cms.expense.advance.model',
+    id: 'cms.billing.advance.model',
     defaultMessage: '代垫费用模板',
   },
   eptAdvModel: {
-    id: 'cms.expense.export.advance.model',
+    id: 'cms.billing.export.advance.model',
     defaultMessage: '下载代垫费用模板',
   },
   incExp: {
-    id: 'cms.expense.inc.expense',
+    id: 'cms.billing.inc.expense',
     defaultMessage: '上传代垫费用记录',
   },
   eptExp: {
-    id: 'cms.expense.export.expense',
+    id: 'cms.billing.export.expense',
     defaultMessage: '导出',
   },
   chooseModel: {
-    id: 'cms.expense.export.chooseModel',
+    id: 'cms.billing.export.chooseModel',
     defaultMessage: '范围方式',
   },
   acptDate: {
-    id: 'cms.expense.export.acptDate',
+    id: 'cms.billing.export.acptDate',
     defaultMessage: '接单日期',
   },
   cleanDate: {
-    id: 'cms.expense.export.cleanDate',
+    id: 'cms.billing.export.cleanDate',
     defaultMessage: '放行日期',
   },
   range: {
-    id: 'cms.expense.export.range',
+    id: 'cms.billing.export.range',
     defaultMessage: '费用周期',
   },
   status: {
-    id: 'cms.expense.status',
+    id: 'cms.billing.status',
     defaultMessage: '状态',
   },
   delgNo: {
-    id: 'cms.expense.delgNo',
+    id: 'cms.billing.delgNo',
     defaultMessage: '委托编号',
   },
   custName: {
-    id: 'cms.expense.customer.name',
+    id: 'cms.billing.customer.name',
     defaultMessage: '客户',
   },
   agentName: {
-    id: 'cms.expense.agent.name',
+    id: 'cms.billing.agent.name',
     defaultMessage: '报关代理',
   },
   orderNo: {
-    id: 'cms.expense.order.no',
+    id: 'cms.billing.order.no',
     defaultMessage: '客户单号',
   },
   bLNo: {
-    id: 'cms.expense.bill.lading.no',
+    id: 'cms.billing.bill.lading.no',
     defaultMessage: '提运单号',
   },
   receivableTotal: {
-    id: 'cms.expense.receivable.total',
+    id: 'cms.billing.receivable.total',
     defaultMessage: '应收合计',
   },
   serviceSummary: {
-    id: 'cms.expense.service.summary',
+    id: 'cms.billing.service.summary',
     defaultMessage: '服务费小计',
   },
   forwarderCharge: {
-    id: 'cms.expense.forwarder.charge',
+    id: 'cms.billing.forwarder.charge',
     defaultMessage: '换单费',
   },
   advanceSummary: {
-    id: 'cms.expense.advance.summary',
+    id: 'cms.billing.advance.summary',
     defaultMessage: '代垫费小计',
   },
   cushBill: {
-    id: 'cms.expense.cushion.bill',
+    id: 'cms.billing.cushion.bill',
     defaultMessage: '代垫应收',
   },
   allBill: {
-    id: 'cms.expense.all.bill',
+    id: 'cms.billing.all.bill',
     defaultMessage: '应收合计',
   },
   cost: {
-    id: 'cms.expense.cost',
+    id: 'cms.billing.cost',
     defaultMessage: '应付',
   },
   serviceExpense: {
-    id: 'cms.expense.service.expense',
+    id: 'cms.billing.service.expense',
     defaultMessage: '服务费用',
   },
   cushCost: {
-    id: 'cms.expense.cushion.cost',
+    id: 'cms.billing.cushion.cost',
     defaultMessage: '代垫费用',
   },
   allCost: {
-    id: 'cms.expense.all.cost',
+    id: 'cms.billing.all.cost',
     defaultMessage: '应付合计',
   },
   profit: {
-    id: 'cms.expense.profit',
+    id: 'cms.billing.profit',
     defaultMessage: '盈亏',
   },
   statementEn: {
-    id: 'cms.expense.statementEn',
+    id: 'cms.billing.statementEn',
     defaultMessage: '是否结单',
   },
   ccdCount: {
-    id: 'cms.expense.ccd.count',
+    id: 'cms.billing.ccd.count',
     defaultMessage: '拼单数',
   },
   ccsCount: {
-    id: 'cms.expense.ccs.count',
+    id: 'cms.billing.ccs.count',
     defaultMessage: '联单数',
   },
   itemCount: {
-    id: 'cms.expense.item.count',
+    id: 'cms.billing.item.count',
     defaultMessage: '品项数',
   },
   prdtCount: {
-    id: 'cms.expense.prdt.count',
+    id: 'cms.billing.prdt.count',
     defaultMessage: '料号数',
   },
   declValue: {
-    id: 'cms.expense.decl.value',
+    id: 'cms.billing.decl.value',
     defaultMessage: '进出口金额',
   },
   acptTime: {
-    id: 'cms.expense.accept.time',
+    id: 'cms.billing.accept.time',
     defaultMessage: '接单时间',
   },
   cleanTime: {
-    id: 'cms.expense.clean.time',
+    id: 'cms.billing.clean.time',
     defaultMessage: '放行时间',
   },
   lastActT: {
-    id: 'cms.expense.last.act.time',
+    id: 'cms.billing.last.act.time',
     defaultMessage: '最后计费时间',
   },
   feeName: {
-    id: 'cms.expense.modal.fee.name',
+    id: 'cms.billing.fee.name',
     defaultMessage: '费用名称',
   },
+  feeCategory: {
+    id: 'cms.billing.fee.category',
+    defaultMessage: '费用分组',
+  },
+  feeType: {
+    id: 'cms.billing.fee.category',
+    defaultMessage: '费用类型',
+  },
   feeVal: {
-    id: 'cms.expense.modal.fee.value',
+    id: 'cms.billing.modal.fee.value',
     defaultMessage: '金额',
   },
   currency: {
-    id: 'cms.expense.modal.currency',
+    id: 'cms.billing.modal.currency',
     defaultMessage: '币制',
   },
   remark: {
-    id: 'cms.expense.modal.remark',
+    id: 'cms.billing.modal.remark',
     defaultMessage: '备注',
   },
   custBroker: {
-    id: 'cms.expense.modal.cust.broker',
+    id: 'cms.billing.modal.cust.broker',
     defaultMessage: '报关供应商',
   },
   ciqBroker: {
-    id: 'cms.expense.modal.ciq.broker',
+    id: 'cms.billing.modal.ciq.broker',
     defaultMessage: '报检供应商',
   },
   certBroker: {
-    id: 'cms.expense.modal.cert.broker',
+    id: 'cms.billing.modal.cert.broker',
     defaultMessage: '办证供应商',
   },
   entryId: {
-    id: 'cms.expense.delg.entryId',
+    id: 'cms.billing.delg.entryId',
     defaultMessage: '报关单号',
   },
   billSeqNo: {
-    id: 'cms.expense.delg.billSeq.no',
+    id: 'cms.billing.delg.billSeq.no',
     defaultMessage: '清单编号',
   },
   preEntryNo: {
-    id: 'cms.expense.delg.preEntry.no',
+    id: 'cms.billing.delg.preEntry.no',
     defaultMessage: '统一编号',
   },
   advanceFee: {
-    id: 'cms.expense.delg.advance.fee',
+    id: 'cms.billing.delg.advance.fee',
     defaultMessage: '代垫费',
   },
   advanceParty: {
@@ -276,16 +284,28 @@ const messages = defineMessages({
     defaultMessage: '费用明细',
   },
   rates: {
-    id: 'cms.expense.rates',
+    id: 'cms.billing.rates',
     defaultMessage: '报价费率',
   },
   customerRates: {
-    id: 'cms.expense.rates.customer',
+    id: 'cms.billing.rates.customer',
     defaultMessage: '客户报价',
   },
   vendorRates: {
-    id: 'cms.expense.rates.vendor',
+    id: 'cms.billing.rates.vendor',
     defaultMessage: '服务商报价',
+  },
+  billingParams: {
+    id: 'cms.billing.rates.billing.params',
+    defaultMessage: '计费参数',
+  },
+  billingMethod: {
+    id: 'cms.billing.rates.billing.method',
+    defaultMessage: '计费方式',
+  },
+  formulaFactor: {
+    id: 'cms.billing.rates.formula.factor',
+    defaultMessage: '单价/公式',
   },
 });
 

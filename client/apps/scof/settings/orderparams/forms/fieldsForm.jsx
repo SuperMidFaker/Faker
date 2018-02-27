@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { message, Button, Form, Input, Col, Icon, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { upsertOrderType } from 'common/reducers/sofOrderPref';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 
@@ -128,6 +128,7 @@ export default class FieldsForm extends Component {
     }
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleExtFieldChange = (ext, field, value) => {
     const state = { ...this.state };
     state[ext][field] = value;
@@ -163,7 +164,7 @@ export default class FieldsForm extends Component {
         <ExtFieldFormItem label={this.msg('extField5')} type="calendar" ext="ext5_params" formData={this.state.ext5_params} onChange={this.handleExtFieldChange} />
         <ExtFieldFormItem label={this.msg('extField6')} type="calendar" ext="ext6_params" formData={this.state.ext6_params} onChange={this.handleExtFieldChange} />
         <FormItem>
-          <Button type="primary" icon="save" onClick={this.handleSave}>{this.msg('save')}</Button>
+          <Button type="primary" icon="save" onClick={this.handleSave}>{this.gmsg('save')}</Button>
         </FormItem>
       </Form>
     );

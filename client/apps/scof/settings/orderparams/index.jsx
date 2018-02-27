@@ -7,10 +7,10 @@ import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/re
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import SettingMenu from './menu';
+import SettingMenu from '../menu';
 import TypeForm from './forms/typeForm';
 import FieldsForm from './forms/fieldsForm';
-import { formatMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Panel } = Collapse;
 const { Content, Sider } = Layout;
@@ -29,7 +29,7 @@ const { Content, Sider } = Layout;
   depth: 2,
   moduleName: 'scof',
 })
-export default class Preferences extends Component {
+export default class OrderParams extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -43,7 +43,8 @@ export default class Preferences extends Component {
       current: orderTypeList.current,
     });
   }
-  msg = formatMsg(this.props.intl);
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleCreate = () => {
     this.props.toggleOrderTypeModal(true, {});
   }
@@ -79,6 +80,16 @@ export default class Preferences extends Component {
   }
   render() {
     const { visible, modalOrderType, orderTypeList } = this.props;
+    const tabList = [
+      {
+        key: 'orderTypes',
+        tab: this.msg('orderTypes'),
+      },
+      {
+        key: 'exceptionCode',
+        tab: this.msg('exceptionCode'),
+      },
+    ];
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -90,21 +101,13 @@ export default class Preferences extends Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <SettingMenu currentKey="ordertypes" />
+            <SettingMenu currentKey="orderparams" />
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                订单类型配置
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-          </PageHeader>
-          <Content className="page-content">
-            <Card extra={<Button type="primary" ghost icon="plus-circle-o" onClick={this.handleCreate}>添加订单类型</Button>} bodyStyle={{ padding: 0 }} >
+          <PageHeader tabList={tabList} onTabChange={this.handleTabChange} />
+          <Content className="page-content layout-fixed-width">
+            <Card extra={<Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>{this.gmsg('add')}</Button>} bodyStyle={{ padding: 0 }} >
               <List
                 loading={orderTypeList.loading}
                 pagination={{
@@ -112,13 +115,15 @@ export default class Preferences extends Component {
                   current: orderTypeList.current,
                   total: orderTypeList.totalCount,
                   onChange: this.handlePageLoad,
+                  size: 'small',
+                  hideOnSinglePage: true,
                 }}
                 dataSource={orderTypeList.data}
                 renderItem={type => (
                   <List.Item
                     key={type.id}
-                    actions={[<RowAction row={type} key="config" onClick={this.handleConfig} icon="setting" label={this.msg('config')} />,
-                      <RowAction danger row={type} confirm="确认删除?" key="del" onConfirm={this.handleTypeDel} icon="delete" />,
+                    actions={[<RowAction row={type} key="config" onClick={this.handleConfig} icon="setting" tooltip={this.gmsg('config')} />,
+                      <RowAction danger row={type} confirm={this.gmsg('deleteConfirm')} key="del" onConfirm={this.handleTypeDel} icon="delete" />,
                     ]}
                   >
                     <List.Item.Meta title={type.name} />

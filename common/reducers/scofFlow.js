@@ -55,7 +55,6 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
-    status: true,
   },
   flowProviderModal: {
     visible: false,
@@ -64,7 +63,7 @@ const initialState = {
   flowListLoading: false,
   reloadFlowList: false,
   submitting: false,
-  listFilter: { name: '', ownerPartnerId: 'all' },
+  listFilter: { name: '', ownerPartnerId: 'all', status: true },
   trackingFields: [],
   currentFlow: null,
   flowGraph: {

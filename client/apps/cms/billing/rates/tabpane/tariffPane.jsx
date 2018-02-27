@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Select, Button, Input, Switch, message, Mention } from 'antd';
+import { Button, Input, message, Mention, TreeSelect } from 'antd';
 import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote } from 'common/reducers/cmsQuote';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
-import SearchBox from 'client/components/SearchBox';
-import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
+// import SearchBox from 'client/components/SearchBox';
+import { BILLING_METHOD } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
-const { Option } = Select;
 const { Nav } = Mention;
 
 function getRowKey(row) {
@@ -41,116 +40,7 @@ ColumnInput.propTypes = {
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
-function CustomInput(props) {
-  const {
-    Edit, record, field, onChange, placeholder,
-  } = props;
-  function handleChange(ev) {
-    if (onChange) {
-      onChange(record, field, ev.target.value);
-    }
-  }
-  let inEdit = false;
-  if (record.category === 'custom' && Edit) {
-    inEdit = true;
-  }
-  let style = {};
-  if (!record.enabled) {
-    style = { color: '#CCCCCC' };
-  }
-  return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} placeholder={placeholder} onChange={handleChange} />
-    : <span style={style}>{record[field] || ''}</span>;
-}
-CustomInput.propTypes = {
-  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
-  field: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-  placeholder: PropTypes.string.isRequired,
-};
-function TaxInput(props) {
-  const {
-    inEdit, record, field, onChange,
-  } = props;
-  function handleChange(ev) {
-    if (onChange) {
-      onChange(record, field, ev.target.value);
-    }
-  }
-  let style = {};
-  if (!(record.invoice_en && record.enabled)) {
-    style = { color: '#CCCCCC' };
-  }
-  return inEdit ? <Input disabled={!(record.invoice_en && record.enabled)} value={record[field] || ''} onChange={handleChange} addonAfter="%" />
-    : <span style={style}>{record[field] || ''}%</span>;
-}
-TaxInput.propTypes = {
-  inEdit: PropTypes.bool,
-  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
-  field: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-};
-function ColumnSwitch(props) {
-  const {
-    record, field, onChange, inEdit,
-  } = props;
-  function handleChange(value) {
-    if (onChange) {
-      onChange(record, field, value);
-    }
-  }
-  let style = {};
-  if (!(record.invoice_en && record.enabled)) {
-    style = { color: '#CCCCCC' };
-  }
-  if (inEdit) {
-    return <Switch size="small" disabled={(!record.enabled && field !== 'enabled')} checked={record[field]} value={record[field] || true} onChange={handleChange} />;
-  }
-  const val = record[field] ? '是' : '否';
-  return <span style={style}>{val}</span>;
-}
-ColumnSwitch.propTypes = {
-  inEdit: PropTypes.bool,
-  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
-  field: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-};
-function ColumnSelect(props) {
-  const {
-    inEdit, record, field, options, onChange,
-  } = props;
-  function handleChange(value) {
-    if (onChange) {
-      onChange(record, field, value);
-    }
-  }
-  if (record.fee_style === 'advance' && field === 'charge_param') {
-    return <span />;
-  }
-  if (inEdit) {
-    return (
-      <Select value={record[field]} disabled={!record.enabled} onChange={handleChange} style={{ width: '100%' }}>
-        {
-          options.map(opt => <Option value={opt.value} key={opt.value}>{opt.text}</Option>)
-        }
-      </Select>
-    );
-  }
-  let style = {};
-  if (!record.enabled) {
-    style = { color: '#CCCCCC' };
-  }
-  const foundOpts = options.filter(opt => opt.value === record[field]);
-  const label = foundOpts.length === 1 ? foundOpts[0].text : '';
-  return <span style={style}>{label}</span>;
-}
 
-ColumnSelect.propTypes = {
-  inEdit: PropTypes.bool,
-  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
-  field: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-  options: PropTypes.arrayOf(PropTypes.shape({ })),
-};
 @injectIntl
 @connect(
   state => ({
@@ -167,120 +57,32 @@ export default class TariffPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     quoteData: PropTypes.shape({ quote_no: PropTypes.string }).isRequired,
-    action: PropTypes.string.isRequired,
-    editable: PropTypes.bool.isRequired,
-    feeUpdate: PropTypes.func.isRequired,
-    feeAdd: PropTypes.func.isRequired,
+    // editable: PropTypes.bool.isRequired,
     feeDelete: PropTypes.func.isRequired,
-    saveQuoteModel: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    editIndex: -1,
     count: 0,
-    dataSource: [],
-    editable: false,
-    batchSaved: 0,
     suggestions: [],
     selectedRowKeys: [],
   };
-  componentWillMount() {
-    this.setState({ dataSource: this.props.quoteData.fees, editable: this.props.editable });
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.quoteData !== this.props.quoteData) {
-      this.setState({ dataSource: nextProps.quoteData.fees });
-    }
-  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   formulaParams = [
-    { value: 'shipmt_qty', text: '运单数量' },
+    { value: 'shipmt_qty', text: '货运数量' },
     { value: 'decl_qty', text: '报关单数量' },
-    { value: 'decl_sheet_qty', text: '报关单联数' },
-    { value: 'decl_item_qty', text: '品名数量' },
+    { value: 'decl_sheet_qty', text: '联单数量' },
+    { value: 'decl_item_qty', text: '品项数量' },
     { value: 'trade_item_qty', text: '料件数量' },
-    { value: 'trade_amt', text: '货值' },
-    { value: 'cert_qty', text: '证书数量' },
+    { value: 'trade_amt', text: '进出口金额' },
   ];
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
-    if (record.fee_code === 'ALL_IN' && record[field] === true) {
-      this.props.quoteData.fees.forEach((fs) => {
-        if (fs.fee_code === 'BGF' || fs.fee_code === 'PDF' || fs.fee_code === 'LDF') {
-          fs.enabled = false; // eslint-disable-line no-param-reassign
-        }
-      });
-    }
-    if (record.fee_code === 'ALL_IN' && record[field] === false) {
-      this.props.quoteData.fees.forEach((fs) => {
-        if (fs.fee_code === 'BGF' || fs.fee_code === 'PDF' || fs.fee_code === 'LDF') {
-          fs.enabled = true; // eslint-disable-line no-param-reassign
-        }
-      });
-    }
     this.forceUpdate();
   }
-  handleAddFees = () => {
-    const addFee = {
-      fee_name: '',
-      fee_code: '',
-      fee_style: 'service',
-      charge_param: 'shipmt_qty',
-      invoice_en: true,
-      tax_rate: 6,
-      enabled: true,
-      category: 'custom',
-    };
-    this.setState({
-      editIndex: this.props.quoteData.fees.length,
-    });
-    this.props.quoteData.fees.push(addFee);
-    this.forceUpdate();
-  }
-  handleModify = (row, index) => {
-    this.setState({
-      editIndex: index,
-    });
-  }
-  handleSave = (row) => {
-    const count = this.state.count + 1;
-    const param = {};
-    param.quoteId = this.props.quoteData._id;
-    param.tenantId = this.props.tenantId;
-    param.modifyById = this.props.loginId;
-    param.modifyBy = this.props.loginName;
-    param.modifyCount = this.props.quoteData.modify_count + count;
-    this.setState({
-      editIndex: -1,
-      count,
-    });
-    if (row._id) {
-      this.props.feeUpdate(
-        param,
-        row,
-      ).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.success('保存成功', 5);
-        }
-      });
-    } else {
-      this.props.feeAdd(
-        param,
-        row,
-      ).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.success('保存成功', 5);
-        }
-      });
-    }
-  }
+
   handleDelete = (row, index) => {
     const count = this.state.count + 1;
     const param = {};
@@ -290,7 +92,6 @@ export default class TariffPane extends Component {
     param.modifyBy = this.props.loginName;
     param.modifyCount = this.props.quoteData.modify_count + count;
     this.setState({
-      editIndex: -1,
       count,
     });
     this.props.feeDelete(
@@ -305,103 +106,6 @@ export default class TariffPane extends Component {
     });
     this.props.quoteData.fees.splice(index, 1);
   }
-  handleModelSave = () => {
-    this.props.saveQuoteModel(
-      this.props.tenantId,
-      this.props.quoteData.fees
-    ).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('保存成功', 5);
-      }
-    });
-  }
-  handleCancel = () => {
-    this.setState({
-      editIndex: -1,
-    });
-    if (this.props.quoteData.status === 'draft') {
-      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.version);
-    } else {
-      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.next_version);
-    }
-  }
-  handleMdlFeeDelete = (row, index) => {
-    const count = this.state.count + 1;
-    this.setState({
-      editIndex: -1,
-      count,
-    });
-    this.props.quoteData.fees.splice(index, 1);
-  }
-  handleTableChange = (pagination, filters) => {
-    if (filters.category || filters.fee_style) {
-      const data = this.props.quoteData.fees;
-      let fees = [];
-      let catgfees = [];
-      let stylfees = [];
-      if (filters.category) {
-        for (let i = 0; i < filters.category.length; i++) {
-          const factor = filters.category[i];
-          catgfees = catgfees.concat(data.filter(da => da.category === factor));
-        }
-      }
-      if (filters.fee_style) {
-        for (let i = 0; i < filters.fee_style.length; i++) {
-          const factor = filters.fee_style[i];
-          stylfees = stylfees.concat(data.filter(da => da.fee_style === factor));
-        }
-      }
-      if (catgfees.length > 0 && stylfees.length > 0) {
-        catgfees.forEach((fe) => {
-          fees = fees.concat(stylfees.filter(sf =>
-            (sf.category === fe.category && sf.fee_code === fe.fee_code)));
-        });
-      } else {
-        fees = catgfees.length > 0 ? catgfees : stylfees;
-        if (fees.length === 0) {
-          fees = data;
-        }
-      }
-      this.setState({ dataSource: fees });
-    }
-  }
-  handlebatchSave = () => {
-    this.setState({ editable: this.props.editable, batchSaved: 0 });
-    this.props.saveQuoteBatchEdit(this.props.quoteData).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('保存成功', 5);
-      }
-    });
-  }
-  handlebatchCancel = () => {
-    this.setState({ editable: this.props.editable, batchSaved: 0 });
-    if (this.props.quoteData.status === 'draft') {
-      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.version);
-    } else {
-      this.props.loadEditQuote(this.props.quoteData.quote_no, this.props.quoteData.next_version);
-    }
-  }
-  handlebatchModify = () => {
-    this.setState({ editable: true, batchSaved: 1 });
-  }
-
-  handleBatchEnChange = (key, value) => {
-    if (key === 'invoiceEn') {
-      this.props.quoteData.fees.forEach((fs) => {
-        fs.invoice_en = value; // eslint-disable-line no-param-reassign
-      });
-    }
-    if (key === 'enabled') {
-      this.props.quoteData.fees.forEach((fs) => {
-        fs.enabled = value; // eslint-disable-line no-param-reassign
-      });
-    }
-    this.forceUpdate();
-  }
   handleSearch = (value) => {
     const searchValue = value.toLowerCase();
     const filtered = this.formulaParams.filter(item =>
@@ -415,104 +119,53 @@ export default class TariffPane extends Component {
   handleonChange = (record, editorState) => {
     record.formula_factor = Mention.toString(editorState); // eslint-disable-line no-param-reassign
   }
-  renderToolbar() {
-    const { action } = this.props;
-    const msg = formatMsg(this.props.intl);
-    if (action === 'edit') {
-      return (
-        <span>
-          <Button type="default" icon="plus-circle-o" style={{ marginRight: 8 }} onClick={this.handleAddFees}>{msg('addCosts')}</Button>
-          {this.state.batchSaved === 0 && <Button icon="form" onClick={this.handlebatchModify}>{msg('batchModify')}</Button>}
-          {this.state.batchSaved === 1 && <Button type="primary" style={{ marginRight: 8 }} onClick={this.handlebatchSave}>{msg('confirm')}</Button>}
-          {this.state.batchSaved === 1 && <Button type="ghost" onClick={this.handlebatchCancel}>{msg('cancel')}</Button>}
-        </span>
-      );
-    } else if (action === 'model') {
-      return (
-        <span>
-          <Button type="primary" onClick={this.handleModelSave}>{msg('save')}</Button>
-        </span>
-      );
-    }
-    return (<span>
-      <SearchBox />
-    </span>);
-  }
   render() {
-    const { quoteData, action } = this.props;
-    const {
-      editIndex, dataSource, editable, batchSaved,
-    } = this.state;
-    const msg = formatMsg(this.props.intl);
+    const { quoteData } = this.props;
     const columns = [
       {
-        title: msg('seqNo'),
+        title: this.gmsg('seqNo'),
         width: 50,
         align: 'center',
         className: 'table-col-seq',
         render: (o, record, index) => <span>{index + 1}</span>,
       }, {
-        title: msg('feeCode'),
+        title: this.msg('feeCode'),
         dataIndex: 'fee_code',
-        width: 150,
+        width: 120,
       }, {
-        title: msg('feeName'),
+        title: this.msg('feeName'),
         dataIndex: 'fee_name',
         width: 150,
       }, {
-        title: msg('feeCategory'),
+        title: this.msg('feeCategory'),
         dataIndex: 'category',
-        filters: [
-          { text: '代理', value: 'agency_expenses' },
-          { text: '报关', value: 'customs_expenses' },
-          { text: '报检', value: 'ciq_expenses' },
-          { text: '鉴定办证', value: 'certs_expenses' },
-          { text: '杂项', value: 'misc_expenses' },
-        ],
         width: 150,
-        render: (o, record, index) =>
-          (<ColumnSelect
-            field="category"
-            inEdit={editable || (index === editIndex)}
-            record={record}
-            onChange={this.handleEditChange}
-            options={FEE_CATEGORY}
-          />),
       }, {
-        title: msg('feeType'),
-        dataIndex: 'fee_style',
+        title: this.msg('feeType'),
+        dataIndex: 'fee_type',
         filters: [
           { text: '服务', value: 'service' },
           { text: '代垫', value: 'advance' },
         ],
         width: 150,
-        render: (o, record, index) =>
-          (<ColumnSelect
-            field="fee_style"
-            inEdit={editable || (index === editIndex)}
-            record={record}
-            onChange={this.handleEditChange}
-            options={FEE_STYLE}
-          />),
       }, {
-        title: msg('billingMethod'),
-        dataIndex: 'charge_param',
-        width: 150,
-        render: (o, record, index) =>
-          (<ColumnSelect
-            field="charge_param"
-            inEdit={editable || (index === editIndex)}
-            record={record}
-            onChange={this.handleEditChange}
-            options={CHARGE_PARAM}
-          />),
-      }, {
-        title: msg('formulaFactor'),
-        dataIndex: 'formula_factor',
+        title: this.msg('billingMethod'),
+        dataIndex: 'billing_method',
         width: 200,
-        render: (o, record, index) => {
-          const inEdit = editable || (index === editIndex);
-          if (record.charge_param === '$formula' && inEdit) {
+        render: o =>
+          (<TreeSelect
+            style={{ width: '100%' }}
+            value={o}
+            dropdownStyle={{ overflow: 'auto' }}
+            treeData={BILLING_METHOD}
+            treeDefaultExpandAll
+            onChange={this.handleEditChange}
+          />),
+      }, {
+        title: this.msg('formulaFactor'),
+        dataIndex: 'formula_factor',
+        render: (o, record) => {
+          if (record.billing_method === '$formula') {
             return (<Mention
               suggestions={this.state.suggestions}
               prefix="$"
@@ -524,67 +177,50 @@ export default class TariffPane extends Component {
               style={{ width: '100%', height: '100%' }}
             />);
           }
-          return <ColumnInput field="formula_factor" inEdit={editable || (index === editIndex)} record={record} onChange={this.handleEditChange} />;
+          return (<ColumnInput
+            field="formula_factor"
+            inEdit
+            record={record}
+            onChange={this.handleEditChange}
+          />);
         },
-      }];
-    if (action !== 'view') {
-      columns.push({
-        title: msg('operation'),
-        width: 80,
-        render: (o, record, index) => {
-          if (record.category === 'custom' && action === 'create') {
-            return (
-              <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleDelete} row={record} index={index} />
-            );
-          } else if (action === 'edit' && batchSaved === 0) {
-            if (index === editIndex) {
-              return (
-                <span>
-                  <RowAction icon="check" tooltip={msg('confirm')} onClick={this.handleSave} row={record} index={index} />
-                  <RowAction icon="close" tooltip={msg('cancel')} onClick={this.handleCancel} />
-                </span>
-              );
-            } else if (record.category === 'custom') {
-              return (
-                <span>
-                  <RowAction icon="edit" tooltip={msg('modify')} onClick={this.handleModify} row={record} index={index} />
-                  <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleDelete} row={record} index={index} />
-                </span>
-              );
-            } else if (record.category !== 'custom') {
-              return (
-                <RowAction icon="edit" tooltip={msg('modify')} onClick={this.handleModify} row={record} index={index} />
-              );
-            }
-          } else if (action === 'edit' && batchSaved === 1) {
-            if (record.category === 'custom') {
-              return (
-                <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleDelete} row={record} index={index} />
-              );
-            }
-          } else if (record.category === 'custom' && action === 'model') {
-            return (
-              <RowAction icon="delete" tooltip={msg('delete')} onClick={this.handleMdlFeeDelete} row={record} index={index} />
-            );
-          } else {
-            return <span />;
-          }
-          return null;
-        },
-      });
-    }
+      }, {
+        width: 60,
+        fixed: 'right',
+        render: (o, record, index) => <RowAction danger icon="minus-circle-o" tooltip={this.gmsg('remove')} onClick={this.handleDelete} row={record} index={index} />,
+      },
+    ];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    const mockData = [{
+      fee_code: '10',
+      fee_name: '报关费',
+      fee_type: 'SC',
+      group: '清关费用',
+      billing_method: '',
+    }, {
+      fee_code: '20',
+      fee_name: '联单费',
+      fee_type: 'SC',
+      group: '清关费用',
+      billing_method: '',
+    }, {
+      fee_code: '100',
+      fee_name: '港杂费',
+      fee_type: 'AP',
+      group: '清关费用',
+      billing_method: '$manual',
+    }];
     return (
       <DataPane
         fullscreen={this.props.fullscreen}
         columns={columns}
         rowSelection={rowSelection}
-        dataSource={dataSource}
+        dataSource={mockData}
         rowKey={getRowKey}
         loading={quoteData.loading}
       >
