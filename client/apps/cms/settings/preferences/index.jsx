@@ -109,7 +109,7 @@ export default class Preferences extends Component {
           <Content className="page-content layout-fixed-width">
             <Collapse bordered={false} defaultActiveKey={['pluginsPref', 'cusDeclPref']}>
               <Panel header={this.msg('pluginsPref')} key="pluginsPref" style={customPanelStyle}>
-                <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 0 }} >
+                <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }} >
                   <List
                     dataSource={CMS_PLUGINS}
                     renderItem={plugin => (
@@ -127,7 +127,7 @@ export default class Preferences extends Component {
                 </Card>
               </Panel>
               <Panel header={this.msg('cusDeclPref')} key="cusDeclPref" style={customPanelStyle}>
-                <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 0 }} >
+                <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }} >
                   <List
                     dataSource={cusDeclPrefList}
                     renderItem={pref => (

@@ -505,8 +505,8 @@ export default(store) => {
             <Route path="vendors" component={SCOFVendors.List} />
             <Route path="flow" component={SCOFFlow.List} />
             <Route path="settings">
-              <IndexRedirect to="/scof/settings/ordertypes" />
-              <Route path="ordertypes" component={SCOFSettings.OrderTypes} />
+              <IndexRedirect to="/scof/settings/orderparams" />
+              <Route path="orderparams" component={SCOFSettings.OrderParams} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>

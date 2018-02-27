@@ -20,9 +20,9 @@ export default class SettingMenu extends React.Component {
     return (
       <div>
         <Menu mode="inline" selectedKeys={[this.props.currentKey]}>
-          <Menu.Item key="ordertypes">
-            <NavLink to="/scof/settings/ordertypes">
-              <Logixon type="rule" /> {this.msg('orderTypes')}
+          <Menu.Item key="orderparams">
+            <NavLink to="/scof/settings/orderparams">
+              <Logixon type="rule" /> {this.msg('orderParams')}
             </NavLink>
           </Menu.Item>
         </Menu>

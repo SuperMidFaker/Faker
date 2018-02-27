@@ -1,1 +1,1 @@
-export OrderTypes from './orderTypes';
+export OrderParams from './orderparams';

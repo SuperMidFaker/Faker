@@ -9,7 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import { connect } from 'react-redux';
 import { loadStatsCard } from 'common/reducers/sofDashboard';
 import OrderStatsCard from './card/orderStatsCard';
-import InvoiceStatsCard from './card/invoiceStatsCard';
+// import InvoiceStatsCard from './card/invoiceStatsCard';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -67,9 +67,6 @@ export default class SOFDashboard extends React.Component {
           <Row gutter={16}>
             <Col sm={24}>
               <OrderStatsCard />
-            </Col>
-            <Col sm={24}>
-              <InvoiceStatsCard />
             </Col>
           </Row>
         </Content>

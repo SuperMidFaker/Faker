@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   settings: {
@@ -10,17 +11,17 @@ const messages = defineMessages({
     id: 'sof.order.preference',
     defaultMessage: '参数设定',
   },
-  cancel: {
-    id: 'scof.settings.cancel',
-    defaultMessage: '取消',
+  orderParams: {
+    id: 'scof.settings.order.params',
+    defaultMessage: '订单参数',
   },
-  save: {
-    id: 'scof.settings.save',
-    defaultMessage: '保存',
+  orderTypes: {
+    id: 'scof.settings.order.types',
+    defaultMessage: '订单类型',
   },
-  modify: {
-    id: 'scof.settings.modify',
-    defaultMessage: '修改',
+  exceptionCode: {
+    id: 'scof.settings.order.exception.code',
+    defaultMessage: '异常原因',
   },
   config: {
     id: 'scof.settings.config',
@@ -66,3 +67,4 @@ const messages = defineMessages({
 
 export default messages;
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);

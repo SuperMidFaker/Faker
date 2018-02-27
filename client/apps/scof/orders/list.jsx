@@ -275,7 +275,7 @@ export default class OrderList extends React.Component {
         </div>);
       },
     }, {
-      width: 200,
+      width: 250,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
       title: '进度状态',

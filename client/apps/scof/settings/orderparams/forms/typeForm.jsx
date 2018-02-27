@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { SCOF_ORDER_TRANSFER } from 'common/constants';
 import { upsertOrderType } from 'common/reducers/sofOrderPref';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -33,6 +33,7 @@ export default class TypeForm extends Component {
     }
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleTypeSave = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
@@ -73,7 +74,7 @@ export default class TypeForm extends Component {
           </RadioGroup>)}
         </FormItem>
         <FormItem>
-          <Button type="primary" icon="save" onClick={this.handleTypeSave}>{this.msg('save')}</Button>
+          <Button type="primary" icon="save" onClick={this.handleTypeSave}>{this.gmsg('save')}</Button>
         </FormItem>
       </Form>
     );
