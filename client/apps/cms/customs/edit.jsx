@@ -221,7 +221,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handlePrintMenuClick = (ev) => {
     const {
-      head, bodies, billMeta, formRequire,
+      head, bodies, formRequire,
     } = this.props;
     let docDef;
     window.pdfMake.fonts = {
@@ -231,11 +231,11 @@ export default class CustomsDeclEditor extends React.Component {
       },
     };
     if (ev.key === 'standard') {
-      docDef = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+      docDef = StandardDocDef(head, bodies, head.decl_way_code, head.cust_order_no, formRequire);
       window.pdfMake.createPdf(docDef).open();
     } else if (ev.key === 'skeleton') {
       docDef = StandardDocDef(
-        head, bodies, billMeta.declWayCode, billMeta.orderNo,
+        head, bodies, head.decl_way_code, head.cust_order_no,
         formRequire, true
       );
       window.pdfMake.createPdf(docDef).print();
