@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Layout, Select, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Icon, Menu, Layout, Select, message } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -15,6 +15,7 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
+import SideDrawer from 'client/components/SideDrawer';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import ExpEptModal from './modals/expEptModal';
@@ -104,6 +105,7 @@ export default class ExpenseList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    currentStatus: 'submitted',
     selectedRowKeys: [],
     expEptVisible: false,
     supeFilter: [],
@@ -284,7 +286,9 @@ export default class ExpenseList extends Component {
     },
     remotes: this.props.expenseList,
   })
-
+  handleMenuClick = (ev) => {
+    this.setState({ currentStatus: ev.key });
+  }
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'shipment');
   }
@@ -384,7 +388,8 @@ export default class ExpenseList extends Component {
     this.context.router.push(link);
   }
   render() {
-    const { expenseList, listFilter } = this.props;
+    const { expenseList, partners } = this.props;
+    const { currentStatus } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -394,13 +399,16 @@ export default class ExpenseList extends Component {
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
-        value={listFilter.status}
+        showSearch
+        optionFilterProp="children"
         style={{ width: 160 }}
-        onChange={this.handleStatusChange}
+        onChange={this.handleClientSelectChange}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
-        <Option value="all">全部</Option>
-        <Option value="pending">未提交结算</Option>
-        <Option value="submitted">已提交结算</Option>
+        {partners.supplier.map(data => (<Option key={data.name} value={data.partner_id}>
+          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+        </Option>))}
       </Select>
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
@@ -421,23 +429,38 @@ export default class ExpenseList extends Component {
           </PageHeader.Title>
           <PageHeader.Actions>
             <Button icon="file-excel" onClick={this.handleExpExport}>
-              {this.msg('eptExp')}
+              {this.msg('import')}
             </Button>
+            {currentStatus === 'submitted' && <Button icon="check-circle-o" onClick={this.handleExpExport}>
+              {this.msg('confirm')}
+            </Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            toolbarActions={toolbarActions}
-            rowSelection={rowSelection}
-            selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns}
-            dataSource={this.dataSource}
-            rowKey="delg_no"
-            loading={expenseList.loading}
-            bordered
-          />
-        </Content>
+        <Layout>
+          <SideDrawer width={160}>
+            <Menu mode="inline" selectedKeys={[this.state.currentStatus]} onClick={this.handleMenuClick}>
+              <Menu.Item key="submitted">
+                <Icon type="inbox" /> {this.msg('statusUnconfirmed')}
+              </Menu.Item>
+              <Menu.Item key="confirmed">
+                <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
+              </Menu.Item>
+            </Menu>
+          </SideDrawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={this.dataSource}
+              rowKey="delg_no"
+              loading={expenseList.loading}
+              bordered
+            />
+          </Content>
+        </Layout>
         <DelegationDockPanel />
         <DelgAdvanceExpenseModal />
         <AdvModelModal />

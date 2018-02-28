@@ -15,6 +15,26 @@ const messages = defineMessages({
     id: 'cms.billing.receivable',
     defaultMessage: '应收费用',
   },
+  statusBilling: {
+    id: 'cms.billing.status.billing',
+    defaultMessage: '计费中',
+  },
+  statusPending: {
+    id: 'cms.billing.status.pending',
+    defaultMessage: '待提交',
+  },
+  statusSubmitted: {
+    id: 'cms.billing.status.submitted',
+    defaultMessage: '已提交',
+  },
+  statusUnconfirmed: {
+    id: 'cms.billing.status.unconfirmed',
+    defaultMessage: '待确认',
+  },
+  statusConfirmed: {
+    id: 'cms.billing.status.confirmed',
+    defaultMessage: '已确认',
+  },
   cusDeclCharges: {
     id: 'cms.billing.cus.decl.charges',
     defaultMessage: '报关收费',
