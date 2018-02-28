@@ -37,8 +37,8 @@ export default class BondedStatsCard extends Component {
   msg = key => formatMsg(this.props.intl, key);
   handleLinkClick = (type) => {
     const { startDate, endDate } = this.props;
-    if (window.localStorage && window.localStorage.cwmReceiveInboundLists) {
-      let fv = JSON.parse(window.localStorage.cwmReceiveInboundLists);
+    if (window.localStorage && window.localStorage.bondedStatus) {
+      let fv = JSON.parse(window.localStorage.bondedStatus);
       fv.startDate = startDate;
       fv.endDate = endDate;
       if (type === 'entryToSync') {
