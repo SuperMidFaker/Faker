@@ -167,7 +167,7 @@ export default class CorpEdit extends React.Component {
       formData: {
         name, username, phone, email, position,
       },
-      intl, form: { getFieldDecorator }, code, roles, visible,
+      intl, form: { getFieldDecorator, getFieldValue }, code, roles, visible,
     } = this.props;
     const isCreating = !this.props.pid && this.props.pid !== 0;
     const msg = descriptor => formatMsg(intl, descriptor);
@@ -197,13 +197,13 @@ export default class CorpEdit extends React.Component {
             {getFieldDecorator('username', {
                 rules: [{
                   validator: (rule, value, callback) => isLoginNameExist(
-                      username, code, this.props.formData.login_id,
+                    getFieldValue('username'), code, this.props.formData.login_id,
                       this.props.tenantId, callback, message, this.props.checkLoginName,
                       (msgs, descriptor) => format(msgs)(intl, descriptor)
                     ),
                 }],
                 initialValue: username && username.split('@')[0],
-              })(<Input type="text" addonAfter={`@${code}`} />)}
+              })(<Input addonAfter={`@${code}`} />)}
           </FormItem>
           {
               isCreating && this.renderTextInput(
