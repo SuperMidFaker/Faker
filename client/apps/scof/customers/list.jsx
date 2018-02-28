@@ -2,23 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Input, Row, Col, Table, Tooltip, Layout } from 'antd';
+import { Breadcrumb, Button, Form, Row, Col, Table, Tooltip, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
+import SearchBox from 'client/components/SearchBox';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import ProfileCard from './cards/profileCard';
-import CustomerModal from './modals/customerModal';
-import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
+import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/sofCustomers';
 import { PARTNER_ROLES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import OverviewCard from './cards/overviewCard';
 import ResourcesCard from './cards/resourcesCard';
 
+import ProfileCard from './cards/profileCard';
+import CustomerModal from './modals/customerModal';
+import messages from './message.i18n';
+
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCustomers(state.account.tenantId));
@@ -28,9 +29,9 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    customers: state.crmCustomers.customers,
-    loading: state.crmCustomers.loading,
-    loaded: state.crmCustomers.loaded,
+    customers: state.sofCustomers.customers,
+    loading: state.sofCustomers.loading,
+    loaded: state.sofCustomers.loaded,
   }),
   { loadCustomers, deleteCustomer, showCustomerModal }
 )
@@ -44,14 +45,13 @@ export default class CustomerList extends React.Component {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    customers: PropTypes.array.isRequired,
+    customers: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
     loadCustomers: PropTypes.func.isRequired,
     deleteCustomer: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
-    customerModalVisible: false,
     customer: {},
     currentPage: 1,
     collapsed: false,
@@ -98,7 +98,7 @@ export default class CustomerList extends React.Component {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    let customers = this.props.customers;
+    let { customers } = this.props;
     if (value) {
       customers = this.props.customers.filter((item) => {
         const reg = new RegExp(value);
@@ -118,7 +118,11 @@ export default class CustomerList extends React.Component {
     }];
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -138,15 +142,26 @@ export default class CustomerList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search
+              <SearchBox
                 placeholder={this.msg('searchPlaceholder')}
                 onSearch={this.handleSearch}
+                width="100%"
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+              <Table
+                size="middle"
+                dataSource={this.state.customers}
+                columns={columns}
+                showHeader={false}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 50,
+                  onChange: this.handlePageChange,
+                }}
+                rowClassName={record => (record.id === customer.id ? 'table-row-selected' : '')}
+                rowKey="id"
+                loading={this.props.loading}
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}
@@ -166,7 +181,8 @@ export default class CustomerList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>}
             <ButtonToggle
-              iconOn="menu-fold" iconOff="menu-unfold"
+              iconOn="menu-fold"
+              iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />

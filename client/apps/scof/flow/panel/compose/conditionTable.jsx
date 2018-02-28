@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Table, Icon, Select, Popconfirm } from 'antd';
+import { Button, Card, Table, Icon, Select, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
 
-const Option = Select.Option;
+const { Option } = Select;
 
 function EditableCell(props) {
   const {
@@ -175,8 +175,14 @@ export default class ConditionTable extends React.Component {
       options = this.props.bizObjects.map(bo => ({ key: bo.key, text: this.msg(bo.text) }));
     }
     const bizObj = this.props.bizObjects.filter(bo => bo.key === value)[0];
-    return (<EditableCell editable={editable} value={value} index={index} options={options}
-      text={bizObj && this.msg(bizObj.text)} onChange={this.handleCellChange} cellKey="biz_object"
+    return (<EditableCell
+      editable={editable}
+      value={value}
+      index={index}
+      options={options}
+      text={bizObj && this.msg(bizObj.text)}
+      onChange={this.handleCellChange}
+      cellKey="biz_object"
     />);
   }
   renderBizeventColumn(row, index) {
@@ -193,15 +199,27 @@ export default class ConditionTable extends React.Component {
     if (editable && bizObj) {
       options = bizObj.triggers.map(tr => ({ key: tr.key, text: this.msg(tr.text) }));
     }
-    return (<EditableCell editable={editable} value={value} index={index} options={options}
-      text={bizEvent && this.msg(bizEvent.text)} onChange={this.handleCellChange} cellKey="event"
+    return (<EditableCell
+      editable={editable}
+      value={value}
+      index={index}
+      options={options}
+      text={bizEvent && this.msg(bizEvent.text)}
+      onChange={this.handleCellChange}
+      cellKey="event"
     />);
   }
   render() {
     const { data } = this.state;
     return (
-      <Table dataSource={data} columns={this.columns} pagination={false} size="middle"
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} />}
-      />);
+      <Card style={{ marginTop: 8 }} bodyStyle={{ padding: 0 }}>
+        <Table
+          dataSource={data}
+          columns={this.columns}
+          pagination={false}
+          size="small"
+          footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} />}
+        />
+      </Card>);
   }
 }

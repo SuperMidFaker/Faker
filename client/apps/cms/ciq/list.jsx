@@ -7,6 +7,7 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { setInspect } from 'common/reducers/cmsCustomsDeclare';
@@ -16,15 +17,13 @@ import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
-import { format } from 'client/common/i18n/helpers';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CIQ_DECL_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
+
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
@@ -90,7 +89,7 @@ export default class CiqDeclList extends Component {
       [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance
     );
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('ciqDeclNo'),
     dataIndex: 'pre_entry_seq_no',
@@ -106,24 +105,24 @@ export default class CiqDeclList extends Component {
     render: dc => (!Number.isNaN(Number(dc)) ? dc : null),
   }, {
     title: this.msg('ciqDeclCode'),
-    width: 100,
+    width: 120,
     dataIndex: 'ciq_decl_type',
     render: (o) => {
       switch (Number(o)) {
         case 13:
-          return <Tag color="cyan">入境检验检疫</Tag>;
+          return <Tag color="cyan">{this.msg('ciqInInsp')}</Tag>;
         case 14:
-          return <Tag color="cyan">入境流向</Tag>;
+          return <Tag color="cyan">{this.msg('ciqInFlow')}</Tag>;
         case 15:
-          return <Tag color="cyan">入境验证</Tag>;
+          return <Tag color="cyan">{this.msg('ciqInVali')}</Tag>;
         case 21:
-          return <Tag color="orange">出境预检</Tag>;
+          return <Tag color="orange">{this.msg('ciqOutPreInsp')}</Tag>;
         case 24:
-          return <Tag color="orange">出境检验检疫</Tag>;
+          return <Tag color="orange">{this.msg('ciqOutInsp')}</Tag>;
         case 25:
-          return <Tag color="orange">出境核查货证</Tag>;
+          return <Tag color="orange">{this.msg('ciqOutCheck')}</Tag>;
         case 28:
-          return <Tag color="orange">出境验证</Tag>;
+          return <Tag color="orange">{this.msg('ciqOutVali')}</Tag>;
         default:
           return null;
       }
@@ -159,15 +158,15 @@ export default class CiqDeclList extends Component {
     render: (o) => {
       switch (o) {
         case 0:
-          return <Badge status="default" text="待申报" />;
+          return <Badge status="default" text={this.msg('pending')} />;
         case 1:
-          return <Badge status="processing" text="报检受理" />;
+          return <Badge status="processing" text={this.msg('accept')} />;
         case 2:
-          return <Badge status="error" text="施检查验" />;
+          return <Badge status="error" text={this.msg('insp')} />;
         case 3:
-          return <Badge status="success" text="通关放行" />;
+          return <Badge status="success" text={this.msg('pass')} />;
         case 4:
-          return <Badge status="success" text="签发证单" />;
+          return <Badge status="success" text={this.msg('sign')} />;
         default:
           return null;
       }
@@ -188,7 +187,7 @@ export default class CiqDeclList extends Component {
     dataIndex: 'agent_name',
     width: 180,
   }, {
-    title: this.msg('报检人员'),
+    title: this.msg('agentPerson'),
     dataIndex: 'agent_ciq_person',
     width: 120,
   }, {
@@ -198,8 +197,8 @@ export default class CiqDeclList extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />
-        <RowAction onClick={this.handleExportNinetown} icon="file-excel" tooltip="九城商检导出" row={record} />
+        <RowAction onClick={this.handleDetail} icon="form" label={this.msg('detail')} row={record} />
+        <RowAction onClick={this.handleExportNinetown} icon="file-excel" tooltip={this.msg('declExport')} row={record} />
       </span>),
   }]
   dataSource = new DataTable.DataSource({
@@ -290,18 +289,18 @@ export default class CiqDeclList extends Component {
       },
     };
     const clients = [{
-      name: '全部委托单位',
+      name: this.msg('allClients'),
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('ciqSearchPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
         optionFilterProp="children"
         value={listFilter.status}
         onChange={this.handleStatusChange}
       >
-        <Option value="all" key="all">全部状态</Option>
+        <Option value="all" key="all">{this.msg('allStatus')}</Option>
         {CIQ_DECL_STATUS.map(item => (
           <Option key={item.value} value={item.value}>
             {item.text}

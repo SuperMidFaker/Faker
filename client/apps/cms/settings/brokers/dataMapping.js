@@ -1,10 +1,10 @@
 export const partnerTypes = {
   CUS: '客户',
   SUP: '供应商',
-  TRS: '运输提供商',
+  TRS: '承运商',
   WHS: '仓储提供商',
-  CCB: '报关提供商',
-  FWD: '货代提供商',
+  CCB: '报关行',
+  FWD: '货代',
   ALL: '物流提供商',
   CIB: '报检提供商',
   ICB: '鉴定办证',

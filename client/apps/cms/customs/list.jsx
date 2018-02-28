@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Avatar, Breadcrumb, DatePicker, Icon, Input, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Avatar, Breadcrumb, DatePicker, Icon, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
@@ -18,7 +19,6 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
@@ -30,15 +30,14 @@ import DeclMsgPanel from './panel/declMsgPanel';
 import DeclMsgModal from './modals/declMsgModal';
 import DeclStatusPopover from '../common/popover/declStatusPopover';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const { Search } = Input;
+
 
 @injectIntl
 @connect(
@@ -85,7 +84,6 @@ export default class CustomsList extends Component {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
-    filterName: null,
   }
   componentDidMount() {
     let filters = null;
@@ -103,7 +101,7 @@ export default class CustomsList extends Component {
     this.props.loadTableParams();
     this.handleTableLoad(this.props.customslist.current, filters);
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
@@ -148,7 +146,7 @@ export default class CustomsList extends Component {
   }, {
     title: '类型',
     dataIndex: 'sheet_type',
-    width: 80,
+    width: 100,
     render: (o, record) => {
       let child = <span />;
       if (record.i_e_type === 0) {
@@ -278,7 +276,7 @@ export default class CustomsList extends Component {
     render: (o, record) => (record.id ?
       record.i_e_date && moment(record.i_e_date).format('YYYY.MM.DD') : '-'),
   }, {
-    title: '制单时间',
+    title: '生成时间',
     dataIndex: 'created_date',
     width: 100,
     render: createdt => (createdt ? moment(createdt).format('MM.DD HH:mm') : '-'),
@@ -303,7 +301,12 @@ export default class CustomsList extends Component {
     width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: '报关人员',
+    title: '审核人员',
+    dataIndex: 'reviewed_by',
+    width: 120,
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
+  }, {
+    title: '人员',
     dataIndex: 'epsend_login_id',
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
@@ -435,9 +438,6 @@ export default class CustomsList extends Component {
     this.handleDeselectRows();
     this.handleTableLoad(1, filter);
   }
-  handleSearchChange = (ev) => {
-    this.setState({ filterName: ev.target.value });
-  }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] }; // FIXME should not use two ids
     if (value !== -1) {
@@ -547,7 +547,8 @@ export default class CustomsList extends Component {
     const {
       customslist, listFilter, avatar, loginName,
     } = this.props;
-    const filterName = this.state.filterName === null ? listFilter.filterNo : this.state.filterName;
+    // const filterName = this.state.filterName === null ?
+    // listFilter.filterNo : this.state.filterName;
     this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -598,12 +599,10 @@ export default class CustomsList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <Search
-        style={{ width: 250 }}
+      <SearchBox
+        width={250}
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
-        onChange={this.handleSearchChange}
-        value={filterName}
       />
       <Select
         showSearch

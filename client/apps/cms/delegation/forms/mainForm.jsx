@@ -6,14 +6,14 @@ import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Radio, Tooltip 
 import { setClientForm } from 'common/reducers/cmsDelegation';
 import { GOODSTYPES, TRANS_MODE, DECL_TYPE, WRAP_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../message.i18n';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const formatMsg = format(messages);
+
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const InputGroup = Input.Group;
 
 function getFieldInits(aspect, formData) {
@@ -51,7 +51,7 @@ export default class MainForm extends Component {
     customs: PropTypes.array.isRequired,
     setClientForm: PropTypes.func.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleClientChange = (value) => {
     if (typeof value === 'string') {
       return value;
@@ -150,11 +150,16 @@ export default class MainForm extends Component {
                   }],
                   getValueFromEvent: this.handleClientChange,
                   initialValue: fieldInits.customer_name,
-                })(<Select mode="combobox" showArrow={false} optionFilterProp="search"
+                })(<Select
+                  mode="combobox"
+                  showArrow={false}
+                  optionFilterProp="search"
                   placeholder="输入客户代码或名称"
                 >
                   {
-                      clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                      clients.map(data => (<Option
+                        key={data.partner_id}
+                        value={data.partner_id}
                         search={`${data.partner_code}${data.name}`}
                       >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
                       </Option>))}

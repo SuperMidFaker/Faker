@@ -4,23 +4,24 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, Checkbox, Select, Row, Col, Button, Icon, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/crmCustomers';
+import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/sofCustomers';
 import { getCompanyInfo } from 'common/reducers/common';
 import { checkPartner } from 'common/reducers/partner';
 import { BUSINESS_TYPES } from 'common/constants';
+import messages from '../message.i18n';
+
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
-const Option = Select.Option;
+const { Option } = Select;
 const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.crmCustomers.customerModal.visible,
-    customer: state.crmCustomers.customerModal.customer,
-    operation: state.crmCustomers.customerModal.operation,
+    visible: state.sofCustomers.customerModal.visible,
+    customer: state.sofCustomers.customerModal.customer,
+    operation: state.sofCustomers.customerModal.operation,
   }),
   {
     addCustomer, editCustomer, checkPartner, hideCustomerModal, getCompanyInfo,
@@ -37,7 +38,9 @@ export default class CustomerModal extends React.Component {
     checkPartner: PropTypes.func.isRequired,
     hideCustomerModal: PropTypes.func.isRequired,
     editCustomer: PropTypes.func.isRequired,
-    customer: PropTypes.object.isRequired,
+    customer: PropTypes.shape({
+      name: PropTypes.string,
+    }).isRequired,
     onOk: PropTypes.func,
     getCompanyInfo: PropTypes.func.isRequired,
   }
@@ -203,7 +206,13 @@ export default class CustomerModal extends React.Component {
       title = '修改客户资料';
     }
     return (
-      <Modal maskClosable={false} visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        title={title}
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
+      >
         <Form layout="horizontal">
           <FormItem
             {...formItemLayout}
@@ -237,14 +246,21 @@ export default class CustomerModal extends React.Component {
             label="客户代码"
             hasFeedback
           >
-            <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
+            <Input
+              value={this.state.partnerCode}
+              onChange={(e) => { this.setState({ partnerCode: e.target.value }); }}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="统一社会信用码"
             hasFeedback
           >
-            <Input placeholder="请填写18位统一社会信用代码" value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
+            <Input
+              placeholder="请填写18位统一社会信用代码"
+              value={this.state.partnerUniqueCode}
+              onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -258,7 +274,11 @@ export default class CustomerModal extends React.Component {
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={BUSINESS_TYPES} value={businessArray} onChange={this.handleCustomerTypesChange} />
+            <CheckboxGroup
+              options={BUSINESS_TYPES}
+              value={businessArray}
+              onChange={this.handleCustomerTypesChange}
+            />
           </FormItem>
           <FormItem
             {...formItemLayout}

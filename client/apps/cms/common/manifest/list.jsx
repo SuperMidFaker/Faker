@@ -5,28 +5,28 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, DatePicker, Layout, Radio, Icon, Progress, message, Popconfirm, Tooltip, notification, Select } from 'antd';
 import moment from 'moment';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
-import DelegationDockPanel from '../dock/delegationDockPanel';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import { loadDelgBill, redoManifest } from 'common/reducers/cmsManifest';
 import Templates from './template/templates';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import DelegationDockPanel from '../dock/delegationDockPanel';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
+
 const { Header, Content, Sider } = Layout;
+
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
-const RangePicker = DatePicker.RangePicker;
+const { Option } = Select;
+const { OptGroup } = Select;
+const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -66,7 +66,7 @@ export default class ManifestList extends Component {
     selectedRowKeys: [],
     searchInput: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -168,7 +168,7 @@ export default class ManifestList extends Component {
       }
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadDelgBill(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -319,7 +319,7 @@ export default class ManifestList extends Component {
             <QueueAnim type={['bottom', 'up']}>
               <div className="page-body" key="body">
                 <div className="toolbar">
-                  <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+                  <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
                   <span />
                   <Select
                     showSearch
@@ -360,7 +360,7 @@ export default class ManifestList extends Component {
                   </div>
                 </div>
                 <div className="panel-body table-panel table-fixed-layout">
-                  <Table
+                  <DataTable
                     rowSelection={rowSelection}
                     columns={this.columns}
                     rowKey="delg_no"

@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { Popover, Input, Tabs, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import SearchBox from 'client/components/SearchBox';
 import { loadLimitLocations, loadAdviceLocations } from 'common/reducers/cwmWhseLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
-const Search = Input.Search;
+const { TabPane } = Tabs;
+
 
 @injectIntl
 @connect(
@@ -29,7 +30,6 @@ export default class LocationPopover extends Component {
     visible: false,
     locations: [],
     adviceLocations: [],
-    searchText: '',
   }
   msg = key => formatMsg(this.props.intl, key);
   handleVisibleChange = (visible) => {
@@ -48,11 +48,6 @@ export default class LocationPopover extends Component {
         }
       });
     }
-    if (!visible) {
-      this.setState({
-        searchText: '',
-      });
-    }
   }
   handleMenuClick = (item) => {
     const { index } = this.props;
@@ -63,16 +58,14 @@ export default class LocationPopover extends Component {
     this.props.onChange(index, item.key, location);
     this.setState({
       visible: false,
-      searchText: '',
+
     });
   }
-  handleChange = (e) => {
-    const text = e.target.value;
-    this.props.loadLimitLocations(this.props.whseCode, '', text).then((result) => {
+  handleChange = (value) => {
+    this.props.loadLimitLocations(this.props.whseCode, '', value).then((result) => {
       if (!result.error) {
         this.setState({
           locations: result.data,
-          searchText: text,
         });
       }
     });
@@ -83,7 +76,7 @@ export default class LocationPopover extends Component {
       <div>
         <Tabs defaultActiveKey="1" >
           <TabPane tab="全部库位" key="1">
-            <Search style={{ width: 216, marginBottom: 8 }} value={this.state.searchText} onChange={this.handleChange} />
+            <SearchBox width={216} onSearch={this.handleChange} />
             <Menu
               style={{ width: 216 }}
               mode="vertical"

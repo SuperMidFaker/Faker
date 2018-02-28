@@ -4,17 +4,17 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Alert, Input, Button, notification } from 'antd';
+import { Alert, Button, notification } from 'antd';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import { string2Bytes } from 'client/util/dataTransform';
 import AllocatingModal from '../modal/allocatingModal';
 
-const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -370,7 +370,7 @@ export default class OrderDetailsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}

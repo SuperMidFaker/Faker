@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
+import { Tag, Badge, Breadcrumb, Form, Input, Layout, Tabs, Steps, Button, Card, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { format } from 'client/common/i18n/helpers';
@@ -20,8 +20,8 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const TabPane = Tabs.TabPane;
-const Step = Steps.Step;
+const { TabPane } = Tabs;
+const { Step } = Steps;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -83,16 +83,19 @@ export default class BatchDeclDetail extends Component {
     fullscreen: true,
   }
   componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
+    this.setState({
+      regs: this.props.regs,
+      details: this.props.details,
+      batchApplies: this.props.batchApplies,
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.batchApplies !== this.props.batchApplies && nextProps.batchApplies.length > 0) {
       if (this.state.tabKey === 'details') {
-        this.setState({ tabKey: nextProps.batchApplies[0].pre_entry_seq_no });
+        this.setState({
+          tabKey: nextProps.batchApplies[0].pre_entry_seq_no,
+          batchApplies: nextProps.batchApplies,
+        });
       }
     }
   }
@@ -267,10 +270,10 @@ export default class BatchDeclDetail extends Component {
     width: 200,
   }]
   handleSend = () => {
-    const batchNo = this.props.params.batchNo;
-    const batchDecl = this.props.batchDecl;
+    const { batchNo } = this.props.params;
+    const { batchDecl } = this.props;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const loginId = this.props.loginId;
+    const { loginId } = this.props;
     this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
@@ -299,7 +302,7 @@ export default class BatchDeclDetail extends Component {
     });
   }
   handleQuery = () => {
-    const batchNo = this.props.params.batchNo;
+    const { batchNo } = this.props.params;
     this.props.makeBatchApplied(batchNo).then((result) => {
       if (!result.error) {
         this.props.loadApplyDetails(batchNo);
@@ -318,10 +321,48 @@ export default class BatchDeclDetail extends Component {
     const ietype = this.props.batchDecl.i_e_type === 0 ? 'import' : 'export';
     this.context.router.push(`/clearance/${ietype}/manifest/${this.props.batchDecl.delg_no}`);
   }
+  handleListSearch = (searchText) => {
+    let { regs } = this.props;
+    if (searchText) {
+      regs = regs.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_rel_no) || reg.test(item.so_no);
+      });
+    }
+    this.setState({ regs });
+  }
+  handleDetailsSearch = (searchText) => {
+    let { details } = this.props;
+    if (searchText) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_rel_no) || reg.test(item.product_no)
+        || reg.test(item.hscode) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ details });
+  }
+  handleAppliesSearch = (searchText, preEntrySeqNo) => {
+    const batchApplies = JSON.parse(JSON.stringify(this.props.batchApplies));
+    if (searchText) {
+      const searchOne = batchApplies.find(apply => apply.pre_entry_seq_no === preEntrySeqNo);
+      const details = searchOne.details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.product_no) || reg.test(item.g_name);
+      });
+      const grossWt = details.reduce((prev, next) => prev + next.gross_wt, 0);
+      const netWt = details.reduce((prev, next) => prev + next.net_wt, 0);
+      searchOne.details = details;
+      searchOne.gross_wt = grossWt;
+      searchOne.net_wt = netWt;
+    }
+    this.setState({ batchApplies });
+  }
   render() {
     const {
-      batchDecl, batchApplies, regs, details, whse, submitting,
+      batchDecl, whse, submitting,
     } = this.props;
+    const { batchApplies, regs, details } = this.state;
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
       gross_wt: acc.gross_wt + det.gross_wt,
@@ -369,7 +410,7 @@ export default class BatchDeclDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <Button icon="link" onClick={this.handleDelgManifest}>关联申报清单 <Badge status="default" text="制单中" /></Button>
+            <Button icon="link" onClick={this.handleDelgManifest}>关联报关清单 <Badge status="default" text="制单中" /></Button>
           </PageHeader.Nav>
           <PageHeader.Actions>
             {sent && <Button icon="check" loading={submitting} onClick={this.handleQuery}>标记申请完成</Button>}
@@ -398,7 +439,19 @@ export default class BatchDeclDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
-                  <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.regColumns}
+                    rowSelection={rowSelection}
+                    indentSize={8}
+                    dataSource={regs}
+                    rowKey="ftz_rel_no"
+                    loading={this.state.loading}
+                  >
+                    <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleListSearch} />
+                    </DataPane.Toolbar>
+                  </DataPane>
                 </TabPane>
                 <TabPane tab="集中报关明细" key="details">
                   <DataPane
@@ -411,12 +464,10 @@ export default class BatchDeclDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <Row type="flex">
-                        <Col className="col-flex-primary info-group-inline" />
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleDetailsSearch} />
+                      <DataPane.Extra>
+                        {totCol}
+                      </DataPane.Extra>
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
@@ -432,17 +483,18 @@ export default class BatchDeclDetail extends Component {
                       loading={this.state.loading}
                     >
                       <DataPane.Toolbar>
-                        <Row type="flex">
-                          <Col className="col-flex-primary info-group-inline">
-                            <InfoItem label="报关单号" field={reg.cus_decl_no} width={370} />
-                          </Col>
-                          <Col className="col-flex-secondary">
-                            <Summary>
-                              <Summary.Item label="总毛重" addonAfter="KG">{reg.gross_wt.toFixed(2)}</Summary.Item>
-                              <Summary.Item label="总净重" addonAfter="KG">{reg.net_wt.toFixed(6)}</Summary.Item>
-                            </Summary>
-                          </Col>
-                        </Row>
+                        <SearchBox
+                          placeholder={this.msg('searchPlaceholder')}
+                          onSearch={searchText =>
+                            this.handleAppliesSearch(searchText, reg.pre_entry_seq_no)}
+                        />
+                        <Input addonBefore="报关单号" value={reg.cus_decl_no} style={{ width: 280 }} />
+                        <DataPane.Extra>
+                          <Summary>
+                            <Summary.Item label="总毛重" addonAfter="KG">{reg.gross_wt.toFixed(2)}</Summary.Item>
+                            <Summary.Item label="总净重" addonAfter="KG">{reg.net_wt.toFixed(6)}</Summary.Item>
+                          </Summary>
+                        </DataPane.Extra>
                       </DataPane.Toolbar>
                     </DataPane>
                   </TabPane>))}

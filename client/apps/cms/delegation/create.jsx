@@ -6,14 +6,13 @@ import { Breadcrumb, Form, Layout, Row, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { createDelegationByCCB } from 'common/reducers/cmsDelegation';
 import { DELG_SOURCE } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
+
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
 import UploadGroup from './forms/attachmentUpload';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
@@ -49,7 +48,7 @@ export default class CreateDelegation extends Component {
   state = {
     attachments: [],
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = ({ accepted }) => {
     this.props.form.validateFields((errors) => {
       if (!errors) {

@@ -8,7 +8,7 @@ import { loadWorkspaceItems, auditItems } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import RowAction from 'client/components/RowAction';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ModuleMenu from '../menu';
 import makeColumns from './commonCols';
@@ -17,6 +17,7 @@ import { formatMsg } from '../message.i18n';
 
 const { Option } = Select;
 const { Sider, Content } = Layout;
+
 
 @injectIntl
 @connect(
@@ -195,7 +196,7 @@ export default class PendingItemsList extends React.Component {
         {repos.map(rep =>
           <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
-      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={filter.name} />
+      <SearchBox placeholder={this.msg('商品货号/HS编码/品名')} onSearch={this.handleSearch} />
     </span>);
     return (
       <Layout>

@@ -13,13 +13,14 @@ import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConf
 import { addPartner } from 'common/reducers/partner';
 import { computeCostCharges } from 'common/reducers/shipment';
 // import ChargeSpecForm from '../shipment/forms/chargeSpec';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import DispatchConfirmModal from './DispatchConfirmModal';
 import CarrierModal from '../resources/modals/carrierModal';
 import VehicleFormMini from '../resources/components/VehicleForm-mini';
 import { toggleCarrierModal } from 'common/reducers/transportResources';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
+
 const TabPane = Tabs.TabPane;
 const formatMsg = format(messages);
 
@@ -149,9 +150,8 @@ export default class DispatchDock extends Component {
             >
               <span>{charge.total_charge.toFixed(2)}</span>
             </Popover> */ }
-        } else {
-          return '';
         }
+        return '';
       },
     }, {
       title: this.msg('shipmtOP'),
@@ -568,16 +568,18 @@ export default class DispatchDock extends Component {
     this.vesds.remotes = vehicles;
     const toolbarActionsConsignee = (
       <span>
-        <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
-          onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
+        <SearchBox
+          placeholder={this.msg('carrierSearchPlaceholder')}
+          onSearch={this.handleCarrierSearch}
         />
         <Button onClick={this.handleNewCarrierClick}>新增承运商</Button>
       </span>
     );
     const toolbarActionsVehicle = (
       <span>
-        <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
-          onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
+        <SearchBox
+          placeholder={this.msg('vehicleSearchPlaceholder')}
+          onSearch={this.handlePlateSearch}
         />
         <Button onClick={this.handleNewVehicleClick}>新增车辆</Button>
       </span>
@@ -626,17 +628,20 @@ export default class DispatchDock extends Component {
         {arr}
       </Col>
       <Col span="4">
-        <InfoItem label="总件数"
+        <InfoItem
+          label="总件数"
           field={totalCount}
         />
       </Col>
       <Col span="4">
-        <InfoItem label="总重量"
+        <InfoItem
+          label="总重量"
           field={totalWeight}
         />
       </Col>
       <Col span="4">
-        <InfoItem label="总体积"
+        <InfoItem
+          label="总体积"
           field={totalVolume}
         />
       </Col>
@@ -645,13 +650,16 @@ export default class DispatchDock extends Component {
   render() {
     const { shipmts, visible } = this.props;
     return (
-      <DockPanel visible={visible} onClose={this.onClose}
+      <DockPanel
+        visible={visible}
+        onClose={this.onClose}
         title={`分配 ${shipmts.length}个运单`}
         extra={this.renderExtra()}
       >
         {this.renderTabs()}
         <DispatchConfirmModal
-          shipmts={shipmts} onChange={this.handlePodTypeChange}
+          shipmts={shipmts}
+          onChange={this.handlePodTypeChange}
           onDispatchAndSend={() => this.handleShipmtDispatchAndSend()}
           onDispatch={() => this.handleShipmtDispatch()}
         />

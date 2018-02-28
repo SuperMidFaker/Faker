@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import { showServiceTeamModal, loadServiceTeamMembers } from 'common/reducers/crmCustomers';
+import { showServiceTeamModal, loadServiceTeamMembers } from 'common/reducers/sofCustomers';
 import { loadDepartments } from 'common/reducers/personnel';
 import messages from '../message.i18n';
 import ServiceTeamModal from '../modals/serviceTeamModal';
@@ -15,7 +15,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
+    serviceTeamMembers: state.sofCustomers.serviceTeamMembers,
     departments: state.personnel.departments,
   }),
   { showServiceTeamModal, loadServiceTeamMembers, loadDepartments },
@@ -64,9 +64,8 @@ export default class ServiceTeam extends React.Component {
       onFilter: (value, record) => {
         if (!record.department) {
           return false;
-        } else {
-          return record.department.indexOf(value) !== -1;
         }
+        return record.department.indexOf(value) !== -1;
       },
     }];
     return (

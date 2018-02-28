@@ -1,6 +1,51 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  collab: {
+    id: 'network.collab',
+    defaultMessage: '协作邀请',
+  },
+  ensureDelete: {
+    id: 'network.collab.ensureDelete',
+    defaultMessage: '确定删除?',
+  },
+  create: {
+    id: 'network.collab.create',
+    defaultMessage: '创建通知模版',
+  },
+  templateName: {
+    id: 'network.collab.templateName',
+    defaultMessage: '模版名称',
+  },
+  sender: {
+    id: 'network.collab.sender',
+    defaultMessage: '发送方',
+  },
+  title: {
+    id: 'network.collab.title',
+    defaultMessage: '标题',
+  },
+  dropdown: {
+    id: 'network.collab.dropdown',
+    defaultMessage: '下拉菜单',
+  },
+  shipmtOrderNo: {
+    id: 'network.collab.shipmtOrderNo',
+    defaultMessage: '业务编号',
+  },
+  custOrderNo: {
+    id: 'network.collab.custOrderNo',
+    defaultMessage: '订单号',
+  },
+  invoiceNo: {
+    id: 'network.collab.invoiceNo',
+    defaultMessage: '发票号',
+  },
+  contractNo: {
+    id: 'network.collab.contractNo',
+    defaultMessage: '合同号',
+  },
   partnerName: {
     id: 'network.partner.name',
     defaultMessage: '合作伙伴',
@@ -17,21 +62,17 @@ const messages = defineMessages({
     id: 'network.tenant.type',
     defaultMessage: '类型',
   },
-  volume: {
-    id: 'network.business.volume',
-    defaultMessage: '业务量',
+  activate: {
+    id: 'network.business.activate',
+    defaultMessage: '申请开通',
   },
-  revenue: {
-    id: 'network.business.revenue',
-    defaultMessage: '营收',
+  revoke: {
+    id: 'network.business.revoke',
+    defaultMessage: '撤回',
   },
-  cost: {
-    id: 'network.business.cost',
-    defaultMessage: '成本',
-  },
-  sendInvitation: {
-    id: 'network.send.invitation',
-    defaultMessage: '发送邀请',
+  invite: {
+    id: 'network.send.invite',
+    defaultMessage: '邀请协作',
   },
   searchPlaceholder: {
     id: 'network.search.placeholder',
@@ -40,6 +81,14 @@ const messages = defineMessages({
   newPartner: {
     id: 'network.table.new.partner',
     defaultMessage: '添加合作伙伴',
+  },
+  invitationSent: {
+    id: 'network.invitation.sent',
+    defaultMessage: '已发送协作邀请',
+  },
+  invitationRevoked: {
+    id: 'network.invitation.revoked',
+    defaultMessage: '已撤回协作邀请',
   },
   acceptFailed: {
     id: 'network.invitation.accept.failed',
@@ -82,11 +131,11 @@ const messages = defineMessages({
     defaultMessage: '已取消',
   },
   accept: {
-    id: 'network.invitation.accept',
+    id: 'network.accept',
     defaultMessage: '接受',
   },
   reject: {
-    id: 'network.invitation.reject',
+    id: 'network.reject',
     defaultMessage: '拒绝',
   },
   selectProviderType: {
@@ -120,3 +169,4 @@ const messages = defineMessages({
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

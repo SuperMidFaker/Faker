@@ -1,22 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Input, Tag, Tooltip } from 'antd';
+import { Modal, Button, Tag, Tooltip } from 'antd';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
-import SKUPopover from '../../../common/popover/skuPopover';
-import ReceivingModal from '../modal/receivingModal';
-import BatchReceivingModal from '../modal/batchReceivingModal';
+import SearchBox from 'client/components/SearchBox';
 import { createFilename } from 'client/util/dataTransform';
 import ExcelUploader from 'client/components/ExcelUploader';
 import EditableCell from 'client/components/EditableCell';
-import { openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
+import { openReceiveModal, viewSuBarcodeScanModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
-import moment from 'moment';
+import SKUPopover from '../../../common/popover/skuPopover';
+import ReceivingModal from '../modal/receivingModal';
+import BatchReceivingModal from '../modal/batchReceivingModal';
+import SuBarcodeScanModal from '../modal/suBarcodeScanModal';
+import { formatMsg } from '../../message.i18n';
 
-const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -30,7 +32,13 @@ const Search = Input.Search;
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   {
-    openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound,
+    openReceiveModal,
+    viewSuBarcodeScanModal,
+    updateInbProductVol,
+    loadInboundProductDetails,
+    showBatchReceivingModal,
+    expressReceive,
+    markReloadInbound,
   }
 )
 @connectNav({
@@ -41,7 +49,10 @@ export default class ReceiveDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     inboundNo: PropTypes.string.isRequired,
-    inboundHead: PropTypes.object.isRequired,
+    inboundHead: PropTypes.shape({
+      owner_partner_id: PropTypes.number,
+      rec_mode: PropTypes.oneOf(['scan', 'manual']),
+    }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -49,7 +60,6 @@ export default class ReceiveDetailsPane extends React.Component {
   state = {
     selectedRowKeys: [],
     selectedRows: [],
-    confirmDisabled: true,
     searchValue: '',
     loading: false,
   }
@@ -61,6 +71,7 @@ export default class ReceiveDetailsPane extends React.Component {
       this.handleReload();
     }
   }
+  msg =formatMsg(this.props.intl)
   handleReload = () => {
     this.setState({ loading: true });
     this.props.loadInboundProductDetails(this.props.inboundNo).then(() => {
@@ -80,7 +91,10 @@ export default class ReceiveDetailsPane extends React.Component {
       title: '是否确认收货完成?',
       content: '默认按预期数量收货，确认收货后可以取消收货退回',
       onOk() {
-        return self.props.expressReceive(self.props.inboundNo, self.props.loginId, self.props.username, new Date());
+        return self.props.expressReceive(
+          self.props.inboundNo,
+          self.props.loginId, self.props.username, new Date()
+        );
       },
       onCancel() {},
       okText: '确认收货',
@@ -98,6 +112,28 @@ export default class ReceiveDetailsPane extends React.Component {
       editable: false,
       inboundNo: this.props.inboundNo,
       inboundProduct: record,
+    });
+  }
+  handleSearch = (value) => {
+    this.setState({ searchValue: value });
+  }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
+  handleDownloadReceiving = () => {
+    const { inboundNo } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/export/receiving/details/${createFilename('receiving')}.xlsx?inboundNo=${inboundNo}`);
+  }
+  handleUploadPutaway = () => {
+    this.props.markReloadInbound();
+  }
+  handlePrdtVolChange = (inbPrdId, vol) => {
+    this.props.updateInbProductVol(inbPrdId, vol);
+  }
+  handleSuBarcodeScanReceive = () => {
+    this.props.viewSuBarcodeScanModal({
+      visible: true,
+      inboundNo: this.props.inboundNo,
     });
   }
   columns = [{
@@ -134,6 +170,7 @@ export default class ReceiveDetailsPane extends React.Component {
       } else if (record.received_qty > record.expect_qty) {
         return (<span className="text-error">{o}</span>);
       }
+      return null;
     },
   }, {
     title: '立方数',
@@ -146,7 +183,8 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'damage_level',
     width: 120,
     align: 'center',
-    render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
+    render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>
+      {CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
     title: '客户单号',
     dataIndex: 'po_no',
@@ -182,22 +220,6 @@ export default class ReceiveDetailsPane extends React.Component {
       return (<RowAction onClick={this.handleManualReceive} icon="check-circle-o" label="收货确认" row={record} />);
     },
   }]
-  handleSearch = (value) => {
-    this.setState({ searchValue: value });
-  }
-  handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [] });
-  }
-  handleDownloadReceiving = () => {
-    const { inboundNo } = this.props;
-    window.open(`${API_ROOTS.default}v1/cwm/export/receiving/details/${createFilename('receiving')}.xlsx?inboundNo=${inboundNo}`);
-  }
-  handleUploadPutaway = () => {
-    this.props.markReloadInbound();
-  }
-  handlePrdtVolChange = (inbPrdId, vol) => {
-    this.props.updateInbProductVol(inbPrdId, vol);
-  }
   render() {
     const { inboundHead, inboundProducts } = this.props;
     const dataSource = inboundProducts.filter((item) => {
@@ -227,7 +249,8 @@ export default class ReceiveDetailsPane extends React.Component {
         key: 'opposite-data',
         text: '反选全部项',
         onSelect: () => {
-          const fDataSource = dataSource.filter(item => !(item.trace_id.length >= 1) && !this.state.selectedRowKeys.find(item1 => item1 === item.id));
+          const fDataSource = dataSource.filter(item => !(item.trace_id.length >= 1) &&
+            !this.state.selectedRowKeys.find(item1 => item1 === item.id));
           const selectedRowKeys = fDataSource.map(item => item.id);
           this.setState({
             selectedRowKeys,
@@ -250,15 +273,21 @@ export default class ReceiveDetailsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             {inboundHead.rec_mode === 'manual' &&
             <Button onClick={this.handleBatchProductReceive}>
             批量收货确认
-            </Button>
-          }
+            </Button>}
           </DataPane.BulkActions>
           <DataPane.Actions>
+            {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
+            <Button onClick={this.handleSuBarcodeScanReceive}>
+            条码收货确认
+            </Button>}
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Tooltip title="导出收货明细" placement="bottom"><Button icon="download" onClick={this.handleDownloadReceiving}>导出</Button></Tooltip>
             }
@@ -283,6 +312,7 @@ export default class ReceiveDetailsPane extends React.Component {
         </DataPane.Toolbar>
         <ReceivingModal />
         <BatchReceivingModal inboundNo={this.props.inboundNo} data={this.state.selectedRows} />
+        <SuBarcodeScanModal />
       </DataPane>
     );
   }

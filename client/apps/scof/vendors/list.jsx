@@ -2,22 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Input, Row, Table, Tooltip, Layout } from 'antd';
+import { Breadcrumb, Button, Form, Row, Table, Tooltip, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import VendorModal from './modals/vendorModal';
 import { loadVendors, showVendorModal, deleteVendor } from 'common/reducers/sofVendors';
 import { PARTNER_ROLES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
+import SearchBox from 'client/components/SearchBox';
 import OverviewCard from './cards/overviewCard';
 import ResourcesCard from './cards/resourcesCard';
+import messages from './message.i18n';
+import VendorModal from './modals/vendorModal';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadVendors(state.account.tenantId));
@@ -43,14 +43,13 @@ export default class VendorList extends React.Component {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    vendors: PropTypes.array.isRequired,
+    vendors: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
     loadVendors: PropTypes.func.isRequired,
     deleteVendor: PropTypes.func.isRequired,
     showVendorModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
-    vendorModalVisible: false,
     vendor: {},
     currentPage: 1,
     collapsed: false,
@@ -97,7 +96,7 @@ export default class VendorList extends React.Component {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    let vendors = this.props.vendors;
+    let { vendors } = this.props;
     if (value) {
       vendors = this.props.vendors.filter((item) => {
         const reg = new RegExp(value);
@@ -117,7 +116,11 @@ export default class VendorList extends React.Component {
     }];
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
+        <Sider
+          width={320}
+          className="menu-sider"
+          key="sider"
+          trigger={null}
           collapsible
           collapsed={this.state.collapsed}
           collapsedWidth={0}
@@ -130,22 +133,33 @@ export default class VendorList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
-              <Tooltip placement="bottom" title="新增供应商">
+              <Tooltip placement="bottom" title="新增服务商">
                 <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showVendorModal('add')} />
               </Tooltip>
             </div>
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search
+              <SearchBox
                 placeholder={this.msg('searchPlaceholder')}
                 onSearch={this.handleSearch}
+                width="100%"
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.vendors} columns={columns} showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === vendor.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+              <Table
+                size="middle"
+                dataSource={this.state.vendors}
+                columns={columns}
+                showHeader={false}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 50,
+                  onChange: this.handlePageChange,
+                }}
+                rowClassName={record => (record.id === vendor.id ? 'table-row-selected' : '')}
+                rowKey="id"
+                loading={this.props.loading}
                 onRow={record => ({
                   onClick: () => { this.handleRowClick(record); },
                 })}
@@ -165,7 +179,8 @@ export default class VendorList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>}
             <ButtonToggle
-              iconOn="menu-fold" iconOff="menu-unfold"
+              iconOn="menu-fold"
+              iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />

@@ -5,14 +5,11 @@ import { Button, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
-import { format } from 'client/common/i18n/helpers';
 import { buildTipItems } from 'client/common/customs';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
 import DeclElementsModal from '../../common/modal/declElementsModal';
-import messages from '../../common/message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../../common/message.i18n';
 
 function ColumnInput(props) {
   const { record, field, decimal } = props;
@@ -33,7 +30,7 @@ function ColumnSelect(props) {
   const label = foundOpts.length === 1 ? `${foundOpts[0].value}|${foundOpts[0].text}` : '';
   return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
 }
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
@@ -204,11 +201,10 @@ export default class CusDeclBodyPane extends React.Component {
       }
     }
   }
-  getColumns() {
-    const {
-      units, countries, currencies, exemptions,
-    } = this.props;
-    const columns = [{
+  msg = formatMsg(this.props.intl)
+
+
+    columns = [{
       title: this.msg('itemNo'),
       dataIndex: 'g_no',
       fixed: 'left',
@@ -257,7 +253,7 @@ export default class CusDeclBodyPane extends React.Component {
         (<ColumnSelect
           field="g_unit"
           record={record}
-          options={units}
+          options={this.props.units}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
@@ -285,7 +281,7 @@ export default class CusDeclBodyPane extends React.Component {
         (<ColumnSelect
           field="trade_curr"
           record={record}
-          options={currencies}
+          options={this.props.currencies}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
@@ -322,7 +318,7 @@ export default class CusDeclBodyPane extends React.Component {
         (<ColumnSelect
           field="unit_1"
           record={record}
-          options={units}
+          options={this.props.units}
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('qty2')}</div>,
@@ -341,7 +337,7 @@ export default class CusDeclBodyPane extends React.Component {
         (<ColumnSelect
           field="unit_2"
           record={record}
-          options={units}
+          options={this.props.units}
         />),
     }, {
       title: this.msg('exemptionWay'),
@@ -350,7 +346,7 @@ export default class CusDeclBodyPane extends React.Component {
         (<ColumnSelect
           field="duty_mode"
           record={record}
-          options={exemptions}
+          options={this.props.exemptions}
         />),
     }, {
       title: this.msg('destCountry'),
@@ -359,7 +355,7 @@ export default class CusDeclBodyPane extends React.Component {
         (<ColumnSelect
           field="dest_country"
           record={record}
-          options={countries}
+          options={this.props.countries}
         />),
     }, {
       title: this.msg('origCountry'),
@@ -368,7 +364,7 @@ export default class CusDeclBodyPane extends React.Component {
         (<ColumnSelect
           field="orig_country"
           record={record}
-          options={countries}
+          options={this.props.countries}
         />),
     }, {
       title: this.msg('customs'),
@@ -380,8 +376,7 @@ export default class CusDeclBodyPane extends React.Component {
       dataIndex: 'inspection',
       render: col => buildTipItems(col, true),
     }];
-    return columns;
-  }
+
   handleShowDeclElementModal = (record) => {
     this.props.getElementByHscode(record.codes).then((result) => {
       if (!result.error) {
@@ -394,7 +389,6 @@ export default class CusDeclBodyPane extends React.Component {
       }
     });
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handlePageChange = (current) => {
     this.setState({
       pagination: {
@@ -410,11 +404,10 @@ export default class CusDeclBodyPane extends React.Component {
   }
   render() {
     const { totGrossWt, totWetWt, totTrade } = this.state;
-    const columns = this.getColumns();
     return (
       <DataPane
         fullscreen={this.props.fullscreen}
-        columns={columns}
+        columns={this.columns}
         bordered
         scrollOffset={312}
         dataSource={this.state.bodies}

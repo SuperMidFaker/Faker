@@ -8,8 +8,8 @@ import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import moment from 'moment';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { getSuppliers } from 'common/reducers/cwmReceive';
-import WhseSuppliersModal from '../../../settings/warehouse/modal/whseSuppliersModal';
 import { toggleSupplierModal } from 'common/reducers/cwmWarehouse';
+import WhseSuppliersModal from '../../../settings/warehouse/modal/whseSuppliersModal';
 import { formatMsg } from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -111,7 +111,7 @@ export default class HeadCard extends Component {
                 showSearch
                 showArrow
                 optionFilterProp="searchText"
-                disabled={!this.props.form.getFieldValue('owner_partner_id')}
+                disabled={this.props.form.getFieldValue('owner_partner_id') === null || this.props.form.getFieldValue('owner_partner_id') === undefined}
                 notFoundContent={<a onClick={() => this.props.toggleSupplierModal(true)}>+ 添加供货商</a>}
               >
                 {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}

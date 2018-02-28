@@ -10,7 +10,6 @@ import { FormLocalSearchSelect, FormRemoteSearchSelect } from './formSelect';
 import FormDatePicker from './formDatePicker';
 import messages from '../message.i18n';
 
-
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;

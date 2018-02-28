@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import pdfMake from 'pdfmake/build/pdfmake';
-// import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Collapse, Button, Breadcrumb, Table, Select, Icon, Form, message } from 'antd';
@@ -11,14 +9,13 @@ import { CMS_DOCU_TYPE } from 'common/constants';
 import InvoiceDetails from '../docus/invoiceDetails';
 import ContractDetails from '../docus/contractDetails';
 import PacklistDetails from '../docus/packlistDetails';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../docus/message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
-const Panel = Collapse.Panel;
+
+const { Panel } = Collapse;
 const { Content, Sider } = Layout;
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
+const { Option } = Select;
+const { OptGroup } = Select;
 const FormItem = Form.Item;
 
 @injectIntl
@@ -396,7 +393,7 @@ export default class DocuPane extends React.Component {
     };
     window.pdfMake.createPdf(docDefinition).open();
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const {
       invoices, contracts, packlists, invtemps, contemps, paktemps,
@@ -426,7 +423,8 @@ export default class DocuPane extends React.Component {
                     value={invTempId}
                   >
                     <OptGroup>
-                      {invtemps.map(data => (<Option key={data.id}
+                      {invtemps.map(data => (<Option
+                        key={data.id}
                         value={data.id}
                         search={`${data.id}${data.template_name}`}
                       ><Icon type="file-text" /> {data.template_name}
@@ -434,7 +432,8 @@ export default class DocuPane extends React.Component {
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle"
+                <Table
+                  size="middle"
                   dataSource={invoices}
                   columns={docuCols}
                   showHeader={false}
@@ -457,7 +456,8 @@ export default class DocuPane extends React.Component {
                     value={conTempId}
                   >
                     <OptGroup>
-                      {contemps.map(data => (<Option key={data.id}
+                      {contemps.map(data => (<Option
+                        key={data.id}
                         value={data.id}
                         search={`${data.id}${data.template_name}`}
                       ><Icon type="file-text" /> {data.template_name}
@@ -465,7 +465,8 @@ export default class DocuPane extends React.Component {
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle"
+                <Table
+                  size="middle"
                   dataSource={contracts}
                   columns={docuCols}
                   showHeader={false}
@@ -488,7 +489,8 @@ export default class DocuPane extends React.Component {
                     value={pakTempId}
                   >
                     <OptGroup>
-                      {paktemps.map(data => (<Option key={data.id}
+                      {paktemps.map(data => (<Option
+                        key={data.id}
                         value={data.id}
                         search={`${data.id}${data.template_name}`}
                       ><Icon type="file-text" /> {data.template_name}
@@ -496,7 +498,8 @@ export default class DocuPane extends React.Component {
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle"
+                <Table
+                  size="middle"
                   dataSource={packlists}
                   columns={docuCols}
                   showHeader={false}

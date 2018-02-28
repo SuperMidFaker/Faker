@@ -1,28 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Col, Icon, Menu, Row, Tabs, message } from 'antd';
+import { Col, Icon, Menu, Row, Tabs, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants';
 import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelegationDock';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
-import { format } from 'client/common/i18n/helpers';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
+import { Logixon } from 'client/components/FontIcon';
 import ShipmentPane from './tabpanes/shipmentPane';
-// import CustomsDeclPane from './tabpanes/customsDeclPane';
-// import CiqDeclPane from './tabpanes/ciqDeclPane';
 import DutyTaxPane from './tabpanes/dutyTaxPane';
 import ExpensePane from './tabpanes/expensePane';
 import FilesPane from './tabpanes/filesPane';
 import DelgDispModal from './delgDispModal';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { TabPane } = Tabs;
-
 
 @injectIntl
 @connect(
@@ -34,7 +30,7 @@ const { TabPane } = Tabs;
     tabKey: state.cmsDelegationDock.tabKey,
     previewKey: state.cmsDelegationDock.previewKey,
     delegateListFilter: state.cmsDelegation.delegateListFilter,
-    operators: state.crmCustomers.operators,
+    operators: state.sofCustomers.operators,
     partnerId: state.cmsDelegationDock.previewer.delgDispatch.send_partner_id,
   }),
   {
@@ -66,7 +62,7 @@ export default class DelegationDockPanel extends React.Component {
   componentWillUnmount() {
     this.props.hideDock();
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleTabChange = (tabKey) => {
     this.props.setPreviewTabkey(tabKey);
   }
@@ -103,7 +99,7 @@ export default class DelegationDockPanel extends React.Component {
     const { delgDispatch, delegation } = previewer;
     const clearType = delegation.i_e_type === 0 ? 'import' : 'export';
     const tabs = [];
-    tabs.push(<TabPane tab="SHIPMENT" key="shipment"><ShipmentPane /></TabPane>);
+    tabs.push(<TabPane tab="货运信息" key="shipment"><ShipmentPane /></TabPane>);
     /*
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
       if (delgDispatch.recv_services.indexOf('ciq') !== -1) {
@@ -126,14 +122,6 @@ export default class DelegationDockPanel extends React.Component {
       <Tabs activeKey={tabKey} onChange={this.handleTabChange}>
         {tabs}
       </Tabs>
-    );
-  }
-  renderTitle = () => {
-    const { previewer } = this.props;
-    const { delegation } = previewer;
-    const button = delegation.instance_uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
-    return (
-      <span>{button}<span>{delegation.delg_no}</span></span>
     );
   }
   renderExtra() {
@@ -171,13 +159,15 @@ export default class DelegationDockPanel extends React.Component {
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
   render() {
-    const { visible, previewLoading } = this.props;
+    const { visible, previewLoading, previewer } = this.props;
+    const { delegation } = previewer;
     return (
       <DockPanel
         size="large"
         visible={visible}
         onClose={this.props.hideDock}
-        title={this.renderTitle()}
+        title={delegation.delg_no}
+        uppperLevel={delegation.instance_uuid && <a onClick={this.goHomeDock}><Logixon type="dan" /></a>}
         extra={this.renderExtra()}
         loading={previewLoading}
         overlay={this.renderMenu()}

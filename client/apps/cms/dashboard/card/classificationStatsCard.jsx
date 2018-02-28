@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadCmsItemsStats } from 'common/reducers/cmsDashboard';
 import Strip from 'client/components/Strip';
 
-const formatMsg = format(messages);
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCmsItemsStats({ tenantId: state.account.tenantId }));
@@ -30,13 +29,14 @@ export default class ClassificationStatsCard extends Component {
     intl: intlShape.isRequired,
     itemsStats: PropTypes.object.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const {
       repoCount, classifiedItems, pendingItems, unclassifiedItems,
     } = this.props.itemsStats;
     return (
-      <Card title={this.msg('classificationStats')}
+      <Card
+        title={this.msg('classificationStats')}
         extra={<div style={{ width: 300, marginTop: 4 }}>
           <Strip parts={{ success: classifiedItems, warning: pendingItems, error: unclassifiedItems }} hints={['已归类', '归类待定', '未归类']} />
         </div>}

@@ -4,10 +4,13 @@ import PropTypes from 'prop-types';
 import { Popover, Button, Form, Input, Row, Col, Checkbox, Select, Icon } from 'antd';
 import { updateGoodsLicenceInfo, loadGoodsLicenceInfo } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_DANG_PACK_TYPE } from 'common/constants';
+import { intlShape, injectIntl } from 'react-intl';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
+@injectIntl
 @Form.create()
 @connect(
   () => ({}),
@@ -15,6 +18,7 @@ const { Option } = Select;
 )
 export default class GoodsLicencePopover extends Component {
   static propTypes = {
+    intl: intlShape.isRequired,
     goodsId: PropTypes.number.isRequired,
   }
   state = {
@@ -45,6 +49,7 @@ export default class GoodsLicencePopover extends Component {
       });
     }
   }
+  msg = formatMsg(this.props.intl)
   handleChange = (e) => {
     this.setState({
       dangerFlag: e.target.checked,
@@ -79,23 +84,23 @@ export default class GoodsLicencePopover extends Component {
     };
     const content = (
       <Form className="form-layout-compact">
-        <FormItem {...formItemLayout} colon={false} label="非危险化学品">
+        <FormItem {...formItemLayout} colon={false} label={this.msg('isDangerChemical')}>
           <Checkbox
             checked={dangerFlag}
             onChange={this.handleChange}
           />
         </FormItem>
-        <FormItem {...formItemLayout} colon={false} label="UN编码">
+        <FormItem {...formItemLayout} colon={false} label={this.msg('dangUnCode')}>
           {getFieldDecorator('dang_un_code', {
             initialValue: info.dang_un_code,
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} colon={false} label="危险货物名称">
+        <FormItem {...formItemLayout} colon={false} label={this.msg('dangName')}>
           {getFieldDecorator('dang_name', {
             initialValue: info.dang_name,
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} colon={false} label="危包类别">
+        <FormItem {...formItemLayout} colon={false} label={this.msg('dangPackType')}>
           {getFieldDecorator('dang_pack_type', {
             initialValue: info.dang_pack_type,
           })(<Select style={{ width: '100%' }}>
@@ -103,22 +108,22 @@ export default class GoodsLicencePopover extends Component {
               <Option key={type.value} value={type.value}>{type.text}</Option>)}
           </Select>)}
         </FormItem>
-        <FormItem {...formItemLayout} colon={false} label="危包规格">
+        <FormItem {...formItemLayout} colon={false} label={this.msg('dangPackSpec')}>
           {getFieldDecorator('dang_pack_spec', {
             initialValue: info.dang_pack_spec,
           })(<Input />)}
         </FormItem>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button onClick={this.handleCancel} style={{ marginRight: 8 }}>取消</Button>
-            <Button type="primary" onClick={this.handleOk}>确定</Button>
+            <Button onClick={this.handleCancel} style={{ marginRight: 8 }}>{this.msg('cancel')}</Button>
+            <Button type="primary" onClick={this.handleOk}>{this.msg('ensure')}</Button>
           </Col>
         </Row>
       </Form>
     );
     return (
       <Popover
-        title="危险货物信息"
+        title={this.msg('dangerInfo')}
         content={content}
         trigger="click"
         visible={this.state.visible}

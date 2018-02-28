@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Select, message, Table } from 'antd';
-import Expander from './expander';
 import { sendMutiDecl, closeBatchSendModal } from 'common/reducers/cmsCustomsDeclare';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { CMS_DECL_TYPE, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
+import Expander from './expander';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 
 function ColumnSelect(props) {
   const {
@@ -30,7 +28,7 @@ function ColumnSelect(props) {
   );
 }
 
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   record: PropTypes.object.isRequired,
   index: PropTypes.number,
   field: PropTypes.string.isRequired,
@@ -64,7 +62,6 @@ export default class BatchSendModal extends React.Component {
     reload: PropTypes.func,
   }
   state = {
-    easipassList: [],
     bodies: [],
     expandDatas: {},
   };
@@ -80,7 +77,7 @@ export default class BatchSendModal extends React.Component {
       this.setState({ bodies, expandDatas: nextProps.data });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.closeBatchSendModal();
   }

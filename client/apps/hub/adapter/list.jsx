@@ -1,24 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Icon, Layout, notification } from 'antd';
-import DataTable from 'client/components/DataTable';
+import { Avatar, Breadcrumb, Button, Icon, Layout, notification, List, Card } from 'antd';
+import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { loadPartners } from 'common/reducers/partner';
+import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/hubDataAdapter';
+import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
 import AdaptorModal from './modal/adaptorModal';
 import AdaptorDetailModal from './modal/adaptorDetailModal';
-import ExcelUploader from 'client/components/ExcelUploader';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
-import { loadPartners } from 'common/reducers/partner';
-import messages from './message.i18n';
-import { PARTNER_ROLES } from 'common/constants';
+import HubSiderMenu from '../menu';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
+const impModels = Object.values(LINE_FILE_ADAPTOR_MODELS);
 
 @injectIntl
 @connect(
@@ -28,33 +26,31 @@ const { Content } = Layout;
     tenantId: state.account.tenantId,
     parentTenantId: state.account.parentTenantId,
     code: state.account.code,
-    adaptors: state.saasLineFileAdaptor.adaptors,
+    adaptors: state.hubDataAdapter.adaptorList,
     customers: state.partner.partners,
+    pageSize: state.hubDataAdapter.adaptorList.pageSize,
+    current: state.hubDataAdapter.adaptorList.current,
+    filter: state.hubDataAdapter.filter,
   }),
   {
     showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor,
   }
 )
 
-export default class ApiAuthList extends React.Component {
+export default class LineFileAdapterList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    avatar: '',
-  }
   componentWillMount() {
-    this.props.loadAdaptors();
+    this.props.loadAdaptors('', '', this.props.pageSize, 1, this.props.filter);
     this.props.loadPartners({
       role: PARTNER_ROLES.CUS,
     });
   }
-  msg = (key, values) => formatMsg(this.props.intl, key, values);
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.context.router.goBack();
   }
@@ -67,86 +63,94 @@ export default class ApiAuthList extends React.Component {
       if (result.error) {
         notification.error({ description: result.error.message });
       } else {
-        this.props.loadAdaptors();
+        this.handleReload();
       }
     });
   }
   handleUploaded = () => {
-    this.props.loadAdaptors();
+    this.handleReload();
   }
-  columns = [{
-    title: this.msg('适配器名称'),
-    dataIndex: 'name',
-    width: 200,
-  }, {
-    title: this.msg('适配对象'),
-    width: 250,
-    dataIndex: 'biz_model',
-  }, {
-    title: this.msg('适用范围'),
-    dataIndex: 'owner_partner_id',
-    render: (o) => {
-      if (o) {
-        return this.props.customers.find(cus => cus.id === o).name;
-      } else {
-        return '全局';
-      }
-    },
-  }, {
-    title: this.msg('操作'),
-    width: 140,
-    render: (_, record) => {
-      let editDiv = null;
-      if (record.active) {
-        editDiv = (<PrivilegeCover module="clearance" feature="resources" action="edit">
-          <RowAction onClick={this.handleEditBtnClick} icon="edit" label="修改" row={record} />
-        </PrivilegeCover>);
-      } else {
-        editDiv = (<ExcelUploader endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
-          formData={{ data: JSON.stringify({ code: record.code }) }} onUploaded={this.handleUploaded}
-        >
-          <RowAction icon="cloud-upload-o" tooltip="上传只有两行示例内容的Excel文件" />
-        </ExcelUploader>);
-      }
-      return (<span>
-        {editDiv}
-        <PrivilegeCover module="clearance" feature="resources" action="delete">
-          <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={record} />
-        </PrivilegeCover>
-      </span>
-      );
-    },
-  }];
-
-  handleAddWarehouse = () => {
+  handleCreateAdapter = () => {
     this.props.showAdaptorModal();
   }
+  handleReload = () => {
+    const { pageSize, current, filter } = this.props;
+    this.props.loadAdaptors('', '', pageSize, current, filter);
+  }
+  handleSearch = (value) => {
+    const { pageSize, current } = this.props;
+    const filter = { ...this.props.filter, searchText: value };
+    this.props.loadAdaptors('', '', pageSize, current, filter);
+  }
   render() {
+    const { adaptors, filter } = this.props;
+    const pagination = {
+      hideOnSinglePage: true,
+      pageSize: Number(adaptors.pageSize),
+      current: Number(adaptors.current),
+      total: adaptors.total,
+      showTotal: total => `共 ${total} 条`,
+      onChange: (page, pageSize) => {
+        this.props.loadAdaptors('', '', pageSize, page, filter);
+      },
+    };
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="usb" /> 数据适配
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Actions>
-            <PageHint />
-            <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
-              {this.msg('create')}
-            </Button>
-          </PageHeader.Actions>
-        </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            columns={this.columns} dataSource={this.props.adaptors} rowKey="id"
-          />
-        </Content>
-        <AdaptorModal />
-        <AdaptorDetailModal />
-      </div>
+      <Layout>
+        <HubSiderMenu currentKey="adapter" />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Icon type="usb" /> {this.msg('adapter')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
+              <Button type="primary" icon="plus" onClick={this.handleCreateAdapter}>
+                {this.msg('create')}
+              </Button>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content layout-fixed-width" key="main">
+            <Card bodyStyle={{ padding: 0 }} >
+              <List
+                dataSource={this.props.adaptors.data}
+                header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
+                pagination={pagination}
+                renderItem={(item) => {
+                  let action = null;
+                  if (item.active) {
+                    action = <RowAction size="default" onClick={this.handleEditBtnClick} icon="setting" tooltip={this.msg('config')} row={item} />;
+                  } else {
+                    action = (<ExcelUploader
+                      endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
+                      formData={{ data: JSON.stringify({ code: item.code }) }}
+                      onUploaded={this.handleUploaded}
+                    >
+                      <RowAction size="default" icon="cloud-upload-o" tooltip="上传至少有两行示例内容的Excel文件" />
+                    </ExcelUploader>);
+                  }
+                  const bizModel = impModels.find(model => model.key === item.biz_model);
+                  return (
+                    <List.Item
+                      key={item.code}
+                      actions={[<span>{action}<RowAction danger size="default" icon="delete" confirm="确定删除?" onConfirm={this.handleDel} row={item} /></span>]}
+                    >
+                      <List.Item.Meta
+                        avatar={<Avatar shape="square" icon="file-excel" style={{ backgroundColor: '#3e7b51' }} />}
+                        title={item.name}
+                        description={bizModel && bizModel.name}
+                      />
+                    </List.Item>);
+                  }}
+              />
+            </Card>
+          </Content>
+          <AdaptorModal />
+          <AdaptorDetailModal reload={this.handleReload} />
+        </Layout>
+      </Layout>
     );
   }
 }

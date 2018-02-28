@@ -4,14 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import FeesTable from './feesTable';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import { formatMsg } from './message.i18n';
+import FeesTable from './feesTable';
 
-const formatMsg = format(messages);
+
 const { Header, Content } = Layout;
 
 function fetchData({ dispatch, state }) {
@@ -35,8 +34,6 @@ function fetchData({ dispatch, state }) {
 export default class QuoteTemplate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    loadQuoteModel: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -45,7 +42,7 @@ export default class QuoteTemplate extends Component {
     this.context.router.push({ pathname: to, query });
   }
 
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
 
   render() {
     return (
@@ -53,20 +50,15 @@ export default class QuoteTemplate extends Component {
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('billing')}
+              {this.msg('expense')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('quotation')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              报价模板
+              费用项设置
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <FeesTable action="model" editable />
-          </div>
+          <FeesTable action="model" editable />
         </Content>
       </Layout>
     );

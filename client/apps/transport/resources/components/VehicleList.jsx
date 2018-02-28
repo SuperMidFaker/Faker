@@ -4,7 +4,7 @@ import { Breadcrumb, Menu, Layout, Button, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/NavLink';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import VehicleModal from '../modals/vehicleModal';
@@ -24,14 +24,18 @@ export default function VehicleList(props) {
     return (
       <PrivilegeCover module="transport" feature="resources" action="edit">
         <span>
-          <a onClick={() => onEditVehicleBtnClick(record.vehicle_id)} disabled={
+          <a
+            onClick={() => onEditVehicleBtnClick(record.vehicle_id)}
+            disabled={
             record.status === '在途中'
           }
           >
             修改
           </a>
           <span className="ant-divider" />
-          <a onClick={() => onStopCarBtnClick(record.vehicle_id)} disabled={
+          <a
+            onClick={() => onStopCarBtnClick(record.vehicle_id)}
+            disabled={
             record.status === '在途中'
           }
           >
@@ -106,9 +110,8 @@ export default function VehicleList(props) {
       render: (_, record) => {
         if (record.status === '已停用') {
           return resumeCarOperaions(record);
-        } else {
-          return editAndStopCarOperations(record);
         }
+        return editAndStopCarOperations(record);
       },
     },
   ];
@@ -129,9 +132,7 @@ export default function VehicleList(props) {
           </Breadcrumb.Item>
         </Breadcrumb>
         <div className="page-header-tools">
-          <SearchBar placeholder="车牌号/司机" onInputSearch={props.onSearch}
-            value={props.searchText}
-          />
+          <SearchBox placeholder="车牌号/司机" onSearch={props.onSearch} />
         </div>
       </Header>
       <Content className="main-content" key="main">

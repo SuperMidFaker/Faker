@@ -7,13 +7,13 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { hideImportModal } from 'common/reducers/cmsTradeManual';
 import { loadPartners } from 'common/reducers/partner';
 import ExcelUploader from 'client/components/ExcelUploader';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
-const formatMsg = format(messages);
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { formatMsg } from '../message.i18n';
+
+
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadPartners({
@@ -44,7 +44,7 @@ export default class ImportModal extends Component {
     ownerTenantId: '',
     ownerName: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.hideImportModal();
     this.setState({
@@ -74,24 +74,31 @@ export default class ImportModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal maskClosable={false} visible={visible} title="客户选择" footer={<span>
-        <Button onClick={this.handleCancel} style={{ marginRight: 8 }}>取消</Button>
-        <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manual/import`}
-          formData={{
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        title={this.msg('customerChosen')}
+        footer={<span>
+          <Button onClick={this.handleCancel} style={{ marginRight: 8 }}>{this.msg('cancel')}</Button>
+          <ExcelUploader
+            endpoint={`${API_ROOTS.default}v1/cms/manual/import`}
+            formData={{
             data: JSON.stringify({
               loginId: this.props.loginId,
               ownerPartnerId,
               ownerTenantId,
               ownerName,
             }),
-          }} onUploaded={this.manualUploaded}
-        >
-          <Button type="primary" onClick={this.handleOk} disabled={!ownerPartnerId}>上传</Button>
-        </ExcelUploader>
-      </span>} onCancel={this.handleCancel}
+          }}
+            onUploaded={this.manualUploaded}
+          >
+            <Button type="primary" onClick={this.handleOk} disabled={!ownerPartnerId}>{this.msg('upload')}</Button>
+          </ExcelUploader>
+        </span>}
+        onCancel={this.handleCancel}
       >
         <Form>
-          <FormItem label="客户" {...formItemLayout}>
+          <FormItem label={this.msg('customers')} {...formItemLayout}>
             <Select onSelect={this.handleSelect} value={ownerPartnerId}>
               {customers.map(item => <Option value={item.id} key={item.id}>{item.name}</Option>)}
             </Select>

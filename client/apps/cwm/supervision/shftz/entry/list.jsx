@@ -3,30 +3,31 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
+import PageHeader from 'client/components/PageHeader';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import ModuleMenu from '../menu';
 import ReceivingDockPanel from '../../../receiving/dock/receivingDockPanel';
 import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
-import PageHeader from 'client/components/PageHeader';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -48,26 +49,32 @@ const RadioButton = Radio.Button;
 export default class SHFTZEntryList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    entryList: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
-    if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
-      status = 'all';
-    }
-    let ownerView = listFilter.ownerView;
+    const { listFilter } = this.props;
+    let { status } = listFilter;
+    let { ownerView } = listFilter;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
+    }
+    if (window.location.search.indexOf('dashboard') > 0 && window.localStorage && window.localStorage.bondedStatus) {
+      const bondedStatus = JSON.parse(window.localStorage.bondedStatus);
+      listFilter.startDate = bondedStatus.startDate;
+      listFilter.endDate = bondedStatus.endDate;
+      const newStatus = bondedStatus.status;
+      status = newStatus;
+    } else {
+      if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
+        status = 'all';
+      }
+      listFilter.startDate = '';
+      listFilter.endDate = '';
     }
     const filter = {
       ...listFilter, status, type: 'bonded', ownerView,
@@ -79,16 +86,29 @@ export default class SHFTZEntryList extends React.Component {
       this.handleEntryListLoad(1, nextprops.whse.code, this.props.listFilter);
     }
   }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
+    this.handleEntryListLoad(1, this.props.whse.code, filters);
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '进区凭单号/备案编号',
     width: 200,
     dataIndex: 'ftz_ent_no',
     fixed: 'left',
-    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_ftz_ent_no}</span>,
+    render: (o, record) => {
+      if (o) {
+        return (
+          <span className="text-emphasis">{o}</span>
+        );
+      }
+      return (
+        <span className="text-normal">{record.pre_entry_seq_no}</span>
+      );
+    },
   }, {
     title: '监管类型',
-    width: 80,
+    width: 100,
     dataIndex: 'ftz_ent_type',
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
@@ -106,12 +126,13 @@ export default class SHFTZEntryList extends React.Component {
       } else if (o === 2) {
         return (<Badge status="success" text="已进区" />);
       }
+      return '';
     },
   }, {
     title: '报关单号',
     dataIndex: 'pre_entry_seq_no',
     width: 180,
-    render: (preno, row) => row.cus_decl_no ? <span className="text-emphasis">{row.cus_decl_no}</span> : <span className="text-normal">{preno}</span>,
+    render: (preno, row) => (row.cus_decl_no ? <span className="text-emphasis">{row.cus_decl_no}</span> : <span className="text-normal">{preno}</span>),
   }, {
     title: '货主',
     width: 180,
@@ -139,6 +160,7 @@ export default class SHFTZEntryList extends React.Component {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
       }
+      return '';
     },
   }, {
     title: '备案更新时间',
@@ -148,6 +170,7 @@ export default class SHFTZEntryList extends React.Component {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
+      return '';
     },
   }, {
     title: '进区更新时间',
@@ -157,12 +180,14 @@ export default class SHFTZEntryList extends React.Component {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
+      return '';
     },
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o) &&
+     this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '创建时间',
     width: 120,
@@ -171,15 +196,16 @@ export default class SHFTZEntryList extends React.Component {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
+      return '';
     },
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status === 0 ?
+    render: (o, record) => (record.status === 0 ?
       <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
-      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />),
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -259,6 +285,10 @@ export default class SHFTZEntryList extends React.Component {
   }
   render() {
     const { entryList, listFilter, owners } = this.props;
+    let dateVal = [];
+    if (listFilter.endDate) {
+      dateVal = [moment(listFilter.startDate, 'YYYY-MM-DD'), moment(listFilter.endDate, 'YYYY-MM-DD')];
+    }
     this.dataSource.remotes = entryList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -267,17 +297,31 @@ export default class SHFTZEntryList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('entrySearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBox placeholder={this.msg('entrySearchPlaceholder')} onSearch={this.handleSearch} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
-        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
-        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+        {owners.map(data => (<Option
+          key={data.customs_code}
+          value={data.customs_code}
           search={`${data.partner_code}${data.name}`}
         >{data.name}
         </Option>))}
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     return (
       <Layout>

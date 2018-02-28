@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Layout, Button, Tabs } from 'antd';
-import { format } from 'client/common/i18n/helpers';
+
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { addPermit } from 'common/reducers/cmsPermit';
 import PermitHeadPane from './tabpane/permitHeadPane';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -38,7 +37,7 @@ export default class PermitAdd extends Component {
   state = {
     permit_file: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleFileChange = (file) => {
     this.setState({
       permit_file: file,
@@ -51,7 +50,7 @@ export default class PermitAdd extends Component {
         data.permit_file = this.state.permit_file;
         this.props.addPermit(data).then((result) => {
           if (!result.error) {
-            this.context.router.push('clearance/permit');
+            this.context.router.push('/clearance/permit');
           }
         });
       }

@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Switch, Select, Icon, Alert } from 'antd';
-import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
+import { setClientForm, loadFlowNodeData } from 'common/reducers/sofOrders';
 import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import { MdIcon } from 'client/components/FontIcon';
+import { Logixon } from 'client/components/FontIcon';
 import * as Location from 'client/util/location';
 import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
@@ -27,10 +27,10 @@ const quoteNoFieldWarning = {
 @injectIntl
 @connect(
   state => ({
-    formRequires: state.crmOrders.formRequires,
-    customerPartnerId: state.crmOrders.formData.customer_partner_id,
-    customerName: state.crmOrders.formData.customer_name,
-    serviceTeam: state.crmCustomers.operators,
+    formRequires: state.sofOrders.formRequires,
+    customerPartnerId: state.sofOrders.formData.customer_partner_id,
+    customerName: state.sofOrders.formData.customer_name,
+    serviceTeam: state.sofCustomers.operators,
     needLoadTariff: state.scofFlow.needLoadTariff,
   }),
   {
@@ -590,7 +590,7 @@ export default class TransportForm extends Component {
       );
     }
     return (
-      <Card title={<MdIcon type="truck" />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} >
+      <Card title={<Logixon type="truck" />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} >
         {
           !this.state.isLineIntariff && <Row>
             <Alert message={<div>发货/收货地址不在报价协议的线路里 <a onClick={this.handleShowAddLineModal}>添加到报价协议</a></div>} type="warning" showIcon />

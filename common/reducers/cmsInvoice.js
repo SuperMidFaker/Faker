@@ -17,6 +17,9 @@ const actionTypes = createActionTypes('@@welogix/cms/invoice/', [
   'LOAD_TEMPLATE_FILE', 'LOAD_TEMPLATE_FILE_SUCCEED', 'LOAD_TEMPLATE_FILE_FAIL',
   'SAVE_TEMPLATE_FILE', 'SAVE_TEMPLATE_FILE_SUCCEED', 'SAVE_TEMPLATE_FILE_FAIL',
   'DELETE_TEMPLATE_FILE', 'DELETE_TEMPLATE_FILE_SUCCEED', 'DELETE_TEMPLATE_FILE_FAIL',
+  'UPLOAD_IMG', 'UPLOAD_IMG_SUCCEED', 'UPLOAD_IMG_FAIL',
+  'REMOVE_IMG', 'REMOVE_IMG_SUCCEED', 'REMOVE_IMG_FAIL',
+  'LOAD_INV_IMGS', 'LOAD_INV_IMGS_SUCCEED', 'LOAD_INV_IMGS_FAIL',
 ]);
 
 const initialState = {
@@ -35,6 +38,8 @@ const initialState = {
   docuDatas: [],
   docuBody: [],
   tempFile: { doc_name: '', url: '' },
+  logo: '',
+  seal: '',
 };
 
 export default function reducer(state = initialState, action) {
@@ -64,6 +69,21 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function loadInvImgs(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INV_IMGS,
+        actionTypes.LOAD_INV_IMGS_SUCCEED,
+        actionTypes.LOAD_INV_IMGS_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/imgs/load',
+      method: 'get',
+      params,
+    },
+  };
 }
 
 export function loadInvTemplates(params) {
@@ -160,6 +180,36 @@ export function saveTempChange(change, id) {
       method: 'post',
       data: { change, id },
       payload: { change },
+    },
+  };
+}
+
+export function uploadImages(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPLOAD_IMG,
+        actionTypes.UPLOAD_IMG_SUCCEED,
+        actionTypes.UPLOAD_IMG_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/template/img/upload',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function removeImg(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_IMG,
+        actionTypes.REMOVE_IMG_SUCCEED,
+        actionTypes.REMOVE_IMG_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/template/img/remove',
+      method: 'post',
+      data,
     },
   };
 }

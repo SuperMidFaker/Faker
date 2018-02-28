@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import DataPane from 'client/components/DataPane';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
+import DataPane from 'client/components/DataPane';
+import { formatMsg } from '../message.i18n';
+
 
 @injectIntl
 @connect(state => ({
@@ -34,7 +33,7 @@ export default class PermitUsagePane extends React.Component {
 
     };
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   columns = [{
     key: 'sno',
     width: 45,
@@ -42,20 +41,20 @@ export default class PermitUsagePane extends React.Component {
     className: 'table-col-seq',
     render: (o, record, index) => index + 1,
   }, {
-    title: this.msg('型号系列'),
+    title: this.msg('model'),
     dataIndex: 'permit_model',
     width: 200,
   }, {
-    title: this.msg('关联商品货号'),
+    title: this.msg('relProductNos'),
     dataIndex: 'rel_product_nos',
   }, {
-    title: this.msg('使用次数'),
+    title: this.msg('usageCount'),
     dataIndex: 'usage_count',
   }, {
-    title: this.msg('使用时间'),
+    title: this.msg('usageDate'),
     dataIndex: 'usage_date',
   }, {
-    title: this.msg('使用对象'),
+    title: this.msg('usageObject'),
     dataIndex: 'pre_entry_seq_no',
   }];
 

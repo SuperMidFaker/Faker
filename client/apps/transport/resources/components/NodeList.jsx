@@ -5,7 +5,7 @@ import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
 import NavLink from 'client/components/NavLink';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import { nodeTypes } from '../utils/dataMapping';
@@ -129,9 +129,7 @@ export default function NodeList(props) {
           <RadioButton value={2}>中转地</RadioButton>
         </RadioGroup>
         <div className="page-header-tools">
-          <SearchBar placeholder="名称/地址/联系人/电话/邮箱" onInputSearch={props.onSearch}
-            value={props.searchText}
-          />
+          <SearchBox placeholder="名称/地址/联系人/电话/邮箱" onSearch={props.onSearch} />
         </div>
       </Header>
       <Content className="main-content" key="main">

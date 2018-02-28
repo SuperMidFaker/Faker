@@ -1,18 +1,104 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
-  openPlatform: {
-    id: 'hub.api.parent',
-    defaultMessage: '协作平台',
+  dev: {
+    id: 'hub.dev',
+    defaultMessage: '自建应用',
   },
-  apiDesc: {
-    id: 'hub.api.desc',
-    defaultMessage: '微骆的OpenAPI是为了给企业提供更强大的第三方自定义扩展，企业用户可以使用微骆平台提供的标准JSON接口进行二次开发，以实现数据交互，系统整合，功能整合，数据调用和数据获取等需求。',
+  searchTip: {
+    id: 'hub.dev.search.tip',
+    defaultMessage: '搜索自建应用',
   },
-  webhookDesc: {
-    id: 'hub.webhook.desc',
-    defaultMessage: '提醒目标Webhook方便企业将业务事件提醒发送至外部第三方系统，以实现更实时的数据交换，业务流程驱动。',
+  create: {
+    id: 'hub.dev.create',
+    defaultMessage: '新建应用',
+  },
+  delete: {
+    id: 'hub.dev.delete',
+    defaultMessage: '删除应用',
+  },
+  apiDocs: {
+    id: 'hub.dev.api.docs',
+    defaultMessage: 'API文档',
+  },
+  config: {
+    id: 'hub.dev.config',
+    defaultMessage: '配置',
+  },
+  save: {
+    id: 'hub.dev.save',
+    defaultMessage: '保存',
+  },
+  close: {
+    id: 'hub.dev.close',
+    defaultMessage: '关闭',
+  },
+  online: {
+    id: 'hub.dev.online',
+    defaultMessage: '上线',
+  },
+  offline: {
+    id: 'hub.dev.offline',
+    defaultMessage: '下线',
+  },
+  appLogo: {
+    id: 'hub.dev.app.logo',
+    defaultMessage: '图标',
+  },
+  appName: {
+    id: 'hub.dev.app.name',
+    defaultMessage: '名称',
+  },
+  appDesc: {
+    id: 'hub.dev.app.desc',
+    defaultMessage: '描述',
+  },
+  appId: {
+    id: 'hub.dev.app.id',
+    defaultMessage: 'Client ID',
+  },
+  appSecret: {
+    id: 'hub.dev.app.secret',
+    defaultMessage: 'Client Secret/密钥',
+  },
+  openapiConfig: {
+    id: 'hub.dev.app.openapi.config',
+    defaultMessage: 'OPENAPI参数配置',
+  },
+  callbackUrl: {
+    id: 'hub.dev.app.callback.url',
+    defaultMessage: '回调地址',
+  },
+  hookUrl: {
+    id: 'hub.dev.app.hook.url',
+    defaultMessage: '触发调用地址',
+  },
+  homeEntranceUrl: {
+    id: 'hub.dev.home.entrance.url',
+    defaultMessage: '「首页」应用入口地址',
+  },
+  sofEntranceUrl: {
+    id: 'hub.dev.sof.entrance.url',
+    defaultMessage: '「订单中心」导航入口地址',
+  },
+  cmsEntranceUrl: {
+    id: 'hub.dev.cms.entrance.url',
+    defaultMessage: '「清关管理」导航入口地址',
+  },
+  bwmEntranceUrl: {
+    id: 'hub.dev.bwm.entrance.url',
+    defaultMessage: '「保税仓储」导航入口地址',
+  },
+  tmsEntranceUrl: {
+    id: 'hub.dev.tms.entrance.url',
+    defaultMessage: '「运输管理」导航入口地址',
+  },
+  bssEntranceUrl: {
+    id: 'hub.dev.bss.entrance.url',
+    defaultMessage: '「结算中心」导航入口地址',
   },
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

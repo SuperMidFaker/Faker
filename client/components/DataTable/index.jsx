@@ -39,6 +39,8 @@ class DataSource {
 class DataTable extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-table',
+    fixedBody: true,
+    scrollOffset: 280,
   }
   static propTypes = {
     baseCls: PropTypes.string,
@@ -53,6 +55,7 @@ class DataTable extends React.Component {
     selectedRowKeys: PropTypes.arrayOf(PropTypes.string),
     handleDeselectRows: PropTypes.func,
     noBorder: PropTypes.bool,
+    fixedBody: PropTypes.bool,
     noSetting: PropTypes.bool,
     total: PropTypes.node,
   }
@@ -67,11 +70,10 @@ class DataTable extends React.Component {
     pathname: '',
   }
   componentWillMount() {
-    const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
     const { location } = this.context.router;
     let columnRule;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ scrollY: window.innerHeight - offset });
+      this.setState({ scrollY: window.innerHeight - this.props.scrollOffset });
       if (window.localStorage) {
         columnRule = JSON.parse(window.localStorage.getItem(location.pathname));
       }
@@ -251,7 +253,9 @@ class DataTable extends React.Component {
     this.setState({ popoverColumns });
   }
   render() {
-    const { baseCls, noBorder, noSetting } = this.props;
+    const {
+      baseCls, noBorder, fixedBody, noSetting,
+    } = this.props;
     let { dataSource } = this.props;
     let { pagination } = this.props;
     if (dataSource && !isLocalDataSource(dataSource)) {
@@ -260,6 +264,7 @@ class DataTable extends React.Component {
         ...pagination,
         ...dataSource.getPagination(dataSource.remotes, resolveCurrent),
       } : pagination;
+      pagination.size = 'small';
       dataSource = data;
     }
     let scrollProp;
@@ -289,9 +294,12 @@ class DataTable extends React.Component {
     const classes = classNames(baseCls, {
       [`${baseCls}-no-border`]: noBorder,
     });
+    const bodyClasses = classNames(`${baseCls}-body`, {
+      [`${baseCls}-body-fixed`]: fixedBody,
+    });
     return (
       <div className={classes}>
-        <div className={`${baseCls}-toolbar`}>
+        {this.props.toolbarActions && <div className={`${baseCls}-toolbar`}>
           {this.props.toolbarActions}
           <div className={`${baseCls}-toolbar-right`}>
             {this.props.total}
@@ -319,8 +327,8 @@ class DataTable extends React.Component {
             </div>
             {this.props.total}
           </div>}
-        </div>
-        <div className={`${baseCls}-body ${baseCls}-body-fixed`}>
+        </div>}
+        <div className={bodyClasses}>
           <Table
             {...this.props}
             dataSource={dataSource}

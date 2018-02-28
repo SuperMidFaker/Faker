@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Layout, Button, Tabs, message, notification } from 'antd';
-import { format } from 'client/common/i18n/helpers';
+
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { createTradeItem, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import ItemMasterPane from './tabpane/itemMasterPane';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -38,7 +37,7 @@ export default class TradeItemAdd extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {

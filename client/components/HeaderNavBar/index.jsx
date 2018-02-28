@@ -13,7 +13,7 @@ import { format } from 'client/common/i18n/helpers';
 import NotifyPopover from './notifyPopover';
 import HelpPopover from './helpPopover';
 import NavLink from '../NavLink';
-import { MdIcon } from '../FontIcon';
+import { Logixon } from '../FontIcon';
 import messages from '../message.i18n';
 import './index.less';
 
@@ -92,6 +92,9 @@ export default class HeaderNavBar extends React.Component {
       }
     });
   }
+  handleGoAccount = () => {
+    window.open('/my/profile');
+  }
   handleGoDepth2 = () => {
     this.context.router.go(-this.props.navTitle.stack);
   }
@@ -109,10 +112,10 @@ export default class HeaderNavBar extends React.Component {
       <div className="navbar-popover">
         <Menu>
           {!compact && <MenuItem>
-            <NavLink to="/my/profile">
+            <a role="presentation" onClick={this.handleGoAccount}>
               <Icon type="user" />
               <span>{formatMsg(intl, 'userAccount')}</span>
-            </NavLink>
+            </a>
           </MenuItem>}
           {!compact && <MenuItem>
             <a role="presentation" onClick={this.handleShowPreference}>
@@ -147,7 +150,7 @@ export default class HeaderNavBar extends React.Component {
     } else if (navTitle.depth === 2) {
       brandNav = (
         <NavLink to="/" className="navbar-toggle">
-          <MdIcon type="apps" />
+          <Logixon type="grid" />
         </NavLink>
       );
       navMenu = (
@@ -157,13 +160,13 @@ export default class HeaderNavBar extends React.Component {
       brandNav = [(
         <Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('back')} key="back" >
           <a role="presentation" className="navbar-anchor" key="back" onClick={this.handleGoBack}>
-            <MdIcon type="arrow-left" />
+            <Icon type="arrow-left" />
           </a>
         </Tooltip>)];
       if (navTitle.jumpOut && this.props.navTitle.stack > 1) {
         brandNav.push(<Tooltip placement="bottomLeft" arrowPointAtCenter mouseEnterDelay={2} title={this.msg('close')} key="close" >
           <a role="presentation" className="navbar-anchor" key="close" onClick={this.handleGoDepth2}>
-            <MdIcon type="close" />
+            <Icon type="close" />
           </a>
         </Tooltip>);
       }
@@ -183,7 +186,7 @@ export default class HeaderNavBar extends React.Component {
             </MenuItem>}
             {!compact && <MenuItem>
               <Popover content={helpcenterContent} placement="bottomRight" trigger="click">
-                <div><i className="icon s7-help1" /></div>
+                <div><Icon type="question-circle-o" /></div>
               </Popover>
             </MenuItem>}
             <MenuItem>
@@ -196,7 +199,6 @@ export default class HeaderNavBar extends React.Component {
               >
                 <div>
                   {avatar ? <Avatar src={avatar} /> : <Avatar >{name}</Avatar>}
-                  <i className="angle-down s7-angle-down" />
                 </div>
               </Popover>
             </MenuItem>

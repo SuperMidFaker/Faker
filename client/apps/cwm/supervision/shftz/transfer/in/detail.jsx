@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Col, Row, Tag, Tooltip, message, notification } from 'antd';
+import { Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import SearchBox from 'client/components/SearchBox';
 import DescriptionList from 'client/components/DescriptionList';
 import EditableCell from 'client/components/EditableCell';
 import DataPane from 'client/components/DataPane';
@@ -74,11 +75,16 @@ export default class SHFTZTransferInDetail extends Component {
     comparable: false,
     fullscreen: true,
   }
+  componentWillMount() {
+    this.setState({
+      entryRegs: this.props.entryRegs,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
       const comparable = nextProps.transfInReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      this.setState({ comparable });
+      this.setState({ comparable, entryRegs: nextProps.entryRegs });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -235,10 +241,22 @@ export default class SHFTZTransferInDetail extends Component {
         }
       });
   }
+  handleSearch = (searchText) => {
+    const entryRegs = JSON.parse(JSON.stringify(this.props.entryRegs));
+    if (searchText) {
+      entryRegs[0].details = entryRegs[0].details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
+        || reg.test(item.hscode) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ entryRegs });
+  }
   render() {
     const {
-      transfInReg, entryRegs, whse, submitting,
+      transfInReg, whse, submitting,
     } = this.props;
+    const { entryRegs } = this.state;
     if (entryRegs.length !== 1) {
       return null;
     }
@@ -364,16 +382,14 @@ export default class SHFTZTransferInDetail extends Component {
                 loading={this.state.loading}
               >
                 <DataPane.Toolbar>
-                  <Row type="flex">
-                    <Col className="col-flex-primary info-group-inline" />
-                    <Col className="col-flex-secondary">
-                      <Summary>
-                        <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
-                        <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
-                        <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
-                      </Summary>
-                    </Col>
-                  </Row>
+                  <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                  <DataPane.Extra>
+                    <Summary>
+                      <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+                      <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+                      <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+                    </Summary>
+                  </DataPane.Extra>
                 </DataPane.Toolbar>
               </DataPane>
             </MagicCard>

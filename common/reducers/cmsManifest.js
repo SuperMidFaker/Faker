@@ -62,6 +62,10 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'ADD_CMS_DECL_CERT', 'ADD_CMS_DECL_CERT_SUCCEED', 'ADD_CMS_DECL_CERT_FAIL',
   'ADD_CMS_DECL_DOCU', 'ADD_CMS_DECL_DOCU_SUCCEED', 'ADD_CMS_DECL_DOCU_FAIL',
   'LOAD_CMS_FILES', 'LOAD_CMS_FILES_SUCCEED', 'LOAD_CMS_FILES_FAIL',
+  'ADD_INVOICE', 'ADD_INVOICE_SUCCEED', 'ADD_INVOICE_FAIL',
+  'LOAD_INVOICES', 'LOAD_INVOICES_SUCCEED', 'LOAD_INVOICES_FAIL',
+  'DELETE_INVOICE', 'DELETE_INVOICE_SUCCEED', 'DELETE_INVOICE_FAIL',
+  'UPDATE_INVOICE', 'UPDATE_INVOICE_SUCCEED', 'UPDATE_INVOICE_FAIL',
 ]);
 
 const initialState = {
@@ -158,6 +162,7 @@ const initialState = {
     templateId: '',
     ietype: '',
   },
+  invoices: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -385,6 +390,8 @@ export default function reducer(state = initialState, action) {
         ...state,
         manifestRulesCloneModal: { ...state.manifestRulesCloneModal, visible: false },
       };
+    case actionTypes.LOAD_INVOICES_SUCCEED:
+      return { ...state, invoices: action.result.data };
     default:
       return state;
   }
@@ -770,7 +777,7 @@ export function closeRuleModel() {
 }
 
 export function submitBillMegeSplit({
-  billSeqNo, mergeOpt, splitOpt, sortOpt,
+  billSeqNo, mergeOpt, splitOpt, sortOpt, invGen
 }) {
   return {
     [CLIENT_API]: {
@@ -782,7 +789,7 @@ export function submitBillMegeSplit({
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
       data: {
-        billSeqNo, mergeOpt, splitOpt, sortOpt,
+        billSeqNo, mergeOpt, splitOpt, sortOpt, invGen
       },
     },
   };
@@ -1271,6 +1278,66 @@ export function loadCmsFiles(delgNo) {
       endpoint: 'v1/cms/files/load',
       method: 'get',
       params: { delgNo },
+    },
+  };
+}
+
+export function addInvoice(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_INVOICE,
+        actionTypes.ADD_INVOICE_SUCCEED,
+        actionTypes.ADD_INVOICE_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/invoice/add',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadInvoices(delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INVOICES,
+        actionTypes.LOAD_INVOICES_SUCCEED,
+        actionTypes.LOAD_INVOICES_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/invoices/load',
+      method: 'get',
+      params: { delgNo },
+    },
+  };
+}
+
+export function deleteInvoice(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_INVOICE,
+        actionTypes.DELETE_INVOICE_SUCCEED,
+        actionTypes.DELETE_INVOICE_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/invoice/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function updateInvoice(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INVOICE,
+        actionTypes.UPDATE_INVOICE_SUCCEED,
+        actionTypes.UPDATE_INVOICE_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/invoice/update',
+      method: 'post',
+      data,
     },
   };
 }

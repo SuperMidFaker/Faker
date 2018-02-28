@@ -41,6 +41,10 @@ export default defineMessages({
     id: 'tms.module.settings',
     defaultMessage: '设置',
   },
+  devApps: {
+    id: 'tms.module.dev.apps',
+    defaultMessage: '更多应用',
+  },
   settingsResources: {
     id: 'tms.module.settings.resources',
     defaultMessage: '资源设置',

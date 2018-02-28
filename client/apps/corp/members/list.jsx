@@ -1,26 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Icon, Menu, Input, Popover, message, Layout } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Button, Card, Icon, Menu, Input, Popover, message, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { MdIcon } from 'client/components/FontIcon';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';
+import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal, toggleUserModal } from 'common/reducers/personnel';
 import NavLink from 'client/components/NavLink';
+import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import globalMessages from 'client/common/root.i18n';
-import containerMessages from 'client/apps/message.i18n';
-import AddMemberModal from './addMemberModal';
-import { formatMsg } from './message.i18n';
+import CorpSiderMenu from '../menu';
+import AddMemberModal from './modal/addMemberModal';
+import AddUser from './modal/addUserModal';
+import { formatMsg } from '../message.i18n';
 
-const formatGlobalMsg = format(globalMessages);
-const formatContainerMsg = format(containerMessages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const { Search } = Input;
 const { SubMenu } = Menu;
 
@@ -48,7 +46,13 @@ function fetchData({ state, dispatch }) {
     loading: state.personnel.loading,
   }),
   {
-    delMember, switchStatus, loadDepartments, createDepartment, loadMembers, openMemberModal,
+    delMember,
+    switchStatus,
+    loadDepartments,
+    createDepartment,
+    loadMembers,
+    openMemberModal,
+    toggleUserModal,
   }
 )
 @withPrivilege({ module: 'corp', feature: 'personnel' })
@@ -58,7 +62,10 @@ export default class MemberDepartmentView extends React.Component {
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.shape({ totalCount: PropTypes.number.isRequired }).isRequired,
     filters: PropTypes.shape({ dept_id: PropTypes.number, name: PropTypes.string }).isRequired,
-    departments: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired })).isRequired,
+    departments: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    })).isRequired,
     tenantId: PropTypes.number.isRequired,
     loadMembers: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
@@ -76,7 +83,7 @@ export default class MemberDepartmentView extends React.Component {
   columns = [{
     title: this.msg('fullName'),
     dataIndex: 'name',
-    width: 80,
+    width: 100,
     sorter: true,
     render: (o, record) => this.renderColumnText(record.status, record.name),
   }, {
@@ -88,90 +95,76 @@ export default class MemberDepartmentView extends React.Component {
     ),
   }, {
     title: this.msg('phone'),
-    width: 100,
+    width: 150,
     render: (o, record) => this.renderColumnText(record.status, record.phone),
   }, {
     title: this.msg('email'),
     dataIndex: 'email',
-    width: 150,
+    width: 200,
     sorter: true,
     render: (o, record) => this.renderColumnText(record.status, record.email),
   }, {
     title: this.msg('department'),
-    width: 200,
     dataIndex: 'department',
     render: (dept, record) => this.renderColumnText(record.status, dept),
   }, {
     title: this.msg('role'),
     sorter: true,
     dataIndex: 'role_name',
-    width: 100,
+    width: 150,
     filters: [{
-      text: formatContainerMsg(this.props.intl, 'tenantManager'),
+      text: this.msg('tenantManager'),
       value: PRESET_TENANT_ROLE.manager.name,
     }, {
-      text: formatContainerMsg(this.props.intl, 'tenantMember'),
+      text: this.msg('tenantMember'),
       value: PRESET_TENANT_ROLE.member.name,
     }],
     render: (role, record) => this.renderColumnText(
       record.status,
       PRESET_ROLE_NAME_KEYS[role] ?
-        formatContainerMsg(this.props.intl, PRESET_ROLE_NAME_KEYS[role].text)
+        this.msg(PRESET_ROLE_NAME_KEYS[role].text)
         : role,
     ),
   }, {
-    title: formatContainerMsg(this.props.intl, 'statusColumn'),
-    width: 50,
+    title: this.msg('status'),
+    dataIndex: 'status',
+    width: 80,
     render: (o, record) => {
       let style = { color: '#51C23A' };
       let { text } = ACCOUNT_STATUS.normal;
       if (record.status === ACCOUNT_STATUS.blocked.id) {
         style = { color: '#CCC' };
-        text = ACCOUNT_STATUS.blocked.text;
+        text = ACCOUNT_STATUS.blocked.text; // eslint-disable-line
       }
-      return <span style={style}>{formatContainerMsg(this.props.intl, text)}</span>;
+      return <span style={style}>{this.msg(text)}</span>;
     },
   }, {
-    title: formatContainerMsg(this.props.intl, 'opColumn'),
-    width: 80,
+    title: this.msg('opCol'),
+    key: 'OP_COL',
+    width: 100,
+    fixed: 'right',
     render: (text, record, index) => {
       if (record.role === PRESET_TENANT_ROLE.owner.name) {
         return (
-          <span>
-            <PrivilegeCover module="corp" feature="personnel" action="edit">
-              <NavLink to={`/corp/members/edit/${record.key}`}>
-                {formatGlobalMsg(this.props.intl, 'modify')}
-              </NavLink>
-            </PrivilegeCover>
-          </span>
+          <PrivilegeCover module="corp" feature="personnel" action="edit">
+            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={() => this.toggleUserModal(record.key)} />
+          </PrivilegeCover>
         );
       } else if (record.status === ACCOUNT_STATUS.normal.id) {
         return (
           <PrivilegeCover module="corp" feature="personnel" action="edit">
-            <span>
-              <NavLink to={`/corp/members/edit/${record.key}`}>
-                {formatGlobalMsg(this.props.intl, 'modify')}
-              </NavLink>
-              <span className="ant-divider" />
-              <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(this.props.intl, 'disableOp')}
-              </a>
-            </span>
+            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={() => this.toggleUserModal(record.key)} />
+            <RowAction icon="pause-circle-o" tooltip={this.msg('disable')} onClick={() => this.handleStatusSwitch(record, index)} />
           </PrivilegeCover>
         );
       } else if (record.status === ACCOUNT_STATUS.blocked.id) {
         return (
           <span>
-            <PrivilegeCover module="corp" feature="personnel" action="delete">
-              <a role="presentation" onClick={() => this.handlePersonnelDel(record)}>
-                {formatGlobalMsg(this.props.intl, 'delete')}
-              </a>
-            </PrivilegeCover>
-            <span className="ant-divider" />
             <PrivilegeCover module="corp" feature="personnel" action="edit">
-              <a role="presentation" onClick={() => this.handleStatusSwitch(record, index)}>
-                {formatContainerMsg(this.props.intl, 'enableOp')}
-              </a>
+              <RowAction icon="play-circle-o" tooltip={this.msg('enable')} onClick={() => this.handleStatusSwitch(record, index)} />
+            </PrivilegeCover>
+            <PrivilegeCover module="corp" feature="personnel" action="delete">
+              <RowAction danger icon="delete" tooltip={this.msg('delete')} confirm="确认删除？" onConfirm={() => this.handlePersonnelDel(record)} />
             </PrivilegeCover>
           </span>
         );
@@ -179,7 +172,7 @@ export default class MemberDepartmentView extends React.Component {
       return <span />;
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadMembers(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -199,7 +192,7 @@ export default class MemberDepartmentView extends React.Component {
         sortOrder: sorter.order,
         filters: { ...this.props.filters },
       };
-      Object.keys(filters).forEach((key) => { params.filters[key] = filters[key][0]; });
+      Object.keys(filters).forEach((key) => { params.filters[key] = filters[key][0]; }); // eslint-disable-line
       params.filters = JSON.stringify(params.filters);
       return params;
     },
@@ -274,10 +267,10 @@ export default class MemberDepartmentView extends React.Component {
   }
   handleMenuClick = (menukey) => {
     const filters = { ...this.props.filters };
-    const key = menukey.key;
+    const { key } = menukey;
     if (key === 'members') {
       filters.dept_id = undefined;
-    } else if (!isNaN(key)) {
+    } else if (!isNaN(key)) { // eslint-disable-line
       filters.dept_id = parseInt(key, 10);
     }
     this.props.loadMembers({
@@ -291,7 +284,8 @@ export default class MemberDepartmentView extends React.Component {
     this.props.openMemberModal();
   }
   handleDepartMembersLoad = () => {
-    if (this.props.filters.dept_id && this.props.personnelist.data.length < this.props.personnelist.pageSize) {
+    if (this.props.filters.dept_id &&
+      (this.props.personnelist.data.length < this.props.personnelist.pageSize)) {
       this.props.loadMembers({
         tenantId: this.props.tenantId,
         pageSize: this.props.personnelist.pageSize,
@@ -300,7 +294,18 @@ export default class MemberDepartmentView extends React.Component {
       });
     }
   }
-  renderColumnText(status, text) {
+  handleReloadAllMembers = () => {
+    this.props.loadMembers({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.personnelist.pageSize,
+      current: 1,
+      filters: JSON.stringify(this.props.filters),
+    });
+  }
+  toggleUserModal = (key) => {
+    this.props.toggleUserModal(true, key);
+  }
+  renderColumnText(status, text) { // eslint-disable-line
     let style = {};
     if (status === ACCOUNT_STATUS.blocked.id) {
       style = { color: '#CCC' };
@@ -314,7 +319,7 @@ export default class MemberDepartmentView extends React.Component {
     this.dataSource.remotes = personnelist;
     const selectMenuKeys = [];
     let contentHeadAction;
-    if (!isNaN(filters.dept_id)) {
+    if (!isNaN(filters.dept_id)) { // eslint-disable-line
       selectMenuKeys.push(filters.dept_id.toString());
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
@@ -326,7 +331,7 @@ export default class MemberDepartmentView extends React.Component {
       selectMenuKeys.push('members');
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
-          <Button type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="user-add">
+          <Button type="primary" onClick={() => this.toggleUserModal()} icon="plus-circle-o">
             {this.msg('newUser')}
           </Button>
         </PrivilegeCover>);
@@ -337,58 +342,68 @@ export default class MemberDepartmentView extends React.Component {
         <Button type="primary" style={{ width: '100%', marginTop: 10 }} onClick={this.handleDeptCreate}>创建</Button>
       </div>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('members')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <Layout className="main-wrapper">
-              <Sider className="nav-sider">
-                <div className="nav-sider-head">
-                  <Search placeholder="搜索用户" onSearch={this.handleSearch} />
-                </div>
-                <Menu defaultOpenKeys={['deptMenu']}
-                  mode="inline"
-                  selectedKeys={selectMenuKeys}
-                  onClick={this.handleMenuClick}
-                >
-                  <Menu.Item key="members"><NavLink to="/corp/members"><Icon type="team" />所有成员</NavLink></Menu.Item>
-                  <SubMenu key="deptMenu" title={<span><MdIcon mode="fontello" type="sitemap" />部门</span>}>
-                    {
-                      departments.map(br => <Menu.Item key={br.id}>{br.name}</Menu.Item>)
-                    }
-                  </SubMenu>
-                </Menu>
-                <div className="nav-sider-footer">
-                  <Popover content={departmentPopover}
-                    placement="bottom"
-                    title="创建部门"
-                    trigger="click"
-                    visible={this.state.deptPopVisible}
-                    onVisibleChange={this.handleDeptPopVisibleChange}
+      <Layout>
+        <CorpSiderMenu currentKey="members" />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('members')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+          </PageHeader>
+          <Content className="page-content" key="main">
+            <Card bodyStyle={{ padding: 0 }}>
+              <Layout className="main-wrapper">
+                <Sider className="nav-sider">
+                  <div className="nav-sider-head">
+                    <Search placeholder="搜索用户" onSearch={this.handleSearch} />
+                  </div>
+                  <Menu
+                    defaultOpenKeys={['deptMenu']}
+                    mode="inline"
+                    selectedKeys={selectMenuKeys}
+                    onClick={this.handleMenuClick}
                   >
-                    <Button type="dashed" icon="plus-circle">创建部门</Button>
-                  </Popover>
-                </div>
-              </Sider>
-              <Content className="nav-content">
-                <div className="nav-content-head">
-                  {contentHeadAction}
-                </div>
-                <div className="panel-body table-panel table-fixed-layout">
-                  <Table rowSelection={this.rowSelection} columns={this.columns} loading={loading} dataSource={this.dataSource} useFixedHeader />
-                </div>
-              </Content>
-            </Layout>
-          </div>
-          <AddMemberModal reload={this.handleDepartMembersLoad} />
-        </Content>
-      </QueueAnim>
+                    <Menu.Item key="members"><NavLink to="/corp/members"><Icon type="team" />所有成员</NavLink></Menu.Item>
+                    <SubMenu key="deptMenu" title={<span><MdIcon mode="fontello" type="sitemap" />部门</span>}>
+                      {
+                        departments.map(br => <Menu.Item key={br.id}>{br.name}</Menu.Item>)
+                      }
+                    </SubMenu>
+                  </Menu>
+                  <div className="nav-sider-footer">
+                    <Popover
+                      content={departmentPopover}
+                      placement="bottom"
+                      title="创建部门"
+                      trigger="click"
+                      visible={this.state.deptPopVisible}
+                      onVisibleChange={this.handleDeptPopVisibleChange}
+                    >
+                      <Button type="dashed" icon="plus-circle">创建部门</Button>
+                    </Popover>
+                  </div>
+                </Sider>
+                <Content className="nav-content">
+                  <DataTable
+                    noBorder
+                    toolbarActions={contentHeadAction}
+                    rowSelection={this.rowSelection}
+                    columns={this.columns}
+                    loading={loading}
+                    dataSource={this.dataSource}
+                  />
+                </Content>
+              </Layout>
+            </Card>
+            <AddMemberModal reload={this.handleDepartMembersLoad} />
+            <AddUser reload={this.handleReloadAllMembers} />
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

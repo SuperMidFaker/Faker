@@ -6,53 +6,29 @@ const messages = defineMessages({
     id: 'bss.module.dashboard',
     defaultMessage: '工作台',
   },
-  fee: {
-    id: 'bss.module.fee',
-    defaultMessage: '收支费用',
+  audit: {
+    id: 'bss.module.audit',
+    defaultMessage: '费用审核',
   },
-  feeSummary: {
-    id: 'bss.module.fee.summary',
-    defaultMessage: '费用汇总',
+  bills: {
+    id: 'bss.module.bills',
+    defaultMessage: '账单管理',
   },
-  feeStatement: {
-    id: 'bss.module.fee.statement',
-    defaultMessage: '费用明细',
-  },
-  revenue: {
-    id: 'bss.module.revenue',
-    defaultMessage: '营业收入',
-  },
-  customerBill: {
-    id: 'bss.module.revenue.customer.bill',
+  customerBills: {
+    id: 'bss.module.bills.customer',
     defaultMessage: '客户账单',
   },
-  receivableInvoice: {
-    id: 'bss.module.revenue.invoice',
-    defaultMessage: '开票管理',
-  },
-  paymentReceived: {
-    id: 'bss.module.revenue.payment',
-    defaultMessage: '收款管理',
-  },
-  cost: {
-    id: 'bss.module.cost',
-    defaultMessage: '成本支出',
-  },
-  vendorBill: {
-    id: 'bss.module.cost.vendor.bill',
-    defaultMessage: '供应商账单',
-  },
-  payableInvoice: {
-    id: 'bss.module.cost.invoice',
-    defaultMessage: '发票管理',
-  },
-  paymentMade: {
-    id: 'bss.module.cost.payment',
-    defaultMessage: '付款管理',
+  vendorBills: {
+    id: 'bss.module.bills.vendor',
+    defaultMessage: '服务商账单',
   },
   settings: {
     id: 'bss.module.settings',
     defaultMessage: '设置',
+  },
+  devApps: {
+    id: 'bss.module.dev.apps',
+    defaultMessage: '更多应用',
   },
 });
 

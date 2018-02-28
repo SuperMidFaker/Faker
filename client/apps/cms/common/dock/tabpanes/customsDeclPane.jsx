@@ -6,7 +6,7 @@ import { Spin, Button, Card, Col, Icon, Progress, Row, List, message } from 'ant
 import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelegationDock';
-import { loadOperators } from 'common/reducers/crmCustomers';
+import { loadOperators } from 'common/reducers/sofCustomers';
 import MemberSelect from 'client/components/MemberSelect';
 import InfoItem from 'client/components/InfoItem';
 import CusDeclCard from '../card/cusDeclCard';

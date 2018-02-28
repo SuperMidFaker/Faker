@@ -6,6 +6,7 @@ require('babel-core/register');
 console.time('starting web server');
 
 const argv = require('./util/minimist')(process.argv.slice(2));
+
 if (!isNaN(argv.port)) {
   process.env.PORT = parseInt(argv.port, 10);
 }
@@ -13,6 +14,7 @@ if (!isNaN(argv.port)) {
 // https://github.com/visionmedia/superagent/issues/205
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 const config = require('../config');
+
 const rootDir = config.get('project_root');
 const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 
@@ -29,6 +31,7 @@ global.API_ROOTS = {
   self: `http://localhost:${__PORT__}/`,
 };
 const isomorphic = require('../webpack/isomorphic');
+
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(isomorphic)
   .server(rootDir, () => {
     require('./web');

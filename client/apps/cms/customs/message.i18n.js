@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
-export default defineMessages({
+const messages = defineMessages({
   customsDecl: {
     id: 'cms.customs.decl',
     defaultMessage: '报关申报',
@@ -100,10 +101,6 @@ export default defineMessages({
   successfulOperation: {
     id: 'cms.customs.decl.modal.successful.operation',
     defaultMessage: '操作成功',
-  },
-  save: {
-    id: 'cms.customs.decl.save',
-    defaultMessage: '保存',
   },
   processDate: {
     id: 'cms.customs.decl.process.date',
@@ -333,4 +330,15 @@ export default defineMessages({
     id: 'cms.customs.decl.op.view.detail',
     defaultMessage: '详情',
   },
+  save: {
+    id: 'cms.customs.decl.save',
+    defaultMessage: '保存',
+  },
+  estimate: {
+    id: 'cms.customs.decl.estimate',
+    defaultMessage: '估算',
+  },
 });
+
+export default messages;
+export const formatMsg = formati18n(messages);

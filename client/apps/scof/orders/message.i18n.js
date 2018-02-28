@@ -1,13 +1,22 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   shipmentOrders: {
     id: 'scof.orders',
-    defaultMessage: '订单',
+    defaultMessage: '订单管理',
+  },
+  orderImport: {
+    id: 'scof.orders.import.order',
+    defaultMessage: '订单导入',
   },
   createOrder: {
     id: 'scof.orders.create.order',
     defaultMessage: '新建订单',
+  },
+  editOrder: {
+    id: 'scof.orders.edit.order',
+    defaultMessage: '编辑订单',
   },
   startOrder: {
     id: 'scof.orders.start',
@@ -92,6 +101,10 @@ const messages = defineMessages({
   atreceived: {
     id: 'scof.orders.at.received',
     defaultMessage: 'Received',
+  },
+  allOperators: {
+    id: 'sof.orders.allOperators',
+    defaultMessage: '全部人员',
   },
   opColumn: {
     id: 'scof.orders.column.operation',
@@ -263,7 +276,7 @@ const messages = defineMessages({
   },
   personResponsible: {
     id: 'scof.orders.responsible.person',
-    defaultMessage: '执行者',
+    defaultMessage: '跟单人员',
   },
   addMore: {
     id: 'scof.orders.delg.addMore',
@@ -665,6 +678,10 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.so.finished',
     defaultMessage: '发货',
   },
+  soDecl: {
+    id: 'scof.orders.progress.action.so.decl',
+    defaultMessage: '保税清关',
+  },
   regFinish: {
     id: 'scof.orders.progress.action.so.reg.finished',
     defaultMessage: '备案',
@@ -677,10 +694,11 @@ const messages = defineMessages({
     id: 'scof.orders.dock.tab.flow',
     defaultMessage: '流程节点',
   },
-  tabBilling: {
-    id: 'scof.orders.dock.tab.billing',
-    defaultMessage: '计费结算',
+  tabAttachment: {
+    id: 'scof.orders.dock.tab.attachment',
+    defaultMessage: '附件',
   },
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

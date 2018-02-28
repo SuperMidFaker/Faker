@@ -7,10 +7,8 @@ import { Alert, Modal, Form, Radio, Select, message } from 'antd';
 import DescriptionList from 'client/components/DescriptionList';
 import { showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl } from 'common/reducers/cmsCustomsDeclare';
 import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
@@ -73,6 +71,7 @@ export default class SendDeclMsgModal extends React.Component {
       });
     }
   }
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.showSendDeclModal({ visible: false });
   }
@@ -100,7 +99,6 @@ export default class SendDeclMsgModal extends React.Component {
       }
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const {
       visible, form: { getFieldDecorator, getFieldValue }, ietype, defaultDecl,

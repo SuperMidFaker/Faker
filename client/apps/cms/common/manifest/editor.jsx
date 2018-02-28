@@ -8,26 +8,24 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead } from 'common/reducers/cmsManifest';
-import { loadDocuDatas } from 'common/reducers/cmsInvoice';
+import { loadDocuDatas, loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { CMS_DECL_STATUS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
 import ContainersPane from './tabpane/containersPane';
-import InvoicesPane from './tabpane/invoicesPane';
 import GenerateDeclModal from './modals/generateDeclModal';
 import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
-import messages from './message.i18n';
+import { formatMsg } from '../message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import DeclTreePopover from '../popover/declTreePopover';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -66,6 +64,7 @@ const { confirm } = Modal;
     loadBillMeta,
     showPreviewer,
     loadDocuDatas,
+    loadInvTemplates,
     resetBillHead,
   }
 )
@@ -117,7 +116,7 @@ export default class ManifestEditor extends React.Component {
       });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -137,7 +136,7 @@ export default class ManifestEditor extends React.Component {
     });
   }
   generateEntry = () => {
-    const { billHead } = this.props;
+    const { billHead, tenantId, billMeta } = this.props;
     this.setState({ generating: true });
     this.props.validateBillDatas({
       billSeqNo: this.props.billHead.bill_seq_no,
@@ -169,6 +168,11 @@ export default class ManifestEditor extends React.Component {
         }
       } else {
         this.setState({ generating: false });
+        this.props.loadInvTemplates({
+          tenantId,
+          docuType: [0, 1, 2],
+          partnerId: billMeta.customerId,
+        });
         this.props.openMergeSplitModal();
       }
     });
@@ -295,6 +299,12 @@ export default class ManifestEditor extends React.Component {
             sort_customs: formData.sort_customs,
             sort_dectotal: formData.sort_dectotal,
             sort_hscode: formData.sort_hscode,
+            gen_invoice: formData.gen_invoice,
+            invoice_template_id: formData.invoice_template_id,
+            gen_packing_list: formData.gen_packing_list,
+            packing_list_template_id: formData.packing_list_template_id,
+            gen_contract: formData.gen_contract,
+            contract_template_id: formData.contract_template_id,
           };
           this.props.saveBillRules({ rules, billSeqNo: this.props.billHead.bill_seq_no });
           message.success('制单规则加载成功');
@@ -430,7 +440,7 @@ export default class ManifestEditor extends React.Component {
       filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
     const tabs = [];
-    tabs.push(<TabPane tab="申报清单表头" key="header">
+    tabs.push(<TabPane tab="报关清单表头" key="header">
       <Spin spinning={this.props.templateValLoading}>
         <ManifestHeadPane
           ietype={ietype}
@@ -441,7 +451,7 @@ export default class ManifestEditor extends React.Component {
         />
       </Spin>
     </TabPane>);
-    tabs.push(<TabPane tab="申报清单明细" key="body">
+    tabs.push(<TabPane tab="报关清单明细" key="body">
       <ManifestBodyPane
         ietype={ietype}
         readonly={!editable}
@@ -458,9 +468,6 @@ export default class ManifestEditor extends React.Component {
     }
     tabs.push(<TabPane tab="集装箱" key="containers">
       <ContainersPane fullscreen={this.state.fullscreen} />
-    </TabPane>);
-    tabs.push(<TabPane tab="商业发票" key="invoices">
-      <InvoicesPane fullscreen={this.state.fullscreen} />
     </TabPane>);
     /*
       tabs.push(<TabPane tab="随附单据" key="attachedDocs" >
@@ -518,7 +525,7 @@ export default class ManifestEditor extends React.Component {
                 ciqs={billMeta.ciqs}
                 billSeqNo={billMeta.bill_seq_no}
                 ietype={ietype}
-                selectedKeys={['manifest']}
+                currentKey="manifest"
               />}
               {billMeta.docts &&
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>

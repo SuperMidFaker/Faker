@@ -5,8 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import { loadWhse, switchDefaultWhse } from 'common/reducers/cwmContext';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
+
 
 const formatMsg = format(messages);
 
@@ -15,6 +16,7 @@ const formatMsg = format(messages);
   state => ({
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
+    bwmApps: state.account.apps.bwm,
   }),
   { loadWhse, switchDefaultWhse }
 )
@@ -22,19 +24,21 @@ export default class ModuleCWM extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
-    children: PropTypes.object.isRequired,
+    children: PropTypes.node,
   };
   state = {
     linkMenus: [],
+    appMenus: [],
   }
   componentWillMount() {
-    const { intl } = this.props;
+    const { intl, bwmApps } = this.props;
     const linkMenus = [];
+    const appMenus = [];
     linkMenus.push({
       single: true,
       key: 'cwm-dashboard',
       path: '/cwm/dashboard',
-      icon: 'logixon icon-apps',
+      icon: 'logixon icon-dashboard',
       text: formatMsg(intl, 'dashboard'),
     });
     if (this.props.whse.bonded) {
@@ -104,10 +108,6 @@ export default class ModuleCWM extends React.Component {
         key: 'cwm-shipping-2',
         path: '/cwm/shipping/outbound',
         text: formatMsg(intl, 'shippingOutbound'),
-      }, {
-        key: 'cwm-shipping-3',
-        path: '/cwm/shipping/load',
-        text: formatMsg(intl, 'shippingLoad'),
       },
       ],
     });
@@ -119,17 +119,40 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'products'),
     });
     linkMenus.push({
-      single: false,
+      single: true,
+      bottom: true,
       key: 'cwm-settings',
+      path: '/cwm/settings/warehouse',
       icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
-      sublinks: [{
-        key: 'cwm-settings-0',
-        path: '/cwm/settings/warehouse',
-        text: formatMsg(intl, 'warehouse'),
-      }],
     });
-    this.setState({ linkMenus });
+    if (bwmApps.length > 0) {
+      if (bwmApps.length === 1) {
+        appMenus.push({
+          single: true,
+          key: bwmApps[0].app_id,
+          path: bwmApps[0].url,
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, bwmApps[0].app_name),
+        });
+      } else {
+        appMenus.push({
+          single: false,
+          key: 'bwm-app',
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
+          sublinks: [],
+        });
+        bwmApps.forEach((b, index) => {
+          appMenus[0].sublinks.push({
+            key: `bwm-app-${index}`,
+            path: b.url,
+            text: formatMsg(intl, b.app_name),
+          });
+        });
+      }
+    }
+    this.setState({ linkMenus, appMenus });
     if (!this.props.whse.code && typeof window !== 'undefined') {
       let defaultWhse = this.props.whses.length > 0 ? this.props.whses[0].code : null;
       if (window.localStorage) {
@@ -167,7 +190,12 @@ export default class ModuleCWM extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout
+        links={this.state.linkMenus}
+        appMenus={this.state.appMenus}
+        childContent={this.props.children}
+        location={this.props.location}
+      />
     );
   }
 }

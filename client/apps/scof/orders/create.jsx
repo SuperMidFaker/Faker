@@ -2,29 +2,36 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/sofOrders';
+import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, message, notification } from 'antd';
-import OrderForm from './forms/orderForm';
-import PageHeader from 'client/components/PageHeader';
-import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/crmOrders';
-import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import PageHeader from 'client/components/PageHeader';
+import OrderForm from './order';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
 const VALIDATE_MSG = {
   no_customer: '请选择客户',
   no_goods_type: '请选择货物类型',
+  no_order_type: '请选择订单类型',
+  no_order_type_attr: '请填写订单类型扩展属性',
   no_flowid: '请选择流程',
   cust_order_no_exist: '客户订单号已存在',
 };
 
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadFormRequires({
-    tenantId: state.account.tenantId,
-  }));
+  const proms = [
+    dispatch(loadFormRequires({
+      tenantId: state.account.tenantId,
+    })),
+    dispatch(loadRequireOrderTypes()),
+  ];
+  return Promise.all(proms);
 }
 
 @connectFetch()(fetchData)
@@ -36,8 +43,8 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantName: state.account.tenantName,
-    formData: state.crmOrders.formData,
-    saving: state.crmOrders.orderSaving,
+    formData: state.sofOrders.formData,
+    saving: state.sofOrders.orderSaving,
   }),
   { submitOrder, validateOrder }
 )
@@ -45,7 +52,9 @@ export default class CreateOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
+    formData: PropTypes.shape({
+      cust_shipmt_transfer: PropTypes.string,
+    }).isRequired,
     submitOrder: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -105,6 +114,8 @@ export default class CreateOrder extends Component {
     this.context.router.goBack();
   }
   render() {
+    const { formData } = this.props;
+    const invalidOrder = !formData.cust_shipmt_transfer || !formData.flow_id;
     return (
       <Layout>
         <PageHeader>
@@ -122,7 +133,7 @@ export default class CreateOrder extends Component {
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>
+            <Button type="primary" onClick={this.handleSave} loading={this.props.saving} disabled={invalidOrder}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

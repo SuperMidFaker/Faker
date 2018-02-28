@@ -124,7 +124,7 @@ const messages = defineMessages({
   },
   tabPermit: {
     id: 'cms.tradeitem.tab.permit',
-    defaultMessage: '涉证资料',
+    defaultMessage: '许可证件',
   },
   tabHistory: {
     id: 'cms.tradeitem.tab.history',

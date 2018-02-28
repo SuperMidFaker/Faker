@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Breadcrumb, Icon, Layout, Popover, Select, Tag, Tooltip, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import { loadWorkspaceItems, submitAudit, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
@@ -17,6 +17,7 @@ import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
 const { Option } = Select;
+
 
 @injectIntl
 @connect(
@@ -173,7 +174,12 @@ export default class InvalidItemsList extends React.Component {
     this.context.router.push(link);
   }
   handleItemDiff = (record) => {
-    this.props.toggleItemDiffModal(true, record);
+    this.props.toggleItemDiffModal(true, {
+      hscode: record.item_hscode,
+      g_name: record.item_g_name,
+      element: record.item_element,
+      g_model: record.item_g_model,
+    }, record);
   }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, name: value };
@@ -285,7 +291,7 @@ export default class InvalidItemsList extends React.Component {
         {repos.map(rep =>
           <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
-      <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={listFilter.name} />
+      <SearchBox placeholder={this.msg('商品货号/HS编码/品名')} onSearch={this.handleSearch} />
     </span>);
     return (
       <Layout>
@@ -313,7 +319,7 @@ export default class InvalidItemsList extends React.Component {
             <PageHeader.Actions>
               <WsItemExportButton {...listFilter} onUploaded={this.handleReload} />
               {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
-              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
+              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>整批提交</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

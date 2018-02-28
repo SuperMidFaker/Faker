@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Layout } from 'antd';
+import { Avatar, Badge, Breadcrumb, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
-import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import RowAction from 'client/components/RowAction';
-import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/openIntegration';
+import SearchBox from 'client/components/SearchBox';
+import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/hubIntegration';
+import HubSiderMenu from '../menu';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -15,9 +16,9 @@ const { Content } = Layout;
 function fetchData({ state, dispatch }) {
   return dispatch(loadInstalledApps({
     tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.openIntegration.listFilter),
-    sorter: JSON.stringify(state.openIntegration.sortFilter),
-    pageSize: state.openIntegration.list.pageSize,
+    filter: JSON.stringify({}),
+    sorter: JSON.stringify(state.hubIntegration.sortFilter),
+    pageSize: state.hubIntegration.installedAppsList.pageSize,
     current: 1,
   }));
 }
@@ -26,17 +27,16 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    listFilter: state.openIntegration.listFilter,
-    sortFilter: state.openIntegration.sortFilter,
+    listFilter: state.hubIntegration.listFilter,
+    sortFilter: state.hubIntegration.sortFilter,
     tenantId: state.account.tenantId,
-    applist: state.openIntegration.list,
+    installedAppsList: state.hubIntegration.installedAppsList,
   }),
   { loadInstalledApps, deleteApp, updateAppStatus }
 )
 export default class InstalledAppsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -61,116 +61,105 @@ export default class InstalledAppsList extends React.Component {
       }
       return <span />;
     },
-  }, {
-    title: this.msg('opColumn'),
-    dataIndex: 'OP_COL',
-    width: 160,
-    render: (txt, row) => {
-      let appType = null;
-      if (row.app_type === 'EASIPASS') {
-        appType = 'easipass';
-      } else if (row.app_type === 'ARCTM') {
-        appType = 'arctm';
-      } else if (row.app_type === 'SHFTZ') {
-        appType = 'shftz';
-      } else if (row.app_type === 'SFEXPRESS') {
-        appType = 'sfexpress';
-      }
-      return (<span>
-        <RowAction onClick={() => this.handleAppConfig(row, appType)} icon="setting" label="配置" />
-        {row.enabled ? <RowAction onClick={this.handleAppDisable} icon="pause-circle" tooltip="停用" row={row} /> :
-        <RowAction onClick={this.handleAppEnable} icon="play-circle" tooltip="启用" row={row} />}
-        <RowAction confirm="确定删除？" onConfirm={this.handleAppDelete} icon="delete" row={row} />
-      </span>);
-    },
   }]
-  dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadInstalledApps(params),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-      showTotal: total => `共 ${total} 条`,
-    }),
-    getParams: (pagination, filters, sorter) => {
-      const params = {
-        tenantId: this.props.tenantId,
-        pageSize: pagination.pageSize,
-        current: pagination.current,
-        sorter: JSON.stringify({
-          field: sorter.field,
-          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
-        }),
-        filter: JSON.stringify(this.props.listFilter),
-      };
-      return params;
-    },
-    remotes: this.props.applist,
-  })
-  handleAppDelete = (row) => {
-    this.props.deleteApp(row.uuid).then((result) => {
-      if (!result.error) {
-        this.props.loadInstalledApps({
-          tenantId: this.props.tenantId,
-          pageSize: this.props.applist.pageSize,
-          current: 1,
-          filter: JSON.stringify(this.props.listFilter),
-          sorter: JSON.stringify(this.props.sortFilter),
-        });
-      }
-    });
-  }
-  handleAppEnable = (row) => {
-    this.props.updateAppStatus({ uuid: row.uuid, enabled: true }).then((result) => {
-      if (!result.error) {
-        this.props.loadInstalledApps({
-          tenantId: this.props.tenantId,
-          pageSize: this.props.applist.pageSize,
-          current: this.props.applist.current,
-          filter: JSON.stringify(this.props.listFilter),
-          sorter: JSON.stringify(this.props.sortFilter),
-        });
-      }
-    });
-  }
-  handleAppDisable = (row) => {
-    this.props.updateAppStatus({ uuid: row.uuid, enabled: false }).then((result) => {
-      if (!result.error) {
-        this.props.loadInstalledApps({
-          tenantId: this.props.tenantId,
-          pageSize: this.props.applist.pageSize,
-          current: this.props.applist.current,
-          filter: JSON.stringify(this.props.listFilter),
-          sorter: JSON.stringify(this.props.sortFilter),
-        });
-      }
-    });
-  }
-  handleAppConfig = (row, appType) => {
+  handleAppConfig = (row) => {
+    let appType = null;
+    if (row.app_type === 'EASIPASS') {
+      appType = 'easipass';
+    } else if (row.app_type === 'ARCTM') {
+      appType = 'arctm';
+    } else if (row.app_type === 'SHFTZ') {
+      appType = 'shftz';
+    } else if (row.app_type === 'SFEXPRESS') {
+      appType = 'sfexpress';
+    }
     const link = `/hub/integration/${appType}/config/${row.uuid}`;
     this.context.router.push(link);
   }
+  handleSearch = (value) => {
+    const {
+      tenantId, listFilter, sortFilter, installedAppsList,
+    } = this.props;
+    const filter = { ...listFilter, searchText: value };
+    this.props.loadInstalledApps({
+      tenantId,
+      filter: JSON.stringify(filter),
+      sorter: JSON.stringify(sortFilter),
+      pageSize: installedAppsList.pageSize,
+      current: 1,
+    });
+  }
+  renderAppLogo(app) {
+    if (app.app_type === 'EASIPASS') {
+      return <Avatar shape="square" style={{ backgroundColor: '#008dff' }}>EP</Avatar>;
+    } else if (app.app_type === 'ARCTM') {
+      return <Avatar shape="square" style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>AmberRoad</Avatar>;
+    } else if (app.app_type === 'SHFTZ') {
+      return <Avatar shape="square" style={{ backgroundColor: '#00a2ae' }}>FTZ</Avatar>;
+    } else if (app.app_type === 'SFEXPRESS') {
+      return <Avatar shape="square" style={{ backgroundColor: '#292929' }}>SF</Avatar>;
+    } else if (app.app_type === 'SW') {
+      return <Avatar shape="square" style={{ backgroundColor: '#f56a00' }}>SW</Avatar>;
+    } else if (app.app_type === 'QP') {
+      return <Avatar shape="square" style={{ backgroundColor: '#7265e6' }}>QP</Avatar>;
+    }
+    return <Avatar shape="square">{this.msg('unknownApp')}</Avatar>;
+  }
   render() {
-    const { loading, applist } = this.props;
-    this.dataSource.remotes = applist;
+    const { installedAppsList } = this.props;
+    const pagination = {
+      hideOnSinglePage: true,
+      pageSize: installedAppsList.pageSize,
+      current: installedAppsList.current,
+      total: installedAppsList.totalCount,
+      showTotal: total => `共 ${total} 条`,
+      onChange: (page) => {
+        this.props.loadInstalledApps({
+          tenantId: this.props.tenantId,
+          filter: JSON.stringify(this.props.listFilter),
+          sorter: JSON.stringify(this.props.sortFilter),
+          pageSize: installedAppsList.pageSize,
+          current: page,
+        });
+      },
+    };
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="appstore-o" /> {this.msg('integration')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
-        <Content className="page-content">
-          <DataTable columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="id" />
-        </Content>
-      </div>
+      <Layout>
+        <HubSiderMenu currentKey="installed" />
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Icon type="api" /> {this.msg('installedApps')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+          </PageHeader>
+          <Content className="page-content layout-fixed-width">
+            <Card bodyStyle={{ padding: 0 }} >
+              <List
+                dataSource={installedAppsList.data}
+                header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
+                pagination={pagination}
+                renderItem={item => (
+                  <List.Item
+                    key={item.id}
+                    actions={[<RowAction size="default" onClick={() => this.handleAppConfig(item)} icon="setting" label={this.msg('config')} />]}
+                  >
+                    <List.Item.Meta
+                      avatar={this.renderAppLogo(item)}
+                      title={item.name}
+                      description={item.desc}
+                    />
+                    {item.enabled === 1 ? <Badge status="success" text={this.msg('appEnabled')} /> : <Badge status="default" text={this.msg('appDisabled')} />}
+                  </List.Item>
+                  )}
+              />
+            </Card>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

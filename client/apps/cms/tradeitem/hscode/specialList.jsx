@@ -5,13 +5,12 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Input, message } from 'antd';
 import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'common/reducers/cmsHsCode';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 import { hscodeColumns } from './hscodeColumns';
 
-const formatMsg = format(messages);
+
 @injectIntl
 @connect(
   state => ({
@@ -26,8 +25,8 @@ export default class HSCodeSpecialList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    categoryHscodes: PropTypes.object.isRequired,
-    hscodeCategory: PropTypes.object.isRequired,
+    categoryHscodes: PropTypes.shape({ categoryId: PropTypes.number }).isRequired,
+    hscodeCategory: PropTypes.shape({ id: PropTypes.number }).isRequired,
     loadCategoryHsCode: PropTypes.func.isRequired,
     removeCategoryHsCode: PropTypes.func.isRequired,
     addCategoryHsCode: PropTypes.func.isRequired,
@@ -43,7 +42,7 @@ export default class HSCodeSpecialList extends React.Component {
       this.handleTableLoad(nextProps);
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   handleHscodeChange = (e) => {
     this.setState({ hscode: e.target.value });
   }
@@ -132,10 +131,9 @@ export default class HSCodeSpecialList extends React.Component {
       }
       return col;
     };
-    const toolbarActions = (<SearchBar
+    const toolbarActions = (<SearchBox
       placeholder="编码/名称/描述/申报要素"
-      onInputSearch={this.handleSearch}
-      value={this.props.categoryHscodes.searchText}
+      onSearch={this.handleSearch}
     />);
     return (
       <DataTable toolbarActions={toolbarActions} dataSource={categoryHscodesDataSource} columns={columns} rowKey="id" bordered loading={loading} />

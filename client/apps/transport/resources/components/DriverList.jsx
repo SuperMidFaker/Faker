@@ -4,7 +4,7 @@ import { Breadcrumb, Menu, Layout, Button, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/NavLink';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import DriverModal from '../modals/driverModal';
@@ -30,29 +30,30 @@ function DriverList(props) {
           </a>
         </span>
       );
-    } else {
-      return (
-        <span>
-          <span className="ant-divider" />
-          <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, login_disabled: record.login_disabled, phone: record.phone } })}>
-            关闭手机登录
-          </a>
-        </span>
-      );
     }
+    return (
+      <span>
+        <span className="ant-divider" />
+        <a onClick={() => handleEditDriverLogin({ driverId: record.driver_id, driverInfo: { login_id: record.login_id, login_disabled: record.login_disabled, phone: record.phone } })}>
+            关闭手机登录
+        </a>
+      </span>
+    );
   }
 
   function editAndStopDriverOperations(record) {
     return (
       <PrivilegeCover module="transport" feature="resources" action="edit">
         <span>
-          <a onClick={() => onEditDriver(record.driver_id)}
+          <a
+            onClick={() => onEditDriver(record.driver_id)}
             disabled={record.status === '不可用'}
           >
             修改
           </a>
           <span className="ant-divider" />
-          <a onClick={() => onStopDriverBtnClick(record.driver_id)}
+          <a
+            onClick={() => onStopDriverBtnClick(record.driver_id)}
             disabled={record.status === '不可用'}
           >
             停用
@@ -112,9 +113,8 @@ function DriverList(props) {
       render: (_, record) => {
         if (record.status === '不可用') {
           return resumeDriverOperaions(record);
-        } else {
-          return editAndStopDriverOperations(record);
         }
+        return editAndStopDriverOperations(record);
       },
     },
   ];
@@ -135,9 +135,7 @@ function DriverList(props) {
           </Breadcrumb.Item>
         </Breadcrumb>
         <div className="page-header-tools">
-          <SearchBar placeholder="司机/手机" onInputSearch={props.onSearch}
-            value={props.searchText}
-          />
+          <SearchBox placeholder="司机/手机" onSearch={props.onSearch} />
         </div>
       </Header>
       <Content className="main-content" key="main">

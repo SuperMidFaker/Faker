@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Table, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadTransportTariffs, loadCmsQuotes } from 'common/reducers/crmCustomers';
+import { loadTransportTariffs, loadCmsQuotes } from 'common/reducers/sofCustomers';
 import { TARIFF_METER_METHODS, GOODS_TYPES, DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE } from 'common/constants';
-import { loadFormRequires } from 'common/reducers/crmOrders';
+import { loadFormRequires } from 'common/reducers/sofOrders';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -19,7 +19,7 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
-  transitModes: state.crmOrders.formRequires.transitModes,
+  transitModes: state.sofOrders.formRequires.transitModes,
 }), { loadTransportTariffs, loadCmsQuotes })
 
 export default class TariffPane extends React.Component {
@@ -115,7 +115,7 @@ export default class TariffPane extends React.Component {
       key: 'valid',
       render: (col) => {
         if (col === 0) return <Tag >无效</Tag>;
-        else return <Tag color="#87d068">有效</Tag>;
+        return <Tag color="#87d068">有效</Tag>;
       },
     }];
     const pId = this.props.customer.id;

@@ -1,42 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
+import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import { CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
-import messages from '../message.i18n';
-import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { showDock, loadInbounds } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Strip from 'client/components/Strip';
+import messages from '../message.i18n';
+import ReceivingDockPanel from '../dock/receivingDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch }) {
-  dispatch(loadInbounds({
-    whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmReceive.inbound.pageSize,
-    current: state.cwmReceive.inbound.current,
-    filters: state.cwmReceive.inboundFilters,
-  }));
-}
-@connectFetch()(fetchData)
+const { RangePicker } = DatePicker;
+
 @injectIntl
 @connect(
   state => ({
@@ -64,8 +56,22 @@ export default class ReceivingInboundList extends React.Component {
   state = {
     selectedRowKeys: [],
   }
+  componentDidMount() {
+    const filters = this.initializeFilters();
+    if (window.location.search.indexOf('dashboard') < 0) {
+      filters.startDate = '';
+      filters.endDate = '';
+    }
+    this.props.loadInbounds({
+      whseCode: this.props.defaultWhse.code,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
+    });
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || !nextProps.inbound.loaded && !nextProps.inbound.loading) {
+    if ((nextProps.defaultWhse.code !== this.props.defaultWhse.code) ||
+     (!nextProps.inbound.loaded && !nextProps.inbound.loading)) {
       const filters = { ...this.props.filters };
       nextProps.loadInbounds({
         whseCode: nextProps.defaultWhse.code,
@@ -74,6 +80,23 @@ export default class ReceivingInboundList extends React.Component {
         filters,
       });
     }
+  }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadInbounds({
+      whseCode,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
+    });
+  }
+  initializeFilters = () => {
+    let filters = {};
+    if (window.localStorage) {
+      filters = JSON.parse(window.localStorage.cwmReceiveInboundLists || '{"status":"all","ownerCode":"all"}');
+    }
+    return filters;
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -90,7 +113,7 @@ export default class ReceivingInboundList extends React.Component {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
     width: 50,
-    render: dc => (!isNaN(dc) ? dc : null),
+    render: dc => (!isNaN(dc) ? dc : null), // eslint-disable-line
   }, {
     title: '货主',
     dataIndex: 'owner_name',
@@ -140,6 +163,7 @@ export default class ReceivingInboundList extends React.Component {
       } else if (o === 'import') {
         return (<Tooltip title="数据导入"><Icon type="upload" /></Tooltip>);
       }
+      return '';
     },
   }, {
     title: '创建时间',
@@ -166,7 +190,7 @@ export default class ReceivingInboundList extends React.Component {
     },
   }]
   handleInboundsReload = () => {
-    const filters = this.props.filters;
+    const { filters } = this.props;
     this.props.loadInbounds({
       whseCode: this.props.defaultWhse.code,
       pageSize: this.props.inbound.pageSize,
@@ -221,6 +245,10 @@ export default class ReceivingInboundList extends React.Component {
     const {
       whses, defaultWhse, owners, filters, loading,
     } = this.props;
+    let dateVal = [];
+    if (filters.endDate) {
+      dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
+    }
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -251,8 +279,7 @@ export default class ReceivingInboundList extends React.Component {
       remotes: this.props.inbound,
     });
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('inboundPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
-      <span />
+      <SearchBox placeholder={this.msg('inboundPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
         optionFilterProp="children"
@@ -267,6 +294,11 @@ export default class ReceivingInboundList extends React.Component {
           owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
         }
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -276,7 +308,10 @@ export default class ReceivingInboundList extends React.Component {
               <Breadcrumb.Item>
                 <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                    whses.map(warehouse =>
+                      (<Option value={warehouse.code} key={warehouse.code}>
+                        {warehouse.name}
+                      </Option>))
                   }
                 </Select>
               </Breadcrumb.Item>

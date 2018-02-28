@@ -10,7 +10,6 @@ import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsMani
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog, uploadDecl } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
-import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
@@ -24,15 +23,14 @@ import ContainersPane from './tabpane/containersPane';
 import AttachedDocsPane from './tabpane/attachedDocsPane';
 import AttachedCertsPane from './tabpane/attachedCertsPane';
 import DutyTaxPane from './tabpane/dutyTaxPane';
-import ManifestDetailsPane from './tabpane/manifestDetailsPane';
+// import ManifestDetailsPane from './tabpane/manifestDetailsPane';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import CusDeclLogsPanel from './panel/cusDeclLogsPanel';
 import { StandardDocDef } from './print/docDef';
 import DeclMsgModal from './modals/declMsgModal';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -126,7 +124,7 @@ export default class CustomsDeclEditor extends React.Component {
       this.props.setNavTitle(navObj);
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -223,7 +221,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handlePrintMenuClick = (ev) => {
     const {
-      head, bodies, billMeta, formRequire,
+      head, bodies, formRequire,
     } = this.props;
     let docDef;
     window.pdfMake.fonts = {
@@ -233,11 +231,11 @@ export default class CustomsDeclEditor extends React.Component {
       },
     };
     if (ev.key === 'standard') {
-      docDef = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+      docDef = StandardDocDef(head, bodies, head.decl_way_code, head.cust_order_no, formRequire);
       window.pdfMake.createPdf(docDef).open();
     } else if (ev.key === 'skeleton') {
       docDef = StandardDocDef(
-        head, bodies, billMeta.declWayCode, billMeta.orderNo,
+        head, bodies, head.decl_way_code, head.cust_order_no,
         formRequire, true
       );
       window.pdfMake.createPdf(docDef).print();
@@ -343,12 +341,14 @@ export default class CustomsDeclEditor extends React.Component {
     tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
       <AttachedDocsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
-    tabs.push(<TabPane tab="预估税金" key="dutyTax" head={head}>
-      <DutyTaxPane fullscreen={this.state.fullscreen} />
+    tabs.push(<TabPane tab="预估税金" key="dutyTax">
+      <DutyTaxPane fullscreen={this.state.fullscreen} head={head} />
     </TabPane>);
-    tabs.push(<TabPane tab="申报清单明细" key="manifestDetails" head={head}>
+    /*
+    tabs.push(<TabPane tab="报关清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
+    */
     if (filterProducts.length > 0) {
       /*
       tabs.push(<TabPane tab="法检商品" key="ciqDetails">
@@ -382,7 +382,7 @@ export default class CustomsDeclEditor extends React.Component {
               ciqs={billMeta.ciqs}
               ietype={params.ietype}
               billSeqNo={billMeta.bill_seq_no}
-              selectedKeys={[`cus-decl-${head.pre_entry_seq_no}`]}
+              currentKey={`cus-decl-${head.pre_entry_seq_no}`}
             />}
             <Dropdown overlay={printMenu}>
               <Button >

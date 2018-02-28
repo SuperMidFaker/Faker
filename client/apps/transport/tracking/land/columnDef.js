@@ -39,7 +39,7 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 140,
+    width: 160,
     render: (o, record) => (
       <ShipmtnoColumn shipmtNo={record.shipmt_no}
         shipment={record} onClick={handlers.onShipmtPreview}

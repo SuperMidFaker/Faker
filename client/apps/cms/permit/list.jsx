@@ -4,21 +4,22 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Breadcrumb, Button, Icon, Layout, Radio, Tag } from 'antd';
-import { format } from 'client/common/i18n/helpers';
+
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
 import { Logixon } from 'client/components/FontIcon';
+import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadPermits, loadCertParams } from 'common/reducers/cmsPermit';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CIQ_LICENCE_TYPE } from 'common/constants';
-import SearchBar from 'client/components/SearchBar';
-import messages from './message.i18n';
+
+import { formatMsg } from './message.i18n';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 
 
@@ -60,7 +61,7 @@ export default class PermitList extends Component {
     );
     this.props.loadCertParams();
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleDetail = (row) => {
     this.context.router.push(`/clearance/permit/${row.id}`);
   }
@@ -94,7 +95,7 @@ export default class PermitList extends Component {
     width: 100,
     dataIndex: 'usage_control',
     align: 'center',
-    render: o => (o ? <Tag color="#87d068">开启</Tag> : <Tag>关闭</Tag>),
+    render: o => (o ? <Tag color="#87d068">{this.msg('turnOn')}</Tag> : <Tag>{this.msg('close')}</Tag>),
   }, {
     title: this.msg('maxUsage'),
     width: 100,
@@ -110,7 +111,7 @@ export default class PermitList extends Component {
     width: 120,
     dataIndex: 'expiry_control',
     align: 'center',
-    render: o => (o ? <Tag color="#87d068">开启</Tag> : <Tag>关闭</Tag>),
+    render: o => (o ? <Tag color="#87d068">{this.msg('turnOn')}</Tag> : <Tag>{this.msg('close')}</Tag>),
   }, {
     title: this.msg('startDate'),
     dataIndex: 'start_date',
@@ -129,9 +130,9 @@ export default class PermitList extends Component {
     dataIndex: 'status',
     render: (o) => {
       if (o) {
-        return <Tag color="green">有效</Tag>;
+        return <Tag color="green">{this.msg('valid')}</Tag>;
       }
-      return <Tag color="red">失效</Tag>;
+      return <Tag color="red">{this.msg('invalid')}</Tag>;
     },
   }, {
     title: this.msg('permitFile'),
@@ -149,14 +150,11 @@ export default class PermitList extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />
+        <RowAction onClick={this.handleDetail} icon="form" label={this.msg('detail')} row={record} />
       </span>),
   }]
   handleAdd = () => {
     this.context.router.push('/clearance/permit/add');
-  }
-  handlePreview = (manualNo) => {
-    this.context.router.push(`/clearance/manual/${manualNo}`);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -178,9 +176,9 @@ export default class PermitList extends Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar
-        placeholder={this.msg('证书编号')}
-        onInputSearch={this.handleSearch}
+      <SearchBox
+        placeholder={this.msg('permitNo')}
+        onSearch={this.handleSearch}
       />
     </span>);
     const dataSource = new DataTable.DataSource({

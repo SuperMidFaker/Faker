@@ -6,7 +6,7 @@ import { Icon, Col, Row, Tabs, Button, Menu, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_SO_STATUS, CWM_OUTBOUND_STATUS } from 'common/constants';
 import { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, cancelOutbound, closeOutbound } from 'common/reducers/cwmShippingOrder';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpane/orderPane';
@@ -220,15 +220,20 @@ export default class ShippingDockPanel extends React.Component {
     const { visible, loading } = this.props;
     const { soHead } = this.state;
     return (
-      <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
-        title={this.renderTitle()} loading={loading}
+      <DockPanel
+        size="large"
+        visible={visible}
+        onClose={this.props.hideDock}
+        title={this.renderTitle()}
+        loading={loading}
         status={this.renderStatus(soHead.status)}
         statusText={this.renderStatusMsg(soHead.status)}
         overlay={this.renderMenu()}
         extra={this.renderExtra()}
       >
         {this.renderTabs()}
-        <Modal maskClosable={false}
+        <Modal
+          maskClosable={false}
           visible={this.state.closeModalVisible}
           onCancel={() => this.setState({ closeModalVisible: false })}
           title="请选择"

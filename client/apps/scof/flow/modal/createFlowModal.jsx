@@ -9,7 +9,7 @@ import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -28,7 +28,7 @@ export default class CreateFlowModal extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     closeCreateFlowModal: PropTypes.func.isRequired,
   }
   state = { trackings: null }
@@ -47,10 +47,9 @@ export default class CreateFlowModal extends React.Component {
         this.props.saveFlow({
           name: fields.name,
           tracking_id: fields.tracking,
-          partner_tenant_id: customer.partner_tenant_id,
-          partner_id: customer.id,
-          partner_name: customer.name,
-          tenantId: this.props.tenantId,
+          partner_tenant_id: customer && customer.partner_tenant_id,
+          partner_id: customer && customer.id,
+          partner_name: customer && customer.name,
         }).then((result) => {
           if (!result.error) {
             this.handleCancel();
@@ -82,8 +81,12 @@ export default class CreateFlowModal extends React.Component {
   render() {
     const { visible, customerPartners, form: { getFieldDecorator } } = this.props;
     return (
-      <Modal maskClosable={false} title={this.msg('createFlow')} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('createFlow')}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form layout="vertical">
           <FormItem label={this.msg('flowName')}>
@@ -95,9 +98,7 @@ export default class CreateFlowModal extends React.Component {
           </FormItem>
           <FormItem label={this.msg('flowCustomer')}>
             {
-             getFieldDecorator('customer', {
-               rules: [{ required: true, message: '流程对应客户必填' }],
-             })(<Select showSearch optionFilterProp="children" onSelect={this.handleCustomerSelect}>
+             getFieldDecorator('customer')(<Select showSearch optionFilterProp="children" onSelect={this.handleCustomerSelect}>
                {customerPartners.map(data => (
                  <Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
              </Select>)

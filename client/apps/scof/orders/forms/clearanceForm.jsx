@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Icon, Input, Select, message } from 'antd';
 import { TRANS_MODE, WRAP_TYPE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
-import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
+import { setClientForm, loadFlowNodeData } from 'common/reducers/sofOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { Logixon } from 'client/components/FontIcon';
@@ -18,9 +18,9 @@ const InputGroup = Input.Group;
 @injectIntl
 @connect(
   state => ({
-    formRequires: state.crmOrders.formRequires,
+    formRequires: state.sofOrders.formRequires,
     cmsQuotes: state.scofFlow.cmsQuotes,
-    serviceTeam: state.crmCustomers.operators,
+    serviceTeam: state.sofCustomers.operators,
   }),
   { setClientForm, loadFlowNodeData }
 )

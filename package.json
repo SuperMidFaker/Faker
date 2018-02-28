@@ -1,6 +1,6 @@
 {
   "name": "welogix-web",
-  "version": "0.8.2",
+  "version": "2.0.0",
   "title": "WeLogix Web",
   "description": "A SaaS platform for Cross-border Supply Chain and Logistics",
   "homepage": "https://welogix.cn/",
@@ -48,10 +48,11 @@
   "license": "MIT",
   "pre-commit": "lint-staged",
   "dependencies": {
-    "antd": "^3.1.0",
+    "antd": "^3.2.2",
     "babel-core": "^6.24.1",
     "babel-polyfill": "^6.22.0",
     "babel-runtime": "^6.23.0",
+    "braft-editor": "^1.1.14",
     "classnames": "^2.2.5",
     "codemirror": "^5.32.0",
     "currency-formatter": "^1.2.1",

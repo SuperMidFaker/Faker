@@ -1,34 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  accountNormal: {
-    id: 'container.account.normal',
-    defaultMessage: '正常',
-  },
-  accountDisabled: {
-    id: 'container.account.disabled',
-    defaultMessage: '停用',
-  },
-  tenantOwner: {
-    id: 'container.tenant.role.owner',
-    defaultMessage: '拥有者',
-  },
-  tenantManager: {
-    id: 'container.tenant.role.manager',
-    defaultMessage: '管理员',
-  },
-  tenantMember: {
-    id: 'container.tenant.role.member',
-    defaultMessage: '成员',
-  },
-  tenantAnalyst: {
-    id: 'container.tenant.role.analyst',
-    defaultMessage: '分析师',
-  },
-  tenantBilling: {
-    id: 'container.tenant.role.billing',
-    defaultMessage: '结算人员',
-  },
   opColumn: {
     id: 'container.table.opColumn',
     defaultMessage: '操作',

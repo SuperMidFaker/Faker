@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cms/dashboard/', [
   'CMS_STATISTICS', 'CMS_STATISTICS_SUCCEED', 'CMS_STATISTICS_FAIL',
   'CMS_ITEMS_STATS', 'CMS_ITEMS_STATS_SUCCEED', 'CMS_ITEMS_STATS_FAIL',
   'CMS_TAX_STATS', 'CMS_TAX_STATS_SUCCEED', 'CMS_TAX_STATS_FAIL',
+  'CMS_IE_STATS', 'CMS_IE_STATS_SUCCEED', 'CMS_IE_STATS_FAIL',
 ]);
 
 const initialState = {
@@ -40,6 +41,16 @@ const initialState = {
     comsuTax: 0,
     totalWithdrawn: 0,
   },
+  importStats: {
+    total_cny: 0,
+    total_usd: 0,
+    count: 0,
+  },
+  exportStats: {
+    total_cny: 0,
+    total_usd: 0,
+    count: 0,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -50,6 +61,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, itemsStats: { ...state.itemsStats, ...action.result.data } };
     case actionTypes.CMS_TAX_STATS_SUCCEED:
       return { ...state, taxStats: { ...state.taxStats, ...action.result.data, ...action.params } };
+    case actionTypes.CMS_IE_STATS_SUCCEED:
+      return { ...state, importStats: { ...state.importStats, ...action.result.data.impVals }, exportStats: { ...state.exportStats, ...action.result.data.expVals } };
     default:
       return state;
   }
@@ -99,3 +112,19 @@ export function loadCmsTaxStats(params) {
     },
   };
 }
+
+export function loadIEStats(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CMS_IE_STATS,
+        actionTypes.CMS_IE_STATS_SUCCEED,
+        actionTypes.CMS_IE_STATS_FAIL,
+      ],
+      endpoint: 'v1/cms/dashboard/ie/stats',
+      method: 'get',
+      params,
+    },
+  };
+}
+

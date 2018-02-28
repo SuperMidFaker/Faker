@@ -19,7 +19,7 @@ import ShareShipmentModal from '../../common/modal/shareShipmentModal';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import RecalculateChargeModal from '../../tracking/land/modals/recalculateChargeModal';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
-import { loadOrderDetail } from 'common/reducers/crmOrders';
+import { loadOrderDetail } from 'common/reducers/sofOrders';
 import { returnShipment, acceptDispShipment, revokeOrReject } from 'common/reducers/transport-acceptance';
 import { doSend,
   doReturn,
@@ -479,7 +479,9 @@ export default class ShipmentDockPanel extends React.Component {
           } else {
             // 司机更新
             buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button key="promptPickup" type="ghost"
+              <Button
+                key="promptPickup"
+                type="ghost"
                 onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPickup)}
               >
                     催促提货
@@ -488,7 +490,10 @@ export default class ShipmentDockPanel extends React.Component {
           }
         } else {
           buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
-            <Button key="promptPickup" type="ghost" onClick={
+            <Button
+              key="promptPickup"
+              type="ghost"
+              onClick={
                   () => this.handlePrompt(PROMPT_TYPES.promptSpPickup)
                 }
             >
@@ -633,17 +638,20 @@ export default class ShipmentDockPanel extends React.Component {
     const { shipmt } = this.props;
     return (<Row>
       <Col span="6">
-        <InfoItem label="托运方"
+        <InfoItem
+          label="托运方"
           field={shipmt.customer_name}
         />
       </Col>
       <Col span="6">
-        <InfoItem label="客户单号"
+        <InfoItem
+          label="客户单号"
           field={shipmt.ref_external_no}
         />
       </Col>
       <Col span="6">
-        <InfoItem label="始发地"
+        <InfoItem
+          label="始发地"
           field={Location.renderLoc({
             province: shipmt.consigner_province,
             city: shipmt.consigner_city,
@@ -652,7 +660,8 @@ export default class ShipmentDockPanel extends React.Component {
         />
       </Col>
       <Col span="6">
-        <InfoItem label="目的地"
+        <InfoItem
+          label="目的地"
           field={Location.renderLoc({
             province: shipmt.consignee_province,
             city: shipmt.consignee_city,
@@ -689,9 +698,13 @@ export default class ShipmentDockPanel extends React.Component {
     } = this.props;
     return (
       shipmtNo ?
-        <DockPanel size="large" visible={visible} onClose={this.handleClose}
+        <DockPanel
+          size="large"
+          visible={visible}
+          onClose={this.handleClose}
           title={this.renderTitle()}
-          status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
+          status={this.transformBadgeColor(dispatch.status)}
+          statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
           overlay={this.renderMenu()}
           extra={this.renderExtra()}
           /* alert={this.renderButtons()}

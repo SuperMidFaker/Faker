@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
@@ -87,7 +87,7 @@ export default class SHFTZTransferOutList extends React.Component {
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
-    width: 80,
+    width: 100,
     render: (reltype) => {
       const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
       if (regtype) {
@@ -129,7 +129,7 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '收货单位',
     width: 280,
     dataIndex: 'receiver_name',
-    render: (o, record) => record.receiver_cus_code ? <TrimSpan text={`${record.receiver_cus_code}|${o}`} maxLen={30} /> : o,
+    render: (o, record) => (record.receiver_cus_code ? <TrimSpan text={`${record.receiver_cus_code}|${o}`} maxLen={30} /> : o),
   }, {
     title: '收货仓库号',
     width: 100,
@@ -158,9 +158,9 @@ export default class SHFTZTransferOutList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status === 0 ?
+    render: (o, record) => (record.status === 0 ?
       <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
-      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />),
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
@@ -236,10 +236,17 @@ export default class SHFTZTransferOutList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBox placeholder={this.msg('releaseSearchPlaceholder')} onSearch={this.handleSearch} />
       <span />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
-        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange}
+        defaultValue="all"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
         {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}

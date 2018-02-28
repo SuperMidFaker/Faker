@@ -13,11 +13,16 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(state => ({
   privileges: state.account.privileges,
+  tmsApps: state.account.apps.tms,
 }))
 export default class Transport extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    privileges: PropTypes.object.isRequired,
+    privileges: PropTypes.shape({
+      module_id: PropTypes.string,
+      feature_id: PropTypes.string,
+      action_id: PropTypes.string,
+    }).isRequired,
     location: locationShape.isRequired,
     children: PropTypes.node,
   }
@@ -26,16 +31,18 @@ export default class Transport extends React.Component {
   }
   state = {
     linkMenus: [],
+    appMenus: [],
   }
   componentWillMount() {
-    const { privileges, intl } = this.props;
+    const { privileges, intl, tmsApps } = this.props;
     const linkMenus = [];
+    const appMenus = [];
     if (hasPermission(privileges, { module: 'transport', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
         key: 'tms-0',
         path: '/transport/dashboard',
-        icon: 'logixon icon-apps',
+        icon: 'logixon icon-dashboard',
         text: formatMsg(intl, 'dashboard'),
       });
     }
@@ -98,6 +105,7 @@ export default class Transport extends React.Component {
     if (hasPermission(privileges, { module: 'transport', feature: 'resources' })) {
       linkMenus.push({
         single: false,
+        bottom: !tmsApps.length > 0,
         key: 'tms-6',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
@@ -112,7 +120,33 @@ export default class Transport extends React.Component {
         }],
       });
     }
-    this.setState({ linkMenus });
+    if (tmsApps.length > 0) {
+      if (tmsApps.length === 1) {
+        appMenus.push({
+          single: true,
+          key: tmsApps[0].app_id,
+          path: tmsApps[0].url,
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, tmsApps[0].app_name),
+        });
+      } else {
+        appMenus.push({
+          single: false,
+          key: 'tms-app',
+          icon: 'logixon icon-apps',
+          text: formatMsg(intl, 'devApps'),
+          sublinks: [],
+        });
+        tmsApps.forEach((t, index) => {
+          appMenus[0].sublinks.push({
+            key: `tms-app-${index}`,
+            path: t.url,
+            text: formatMsg(intl, t.app_name),
+          });
+        });
+      }
+    }
+    this.setState({ linkMenus, appMenus });
     if (this.props.children === null) {
       this.redirectInitialRoute(this.props.privileges);
     }
@@ -149,7 +183,12 @@ export default class Transport extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout links={this.state.linkMenus} childContent={this.props.children} location={this.props.location} />
+      <CollapsibleSiderLayout
+        links={this.state.linkMenus}
+        appMenus={this.state.appMenus}
+        childContent={this.props.children}
+        location={this.props.location}
+      />
     );
   }
 }

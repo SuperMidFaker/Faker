@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Collapse, Input, Layout, Select, message, Table } from 'antd';
+import { Breadcrumb, Button, Collapse, Layout, Select, message, Table } from 'antd';
 import DataTable from 'client/components/DataTable';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import ButtonToggle from 'client/components/ButtonToggle';
 import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
@@ -18,7 +18,6 @@ import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
-const { Search } = Input;
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -274,7 +273,7 @@ export default class CWMSkuList extends React.Component {
   }
   render() {
     const {
-      skulist, owner, whse, whses, loading, syncing, listFilter,
+      skulist, owner, whse, whses, loading, syncing,
     } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -284,7 +283,7 @@ export default class CWMSkuList extends React.Component {
     };
     this.dataSource.remotes = skulist;
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.sku} />
+      <SearchBox placeholder={this.msg('productSearchPlaceholder')} onSearch={this.handleSearch} />
     </span>);
     const bulkActions = (<span>
       <Button onClick={this.handleApplyPackingRule}>采用包装规则</Button>
@@ -306,7 +305,7 @@ export default class CWMSkuList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search placeholder={this.msg('ownerSearch')} onSearch={this.handleOwnerSearch} />
+              <SearchBox placeholder={this.msg('ownerSearch')} onSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
               <Table

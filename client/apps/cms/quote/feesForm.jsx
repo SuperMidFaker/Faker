@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+
+import { formatMsg } from './message.i18n';
 import { DECL_I_TYPE, DECL_E_TYPE, TRANS_MODE, INVOICE_TYPE, CMS_QUOTE_PERMISSION } from 'common/constants';
 import { Form, Select, Radio, Input, InputNumber, Col, Row } from 'antd';
 
-const formatMsg = format(messages);
+
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
+const { Option } = Select;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -58,7 +58,7 @@ export default class FeesForm extends Component {
     form: PropTypes.object.isRequired,
     action: PropTypes.oneOf(['create', 'edit', 'view']),
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, fieldInits, action } = this.props;
     const DECL_TYPE = DECL_I_TYPE.concat(DECL_E_TYPE);

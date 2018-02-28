@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Input, Modal, message, Form, Select, DatePicker } from 'antd';
 import { closePublishModal, publishQuote } from 'common/reducers/cmsQuote';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+import { formatMsg } from '../message.i18n';
+
+
+const { Option } = Select;
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -27,12 +27,12 @@ const formItemLayout = {
   { closePublishModal, publishQuote }
 )
 @Form.create()
-export default class CreateQtModal extends React.Component {
+export default class PublishQuoteModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    form: PropTypes.object.isRequired,
-    quoteForm: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    quoteForm: PropTypes.shape({ getFieldsValue: PropTypes.func.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -62,19 +62,23 @@ export default class CreateQtModal extends React.Component {
           } else {
             message.info('发布成功', 5);
             this.props.closePublishModal();
-            this.context.router.push('/clearance/billing/quote');
+            this.context.router.push('/clearance/quote');
           }
         });
       }
     });
   }
   disabledBasementDate = current => current && current.valueOf() > Date.now()
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
-      <Modal maskClosable={false} title={this.msg('publishTitle')} visible={visible}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        title={this.msg('publishTitle')}
+        visible={visible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form layout="horizontal">
           <Alert message="报价发布后将按设置的生效时间起重新计费" type="info" showIcon />
@@ -93,7 +97,6 @@ export default class CreateQtModal extends React.Component {
           </FormItem>
           <FormItem label={this.msg('publishRemark')} {...formItemLayout}>
             {getFieldDecorator('publish_commit', {
-              rules: [{ required: true, message: '备注必填' }],
             })(<Input.TextArea row={3} />)}
           </FormItem>
         </Form>

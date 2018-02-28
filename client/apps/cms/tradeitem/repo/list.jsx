@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Switch, Breadcrumb, Button, Icon, Menu, Modal, Layout, Input, Tag, Tooltip } from 'antd';
+import { Switch, Breadcrumb, Button, Icon, Menu, Modal, Layout, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadRepos, openAddModal, switchRepoMode, switchRepoVersionKeep, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
-import { loadCustomers } from 'common/reducers/crmCustomers';
+import { loadRepos, openAddModal, deleteRepo, switchRepoMode, switchRepoVersionKeep, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
+import { loadCustomers } from 'common/reducers/sofCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import ModuleMenu from '../menu';
 import AddRepoModal from './modal/addRepoModal';
@@ -18,7 +19,7 @@ import LinkSlaveModal from './modal/linkSlaveModal';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
-const { Search } = Input;
+
 
 @injectIntl
 @connect(
@@ -30,6 +31,7 @@ const { Search } = Input;
   {
     loadRepos,
     openAddModal,
+    deleteRepo,
     switchRepoMode,
     switchRepoVersionKeep,
     showLinkSlaveModal,
@@ -142,6 +144,9 @@ export default class RepoList extends React.Component {
             <a onClick={() => this.handleLinkSlave(repo)}>关联从库</a>
           </Menu.Item>);
         }
+        menuItems.push(<Menu.Item key="repodel">
+          <a onClick={() => this.handleRepoDel(repo)}><Tag color="red">删除</Tag></a>
+        </Menu.Item>);
       } else if (repo.owner_tenant_id === this.props.tenantId) {
         menuItems.push(<Menu.Item key="remslave">
           <a onClick={() => this.handleUnlinkSlave(repo.id)}>删除关联</a>
@@ -180,6 +185,21 @@ export default class RepoList extends React.Component {
       },
     });
   }
+  handleRepoDel = (repo) => {
+    const self = this;
+    Modal.confirm({
+      title: `确定删除物料库【${repo.owner_name}】所有信息?`,
+      onOk() {
+        self.props.deleteRepo(repo.id).then((result) => {
+          if (!result.error) {
+            self.handleRepoReload();
+          }
+        });
+      },
+      onCancel() {
+      },
+    });
+  }
   handleVersionKeepChange = (repoId, keep) => {
     this.props.switchRepoVersionKeep(repoId, keep);
   }
@@ -210,7 +230,7 @@ export default class RepoList extends React.Component {
     const repos = this.props.repos.filter(rep =>
       !filter.name || new RegExp(filter.name).test(rep.owner_name));
     const toolbarActions = (<span>
-      <Search style={{ width: 200 }} placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} />
+      <SearchBox placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} />
     </span>);
     return (
       <Layout>

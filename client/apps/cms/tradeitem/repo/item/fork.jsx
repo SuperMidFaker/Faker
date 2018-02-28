@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
+
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import { loadTradeItem, saveRepoForkItem, toggleConfirmForkModal, changeItemMaster, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import ItemMasterPane from './tabpane/itemMasterPane';
 import ConfirmForkModal from './modal/confirmForkModal';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
@@ -56,7 +56,7 @@ export default class TradeItemFork extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleConfirm = () => {
     const { itemData, form } = this.props;
     const values = form.getFieldsValue();

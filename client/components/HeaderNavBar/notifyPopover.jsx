@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Button, Popover, Badge, notification, message } from 'antd';
+import { Alert, Button, Popover, Badge, Icon, notification, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
@@ -199,9 +199,9 @@ export default class NotifyPopover extends React.Component {
       <Popover content={notificationContent} placement="bottomLeft" trigger="click"
         visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
         <div>
-            <Badge count={unreadMessagesNum} overflowCount={99}>
-                <i className="icon s7-bell" />
-            </Badge>
+          <Badge count={unreadMessagesNum} overflowCount={99}>
+            <Icon type="bell" />
+          </Badge>
         </div>
       </Popover>
     );

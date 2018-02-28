@@ -109,6 +109,10 @@ const cwmShippingBizObjects = [{
     key: 'soFinished',
     text: 'onSoFinished',
     actionText: 'soFinish',
+  }, {
+    key: 'soDecl',
+    text: 'onSoDecl',
+    actionText: 'soDecl',
   }],
 }, {
   key: 'cwmSoNormal',

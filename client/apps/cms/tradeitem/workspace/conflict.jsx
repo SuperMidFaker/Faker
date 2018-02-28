@@ -114,7 +114,7 @@ export default class ConflictItemsList extends React.Component {
             <PageHeader.Actions>
               <WsItemExportButton {...this.state.filter} onUploaded={this.handleReload} />
               {conflictStat.master && <Button type="primary" loading={submitting} ghost icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
-              <Button type="primary" icon="arrow-up" loading={submitting} onClick={this.handleLocalAudit}>提交审核</Button>
+              <Button type="primary" icon="arrow-up" loading={submitting} onClick={this.handleLocalAudit}>整批提交</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

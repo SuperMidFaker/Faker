@@ -5,13 +5,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
-import { format } from 'client/common/i18n/helpers';
+
 import { Logixon } from 'client/components/FontIcon';
 import { loadCertParams, loadPermitsByTradeItem } from 'common/reducers/cmsPermit';
 import { CIQ_LICENCE_TYPE } from 'common/constants';
-import messages from '../../../message.i18n';
+import { formatMsg } from '../../../message.i18n';
 
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
@@ -46,7 +45,7 @@ export default class ItemPermitPane extends React.Component {
       }
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     key: 'sno',
     width: 45,

@@ -1,3 +1,11 @@
+export const QUOTE_TYPE = [{
+  value: 'sales',
+  text: '客户报价',
+}, {
+  value: 'cost',
+  text: '服务商报价',
+}];
+
 export const TARIFF_KINDS = [{
   value: 'sales',
   text: '销售价',

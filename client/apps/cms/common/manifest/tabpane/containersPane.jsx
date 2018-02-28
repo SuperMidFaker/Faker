@@ -2,17 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Menu, Input, Select, message } from 'antd';
+import { Input, Select, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import { CMS_CNTNR_SPEC_CUS, CMS_CNTNR_SPEC_CIQ } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const { Option } = Select;
-const formatMsg = format(messages);
 
 function ColumnInput(props) {
   const {
@@ -54,7 +52,7 @@ function ColumnSelect(props) {
   const option = options.find(item => item.value === record[field]);
   return <span>{option ? option.text : ''}</span>;
 }
-ColumnSelect.proptypes = {
+ColumnSelect.propTypes = {
   inEdit: PropTypes.bool,
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
@@ -94,7 +92,7 @@ export default class ContainersPane extends React.Component {
       this.setState({ datas: nextProps.containers });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();

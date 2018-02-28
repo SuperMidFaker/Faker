@@ -4,29 +4,35 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Breadcrumb, Button, Card, Collapse, Form, Popconfirm, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Card, Collapse, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions,
-  loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
+import { toggleFlowList, loadVendorTenants, openSubFlowAuthModal, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
+import { loadFormRequires } from 'common/reducers/sofOrders';
+import { loadPartners } from 'common/reducers/partner';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
-import AddTriggerModal from './panel/compose/addTriggerModal';
 import { Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
+import PageHeader from 'client/components/PageHeader';
+import { PARTNER_ROLES } from 'common/constants';
+import update from 'immutability-helper';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import FlowSettingModal from './modal/flowSettingModal';
+import AddTriggerModal from './panel/compose/addTriggerModal';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
 import BizObjTMSPanel from './panel/bizObjTMSPanel';
 import BizObjCWMRecPanel from './panel/bizObjCWMRecPanel';
 import BizObjCWMShipPanel from './panel/bizObjCWMShipPanel';
-import { loadFormRequires } from 'common/reducers/crmOrders';
 import { formatMsg } from './message.i18n';
+import DragItem from './dragItem';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Panel = Collapse.Panel;
-const Option = Select.Option;
-const FormItem = Form.Item;
+const { Option } = Select;
+const { Panel } = Collapse;
 
 const NodeKindPanelMap = {
   import: BizObjCMSPanel,
@@ -49,27 +55,32 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     trackingFields: state.scofFlow.trackingFields,
     flowGraph: state.scofFlow.flowGraph,
     submitting: state.scofFlow.submitting,
     graphLoading: state.scofFlow.graphLoading,
     listCollapsed: state.scofFlow.listCollapsed,
+    tenantId: state.account.tenantId,
   }),
   {
-    toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings,
+    toggleFlowList,
+    loadVendorTenants,
+    loadPartners,
+    openSubFlowAuthModal,
+    delFlow,
+    loadFlowGraph,
+    loadFlowGraphItem,
+    saveFlowGraph,
+    setNodeActions,
+    loadScvTrackings,
   }
 )
+@DragDropContext(HTML5Backend)
 export default class FlowDesigner extends React.Component {
-  static defaultProps ={
-    listCollapsed: false,
-  }
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     submitting: PropTypes.bool,
     graphLoading: PropTypes.bool.isRequired,
-    listCollapsed: PropTypes.bool.isRequired,
     reloadOnDel: PropTypes.func.isRequired,
     trackingFields: PropTypes.arrayOf(PropTypes.shape({
       field: PropTypes.string,
@@ -79,8 +90,8 @@ export default class FlowDesigner extends React.Component {
     currentFlow: PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
-      partner_id: PropTypes.number.isRequired,
-      customer_tenant_id: PropTypes.number.isRequired,
+      partner_id: PropTypes.number,
+      customer_tenant_id: PropTypes.number,
       tracking_id: PropTypes.number,
     }).isRequired,
   }
@@ -94,6 +105,7 @@ export default class FlowDesigner extends React.Component {
       })),
       trackings: [],
       trackingId: null,
+      nodes: [],
     };
     this.trackingFieldTypeMapNodeKinds = {
       cms: ['import', 'export'],
@@ -106,11 +118,10 @@ export default class FlowDesigner extends React.Component {
     this.formhoc = null;
     this.trackingColumns = [{
       title: '追踪点',
-      width: 50,
+      width: 150,
       dataIndex: 'title',
     }, {
       title: '来源节点',
-      width: 130,
       dataIndex: 'node',
       render: (node, row) => {
         if (this.graph) {
@@ -129,13 +140,27 @@ export default class FlowDesigner extends React.Component {
               onSave={nodeId => this.handleTrackNodeChange(nodeId, row.field)}
             />);
         }
+        return null;
       },
     }];
   }
+
   componentWillMount() {
-    this.props.loadFlowGraph(this.props.currentFlow.id);
-    if (this.props.currentFlow.customer_tenant_id !== -1) {
-      this.props.loadScvTrackings(this.props.currentFlow.customer_tenant_id).then((result) => {
+    const { currentFlow } = this.props;
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        contentHeight: window.innerHeight - 150,
+      });
+    }
+    this.props.loadFlowGraph(currentFlow.id, currentFlow.main_flow_id).then((result) => {
+      if (!result.error) {
+        this.setState({
+          nodes: result.data.nodes,
+        });
+      }
+    });
+    if (currentFlow.customer_tenant_id && currentFlow.customer_tenant_id !== -1) {
+      this.props.loadScvTrackings(currentFlow.customer_tenant_id).then((result) => {
         if (!result.error) {
           this.setState({ trackings: result.data });
         }
@@ -143,10 +168,14 @@ export default class FlowDesigner extends React.Component {
     }
   }
   componentDidMount() {
+    if (!this.props.main_flow_id) {
+      this.props.loadVendorTenants();
+      this.props.loadPartners({ role: PARTNER_ROLES.CUS });
+    }
     this.graph = new window.G6.Graph({
       id: 'flowchart', // 容器ID
-      width: window.innerWidth - 370, // 画布宽
-      height: 240, // 画布高
+      width: window.innerWidth - 100, // 画布宽
+      height: 180, // 画布高
       grid: {
         forceAlign: true, // 是否支持网格对齐
         cell: 10, // 网格大小
@@ -179,7 +208,13 @@ export default class FlowDesigner extends React.Component {
         this.beginAdd = false;
         return;
       }
-      const item = ev.item;
+      const { item } = ev;
+      const { tenantId } = this.props;
+      if (item && item.get('type') === 'node' && item.get('model').tenant_id !== tenantId
+        && item.get('model').provider_tenant_id !== tenantId) {
+        this.setState({ activeItem: null });
+        return;
+      }
       if (this.state.activeItem) {
         if (item && this.state.activeItem.get('id') === item.get('id')) {
           return;
@@ -191,7 +226,7 @@ export default class FlowDesigner extends React.Component {
     });
     this.graph.on('afterAdd', (ev) => {
       console.log('afteradd', ev);
-      const item = ev.item;
+      const { item } = ev;
       this.graph.update(item, { loaded: true });
       if (item.get('type') === 'edge') {
         /*
@@ -237,11 +272,12 @@ export default class FlowDesigner extends React.Component {
           title: tf.title, field: tf.field, module: tf.module, node: null,
         })),
       });
-      this.props.loadFlowGraph(nextProps.currentFlow.id);
+      this.props.loadFlowGraph(nextProps.currentFlow.id, nextProps.currentFlow.main_flow_id);
     }
     if (nextProps.currentFlow.customer_tenant_id === -1) {
       this.setState({ trackings: [] });
-    } else if (nextProps.currentFlow.customer_tenant_id !== this.props.currentFlow.customer_tenant_id) {
+    } else if (nextProps.currentFlow.customer_tenant_id
+      !== this.props.currentFlow.customer_tenant_id) {
       this.props.loadScvTrackings(nextProps.currentFlow.customer_tenant_id).then((result) => {
         if (!result.error) {
           this.setState({ trackings: result.data });
@@ -296,6 +332,7 @@ export default class FlowDesigner extends React.Component {
         break;
     }
     if (kind) {
+      const { currentFlow, tenantId } = this.props;
       this.graph.beginAdd('node', {
         id,
         kind,
@@ -303,6 +340,10 @@ export default class FlowDesigner extends React.Component {
         in_degree: 0,
         out_degree: 0,
         name: kind !== 'terminal' ? `节点${this.graph.get('items').filter(item => item.get('type') === 'node').length + 1}` : undefined,
+        demander_tenant_id: currentFlow.customer_tenant_id || tenantId,
+        demander_partner_id: currentFlow.partner_id,
+        provider_tenant_id: tenantId,
+        tenant_id: tenantId,
       });
       this.graph.refresh();
     }
@@ -327,7 +368,7 @@ export default class FlowDesigner extends React.Component {
   }
   handleAddToolbarNode = (ev) => {
     this.beginAdd = true;
-    const activeItem = this.state.activeItem;
+    const { activeItem } = this.state;
     if (activeItem && this.formhoc) {
       this.formhoc.validateFields((err, values) => {
         if (!err) {
@@ -343,7 +384,7 @@ export default class FlowDesigner extends React.Component {
   }
   handleAddEdge = () => {
     this.beginAdd = true;
-    const activeItem = this.state.activeItem;
+    const { activeItem } = this.state;
     if (activeItem && this.formhoc) {
       this.formhoc.validateFields((err, values) => {
         if (!err) {
@@ -380,7 +421,7 @@ export default class FlowDesigner extends React.Component {
     });
   }
   handleActiveValidated = (item) => {
-    const activeItem = this.state.activeItem;
+    const { activeItem } = this.state;
     if (activeItem && this.formhoc) {
       const values = this.formhoc.getFieldsValue();
       this.graph.update(activeItem, values);
@@ -435,7 +476,7 @@ export default class FlowDesigner extends React.Component {
     this.graph.update(this.state.activeItem, { addedConds: added, conditions: afterConds });
   }
   handleCondUpdate = (cond, afterConds) => {
-    const updConds = this.state.activeItem.get('model').updConds;
+    const { updConds } = this.state.activeItem.get('model');
     let i = 0;
     for (; i < updConds.length; i++) {
       if (updConds[i].key === cond.key) {
@@ -460,7 +501,7 @@ export default class FlowDesigner extends React.Component {
       }
     }
     if (!found) {
-      const delConds = this.state.activeItem.get('model').delConds;
+      const { delConds } = this.state.activeItem.get('model');
       delConds.push(cond.key);
       this.graph.update(this.state.activeItem, { delConds, conditions: afterConds });
     }
@@ -468,11 +509,13 @@ export default class FlowDesigner extends React.Component {
   handleTriggerModalChange = (nodeBizObject, triggerName, newActions) => {
     const nodeActions = this.state.activeItem.get('model').actions;
     const actions = nodeActions.filter(na => !(nodeBizObject ?
-      (na.node_biz_object === nodeBizObject && na.trigger_name === triggerName) : (na.trigger_name === triggerName))).concat(newActions.map(na => ({
+      (na.node_biz_object === nodeBizObject && na.trigger_name === triggerName) :
+      (na.trigger_name === triggerName))).concat(newActions.map(na => ({
       ...na, node_biz_object: nodeBizObject, trigger_name: triggerName,
     })));
     this.graph.update(this.state.activeItem, { actions });
-    this.props.setNodeActions(actions); // connect nodeActions rerender FlowTriggerTable, model passed no effect
+    this.props.setNodeActions(actions);
+    // connect nodeActions rerender FlowTriggerTable, model passed no effect
   }
   handleTrackingChange = (trackingId) => {
     this.setState({ trackingId });
@@ -485,13 +528,31 @@ export default class FlowDesigner extends React.Component {
     });
   }
   handlePanelForm = (form) => { this.formhoc = form; }
+  handleSubFlowAuth = () => {
+    this.props.openSubFlowAuthModal(this.props.currentFlow);
+  }
+  moveCard = (dragIndex, hoverIndex) => {
+    const { nodes } = this.state;
+    const dragCard = nodes[dragIndex];
+    const state = update(this.state, {
+      nodes: {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard],
+        ],
+      },
+
+    });
+    this.setState({ ...state });
+  }
   handleSave = () => {
-    const activeItem = this.state.activeItem;
+    const { activeItem } = this.state;
     if (activeItem && this.formhoc) {
       const values = this.formhoc.getFieldsValue();
       this.graph.update(activeItem, values);
     }
-    const trackingId = this.state.trackingId !== this.props.currentFlow.tracking_id ? this.state.trackingId : null;
+    const trackingId = this.state.trackingId !== this.props.currentFlow.tracking_id ?
+      this.state.trackingId : null;
     const graphItems = this.graph.get('items');
     const nodeMap = {};
     graphItems.filter(item => item.get('type') === 'node').forEach((item) => {
@@ -513,12 +574,16 @@ export default class FlowDesigner extends React.Component {
     const nodes = Object.keys(nodeMap).map(nodeid => nodeMap[nodeid]);
     console.log(nodes, edges);
     // todo graph node edge disconnected
-    this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges, trackingId, this.state.trackDataSource.map(tds => ({
-      field: tds.field,
-      node: tds.node,
-    }))).then((result) => {
+    this.props.saveFlowGraph(
+      this.props.currentFlow.id, nodes, edges, trackingId,
+      this.state.trackDataSource.map(tds => ({
+        field: tds.field,
+        node: tds.node,
+      }))
+    ).then((result) => {
       if (!result.error) {
-        this.props.loadFlowGraph(this.props.currentFlow.id);
+        const { currentFlow } = this.props;
+        this.props.loadFlowGraph(currentFlow.id, currentFlow.main_flow_id);
         this.setState({ activeItem: null });
         message.success('保存成功');
       } else {
@@ -538,49 +603,42 @@ export default class FlowDesigner extends React.Component {
     );
   }
   render() {
-    const { submitting, listCollapsed, currentFlow } = this.props;
+    const { submitting, currentFlow } = this.props;
     const { activeItem } = this.state;
     const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
     return (
       <Layout>
-        <Layout>
-          <Header className="page-header">
-            {listCollapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('flowName')}
-              </Breadcrumb.Item>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
               <Breadcrumb.Item>
                 {currentFlow.name}
               </Breadcrumb.Item>
-            </Breadcrumb>}
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
+            <Button icon="setting" onClick={this.handleSubFlowAuth}>{this.msg('flowSetting')}</Button>
+            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
+              {this.msg('saveFlow')}
+            </Button>
             <ButtonToggle
-              iconOn="menu-fold"
-              iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
+              iconOn="menu-unfold"
+              iconOff="menu-fold"
+              onClick={this.toggleRightSider}
             />
-            <div className="page-header-tools">
-              <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
-                {this.msg('saveFlow')}
-              </Button>
-              <ButtonToggle
-                iconOn="setting"
-                iconOff="setting"
-                onClick={this.toggleRightSider}
-              />
-            </div>
-          </Header>
-          <Content className="main-content">
+          </PageHeader.Actions>
+        </PageHeader>
+        <Layout>
+          <Content style={{ padding: 8, height: this.state.contentHeight }} >
             <Spin spinning={this.props.graphLoading}>
               <Card
                 title={this.msg('flowRelationGraph')}
-                bodyStyle={{ padding: 0, height: 240 }}
+                bodyStyle={{ padding: 0, height: 180 }}
+                style={{ marginBottom: 8 }}
                 extra={<div className="toolbar-right">
                   {this.renderGraphToolbar()}
-                  <Button icon="swap-right" onClick={this.handleAddEdge}>
-                    {this.msg('addFlowEdge')}
-                  </Button>
-                  <Button icon="delete" onClick={this.handleRemoveItem} />
+                  <Tooltip title={this.msg('addFlowEdge')}><Button onClick={this.handleAddEdge}><Logixon type="connect" /></Button></Tooltip>
+                  <Tooltip title={this.msg('erase')}><Button onClick={this.handleRemoveItem}><Logixon type="erase" /></Button></Tooltip>
                 </div>}
               >
                 <div id="flowchart" />
@@ -617,47 +675,48 @@ export default class FlowDesigner extends React.Component {
                 kind={activeItem && activeItem.get('model').kind}
                 model={activeItem && activeItem.get('model')}
               />
+              <FlowSettingModal graph={this.graph} />
             </Spin>
           </Content>
-        </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSidercollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="panel-header">
-              <h3>流程设置</h3>
+          <Sider
+            trigger={null}
+            defaultCollapsed
+            collapsible
+            collapsed={this.state.rightSidercollapsed}
+            width={380}
+            collapsedWidth={0}
+            className="right-sider"
+          >
+            <div className="right-sider-panel">
+              <Collapse accordion defaultActiveKey="nodeOrdering">
+                <Panel header={this.msg('nodeOrdering')} key="nodeOrdering">
+                  {this.state.nodes.map((node, index) => (
+                    <DragItem
+                      index={index}
+                      id={node.id}
+                      name={node.name}
+                      moveCard={this.moveCard}
+                    />
+                  ))}
+                </Panel>
+                <Panel header={this.msg('tracking')} key="tracking">
+                  <Table
+                    size="middle"
+                    title={() => (<Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
+                      {this.state.trackings.map(data => (
+                        <Option key={data.id} value={data.id}>{data.name}</Option>))}
+                    </Select>)}
+                    columns={this.trackingColumns}
+                    bordered={false}
+                    dataSource={this.state.trackDataSource}
+                    rowKey="field"
+                    scroll={{ y: (this.state.contentHeight - 280) }}
+                  />
+                </Panel>
+              </Collapse>
             </div>
-            <Collapse accordion defaultActiveKey="tracking">
-              <Panel header="追踪节点" key="tracking">
-                <FormItem label="追踪表" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }}>
-                  <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
-                    {this.state.trackings.map(data => (
-                      <Option key={data.id} value={data.id}>{data.name}</Option>))}
-                  </Select>
-                </FormItem>
-                <Table
-                  columns={this.trackingColumns}
-                  bordered={false}
-                  dataSource={this.state.trackDataSource}
-                  rowKey="field"
-                  scroll={{ y: 400 }}
-                />
-              </Panel>
-              <Panel header="更多" key="more">
-                <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
-                <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteFlow}>
-                  <Button type="danger" icon="delete">删除流程</Button>
-                </Popconfirm>
-              </Panel>
-            </Collapse>
-          </div>
-        </Sider>
+          </Sider>
+        </Layout>
       </Layout>
     );
   }

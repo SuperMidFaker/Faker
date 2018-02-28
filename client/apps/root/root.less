@@ -17,18 +17,6 @@ img {
   vertical-align: middle;
 }
 /* Override antd styles */
-// Override default font-size
-
-.ant-checkbox-wrapper,
-.ant-dropdown-menu-item,
-.ant-dropdown-menu-submenu-title,
-.ant-input,
-.ant-popover,
-.ant-select,
-.ant-select-dropdown,
-.ant-upload {
-  font-size: 14px;
-}
 .ant-advanced-search-form {
   padding: 16px;
   transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -63,6 +51,14 @@ img {
   margin-bottom: 16px;
   .ant-collapse {
     border: none;
+  }
+  .ant-list-header,
+  .ant-list-footer,
+  .ant-list-item {
+    padding: 12px;
+  }
+  .ant-list-pagination {
+    margin-bottom: 12px;
   }
   .ant-table-small {
     border: none;
@@ -121,6 +117,9 @@ img {
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   padding-right: 16px;
 }
+.ant-collapse-borderless > .ant-collapse-item:last-child {
+  border-bottom: 0;
+}
 .ant-form-hide-required-mark {
   .ant-form-item-required {
     font-weight: 600;
@@ -162,15 +161,18 @@ img {
   background: transparent;
 }
 .ant-list {
-  .ant-spin-container {
-    overflow: visible;
-  }
   .ant-card {
     margin-bottom: 0;
   }
 }
 .ant-list-grid .ant-list-item {
   margin-bottom: 0;
+}
+.ant-list-item-meta-title {
+  font-size: 16px;
+}
+.ant-list-item-meta-description .ant-badge-status-text {
+  color: rgba(0, 0, 0, 0.45);
 }
 .ant-menu-root {
   font-size: 14px;
@@ -214,6 +216,9 @@ img {
   height: 16px;
   line-height: 16px;
   border-radius: 8px;
+  .ant-avatar-string {
+    line-height: 16px;
+  }
 }
 .ant-steps .ant-steps-title,
 .ant-steps .ant-steps-head {
@@ -244,7 +249,7 @@ img {
   border-radius: 0;
 }
 .ant-table-thead > tr > th {
-  padding: 12px 8px;
+  padding: 8px;
 }
 .ant-table-placeholder {
   border-bottom: none;
@@ -606,7 +611,6 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
   &-head {
     padding: 8px;
-    border-bottom: 1px solid #d9d9d9;
     .ant-upload {
       width: 100%;
       button {
@@ -656,7 +660,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 }
 .main-wrapper {
   background: #fff;
-  padding: 16px 0;
+  padding: 0;
 }
 .full-container {
   height: 100%;
@@ -1028,6 +1032,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   >span {
     margin-left: 8px;
     margin-right: 0;
+  }
+  .logixon {
+    font-size: 16px;
   }
 }
 .toolbar-left {

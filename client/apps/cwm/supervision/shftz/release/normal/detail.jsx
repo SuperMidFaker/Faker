@@ -10,6 +10,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import SearchBox from 'client/components/SearchBox';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
@@ -125,7 +126,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
           }
         ));
       } else {
-        detailMap.set(detail.ftz_ent_detail_id, detail);
+        detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, detail, {
+          seq_no: null,
+          product_no: null,
+        }));
       }
     }
     return detailMap;
@@ -422,6 +426,28 @@ export default class SHFTZNormalRelRegDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
+  handleFilSearch = (searchText) => {
+    let filingDetails = this.props.relRegs[0].details.filter(det => det.qty > 0);
+    if (searchText) {
+      filingDetails = filingDetails.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.hscode)
+        || reg.test(item.product_no) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ filingDetails });
+  }
+  handleExitSearch = (searchText) => {
+    let exitDetails = this.props.relRegs[0].details.filter(det => det.normalreg_exit_no);
+    if (searchText) {
+      exitDetails = exitDetails.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.hscode)
+        || reg.test(item.product_no) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ exitDetails });
+  }
   render() {
     const {
       relSo, relRegs, whse, submitting,
@@ -483,14 +509,16 @@ export default class SHFTZNormalRelRegDetail extends Component {
       tab: r.ftz_rel_no || r.pre_entry_seq_no,
       key: index,
     }));
-    const stat = reg.details && reg.details.reduce((acc, regd) => ({
+    const stat = filingDetails.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,
       total_net_wt: acc.total_net_wt + regd.net_wt,
+      total_grosswt: acc.total_grosswt + regd.gross_wt,
     }), {
       total_qty: 0,
       total_amount: 0,
       total_net_wt: 0,
+      total_grosswt: 0,
     });
     return (
       <div>
@@ -616,6 +644,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                     rowKey="id"
                   >
                     <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleFilSearch} />
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                         <RadioButton value="splitted">拆分明细</RadioButton>
                         <RadioButton value="merged">合并明细</RadioButton>
@@ -623,6 +652,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                       <DataPane.Extra>
                         <Summary>
                           <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>
+                          <Summary.Item label="总毛重" addonAfter="KG">{stat && stat.total_grosswt.toFixed(3)}</Summary.Item>
                           <Summary.Item label="总净重" addonAfter="KG">{stat && stat.total_net_wt.toFixed(3)}</Summary.Item>
                           <Summary.Item label="总金额">{stat && stat.total_amount.toFixed(3)}</Summary.Item>
                         </Summary>
@@ -639,12 +669,13 @@ export default class SHFTZNormalRelRegDetail extends Component {
                     dataSource={exitDetails}
                     rowKey="id"
                   >
-                    {exitDetails.length > 0 &&
                     <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleExitSearch} />
+                      {exitDetails.length > 0 &&
                       <DataPane.Actions>
                         <Button type="primary" onClick={this.handleExportExitVoucher}>导出出区凭单</Button>
-                      </DataPane.Actions>
-                    </DataPane.Toolbar>}
+                      </DataPane.Actions>}
+                    </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
               </Tabs>

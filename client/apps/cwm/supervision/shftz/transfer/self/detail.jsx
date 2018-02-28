@@ -6,13 +6,14 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Steps, Button, Tabs, Card, Col, Row, Tag, message, notification } from 'antd';
+import { Breadcrumb, Form, Layout, Steps, Button, Tabs, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
+import SearchBox from 'client/components/SearchBox';
 import EditableCell from 'client/components/EditableCell';
 import Summary from 'client/components/Summary';
 import { loadVirtualTransferDetails, getSelfTransfFtzCargos, loadParams, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
@@ -77,6 +78,12 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   state = {
     fullscreen: true,
+    transfSelfReg: {},
+  }
+  componentWillMount() {
+    this.setState({
+      transfSelfReg: this.props.transfSelfReg,
+    });
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleFullscreen = (fullscreen) => {
@@ -303,8 +310,20 @@ export default class SHFTZTransferSelfDetail extends Component {
       }
     });
   }
+  handleSearch = (searchText) => {
+    const transfSelfReg = JSON.parse(JSON.stringify(this.props.transfSelfReg));
+    if (searchText) {
+      transfSelfReg.details = transfSelfReg.details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
+        || reg.test(item.hscode) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ transfSelfReg });
+  }
   render() {
-    const { transfSelfReg, whse, submitting } = this.props;
+    const { whse, submitting } = this.props;
+    const { transfSelfReg } = this.state;
     const stat = transfSelfReg.details ? transfSelfReg.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
@@ -417,14 +436,10 @@ export default class SHFTZTransferSelfDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <Row type="flex">
-                        <Col className="col-flex-primary info-group-inline" />
-
-
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+                      <DataPane.Extra>
+                        {totCol}
+                      </DataPane.Extra>
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>

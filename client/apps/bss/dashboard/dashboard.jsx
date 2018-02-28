@@ -10,11 +10,9 @@ import ChartCard from 'client/components/ChartCard';
 import Trend from 'client/components/Trend';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import messages from './message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 
 @injectIntl
@@ -33,7 +31,8 @@ export default class BSSDashboard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   render() {
     const topColResponsiveProps = {
       xs: 24,
@@ -92,7 +91,8 @@ export default class BSSDashboard extends React.Component {
                 action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
                 total={yuan(8846)}
                 footer={<Field label="支付税金" value={`￥${numeral(12423).format('0,0')}`} />}
-                contentHeight={46} canvas
+                contentHeight={46}
+                canvas
               >
                 <MiniArea
                   color="#975FE4"
@@ -108,7 +108,7 @@ export default class BSSDashboard extends React.Component {
                 action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
                 total={yuan(6560)}
                 footer={<Field label="回款比例" value="60%" />}
-                contentHeight={46} canvas
+                contentHeight={46}
               >
                 <MiniBar
                   height={46}

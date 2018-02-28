@@ -5,6 +5,8 @@ import { Modal, Input, Table } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { toggleAttDocuModal, saveAttDocuments, loadCiqDeclHead, loadAttDocuments } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_ATT_DOCUMENTS } from 'common/constants';
+import { intlShape, injectIntl } from 'react-intl';
+import { formatMsg } from '../message.i18n';
 
 
 @connect(
@@ -15,9 +17,11 @@ import { CIQ_ATT_DOCUMENTS } from 'common/constants';
     toggleAttDocuModal, saveAttDocuments, loadCiqDeclHead, loadAttDocuments,
   }
 )
+@injectIntl
 export default class AttachedDocuModal extends Component {
   static propTypes = {
-    preEntrySeqNo: PropTypes.string.isRequired,
+    intl: intlShape.isRequired,
+    preEntrySeqNo: PropTypes.string,
   }
   state = {
     documents: [],
@@ -48,6 +52,7 @@ export default class AttachedDocuModal extends Component {
       });
     }
   }
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleAttDocuModal(false);
   }
@@ -99,45 +104,45 @@ export default class AttachedDocuModal extends Component {
       className: 'table-col-seq',
       render: (o, record, index) => index + 1,
     }, {
-      title: '类别代码',
+      title: this.msg('attDocTypeCode'),
       dataIndex: 'att_doc_type_code',
       align: 'center',
       width: 80,
     }, {
-      title: '随附单据名称',
+      title: this.msg('attDocName'),
       dataIndex: 'att_doc_name',
     }, {
-      title: '随附单据编号',
+      title: this.msg('attDocNo'),
       render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_no')} />,
       dataIndex: 'att_doc_no',
       width: 150,
     }, {
-      title: '核销货物序号',
+      title: this.msg('wrtofDetailNo'),
       render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_detail_no')} />,
       dataIndex: 'att_doc_wrtof_detail_no',
       width: 120,
     }, {
-      title: '核销数量',
+      title: this.msg('wrtofQty'),
       render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_qty')} />,
       dataIndex: 'att_doc_wrtof_qty',
       width: 120,
     }, {
-      title: '核销后明细余量',
+      title: this.msg('detailLeft'),
       render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_detail_left')} />,
       dataIndex: 'att_doc_detail_left',
       width: 120,
     }, {
-      title: '核销后余量',
+      title: this.msg('wrtofLeft'),
       render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_left')} />,
       dataIndex: 'att_doc_wrtof_left',
       width: 120,
     }, {
-      title: '操作',
+      dataIndex: 'OPS_COL',
       width: 60,
       render: (o, record, index) => <RowAction onClick={() => this.handleAdd(record.att_doc_type_code, index)} icon="plus" />,
     }];
     return (
-      <Modal width={1200} title="随附单据" visible={visible} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} style={{ top: 20 }}>
+      <Modal width={1200} title={this.msg('attDoc')} visible={visible} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} style={{ top: 20 }}>
         <Table size="middle" columns={columns} dataSource={documents} pagination={false} scroll={{ y: 560 }} rowSelection={rowSelection} rowKey="index" />
       </Modal>
     );

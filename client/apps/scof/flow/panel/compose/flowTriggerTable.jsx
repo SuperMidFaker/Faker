@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table } from 'antd';
+import { Card, Icon, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { openAddTriggerModal } from 'common/reducers/scofFlow';
 import { NODE_TRIGGERS, NODE_BIZ_OBJECTS } from 'common/constants';
@@ -27,12 +27,17 @@ export default class FlowTriggerTable extends React.Component {
     {
       dataIndex: 'operation',
       width: 90,
+      align: 'right',
       render: (di, row) => {
         const { bizObj, nodeActions } = this.props;
-        const actions = nodeActions.filter(na => bizObj ?
-          (na.node_biz_object === bizObj && na.trigger_name === row.key) : (na.trigger_name === row.key));
-        const label = actions.length > 0 ? `${actions.length}个触发器` : '新增触发器';
-        return <a onClick={() => this.handleTriggerActions(row.key, row.name, actions, bizObj)}>{label}</a>;
+        const actions = nodeActions.filter(na => (bizObj ?
+          (na.node_biz_object === bizObj && na.trigger_name === row.key) :
+          (na.trigger_name === row.key)));
+        const label = actions.length > 0 ? `${actions.length}个触发器` :
+        <span><Icon type="plus-circle-o" /> 触发器</span>;
+        return (<a onClick={() =>
+          this.handleTriggerActions(row.key, row.name, actions, bizObj)}
+        >{label}</a>);
       },
     },
   ]
@@ -53,7 +58,9 @@ export default class FlowTriggerTable extends React.Component {
       events = NODE_TRIGGERS.map(nt => ({ key: nt.key, name: this.msg(nt.text) }));
     }
     return (
-      <Table size="middle" columns={this.eventColumns} dataSource={events} pagination={false} showHeader={false} />
+      <Card bodyStyle={{ padding: 0 }}>
+        <Table size="small" columns={this.eventColumns} dataSource={events} pagination={false} showHeader={false} />
+      </Card>
     );
   }
 }

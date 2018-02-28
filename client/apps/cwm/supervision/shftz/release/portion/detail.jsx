@@ -10,6 +10,7 @@ import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg,
@@ -22,8 +23,8 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const TabPane = Tabs.TabPane;
-const Step = Steps.Step;
+const { TabPane } = Tabs;
+const { Step } = Steps;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -84,22 +85,13 @@ export default class SHFTZRelDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    tabKey: '',
     reg: {},
-    editable: false,
-    groupVals: ['supplier', 'trxn_mode', 'currency'],
     fullscreen: true,
+    origDecl: [],
     decl: [],
     view: 'splitted',
     filingDetails: [],
     merged: [],
-  }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
@@ -110,12 +102,11 @@ export default class SHFTZRelDetail extends Component {
         reg: nextProps.relRegs[0],
         filingDetails: nextProps.relRegs[0].details,
         merged: [...detailMap.values()],
-        tabKey: nextProps.relRegs[0].pre_entry_seq_no,
-        editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
       });
       this.props.loadBatchDecl(nextProps.relRegs[0].ftz_rel_no).then((result) => {
         if (!result.error) {
           this.setState({
+            origDecl: result.data,
             decl: result.data,
           });
         }
@@ -140,7 +131,10 @@ export default class SHFTZRelDetail extends Component {
           }
         ));
       } else {
-        detailMap.set(detail.ftz_ent_detail_id, detail);
+        detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, detail, {
+          seq_no: null,
+          product_no: null,
+        }));
       }
     }
     return detailMap;
@@ -153,10 +147,11 @@ export default class SHFTZRelDetail extends Component {
     } else if (status === 5 || status === 6) {
       return 4;
     }
+    return -1;
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
-    const soNo = this.props.params.soNo;
+    const { soNo } = this.props.params;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     const fileOp = this.props.fileRelPortionouts(soNo, whseCode, ftzWhseCode);
@@ -193,7 +188,7 @@ export default class SHFTZRelDetail extends Component {
     }
   }
   handleQuery = () => {
-    const soNo = this.props.params.soNo;
+    const { soNo } = this.props.params;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     this.props.queryPortionoutInfos(soNo, whseCode, ftzWhseCode).then((result) => {
@@ -221,7 +216,7 @@ export default class SHFTZRelDetail extends Component {
     });
   }
   handleCancelReg = () => {
-    const soNo = this.props.params.soNo;
+    const { soNo } = this.props.params;
     this.props.cancelRelReg(soNo).then((result) => {
       if (result.error) {
         notification.error({
@@ -244,7 +239,6 @@ export default class SHFTZRelDetail extends Component {
     const detailMap = this.getMerged(this.props.relRegs[tabKey].details);
     this.setState({
       view: 'splitted',
-      tabKey,
       reg: this.props.relRegs[tabKey],
       filingDetails: this.props.relRegs[tabKey].details,
       merged: [...detailMap.values()],
@@ -429,6 +423,27 @@ export default class SHFTZRelDetail extends Component {
       }
     },
   }]
+  handleDetailsSearch = (searchText) => {
+    let [{ details }] = this.props.relRegs;
+    if (searchText) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_cargo_no) || reg.test(item.hscode)
+        || reg.test(item.product_no) || reg.test(item.g_name);
+      });
+    }
+    this.setState({ filingDetails: details });
+  }
+  handleBatchSearch = (searchText) => {
+    let { origDecl } = this.state;
+    if (searchText) {
+      origDecl = origDecl.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.ftz_apply_nos) || reg.test(item.cus_decl_nos);
+      });
+    }
+    this.setState({ decl: origDecl });
+  }
   render() {
     const {
       relSo, relRegs, whse, submitting,
@@ -456,7 +471,8 @@ export default class SHFTZRelDetail extends Component {
       whyunsent = '出库单未配货';
     }
     const tabList = [];
-    relRegs.forEach((r, index) => tabList.push({ tab: r.ftz_rel_no || r.pre_entry_seq_no, key: index }));
+    relRegs.forEach((r, index) =>
+      tabList.push({ tab: r.ftz_rel_no || r.pre_entry_seq_no, key: index }));
     const stat = reg.details && reg.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,
@@ -466,8 +482,10 @@ export default class SHFTZRelDetail extends Component {
       total_amount: 0,
       total_net_wt: 0,
     });
-    const queryable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed && relRegs.filter(er => !er.ftz_rel_no).length === 0;
-    const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
+    const queryable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed
+      && relRegs.filter(er => !er.ftz_rel_no).length === 0;
+    const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status =>
+      status.value === relSo.outbound_status)[0];
     return (
       <div>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
@@ -571,6 +589,7 @@ export default class SHFTZRelDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
+                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleDetailsSearch} />
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                         <RadioButton value="splitted">拆分明细</RadioButton>
                         <RadioButton value="merged">合并明细</RadioButton>
@@ -593,7 +612,11 @@ export default class SHFTZRelDetail extends Component {
                       dataSource={decl}
                       rowKey="id"
                       loading={this.state.loading}
-                    />
+                    >
+                      <DataPane.Toolbar>
+                        <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleBatchSearch} />
+                      </DataPane.Toolbar>
+                    </DataPane>
                   </TabPane>
                 }
               </Tabs>

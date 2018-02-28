@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Col, Row } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { hideDock, manualEnterFlowInstance } from 'common/reducers/crmOrders';
+import { hideDock, manualEnterFlowInstance } from 'common/reducers/sofOrders';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { NODE_BIZ_OBJECTS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { MdIcon } from 'client/components/FontIcon';
@@ -48,12 +48,6 @@ export default class CMSNodeCard extends React.Component {
     const link = `/clearance/${this.props.node.kind}/manifest/`;
     this.context.router.push(`${link}${this.props.node.biz_no}`);
   }
-  handleNodeEnterTrigger = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    const { node: { uuid, kind } } = this.props;
-    this.props.manualEnterFlowInstance(uuid, kind);
-  }
   render() {
     const {
       /* children, */ node: {
@@ -67,7 +61,7 @@ export default class CMSNodeCard extends React.Component {
     const extra = [];
     if (bizno) {
       extra.push(<Tooltip title="进入详情" key="detail">
-        <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleManifest} />
+        <Button type="primary" shape="circle" icon="right" onClick={this.handleManifest} />
       </Tooltip>);
     }
     return (

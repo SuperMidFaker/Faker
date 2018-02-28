@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Tooltip, Tag, Radio } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadDispatchTable, loadShipmtDetail, hideDock } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
 import RevokeModal from '../../../common/modal/revokeModal';
+
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -78,7 +79,7 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadDispatchTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -161,8 +162,14 @@ export default class TodoAcceptPane extends Component {
           </RadioGroup>
         </div>
         <div>
-          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.acceptanceList.loading}
+          <DataTable
+            size="middle"
+            dataSource={dataSource}
+            columns={columns}
+            showHeader={false}
+            locale={{ emptyText: '没有待办事项' }}
+            rowKey="id"
+            loading={this.props.acceptanceList.loading}
           />
           <RevokeModal reload={this.handleTableReload} />
         </div>

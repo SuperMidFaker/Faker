@@ -7,10 +7,8 @@ import { loadDocuMarks, saveDocuMark, delDocumark, addCmsDeclDocu } from 'common
 import { CMS_DECL_DOCU, CMS_DECL_STATUS } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Option } = Select;
 
 function ColumnInput(props) {
@@ -49,12 +47,12 @@ function ColumnSelect(props) {
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
           options.map(opt =>
-            <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
+            <Option value={opt.value} key={opt.value}>{opt.value} | {opt.text}</Option>)
         }
       </Select>
     );
   }
-  const option = options.find(item => item.text === record[field]);
+  const option = options.find(item => item.value === record[field]);
   return <span>{option ? option.text : ''}</span>;
 }
 
@@ -119,7 +117,7 @@ export default class AttachedDocsPane extends React.Component {
       this.setState({ datas: nextProps.docuMarks });
     }
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
@@ -183,6 +181,18 @@ export default class AttachedDocsPane extends React.Component {
   handleView = (row) => {
     window.open(row.docu_file);
   }
+  handleDownloadAll = () => {
+    const link = document.createElement('a');
+    link.setAttribute('download', null);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    for (var i = 0; i < this.state.datas.length; i++) {
+      link.setAttribute('href', this.state.datas[i].docu_file);
+      link.click();
+    }
+    document.body.removeChild(link);
+  }
+
   render() {
     const { head } = this.props;
     const columns = [{

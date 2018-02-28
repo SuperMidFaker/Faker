@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Input, Transfer, Select, message } from 'antd';
 import { connect } from 'react-redux';
-import { addTracking, updateTracking, toggleTrackingModal } from 'common/reducers/scvTracking';
+import { addTracking, updateTracking, toggleTrackingModal } from 'common/reducers/sofTracking';
 import { SCV_TRACKING_FIELD_MODELES } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -10,11 +10,11 @@ const { Option } = Select;
 
 @connect(state => ({
   tenantId: state.account.tenantId,
-  visible: state.scvTracking.trackingModal.visible,
-  operation: state.scvTracking.trackingModal.operation,
-  trackingFields: state.scvTracking.trackingFields,
-  trackingItems: state.scvTracking.trackingItems,
-  tracking: state.scvTracking.trackingModal.tracking,
+  visible: state.sofTracking.trackingModal.visible,
+  operation: state.sofTracking.trackingModal.operation,
+  trackingFields: state.sofTracking.trackingFields,
+  trackingItems: state.sofTracking.trackingItems,
+  tracking: state.sofTracking.trackingModal.tracking,
 }), { addTracking, updateTracking, toggleTrackingModal })
 @Form.create()
 export default class TrackingModal extends React.Component {

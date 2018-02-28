@@ -7,10 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import UserAvatar from 'client/components/UserAvatar';
 import { hideDeclLog, loadDeclLogs } from 'common/reducers/cmsCustomsDeclare';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 function getBehavior(code) {
   if (code === 'CREATE') {
@@ -54,7 +51,7 @@ export default class CusDeclLogsPanel extends React.Component {
     return user || {};
   }
 
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const { visible } = this.props;
     const { logs } = this.state;

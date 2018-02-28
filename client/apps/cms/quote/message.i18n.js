@@ -2,13 +2,9 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
-  billing: {
-    id: 'cms.quote.billing',
-    defaultMessage: '账务中心',
-  },
-  quotation: {
-    id: 'cms.quote.quotation',
-    defaultMessage: '报价管理',
+  quoteRates: {
+    id: 'cms.quote.rates',
+    defaultMessage: '报价费率',
   },
   filterAll: {
     id: 'cms.quote.filter.all',

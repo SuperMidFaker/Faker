@@ -23,7 +23,7 @@ export default class FTZDiscrepancyPane extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: this.msg('billNo'),
+    title: this.msg('ftzEntNo'),
     dataIndex: 'ftz_ent_no',
     width: 200,
   }, {
@@ -42,7 +42,7 @@ export default class FTZDiscrepancyPane extends React.Component {
     title: this.msg('cargoType'),
     width: 150,
     dataIndex: 'portion',
-    render: por => por ? '可分拨' : '非分拨',
+    render: por => (por ? '可分拨' : '非分拨'),
   }, {
     title: this.msg('ftzStockQty'),
     dataIndex: 'ftz_qty',
@@ -115,7 +115,7 @@ export default class FTZDiscrepancyPane extends React.Component {
         el.serial_no = ins[0].serial_no;
       }
     }
-    return <Table size="small" columns={this.expColumns} dataSource={entrylist} rowKey="key" />;
+    return <Table size="small" columns={this.expColumns} dataSource={entrylist} rowKey="key" pagination={false} />;
   }
   handleExportExcel = () => {
     const csvData = [];
@@ -155,9 +155,12 @@ export default class FTZDiscrepancyPane extends React.Component {
   }
   render() {
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} expandedRowRender={this.expandedRowRender}
-        dataSource={this.props.diffviews} rowKey="id"
+      <DataPane
+        fullscreen={this.props.fullscreen}
+        columns={this.columns}
+        expandedRowRender={this.expandedRowRender}
+        dataSource={this.props.diffviews}
+        rowKey="id"
       >
         <DataPane.Toolbar>
           <Button icon="export" disabled={!this.props.diffviews.length > 0} onClick={this.handleExportExcel}>

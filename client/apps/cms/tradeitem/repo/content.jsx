@@ -8,14 +8,16 @@ import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Sel
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal } from 'common/reducers/cmsTradeitem';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave,
+  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getMasterTradeItem, toggleExportModal } from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
 import ItemDiffModal from '../workspace/modal/itemDiffModal';
+import ExportModal from './modal/exportModal';
 
 import { formatMsg } from '../message.i18n';
 
@@ -24,6 +26,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
 const { Option } = Select;
+
 
 @injectIntl
 @connect(
@@ -58,6 +61,8 @@ const { Option } = Select;
     showDeclElementsModal,
     toggleHistoryItemsDecl,
     toggleItemDiffModal,
+    getMasterTradeItem,
+    toggleExportModal,
   }
 )
 @connectNav({
@@ -79,6 +84,7 @@ export default class RepoContent extends Component {
     selectedRowKeys: [],
     linkedSlaves: [],
     masterReplica: {
+      visible: false,
       source: '',
       slave: null,
     },
@@ -402,7 +408,14 @@ export default class RepoContent extends Component {
     });
   }
   handleItemDiff = (record) => {
-    this.props.toggleItemDiffModal(true, record);
+    const { params: { repoId } } = this.props;
+    let master = null;
+    this.props.getMasterTradeItem(repoId, record.cop_product_no).then((result) => {
+      if (!result.error) {
+        master = result.data;
+        this.props.toggleItemDiffModal(true, master, record);
+      }
+    });
   }
   handleItemListLoad = (currentPage, filter) => {
     const { listFilter, tradeItemlist: { pageSize, current } } = this.props;
@@ -486,6 +499,11 @@ export default class RepoContent extends Component {
     masterReplica.slave = slave;
     this.setState({ masterReplica });
   }
+  handleMasterReplicaVisibleChange = (visible) => {
+    const masterReplica = { ...this.state.masterReplica };
+    masterReplica.visible = visible;
+    this.setState({ masterReplica });
+  }
   handleMasterSlaveReplica = () => {
     this.props.replicaMasterSlave({
       masterRepo: this.props.params.repoId,
@@ -498,14 +516,18 @@ export default class RepoContent extends Component {
         } else if (this.state.masterReplica.source === 'master') {
           message.info('主库已开始向从库同步物料归类', 10);
         }
+        this.setState({ masterReplica: { visible: false, source: '', slave: null } });
       }
     });
+  }
+  toggleExportModal = () => {
+    this.props.toggleExportModal(true);
   }
   render() {
     const {
       tradeItemlist, repo, listFilter, submitting, tenantId,
     } = this.props;
-    const { linkedSlaves } = this.state;
+    const { linkedSlaves, masterReplica } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -527,7 +549,7 @@ export default class RepoContent extends Component {
       }
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = [<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={listFilter.search} key="searchbar" />];
+    const toolbarActions = [<SearchBox placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} key="searchbar" />];
     if (listFilter.status === 'versioned') {
       toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
     }
@@ -566,6 +588,9 @@ export default class RepoContent extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
+            <Button icon="export" onClick={this.toggleExportModal}>
+              {this.msg('export')}
+            </Button>
             { repo.mode === 'master' &&
             <Popover
               placement="left"
@@ -577,13 +602,14 @@ export default class RepoContent extends Component {
                     showSearch
                     onChange={this.handleReplicaSlave}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
+                    value={masterReplica.slave}
                   >{linkedSlaves.map(slv =>
                     (<Option key={slv.creator_name} value={String(slv.id)}>
                       {slv.creator_name}</Option>))}
                   </Select>
                 </FormItem>
                 <FormItem label="同步源">
-                  <RadioGroup onChange={this.handleReplicaSource} value={listFilter.status}>
+                  <RadioGroup onChange={this.handleReplicaSource} value={masterReplica.source}>
                     <RadioButton value="master">主库</RadioButton>
                     <RadioButton value="slave">从库</RadioButton>
                   </RadioGroup>
@@ -591,6 +617,8 @@ export default class RepoContent extends Component {
                 <Button type="primary" onClick={this.handleMasterSlaveReplica}>确定</Button>
               </Form>}
               trigger="click"
+              visible={masterReplica.visible}
+              onVisibleChange={this.handleMasterReplicaVisibleChange}
             >
               <Button loading={submitting}>同步数据</Button>
             </Popover>
@@ -613,6 +641,7 @@ export default class RepoContent extends Component {
           />
           <DeclElementsModal onOk={null} />
           <ItemDiffModal />
+          <ExportModal repoId={this.props.params.repoId} />
         </Content>
       </Layout>
     );

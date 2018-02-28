@@ -7,26 +7,27 @@ import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'co
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(state => ({
+  tenantId: state.account.tenantId,
   eplist: state.scofFlow.eplist,
   qplist: state.scofFlow.qplist,
 }))
 export default class CMSCustomsDeclPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   render() {
     const {
-      form: { getFieldDecorator, getFieldValue }, model, eplist, qplist,
+      form: { getFieldDecorator, getFieldValue }, model, tenantId, eplist, qplist,
     } = this.props;
     let cmsDeclTypes = [];
     if (model.kind === 'import') {
@@ -34,8 +35,9 @@ export default class CMSCustomsDeclPane extends Component {
     } else if (model.kind === 'export') {
       cmsDeclTypes = CMS_EXPORT_DECL_TYPE;
     }
+    const provider = model.provider_tenant_id === tenantId;
     return (
-      <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
+      <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={12}>
@@ -43,18 +45,23 @@ export default class CMSCustomsDeclPane extends Component {
                 {getFieldDecorator('ep_dec_type', {
                   initialValue: model.ep_dec_type,
                 })(<Select allowClear>
-                  {cmsDeclTypes.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
+                  {cmsDeclTypes.map(item =>
+                    (<Option key={item.value} value={item.value}>{item.text}</Option>))}
                 </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsDeclChannel')}>
                 {getFieldDecorator('dec_channel', {
-                  initialValue: model.dec_channel,
-                })(<RadioGroup>
+                  initialValue: provider ? model.dec_channel : null,
+                })(<RadioGroup disabled={!provider}>
                   {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
                       const channel = CMS_DECL_CHANNEL[declChannel];
-                      return <RadioButton value={channel.value} key={channel.value} disabled={channel.disabled}>{channel.text}</RadioButton>;
+                      return (<RadioButton
+                        value={channel.value}
+                        key={channel.value}
+                        disabled={channel.disabled}
+                      >{channel.text}</RadioButton>);
                     })}
                 </RadioGroup>)}
               </FormItem>
@@ -62,10 +69,11 @@ export default class CMSCustomsDeclPane extends Component {
             { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.EP.value && <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsEasipass')}>
                 {getFieldDecorator('ep_app_uuid', {
-                  initialValue: model.ep_app_uuid,
-                })(<Select allowClear>
+                  initialValue: provider ? model.ep_app_uuid : null,
+                })(<Select allowClear disabled={!provider}>
                   {
-                    eplist.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
+                    eplist.map(item =>
+                      (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
                   }
                 </Select>)}
               </FormItem>
@@ -74,10 +82,11 @@ export default class CMSCustomsDeclPane extends Component {
             { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.QP.value && <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsQuickpass')}>
                 {getFieldDecorator('ep_app_uuid', {
-                  initialValue: model.ep_app_uuid,
-                })(<Select allowClear>
+                  initialValue: provider ? model.ep_app_uuid : null,
+                })(<Select allowClear disabled={!provider}>
                   {
-                    qplist.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
+                    qplist.map(item =>
+                      (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
                   }
                 </Select>)}
               </FormItem>

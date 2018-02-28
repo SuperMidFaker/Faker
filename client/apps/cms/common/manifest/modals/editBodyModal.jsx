@@ -4,12 +4,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, message } from 'antd';
 import { showEditBodyModal, editBillBody, loadBillBody, addNewBillBody } from 'common/reducers/cmsManifest';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+
+import { formatMsg } from '../../message.i18n';
 import EditBodyForm from '../form/editBodyForm';
 
-
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
@@ -66,14 +64,19 @@ export default class EditBodyModal extends React.Component {
       }
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   render() {
     const {
       editBodyVisible, form, editBody, billSeqNo,
     } = this.props;
     return (
-      <Modal title="商品信息" maskClosable={false} visible={editBodyVisible} width={1200}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        title="商品信息"
+        maskClosable={false}
+        visible={editBodyVisible}
+        width={1200}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <EditBodyForm form={form} editBody={editBody} billSeqNo={billSeqNo} />
       </Modal>

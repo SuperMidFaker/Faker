@@ -1,1 +1,1 @@
-export ListPanel from './list';
+export List from './list';

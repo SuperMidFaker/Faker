@@ -2,8 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Col, Form, Select, Input } from 'antd';
+
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 export class FormLocalSearchSelect extends React.Component {
   static propTypes = {
@@ -32,7 +33,11 @@ export class FormLocalSearchSelect extends React.Component {
     const filterOpt = options.filter(opt => opt.value === initialValue)[0];
     return (
       <Col span={outercol}>
-        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} colon={false} label={label}
+        <FormItem
+          labelCol={{ span: col }}
+          wrapperCol={{ span: 24 - col }}
+          colon={false}
+          label={label}
           required={required}
         >
           { disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
@@ -94,8 +99,13 @@ export class FormRemoteSearchSelect extends React.Component {
     const filterOpt = options.filter(opt => opt.value === initialValue)[0];
     return (
       <Col span={outercol}>
-        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} colon={false} label={label}
-          required={required} style={{ marginBottom: 0 }}
+        <FormItem
+          labelCol={{ span: col }}
+          wrapperCol={{ span: 24 - col }}
+          colon={false}
+          label={label}
+          required={required}
+          style={{ marginBottom: 0 }}
         >
           {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<Select

@@ -16,7 +16,7 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(state => ({
   loginId: state.account.loginId,
-  order: state.crmOrders.dock.order,
+  order: state.sofOrders.dock.order,
   defaultWhse: state.cwmContext.defaultWhse,
   carriers: state.cwmWarehouse.carriers,
 }), { loadCarriers, updateSoHead })

@@ -43,10 +43,11 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
   'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
   'TOGGLE_APPLY_CERTS_MODAL', 'TOGGLE_ITEM_DIFF_MODAL', 'TOGGLE_CONFIRM_CHANGES_MODAL',
-  'TOGGLE_CONFIRM_FORK_MODAL',
+  'TOGGLE_CONFIRM_FORK_MODAL', 'TOGGLE_EXPORT_MODAL',
   'UPDATE_ITEM_APPL_CERT', 'UPDATE_ITEM_APPL_CERT_SUCCEED', 'UPDATE_ITEM_APPL_CERT_FAIL',
   'LOAD_PERMITS', 'LOAD_PERMITS_SUCCEED', 'LOAD_PERMITS_FAIL',
   'CHANGE_ITEM_MASTER', 'NOTIFY_FORM_CHANGED',
+  'GET_MASTER_TRADE_ITEM', 'GET_MASTER_TRADE_ITEM_SUCCEED', 'GET_MASTER_TRADE_ITEM_FAIL',
 ]);
 
 const initialState = {
@@ -117,6 +118,7 @@ const initialState = {
   },
   itemDiffModal: {
     visible: false,
+    master: {},
     data: {},
   },
   confirmChangesModal: {
@@ -129,6 +131,9 @@ const initialState = {
   },
   formChanged: false,
   itemMasterChanges: [],
+  exportModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -262,6 +267,7 @@ export default function reducer(state = initialState, action) {
         itemDiffModal: {
           ...state.itemDiffModal,
           visible: action.visible,
+          master: action.master,
           data: action.data,
         },
       };
@@ -292,6 +298,14 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         formChanged: action.changed,
+      };
+    case actionTypes.TOGGLE_EXPORT_MODAL:
+      return {
+        ...state,
+        exportModal: {
+          ...state.exportModal,
+          visible: action.visible,
+        },
       };
     default:
       return state;
@@ -924,10 +938,11 @@ export function toggleApplyCertsModal(visible, data = {}) {
   };
 }
 
-export function toggleItemDiffModal(visible, data = {}) {
+export function toggleItemDiffModal(visible, master = {}, data = {}) {
   return {
     type: actionTypes.TOGGLE_ITEM_DIFF_MODAL,
     visible,
+    master,
     data,
   };
 }
@@ -974,5 +989,27 @@ export function updateItemApplCert(cert, id) {
       method: 'post',
       data: { cert: JSON.stringify(cert), id },
     },
+  };
+}
+
+export function getMasterTradeItem(repoId, copProdNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_MASTER_TRADE_ITEM,
+        actionTypes.GET_MASTER_TRADE_ITEM_SUCCEED,
+        actionTypes.GET_MASTER_TRADE_ITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/master/tradeitem/get',
+      method: 'get',
+      params: { repoId, copProdNo },
+    },
+  };
+}
+
+export function toggleExportModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_EXPORT_MODAL,
+    visible,
   };
 }

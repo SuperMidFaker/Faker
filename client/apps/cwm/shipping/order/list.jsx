@@ -4,44 +4,35 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
+import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/SearchBar';
+import SearchBox from 'client/components/SearchBox';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import connectNav from 'client/common/decorators/connect-nav';
-import ShippingDockPanel from '../dock/shippingDockPanel';
-import AddToWaveModal from './modal/addToWaveModal';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
 import { exportNormalExitBySo } from 'common/reducers/cwmOutbound';
-import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+import ShippingDockPanel from '../dock/shippingDockPanel';
+import AddToWaveModal from './modal/addToWaveModal';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
-import ImportDataPanel from 'client/components/ImportDataPanel';
 
 
 const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
+const { Option } = Select;
+const { RangePicker } = DatePicker;
 
-function fetchData({ state, dispatch }) {
-  dispatch(loadSos({
-    whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmShippingOrder.solist.pageSize,
-    current: state.cwmShippingOrder.solist.current,
-    filters: state.cwmShippingOrder.soFilters,
-  }));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -56,10 +47,18 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
     userMembers: state.account.userMembers,
-    adaptors: state.saasLineFileAdaptor.adaptors,
+    adaptors: state.hubDataAdapter.modelAdaptors,
   }),
   {
-    loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, exportNormalExitBySo, loadAdaptors,
+    loadSos,
+    switchDefaultWhse,
+    showDock,
+    releaseSo,
+    createWave,
+    showAddToWave,
+    batchRelease,
+    exportNormalExitBySo,
+    loadModelAdaptors,
   }
 )
 @connectNav({
@@ -80,12 +79,37 @@ export default class ShippingOrderList extends React.Component {
     importPanelVisible: false,
   }
   componentDidMount() {
-    this.props.loadAdaptors('', [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key], true);
+    const filters = {
+      status: 'all', ownerCode: 'all', receiverCode: 'all', carrierCode: 'all', startDate: '', endDate: '',
+    };
+    if (window.location.search.indexOf('pending') > 0 && window.localStorage && window.localStorage.cwmShipOutboundLists) {
+      const cwmShipOutboundLists = JSON.parse(window.localStorage.cwmShipOutboundLists);
+      filters.startDate = cwmShipOutboundLists.startDate;
+      filters.endDate = cwmShipOutboundLists.endDate;
+      filters.status = cwmShipOutboundLists.status;
+    }
+    this.props.loadSos({
+      whseCode: this.props.defaultWhse.code,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
+    this.props.loadModelAdaptors('', [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key]);
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.solist.loaded && !nextProps.solist.loading) {
       this.handleReload();
     }
+  }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -126,6 +150,7 @@ export default class ShippingOrderList extends React.Component {
       } else if (o === 3) {
         return (<Badge status="success" text="发货完成" />);
       }
+      return null;
     },
   }, {
     title: '货物属性',
@@ -133,7 +158,8 @@ export default class ShippingOrderList extends React.Component {
     dataIndex: 'bonded',
     render: (bonded, record) => {
       if (bonded === 1) {
-        const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === record.bonded_outtype)[0];
+        const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr =>
+          sbr.value === record.bonded_outtype)[0];
         if (regtype) {
           return (<Tag color={regtype.tagcolor}>{regtype.ftztext || '保税'}</Tag>);
         }
@@ -142,6 +168,7 @@ export default class ShippingOrderList extends React.Component {
       } else {
         return (<Tag>非保税</Tag>);
       }
+      return null;
     },
   }, {
     title: '监管状态',
@@ -155,13 +182,15 @@ export default class ShippingOrderList extends React.Component {
       } else if (o === 2) {
         return (<Badge status="success" text="备案完成" />);
       }
+      return null;
     },
   }, {
     title: '要求出货日期',
     dataIndex: 'expect_shipping_date',
     width: 140,
     render: o => o && moment(o).format('YYYY.MM.DD'),
-    sorter: (a, b) => new Date(a.expect_shipping_date).getTime() - new Date(b.expect_shipping_date).getTime(),
+    sorter: (a, b) => new Date(a.expect_shipping_date).getTime() -
+    new Date(b.expect_shipping_date).getTime(),
   }, {
     title: '实际出库时间',
     dataIndex: 'shipped_date',
@@ -178,7 +207,8 @@ export default class ShippingOrderList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o) &&
+    this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -190,24 +220,23 @@ export default class ShippingOrderList extends React.Component {
           <RowAction icon="play-circle-o" label="释放" row={record} onClick={this.handleReleaseSO} />
           <RowAction onClick={this.handleEditSO} tooltip="修改" icon="edit" row={record} />
         </span>);
-      } else {
-        const outbndActions = (<span>
-          {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
-            && <RowAction onClick={this.handleOutbound} icon="form" label="出库操作" row={record} />}
-          {record.status === CWM_SO_STATUS.COMPLETED.value &&
-            <RowAction onClick={this.handleOutbound} icon="eye-o" label="出库详情" row={record} />}
-        </span>);
-        if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
-          return (<span>
-            {outbndActions}
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ?
-              <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="海关备案" row={record} />
-              : <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="备案详情" row={record} />}
-          </span>);
-        } else {
-          return (<span>{outbndActions}</span>);
-        }
       }
+      const outbndActions = (<span>
+        {(record.status === CWM_SO_STATUS.OUTBOUND.value ||
+            record.status === CWM_SO_STATUS.PARTIAL.value)
+            && <RowAction onClick={this.handleOutbound} icon="form" label="出库操作" row={record} />}
+        {record.status === CWM_SO_STATUS.COMPLETED.value &&
+        <RowAction onClick={this.handleOutbound} icon="eye-o" label="出库详情" row={record} />}
+      </span>);
+      if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
+        return (<span>
+          {outbndActions}
+          {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ?
+            <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="海关备案" row={record} />
+              : <RowAction onClick={this.handleSupervision} icon="inbox" tooltip="备案详情" row={record} />}
+        </span>);
+      }
+      return (<span>{outbndActions}</span>);
     },
   }]
   handleSupervision = (row) => {
@@ -329,7 +358,7 @@ export default class ShippingOrderList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    const filters = this.props.filters;
+    const { filters } = this.props;
     this.props.loadSos({
       whseCode: value,
       pageSize: this.props.solist.pageSize,
@@ -377,7 +406,11 @@ export default class ShippingOrderList extends React.Component {
     const {
       whses, defaultWhse, owners, receivers, carriers, filters, loading,
     } = this.props;
-    let columns = this.columns;
+    let dateVal = [];
+    if (filters.endDate) {
+      dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
+    }
+    let { columns } = this;
     if (filters.status === 'inWave') {
       columns = [...columns];
       columns.splice(-1, 1);
@@ -420,7 +453,8 @@ export default class ShippingOrderList extends React.Component {
             break;
           }
           if (i > 0) {
-            if (selectedRows[i].receiver_code !== selectedRows[i - 1].receiver_code && selectedRows[i].carrier_code !== selectedRows[i - 1].carrier_code) {
+            if (selectedRows[i].receiver_code !== selectedRows[i - 1].receiver_code &&
+              selectedRows[i].carrier_code !== selectedRows[i - 1].carrier_code) {
               this.setState({
                 createWaveEnable: false,
               });
@@ -432,10 +466,15 @@ export default class ShippingOrderList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('soPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBox placeholder={this.msg('soPlaceholder')} onSearch={this.handleSearch} />
       <span />
-      <Select showSearch optionFilterProp="children" value={filters.ownerCode}
-        onChange={this.handleOwnerChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.ownerCode}
+        onChange={this.handleOwnerChange}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {
@@ -443,25 +482,42 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" value={filters.receiverCode}
-        onChange={this.handleReceiverChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.receiverCode}
+        onChange={this.handleReceiverChange}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部收货人</Option>
         {
-            receivers.filter(receiver => filters.ownerCode !== 'all' ? filters.ownerCode === receiver.owner_partner_id : true)
-            .map(receiver => (<Option key={receiver.code} value={receiver.code}>{receiver.name}</Option>))
+            receivers.filter(receiver => (filters.ownerCode !== 'all' ? filters.ownerCode === receiver.owner_partner_id : true))
+            .map(receiver => (
+              <Option key={receiver.code} value={receiver.code}>{receiver.name}</Option>))
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" value={filters.carrierCode}
-        onChange={this.handleCarrierChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        value={filters.carrierCode}
+        onChange={this.handleCarrierChange}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部承运人</Option>
         {
-            carriers.filter(carrier => filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true)
-            .map(carrier => (<Option key={carrier.code} value={carrier.code}>{carrier.name}</Option>))
+            carriers.filter(carrier => (filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true))
+            .map(carrier => (
+              <Option key={carrier.code} value={carrier.code}>{carrier.name}</Option>))
           }
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}
@@ -478,7 +534,9 @@ export default class ShippingOrderList extends React.Component {
               <Breadcrumb.Item>
                 <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                    whses.map(warehouse => (
+                      <Option value={warehouse.code} key={warehouse.code}>
+                        {warehouse.name}</Option>))
                   }
                 </Select>
               </Breadcrumb.Item>
@@ -508,9 +566,17 @@ export default class ShippingOrderList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-            toolbarActions={toolbarActions} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
-            bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+          <DataTable
+            columns={columns}
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            rowKey="id"
+            toolbarActions={toolbarActions}
+            scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+            loading={loading}
+            bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
           />
         </Content>
         <ShippingDockPanel />

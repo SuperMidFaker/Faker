@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Table, Form, Modal, Radio, Row, Col, Select, Tag, Input, message, Checkbox } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
+import SearchBox from 'client/components/SearchBox';
 import { format } from 'client/common/i18n/helpers';
 import { loadBrokers } from 'common/reducers/cwmWarehouse';
 import { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
@@ -13,7 +14,6 @@ import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const { Search } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -425,8 +425,8 @@ export default class BatchDeclModal extends Component {
   handleCheckChange = (checkedValues) => {
     this.setState({ groupVals: checkedValues });
   }
-  handleFtzRelNoChange = (ev) => {
-    this.setState({ ftzRelNo: ev.target.value });
+  handleFtzRelNoChange = (value) => {
+    this.setState({ ftzRelNo: value });
   }
   handleDutyModeChange = (dutyMode) => {
     this.setState({ dutyMode });
@@ -608,11 +608,9 @@ export default class BatchDeclModal extends Component {
               <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search
+                    <SearchBox
                       placeholder="出库单号"
-                      style={{ width: 200 }}
-                      onChange={this.handleFtzRelNoChange}
-                      value={this.state.ftzRelNo}
+                      onSearch={this.handleFtzRelNoChange}
                     />
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.selectedRowKeys.length}项</h3>

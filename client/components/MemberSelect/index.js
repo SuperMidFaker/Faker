@@ -4,7 +4,7 @@ import { Popover, Input, Tabs, Menu, Avatar, Tree } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import InfoItem from 'client/components/InfoItem';
-import { loadTeamUserIds } from 'common/reducers/crmCustomers';
+import { loadTeamUserIds } from 'common/reducers/sofCustomers';
 import { loadDepartments, loadDepartmentMembers } from 'common/reducers/personnel';
 
 const TabPane = Tabs.TabPane;
@@ -158,8 +158,13 @@ export default class MemberSelect extends React.Component {
     return (
       <Popover content={content} trigger="click" placement="bottom" visible={this.state.visible} onVisibleChange={this.handleVisibleChange} overlayStyle={{ width: 284 }}>
         <div>
-          <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{preparerName}</Avatar>}
-            field={preparerName} placeholder="分配操作人员" editable={editable}
+          <InfoItem
+            type="dropdown"
+            label="操作人员"
+            addonBefore={<Avatar size="small">{preparerName}</Avatar>}
+            field={preparerName}
+            placeholder="分配操作人员"
+            editable={editable}
             overlay={<span>{preparerName}</span>}
           />
         </div>

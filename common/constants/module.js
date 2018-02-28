@@ -1,7 +1,7 @@
 const MODULE_SCOF = {
   id: 'scof',
   text: 'moduleSCOF',
-  defaultText: '客户订单流',
+  defaultText: '订单中心',
   features: [
     {
       id: 'dashboard',
@@ -82,6 +82,44 @@ const MODULE_SCOF = {
     {
       id: 'customers',
       text: 'featScofCustomers',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'vendors',
+      text: 'featScofVendors',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'settings',
+      text: 'featScofSettings',
       actions: [
         {
           id: 'view',
@@ -413,7 +451,6 @@ const MODULE_CWM = {
   id: 'cwm',
   text: 'moduleCWM',
   defaultText: '保税仓储',
-  status: 'alpha',
   features: [
     {
       id: 'dashboard',
@@ -559,21 +596,12 @@ const MODULE_BSS = {
   features: [],
 };
 
-const MODULE_SCV = {
-  id: 'scv',
-  text: 'moduleSCV',
-  defaultText: 'SCV',
-  status: 'alpha',
-  features: [],
-};
-
 const appModules = [
   MODULE_SCOF,
   MODULE_CLEARANCE,
   MODULE_CWM,
   MODULE_TRANSPORT,
   MODULE_BSS,
-  MODULE_SCV,
 ];
 
 const spnModules = [
