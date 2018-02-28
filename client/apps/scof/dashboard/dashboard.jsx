@@ -33,6 +33,7 @@ export default class SOFDashboard extends React.Component {
   }
   state = {
     startDate: new Date(new Date().setDate(1)),
+    endDate: new Date(),
   }
   componentWillMount() {
     const { startDate } = this.state;
@@ -40,10 +41,14 @@ export default class SOFDashboard extends React.Component {
   }
   onDateChange = (data, dataString) => {
     this.props.loadStatsCard(dataString[0], dataString[1]);
+    this.setState({
+      startDate: dataString[0],
+      endDate: dataString[1],
+    });
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { startDate } = this.state;
+    const { startDate, endDate } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>
@@ -66,7 +71,7 @@ export default class SOFDashboard extends React.Component {
         <Content className="page-content" key="main">
           <Row gutter={16}>
             <Col sm={24}>
-              <OrderStatsCard />
+              <OrderStatsCard startDate={startDate} endDate={endDate} />
             </Col>
           </Row>
         </Content>

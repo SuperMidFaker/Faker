@@ -52,6 +52,17 @@ export default class InvoicePane extends Component {
         dataSource: nextProps.formData.invoices,
       });
     }
+    if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {
+      this.props.loadUnshippedInvoices(nextProps.formData.customer_partner_id).then((result) => {
+        if (!result.error) {
+          this.setState({
+            origInvoices: result.data,
+            dataSource: this.props.formData.invoices,
+            origDataSource: this.props.formData.invoices,
+          });
+        }
+      });
+    }
   }
   handleInvoiceAdd = (data) => {
     this.setState({
