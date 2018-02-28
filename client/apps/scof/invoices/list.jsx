@@ -13,7 +13,7 @@ import SearchBox from 'client/components/SearchBox';
 import { loadPartners } from 'common/reducers/partner';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { loadInvoices, deleteSofInvice } from 'common/reducers/sofInvoice';
+import { loadInvoices, deleteSofInvice, batchDeleteInvoices } from 'common/reducers/sofInvoice';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
@@ -49,7 +49,7 @@ function fetchData({ state, dispatch }) {
     adaptors: state.hubDataAdapter.modelAdaptors,
   }),
   {
-    loadInvoices, loadModelAdaptors, deleteSofInvice,
+    loadInvoices, loadModelAdaptors, deleteSofInvice, batchDeleteInvoices,
   }
 )
 @connectNav({
@@ -205,6 +205,22 @@ export default class InvoiceList extends React.Component {
   handleDelete = (row) => {
     this.props.deleteSofInvice(row.invoice_no).then((result) => {
       if (!result.error) {
+        const { selectedRowKeys } = this.state;
+        const newKeys = selectedRowKeys.filter(key => key !== row.id);
+        this.setState({
+          selectedRowKeys: newKeys,
+        });
+        const { filter } = this.props;
+        this.handleReload(filter);
+      }
+    });
+  }
+  handleBatchDelete = () => {
+    const { selectedRows } = this.state;
+    const invoiceNos = selectedRows.map(row => row.invoice_no);
+    this.props.batchDeleteInvoices(invoiceNos).then((result) => {
+      if (!result.error) {
+        this.handleDeselectRows();
         const { filter } = this.props;
         this.handleReload(filter);
       }
