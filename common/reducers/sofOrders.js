@@ -94,7 +94,7 @@ const initialState = {
     data: [],
   },
   orderFilters: {
-    progress: 'all', transfer: 'all', partnerId: '', orderType: null,
+    progress: 'all', transfer: 'all', partnerId: '', orderType: null, expedited: 'all',
   },
   orderBizObjects: [],
 };

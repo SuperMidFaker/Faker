@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
+import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
@@ -35,6 +35,7 @@ const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const { RangePicker } = DatePicker;
 
 // 暂时由 CreatorSelect 触发获取list
 function fetchData({ state, dispatch }) {
@@ -108,6 +109,30 @@ export default class OrderList extends React.Component {
     },
   }
   componentWillMount() {
+    const filters = {
+      progress: 'all',
+      transfer: 'all',
+      partnerId: '',
+      orderType: null,
+      expedited: 'all',
+      creator: 'all',
+      loginId: this.props.loginId,
+      startDate: '',
+      endDate: '',
+    };
+    if (window.location.search.indexOf('dashboard') > 0 && window.localStorage && window.localStorage.scofOrderLists) {
+      const scofOrderLists = JSON.parse(window.localStorage.scofOrderLists);
+      filters.startDate = scofOrderLists.startDate;
+      filters.endDate = scofOrderLists.endDate;
+      filters.progress = scofOrderLists.progress;
+      filters.expedited = scofOrderLists.expedited;
+    }
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
+    });
     this.props.hideDock();
   }
   componentDidMount() {
@@ -127,6 +152,15 @@ export default class OrderList extends React.Component {
         this.props.loadOrderDetail(nextQuery.shipmt_order_no, this.props.tenantId);
       }
     }
+  }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
+    });
   }
   msg = formatMsg(this.props.intl)
   handleImport = () => {
@@ -181,6 +215,15 @@ export default class OrderList extends React.Component {
   }
   handleProgressChange = (ev) => {
     const filters = { ...this.props.filters, progress: ev.target.value };
+    this.props.loadOrders({
+      tenantId: this.props.tenantId,
+      pageSize: this.props.orders.pageSize,
+      current: this.props.orders.current,
+      filters,
+    });
+  }
+  handleExpeditedChange = (e) => {
+    const filters = { ...this.props.filters, expedited: e.target.value };
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
@@ -248,6 +291,10 @@ export default class OrderList extends React.Component {
     const {
       loading, filters, flows, partners, orderTypes,
     } = this.props;
+    let dateVal = [];
+    if (filters.endDate) {
+      dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
+    }
     const { importPanel } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -364,6 +411,11 @@ export default class OrderList extends React.Component {
       </Select>
       <span />
       <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>
     );
     return (
@@ -377,11 +429,19 @@ export default class OrderList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleProgressChange} value={filters.progress}>
+            <RadioGroup
+              onChange={this.handleProgressChange}
+              value={filters.progress}
+              style={{ marginRight: 8 }}
+            >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">待处理</RadioButton>
               <RadioButton value="active">进行中</RadioButton>
               <RadioButton value="completed">已完成</RadioButton>
+            </RadioGroup>
+            <RadioGroup onChange={this.handleExpeditedChange} value={filters.expedited}>
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="expedited">加急订单</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
