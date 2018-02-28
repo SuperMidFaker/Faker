@@ -32,7 +32,7 @@ function fetchData({ state, dispatch }) {
 export default class ImportStatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    importStats: PropTypes.object.isRequired,
+    importStats: PropTypes.shape({ count: PropTypes.number }).isRequired,
   }
   state = {
     amount: 0,
@@ -81,7 +81,7 @@ export default class ImportStatsCard extends Component {
         bordered={false}
         title="进口金额"
         action={<Dropdown overlay={menu}><Icon type="ellipsis" /></Dropdown>}
-        total={`${currency}` === 'CNY' ? `￥${amount}` : `$${amount}`}
+        total={`${currency}` === 'CNY' ? `￥${amount.toFixed(2)}` : `$${amount.toFixed(2)}`}
         footer={<Field label="进口量" value={count} />}
         contentHeight={64}
       >
