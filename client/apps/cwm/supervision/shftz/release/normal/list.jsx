@@ -3,31 +3,32 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
+import { openNormalRelRegModal, loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { showDock } from 'common/reducers/cwmShippingOrder';
+import { format } from 'client/common/i18n/helpers';
+import PageHeader from 'client/components/PageHeader';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
-import PageHeader from 'client/components/PageHeader';
 import ModuleMenu from '../../menu';
-import { showDock } from 'common/reducers/cwmShippingOrder';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import NormalRelRegModal from './modal/normalRelRegModal';
-import { openNormalRelRegModal, loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -51,31 +52,41 @@ const RadioButton = Radio.Button;
 export default class SHFTZNormalRelRegList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    releaseList: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
-    if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
-      status = 'all';
-    }
-    let ownerView = listFilter.ownerView;
+    const { listFilter } = this.props;
+    let { status } = listFilter;
+    let { ownerView } = listFilter;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
+    }
+    if (window.location.search.indexOf('dashboard') > 0 && window.localStorage && window.localStorage.bondedStatus) {
+      const bondedStatus = JSON.parse(window.localStorage.bondedStatus);
+      listFilter.startDate = bondedStatus.startDate;
+      listFilter.endDate = bondedStatus.endDate;
+      const newStatus = bondedStatus.status;
+      status = newStatus;
+    } else {
+      if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
+        status = 'all';
+      }
+      listFilter.startDate = '';
+      listFilter.endDate = '';
     }
     const filter = {
       ...listFilter, status, type: 'normal', ownerView,
     };
     this.handleReleaseListLoad(null, null, filter);
+  }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
+    this.handleReleaseListLoad(1, this.props.whse.code, filters);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -83,7 +94,16 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'ftz_rel_no',
     width: 200,
     fixed: 'left',
-    render: (o, record) => (o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>),
+    render: (o, record) => {
+      if (o) {
+        return (
+          <span className="text-emphasis">{o}</span>
+        );
+      }
+      return (
+        <span className="text-normal">{record.pre_entry_seq_no}</span>
+      );
+    },
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -93,6 +113,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
       if (regtype) {
         return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
       }
+      return '';
     },
   }, {
     title: '状态',
@@ -119,7 +140,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 8:
           return (<Badge status="success" text="出区完成" />);
         default:
-          break;
+          return '';
       }
     },
   }, {
@@ -170,7 +191,8 @@ export default class SHFTZNormalRelRegList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o) &&
+     this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '创建时间',
     width: 120,
@@ -179,6 +201,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
+      return '';
     },
   }, {
     title: '操作',
@@ -204,7 +227,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 8:
           return <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />;
         default:
-          break;
+          return '';
       }
     },
   }]
@@ -282,6 +305,10 @@ export default class SHFTZNormalRelRegList extends React.Component {
   }
   render() {
     const { releaseList, listFilter, owners } = this.props;
+    let dateVal = [];
+    if (listFilter.endDate) {
+      dateVal = [moment(listFilter.startDate, 'YYYY-MM-DD'), moment(listFilter.endDate, 'YYYY-MM-DD')];
+    }
     this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -305,6 +332,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
         <Option value="all">全部货主</Option>
         {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     const bulkActions = (<span>
       {listFilter.status === 'pending' && <Button >批量发送</Button>}

@@ -98,13 +98,13 @@ export default class CWMDashboard extends React.Component {
         <Content className="page-content" key="main">
           <Row gutter={16}>
             <Col sm={24}>
-              <InboundStatsCard />
+              <InboundStatsCard startDate={startDate} endDate={endDate} />
             </Col>
             <Col sm={24}>
-              <OutboundStatsCard />
+              <OutboundStatsCard startDate={startDate} endDate={endDate} />
             </Col>
             <Col sm={24}>
-              <BondedStatsCard />
+              <BondedStatsCard startDate={startDate} endDate={endDate} />
             </Col>
           </Row>
         </Content>
