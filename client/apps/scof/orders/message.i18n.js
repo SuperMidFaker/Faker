@@ -14,6 +14,10 @@ const messages = defineMessages({
     id: 'scof.orders.create.order',
     defaultMessage: '新建订单',
   },
+  editOrder: {
+    id: 'scof.orders.edit.order',
+    defaultMessage: '编辑订单',
+  },
   startOrder: {
     id: 'scof.orders.start',
     defaultMessage: '开始',

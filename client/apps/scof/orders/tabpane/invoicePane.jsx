@@ -165,16 +165,21 @@ export default class InvoicePane extends Component {
           <Button type="primary" icon="plus-circle-o" onClick={this.handleToggleInvoiceModal}>添加</Button>
         </DataPane.Toolbar>
         {/* <InvoiceModal handleOk={this.handleInvoiceAdd} /> */}
-        <Modal title="发票" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+        <Modal title="选择商业发票" width={695} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
           <Transfer
             dataSource={origInvoices}
-            titles={['Source', 'Target']}
+            showSearch
+            titles={['可选', '已选']}
             targetKeys={targetKeys}
             selectedKeys={selectedKeys}
             onChange={this.handleChange}
             onSelectChange={this.handleSelectChange}
             render={item => item.invoice_no}
             rowKey={item => item.invoice_no}
+            listStyle={{
+              width: 300,
+              height: 400,
+            }}
           />
         </Modal>
       </DataPane>

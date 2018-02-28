@@ -445,7 +445,7 @@ export default class OrderForm extends Component {
                       <FormItem label={this.msg('CBM')} {...formItemLayout}>
                         <Input
                           type="number"
-                          addonAfter={this.msg('cubicMeter')}
+                          addonAfter={this.msg('立方米')}
                           value={formData.cust_shipmt_volume}
                           onChange={(ev) => {
                             const volume = parseFloat(ev.target.value);
@@ -686,7 +686,7 @@ export default class OrderForm extends Component {
             <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
               <ContainerPane />
             </TabPane>
-            <TabPane tab="订单明细" key="details">
+            <TabPane tab="货物明细" key="details">
               <OrderDetailsPane />
             </TabPane>
           </Tabs>
