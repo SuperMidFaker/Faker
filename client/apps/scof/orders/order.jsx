@@ -237,7 +237,7 @@ export default class OrderForm extends Component {
   }
   render() {
     const {
-      formRequires, formData, flows, serviceTeam, orderTypes,
+      formRequires, formData, flows, serviceTeam, orderTypes, operation,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -354,6 +354,7 @@ export default class OrderForm extends Component {
                           dropdownMatchSelectWidth={false}
                           dropdownStyle={{ width: 360 }}
                           style={{ width: '100%' }}
+                          disabled={!!(operation === 'edit' || operation === 'view')}
                         >
                           {formRequires.clients.map(data => (
                             <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
