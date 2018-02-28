@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
+import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -32,16 +31,8 @@ const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
-function fetchData({ state, dispatch }) {
-  dispatch(loadSos({
-    whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmShippingOrder.solist.pageSize,
-    current: state.cwmShippingOrder.solist.current,
-    filters: state.cwmShippingOrder.soFilters,
-  }));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -88,12 +79,37 @@ export default class ShippingOrderList extends React.Component {
     importPanelVisible: false,
   }
   componentDidMount() {
+    const filters = {
+      status: 'all', ownerCode: 'all', receiverCode: 'all', carrierCode: 'all', startDate: '', endDate: '',
+    };
+    if (window.location.search.indexOf('pending') > 0 && window.localStorage && window.localStorage.cwmShipOutboundLists) {
+      const cwmShipOutboundLists = JSON.parse(window.localStorage.cwmShipOutboundLists);
+      filters.startDate = cwmShipOutboundLists.startDate;
+      filters.endDate = cwmShipOutboundLists.endDate;
+      filters.status = cwmShipOutboundLists.status;
+    }
+    this.props.loadSos({
+      whseCode: this.props.defaultWhse.code,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
     this.props.loadModelAdaptors('', [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key]);
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.solist.loaded && !nextProps.solist.loading) {
       this.handleReload();
     }
+  }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -390,6 +406,10 @@ export default class ShippingOrderList extends React.Component {
     const {
       whses, defaultWhse, owners, receivers, carriers, filters, loading,
     } = this.props;
+    let dateVal = [];
+    if (filters.endDate) {
+      dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
+    }
     let { columns } = this;
     if (filters.status === 'inWave') {
       columns = [...columns];
@@ -493,6 +513,11 @@ export default class ShippingOrderList extends React.Component {
               <Option key={carrier.code} value={carrier.code}>{carrier.name}</Option>))
           }
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}

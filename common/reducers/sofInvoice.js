@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'CLEAR_INVOICE',
   'DELETE_SOF_INVOICE', 'DELETE_SOF_INVOICE_SUCCEED', 'DELETE_SOF_INVOICE_FAIL',
   'SPLIT_SOF_INVOICE', 'SPLIT_SOF_INVOICE_SUCCEED', 'SPLIT_SOF_INVOICE_FAIL',
+  'BATCH_DELETE_INVOICES', 'BATCH_DELETE_INVOICES_SUCCEED', 'BATCH_DELETE_INVOICES_FAIL',
 ]);
 
 const initialState = {
@@ -176,6 +177,21 @@ export function splitInvoice(invoiceNo, splitDetails) {
       endpoint: 'v1/sof/invoice/split',
       method: 'post',
       data: { invoiceNo, splitDetails },
+    },
+  };
+}
+
+export function batchDeleteInvoices(invoiceNos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_DELETE_INVOICES,
+        actionTypes.BATCH_DELETE_INVOICES_SUCCEED,
+        actionTypes.BATCH_DELETE_INVOICES_FAIL,
+      ],
+      endpoint: 'v1/sof/invoices/batch/delete',
+      method: 'post',
+      data: { invoiceNos },
     },
   };
 }
