@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
+import { Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
@@ -29,16 +28,8 @@ const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const { RangePicker } = DatePicker;
 
-function fetchData({ state, dispatch }) {
-  dispatch(loadOutbounds({
-    whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmOutbound.outbound.pageSize,
-    current: state.cwmOutbound.outbound.current,
-    filters: state.cwmOutbound.outboundFilters,
-  }));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -66,9 +57,22 @@ export default class OutboundList extends React.Component {
   state = {
     selectedRowKeys: [],
   }
+  componentDidMount() {
+    const filters = this.initializeFilters();
+    if (window.location.search.indexOf('dashboard') < 0) {
+      filters.startDate = '';
+      filters.endDate = '';
+    }
+    this.props.loadOutbounds({
+      whseCode: this.props.defaultWhse.code,
+      pageSize: this.props.outbound.pageSize,
+      current: this.props.outbound.current,
+      filters,
+    });
+  }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code ||
-       !nextProps.outbound.loaded && !nextProps.outbound.loading) {
+    if ((nextProps.defaultWhse.code !== this.props.defaultWhse.code) ||
+       (!nextProps.outbound.loaded && !nextProps.outbound.loading)) {
       const filters = { ...this.props.filters };
       const whseCode = nextProps.defaultWhse.code;
       this.props.loadOutbounds({
@@ -78,6 +82,23 @@ export default class OutboundList extends React.Component {
         filters,
       });
     }
+  }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadOutbounds({
+      whseCode,
+      pageSize: this.props.outbound.pageSize,
+      current: this.props.outbound.current,
+      filters,
+    });
+  }
+  initializeFilters = () => {
+    let filters = {};
+    if (window.localStorage) {
+      filters = JSON.parse(window.localStorage.cwmShipOutboundLists || '{"status":"all","ownerCode":"all"}');
+    }
+    return filters;
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -96,7 +117,7 @@ export default class OutboundList extends React.Component {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
     width: 50,
-    render: dc => (!isNaN(dc) ? dc : null),
+    render: dc => (!isNaN(dc) ? dc : null), // eslint-disable-line
   }, {
     title: '货主',
     width: 200,
@@ -237,6 +258,10 @@ export default class OutboundList extends React.Component {
     const {
       defaultWhse, whses, owners, loading, filters,
     } = this.props;
+    let dateVal = [];
+    if (filters.endDate) {
+      dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
+    }
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadOutbounds(params),
       resolve: result => result.data,
@@ -282,6 +307,11 @@ export default class OutboundList extends React.Component {
         <Option value="all" key="all">全部货主</Option>
         {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>

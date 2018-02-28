@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, message } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, message, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
@@ -26,16 +25,8 @@ const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch }) {
-  dispatch(loadAsnLists({
-    whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmReceive.asnlist.pageSize,
-    current: state.cwmReceive.asnlist.current,
-    filters: state.cwmReceive.asnFilters,
-  }));
-}
+const { RangePicker } = DatePicker;
 
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -70,10 +61,37 @@ export default class ReceivingASNList extends React.Component {
   state = {
     selectedRowKeys: [],
   }
+  componentDidMount() {
+    const filters = {
+      status: 'all', ownerCode: 'all', supplierCode: 'all', startDate: '', endDate: '',
+    };
+    if (window.location.search.indexOf('pending') > 0 && window.localStorage && window.localStorage.cwmReceiveInboundLists) {
+      const cwmReceiveInboundLists = JSON.parse(window.localStorage.cwmReceiveInboundLists);
+      filters.startDate = cwmReceiveInboundLists.startDate;
+      filters.endDate = cwmReceiveInboundLists.endDate;
+      filters.status = cwmReceiveInboundLists.status;
+    }
+    this.props.loadAsnLists({
+      whseCode: this.props.defaultWhse.code,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
+      filters,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
       this.handleListReload();
     }
+  }
+  onDateChange = (data, dataString) => {
+    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
+      filters,
+    });
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -341,6 +359,10 @@ export default class ReceivingASNList extends React.Component {
     const {
       whses, defaultWhse, owners, suppliers, filters, loading,
     } = this.props;
+    let dateVal = [];
+    if (filters.endDate) {
+      dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
+    }
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -404,6 +426,11 @@ export default class ReceivingASNList extends React.Component {
               <Option key={supplier.code} value={supplier.code}>
                 {supplier.name}</Option>))}
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     const bulkActions = filters.status === 'pending' && <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
     /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'

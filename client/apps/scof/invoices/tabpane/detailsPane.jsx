@@ -143,6 +143,17 @@ export default class DetailsPane extends Component {
         }
         this.props.setTemporary(tempDetails);
       },
+      onSelectAll: (selected) => {
+        const tempDetails = [...this.props.temporaryDetails];
+        tempDetails.forEach(td => td.disabled = !selected); // eslint-disable-line
+        const { length } = tempDetails;
+        let selectedRowKeys = [];
+        if (selected) {
+          selectedRowKeys = Array.from(new Array(length).keys());
+        }
+        this.setState({ selectedRowKeys });
+        this.props.setTemporary(tempDetails);
+      },
     };
     const columns = [{
       title: '序号',
