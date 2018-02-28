@@ -220,11 +220,11 @@ const messages = defineMessages({
   },
   nodeDemander: {
     id: 'scof.flow.biz.node.demander',
-    defaultMessage: '需求方',
+    defaultMessage: '业务需求方',
   },
   nodeProvider: {
     id: 'scof.flow.biz.node.provider',
-    defaultMessage: '业务提供方',
+    defaultMessage: '服务提供方',
   },
   nodeExecutor: {
     id: 'scof.flow.biz.node.executor',

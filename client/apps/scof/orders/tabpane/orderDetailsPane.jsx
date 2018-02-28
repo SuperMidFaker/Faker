@@ -40,6 +40,10 @@ export default class OrderDetailsPane extends Component {
     dataIndex: 'po_no',
     width: 150,
   }, {
+    title: '集装箱号',
+    dataIndex: 'container_no',
+    width: 150,
+  }, {
     title: '货号',
     dataIndex: 'product_no',
     width: 200,
