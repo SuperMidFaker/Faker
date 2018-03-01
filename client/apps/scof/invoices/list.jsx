@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Select, Tag } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Layout, Select, Tag } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
+import UserAvatar from 'client/components/UserAvatar';
 import { loadPartners } from 'common/reducers/partner';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
@@ -124,18 +125,28 @@ export default class InvoiceList extends React.Component {
   }, {
     title: '购买方',
     dataIndex: 'buyer',
-    width: 250,
+    width: 200,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
     title: '销售方',
     dataIndex: 'seller',
-    width: 250,
+    width: 200,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
+  }, {
+    title: '总数量',
+    dataIndex: 'total_qty',
+    align: 'right',
+    width: 120,
+  }, {
+    title: '总净重',
+    dataIndex: 'total_net_wt',
+    align: 'right',
+    width: 120,
   }, {
     title: '总金额',
     dataIndex: 'total_amount',
@@ -148,15 +159,16 @@ export default class InvoiceList extends React.Component {
     render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
     this.props.currencies.find(curr => curr.curr_code === o).curr_name,
   }, {
-    title: '总数量',
-    dataIndex: 'total_qty',
-    align: 'right',
-    width: 120,
+    title: '创建时间',
+    dataIndex: 'created_date',
+    width: 140,
+    render: createdate => createdate && moment(createdate).format('YYYY.MM.DD HH:mm'),
+    sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
-    title: '总净重',
-    dataIndex: 'total_net_wt',
-    align: 'right',
+    title: '创建人员',
+    dataIndex: 'created_by',
     width: 120,
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
     dataIndex: 'OPS_COL',
     width: 100,
@@ -242,6 +254,11 @@ export default class InvoiceList extends React.Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="logs">{this.msg('importLogs')}</Menu.Item>
+      </Menu>
+    );
     const toolbarActions = (<span>
       <SearchBox
         placeholder={this.msg('searchPlaceholder')}
@@ -274,9 +291,9 @@ export default class InvoiceList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="upload" onClick={this.handleImport}>
+            <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
               {this.gmsg('batchImport')}
-            </Button>
+            </Dropdown.Button>
             <Button type="primary" icon="plus" onClick={this.handleCreate} >{this.msg('createInvoice')}</Button>
           </PageHeader.Actions>
         </PageHeader>

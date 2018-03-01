@@ -511,12 +511,12 @@ export default class SHFTZRelDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {queryable && <Tooltip title="向监管系统接口查询获取分拨出库单明细的监管ID" placement="bottom">
-              <Button loading={submitting} icon="sync" onClick={this.handleQuery}>获取监管ID</Button>
-            </Tooltip>
-            }
             {relEditable &&
             <Button type="primary" ghost={sent} icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
+            {queryable && <Tooltip title="向监管系统接口查询获取分拨出库单明细的监管ID" placement="bottom">
+              <Button type="primary" loading={submitting} icon="sync" onClick={this.handleQuery}>获取监管ID</Button>
+            </Tooltip>
+            }
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
