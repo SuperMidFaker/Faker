@@ -85,8 +85,16 @@ export default class OrderDetailsPane extends Component {
     title: '原产国',
     dataIndex: 'orig_country',
     width: 100,
-    render: o => this.props.countries.find(coun => coun.cntry_co === o) &&
-    this.props.countries.find(coun => coun.cntry_co === o).cntry_name_cn,
+    render: (o, record) => {
+      if (record.orig_country) {
+        return this.props.countries.find(coun =>
+          coun.cntry_co === record.orig_country).cntry_name_cn;
+      } else if (record.country) {
+        return this.props.countries.find(coun =>
+          coun.cntry_co === record.country).cntry_name_cn;
+      }
+      return '';
+    },
   }, {
     title: '净重',
     dataIndex: 'net_wt',
