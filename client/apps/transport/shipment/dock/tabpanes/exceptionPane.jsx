@@ -158,7 +158,7 @@ export default class ExceptionPane extends React.Component {
     return (
       <div className="pane-content tab-pane table-list">
         <Card bodyStyle={{ padding: 16 }} >
-          <DataTable size="middle" showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
+          <DataTable showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" />
           <ResolveExceptionModal />
         </Card>
       </div>
