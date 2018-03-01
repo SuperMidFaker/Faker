@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Dropdown, Icon, Menu } from 'antd';
 import { MiniBar, Field } from 'client/components/Charts';
@@ -25,6 +24,7 @@ export default class ExportStatsCard extends Component {
     amount: 0,
     count: 0,
     currency: 'CNY',
+    mockData: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.exportStats !== this.props.exportStats) {
@@ -32,11 +32,13 @@ export default class ExportStatsCard extends Component {
         this.setState({
           amount: nextProps.exportStats.total_usd,
           count: nextProps.exportStats.count,
+          mockData: nextProps.exportStats.usdMockData,
         });
       } else if (this.state.currency === 'CNY') {
         this.setState({
           amount: nextProps.exportStats.total_cny,
           count: nextProps.exportStats.count,
+          mockData: nextProps.exportStats.cnyMockData,
         });
       }
     }
@@ -44,25 +46,27 @@ export default class ExportStatsCard extends Component {
   msg = key => formatMsg(this.props.intl, key);
   handleMenuClick = (e) => {
     if (e.key === 'USD') {
-      this.setState({ currency: e.key, amount: this.props.exportStats.total_usd });
+      this.setState({
+        currency: e.key,
+        amount: this.props.exportStats.total_usd,
+        mockData: this.props.exportStats.usdMockData,
+      });
     } else if (e.key === 'CNY') {
-      this.setState({ currency: e.key, amount: this.props.exportStats.total_cny });
+      this.setState({
+        currency: e.key,
+        amount: this.props.exportStats.total_cny,
+        mockData: this.props.exportStats.cnyMockData,
+      });
     }
   }
   render() {
-    const { amount, count, currency } = this.state;
+    const {
+      amount, count, currency, mockData,
+    } = this.state;
     const menu = (<Menu key={currency} onClick={this.handleMenuClick}>
       <Menu.Item key="USD">USD</Menu.Item>
       <Menu.Item key="CNY">CNY</Menu.Item>
     </Menu>);
-    const mockData = [];
-    const beginDay = (new Date().getTime()) - (1000 * 60 * 60 * 24 * 30);
-    for (let i = 0; i < 30; i += 1) {
-      mockData.push({
-        x: moment(new Date(beginDay + (1000 * 60 * 60 * 24 * i))).format('YYYY-MM-DD'),
-        y: Math.floor(Math.random() * 100) + 10,
-      });
-    }
     return (
       <ChartCard
         bordered={false}
