@@ -222,7 +222,11 @@ export default class InvoiceList extends React.Component {
       if (!result.error) {
         this.handleDeselectRows();
         const { filter } = this.props;
-        this.handleReload(filter);
+        this.props.loadInvoices({
+          filter: JSON.stringify(filter),
+          pageSize: this.props.invoiceList.pageSize,
+          current: 1,
+        });
       }
     });
   }
