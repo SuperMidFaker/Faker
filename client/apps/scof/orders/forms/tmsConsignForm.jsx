@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Select, Alert } from 'antd';
+import { Icon, DatePicker, InputNumber, Form, Row, Col, Card, Input, Select, Alert } from 'antd';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/sofOrders';
 import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -18,8 +18,11 @@ import messages from '../message.i18n';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const formatMsg = format(messages);
+
 const FormItem = Form.Item;
 const { Option } = Select;
+const InputGroup = Input.Group;
+
 const quoteNoFieldWarning = {
   validateStatus: 'warning',
   help: '请重新选择报价协议',
@@ -59,7 +62,7 @@ export default class TMSConsignForm extends Component {
     shipment: PropTypes.shape({
       cust_shipmt_pieces: PropTypes.string,
       cust_shipmt_weight: PropTypes.string,
-      cust_shipmt_goods_type: PropTypes.string,
+      // cust_shipmt_goods_type: PropTypes.string,
       cust_shipmt_wrap_type: PropTypes.string,
     }),
     loadTariffsByTransportInfo: PropTypes.func.isRequired,
@@ -565,7 +568,6 @@ export default class TMSConsignForm extends Component {
       }, customerPartnerId,
     } = this.props;
     const { quoteNoField } = this.state;
-    // todo consigner consignee by customer partner id
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -577,7 +579,34 @@ export default class TMSConsignForm extends Component {
       },
       colon: false,
     };
+    const consignLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 20 },
+      },
+      colon: false,
+    };
+    const fullColLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 2 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 22 },
+      },
+      colon: false,
+    };
     const { node } = formData;
+    // todo consigner consignee by customer partner id
+    const consigner = consignerLocations.find(item => item.node_id === node.consigner_id);
+    const consignee = consigneeLocations.find(item => item.node_id === node.consignee_id);
+    const consignerLocation = (consigner && consigner.byname) ? consigner.byname : Location.renderLocation(node, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street');
+    const consigneeLocation = (consignee && consignee.byname) ? consignee.byname : Location.renderLocation(node, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street');
 
     return (
       <FormPane>
@@ -586,60 +615,138 @@ export default class TMSConsignForm extends Component {
           !this.state.isLineIntariff &&
             <Alert message={<div>发货/收货地址不在报价协议的线路里 <a onClick={this.handleShowAddLineModal}>添加到报价协议</a></div>} type="warning" showIcon />
         }
+          <Row gutter={16}>
+            <Col sm={12}>
+              <FormItem label="起运地" {...consignLayout}>
+                <Row>
+                  <Select
+                    allowClear
+                    showArrow
+                    value={node.consigner_id}
+                    onChange={value => this.handleConsignChange('consigner_name', value)}
+                    onSelect={value => this.handleConsignSelect('consigner_name', value)}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 400 }}
+                    optionFilterProp="children"
+                    showSearch
+                    notFoundContent={
+                      <a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
+                  >
+                    {consignerLocations.filter(cl =>
+                        cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                          .map(dw => (<Option value={dw.node_id} key={dw.node_id}>
+                            {this.renderConsign(dw)}</Option>))
+                }
+                    <Option value={-1} key={-1}>+ 添加地址</Option>
+                  </Select>
+                </Row>
+                <Row style={{ marginTop: 10 }}>
+                  <InputGroup >
+                    <Input value={consignerLocation} readOnly style={{ width: '50%' }} />
+                    <Input
+                      prefix={<Icon type="environment-o" />}
+                      value={node.consigner_addr}
+                      onChange={e => this.handleChange('consigner_addr', e.target.value)}
+                      placeholder="详细地址"
+                      style={{ width: '50%' }}
+                    />
+                  </InputGroup>
+                </Row>
+                <Row style={{ marginTop: 10 }}>
+                  <InputGroup >
+                    <Input
+                      style={{ width: '33.33%' }}
+                      prefix={<Icon type="user" />}
+                      value={node.consigner_contact}
+                      onChange={e => this.handleChange('consigner_contact', e.target.value)}
+                      placeholder="联系人"
+                    />
+                    <Input
+                      style={{ width: '33.33%' }}
+                      prefix={<Icon type="mobile" />}
+                      value={node.consigner_mobile}
+                      type="tel"
+                      onChange={e => this.handleChange('consigner_mobile', e.target.value)}
+                      placeholder="电话"
+                    />
+                    <Input
+                      style={{ width: '33.33%' }}
+                      prefix={<Icon type="mail" />}
+                      value={node.consigner_email}
+                      type="email"
+                      onChange={e => this.handleChange('consigner_email', e.target.value)}
+                      placeholder="邮箱"
+                    />
+                  </InputGroup>
+                </Row>
+              </FormItem>
+            </Col>
+            <Col sm={12}>
+              <FormItem label="目的地" {...consignLayout}>
+                <Row>
+                  <Select
+                    allowClear
+                    showArrow
+                    value={node.consignee_id}
+                    onChange={value => this.handleConsignChange('consignee_name', value)}
+                    onSelect={value => this.handleConsignSelect('consignee_name', value)}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 400 }}
+                    optionFilterProp="children"
+                    showSearch
+                    notFoundContent={
+                      <a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
+                  >
+                    {consigneeLocations.filter(cl =>
+                        cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1)
+                          .map(dw => (<Option value={dw.node_id} key={dw.node_id}>
+                            {this.renderConsign(dw)}</Option>))}
+                    <Option value={-1} key={-1}>+ 添加地址</Option>
+                  </Select>
+                </Row>
+                <Row style={{ marginTop: 10 }}>
+                  <InputGroup >
+                    <Input value={consigneeLocation} readOnly style={{ width: '50%' }} />
+                    <Input
+                      prefix={<Icon type="environment-o" />}
+                      value={node.consignee_addr}
+                      onChange={e => this.handleChange('consignee_addr', e.target.value)}
+                      placeholder="详细地址"
+                      style={{ width: '50%' }}
+                    />
+                  </InputGroup>
+                </Row>
+                <Row style={{ marginTop: 10 }}>
+                  <InputGroup >
+                    <Input
+                      style={{ width: '33.33%' }}
+                      prefix={<Icon type="user" />}
+                      value={node.consignee_contact}
+                      onChange={e => this.handleChange('consignee_contact', e.target.value)}
+                      placeholder="联系人"
+                    />
+                    <Input
+                      style={{ width: '33.33%' }}
+                      prefix={<Icon type="mobile" />}
+                      value={node.consignee_mobile}
+                      type="tel"
+                      onChange={e => this.handleChange('consignee_mobile', e.target.value)}
+                      placeholder="电话"
+                    />
+                    <Input
+                      style={{ width: '33.33%' }}
+                      prefix={<Icon type="mail" />}
+                      value={node.consignee_email}
+                      type="email"
+                      onChange={e => this.handleChange('consignee_email', e.target.value)}
+                      placeholder="邮箱"
+                    />
+                  </InputGroup>
+                </Row>
+              </FormItem>
+            </Col>
+          </Row>
           <Row>
-            <Col span={8}>
-              <FormItem label="起运地" {...formItemLayout} required>
-                <Select
-                  allowClear
-                  showArrow
-                  value={node.consigner_id}
-                  onChange={value => this.handleConsignChange('consigner_name', value)}
-                  onSelect={value => this.handleConsignSelect('consigner_name', value)}
-                  dropdownMatchSelectWidth={false}
-                  dropdownStyle={{ width: 400 }}
-                  optionFilterProp="children"
-                  showSearch
-                  notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
-                >
-                  {consignerLocations.filter(cl =>
-                    cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                      (<Option value={dw.node_id} key={dw.node_id}>
-                        {this.renderConsign(dw)}</Option>))
-                }
-                  <Option value={-1} key={-1}>+ 添加地址</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label="目的地" {...formItemLayout} required>
-                <Select
-                  allowClear
-                  showArrow
-                  value={node.consignee_id}
-                  onChange={value => this.handleConsignChange('consignee_name', value)}
-                  onSelect={value => this.handleConsignSelect('consignee_name', value)}
-                  dropdownMatchSelectWidth={false}
-                  dropdownStyle={{ width: 400 }}
-                  optionFilterProp="children"
-                  showSearch
-                  notFoundContent={<a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
-                >
-                  {consigneeLocations.filter(cl =>
-                    cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                      (<Option value={dw.node_id} key={dw.node_id}>
-                        {this.renderConsign(dw)}</Option>))
-                }
-                  <Option value={-1} key={-1}>+ 添加地址</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={this.msg('调度人员')} {...formItemLayout}>
-                <Select value={node.person_id} onChange={this.handlePersonChange}>
-                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
-                </Select>
-              </FormItem>
-            </Col>
             <Col span={8}>
               <FormItem label="运输模式" {...formItemLayout} required>
                 <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
@@ -658,8 +765,10 @@ export default class TMSConsignForm extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem label="备注" {...formItemLayout}>
-                <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
+              <FormItem label={this.msg('调度人员')} {...formItemLayout}>
+                <Select value={node.person_id} onChange={this.handlePersonChange}>
+                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
+                </Select>
               </FormItem>
             </Col>
             <Col span={8}>
@@ -688,6 +797,11 @@ export default class TMSConsignForm extends Component {
                   value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
                   onChange={this.handleDeliveryChange}
                 />
+              </FormItem>
+            </Col>
+            <Col span={24}>
+              <FormItem label="备注" {...fullColLayout}>
+                <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
               </FormItem>
             </Col>
           </Row>
