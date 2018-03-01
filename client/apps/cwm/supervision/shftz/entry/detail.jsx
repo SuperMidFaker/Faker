@@ -611,8 +611,6 @@ export default class SHFTZEntryDetail extends Component {
               primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.completed &&
               <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>
             */}
-            {this.state.queryable &&
-              <Button icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
             {this.state.nonCargono &&
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
             { entryRegs.length === 1 &&
@@ -638,6 +636,8 @@ export default class SHFTZEntryDetail extends Component {
             {entryEditable && entryRegs.length === 1 &&
               <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>
             }
+            {this.state.queryable &&
+              <Button type="primary" icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
