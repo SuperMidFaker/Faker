@@ -65,15 +65,23 @@ export default class OrderForm extends Component {
     setClientForm: PropTypes.func.isRequired,
     graphLoading: PropTypes.bool.isRequired,
   }
+  componentDidMount() {
+    this.handleOrderParamsLoad(this.props.formData);
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {
+      this.handleOrderParamsLoad(nextProps.formData);
+    }
+  }
+  handleOrderParamsLoad = (formData) => {
+    if (formData.customer_partner_id) {
       this.props.loadPartnerFlowList({
-        partnerId: nextProps.formData.customer_partner_id,
-        tenantId: nextProps.tenantId,
+        partnerId: formData.customer_partner_id,
+        tenantId: this.props.tenantId,
       });
-      this.props.loadCwmBizParams(nextProps.tenantId, nextProps.formData.customer_partner_id);
-      this.props.loadCustomerCmsQuotes(nextProps.tenantId, nextProps.formData.customer_partner_id);
-      this.props.loadOperators(nextProps.formData.customer_partner_id, nextProps.tenantId);
+      this.props.loadCwmBizParams(this.props.tenantId, formData.customer_partner_id);
+      this.props.loadCustomerCmsQuotes(this.props.tenantId, formData.customer_partner_id);
+      this.props.loadOperators(formData.customer_partner_id, this.props.tenantId);
     }
   }
   msg = key => formatMsg(this.props.intl, key)
