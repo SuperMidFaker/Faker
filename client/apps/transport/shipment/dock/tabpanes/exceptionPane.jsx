@@ -7,9 +7,10 @@ import moment from 'moment';
 import DataTable from 'client/components/DataTable';
 import { loadExceptions, showDealExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../..//message.i18n';
-import ResolveExceptionModal from '../../../tracking/land/modals/resolveExceptionModal';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
+import messages from '../../message.i18n';
+import ResolveExceptionModal from '../../../tracking/land/modals/resolveExceptionModal';
+
 
 const formatMsg = format(messages);
 
@@ -27,7 +28,6 @@ export default class ExceptionPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     shipmtNo: PropTypes.string,
-    dispId: PropTypes.number,
     exceptions: PropTypes.object.isRequired,
     showDealExcpModal: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
@@ -158,7 +158,7 @@ export default class ExceptionPane extends React.Component {
     return (
       <div className="pane-content tab-pane table-list">
         <Card bodyStyle={{ padding: 16 }} >
-          <DataTable showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" />
+          <DataTable size="middle" showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
           <ResolveExceptionModal />
         </Card>
       </div>

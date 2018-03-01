@@ -1,26 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Select, DatePicker, Button, Menu, Dropdown, Icon, Table, Input } from 'antd';
+import { Breadcrumb, Card, Layout, Select, DatePicker, Button, Menu, Dropdown, Icon, Table } from 'antd';
 import { loadKpi, changeModes } from 'common/reducers/transportKpi';
 import { loadPartners } from 'common/reducers/shipment';
 import ButtonToggle from 'client/components/ButtonToggle';
+import SearchBox from 'client/components/SearchBox';
+import { createFilename } from 'client/util/dataTransform';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import TrafficVolume from './trafficVolume';
 import Punctual from './punctual';
 import OverTime from './overTime';
 import Fees from './fees';
 import Exceptional from './exceptional';
-import { createFilename } from 'client/util/dataTransform';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const { Header, Content, Sider } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const { MonthPicker } = DatePicker;
-const SubMenu = Menu.SubMenu;
-const Search = Input.Search;
+const { SubMenu } = Menu;
 
 @injectIntl
 @connectNav({
@@ -40,7 +40,6 @@ const Search = Input.Search;
 )
 export default class Kpi extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loadKpi: PropTypes.func.isRequired,
     kpi: PropTypes.object.isRequired,
@@ -63,12 +62,20 @@ export default class Kpi extends React.Component {
     sourceType: 'sp',
   }
   componentWillMount() {
-    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+    this.props.loadPartners(
+      this.props.tenantId,
+      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
+      [PARTNER_BUSINESSE_TYPES.transport]
+    ).then((result) => {
       this.setState({ customers: result.data, clients: result.data }, () => {
         this.handleTableLoad(this.props);
       });
     });
-    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+    this.props.loadPartners(
+      this.props.tenantId,
+      [PARTNER_ROLES.SUP],
+      [PARTNER_BUSINESSE_TYPES.transport]
+    ).then((result) => {
       this.setState({ carriers: result.data });
     });
   }
@@ -88,7 +95,8 @@ export default class Kpi extends React.Component {
     const tp = { ...this.props };
     delete np.modes;
     delete tp.modes;
-    if (JSON.stringify(np) === JSON.stringify(tp) && JSON.stringify(nextState) === JSON.stringify(this.state)) return false;
+    if ((JSON.stringify(np) === JSON.stringify(tp))
+      && (JSON.stringify(nextState) === JSON.stringify(this.state))) return false;
     return true;
   }
   handleTableLoad = (props) => {
@@ -121,7 +129,15 @@ export default class Kpi extends React.Component {
       customer: record,
     });
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, query.endDate, record.partner_id, record.tid, query.separationDate, this.state.sourceType);
+    this.props.loadKpi(
+      tenantId,
+      query.beginDate,
+      query.endDate,
+      record.partner_id,
+      record.tid,
+      query.separationDate,
+      this.state.sourceType
+    );
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
@@ -144,25 +160,57 @@ export default class Kpi extends React.Component {
   }
   handleBeginDateChange = (date) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, date, query.endDate, query.partnerId, query.partnerTenantId, query.separationDate, this.state.sourceType);
+    this.props.loadKpi(
+      tenantId,
+      date,
+      query.endDate,
+      query.partnerId,
+      query.partnerTenantId,
+      query.separationDate,
+      this.state.sourceType
+    );
   }
   handleEndDateChange = (date) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, date, query.partnerId, query.partnerTenantId, query.separationDate, this.state.sourceType);
+    this.props.loadKpi(
+      tenantId,
+      query.beginDate,
+      date,
+      query.partnerId,
+      query.partnerTenantId,
+      query.separationDate,
+      this.state.sourceType
+    );
   }
   handleMonth = (month) => {
     const { tenantId, query } = this.props;
     const end = new Date();
     const begin = new Date();
     begin.setMonth(begin.getMonth() - month);
-    this.props.loadKpi(tenantId, begin, end, query.partnerId, query.partnerTenantId, query.separationDate, this.state.sourceType);
+    this.props.loadKpi(
+      tenantId,
+      begin,
+      end,
+      query.partnerId,
+      query.partnerTenantId,
+      query.separationDate,
+      this.state.sourceType
+    );
   }
   handleSeparationDateChange = (value) => {
     const { tenantId, query } = this.props;
-    this.props.loadKpi(tenantId, query.beginDate, query.endDate, query.partnerId, query.partnerTenantId, value, this.state.sourceType);
+    this.props.loadKpi(
+      tenantId,
+      query.beginDate,
+      query.endDate,
+      query.partnerId,
+      query.partnerTenantId,
+      value,
+      this.state.sourceType
+    );
   }
   toggleSourceType = () => {
-    let sourceType = this.state.sourceType;
+    let { sourceType } = this.state;
     let clients = [...this.state.clients];
     if (this.state.sourceType === 'sp') {
       sourceType = 'sr';
@@ -189,7 +237,8 @@ export default class Kpi extends React.Component {
   handleExportExcel = (type) => {
     const { modes } = this.props;
     const {
-      transitModes, range, shipmentCounts, punctualShipmentCounts, shipmentFees, exceptionalShipmentCounts,
+      transitModes, range, shipmentCounts, punctualShipmentCounts,
+      shipmentFees, exceptionalShipmentCounts,
     } = this.props.kpi;
     window.open(`${API_ROOTS.default}v1/transport/kpi/exportExcel/${createFilename('KPI')}.xlsx?transitModes=${JSON.stringify(transitModes)}&range=${
       JSON.stringify(range)}&shipmentCounts=${JSON.stringify(shipmentCounts)}&punctualShipmentCounts=${JSON.stringify(punctualShipmentCounts)
@@ -221,15 +270,45 @@ export default class Kpi extends React.Component {
     } = this.state;
     let content = (<span />);
     if (selectedKey === '1') {
-      content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} modes={modes.punctual} onModesChange={this.handleModesChange} />);
+      content = (<Punctual
+        kpi={kpi}
+        loading={loading}
+        loaded={loaded}
+        modes={modes.punctual}
+        onModesChange={this.handleModesChange}
+      />);
     } else if (selectedKey === '2') {
-      content = (<OverTime kpi={kpi} loading={loading} loaded={loaded} modes={modes.overTime} onModesChange={this.handleModesChange} />);
+      content = (<OverTime
+        kpi={kpi}
+        loading={loading}
+        loaded={loaded}
+        modes={modes.overTime}
+        onModesChange={this.handleModesChange}
+      />);
     } else if (selectedKey === '3') {
-      content = (<TrafficVolume kpi={kpi} loading={loading} loaded={loaded} modes={modes.volume} onModesChange={this.handleModesChange} />);
+      content = (<TrafficVolume
+        kpi={kpi}
+        loading={loading}
+        loaded={loaded}
+        modes={modes.volume}
+        onModesChange={this.handleModesChange}
+      />);
     } else if (selectedKey === '4') {
-      content = (<Fees kpi={kpi} loading={loading} loaded={loaded} modes={modes.fees} onModesChange={this.handleModesChange} />);
+      content = (<Fees
+        kpi={kpi}
+        loading={loading}
+        loaded={loaded}
+        modes={modes.fees}
+        onModesChange={this.handleModesChange}
+      />);
     } else if (selectedKey === '5') {
-      content = (<Exceptional kpi={kpi} loading={loading} loaded={loaded} modes={modes.exception} onModesChange={this.handleModesChange} />);
+      content = (<Exceptional
+        kpi={kpi}
+        loading={loading}
+        loaded={loaded}
+        modes={modes.exception}
+        onModesChange={this.handleModesChange}
+      />);
     }
     const menu = (
       <Menu onClick={this.handleExportClick}>
@@ -273,6 +352,7 @@ export default class Kpi extends React.Component {
           <div className="left-sider-panel">
             <div className="toolbar">
               <SearchBox
+                width="100%"
                 placeholder="搜索"
                 onSearch={this.handleSearch}
               />
@@ -283,7 +363,11 @@ export default class Kpi extends React.Component {
                 dataSource={this.state.clients}
                 columns={columns}
                 showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 15,
+                  onChange: this.handlePageChange,
+                }}
                 rowKey="partner_id"
                 rowClassName={record => (record.partner_id === customer.partner_id ? 'table-row-selected' : '')}
                 onRow={record => ({
@@ -318,27 +402,38 @@ export default class Kpi extends React.Component {
             </div>
           </Header>
           <Content className="main-content" id="transport-kpi-main-content">
-            <div className="page-body">
-              <div className="toolbar">
-                <h3>{this.state.collapsed ? customer.name : ''}</h3>
-                <div className="toolbar-right">
-                  <a onClick={() => this.handleMonth(2)}>近3月</a>
-                  <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
-                  <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
-                  <MonthPicker allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} />
-                  <span>~</span>
-                  <MonthPicker allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
-                  <span style={{ marginLeft: 20 }}>结算日:</span>
-                  <Select style={{ width: 70, marginLeft: 5 }} value={query.separationDate} onChange={this.handleSeparationDateChange}>
-                    {this.renderSeparationDateOption()}
-                  </Select>
-                </div>
-              </div>
+            <Card
+              title={customer.name}
+              extra={<span>
+                <a onClick={() => this.handleMonth(2)}>近3月</a>
+                <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
+                <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
+                <MonthPicker
+                  allowClear={false}
+                  value={moment(query.beginDate)}
+                  onChange={this.handleBeginDateChange}
+                />
+                <span>~</span>
+                <MonthPicker
+                  allowClear={false}
+                  value={moment(query.endDate)}
+                  onChange={this.handleEndDateChange}
+                />
+                <span style={{ marginLeft: 20 }}>结算日:</span>
+                <Select
+                  style={{ width: 70, marginLeft: 5 }}
+                  value={query.separationDate}
+                  onChange={this.handleSeparationDateChange}
+                >
+                  {this.renderSeparationDateOption()}
+                </Select>
+              </span>}
+              bodyStyle={{ padding: 8 }}
+            >
               <Layout className="main-wrapper">
-                <Sider className="nav-sider" width={150}>
+                <Sider width={150} className="nav-sider">
                   <Menu
                     onClick={this.handleMenuChange}
-                    style={{ width: 150 }}
                     defaultOpenKeys={['sub1']}
                     selectedKeys={[selectedKey]}
                     mode="inline"
@@ -352,11 +447,11 @@ export default class Kpi extends React.Component {
                     <Menu.Item key="5">异常票数统计</Menu.Item>
                   </Menu>
                 </Sider>
-                <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                <Content className="nav-content" style={{ padding: 16 }}>
                   {content}
                 </Content>
               </Layout>
-            </div>
+            </Card>
           </Content>
         </Layout>
       </Layout>
