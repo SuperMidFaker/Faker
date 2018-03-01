@@ -41,6 +41,7 @@ class DataTable extends React.Component {
     baseCls: 'welo-data-table',
     fixedBody: true,
     scrollOffset: 280,
+    paginationSize: 'small',
   }
   static propTypes = {
     baseCls: PropTypes.string,
@@ -58,6 +59,7 @@ class DataTable extends React.Component {
     fixedBody: PropTypes.bool,
     noSetting: PropTypes.bool,
     total: PropTypes.node,
+    paginationSize: PropTypes.string,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -254,7 +256,7 @@ class DataTable extends React.Component {
   }
   render() {
     const {
-      baseCls, noBorder, fixedBody, noSetting,
+      baseCls, noBorder, fixedBody, noSetting, paginationSize,
     } = this.props;
     let { dataSource } = this.props;
     let { pagination } = this.props;
@@ -264,8 +266,10 @@ class DataTable extends React.Component {
         ...pagination,
         ...dataSource.getPagination(dataSource.remotes, resolveCurrent),
       } : pagination;
-      pagination.size = 'small';
       dataSource = data;
+    }
+    if (pagination) {
+      pagination.size = paginationSize;
     }
     let scrollProp;
     if (this.state.scrollY) {

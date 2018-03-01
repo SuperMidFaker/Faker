@@ -29,7 +29,6 @@ export default class AdaptorDetailModal extends Component {
     intl: intlShape.isRequired,
   }
   state = {
-    lineColumns: [],
     lineData: [],
     columnDefaults: [],
     rightSidercollapsed: true,
@@ -46,12 +45,7 @@ export default class AdaptorDetailModal extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.adaptor.columns !== nextProps.adaptor.columns) {
-      const lineColumns = [{
-        dataIndex: 'keyall',
-        width: 100,
-        fixed: 'left',
-      }];
+    if (nextProps.visible && this.props.adaptor.columns !== nextProps.adaptor.columns) {
       const lineData = [{
         id: 'example1',
         keyall: '行1',
@@ -69,52 +63,8 @@ export default class AdaptorDetailModal extends Component {
         keyall: '映射关系',
       }];
       let scrollX = 100;
-      let modelColumns = [];
-      const modelKeys = Object.keys(LINE_FILE_ADAPTOR_MODELS);
-      for (let i = 0; i < modelKeys.length; i++) {
-        const model = modelKeys[i];
-        if (LINE_FILE_ADAPTOR_MODELS[model].key === nextProps.adaptor.biz_model) {
-          modelColumns = LINE_FILE_ADAPTOR_MODELS[model].columns;
-          break;
-        }
-      }
       nextProps.adaptor.columns.forEach((col, index) => {
         const dataIndex = `key${index}`;
-        lineColumns.push({
-          title: `列${index}`,
-          dataIndex,
-          width: 200,
-          render: (value, row, rowIndex) => {
-            if (rowIndex === 2) {
-              return (
-                <Select
-                  showSearch
-                  allowClear
-                  style={{ width: 160 }}
-                  placeholder="选择字段"
-                  optionFilterProp="children"
-                  onChange={field => this.handleFieldMap(col.id, field, dataIndex)}
-                  value={value}
-                >
-                  {modelColumns.map(acol =>
-                    <Option value={acol.field} key={acol.field}>{acol.label}</Option>)}
-                </Select>
-              );
-            } else if (rowIndex === 3) {
-              return (
-                <EditableCell
-                  value={value}
-                  cellTrigger
-                  placeholder={`C${index}`}
-                  onSave={field => this.handleConvertMap(col.id, field)}
-                />
-              );
-            } else if (rowIndex === 4) {
-              return <Tooltip title="编辑映射"><Button icon="edit" onClick={() => this.handleMappingEditBegin(col.id, value, dataIndex)} /></Tooltip>;
-            }
-            return value;
-          },
-        });
         lineData[0][dataIndex] = col.desc1;
         lineData[1][dataIndex] = col.desc2;
         lineData[2][dataIndex] = col.field;
@@ -123,7 +73,7 @@ export default class AdaptorDetailModal extends Component {
         scrollX += 200;
       });
       this.setState({
-        lineColumns, lineData, scrollX, columnDefaults: nextProps.adaptor.columnDefaults,
+        lineData, scrollX, columnDefaults: nextProps.adaptor.columnDefaults,
       });
     }
   }
@@ -137,7 +87,7 @@ export default class AdaptorDetailModal extends Component {
     this.props.hideAdaptorDetailModal();
   }
   handleFieldMap = (columnId, field, dataIndex) => {
-    this.props.updateColumnField(columnId, { field });
+    this.props.updateColumnField(columnId, { field: field || null });
     const lineData = [...this.state.lineData];
     lineData[2][dataIndex] = field;
     this.setState({ lineData });
@@ -274,7 +224,7 @@ export default class AdaptorDetailModal extends Component {
       form: { getFieldDecorator }, visible, adaptor, customers,
     } = this.props;
     const {
-      lineColumns, lineData, scrollX, columnDefaults, mappingModal,
+      lineData, scrollX, columnDefaults, mappingModal,
     } = this.state;
     let adaptorModel;
     const modelKeys = Object.keys(LINE_FILE_ADAPTOR_MODELS);
@@ -287,6 +237,14 @@ export default class AdaptorDetailModal extends Component {
     }
     if (!adaptorModel) {
       return null;
+    }
+    const mappedFieldsMap = new Map();
+    if (lineData[2]) {
+      Object.values(lineData[2]).forEach((ld) => {
+        if (ld) {
+          mappedFieldsMap.set(ld, true);
+        }
+      });
     }
     const fieldColumns = [{
       dataIndex: 'keyall',
@@ -301,16 +259,8 @@ export default class AdaptorDetailModal extends Component {
       keyall: '默认值',
     }];
     let fieldsScrollX = 100;
-    const mappedFieldsMap = new Map();
-    if (lineData[2]) {
-      Object.values(lineData[2]).forEach((ld) => {
-        if (ld) {
-          mappedFieldsMap.set(ld, true);
-        }
-      });
-    }
-    const defaultColumns = adaptorModel.columns.filter(col => !mappedFieldsMap.has(col.field));
-    defaultColumns.forEach((defc, index) => {
+    const availColumnFields = adaptorModel.columns.filter(col => !mappedFieldsMap.has(col.field));
+    availColumnFields.forEach((defc, index) => {
       const colDefault = columnDefaults.filter(cold => cold.field === defc.field)[0];
       const dataIndex = `key${index}`;
       fieldColumns.push({
@@ -331,6 +281,57 @@ export default class AdaptorDetailModal extends Component {
       fieldData[0][dataIndex] = defc.label;
       fieldData[1][dataIndex] = colDefault && colDefault.default;
       fieldsScrollX += 200;
+    });
+    const lineColumns = [{
+      dataIndex: 'keyall',
+      width: 100,
+      fixed: 'left',
+    }];
+    adaptor.columns.forEach((col, index) => {
+      const dataIndex = `key${index}`;
+      lineColumns.push({
+        title: `列${index}`,
+        dataIndex,
+        width: 200,
+        render: (value, row, rowIndex) => {
+          if (rowIndex === 2) {
+            const fieldSelOptions = [...availColumnFields];
+            if (value) {
+              const thisFieldColumn = adaptorModel.columns.filter(adcol =>
+                adcol.field === value)[0];
+              if (thisFieldColumn) {
+                fieldSelOptions.unshift(thisFieldColumn);
+              }
+            }
+            return (
+              <Select
+                showSearch
+                allowClear
+                style={{ width: 160 }}
+                placeholder="选择字段"
+                optionFilterProp="children"
+                onChange={field => this.handleFieldMap(col.id, field, dataIndex)}
+                value={value}
+              >
+                {fieldSelOptions.map(acol =>
+                  <Option value={acol.field} key={acol.field}>{acol.label}</Option>)}
+              </Select>
+            );
+          } else if (rowIndex === 3) {
+            return (
+              <EditableCell
+                value={value}
+                cellTrigger
+                placeholder={`C${index}`}
+                onSave={field => this.handleConvertMap(col.id, field)}
+              />
+            );
+          } else if (rowIndex === 4) {
+            return <Tooltip title="编辑映射"><Button icon="edit" onClick={() => this.handleMappingEditBegin(col.id, value, dataIndex)} /></Tooltip>;
+          }
+          return value;
+        },
+      });
     });
     let isCsv = false;
     let csvOption;

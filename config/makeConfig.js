@@ -72,7 +72,7 @@ module.exports = (serverPort, dirName, appName) => {
       notify: 'https://notify.welogix.cn/',
       self: '/',
     });
-    config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
+    config.set('CDN_URL', 'https://pd-cdn.welogix.cn');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }

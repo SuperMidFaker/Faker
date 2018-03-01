@@ -19,7 +19,7 @@ const formatMsg = format(messages);
 export default class ExportStatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    exportStats: PropTypes.object.isRequired,
+    exportStats: PropTypes.shape({ count: PropTypes.number }).isRequired,
   }
   state = {
     amount: 0,
@@ -66,10 +66,10 @@ export default class ExportStatsCard extends Component {
     return (
       <ChartCard
         bordered={false}
-        title="进口金额"
+        title="出口金额"
         action={<Dropdown overlay={menu}><Icon type="ellipsis" /></Dropdown>}
-        total={`${currency}` === 'CNY' ? `￥${amount}` : `$${amount}`}
-        footer={<Field label="进口量" value={count} />}
+        total={`${currency}` === 'CNY' ? `￥${amount.toFixed(2)}` : `$${amount.toFixed(2)}`}
+        footer={<Field label="出口量" value={count} />}
         contentHeight={64}
       >
         <MiniBar

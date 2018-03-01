@@ -170,7 +170,6 @@ export default class CorpEdit extends React.Component {
       intl, form: { getFieldDecorator, getFieldValue }, code, roles, visible,
     } = this.props;
     const isCreating = !this.props.pid && this.props.pid !== 0;
-    const msg = descriptor => formatMsg(intl, descriptor);
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -208,7 +207,7 @@ export default class CorpEdit extends React.Component {
           {
               isCreating && this.renderTextInput(
                 this.msg('password'), this.msg('passwordPlaceholder'), 'password', true,
-                [{ required: true, min: 6, message: msg('passwordMessage') }],
+                [{ required: true, min: 6, message: this.msg('passwordMessage') }],
                 { initialValue: '' }, 'password'
               )
             }

@@ -2,17 +2,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Steps, Card, Collapse, Row, Col, Alert } from 'antd';
 import { loadPubShipmtDetail } from 'common/reducers/shipment';
 import * as Location from 'client/util/location';
 import { loadExceptions } from 'common/reducers/trackingLandException';
 import TrackingTimeline from '../../transport/common/trackingTimeline';
-import moment from 'moment';
+
 import './index.less';
 
-const Step = Steps.Step;
-const Panel = Collapse.Panel;
+const { Step } = Steps;
+const { Panel } = Collapse;
 const { Header, Content } = Layout;
 
 @connect(
@@ -27,7 +28,6 @@ const { Header, Content } = Layout;
 })
 export default class TrackingDetail extends React.Component {
   static propTypes = {
-    shipmtDetail: PropTypes.object.isRequired,
     loadExceptions: PropTypes.func.isRequired,
     loadPubShipmtDetail: PropTypes.func.isRequired,
   }
@@ -145,11 +145,11 @@ export default class TrackingDetail extends React.Component {
       function addMarker(pt, label, index, cur, pts) {
         if (pt && pt.lat !== 0 && pt.lng !== 0) {
           const iconSize = [25, 82];
-          let iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_way.png';
+          let iconurl = 'https://pd-cdn.welogix.cn/assets/img/marker_way.png';
           if (index === 0) {
-            iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_origin.png';
+            iconurl = 'https://pd-cdn.welogix.cn/assets/img/marker_origin.png';
           } else if (index === pts.length - 1) {
-            iconurl = 'https://welogix-web-cdn.b0.upaiyun.com/assets/img/marker_dest.png';
+            iconurl = 'https://pd-cdn.welogix.cn/assets/img/marker_dest.png';
           }
           const icon = new BMap.Icon(iconurl, new BMap.Size(...iconSize));
           const marker = new BMap.Marker(pt, { icon });
@@ -251,7 +251,7 @@ export default class TrackingDetail extends React.Component {
     };
     let statusPos = 0;
     if (tracking.points.length > 0) {
-      latestPoint = tracking.points[0];
+      [latestPoint] = tracking.points;
     }
     if (shipmt.status < 4) {
       statusPos = 0;
@@ -334,6 +334,7 @@ export default class TrackingDetail extends React.Component {
         />
       </Steps>);
     }
+    return null;
   }
   render() {
     const { shipmt, tracking } = this.props.shipmtDetail;
