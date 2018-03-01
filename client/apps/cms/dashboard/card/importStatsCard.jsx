@@ -37,6 +37,7 @@ export default class ImportStatsCard extends Component {
   state = {
     amount: 0,
     count: 0,
+    dailyStats: [],
     currency: 'CNY',
   }
   componentWillReceiveProps(nextProps) {
@@ -45,11 +46,13 @@ export default class ImportStatsCard extends Component {
         this.setState({
           amount: nextProps.importStats.total_usd,
           count: nextProps.importStats.count,
+          dailyStats: nextProps.importStats.dailyStatsUSD,
         });
       } else if (this.state.currency === 'CNY') {
         this.setState({
           amount: nextProps.importStats.total_cny,
           count: nextProps.importStats.count,
+          dailyStats: nextProps.importStats.dailyStatsCNY,
         });
       }
     }
@@ -57,37 +60,39 @@ export default class ImportStatsCard extends Component {
   msg = key => formatMsg(this.props.intl, key);
   handleMenuClick = (e) => {
     if (e.key === 'USD') {
-      this.setState({ currency: e.key, amount: this.props.importStats.total_usd });
+      this.setState({
+        currency: e.key,
+        amount: this.props.importStats.total_usd,
+        dailyStats: this.props.importStats.dailyStatsUSD,
+      });
     } else if (e.key === 'CNY') {
-      this.setState({ currency: e.key, amount: this.props.importStats.total_cny });
+      this.setState({
+        currency: e.key,
+        amount: this.props.importStats.total_cny,
+        dailyStats: this.props.importStats.dailyStatsCNY,
+      });
     }
   }
   render() {
-    const { amount, count, currency } = this.state;
+    const {
+      amount, count, currency, dailyStats,
+    } = this.state;
     const menu = (<Menu key={currency} onClick={this.handleMenuClick}>
       <Menu.Item key="USD">USD</Menu.Item>
       <Menu.Item key="CNY">CNY</Menu.Item>
     </Menu>);
-    const mockData = [];
-    const beginDay = (new Date().getTime()) - (1000 * 60 * 60 * 24 * 30);
-    for (let i = 0; i < 30; i += 1) {
-      mockData.push({
-        x: moment(new Date(beginDay + (1000 * 60 * 60 * 24 * i))).format('YYYY-MM-DD'),
-        y: Math.floor(Math.random() * 100) + 10,
-      });
-    }
     return (
       <ChartCard
         bordered={false}
         title="进口金额"
         action={<Dropdown overlay={menu}><Icon type="ellipsis" /></Dropdown>}
-        total={`${currency}` === 'CNY' ? `￥${amount.toFixed(2)}` : `$${amount.toFixed(2)}`}
+        total={`${currency}` === 'CNY' ? `￥${amount}` : `$${amount}`}
         footer={<Field label="进口量" value={count} />}
         contentHeight={64}
       >
         <MiniBar
           height={64}
-          data={mockData}
+          data={dailyStats}
         />
       </ChartCard>
     );

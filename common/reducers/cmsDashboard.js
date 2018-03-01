@@ -45,24 +45,35 @@ const initialState = {
     total_cny: 0,
     total_usd: 0,
     count: 0,
+    dailyStatsCNY: [],
+    dailyStatsUSD: [],
   },
   exportStats: {
     total_cny: 0,
     total_usd: 0,
     count: 0,
+    dailyStatsCNY: [],
+    dailyStatsUSD: [],
   },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.CMS_STATISTICS_SUCCEED:
-      return { ...state, statistics: { ...state.statistics, ...action.result.data, ...action.params } };
+      return {
+        ...state,
+        statistics: { ...state.statistics, ...action.result.data, ...action.params },
+      };
     case actionTypes.CMS_ITEMS_STATS_SUCCEED:
       return { ...state, itemsStats: { ...state.itemsStats, ...action.result.data } };
     case actionTypes.CMS_TAX_STATS_SUCCEED:
       return { ...state, taxStats: { ...state.taxStats, ...action.result.data, ...action.params } };
     case actionTypes.CMS_IE_STATS_SUCCEED:
-      return { ...state, importStats: { ...state.importStats, ...action.result.data.impVals }, exportStats: { ...state.exportStats, ...action.result.data.expVals } };
+      return {
+        ...state,
+        importStats: { ...state.importStats, ...action.result.data.impVals },
+        exportStats: { ...state.exportStats, ...action.result.data.expVals },
+      };
     default:
       return state;
   }

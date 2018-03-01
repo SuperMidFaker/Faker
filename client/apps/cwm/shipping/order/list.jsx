@@ -317,7 +317,7 @@ export default class ShippingOrderList extends React.Component {
   handleOwnerChange = (value) => {
     const filters = { ...this.props.filters, ownerCode: value };
     const whseCode = this.props.defaultWhse.code;
-    this.props.loadAdaptors(`${value === 'all' ? '' : value}`, [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key], true);
+    this.props.loadModelAdaptors(`${value === 'all' ? '' : value}`, [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key], true);
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
