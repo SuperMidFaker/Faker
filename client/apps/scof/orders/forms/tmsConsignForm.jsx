@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { DatePicker, Form, Row, Col, Card, Input, Select, Alert } from 'antd';
+import { DatePicker, InputNumber, Form, Row, Col, Card, Input, Select, Alert } from 'antd';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/sofOrders';
 import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
@@ -238,28 +238,13 @@ export default class TMSConsignForm extends Component {
     }
   }
   handleConsignChange = (key, value) => {
-    if (typeof value !== 'string') {
+    if (typeof value !== 'string' && value !== undefined && value !== null) {
       return;
     }
     const { formRequires } = this.props;
     const consignForm = {};
     if (key === 'consigner_name') {
-      consignForm.consigner_name = value;
-      const consign = formRequires.consignerLocations.find(item => item.name === value);
-      if (consign) {
-        consignForm.consigner_id = consign.node_id;
-        consignForm.consigner_byname = consign.byname;
-        consignForm.consigner_province = consign.province;
-        consignForm.consigner_city = consign.city;
-        consignForm.consigner_district = consign.district;
-        consignForm.consigner_street = consign.street;
-        consignForm.consigner_region_code = consign.region_code;
-        consignForm.consigner_addr = consign.addr;
-        consignForm.consigner_email = consign.email;
-        consignForm.consigner_contact = consign.contact;
-        consignForm.consigner_mobile = consign.mobile;
-        this.handleJudgeLine({ consignerId: consign.node_id });
-      } else if (!value) {
+      if (!value) {
         consignForm.consigner_id = null;
         consignForm.consigner_name = null;
         consignForm.consigner_byname = null;
@@ -273,25 +258,27 @@ export default class TMSConsignForm extends Component {
         consignForm.consigner_contact = null;
         consignForm.consigner_mobile = null;
       } else {
-        consignForm.consigner_id = null;
+        consignForm.consigner_name = value;
+        const consign = formRequires.consignerLocations.find(item => item.name === value);
+        if (consign) {
+          consignForm.consigner_id = consign.node_id;
+          consignForm.consigner_byname = consign.byname;
+          consignForm.consigner_province = consign.province;
+          consignForm.consigner_city = consign.city;
+          consignForm.consigner_district = consign.district;
+          consignForm.consigner_street = consign.street;
+          consignForm.consigner_region_code = consign.region_code;
+          consignForm.consigner_addr = consign.addr;
+          consignForm.consigner_email = consign.email;
+          consignForm.consigner_contact = consign.contact;
+          consignForm.consigner_mobile = consign.mobile;
+          this.handleJudgeLine({ consignerId: consign.node_id });
+        } else {
+          consignForm.consigner_id = null;
+        }
       }
     } else if (key === 'consignee_name') {
-      consignForm.consignee_name = value;
-      const consign = formRequires.consigneeLocations.find(item => item.name === value);
-      if (consign) {
-        consignForm.consignee_id = consign.node_id;
-        consignForm.consignee_byname = consign.byname;
-        consignForm.consignee_province = consign.province;
-        consignForm.consignee_city = consign.city;
-        consignForm.consignee_district = consign.district;
-        consignForm.consignee_street = consign.street;
-        consignForm.consignee_region_code = consign.region_code;
-        consignForm.consignee_addr = consign.addr;
-        consignForm.consignee_email = consign.email;
-        consignForm.consignee_contact = consign.contact;
-        consignForm.consignee_mobile = consign.mobile;
-        this.handleJudgeLine({ consigneeId: consign.node_id });
-      } else if (!value) {
+      if (!value) {
         consignForm.consignee_id = null;
         consignForm.consignee_name = null;
         consignForm.consignee_byname = null;
@@ -305,7 +292,24 @@ export default class TMSConsignForm extends Component {
         consignForm.consignee_contact = null;
         consignForm.consignee_mobile = null;
       } else {
-        consignForm.consignee_id = null;
+        consignForm.consignee_name = value;
+        const consign = formRequires.consigneeLocations.find(item => item.name === value);
+        if (consign) {
+          consignForm.consignee_id = consign.node_id;
+          consignForm.consignee_byname = consign.byname;
+          consignForm.consignee_province = consign.province;
+          consignForm.consignee_city = consign.city;
+          consignForm.consignee_district = consign.district;
+          consignForm.consignee_street = consign.street;
+          consignForm.consignee_region_code = consign.region_code;
+          consignForm.consignee_addr = consign.addr;
+          consignForm.consignee_email = consign.email;
+          consignForm.consignee_contact = consign.contact;
+          consignForm.consignee_mobile = consign.mobile;
+          this.handleJudgeLine({ consigneeId: consign.node_id });
+        } else {
+          consignForm.consignee_id = null;
+        }
       }
     }
     this.handleSetClientForm(consignForm);
@@ -589,7 +593,6 @@ export default class TMSConsignForm extends Component {
                   allowClear
                   showArrow
                   value={node.consigner_id}
-                  optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                   onSelect={value => this.handleConsignSelect('consigner_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -600,7 +603,7 @@ export default class TMSConsignForm extends Component {
                 >
                   {consignerLocations.filter(cl =>
                     cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                      (<Option value={dw.node_id} key={dw.node_id} name={dw.name}>
+                      (<Option value={dw.node_id} key={dw.node_id}>
                         {this.renderConsign(dw)}</Option>))
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>
@@ -613,7 +616,6 @@ export default class TMSConsignForm extends Component {
                   allowClear
                   showArrow
                   value={node.consignee_id}
-                  optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                   onSelect={value => this.handleConsignSelect('consignee_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -624,7 +626,7 @@ export default class TMSConsignForm extends Component {
                 >
                   {consigneeLocations.filter(cl =>
                     cl.ref_partner_id === customerPartnerId || cl.ref_partner_id === -1).map(dw =>
-                      (<Option value={dw.node_id} key={dw.node_id} name={dw.name}>
+                      (<Option value={dw.node_id} key={dw.node_id}>
                         {this.renderConsign(dw)}</Option>))
                 }
                   <Option value={-1} key={-1}>+ 添加地址</Option>
@@ -646,31 +648,6 @@ export default class TMSConsignForm extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
-              <FormItem label={this.msg('pickupEstDate')} {...formItemLayout}>
-                <DatePicker
-                  style={{ width: '100%' }}
-                  value={node.pickup_est_date && moment(new Date(node.pickup_est_date), 'YYYY-MM-DD')}
-                  onChange={this.handlePickupChange}
-                />
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={this.msg('deliveryEstDate')} {...formItemLayout}>
-                <DatePicker
-                  style={{ width: '100%' }}
-                  value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
-                  onChange={this.handleDeliveryChange}
-                />
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={this.msg('承运商')} {...formItemLayout}>
-                <Select value={node.person_id} onChange={this.handlePersonChange}>
-                  {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span={8}>
               <FormItem label={this.msg('quoteNo')} validateStatus={quoteNoField.validateStatus} help={quoteNoField.help} {...formItemLayout}>
                 <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
                   {
@@ -683,6 +660,34 @@ export default class TMSConsignForm extends Component {
             <Col span={8}>
               <FormItem label="备注" {...formItemLayout}>
                 <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label={this.msg('pickupEstDate')} {...formItemLayout}>
+                <DatePicker
+                  style={{ width: '100%' }}
+                  value={node.pickup_est_date && moment(new Date(node.pickup_est_date), 'YYYY-MM-DD')}
+                  onChange={this.handlePickupChange}
+                />
+              </FormItem>
+            </Col>
+            <Col sm={24} md={8}>
+              <FormItem label={this.msg('shipmtTransit')} {...formItemLayout}>
+                <InputNumber
+                  style={{ width: '100%' }}
+                  min={0}
+                  value={node.transit_time}
+                  onChange={this.handleTransitChange}
+                />
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem label={this.msg('deliveryEstDate')} {...formItemLayout}>
+                <DatePicker
+                  style={{ width: '100%' }}
+                  value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
+                  onChange={this.handleDeliveryChange}
+                />
               </FormItem>
             </Col>
           </Row>
