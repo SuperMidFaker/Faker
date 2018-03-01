@@ -37,7 +37,7 @@ export default class ImportStatsCard extends Component {
   state = {
     amount: 0,
     count: 0,
-    mockData: [],
+    dailyStats: [],
     currency: 'CNY',
   }
   componentWillReceiveProps(nextProps) {
@@ -46,13 +46,13 @@ export default class ImportStatsCard extends Component {
         this.setState({
           amount: nextProps.importStats.total_usd,
           count: nextProps.importStats.count,
-          mockData: nextProps.importStats.usdMockData,
+          dailyStats: nextProps.importStats.dailyStatsUSD,
         });
       } else if (this.state.currency === 'CNY') {
         this.setState({
           amount: nextProps.importStats.total_cny,
           count: nextProps.importStats.count,
-          mockData: nextProps.importStats.cnyMockData,
+          dailyStats: nextProps.importStats.dailyStatsCNY,
         });
       }
     }
@@ -63,19 +63,19 @@ export default class ImportStatsCard extends Component {
       this.setState({
         currency: e.key,
         amount: this.props.importStats.total_usd,
-        mockData: this.props.importStats.usdMockData,
+        dailyStats: this.props.importStats.dailyStatsUSD,
       });
     } else if (e.key === 'CNY') {
       this.setState({
         currency: e.key,
         amount: this.props.importStats.total_cny,
-        mockData: this.props.importStats.cnyMockData,
+        dailyStats: this.props.importStats.dailyStatsCNY,
       });
     }
   }
   render() {
     const {
-      amount, count, currency, mockData,
+      amount, count, currency, dailyStats,
     } = this.state;
     const menu = (<Menu key={currency} onClick={this.handleMenuClick}>
       <Menu.Item key="USD">USD</Menu.Item>
@@ -86,13 +86,13 @@ export default class ImportStatsCard extends Component {
         bordered={false}
         title="进口金额"
         action={<Dropdown overlay={menu}><Icon type="ellipsis" /></Dropdown>}
-        total={`${currency}` === 'CNY' ? `￥${amount.toFixed(2)}` : `$${amount.toFixed(2)}`}
+        total={`${currency}` === 'CNY' ? `￥${amount}` : `$${amount}`}
         footer={<Field label="进口量" value={count} />}
         contentHeight={64}
       >
         <MiniBar
           height={64}
-          data={mockData}
+          data={dailyStats}
         />
       </ChartCard>
     );
