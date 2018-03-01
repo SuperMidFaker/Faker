@@ -37,6 +37,7 @@ export default class ImportStatsCard extends Component {
   state = {
     amount: 0,
     count: 0,
+    mockData: [],
     currency: 'CNY',
   }
   componentWillReceiveProps(nextProps) {
@@ -45,11 +46,13 @@ export default class ImportStatsCard extends Component {
         this.setState({
           amount: nextProps.importStats.total_usd,
           count: nextProps.importStats.count,
+          mockData: nextProps.importStats.usdMockData,
         });
       } else if (this.state.currency === 'CNY') {
         this.setState({
           amount: nextProps.importStats.total_cny,
           count: nextProps.importStats.count,
+          mockData: nextProps.importStats.cnyMockData,
         });
       }
     }
@@ -57,25 +60,27 @@ export default class ImportStatsCard extends Component {
   msg = key => formatMsg(this.props.intl, key);
   handleMenuClick = (e) => {
     if (e.key === 'USD') {
-      this.setState({ currency: e.key, amount: this.props.importStats.total_usd });
+      this.setState({
+        currency: e.key,
+        amount: this.props.importStats.total_usd,
+        mockData: this.props.importStats.usdMockData,
+      });
     } else if (e.key === 'CNY') {
-      this.setState({ currency: e.key, amount: this.props.importStats.total_cny });
+      this.setState({
+        currency: e.key,
+        amount: this.props.importStats.total_cny,
+        mockData: this.props.importStats.cnyMockData,
+      });
     }
   }
   render() {
-    const { amount, count, currency } = this.state;
+    const {
+      amount, count, currency, mockData,
+    } = this.state;
     const menu = (<Menu key={currency} onClick={this.handleMenuClick}>
       <Menu.Item key="USD">USD</Menu.Item>
       <Menu.Item key="CNY">CNY</Menu.Item>
     </Menu>);
-    const mockData = [];
-    const beginDay = (new Date().getTime()) - (1000 * 60 * 60 * 24 * 30);
-    for (let i = 0; i < 30; i += 1) {
-      mockData.push({
-        x: moment(new Date(beginDay + (1000 * 60 * 60 * 24 * i))).format('YYYY-MM-DD'),
-        y: Math.floor(Math.random() * 100) + 10,
-      });
-    }
     return (
       <ChartCard
         bordered={false}

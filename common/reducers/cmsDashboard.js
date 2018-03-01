@@ -45,11 +45,15 @@ const initialState = {
     total_cny: 0,
     total_usd: 0,
     count: 0,
+    cnyMockData: [],
+    usdMockData: [],
   },
   exportStats: {
     total_cny: 0,
     total_usd: 0,
     count: 0,
+    cnyMockData: [],
+    usdMockData: [],
   },
 };
 
