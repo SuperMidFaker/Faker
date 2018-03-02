@@ -514,12 +514,22 @@ export default class SHFTZNormalRelRegDetail extends Component {
       total_amount: acc.total_amount + regd.amount,
       total_net_wt: acc.total_net_wt + regd.net_wt,
       total_grosswt: acc.total_grosswt + regd.gross_wt,
+      total_freight: acc.total_freight + regd.freight,
     }), {
       total_qty: 0,
       total_amount: 0,
       total_net_wt: 0,
       total_grosswt: 0,
+      total_freight: 0,
     });
+    const freightDetail = filingDetails.filter(fd => fd.freight_currency)[0];
+    if (freightDetail) {
+      const currency = this.props.currencies.filter(cur =>
+        cur.value === freightDetail.freight_currency)[0];
+      if (currency) {
+        stat.freight_currency = currency.text;
+      }
+    }
     return (
       <div>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
@@ -655,6 +665,9 @@ export default class SHFTZNormalRelRegDetail extends Component {
                           <Summary.Item label="总毛重" addonAfter="KG">{stat && stat.total_grosswt.toFixed(3)}</Summary.Item>
                           <Summary.Item label="总净重" addonAfter="KG">{stat && stat.total_net_wt.toFixed(3)}</Summary.Item>
                           <Summary.Item label="总金额">{stat && stat.total_amount.toFixed(3)}</Summary.Item>
+                          {stat.total_freight && <Summary.Item label="总运费">{stat && stat.total_freight.toFixed(2)}</Summary.Item>}
+                          {stat.total_freight && stat.freight_currency &&
+                          <Tag style={{ marginLeft: 5 }}>{stat.freight_currency}</Tag>}
                         </Summary>
                       </DataPane.Extra>
                     </DataPane.Toolbar>

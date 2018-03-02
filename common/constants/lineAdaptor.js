@@ -142,6 +142,9 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'supplier',
       label: '供货商',
+    }, {
+      field: 'so_type',
+      label: 'SO类型',
     }],
   },
   SOF_ORDER: {

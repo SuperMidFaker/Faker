@@ -144,6 +144,9 @@ exports.CWM_SO_TYPES = [{
 }, {
   value: '3',
   text: '越库',
+}, {
+  value: '4',
+  text: '保税转非保', // todo 只能在保税仓库下
 }];
 
 exports.CWM_SO_BONDED_REGTYPES = [{

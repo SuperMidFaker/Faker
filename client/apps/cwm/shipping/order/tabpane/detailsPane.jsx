@@ -7,6 +7,7 @@ import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
 import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import { showAsnSelectModal } from 'common/reducers/cwmShippingOrder';
+import { CWM_SO_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import AddDetailModal from '../modal/addDetailModal';
 import AsnSelectModal from '../modal/asnSelectModal';
@@ -29,7 +30,7 @@ const formatMsg = format(messages);
 export default class DetailsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldValue: PropTypes.func.isRequired }).isRequired,
     editable: PropTypes.bool,
     detailEnable: PropTypes.bool.isRequired,
     selectedOwner: PropTypes.number.isRequired,
@@ -80,7 +81,8 @@ export default class DetailsPane extends Component {
   handleBatchDelete = () => {
     const { selectedRowKeys } = this.state;
     const { temporaryDetails } = this.props;
-    const newTemporary = temporaryDetails.filter((temporary, index) => selectedRowKeys.findIndex(key => key === index) === -1);
+    const newTemporary = temporaryDetails.filter((temporary, index) =>
+      selectedRowKeys.findIndex(key => key === index) === -1);
     this.props.clearTemporary();
     this.props.addTemporary(newTemporary);
     this.setState({
@@ -113,7 +115,8 @@ export default class DetailsPane extends Component {
       width: 50,
       fixed: 'left',
       align: 'center',
-      render: (col, row, index) => col || pagination.pageSize * (pagination.current - 1) + index + 1,
+      render: (col, row, index) => col ||
+      (pagination.pageSize * (pagination.current - 1)) + index + 1,
     }, {
       title: '商品货号',
       dataIndex: 'product_no',
@@ -172,7 +175,7 @@ export default class DetailsPane extends Component {
       title: '币制',
       dataIndex: 'currency',
       render: (o) => {
-        const currency = currencies.find(currency => Number(currency.code) === Number(o));
+        const currency = currencies.find(curr => Number(curr.code) === Number(o));
         if (currency) {
           return <span>{currency.name}</span>;
         }
@@ -189,6 +192,15 @@ export default class DetailsPane extends Component {
         </span>
       ),
     }];
+    let detailAddDisabled = !editable;
+    if (!detailAddDisabled) {
+      detailAddDisabled = !detailEnable || soType === CWM_SO_TYPES[2].value;
+    }
+    let crossAsnDisabled = !editable;
+    if (!crossAsnDisabled) {
+      crossAsnDisabled = !detailEnable ||
+        ((soType !== CWM_SO_TYPES[2].value) && (soType !== CWM_SO_TYPES[3].value));
+    }
     return (
       <DataPane
         fullscreen={this.props.fullscreen}
@@ -200,15 +212,22 @@ export default class DetailsPane extends Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          {editable && <Button type="primary" icon="plus-circle-o" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
-          {editable && <Button icon="upload" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'}>导入</Button>}
-          {editable && <Button disabled={(detailEnable && Number(soType) === 3) ? '' : 'disabled'} onClick={this.showAsnSelectModal}>选择ASN</Button>}
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <Button type="primary" icon="plus-circle-o" disabled={detailAddDisabled} onClick={this.showDetailModal}>添加</Button>
+          <Button icon="upload" disabled={detailAddDisabled}>导入</Button>
+          <Button disabled={crossAsnDisabled} onClick={this.showAsnSelectModal}>选择ASN</Button>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
-        <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
-        <AsnSelectModal bonded={bonded} regType={regType} ownerPartnerId={form.getFieldValue('owner_partner_id')} />
+        <AddDetailModal
+          product={this.state.editRecord}
+          edit={this.state.edit}
+          selectedOwner={this.props.selectedOwner}
+        />
+        <AsnSelectModal bonded={bonded} regType={regType} ownerPartnerId={form.getFieldValue('owner_partner_id')} soType={soType} />
       </DataPane>
     );
   }

@@ -874,7 +874,7 @@ export function getSuppliers(whseCode, ownerPartnerId) {
   };
 }
 
-export function getCrossAsns(whseCode, bonded, regType, ownerPartnerId) {
+export function getCrossAsns(whseCode, bonded, regType, soType, ownerPartnerId, search) {
   return {
     [CLIENT_API]: {
       types: [
@@ -885,13 +885,13 @@ export function getCrossAsns(whseCode, bonded, regType, ownerPartnerId) {
       endpoint: 'v1/cwm/cross/asns',
       method: 'get',
       params: {
-        whseCode, bonded, regType, ownerPartnerId,
+        whseCode, bonded, soType, regType, ownerPartnerId, search,
       },
     },
   };
 }
 
-export function getCrossAsnDetails(asnNos) {
+export function getCrossAsnDetails(asnNos, bonded, regType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -901,12 +901,12 @@ export function getCrossAsnDetails(asnNos) {
       ],
       endpoint: 'v1/cwm/cross/asn/details',
       method: 'get',
-      params: { asnNos },
+      params: { asnNos, bonded, regType },
     },
   };
 }
 
-export function getSkuAvail(ownerPartnerId, productNo) {
+export function loadSkuStockSum(ownerPartnerId, productNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -914,7 +914,7 @@ export function getSkuAvail(ownerPartnerId, productNo) {
         actionTypes.GET_SKU_AVAIL_SUCCEED,
         actionTypes.GET_SKU_AVAIL_FAIL,
       ],
-      endpoint: 'v1/cwm/product/amount/get',
+      endpoint: 'v1/cwm/inbound/sku/stock/sum',
       method: 'get',
       params: { ownerPartnerId, productNo },
     },
