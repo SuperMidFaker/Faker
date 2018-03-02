@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Layout, Select, Tag } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Layout, Select, Tag, DatePicker } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -21,12 +21,15 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
   promises.push(dispatch(loadCmsParams()));
   promises.push(dispatch(loadInvoices({
-    filter: JSON.stringify({ ...state.sofInvoice.filter, searchText: '', partner: 'all' }),
+    filter: JSON.stringify({
+      ...state.sofInvoice.filter, searchText: '', partner: 'all', startDate: '', endDate: '',
+    }),
     pageSize: state.sofInvoice.invoiceList.pageSize,
     current: state.sofInvoice.invoiceList.current,
   })));
@@ -71,6 +74,14 @@ export default class InvoiceList extends React.Component {
   }
   componentDidMount() {
     this.props.loadModelAdaptors('', [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
+  }
+  onDateChange = (data, dataString) => {
+    const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
+    this.props.loadInvoices({
+      filter: JSON.stringify(filter),
+      pageSize: this.props.invoiceList.pageSize,
+      current: 1,
+    });
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -242,10 +253,17 @@ export default class InvoiceList extends React.Component {
       }
     });
   }
+  handlePartnerChange = (partnerId) => {
+    this.props.loadModelAdaptors(partnerId, [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
+  }
   render() {
     const {
-      invoiceList, partners, loading,
+      invoiceList, partners, loading, filter,
     } = this.props;
+    let dateVal = [];
+    if (filter.endDate) {
+      dateVal = [moment(filter.startDate, 'YYYY-MM-DD'), moment(filter.endDate, 'YYYY-MM-DD')];
+    }
     this.dataSource.remotes = invoiceList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -275,6 +293,11 @@ export default class InvoiceList extends React.Component {
         <Option value="all" key="all">全部</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
+      <RangePicker
+        onChange={this.onDateChange}
+        value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+      />
     </span>);
     const bulkActions = (<span>
       <Button icon="download" onClick={this.handleExport}>{this.gmsg('export')}</Button>
@@ -314,12 +337,24 @@ export default class InvoiceList extends React.Component {
             visible={this.state.importPanelVisible}
             adaptors={this.props.adaptors}
             endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
-            formData={{
-          }}
+            formData={{}}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
             template={`${XLSX_CDN}/发票导入模板.xlsx`}
-          />
+          >
+            <Select
+              placeholder="请选择客户"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              onChange={this.handlePartnerChange}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ width: 360 }}
+              style={{ width: '100%', marginBottom: '10px' }}
+            >
+              {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+            </Select>
+          </ImportDataPanel>
         </Content>
       </Layout>
     );

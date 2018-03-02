@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
+import Summary from 'client/components/Summary';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -85,20 +86,44 @@ export default class OrderDetailsPane extends Component {
     title: '原产国',
     dataIndex: 'orig_country',
     width: 100,
-    render: o => this.props.countries.find(coun => coun.cntry_co === o) &&
-    this.props.countries.find(coun => coun.cntry_co === o).cntry_name_cn,
+    render: (o, record) => {
+      if (record.orig_country) {
+        return this.props.countries.find(coun =>
+          coun.cntry_co === record.orig_country).cntry_name_cn;
+      } else if (record.country) {
+        return this.props.countries.find(coun =>
+          coun.cntry_co === record.country).cntry_name_cn;
+      }
+      return '';
+    },
   }, {
     title: '净重',
     dataIndex: 'net_wt',
     width: 100,
   }];
   render() {
+    const statWt = this.props.orderDetails.reduce((acc, det) => ({
+      total_amount: acc.total_amount + det.amount,
+      total_net_wt: acc.total_net_wt + det.net_wt,
+    }), { total_amount: 0, total_net_wt: 0 });
+    const totCol = (
+      <Summary>
+        <Summary.Item label="总数量" addonAfter="KG">{statWt.total_amount.toFixed(5)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{statWt.total_net_wt.toFixed(5)}</Summary.Item>
+      </Summary>
+    );
     return (
       <DataPane
         columns={this.columns}
         dataSource={this.props.orderDetails}
         rowKey="id"
-      />
+      >
+        <DataPane.Toolbar>
+          <DataPane.Extra>
+            {totCol}
+          </DataPane.Extra>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }
