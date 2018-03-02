@@ -36,6 +36,7 @@ export default class AdaptorDetailModal extends Component {
       visible: false,
       mappings: [],
     },
+    contentHeight: 0,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -294,14 +295,15 @@ export default class AdaptorDetailModal extends Component {
         dataIndex,
         width: 200,
         render: (value, row, rowIndex) => {
+          const columnField = lineData[2][dataIndex];
+          let thisFieldColumn;
+          if (columnField) {
+            [thisFieldColumn] = adaptorModel.columns.filter(adcol => adcol.field === columnField);
+          }
           if (rowIndex === 2) {
             const fieldSelOptions = [...availColumnFields];
-            if (value) {
-              const thisFieldColumn = adaptorModel.columns.filter(adcol =>
-                adcol.field === value)[0];
-              if (thisFieldColumn) {
-                fieldSelOptions.unshift(thisFieldColumn);
-              }
+            if (value && thisFieldColumn) {
+              fieldSelOptions.unshift(thisFieldColumn);
             }
             return (
               <Select
@@ -318,11 +320,15 @@ export default class AdaptorDetailModal extends Component {
               </Select>
             );
           } else if (rowIndex === 3) {
+            let placeholder = `C${index}`;
+            if (thisFieldColumn && thisFieldColumn.datatype === 'date') {
+              placeholder = '#YYYYMMDD';
+            }
             return (
               <EditableCell
                 value={value}
                 cellTrigger
-                placeholder={`C${index}`}
+                placeholder={placeholder}
                 onSave={field => this.handleConvertMap(col.id, field)}
               />
             );
