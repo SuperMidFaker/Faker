@@ -186,13 +186,13 @@ export default class InvoiceList extends React.Component {
   }
   handleSearch = (value) => {
     const filter = { ...this.props.filter, searchText: value };
-    this.handleReload(filter);
+    this.handleReload(filter, 1);
   }
-  handleReload = (filter) => {
+  handleReload = (filter, currentPage) => {
     this.props.loadInvoices({
       filter: JSON.stringify(filter),
       pageSize: this.props.invoiceList.pageSize,
-      current: this.props.invoiceList.current,
+      current: currentPage || this.props.invoiceList.current,
     });
   }
   handleImport = () => {
@@ -202,7 +202,7 @@ export default class InvoiceList extends React.Component {
   }
   handleSelect = (value) => {
     const filter = { ...this.props.filter, partner: value };
-    this.handleReload(filter);
+    this.handleReload(filter, 1);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [], selectedRows: [] });
