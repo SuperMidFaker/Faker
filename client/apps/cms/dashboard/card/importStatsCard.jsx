@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Dropdown, Icon, Menu } from 'antd';
+import currencyFormatter from 'currency-formatter';
 import { MiniBar, Field } from 'client/components/Charts';
 import ChartCard from 'client/components/ChartCard';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -86,7 +87,7 @@ export default class ImportStatsCard extends Component {
         bordered={false}
         title="进口金额"
         action={<Dropdown overlay={menu}><Icon type="ellipsis" /></Dropdown>}
-        total={`${currency}` === 'CNY' ? `￥${amount}` : `$${amount}`}
+        total={currencyFormatter.format(amount, { code: currency })}
         footer={<Field label="进口量" value={count} />}
         contentHeight={64}
       >
