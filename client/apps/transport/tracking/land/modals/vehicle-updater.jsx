@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { closeVehicleModal, saveVehicle } from 'common/reducers/trackingLandStatus';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
 
 function ModalInput(props) {
@@ -18,8 +19,12 @@ function ModalInput(props) {
     }
   }
   return (
-    <Input type={type} placeholder={placeholder} disabled={disabled}
-      value={value} onChange={handleChange}
+    <Input
+      type={type}
+      placeholder={placeholder}
+      disabled={disabled}
+      value={value}
+      onChange={handleChange}
     />
   );
 }
@@ -61,15 +66,13 @@ export default class VehicleUpdater extends React.Component {
     this.setState({ [field]: value });
   }
   handlePlateCheck = (ev) => {
-    const checked = ev.target.checked;
     this.setState({
-      plateDisabled: checked,
+      plateDisabled: ev.target.checked,
     });
   }
   handleDriverCheck = (ev) => {
-    const checked = ev.target.checked;
     this.setState({
-      driverDisabled: checked,
+      driverDisabled: ev.target.checked,
     });
   }
   handleOk = () => {
@@ -97,43 +100,63 @@ export default class VehicleUpdater extends React.Component {
     } = this.state;
     const colSpan = 4;
     return (
-      <Modal maskClosable={false} title={this.msg('vehicleModalTitle')} onCancel={this.handleCancel}
-        onOk={this.handleOk} visible={this.props.visible}
+      <Modal
+        maskClosable={false}
+        title={this.msg('vehicleModalTitle')}
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
+        visible={this.props.visible}
       >
         <Form className="row">
-          <FormItem label={this.msg('vehiclePlate')} labelCol={{ span: colSpan }}
+          <FormItem
+            label={this.msg('vehiclePlate')}
+            labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <Col span="17">
-              <Modal maskClosable={false}Input field="vehiclePlate" value={vehiclePlate}
-                onChange={this.handleFieldChange} disabled={plateDisabled}
+            <Col span={16}>
+              <ModalInput
+                field="vehiclePlate"
+                value={vehiclePlate}
+                onChange={this.handleFieldChange}
+                disabled={plateDisabled}
               />
             </Col>
-            <Col offset="1" span="6">
+            <Col offset={1} span={7}>
               <Checkbox checked={plateDisabled} onChange={this.handlePlateCheck}>
                 {this.msg('unknownPlate')}
               </Checkbox>
             </Col>
           </FormItem>
-          <FormItem label={this.msg('driverName')} labelCol={{ span: colSpan }}
+          <FormItem
+            label={this.msg('driverName')}
+            labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <Col span="17">
-              <Modal maskClosable={false}Input field="driverName" value={driverName}
-                onChange={this.handleFieldChange} disabled={driverDisabled}
+            <Col span={16}>
+              <ModalInput
+                field="driverName"
+                value={driverName}
+                onChange={this.handleFieldChange}
+                disabled={driverDisabled}
               />
             </Col>
-            <Col offset="1" span="6">
+            <Col offset={1} span={7}>
               <Checkbox checked={driverDisabled} onChange={this.handleDriverCheck}>
                 {this.msg('unknownDriver')}
               </Checkbox>
             </Col>
           </FormItem>
-          <FormItem label={this.msg('taskRemark')} labelCol={{ span: colSpan }}
+          <FormItem
+            label={this.msg('taskRemark')}
+            labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <Modal maskClosable={false}Input type="textarea" placeholder={this.msg('remarkPlaceholder')}
-              field="remark" value={remark} onChange={this.handleFieldChange}
+            <ModalInput
+              type="textarea"
+              placeholder={this.msg('remarkPlaceholder')}
+              field="remark"
+              value={remark}
+              onChange={this.handleFieldChange}
             />
           </FormItem>
         </Form>

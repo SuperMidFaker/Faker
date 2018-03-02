@@ -354,9 +354,11 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'attrib_7_date',
       label: '扩展属性7',
+      datatype: 'date',
     }, {
       field: 'attrib_8_date',
       label: '扩展属性8',
+      datatype: 'date',
     }],
   },
   SCOF_INVOICE: {
@@ -368,6 +370,7 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'invoice_date',
       label: '发票日期',
+      datatype: 'date',
     }, {
       field: 'buyer',
       label: '购买方',
