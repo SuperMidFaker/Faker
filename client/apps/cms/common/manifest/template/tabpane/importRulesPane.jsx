@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Mention, Switch, Card, Row, Col, Form, Radio } from 'antd';
+import { Mention, Switch, Card, Row, Col, Form, Radio, Select } from 'antd';
 import { SOURCE_CHOOSE } from 'common/constants';
 import FormPane from 'client/components/FormPane';
 
@@ -10,6 +10,7 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Nav } = Mention;
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -19,6 +20,16 @@ const formItemLayout = {
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
+  exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+    value: ep.value,
+    text: ep.text,
+    search: `${ep.value}${ep.text}`,
+  })),
+  tradeCountries: state.cmsManifest.params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+    search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
+  })),
 }))
 export default class ImportRulesPane extends Component {
   static propTypes = {
@@ -50,7 +61,9 @@ export default class ImportRulesPane extends Component {
     this.setState({ suggestions });
   }
   render() {
-    const { form: { getFieldDecorator }, formData } = this.props;
+    const {
+      form: { getFieldDecorator }, formData, exemptions, tradeCountries,
+    } = this.props;
     const { specialCode } = this.state;
     return (
       <FormPane fullscreen={this.props.fullscreen}>
@@ -106,6 +119,38 @@ export default class ImportRulesPane extends Component {
                     {SOURCE_CHOOSE.item.value}
                   </RadioButton>
                 </RadioGroup>)}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={20}>
+            <Col sm={24} lg={12}>
+              <FormItem label="最终目的国" {...formItemLayout} >
+                {getFieldDecorator('rule_dest_country', { initialValue: formData.rule_dest_country })(<Select
+                  showSearch
+                  showArrow
+                  optionFilterProp="search"
+                  style={{ width: '50%' }}
+                >
+                  { tradeCountries.map(data => (
+                    <Option key={data.value} search={`${data.search}`} >
+                      {`${data.value}|${data.text}`}
+                    </Option>))}
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={12}>
+              <FormItem label="征免方式" {...formItemLayout} >
+                {getFieldDecorator('rule_duty_mode', { initialValue: formData.rule_duty_mode })(<Select
+                  showSearch
+                  showArrow
+                  optionFilterProp="search"
+                  style={{ width: '50%' }}
+                >
+                  { exemptions.map(data => (
+                    <Option key={data.value} search={`${data.search}`} >
+                      {`${data.value}|${data.text}`}
+                    </Option>))}
+                </Select>)}
               </FormItem>
             </Col>
           </Row>

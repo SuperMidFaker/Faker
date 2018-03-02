@@ -31,6 +31,9 @@ function getFieldInits(formData) {
     ['rule_g_name', 'rule_g_unit'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : '0';
     });
+    ['rule_dest_country', 'rule_duty_mode'].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : '';
+    });
     init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
     init.rule_element = formData.rule_element ? formData.rule_element : '$g_model';
     if (formData.merge_byhscode) {
@@ -77,7 +80,7 @@ function getFieldInits(formData) {
       'gen_invoice', 'gen_packing_list', 'gen_contract'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
-    ['invoice_template_id', 'packing_list_template_id', 'contract_template_id'].forEach(fd => {
+    ['invoice_template_id', 'packing_list_template_id', 'contract_template_id'].forEach((fd) => {
       init[fd] = formData[fd];
     });
     init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';

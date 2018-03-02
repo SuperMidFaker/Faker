@@ -94,6 +94,8 @@ export default class EditBodyForm extends Component {
           unit_2: unit2Val,
           trade_curr: item.trade_curr,
           orig_country: item.orig_country,
+          dest_country: item.dest_country,
+          duty_mode: item.duty_mode,
         });
       } else {
         this.props.form.setFieldsValue({
@@ -106,6 +108,8 @@ export default class EditBodyForm extends Component {
           unit_2: '',
           trade_curr: '',
           orig_country: '',
+          dest_country: '',
+          duty_mode: '',
         });
       }
     }
