@@ -495,7 +495,7 @@ export default class OrderList extends React.Component {
             onChange={this.handleImportClientChange}
             dropdownMatchSelectWidth={false}
             dropdownStyle={{ width: 360 }}
-            style={{ width: '100%', marginBottom: '10px' }}
+            style={{ width: '100%', marginBottom: 16 }}
           >
             {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
           </Select>

@@ -184,7 +184,13 @@ export default class DetailsPane extends Component {
       dataIndex: 'splitQty',
       width: 100,
       align: 'right',
-      render: (o, record, index) => <Input size="small" value={o} disabled={record.disabled} onChange={e => this.handleSplitChange(e, record, index)} />,
+      render: (o, record, index) => (<Input
+        size="small"
+        value={o}
+        disabled={record.disabled}
+        onChange={e => this.handleSplitChange(e, record, index)}
+        style={{ textAlign: 'right' }}
+      />),
     }, {
       title: '计量单位',
       dataIndex: 'unit',
@@ -267,7 +273,6 @@ export default class DetailsPane extends Component {
           >
             {<Button icon="upload">{this.gmsg('import')}</Button>}
           </ExcelUploader>
-          <Button icon="download" onClick={this.handleTemplateDownload} style={{ marginLeft: 8 }}>模板下载</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}
