@@ -7,6 +7,7 @@ import { setClientForm, removeOrderInvoice, loadUnshippedInvoices, getOrderDetai
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
+import Summary from 'client/components/Summary';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -164,8 +165,18 @@ export default class InvoicePane extends Component {
   }];
   render() {
     const {
-      origInvoices, targetKeys, selectedKeys, visible,
+      origInvoices, targetKeys, selectedKeys, visible, dataSource,
     } = this.state;
+    const statWt = dataSource.reduce((acc, det) => ({
+      total_amount: acc.total_amount + det.total_amount,
+      total_net_wt: acc.total_net_wt + det.total_net_wt,
+    }), { total_amount: 0, total_net_wt: 0 });
+    const totCol = (
+      <Summary>
+        <Summary.Item label="总数量" addonAfter="KG">{statWt.total_amount.toFixed(5)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{statWt.total_net_wt.toFixed(5)}</Summary.Item>
+      </Summary>
+    );
     return (
       <DataPane
         columns={this.invoiceColumns}
@@ -174,6 +185,9 @@ export default class InvoicePane extends Component {
       >
         <DataPane.Toolbar>
           <Button type="primary" icon="plus-circle-o" onClick={this.handleToggleInvoiceModal}>添加</Button>
+          <DataPane.Extra>
+            {totCol}
+          </DataPane.Extra>
         </DataPane.Toolbar>
         {/* <InvoiceModal handleOk={this.handleInvoiceAdd} /> */}
         <Modal title="选择商业发票" width={695} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
