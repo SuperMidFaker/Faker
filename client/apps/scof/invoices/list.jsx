@@ -253,6 +253,9 @@ export default class InvoiceList extends React.Component {
       }
     });
   }
+  handlePartnerChange = (partnerId) => {
+    this.props.loadModelAdaptors(partnerId, [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
+  }
   render() {
     const {
       invoiceList, partners, loading, filter,
@@ -334,12 +337,24 @@ export default class InvoiceList extends React.Component {
             visible={this.state.importPanelVisible}
             adaptors={this.props.adaptors}
             endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
-            formData={{
-          }}
+            formData={{}}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
             template={`${XLSX_CDN}/发票导入模板.xlsx`}
-          />
+          >
+            <Select
+              placeholder="请选择客户"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              onChange={this.handlePartnerChange}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ width: 360 }}
+              style={{ width: '100%', marginBottom: '10px' }}
+            >
+              {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+            </Select>
+          </ImportDataPanel>
         </Content>
       </Layout>
     );
