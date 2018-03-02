@@ -36,6 +36,9 @@ export default class UserAvatar extends React.Component {
     const {
       currentUser, avatar, name, loginId, showName,
     } = this.props;
+    if (!loginId) {
+      return null;
+    }
     if (!currentUser) {
       const user = this.props.userMembers.filter(usm => usm.login_id === loginId)[0];
       if (user) {

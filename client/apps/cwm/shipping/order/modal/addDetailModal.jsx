@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers, loadSkuStockSum } from 'common/reducers/cwmReceive';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers, getSkuAvail } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const InputGroup = Input.Group;
 
 @injectIntl
@@ -25,7 +25,13 @@ const InputGroup = Input.Group;
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   {
-    hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers, getSkuAvail,
+    hideDetailModal,
+    addTemporary,
+    loadProducts,
+    editTemporary,
+    clearProductNos,
+    getSuppliers,
+    loadSkuStockSum,
   }
 )
 @Form.create()
@@ -44,12 +50,11 @@ export default class AddDetailModal extends Component {
     skus: [],
     stock: '',
     avail: '',
-    alock: '',
     frozen: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.product !== this.props.product) {
-      const product = nextProps.product;
+      const { product } = nextProps;
       product.desc_cn = product.name;
       this.setState({
         product,
@@ -70,7 +75,6 @@ export default class AddDetailModal extends Component {
       skus: [],
       stock: '',
       avail: '',
-      alock: '',
       frozen: '',
     });
     this.props.form.setFieldsValue({
@@ -87,8 +91,8 @@ export default class AddDetailModal extends Component {
     }
   }
   submit = () => {
-    const product = this.state.product;
-    const edit = this.props.edit;
+    const { product } = this.state;
+    const { edit } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (!edit) {
@@ -103,13 +107,19 @@ export default class AddDetailModal extends Component {
             ...values,
           });
         } else {
-          this.props.editTemporary(product.index, { ...product, ...values, amount: this.state.amount ? this.state.amount : product.amount });
+          this.props.editTemporary(
+            product.index,
+            {
+              ...product,
+              ...values,
+              amount: this.state.amount ? this.state.amount : product.amount,
+            }
+          );
         }
         this.handleCancel();
         this.setState({
           product: {},
           amount: 0,
-          sku: [],
         });
         this.props.form.setFieldsValue({
           product_no: '',
@@ -122,7 +132,7 @@ export default class AddDetailModal extends Component {
   }
   handleQtyChange = (e) => {
     const unitPrice = this.props.form.getFieldValue('unit_price');
-    const amount = this.state.amount;
+    const { amount } = this.state;
     if (!unitPrice && !amount) { return; }
     if (!unitPrice && amount) {
       this.props.form.setFieldsValue({ unit_price: (amount / e.target.value).toFixed(2) });
@@ -151,7 +161,7 @@ export default class AddDetailModal extends Component {
       product: filterProducts[0],
       skus,
     });
-    this.props.getSkuAvail(selectedOwner, value).then((result) => {
+    this.props.loadSkuStockSum(selectedOwner, value).then((result) => {
       if (!result.error) {
         this.setState({
           avail: result.data[0].avail_qty,
@@ -194,9 +204,8 @@ export default class AddDetailModal extends Component {
       form: { getFieldDecorator }, visible, productNos, units, currencies,
     } = this.props;
     const {
-      skus, avail, stock, alloc, frozen,
+      skus, avail, stock, alloc, frozen, product,
     } = this.state;
-    const product = this.state.product;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
@@ -207,8 +216,15 @@ export default class AddDetailModal extends Component {
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
-            })(<Select mode="combobox" placeholder="请至少输入三位货号" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
-              {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
+            })(<Select
+              mode="combobox"
+              placeholder="请至少输入三位货号"
+              onChange={this.handleSearch}
+              style={{ width: '100%' }}
+              onSelect={this.handleSelect}
+            >
+              {productNos.map(productNo => (<Option value={productNo} key={productNo}>
+                {productNo}</Option>))}
             </Select>)}
           </FormItem>
           <FormItem label="SKU" {...formItemLayout}>
@@ -232,7 +248,8 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('order_qty', {
                 rules: [{ required: true, message: '请输入订单数量' }],
               })(<Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />)}
-              <Select showSearch
+              <Select
+                showSearch
                 allowClear
                 optionFilterProp="children"
                 placeholder="计量单位"
@@ -240,7 +257,8 @@ export default class AddDetailModal extends Component {
                 style={{ width: '30%' }}
                 onChange={this.handleUnitChange}
               >
-                {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
+                {units.map(unit =>
+                  <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
               </Select>
             </InputGroup>
           </FormItem>
@@ -277,7 +295,8 @@ export default class AddDetailModal extends Component {
                 initialValue: product.unit_price,
               })(<Input type="number" placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />)}
               <Input type="number" placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleAmountChange} style={{ width: '30%' }} />
-              <Select showSearch
+              <Select
+                showSearch
                 allowClear
                 optionFilterProp="children"
                 placeholder="币制"
@@ -285,7 +304,8 @@ export default class AddDetailModal extends Component {
                 style={{ width: '40%' }}
                 onChange={this.handleCurrChange}
               >
-                {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}
+                {currencies.map(curr => (<Option value={curr.code} key={curr.code}>
+                  {curr.code} | {curr.name}</Option>))}
               </Select>
             </InputGroup>
           </FormItem>

@@ -5,15 +5,15 @@ import { Card, Form, Input, Select, DatePicker, Col, Radio, Row } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { getSuppliers, clearTemporary } from 'common/reducers/cwmReceive';
+import messages from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -28,7 +28,7 @@ const RadioGroup = Radio.Group;
 export default class HeadCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldValue: PropTypes.func.isRequired }).isRequired,
     handleOwnerChange: PropTypes.func,
   }
   state = {
@@ -79,9 +79,16 @@ export default class HeadCard extends Component {
     this.props.getSuppliers(this.props.defaultWhse.code, value);
   }
   handleSoTypeChange = (value) => {
-    const sotype = this.props.form.getFieldValue('so_type');
-    if ((Number(sotype) !== 3 && Number(value) === 3) || (Number(sotype) === 3 && Number(value) !== 3)) {
+    const soType = this.props.form.getFieldValue('so_type');
+    if ((soType !== '3' && value === '3') || (soType === '3' && value !== '3')) {
       this.props.clearTemporary();
+    }
+    if (value === '4') {
+      this.props.form.setFieldsValue({
+        bonded: 1,
+        reg_type: CWM_SO_BONDED_REGTYPES[0].value,
+      });
+      this.setState({ bonded: 1 });
     }
   }
   render() {
@@ -98,17 +105,17 @@ export default class HeadCard extends Component {
                 rules: [{ required: true, message: '请选择货主' }],
                 initialValue: soHead && soHead.owner_partner_id,
               })(<Select placeholder="选择货主" onSelect={this.handleSelect}>
-                {
-                      owners.map(owner => <Option value={owner.id} key={owner.id}>{owner.name}</Option>)
-                    }
+                {owners.map(owner => (<Option value={owner.id} key={owner.id}>
+                  {owner.name}</Option>))}
               </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
             <FormItem label="要求出货日期" >
               {getFieldDecorator('expect_shipping_date', {
- rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-                initialValue: soHead ? moment(new Date(soHead.expect_shipping_date)) : moment(new Date()),
+ rules: [{ type: 'object', required: true, message: '选择出货日期!' }],
+                initialValue: soHead ? moment(new Date(soHead.expect_shipping_date))
+                : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
@@ -126,7 +133,8 @@ export default class HeadCard extends Component {
               {getFieldDecorator('so_type', {
                 initialValue: soHead ? soHead.so_type : CWM_SO_TYPES[0].value,
               })(<Select placeholder="SO类型" onChange={this.handleSoTypeChange}>
-                {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+                {CWM_SO_TYPES.map(cat => (<Option value={cat.value} key={cat.value}>
+                  {cat.text}</Option>))}
               </Select>)}
             </FormItem>
           </Col>
@@ -148,7 +156,9 @@ export default class HeadCard extends Component {
                 initialValue: soHead && soHead.bonded_outtype,
                 rules: [{ required: bonded, message: '请选择监管方式' }],
               })(<RadioGroup>
-                {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext || cabr.text}</RadioButton>)}
+                {CWM_SO_BONDED_REGTYPES.map(cabr =>
+                  (<RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext || cabr.text}
+                  </RadioButton>))}
               </RadioGroup>)}
             </FormItem>
           </Col>

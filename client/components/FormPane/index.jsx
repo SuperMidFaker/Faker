@@ -11,6 +11,7 @@ export default class FormPane extends React.Component {
     baseCls: 'welo-form-pane',
     layout: 'horizontal',
     hideRequiredMark: false,
+    descendant: false,
   }
   static propTypes = {
     baseCls: PropTypes.string,
@@ -18,19 +19,21 @@ export default class FormPane extends React.Component {
     header: PropTypes.node,
     layout: PropTypes.string,
     hideRequiredMark: PropTypes.bool,
+    descendant: PropTypes.bool,
   }
   state = { submitting: false }
   render() {
     const {
-      baseCls, children, header, layout, hideRequiredMark,
+      baseCls, children, header, layout, hideRequiredMark, descendant,
     } = this.props;
     return (
       <div className={baseCls}>
         <Spin spinning={this.state.submitting}>
           {header ? <div className={`${baseCls}-header`}>{header}</div> : null}
-          <Form layout={layout} hideRequiredMark={hideRequiredMark} className={`${baseCls}-form`}>
+          {descendant ? <div className={`${baseCls}-form`}>{children}</div>
+          : <Form layout={layout} hideRequiredMark={hideRequiredMark} className={`${baseCls}-form`}>
             {children}
-          </Form>
+          </Form>}
         </Spin>
       </div>
     );

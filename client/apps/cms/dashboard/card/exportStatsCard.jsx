@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Dropdown, Icon, Menu } from 'antd';
+import currencyFormatter from 'currency-formatter';
 import { MiniBar, Field } from 'client/components/Charts';
 import ChartCard from 'client/components/ChartCard';
 import { format } from 'client/common/i18n/helpers';
@@ -72,7 +73,7 @@ export default class ExportStatsCard extends Component {
         bordered={false}
         title="出口金额"
         action={<Dropdown overlay={menu}><Icon type="ellipsis" /></Dropdown>}
-        total={`${currency}` === 'CNY' ? `￥${amount}` : `$${amount}`}
+        total={currencyFormatter.format(amount, { code: currency })}
         footer={<Field label="出口量" value={count} />}
         contentHeight={64}
       >

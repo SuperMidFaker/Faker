@@ -320,17 +320,6 @@ class DataTable extends React.Component {
               </Tooltip>
             </Popover>}
           </div>
-          {this.props.selectedRowKeys &&
-          <div className={`${baseCls}-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h4>已选中{this.props.selectedRowKeys.length}项</h4>
-            {this.props.bulkActions}
-            <div className={`${baseCls}-toolbar-right`}>
-              <Tooltip title="取消选择" placement="left">
-                <Button type="primary" ghost shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
-              </Tooltip>
-            </div>
-            {this.props.total}
-          </div>}
         </div>}
         <div className={bodyClasses}>
           <Table
@@ -341,6 +330,15 @@ class DataTable extends React.Component {
             scroll={scrollProp}
             columns={this.state.tableColumns}
           />
+          {this.props.selectedRowKeys &&
+            <div className={`${baseCls}-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              <Tooltip title="取消选择" placement="top">
+                <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
+              </Tooltip>
+              <h4>已选中{this.props.selectedRowKeys.length}项</h4>
+              {this.props.bulkActions}
+              {this.props.total}
+            </div>}
         </div>
       </div>
     );

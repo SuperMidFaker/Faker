@@ -86,9 +86,9 @@ export default class CustomsList extends Component {
     selectedRowKeys: [],
   }
   componentDidMount() {
-    let filters = null;
+    let filters = this.props.listFilter;
     if (window.location.search.indexOf('inspect') > 0) {
-      filters = { status: 'inspect' };
+      filters = { ...filters, status: 'inspect' };
       if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
         const listFilters = JSON.parse(window.localStorage.cmsDelegationListFilters);
         filters = { ...filters, filterDate: listFilters.acptDate };
