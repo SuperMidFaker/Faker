@@ -33,7 +33,7 @@ export default class UploadMask extends React.Component {
       this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
     } else if (info.event) {
       this.uploadChangeCount += 1;
-      this.setState({ uploadPercent: info.event.percent * 0.8 });
+      this.setState({ uploadPercent: (info.event.percent * 0.8).toFixed(1) });
     } else if (info.file.status === 'done') {
       const { response } = info.file;
       this.uploadChangeCount = 0;
@@ -66,17 +66,17 @@ export default class UploadMask extends React.Component {
       <Modal
         maskClosable={false}
         closable={closable}
-        footer={[]}
+        footer={null}
         visible={inUpload}
         onCancel={this.handleCancel}
       >
-        {errorMsg && <Alert message={errorMsg} showIcon type="error" /> }
         <Progress
           type="circle"
           percent={uploadPercent}
           status={uploadStatus}
-          style={{ display: 'block', margin: '0 auto', width: '40%' }}
+          style={{ display: 'block', margin: '0 auto', width: 120 }}
         />
+        {errorMsg && <Alert message={errorMsg} showIcon type="error" style={{ marginTop: 24 }} /> }
       </Modal>
     );
   }

@@ -68,7 +68,7 @@ export default class ImportDataPanel extends React.Component {
     }
     return (
       <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose}>
-        <div style={{ marginBottom: 10 }}>
+        <div style={{ marginBottom: 16 }}>
           {children}
         </div>
         {adaptors &&
@@ -77,12 +77,13 @@ export default class ImportDataPanel extends React.Component {
           showSearch
           placeholder="导入适配器"
           onChange={this.handleAdaptorChange}
-          style={{ width: '100%', marginBottom: 10 }}
+          notFoundContent={this.msg('adaptorNotFound')}
+          style={{ width: '100%', marginBottom: 16 }}
         >
           {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
         </Select>
         }
-        <div style={{ height: 300, marginBottom: 24 }}>
+        <div style={{ height: 200, marginBottom: 16 }}>
           <Dragger
             accept=".xls,.xlsx,.csv"
             action={endpoint}

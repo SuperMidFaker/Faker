@@ -61,7 +61,7 @@ export default class HeadCard extends Component {
     };
     return (
       <Card bodyStyle={{ padding: 0 }} >
-        <FormPane>
+        <FormPane descendant>
           <Row>
             <Col span={6}>
               <FormItem label="发票号" {...formItemLayout}>

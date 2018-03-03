@@ -47,22 +47,18 @@
         margin-right: 8px;
       }
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
       overflow: inherit;
-      width: 100%;
-      min-height: 45px;
-      padding: 8px 16px 7px;
-      background: #fff;
-      border-bottom: 1px solid #e9e9e9;
+      padding: 12px 18px 12px;
       z-index: 50;
       .ant-btn-group {
         display: inline-flex;
-        margin-left: 8px;
+        margin-right: 8px;
       }
       button,
       >span {
-        margin-left: 8px;
+        margin-right: 8px;
       }
       &.hide {
         display: none;
@@ -85,6 +81,10 @@
   }
   &-body {
     clear: both;
+    position: relative;
+    .ant-table-pagination.ant-pagination {
+      z-index: 60;
+    }
     .ant-table-tbody > tr > td {
       padding: 8px;
     }

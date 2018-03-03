@@ -23,6 +23,9 @@ function getFieldInits(formData) {
     ['rule_g_name', 'rule_g_unit'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : '0';
     });
+    ['rule_dest_country', 'rule_duty_mode'].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : '';
+    });
     init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
     init.rule_element = formData.rule_element ? formData.rule_element : '$g_model';
     if (formData.merge_byhscode) {

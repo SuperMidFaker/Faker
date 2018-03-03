@@ -277,6 +277,8 @@ export default class ManifestEditor extends React.Component {
             rule_g_name: formData.rule_g_name,
             rule_currency: formData.rule_currency,
             rule_orig_country: formData.rule_orig_country,
+            rule_duty_mode: formData.rule_duty_mode,
+            rule_dest_country: formData.rule_dest_country,
             rule_net_wt: formData.rule_net_wt,
             rule_g_unit: formData.rule_g_unit,
             rule_gunit_num: formData.rule_gunit_num,

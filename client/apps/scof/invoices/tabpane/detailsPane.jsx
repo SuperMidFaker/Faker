@@ -9,6 +9,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { toggleDetailModal, setTemporary, splitInvoice, getInvoice } from 'common/reducers/sofInvoice';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import ExcelUploader from 'client/components/ExcelUploader';
+import { createFilename } from 'client/util/dataTransform';
 import DetailModal from '../modal/detailModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
@@ -91,8 +92,9 @@ export default class DetailsPane extends Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleTemplateDownload = () => {
-    window.open(`${XLSX_CDN}/发票明细导入模板.xlsx`);
+  handleExport = () => {
+    const { invoiceNo } = this.props;
+    window.open(`${API_ROOTS.default}v1/scof/invoice/${createFilename(`${invoiceNo}`)}.xlsx?invoiceNo=${invoiceNo}`);
   }
   toggleDetailModal = () => {
     this.props.toggleDetailModal(true);
@@ -184,7 +186,13 @@ export default class DetailsPane extends Component {
       dataIndex: 'splitQty',
       width: 100,
       align: 'right',
-      render: (o, record, index) => <Input size="small" value={o} disabled={record.disabled} onChange={e => this.handleSplitChange(e, record, index)} />,
+      render: (o, record, index) => (<Input
+        size="small"
+        value={o}
+        disabled={record.disabled}
+        onChange={e => this.handleSplitChange(e, record, index)}
+        style={{ textAlign: 'right' }}
+      />),
     }, {
       title: '计量单位',
       dataIndex: 'unit',
@@ -267,7 +275,7 @@ export default class DetailsPane extends Component {
           >
             {<Button icon="upload">{this.gmsg('import')}</Button>}
           </ExcelUploader>
-          <Button icon="download" onClick={this.handleTemplateDownload} style={{ marginLeft: 8 }}>模板下载</Button>
+          <Button icon="download" onClick={this.handleExport} style={{ marginLeft: 8 }}>明细导出</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}
