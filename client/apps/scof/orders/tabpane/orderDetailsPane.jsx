@@ -50,7 +50,7 @@ export default class OrderDetailsPane extends Component {
     width: 200,
   }, {
     title: '商品描述',
-    dataIndex: 'description',
+    dataIndex: 'g_name',
     width: 200,
   }, {
     title: '数量',
@@ -84,7 +84,7 @@ export default class OrderDetailsPane extends Component {
     },
   }, {
     title: '原产国',
-    dataIndex: 'orig_country',
+    dataIndex: 'country',
     width: 100,
     render: (o, record) => {
       if (record.orig_country) {

@@ -245,7 +245,7 @@ export default class OrderForm extends Component {
   }
   render() {
     const {
-      formRequires, formData, flows, serviceTeam, orderTypes, operation,
+      formRequires, formData, flows, serviceTeam, orderTypes,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -362,7 +362,7 @@ export default class OrderForm extends Component {
                           dropdownMatchSelectWidth={false}
                           dropdownStyle={{ width: 360 }}
                           style={{ width: '100%' }}
-                          disabled={!!(operation === 'edit' || operation === 'view')}
+                          disabled={!!(formData.shipmt_order_no)}
                         >
                           {formRequires.clients.map(data => (
                             <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
@@ -689,13 +689,19 @@ export default class OrderForm extends Component {
                 </Card>
               </FormPane>
             </TabPane>
-            <TabPane tab="商业发票" key="invoice">
+            <TabPane tab="商业发票" key="invoice" disabled={!formData.shipmt_order_no}>
               <InvoicePane />
             </TabPane>
-            <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
+            <TabPane
+              tab="集装箱"
+              key="container"
+              disabled={
+              !formData.shipmt_order_no || formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'
+            }
+            >
               <ContainerPane />
             </TabPane>
-            <TabPane tab="货物明细" key="details">
+            <TabPane tab="货物明细" key="details" disabled={!formData.shipmt_order_no}>
               <OrderDetailsPane />
             </TabPane>
           </Tabs>
