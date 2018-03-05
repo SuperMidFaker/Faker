@@ -249,7 +249,7 @@ export default class ExpenseList extends Component {
       align: 'right',
       fixed: 'right',
       width: 120,
-      render: (o, record) => <RowAction onClick={this.handleDetail} label="应付明细" row={record} />,
+      render: (o, record) => <RowAction icon="eye-o" onClick={this.handleDetail} label="应付明细" row={record} />,
     },
   ];
   dataSource = new DataTable.DataSource({

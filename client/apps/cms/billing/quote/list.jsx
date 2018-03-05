@@ -134,25 +134,22 @@ export default class RatesList extends Component {
   }
   handleQuoteEdit = (row) => {
     if (row.status === 'draft') {
-      this.context.router.push(`/clearance/billing/rates/${row.quote_no}`);
+      this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
     } else if (row.next_version) {
-      this.context.router.push(`/clearance/billing/rates/${row.quote_no}`);
+      this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
     } else {
       const { loginName, loginId } = this.props;
       this.props.createDraftQuote(row.quote_no, loginName, loginId).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.context.router.push(`/clearance/billing/rates/${row.quote_no}`);
+          this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
         }
       });
     }
   }
   handleQuoteView = (row) => {
-    this.context.router.push(`/clearance/quote/view/${row.quote_no}/${row.version}`);
-  }
-  handleSettings = () => {
-    this.context.router.push('/bss/settings/fees');
+    this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
   }
   handleDeleteQuote = (quoteNo) => {
     this.props.deleteQuote(quoteNo).then((result) => {
@@ -241,7 +238,7 @@ export default class RatesList extends Component {
           if (auth === 'modify') {
             return (
               <PrivilegeCover module="clearance" feature="quote" action="edit">
-                <RowAction icon="edit" tooltip={this.msg('reviseContinue')} onClick={() => this.handleQuoteEdit(record)} />
+                <RowAction icon="edit" tooltip={this.msg('edit')} onClick={() => this.handleQuoteEdit(record)} />
               </PrivilegeCover>
             );
           } else if (auth === 'read') {
@@ -282,7 +279,7 @@ export default class RatesList extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('rates')}
+                {this.msg('quote')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
@@ -290,7 +287,6 @@ export default class RatesList extends Component {
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
               新建报价
             </Button>
-            <Button icon="setting" onClick={this.handleSettings} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">

@@ -138,7 +138,10 @@ export default class QuotingEdit extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('rates')}
+                {this.msg('quote')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.quoteNo}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
