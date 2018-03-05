@@ -469,6 +469,8 @@ export default class SHFTZRelDetail extends Component {
     if (outboundStatus < CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
       sendable = false;
       whyunsent = '出库单未配货';
+    } else if (outboundStatus === CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
+      whyunsent = '出库单部分配货';
     }
     const tabList = [];
     relRegs.forEach((r, index) =>

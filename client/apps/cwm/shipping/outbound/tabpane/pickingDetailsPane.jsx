@@ -9,7 +9,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS } from 'common/constants';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -162,7 +162,9 @@ export default class PickingDetailsPane extends React.Component {
         switch (record.status) { // 分配明细的状态 2 已分配 4 已拣货 6 已发运
           case 2: // 已分配
             return (<span>
+              {outboundHead.so_type !== CWM_SO_TYPES[3].value &&
               <RowAction onClick={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty, record.sku_pack_qty, record.trace_id)} icon="check-circle-o" label="拣货确认" row={record} />
+}
               <RowAction onClick={this.handleCancelAllocated} icon="close-circle-o" tooltip="取消分配" row={record} disabled={submitting} />
             </span>);
           case 3: // 部分拣货
@@ -364,19 +366,25 @@ export default class PickingDetailsPane extends React.Component {
             selectedRowKeys={this.state.selectedRowKeys}
             handleDeselectRows={this.handleDeselectRows}
           >
-            {outboundHead.shipping_mode === 'manual' && currentStep === 'allAllocated' && <Button onClick={this.handleBatchConfirmPicked}>
-              <MdIcon type="check-all" />批量拣货确认
-            </Button>
+            {outboundHead.shipping_mode === 'manual'
+                && outboundHead.so_type !== CWM_SO_TYPES[3].value
+                && currentStep === 'allAllocated' && <Button onClick={this.handleBatchConfirmPicked}>
+                  <MdIcon type="check-all" />批量拣货确认
+                </Button>
             }
             {currentStep === 'allAllocated' && <Button onClick={this.handleAllocBatchCancel} icon="close" loading={submitting}>
               批量取消分配
             </Button>}
-            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button onClick={this.handleBatchConfirmShipped}>
-              <MdIcon type="check-all" />批量发货确认
-            </Button>}
-            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
+            {outboundHead.shipping_mode === 'manual'
+                && outboundHead.so_type !== CWM_SO_TYPES[3].value
+                && currentStep === 'allPicked' && <Button onClick={this.handleBatchConfirmShipped}>
+                  <MdIcon type="check-all" />批量发货确认
+                </Button>}
+            {outboundHead.shipping_mode === 'manual'
+                && outboundHead.so_type !== CWM_SO_TYPES[3].value
+                && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
               批量取消拣货
-            </Button>}
+                </Button>}
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <PickingModal
