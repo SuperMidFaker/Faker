@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Icon, Select, Menu, Layout, message } from 'antd';
+import { Breadcrumb, Button, DatePicker, Icon, Select, Menu, Layout, message } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -14,13 +14,14 @@ import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import RowAction from 'client/components/RowAction';
 import SideDrawer from 'client/components/SideDrawer';
+import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
-import AdvUploadModal from './modals/advUploadModal';
 import AdvExpsImpTempModal from './modals/advExpImpTempModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -108,9 +109,8 @@ export default class ExpenseList extends Component {
     currentStatus: 'billing',
     selectedRowKeys: [],
     expEptVisible: false,
-    supeFilter: [],
     sortedInfo: { field: '', order: '' },
-    advUploadVisible: false,
+    importFeesModalVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -140,7 +140,6 @@ export default class ExpenseList extends Component {
         text: `${this.props.tenantId} | ${this.props.tenantName}`,
         value: `tenantId:${this.props.tenantId}`,
       });
-      this.setState({ supeFilter });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -156,84 +155,97 @@ export default class ExpenseList extends Component {
           {o}
         </a>),
     }, {
-      title: this.msg('custName'),
-      dataIndex: 'send_name',
+      title: this.msg('clientName'),
+      dataIndex: 'client_name',
       width: 200,
-      filters: this.state.supeFilter,
       render: o => <TrimSpan text={o} maxLen={12} />,
     }, {
+      title: this.msg('custOrderNo'),
+      dataIndex: 'cust_order_no',
+      width: 120,
+    }, {
+      title: this.msg('waybillLadingNo'),
+      dataIndex: 'bl_wb_no',
+      width: 180,
+    }, {
+      title: this.msg('cusDeclNo'),
+      dataIndex: 'cus_decl_nos',
+      width: 120,
+    }, {
+      title: this.msg('bizStatus'),
+      dataIndex: 'biz_status',
+      width: 80,
+    }, {
       title: this.msg('serviceSummary'),
-      dataIndex: 'certs_charges',
+      dataIndex: 'sum_svc_charges',
       width: 90,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
       title: this.msg('advanceSummary'),
-      dataIndex: 'certs_charges',
+      dataIndex: 'sum_adv_charges',
       width: 90,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
       title: this.msg('receivableTotal'),
-      dataIndex: 'revenue',
+      dataIndex: 'total_charges',
+      align: 'right',
+      render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('status'),
-      dataIndex: 'cost_status',
-      key: 'cost_status',
-      width: 100,
-      render: (status) => {
-        if (status === 1) {
-          return <Badge status="warning" />;
-        } else if (status === 2) {
-          return <Badge status="success" />;
-        }
-        return <Badge status="default" />;
-      },
+      title: this.msg('expStatus'),
+      dataIndex: 'exp_status',
+      width: 80,
     }, {
-      title: this.msg('ccdCount'),
-      dataIndex: 'ccd_count',
+      title: this.msg('declQty'),
+      dataIndex: 'decl_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('ccsCount'),
-      dataIndex: 'ccs_count',
+      title: this.msg('declSheetQty'),
+      dataIndex: 'decl_sheet_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('itemCount'),
-      dataIndex: 'item_count',
+      title: this.msg('declItemQty'),
+      dataIndex: 'decl_item_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('prdtCount'),
-      dataIndex: 'prdt_count',
+      title: this.msg('tradeItemQty'),
+      dataIndex: 'trade_item_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('declValue'),
-      dataIndex: 'decl_value',
+      title: this.msg('tradeAmount'),
+      dataIndex: 'trade_amount',
       align: 'right',
       width: 100,
     }, {
-      title: this.msg('acptTime'),
-      dataIndex: 'acpt_time',
-      width: 120,
-      render: o => o && moment(o).format('MM.DD HH:mm'),
-    }, {
-      title: this.msg('cleanDate'),
-      dataIndex: 'clean_time',
-      width: 120,
-      render: o => o && moment(o).format('MM.DD HH:mm'),
+      title: this.msg('quoteNo'),
+      dataIndex: 'quote_no',
+      width: 100,
     }, {
       title: this.msg('lastActT'),
-      dataIndex: 'last_charge_time',
+      dataIndex: 'last_updated_date',
       width: 120,
       render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
-      title: this.gmsg('op'),
-      dataIndex: 'OPS_COL',
+      title: '计费人员',
+      dataIndex: 'charged_by',
       width: 120,
+      render: lid => <UserAvatar size="small" loginId={lid} showName />,
+    }, {
+      title: '审核人员',
+      dataIndex: 'audited_by',
+      width: 120,
+      render: lid => <UserAvatar size="small" loginId={lid} showName />,
+    }, {
+      title: this.gmsg('actions'),
+      dataIndex: 'OPS_COL',
+      align: 'right',
       fixed: 'right',
+      width: 120,
       render: (o, record) => <RowAction onClick={this.handleDetail} label="应收明细" row={record} />,
     },
   ];
@@ -319,7 +331,7 @@ export default class ExpenseList extends Component {
     this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'send');
   }
   handleAdvFeesImport = () => {
-    this.toggleAdvUploadModal();
+    this.toggleImportFeesModal();
   }
   handleExpExport = () => {
     this.setState({
@@ -329,8 +341,8 @@ export default class ExpenseList extends Component {
   toggleEptModal = () => {
     this.setState({ expEptVisible: !this.state.expEptVisible });
   }
-  toggleAdvUploadModal = () => {
-    this.setState({ advUploadVisible: !this.state.advUploadVisible });
+  toggleImportFeesModal = () => {
+    this.setState({ importFeesModalVisible: !this.state.importFeesModalVisible });
   }
   handleAcptDateChange = (dates) => {
     let filter = this.props.listFilter;
@@ -379,15 +391,15 @@ export default class ExpenseList extends Component {
     const filter = { ...this.props.listFilter, status: value };
     this.handleExpListLoad(1, filter);
   }
-  handleAdvModelEpt = () => {
-    this.props.showAdvModelModal(true);
+  handleGenTemplate = () => {
+    // this.props.showAdvModelModal(true);
     this.props.loadQuoteModel(this.props.tenantId);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
   handleDetail = (row) => {
-    const link = `/clearance/expense/receivable/${row.delg_no}`;
+    const link = `/clearance/billing/expense/${row.delg_no}/receivable/${row.disp_id}`;
     this.context.router.push(link);
   }
   render() {
@@ -403,6 +415,7 @@ export default class ExpenseList extends Component {
       <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
+        allowClear
         optionFilterProp="children"
         style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
@@ -419,6 +432,11 @@ export default class ExpenseList extends Component {
         style={{ width: 256 }}
       />
     </span>);
+    const bulkActions = (<span>
+      {(currentStatus === 'billing' || currentStatus === 'pending') &&
+      <Button icon="arrow-up" onClick={this.handleBatchSubmit}>{this.gmsg('submit')}</Button>}
+      <Button icon="download" onClick={this.handleExpExport}>{this.gmsg('export')}</Button>
+    </span>);
     this.dataSource.remotes = expenseList;
     return (
       <Layout>
@@ -431,18 +449,17 @@ export default class ExpenseList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="download" onClick={this.handleAdvModelEpt}>
+            {/*  <Button icon="download" onClick={this.handleAdvModelEpt}>
               {this.msg('eptAdvModel')}
             </Button>
-            <Button icon="upload" onClick={this.handleAdvFeesImport}>
-              {this.msg('incExp')}
-            </Button>
-            <Button icon="file-excel" onClick={this.handleExpExport}>
-              {this.msg('eptExp')}
-            </Button>
+            */}
+            {(currentStatus === 'billing' || currentStatus === 'pending') &&
+            <Button type="primary" ghost={currentStatus === 'pending'} icon="upload" onClick={this.handleAdvFeesImport}>
+              {this.msg('importFees')}
+            </Button>}
             {currentStatus === 'pending' &&
-            <Button type="primary" icon="upload" onClick={this.handleExpExport}>
-              {this.msg('整体提交')}
+            <Button type="primary" icon="arrow-up" onClick={this.handleAllSubmit}>
+              {this.msg('submitAll')}
             </Button>}
           </PageHeader.Actions>
         </PageHeader>
@@ -466,6 +483,7 @@ export default class ExpenseList extends Component {
           <Content className="page-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
@@ -476,11 +494,34 @@ export default class ExpenseList extends Component {
               bordered
             />
           </Content>
+          <ImportDataPanel
+            title={this.msg('importFees')}
+            visible={this.state.importFeesModalVisible}
+            endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
+            formData={{}}
+            onClose={() => { this.setState({ importFeesModalVisible: false }); }}
+            onUploaded={this.invoicesUploaded}
+            onGenTemplate={this.handleGenTemplate}
+          >
+            <Select
+              placeholder="请选择委托方"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              onChange={this.handlePartnerChange}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ width: 360 }}
+              style={{ width: '100%' }}
+            >
+              {partners.customer.map(data => (<Option key={data.name} value={data.partner_id}>
+                {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+              </Option>))}
+            </Select>
+          </ImportDataPanel>
         </Layout>
         <DelegationDockPanel />
         <DelgAdvanceExpenseModal />
         <AdvModelModal />
-        <AdvUploadModal visible={this.state.advUploadVisible} toggle={this.toggleAdvUploadModal} />
         <AdvExpsImpTempModal onload={() => this.handleExpListLoad()} />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </Layout>

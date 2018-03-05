@@ -142,13 +142,13 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="订单接收" />);
+        return (<Badge status="default" text="未处理" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已释放" />);
       } else if (o === 2) {
         return (<Badge status="warning" text="部分发货" />);
       } else if (o === 3) {
-        return (<Badge status="success" text="发货完成" />);
+        return (<Badge status="success" text="已完成" />);
       }
       return null;
     },
@@ -548,10 +548,10 @@ export default class ShippingOrderList extends React.Component {
           <PageHeader.Nav>
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">订单接收</RadioButton>
+              <RadioButton value="pending">未处理</RadioButton>
               <RadioButton value="outbound">已释放</RadioButton>
               <RadioButton value="partial">部分发货</RadioButton>
-              <RadioButton value="completed">发货完成</RadioButton>
+              <RadioButton value="completed">已完成</RadioButton>
             </RadioGroup>
             <span />
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >

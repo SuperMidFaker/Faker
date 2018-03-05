@@ -118,22 +118,6 @@ export default class InvoiceList extends React.Component {
     render: o => o && moment(o).format('YYYY-MM-DD'),
     width: 100,
   }, {
-    title: '状态',
-    dataIndex: 'invoice_status',
-    width: 100,
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <Tag>{this.msg('toShip')}</Tag>;
-        case 1:
-          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
-        case 2:
-          return <Tag color="green">{this.msg('shipped')}</Tag>;
-        default:
-          return null;
-      }
-    },
-  }, {
     title: '购买方',
     dataIndex: 'buyer',
     width: 200,
@@ -170,6 +154,22 @@ export default class InvoiceList extends React.Component {
     render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
     this.props.currencies.find(curr => curr.curr_code === o).curr_name,
   }, {
+    title: '状态',
+    dataIndex: 'invoice_status',
+    width: 100,
+    render: (o) => {
+      switch (o) {
+        case 0:
+          return <Tag>{this.msg('toShip')}</Tag>;
+        case 1:
+          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
+        case 2:
+          return <Tag color="green">{this.msg('shipped')}</Tag>;
+        default:
+          return null;
+      }
+    },
+  }, {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 140,
@@ -181,12 +181,13 @@ export default class InvoiceList extends React.Component {
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
+    title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 60,
+    align: 'right',
     fixed: 'right',
     render: (o, record) => (<span>
       <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />
-      <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />
     </span>),
   }]
   handleCreate = () => {
@@ -301,7 +302,7 @@ export default class InvoiceList extends React.Component {
     </span>);
     const bulkActions = (<span>
       <Button icon="download" onClick={this.handleExport}>{this.gmsg('export')}</Button>
-      <Button type="danger" icon="delete" onClick={this.handleBatchDelete}>{this.gmsg('batchDelete')}</Button>
+      <Button type="danger" icon="delete" onClick={this.handleBatchDelete}>{this.gmsg('delete')}</Button>
     </span>);
     return (
       <Layout>
@@ -350,7 +351,7 @@ export default class InvoiceList extends React.Component {
               onChange={this.handlePartnerChange}
               dropdownMatchSelectWidth={false}
               dropdownStyle={{ width: 360 }}
-              style={{ width: '100%', marginBottom: '10px' }}
+              style={{ width: '100%' }}
             >
               {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
             </Select>

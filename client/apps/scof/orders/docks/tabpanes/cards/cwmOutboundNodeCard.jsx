@@ -101,7 +101,7 @@ export default class CWMOutboundNodeCard extends React.Component {
             node={{ uuid: node.uuid, biz_no: node.biz_no }}
             bizObjects={[NODE_BIZ_OBJECTS[node.kind][0].key]}
             triggerMap={this.triggerStepMap}
-            stepDesc={['订单接收', '出库操作', '发货完成']}
+            stepDesc={['未处理', '出库操作', '已完成']}
           />
         </div>
       </Card>

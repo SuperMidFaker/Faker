@@ -49,72 +49,76 @@ const messages = defineMessages({
     id: 'root.back',
     defaultMessage: '返回',
   },
+  actions: {
+    id: 'root.actions',
+    defaultMessage: '操作',
+  },
   edit: {
-    id: 'root.edit',
+    id: 'root.actions.edit',
     defaultMessage: '编辑',
   },
   modify: {
-    id: 'root.modify',
+    id: 'root.actions.modify',
     defaultMessage: '修改',
   },
   config: {
-    id: 'root.config',
+    id: 'root.actions.config',
     defaultMessage: '配置',
   },
   assign: {
-    id: 'root.assign',
+    id: 'root.actions.assign',
     defaultMessage: '分配',
   },
   delete: {
-    id: 'root.delete',
+    id: 'root.actions.delete',
     defaultMessage: '删除',
   },
   add: {
-    id: 'root.add',
+    id: 'root.actions.add',
     defaultMessage: '添加',
   },
   create: {
-    id: 'root.create',
+    id: 'root.actions.create',
     defaultMessage: '新建',
   },
   import: {
-    id: 'root.import',
+    id: 'root.actions.import',
     defaultMessage: '导入',
   },
   export: {
-    id: 'root.export',
+    id: 'root.actions.export',
     defaultMessage: '导出',
   },
   save: {
-    id: 'root.save',
+    id: 'root.actions.save',
     defaultMessage: '保存',
   },
   close: {
-    id: 'root.close',
+    id: 'root.actions.close',
     defaultMessage: '关闭',
   },
   search: {
-    id: 'root.search',
+    id: 'root.actions.search',
     defaultMessage: '搜索',
   },
   setting: {
-    id: 'root.setting',
+    id: 'root.actions.setting',
     defaultMessage: '设置',
   },
   accept: {
-    id: 'root.accept',
+    id: 'root.actions.accept',
     defaultMessage: '接受',
   },
   reject: {
-    id: 'root.reject',
+    id: 'root.actions.reject',
     defaultMessage: '拒绝',
   },
   approve: {
-    id: 'root.approve',
+    id: 'root.actions.approve',
     defaultMessage: '通过',
   },
   revoke: {
-    id: 'root.revoke',
+    id: 'root.actions.revoke',
     defaultMessage: '撤销',
   },
   batchImport: {

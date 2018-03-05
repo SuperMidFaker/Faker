@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Icon, Menu, Layout, Select, message } from 'antd';
+import { Breadcrumb, Button, DatePicker, Icon, Menu, Layout, Select, message } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -16,11 +16,11 @@ import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import SideDrawer from 'client/components/SideDrawer';
+import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
-import AdvUploadModal from './modals/advUploadModal';
 import AdvExpsImpTempModal from './modals/advExpImpTempModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -156,89 +156,99 @@ export default class ExpenseList extends Component {
           {o}
         </a>),
     }, {
-      title: this.msg('serviceExpense'),
-      dataIndex: 'serv_cost',
-      key: 'serv_cost',
+      title: this.msg('providerName'),
+      dataIndex: 'provider_name',
+      width: 200,
+      filters: this.state.supeFilter,
+      render: o => <TrimSpan text={o} maxLen={12} />,
+    }, {
+      title: this.msg('custOrderNo'),
+      dataIndex: 'cust_order_no',
       width: 120,
+    }, {
+      title: this.msg('waybillLadingNo'),
+      dataIndex: 'bl_wb_no',
+      width: 180,
+    }, {
+      title: this.msg('cusDeclNo'),
+      dataIndex: 'cus_decl_nos',
+      width: 120,
+    }, {
+      title: this.msg('bizStatus'),
+      dataIndex: 'biz_status',
+      width: 80,
+    }, {
+      title: this.msg('serviceSummary'),
+      dataIndex: 'sum_svc_charges',
+      width: 90,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('cushCost'),
-      dataIndex: 'cush_cost',
-      key: 'cush_cost',
-      width: 120,
+      title: this.msg('advanceSummary'),
+      dataIndex: 'sum_adv_charges',
+      width: 90,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('allCost'),
+      title: this.msg('payableTotal'),
       dataIndex: 'total_charges',
       width: 120,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('agentName'),
-      dataIndex: 'agent_name',
-      width: 200,
-      filters: this.state.supeFilter,
-      render: o => <TrimSpan text={o} maxLen={12} />,
+      title: this.msg('expStatus'),
+      dataIndex: 'exp_status',
+      width: 80,
     }, {
-      title: this.msg('status'),
-      dataIndex: 'cost_status',
-      key: 'cost_status',
-      width: 100,
-      render: (status) => {
-        if (status === 1) {
-          return <Badge status="warning" />;
-        } else if (status === 2) {
-          return <Badge status="success" />;
-        }
-        return <Badge status="default" />;
-      },
-    }, {
-      title: this.msg('ccdCount'),
-      dataIndex: 'ccd_count',
+      title: this.msg('declQty'),
+      dataIndex: 'decl_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('ccsCount'),
-      dataIndex: 'ccs_count',
+      title: this.msg('declSheetQty'),
+      dataIndex: 'decl_sheet_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('itemCount'),
-      dataIndex: 'item_count',
+      title: this.msg('declItemQty'),
+      dataIndex: 'decl_item_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('prdtCount'),
-      dataIndex: 'prdt_count',
+      title: this.msg('tradeItemQty'),
+      dataIndex: 'trade_item_qty',
       align: 'center',
       width: 70,
     }, {
-      title: this.msg('declValue'),
-      dataIndex: 'decl_value',
+      title: this.msg('tradeAmount'),
+      dataIndex: 'trade_amount',
       align: 'right',
       width: 100,
     }, {
-      title: this.msg('acptTime'),
-      dataIndex: 'acpt_time',
-      width: 120,
-      render: o => o && moment(o).format('MM.DD HH:mm'),
-    }, {
-      title: this.msg('cleanDate'),
-      dataIndex: 'clean_time',
-      width: 120,
-      render: o => o && moment(o).format('MM.DD HH:mm'),
+      title: this.msg('quoteNo'),
+      dataIndex: 'quote_no',
+      width: 100,
     }, {
       title: this.msg('lastActT'),
-      dataIndex: 'last_charge_time',
+      dataIndex: 'last_updated_date',
       width: 120,
       render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
-      title: this.gmsg('op'),
-      dataIndex: 'OPS_COL',
+      title: '计费人员',
+      dataIndex: 'charged_by',
       width: 120,
+      render: lid => <UserAvatar size="small" loginId={lid} showName />,
+    }, {
+      title: '审核人员',
+      dataIndex: 'audited_by',
+      width: 120,
+      render: lid => <UserAvatar size="small" loginId={lid} showName />,
+    }, {
+      title: this.gmsg('actions'),
+      dataIndex: 'OPS_COL',
+      align: 'right',
       fixed: 'right',
+      width: 120,
       render: (o, record) => <RowAction onClick={this.handleDetail} label="应付明细" row={record} />,
     },
   ];
@@ -384,7 +394,7 @@ export default class ExpenseList extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleDetail = (row) => {
-    const link = `/clearance/expense/payable/${row.delg_no}`;
+    const link = `/clearance/billing/expense/${row.delg_no}/payable/${row.disp_id}`;
     this.context.router.push(link);
   }
   render() {
@@ -416,6 +426,11 @@ export default class ExpenseList extends Component {
         style={{ width: 256 }}
       />
     </span>);
+    const bulkActions = (<span>
+      {(currentStatus === 'submitted') &&
+      <Button icon="check" onClick={this.handleBatchConfirm}>{this.msg('confirm')}</Button>}
+      <Button icon="download" onClick={this.handleExpExport}>{this.gmsg('export')}</Button>
+    </span>);
     this.dataSource.remotes = expenseList;
     return (
       <Layout>
@@ -428,11 +443,12 @@ export default class ExpenseList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="file-excel" onClick={this.handleExpExport}>
-              {this.msg('import')}
+            <Button icon="upload" onClick={this.handleExpExport}>
+              {this.msg('importFees')}
             </Button>
-            {currentStatus === 'submitted' && <Button icon="check-circle-o" onClick={this.handleExpExport}>
-              {this.msg('confirm')}
+            {currentStatus === 'submitted' &&
+            <Button type="primary" icon="check-circle-o" onClick={this.handleExpExport}>
+              {this.msg('confirmAll')}
             </Button>}
           </PageHeader.Actions>
         </PageHeader>
@@ -453,6 +469,7 @@ export default class ExpenseList extends Component {
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
+              bulkActions={bulkActions}
               columns={this.columns}
               dataSource={this.dataSource}
               rowKey="delg_no"
@@ -464,7 +481,6 @@ export default class ExpenseList extends Component {
         <DelegationDockPanel />
         <DelgAdvanceExpenseModal />
         <AdvModelModal />
-        <AdvUploadModal visible={this.state.advUploadVisible} toggle={this.toggleAdvUploadModal} />
         <AdvExpsImpTempModal onload={() => this.handleExpListLoad()} />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </Layout>

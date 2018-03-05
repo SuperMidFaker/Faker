@@ -10,7 +10,7 @@ import MagicCard from 'client/components/MagicCard';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { loadExpsDetails } from 'common/reducers/cmsExpense';
-import { FEE_TYPE, FEE_CATEGORY } from 'common/constants';
+import { FEE_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -71,134 +71,72 @@ export default class ExpenseDetail extends Component {
     });
   }
 
-  recColumns = [{
-    title: '业务流水号',
-    dataIndex: 'biz_seq_no',
-    width: 180,
+  columns = [{
+    title: '序号',
+    dataIndex: 'seq_no',
+    width: 45,
+    align: 'center',
+    className: 'table-col-seq',
+    render: (col, row) => row.index + 1,
   }, {
     title: '费用名称',
     dataIndex: 'fee_name',
-  }, {
-    title: '费用种类',
-    dataIndex: 'category',
-    width: 100,
-    render: (o) => {
-      const category = FEE_CATEGORY.filter(fe => fe.value === o)[0];
-      return category ? <span>{category.text}</span> : <span />;
-    },
+    width: 200,
   }, {
     title: '费用类型',
-    dataIndex: 'fee_style',
+    dataIndex: 'fee_type',
     width: 100,
     render: (o) => {
       const type = FEE_TYPE.filter(fe => fe.value === o)[0];
       return type ? <span>{type.text}</span> : <span />;
     },
   }, {
-    title: '营收金额(人民币)',
-    dataIndex: 'total_fee',
+    title: '计费金额(人民币)',
+    dataIndex: 'sum_amount',
     width: 150,
+    align: 'right',
   }, {
     title: '外币金额',
-    dataIndex: 'amount_forc',
+    dataIndex: 'orig_amount',
     width: 150,
+    align: 'right',
   }, {
     title: '外币币制',
     dataIndex: 'currency',
     width: 100,
   }, {
     title: '汇率',
-    dataIndex: 'currency_rate',
+    dataIndex: 'exchange_rate',
     width: 100,
+    align: 'right',
   }, {
-    title: '调整金额',
-    dataIndex: 'adj_amount',
-    width: 150,
+    title: '开票税率',
+    dataIndex: 'tax_rate',
+    width: 100,
+    align: 'right',
   }, {
-    title: '审核人员',
-    dataIndex: 'auditted_by',
+    title: '税金',
+    dataIndex: 'tax',
     width: 150,
+    align: 'right',
+  }, {
+    title: '备注',
+    dataIndex: 'remark',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 90,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      }
-      return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
-        <span className="ant-divider" />
-        <RowAction onClick={this.handleDetail} label="排除" row={record} />
-      </span>);
-    },
-  }]
-  payColumns = [{
-    title: '结算对象',
-    dataIndex: 'billing_party',
-    width: 180,
-  }, {
-    title: '费用名称',
-    dataIndex: 'fee_name',
-  }, {
-    title: '费用种类',
-    dataIndex: 'category',
-    width: 100,
-    render: (o) => {
-      const category = FEE_CATEGORY.filter(fe => fe.value === o)[0];
-      return category ? <span>{category.text}</span> : <span />;
-    },
-  }, {
-    title: '费用类型',
-    dataIndex: 'fee_style',
-    width: 100,
-    render: (o) => {
-      const type = FEE_TYPE.filter(fe => fe.value === o)[0];
-      return type ? <span>{type.text}</span> : <span />;
-    },
-  }, {
-    title: '成本金额(人民币)',
-    dataIndex: 'total_fee',
-    width: 150,
-  }, {
-    title: '外币金额',
-    dataIndex: 'amount_forc',
-    width: 150,
-  }, {
-    title: '外币币制',
-    dataIndex: 'currency',
-    width: 100,
-  }, {
-    title: '汇率',
-    dataIndex: 'currency_rate',
-    width: 100,
-  }, {
-    title: '调整金额',
-    dataIndex: 'adj_amount',
-    width: 150,
-  }, {
-    title: '审核人员',
-    dataIndex: 'auditted_by',
-    width: 150,
-  }, {
-    title: '操作',
-    dataIndex: 'OPS_COL',
-    width: 150,
-    fixed: 'right',
-    render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
-      }
-      return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
-        <span className="ant-divider" />
-        <RowAction onClick={this.handleDetail} label="排除" row={record} />
-      </span>);
-    },
+    render: (o, record) => (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
+      <span className="ant-divider" />
+      <RowAction onClick={this.handleDetail} label="排除" row={record} />
+    </span>),
   }]
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   render() {
+    const { params } = this.props;
     return (
       <div>
         <PageHeader>
@@ -208,18 +146,21 @@ export default class ExpenseDetail extends Component {
                 {this.msg('expenseDetail')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.props.params.delgNo}
+                {params.delgNo}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey={this.props.params.prType} onChange={this.handleTabChange}>
-              <TabPane tab="应收明细" key="receivable" >
+            <Tabs
+              defaultActiveKey={`${params.prType}-${params.dispId}`}
+              onChange={this.handleTabChange}
+            >
+              <TabPane tab="应收明细" key={`receivable-${params.dispId}`} >
                 <DataPane
                   fullscreen={this.state.fullscreen}
-                  columns={this.recColumns}
+                  columns={this.columns}
                   dataSource={this.state.datas}
                   rowKey="id"
                   loading={this.state.loading}
@@ -227,10 +168,10 @@ export default class ExpenseDetail extends Component {
                   <DataPane.Toolbar />
                 </DataPane>
               </TabPane>
-              <TabPane tab="应付明细" key="payable" >
+              <TabPane tab="应付明细" key={`payable-${params.dispId}`} >
                 <DataPane
                   fullscreen={this.state.fullscreen}
-                  columns={this.payColumns}
+                  columns={this.columns}
                   dataSource={this.state.datas}
                   rowKey="id"
                   loading={this.state.loading}
