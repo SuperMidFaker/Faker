@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { Button, Icon, Select, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
-import { format } from 'client/common/i18n/helpers';
 import UploadMask from '../UploadMask';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 const { Option } = Select;
 const { Dragger } = Upload;
-const formatMsg = format(messages);
 
 @injectIntl
 export default class ImportDataPanel extends React.Component {
@@ -29,6 +27,7 @@ export default class ImportDataPanel extends React.Component {
     importInfo: {},
     adaptor: '',
   }
+  msg = formatMsg(this.props.intl)
   handleUploadFile = (info) => {
     if (this.props.onBeforeUpload) {
       const upload = this.props.onBeforeUpload();
@@ -61,7 +60,6 @@ export default class ImportDataPanel extends React.Component {
       this.props.onClose();
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const {
       endpoint, formData = {}, children, visible, title, onUploaded,

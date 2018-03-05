@@ -11,8 +11,9 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import UserAvatar from 'client/components/UserAvatar';
-import { loadPartners } from 'common/reducers/partner';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import UploadLogsPanel from 'client/components/UploadLogsPanel';
+import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { loadInvoices, deleteSofInvice, batchDeleteInvoices } from 'common/reducers/sofInvoice';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
@@ -69,6 +70,7 @@ export default class InvoiceList extends React.Component {
   }
   state = {
     importPanelVisible: false,
+    logsPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
   }
@@ -256,6 +258,11 @@ export default class InvoiceList extends React.Component {
   handlePartnerChange = (partnerId) => {
     this.props.loadModelAdaptors(partnerId, [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
   }
+  handleMenuClick = (ev) => {
+    if (ev.key === 'logs') {
+      this.setState({ logsPanelVisible: true });
+    }
+  }
   render() {
     const {
       invoiceList, partners, loading, filter,
@@ -274,7 +281,7 @@ export default class InvoiceList extends React.Component {
     };
     const menu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="logs">{this.msg('importLogs')}</Menu.Item>
+        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
       </Menu>
     );
     const toolbarActions = (<span>
@@ -355,6 +362,11 @@ export default class InvoiceList extends React.Component {
               {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
             </Select>
           </ImportDataPanel>
+          <UploadLogsPanel
+            visible={this.state.logsPanelVisible}
+            onClose={() => { this.setState({ logsPanelVisible: false }); }}
+            logs={[]}
+          />
         </Content>
       </Layout>
     );

@@ -125,6 +125,10 @@ const messages = defineMessages({
     id: 'root.batch.import',
     defaultMessage: '批量导入',
   },
+  importLogs: {
+    id: 'root.batch.import.logs',
+    defaultMessage: '导入历史记录',
+  },
   batchDelete: {
     id: 'root.batch.delete',
     defaultMessage: '批量删除',
