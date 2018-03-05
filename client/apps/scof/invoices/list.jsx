@@ -229,7 +229,7 @@ export default class InvoiceList extends React.Component {
     this.props.deleteSofInvice(row.invoice_no).then((result) => {
       if (!result.error) {
         const { selectedRowKeys } = this.state;
-        const newKeys = selectedRowKeys.filter(key => key !== row.id);
+        const newKeys = selectedRowKeys.filter(key => key !== row.invoice_no);
         this.setState({
           selectedRowKeys: newKeys,
         });
@@ -239,9 +239,8 @@ export default class InvoiceList extends React.Component {
     });
   }
   handleBatchDelete = () => {
-    const { selectedRows } = this.state;
-    const invoiceNos = selectedRows.map(row => row.invoice_no);
-    this.props.batchDeleteInvoices(invoiceNos).then((result) => {
+    const { selectedRowKeys } = this.state;
+    this.props.batchDeleteInvoices(selectedRowKeys).then((result) => {
       if (!result.error) {
         this.handleDeselectRows();
         const { filter } = this.props;
@@ -330,7 +329,7 @@ export default class InvoiceList extends React.Component {
             handleDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             loading={loading}
-            rowKey="id"
+            rowKey="invoice_no"
           />
           <ImportDataPanel
             title={this.msg('batchImportInvoices')}
