@@ -31,6 +31,18 @@ const messages = defineMessages({
     id: 'bss.settings.fees.groups',
     defaultMessage: '费用分组',
   },
+  newFeeGroup: {
+    id: 'bss.settings.new.fees.groups',
+    defaultMessage: '新建费用分组',
+  },
+  newFeeElement: {
+    id: 'bss.settings.new.fees.element',
+    defaultMessage: '新建费用元素',
+  },
+  newChildFeeElement: {
+    id: 'bss.settings.new.child.fees.element',
+    defaultMessage: '新建子费用元素',
+  },
   exchangeRates: {
     id: 'bss.settings.exchange.rates',
     defaultMessage: '汇率',
