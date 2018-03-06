@@ -148,7 +148,7 @@ const messages = defineMessages({
     defaultMessage: '费用分组',
   },
   feeType: {
-    id: 'cms.billing.fee.category',
+    id: 'cms.billing.fee.type',
     defaultMessage: '费用类型',
   },
   feeVal: {
