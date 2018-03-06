@@ -18,7 +18,6 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
     elementModal: state.bssFeeSettings.visibleNewElementModal,
   }),
   { toggleNewFeeElementModal, addFeeElement }

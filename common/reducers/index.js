@@ -15,7 +15,7 @@ import role from './role';
 import invitation from './invitation';
 import operationLog from './operationLog';
 import bssFeeSettings from './bssFeeSettings';
-import bssExRateSetting from './bssExRateSetting';
+import bssExRateSettings from './bssExRateSettings';
 import cmsDashboard from './cmsDashboard';
 import cmsDelegation from './cmsDelegation';
 import cmsDelegationDock from './cmsDelegationDock';
@@ -101,7 +101,7 @@ export default combineReducers({
   transportBilling,
   transportKpi,
   bssFeeSettings,
-  bssExRateSetting,
+  bssExRateSettings,
   cmsDashboard,
   cmsDelegation,
   cmsDelegationDock,

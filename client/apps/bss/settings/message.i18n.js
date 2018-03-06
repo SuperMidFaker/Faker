@@ -55,6 +55,10 @@ const messages = defineMessages({
     id: 'bss.settings.exchange.rates',
     defaultMessage: '汇率',
   },
+  addChangeRate: {
+    id: 'bss.settings.exchange.rate.add',
+    defaultMessage: '添加汇率',
+  },
   taxRates: {
     id: 'bss.settings.tax.rates',
     defaultMessage: '税率',
