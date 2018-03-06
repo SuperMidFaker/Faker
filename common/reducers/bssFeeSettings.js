@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/bss/settings/', [
+const actionTypes = createActionTypes('@@welogix/bss/fee/settings/', [
   'VISIBLE_NEW_GROUP_MODAL',
   'LOAD_FEE_GROUPS', 'LOAD_FEE_GROUPS_SUCCEED', 'LOAD_FEE_GROUPS_FAIL',
   'ADD_FEE_GROUP', 'ADD_FEE_GROUP_SUCCEED', 'ADD_FEE_GROUP_FAIL',
@@ -12,12 +12,11 @@ const actionTypes = createActionTypes('@@welogix/bss/settings/', [
   'ADD_FEE_ELEMENT', 'ADD_FEE_ELEMENT_SUCCEED', 'ADD_FEE_ELEMENT_FAIL',
   'ALTER_FEE_ELEMENT', 'ALTER_FEE_ELEMENT_SUCCEED', 'ALTER_FEE_ELEMENT_FAIL',
   'DELETE_FEE_ELEMENT', 'DELETE_FEE_ELEMENT_SUCCEED', 'DELETE_FEE_ELEMENT_FAIL',
+  'VISIBLE_NEW_Rate_MODAL',
 ]);
 
 const initialState = {
   visibleNewFeeGModal: false,
-  feeElements: [],
-  feeElementMap: {},
   feeGroupslist: {
     totalCount: 0,
     current: 1,
@@ -38,7 +37,6 @@ const initialState = {
   },
   gpLoading: false,
   elLoading: false,
-  feeGroups: [],
   visibleNewElementModal: {
     visible: false,
   },
@@ -204,3 +202,4 @@ export function deleteFeeElement(code) {
     },
   };
 }
+

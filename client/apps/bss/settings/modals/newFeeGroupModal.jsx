@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message } from 'antd';
-import { toggleNewFeeGroupModal, addFeeGroup } from 'common/reducers/bssSettings';
+import { toggleNewFeeGroupModal, addFeeGroup } from 'common/reducers/bssFeeSettings';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -15,8 +15,8 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    visible: state.bssSettings.visibleNewFeeGModal,
-    feeGroups: state.bssSettings.feeGroupslist.data,
+    visible: state.bssFeeSettings.visibleNewFeeGModal,
+    feeGroups: state.bssFeeSettings.feeGroupslist.data,
   }),
   { toggleNewFeeGroupModal, addFeeGroup }
 )

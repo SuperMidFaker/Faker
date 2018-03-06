@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message, Select } from 'antd';
-import { toggleNewFeeElementModal, addFeeElement } from 'common/reducers/bssSettings';
+import { toggleNewFeeElementModal, addFeeElement } from 'common/reducers/bssFeeSettings';
 import { BSS_FEE_TYPE } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -19,7 +19,7 @@ const formItemLayout = {
 @connect(
   state => ({
     loginId: state.account.loginId,
-    elementModal: state.bssSettings.visibleNewElementModal,
+    elementModal: state.bssFeeSettings.visibleNewElementModal,
   }),
   { toggleNewFeeElementModal, addFeeElement }
 )

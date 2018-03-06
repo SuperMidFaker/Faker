@@ -8,7 +8,7 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
-import { loadFeeElements, alterFeeElement, deleteFeeElement, toggleNewFeeElementModal } from 'common/reducers/bssSettings';
+import { loadFeeElements, alterFeeElement, deleteFeeElement, toggleNewFeeElementModal } from 'common/reducers/bssFeeSettings';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Option } = Select;
@@ -16,9 +16,9 @@ const { Option } = Select;
 @injectIntl
 @connect(
   state => ({
-    feeElementlist: state.bssSettings.feeElementlist,
-    listFilter: state.bssSettings.ellistFilter,
-    loading: state.bssSettings.elLoading,
+    feeElementlist: state.bssFeeSettings.feeElementlist,
+    listFilter: state.bssFeeSettings.ellistFilter,
+    loading: state.bssFeeSettings.elLoading,
   }),
   {
     loadFeeElements, alterFeeElement, deleteFeeElement, toggleNewFeeElementModal,

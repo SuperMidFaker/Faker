@@ -5,7 +5,7 @@ import { Button, Breadcrumb, Dropdown, Icon, Menu, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
-import { toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFeeElements } from 'common/reducers/bssSettings';
+import { toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFeeElements } from 'common/reducers/bssFeeSettings';
 import SettingMenu from './menu';
 import FeeGroups from './feeGroups';
 import FeeElements from './feeElements';
@@ -18,11 +18,11 @@ const { Content, Sider } = Layout;
 @injectIntl
 @connect(
   state => ({
-    feeGroupslist: state.bssSettings.feeGroupslist,
-    gplistFilter: state.bssSettings.gplistFilter,
-    feeElementlist: state.bssSettings.feeElementlist,
-    ellistFilter: state.bssSettings.ellistFilter,
-    feeGroups: state.bssSettings.feeGroupslist.data.map(fe => ({
+    feeGroupslist: state.bssFeeSettings.feeGroupslist,
+    gplistFilter: state.bssFeeSettings.gplistFilter,
+    feeElementlist: state.bssFeeSettings.feeElementlist,
+    ellistFilter: state.bssFeeSettings.ellistFilter,
+    feeGroups: state.bssFeeSettings.feeGroupslist.data.map(fe => ({
       key: fe.fee_group_code,
       text: `${fe.fee_group_name}`,
     })),

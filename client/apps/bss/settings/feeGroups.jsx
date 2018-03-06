@@ -7,16 +7,16 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
-import { loadFeeGroups, deleteFeeGroup, alterFeeGroupName } from 'common/reducers/bssSettings';
+import { loadFeeGroups, deleteFeeGroup, alterFeeGroupName } from 'common/reducers/bssFeeSettings';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 
 @injectIntl
 @connect(
   state => ({
-    feeGroupslist: state.bssSettings.feeGroupslist,
-    listFilter: state.bssSettings.gplistFilter,
-    loading: state.bssSettings.gpLoading,
+    feeGroupslist: state.bssFeeSettings.feeGroupslist,
+    listFilter: state.bssFeeSettings.gplistFilter,
+    loading: state.bssFeeSettings.gpLoading,
   }),
   { loadFeeGroups, deleteFeeGroup, alterFeeGroupName }
 )
