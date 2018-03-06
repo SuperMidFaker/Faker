@@ -18,6 +18,26 @@ const initialState = {
   visibleNewFeeGModal: false,
   feeElements: [],
   feeElementMap: {},
+  feeGroupslist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  gplistFilter: {
+    code: '',
+  },
+  feeElementlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  ellistFilter: {
+    code: '',
+  },
+  gpLoading: false,
+  elLoading: false,
   feeGroups: [],
   visibleNewElementModal: {
     visible: false,
@@ -28,10 +48,22 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.VISIBLE_NEW_GROUP_MODAL:
       return { ...state, visibleNewFeeGModal: action.data };
+    case actionTypes.LOAD_FEE_GROUPS:
+      return {
+        ...state,
+        gplistFilter: JSON.parse(action.params.filter),
+        gpLoading: true,
+      };
     case actionTypes.LOAD_FEE_GROUPS_SUCCEED:
-      return { ...state, feeGroups: action.result.data };
+      return { ...state, gpLoading: false, feeGroupslist: action.result.data };
+    case actionTypes.LOAD_FEE_ELEMENTS:
+      return {
+        ...state,
+        ellistFilter: JSON.parse(action.params.filter),
+        elLoading: true,
+      };
     case actionTypes.LOAD_FEE_ELEMENTS_SUCCEED:
-      return { ...state, feeElements: action.result.data.parentItems, feeElementMap: action.result.data.childMaps };
+      return { ...state, elLoading: false, feeElementlist: action.result.data };
     case actionTypes.VISIBLE_NEW_ELEMENT_MODAL:
       return { ...state, visibleNewElementModal: action.data };
     default:

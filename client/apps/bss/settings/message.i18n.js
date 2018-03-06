@@ -39,6 +39,14 @@ const messages = defineMessages({
     id: 'bss.settings.new.fees.element',
     defaultMessage: '新建费用元素',
   },
+  groupsSearchTip: {
+    id: 'bss.settings.fee.group.search',
+    defaultMessage: '分组代码/分组名称',
+  },
+  elementsSearchTip: {
+    id: 'bss.settings.fee.element.search',
+    defaultMessage: '费用代码/费用名称',
+  },
   newChildFeeElement: {
     id: 'bss.settings.new.child.fees.element',
     defaultMessage: '新建子费用元素',

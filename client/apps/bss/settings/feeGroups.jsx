@@ -14,8 +14,9 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    feeGroups: state.bssSettings.feeGroups,
+    feeGroupslist: state.bssSettings.feeGroupslist,
+    listFilter: state.bssSettings.gplistFilter,
+    loading: state.bssSettings.gpLoading,
   }),
   { loadFeeGroups, deleteFeeGroup, alterFeeGroupName }
 )
@@ -26,8 +27,8 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 export default class FeeGroups extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    feeGroups: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired,
+    reload: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -53,23 +54,49 @@ export default class FeeGroups extends Component {
     width: 90,
     render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDeleteFeeGroup} icon="delete" row={record} />,
   }]
-
-  handleLoadGroups = () => {
-    this.props.loadFeeGroups({ tenantId: this.props.tenantId });
-  }
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadFeeGroups(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        filter: JSON.stringify(this.props.listFilter),
+      };
+      return params;
+    },
+    remotes: this.props.feeGroupslist,
+  })
   handleDeleteFeeGroup = (row) => {
     this.props.deleteFeeGroup(row.id).then((result) => {
       if (!result.error) {
-        this.handleLoadGroups();
+        this.props.reload();
       }
     });
   }
   handleAlterGName = (id, val) => {
     this.props.alterFeeGroupName({ groupName: val, id });
   }
+  handleSearch = (value) => {
+    const filter = { ...this.props.listFilter, code: value };
+    this.props.loadFeeGroups({
+      filter: JSON.stringify(filter),
+      pageSize: this.props.feeGroupslist.pageSize,
+      current: this.props.feeGroupslist.current,
+    });
+  }
   render() {
-    const { feeGroups } = this.props;
-    const groupsActions = <SearchBox placeholder={this.msg('groupsSearchTip')} onSearch={this.handleSearchGroups} />;
+    const { feeGroupslist, loading } = this.props;
+    this.dataSource.remotes = feeGroupslist;
+    const groupsActions = <SearchBox placeholder={this.msg('groupsSearchTip')} onSearch={this.handleSearch} />;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -81,7 +108,8 @@ export default class FeeGroups extends Component {
         toolbarActions={groupsActions}
         selectedRowKeys={this.state.selectedRowKeys}
         columns={this.groupsColumns}
-        dataSource={feeGroups}
+        dataSource={this.dataSource}
+        loading={loading}
         rowSelection={rowSelection}
         rowKey="id"
       />
