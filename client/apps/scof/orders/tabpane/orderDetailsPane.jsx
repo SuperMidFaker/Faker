@@ -21,6 +21,7 @@ const formatMsg = format(messages);
     totalCount: state.sofOrders.dock.orderProductList.totalCount,
     currencies: state.cmsManifest.params.currencies,
     countries: state.cmsManifest.params.tradeCountries,
+    invoices: state.sofOrders.invoices,
   }),
   { loadOrderProducts }
 )
@@ -35,6 +36,15 @@ export default class OrderDetailsPane extends Component {
       current: this.props.current,
       orderNo: this.props.orderNo,
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.invoices !== this.props.invoices) {
+      this.props.loadOrderProducts({
+        pageSize: this.props.pageSize,
+        current: this.props.current,
+        orderNo: this.props.orderNo,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   columns = [{

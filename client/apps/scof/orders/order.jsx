@@ -690,7 +690,7 @@ export default class OrderForm extends Component {
               </FormPane>
             </TabPane>
             <TabPane tab="商业发票" key="invoice" disabled={!formData.shipmt_order_no}>
-              <InvoicePane />
+              <InvoicePane orderNo={formData.shipmt_order_no} />
             </TabPane>
             <TabPane
               tab="集装箱"
@@ -699,7 +699,7 @@ export default class OrderForm extends Component {
               !formData.shipmt_order_no || formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'
             }
             >
-              <ContainerPane />
+              <ContainerPane orderNo={formData.shipmt_order_no} />
             </TabPane>
             <TabPane tab="货物明细" key="details" disabled={!formData.shipmt_order_no}>
               <OrderDetailsPane orderNo={formData.shipmt_order_no} />

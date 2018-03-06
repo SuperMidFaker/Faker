@@ -26,8 +26,12 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'ATTACHMENT_UPLOAD', 'ATTACHMENT_UPLOAD_SUCCEED', 'ATTACHMENT_UPLOAD_FAIL',
   'LOAD_ATTACHMENTS', 'LOAD_ATTACHMENTS_SUCCEED', 'LOAD_ATTACHMENTS_FAIL',
   'LOAD_UNSHIPPED_INVOICES', 'LOAD_UNSHIPPED_INVOICES_SUCCEED', 'LOAD_UNSHIPPED_INVOICES_FAIL',
-  'GET_ORDER_DETAILS', 'GET_ORDER_DETAILS_SUCCEED', 'GET_ORDER_DETAILS_FAIL',
   'REMOVE_ORDER_INVOICE', 'REMOVE_ORDER_INVOICE_SUCCEED', 'REMOVE_ORDER_INVOICE_FAIL',
+  'ADD_ORDER_CONTAINER', 'ADD_ORDER_CONTAINER_SUCCEED', 'ADD_ORDER_CONTAINER_FAIL',
+  'LOAD_ORDER_CONTAINERS', 'LOAD_ORDER_CONTAINERS_SUCCEED', 'LOAD_ORDER_CONTAINERS_FAIL',
+  'ORDER_CONTAINER_REMOVE', 'ORDER_CONTAINER_REMOVE_SUCCEED', 'ORDER_CONTAINER_REMOVE_FAIL',
+  'LOAD_ORDER_INVOICES', 'LOAD_ORDER_INVOICES_SUCCEED', 'LOAD_ORDER_INVOICES_FAIL',
+  'ADD_ORDER_INVOICES', 'ADD_ORDER_INVOICES_SUCCEED', 'ADD_ORDER_INVOICES_FAIL',
 ]);
 
 const initialState = {
@@ -68,10 +72,7 @@ const initialState = {
     cust_shipmt_goods_type: 0,
     cust_shipmt_wrap_type: null,
     ccb_need_exchange: 0,
-    containers: [],
     subOrders: [],
-    invoices: [],
-    orderDetails: [],
   },
   formRequires: {
     orderTypes: [],
@@ -97,6 +98,8 @@ const initialState = {
     progress: 'all', transfer: 'all', partnerId: '', orderType: null, expedited: 'all',
   },
   orderBizObjects: [],
+  containers: [],
+  invoices: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -189,8 +192,10 @@ export default function reducer(state = initialState, action) {
           [action.params.uuid]: action.result.data,
         },
       };
-    case actionTypes.GET_ORDER_DETAILS_SUCCEED:
-      return { ...state, formData: { ...state.formData, orderDetails: action.result.data } };
+    case actionTypes.LOAD_ORDER_CONTAINERS_SUCCEED:
+      return { ...state, containers: action.result.data };
+    case actionTypes.LOAD_ORDER_INVOICES_SUCCEED:
+      return { ...state, invoices: action.result.data };
     default:
       return state;
   }
@@ -577,21 +582,6 @@ export function loadUnshippedInvoices(partnerId) {
   };
 }
 
-export function getOrderDetails(invoiceNos) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.GET_ORDER_DETAILS,
-        actionTypes.GET_ORDER_DETAILS_SUCCEED,
-        actionTypes.GET_ORDER_DETAILS_FAIL,
-      ],
-      endpoint: 'v1/sof/invoice/details/get',
-      method: 'get',
-      params: { invoiceNos },
-    },
-  };
-}
-
 export function removeOrderInvoice(id, invoiceNo, shipmtOrderNo) {
   return {
     [CLIENT_API]: {
@@ -600,9 +590,86 @@ export function removeOrderInvoice(id, invoiceNo, shipmtOrderNo) {
         actionTypes.REMOVE_ORDER_INVOICE_SUCCEED,
         actionTypes.REMOVE_ORDER_INVOICE_FAIL,
       ],
-      endpoint: 'v1/sof/invoice/remove',
+      endpoint: 'v1/sof/order/invoice/remove',
       method: 'post',
       data: { id, invoiceNo, shipmtOrderNo },
+    },
+  };
+}
+
+export function addOrderContainer(orderNo, cntnrNo, cntnrSpec, isLcl) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_ORDER_CONTAINER,
+        actionTypes.ADD_ORDER_CONTAINER_SUCCEED,
+        actionTypes.ADD_ORDER_CONTAINER_FAIL,
+      ],
+      endpoint: 'v1/sof/order/container/add',
+      method: 'post',
+      data: {
+        orderNo, cntnrNo, cntnrSpec, isLcl,
+      },
+    },
+  };
+}
+
+export function loadOrderContainers(orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ORDER_CONTAINERS,
+        actionTypes.LOAD_ORDER_CONTAINERS_SUCCEED,
+        actionTypes.LOAD_ORDER_CONTAINERS_FAIL,
+      ],
+      endpoint: 'v1/sof/order/containers',
+      method: 'get',
+      params: { orderNo },
+    },
+  };
+}
+
+export function orderContainerRemove(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ORDER_CONTAINER_REMOVE,
+        actionTypes.ORDER_CONTAINER_REMOVE_SUCCEED,
+        actionTypes.ORDER_CONTAINER_REMOVE_FAIL,
+      ],
+      endpoint: 'v1/sof/order/container/remove',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function loadOrderInvoices(orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ORDER_INVOICES,
+        actionTypes.LOAD_ORDER_INVOICES_SUCCEED,
+        actionTypes.LOAD_ORDER_INVOICES_FAIL,
+      ],
+      endpoint: 'v1/sof/order/invoices',
+      method: 'get',
+      params: { orderNo },
+    },
+  };
+}
+
+export function addOrderInvoices(invoiceNos, orderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_ORDER_INVOICES,
+        actionTypes.ADD_ORDER_INVOICES_SUCCEED,
+        actionTypes.ADD_ORDER_INVOICES_FAIL,
+      ],
+      endpoint: 'v1/sof/order/invoices/add',
+      method: 'post',
+      data: { invoiceNos, orderNo },
     },
   };
 }
