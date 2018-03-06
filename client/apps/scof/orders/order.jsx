@@ -702,7 +702,7 @@ export default class OrderForm extends Component {
               <ContainerPane />
             </TabPane>
             <TabPane tab="货物明细" key="details" disabled={!formData.shipmt_order_no}>
-              <OrderDetailsPane />
+              <OrderDetailsPane orderNo={formData.shipmt_order_no} />
             </TabPane>
           </Tabs>
         </Card>

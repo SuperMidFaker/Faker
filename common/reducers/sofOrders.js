@@ -125,15 +125,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, orderSaving: true };
     case actionTypes.EDIT_ORDER_SUCCEED:
     case actionTypes.EDIT_ORDER_FAIL:
+    case actionTypes.SUBMIT_ORDER_SUCCEED:
     case actionTypes.SUBMIT_ORDER_FAIL:
       return { ...state, orderSaving: false };
-    case actionTypes.SUBMIT_ORDER_SUCCEED:
-      return {
-        ...state,
-        orderSaving: false,
-        formData:
-        { ...state.formData, ...action.result.data },
-      };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
       return {
         ...state,
@@ -606,7 +600,7 @@ export function removeOrderInvoice(id, invoiceNo, shipmtOrderNo) {
         actionTypes.REMOVE_ORDER_INVOICE_SUCCEED,
         actionTypes.REMOVE_ORDER_INVOICE_FAIL,
       ],
-      endpoint: 'v1/sof/order/invoice/remove',
+      endpoint: 'v1/sof/invoice/remove',
       method: 'post',
       data: { id, invoiceNo, shipmtOrderNo },
     },

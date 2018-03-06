@@ -43,7 +43,7 @@ export default class DataPane extends React.Component {
   }
   render() {
     const {
-      baseCls, children, columns, header,
+      baseCls, children, columns, header, pagination,
     } = this.props;
     return (
       <div className={baseCls}>
@@ -52,7 +52,7 @@ export default class DataPane extends React.Component {
         <Table
           size="middle"
           {...this.props}
-          pagination={{
+          pagination={pagination || {
             defaultPageSize: 20,
             showSizeChanger: true,
             showTotal: total => `共 ${total} 条`,
