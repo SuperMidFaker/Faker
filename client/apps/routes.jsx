@@ -51,9 +51,8 @@ import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
-import * as CMSQuote from './cms/quote';
 import * as CMSBilling from './cms/billing';
-import * as CMSRates from './cms/billing/rates';
+import * as CMSQuote from './cms/billing/quote';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
@@ -329,22 +328,15 @@ export default(store) => {
             <Route path="billing">
               <Route path="receivable">
                 <IndexRoute component={CMSBilling.ReceivableList} />
-                <Route path=":delgNo" component={CMSBilling.Detail} />
               </Route>
               <Route path="payable">
                 <IndexRoute component={CMSBilling.PayableList} />
-                <Route path=":delgNo" component={CMSBilling.Detail} />
               </Route>
-              <Route path="rates">
-                <IndexRoute component={CMSRates.List} />
-                <Route path=":id" component={CMSRates.Edit} />
+              <Route path="expense/:delgNo/:prType/:dispId" component={CMSBilling.Expense} />
+              <Route path="quote">
+                <IndexRoute component={CMSQuote.List} />
+                <Route path=":quoteNo" component={CMSQuote.Edit} />
               </Route>
-            </Route>
-            <Route path="quote">
-              <IndexRoute component={CMSQuote.List} />
-              <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
-              <Route path="view/:quoteno/:version" component={CMSQuote.View} />
-              <Route path="template" component={CMSQuote.Template} />
             </Route>
             <Route path="analytics">
               <IndexRoute component={CMSAnalytics.List} />

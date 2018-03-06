@@ -62,7 +62,12 @@ export default class EditOrder extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
     const { formData } = this.props;
-    this.props.validateOrder(formData).then((result) => {
+    const valitFormData = {};
+    ['customer_name', 'cust_shipmt_goods_type', 'cust_shipmt_transfer', 'flow_id',
+      'ext_attr_1', 'ext_attr_2', 'ext_attr_3', 'ext_attr_4', 'cust_order_no'].forEach((vaKey) => {
+      valitFormData[vaKey] = formData[vaKey];
+    });
+    this.props.validateOrder(valitFormData).then((result) => {
       if (result.error) {
         notification.error({
           message: '错误信息',
@@ -97,6 +102,7 @@ export default class EditOrder extends Component {
       notification.close('confirm-submit');
     }
     const { formData, tenantName } = this.props;
+    formData.orderDetails = formData.orderDetails.filter(ord => ord.invoice_detail_id);
     this.props.editOrder({ formData, tenantName }).then((result) => {
       if (result.error) {
         notification.error({
@@ -110,7 +116,7 @@ export default class EditOrder extends Component {
     });
   }
   handleCancel = () => {
-    this.context.router.goBack();
+    this.context.router.push('/scof/orders');
   }
   render() {
     return (

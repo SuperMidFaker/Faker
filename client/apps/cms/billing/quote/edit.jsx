@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Form, Layout, Tabs, message, Icon, Button, Menu, Dropdown } from 'antd';
+import { Breadcrumb, Form, Layout, Tabs, message, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadEditQuote, reviseQuote, copyQuote, openPublishModal, openTrialModal } from 'common/reducers/cmsQuote';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import QuoteTitle from './quoteTitle';
-import FeesTable from './feesTable';
-import FeesForm from './feesForm';
-import PublishModal from './modals/publishModal';
-import TrialModal from './modals/trialModal';
-import RevisionTable from './revisionTable';
-import { formatMsg } from './message.i18n';
+import TariffPane from './tabpane/tariffPane';
+import SettingPane from './tabpane/settingPane';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -58,17 +54,18 @@ export default class QuotingEdit extends Component {
     }),
   }
   state = {
-    tabKey: 'fees-table',
+    tabKey: 'tariff',
   }
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleFormError = () => {
     this.setState({
-      tabKey: 'fees-form',
+      tabKey: 'setting',
     });
   }
   handleTabChange = (key) => {
     this.setState({ tabKey: key });
   }
-  msg = formatMsg(this.props.intl)
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -135,43 +132,36 @@ export default class QuotingEdit extends Component {
   }
   render() {
     const { form, saving } = this.props;
-    const menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="trial">{this.msg('trial')}</Menu.Item>
-        <Menu.Item key="copyQuote">{this.msg('copy')}</Menu.Item>
-      </Menu>
-    );
     return (
       <Layout>
         <PageHeader>
           <PageHeader.Title>
-            <QuoteTitle />
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('quote')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.quoteNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Dropdown overlay={menu}>
-              <Button >{this.msg('more')} <Icon type="down" /></Button>
-            </Dropdown>
-            <Button type="default" icon="save" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
-            <Button type="primary" icon="book" onClick={this.handlePublish}>{this.msg('publish')}</Button>
+            <Button icon="copy">{this.msg('clone')}</Button>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-              <TabPane tab="报价费率" key="fees-table">
-                <FeesTable action="edit" editable={false} />
+              <TabPane tab="费率" key="tariff">
+                <TariffPane />
               </TabPane>
-              <TabPane tab="报价设置" key="fees-form">
-                <FeesForm form={form} action="edit" />
-              </TabPane>
-              <TabPane tab="修订历史" key="revision-history">
-                <RevisionTable />
+              <TabPane tab="设置" key="setting">
+                <SettingPane form={form} />
               </TabPane>
             </Tabs>
           </MagicCard>
         </Content>
-        <PublishModal quoteForm={form} />
-        <TrialModal quoteForm={form} />
       </Layout>
     );
   }

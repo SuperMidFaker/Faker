@@ -14,7 +14,7 @@ import { string2Bytes } from 'client/util/dataTransform';
 import { Logixon } from 'client/components/FontIcon';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
-import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR } from 'common/constants';
+import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR } from 'common/constants';
 import { loadOutboundHead, updateOutboundMode, toggleSFExpressModal, loadSFExpressConfig, loadPrintPickDetails } from 'common/reducers/cwmOutbound';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
@@ -127,7 +127,7 @@ export default class OutboundDetail extends Component {
           Object.assign({}, { v: v[k], position: String.fromCharCode(65 + j) + (i + 6) })))
           .reduce((prev, next) => prev.concat(next))
           .reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
-        const ref = 'A1' + ':' + `I${csvData.length + 8}`;
+        const ref = `A1:I${csvData.length + 8}`;
         const ws = Object.assign({}, headers, data, { '!ref': ref });
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
         const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
@@ -301,8 +301,7 @@ export default class OutboundDetail extends Component {
             </Dropdown>}
             {this.state.tabKey === 'pickingDetails' &&
               <Tooltip title="导出拣货单Excel" placement="bottom">
-                <Button icon="export" onClick={this.handleExportPickingListXLS} loading={this.state.expLoad}>
-                </Button>
+                <Button icon="export" onClick={this.handleExportPickingListXLS} loading={this.state.expLoad} />
               </Tooltip>
             }
             <Tooltip title="打印顺丰速运面单" placement="bottom">
@@ -394,13 +393,13 @@ export default class OutboundDetail extends Component {
                   fullscreen={this.state.fullscreen}
                 />
               </TabPane>
-              <TabPane tab="装箱明细" key="packingDetails">
+              <TabPane tab="装箱明细" key="packingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
                 <PackingDetailsPane
                   outboundNo={this.props.params.outboundNo}
                   fullscreen={this.state.fullscreen}
                 />
               </TabPane>
-              <TabPane tab="发货明细" key="shippingDetails">
+              <TabPane tab="发货明细" key="shippingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
                 <ShippingDetailsPane
                   outboundNo={this.props.params.outboundNo}
                   fullscreen={this.state.fullscreen}

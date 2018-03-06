@@ -54,7 +54,14 @@ export default class RowAction extends Component {
     }
     return overlay ?
       (<Dropdown overlay={overlay} placement="bottomRight" trigger={['click']}>
-        <Button shape={shape} disabled={disabled} size="small"><Icon type="ellipsis" /></Button>
+        <Button
+          shape={shape}
+          disabled={disabled}
+          size={size}
+          className="welo-row-action"
+        >
+          <Icon type="ellipsis" />
+        </Button>
       </Dropdown>)
       :
       (<Button

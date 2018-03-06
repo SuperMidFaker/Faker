@@ -112,8 +112,8 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'payableExpense'),
         }, {
           key: 'cms-billing-3',
-          path: '/clearance/billing/rates',
-          text: formatMsg(intl, 'rates'),
+          path: '/clearance/billing/quote',
+          text: formatMsg(intl, 'quote'),
         }],
       });
     }

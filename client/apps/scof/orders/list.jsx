@@ -333,7 +333,8 @@ export default class OrderList extends React.Component {
       render: lid => <UserAvatar size="small" loginId={lid} />,
     }, {
       title: '操作',
-      width: 90,
+      width: 100,
+      align: 'right',
       fixed: 'right',
       render: (o, record) => {
         if (record.order_status === CRM_ORDER_STATUS.created) {

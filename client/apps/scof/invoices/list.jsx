@@ -11,8 +11,9 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import UserAvatar from 'client/components/UserAvatar';
-import { loadPartners } from 'common/reducers/partner';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import UploadLogsPanel from 'client/components/UploadLogsPanel';
+import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { loadInvoices, deleteSofInvice, batchDeleteInvoices } from 'common/reducers/sofInvoice';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
@@ -69,6 +70,7 @@ export default class InvoiceList extends React.Component {
   }
   state = {
     importPanelVisible: false,
+    logsPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
   }
@@ -118,22 +120,6 @@ export default class InvoiceList extends React.Component {
     render: o => o && moment(o).format('YYYY-MM-DD'),
     width: 100,
   }, {
-    title: '状态',
-    dataIndex: 'invoice_status',
-    width: 100,
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <Tag>{this.msg('toShip')}</Tag>;
-        case 1:
-          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
-        case 2:
-          return <Tag color="green">{this.msg('shipped')}</Tag>;
-        default:
-          return null;
-      }
-    },
-  }, {
     title: '购买方',
     dataIndex: 'buyer',
     width: 200,
@@ -170,6 +156,22 @@ export default class InvoiceList extends React.Component {
     render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
     this.props.currencies.find(curr => curr.curr_code === o).curr_name,
   }, {
+    title: '状态',
+    dataIndex: 'invoice_status',
+    width: 100,
+    render: (o) => {
+      switch (o) {
+        case 0:
+          return <Tag>{this.msg('toShip')}</Tag>;
+        case 1:
+          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
+        case 2:
+          return <Tag color="green">{this.msg('shipped')}</Tag>;
+        default:
+          return null;
+      }
+    },
+  }, {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 140,
@@ -181,12 +183,13 @@ export default class InvoiceList extends React.Component {
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
+    title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 60,
+    align: 'right',
     fixed: 'right',
     render: (o, record) => (<span>
       <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />
-      <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />
     </span>),
   }]
   handleCreate = () => {
@@ -229,7 +232,7 @@ export default class InvoiceList extends React.Component {
     this.props.deleteSofInvice(row.invoice_no).then((result) => {
       if (!result.error) {
         const { selectedRowKeys } = this.state;
-        const newKeys = selectedRowKeys.filter(key => key !== row.id);
+        const newKeys = selectedRowKeys.filter(key => key !== row.invoice_no);
         this.setState({
           selectedRowKeys: newKeys,
         });
@@ -239,9 +242,8 @@ export default class InvoiceList extends React.Component {
     });
   }
   handleBatchDelete = () => {
-    const { selectedRows } = this.state;
-    const invoiceNos = selectedRows.map(row => row.invoice_no);
-    this.props.batchDeleteInvoices(invoiceNos).then((result) => {
+    const { selectedRowKeys } = this.state;
+    this.props.batchDeleteInvoices(selectedRowKeys).then((result) => {
       if (!result.error) {
         this.handleDeselectRows();
         const { filter } = this.props;
@@ -255,6 +257,11 @@ export default class InvoiceList extends React.Component {
   }
   handlePartnerChange = (partnerId) => {
     this.props.loadModelAdaptors(partnerId, [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
+  }
+  handleMenuClick = (ev) => {
+    if (ev.key === 'logs') {
+      this.setState({ logsPanelVisible: true });
+    }
   }
   render() {
     const {
@@ -274,7 +281,7 @@ export default class InvoiceList extends React.Component {
     };
     const menu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="logs">{this.msg('importLogs')}</Menu.Item>
+        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
       </Menu>
     );
     const toolbarActions = (<span>
@@ -301,7 +308,7 @@ export default class InvoiceList extends React.Component {
     </span>);
     const bulkActions = (<span>
       <Button icon="download" onClick={this.handleExport}>{this.gmsg('export')}</Button>
-      <Button type="danger" icon="delete" onClick={this.handleBatchDelete}>{this.gmsg('batchDelete')}</Button>
+      <Button type="danger" icon="delete" onClick={this.handleBatchDelete}>{this.gmsg('delete')}</Button>
     </span>);
     return (
       <Layout>
@@ -330,7 +337,7 @@ export default class InvoiceList extends React.Component {
             handleDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             loading={loading}
-            rowKey="id"
+            rowKey="invoice_no"
           />
           <ImportDataPanel
             title={this.msg('batchImportInvoices')}
@@ -350,11 +357,16 @@ export default class InvoiceList extends React.Component {
               onChange={this.handlePartnerChange}
               dropdownMatchSelectWidth={false}
               dropdownStyle={{ width: 360 }}
-              style={{ width: '100%', marginBottom: '10px' }}
+              style={{ width: '100%' }}
             >
               {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
             </Select>
           </ImportDataPanel>
+          <UploadLogsPanel
+            visible={this.state.logsPanelVisible}
+            onClose={() => { this.setState({ logsPanelVisible: false }); }}
+            logs={[]}
+          />
         </Content>
       </Layout>
     );

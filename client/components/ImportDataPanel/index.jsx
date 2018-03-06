@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { Button, Icon, Select, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
-import { format } from 'client/common/i18n/helpers';
 import UploadMask from '../UploadMask';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
 const { Option } = Select;
 const { Dragger } = Upload;
-const formatMsg = format(messages);
 
 @injectIntl
 export default class ImportDataPanel extends React.Component {
@@ -19,6 +17,7 @@ export default class ImportDataPanel extends React.Component {
     title: PropTypes.string,
     endpoint: PropTypes.string.isRequired,
     template: PropTypes.string,
+    onGenTemplate: PropTypes.func,
     children: PropTypes.node,
     onUploaded: PropTypes.func,
     onClose: PropTypes.func,
@@ -28,6 +27,7 @@ export default class ImportDataPanel extends React.Component {
     importInfo: {},
     adaptor: '',
   }
+  msg = formatMsg(this.props.intl)
   handleUploadFile = (info) => {
     if (this.props.onBeforeUpload) {
       const upload = this.props.onBeforeUpload();
@@ -38,7 +38,10 @@ export default class ImportDataPanel extends React.Component {
     this.setState({ importInfo: info });
   }
   handleDownloadTemplate = () => {
-    const { template } = this.props;
+    const { onGenTemplate, template } = this.props;
+    if (onGenTemplate) {
+      onGenTemplate();
+    }
     window.open(template);
   }
   handleAdaptorChange = (value) => {
@@ -57,10 +60,10 @@ export default class ImportDataPanel extends React.Component {
       this.props.onClose();
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const {
-      endpoint, formData = {}, children, visible, title, onUploaded, adaptors,
+      endpoint, formData = {}, children, visible, title, onUploaded,
+      adaptors, template, onGenTemplate,
     } = this.props;
     const { importInfo, adaptor } = this.state;
     if (adaptor) {
@@ -99,7 +102,13 @@ export default class ImportDataPanel extends React.Component {
             <p className="ant-upload-text">点击或拖拽文件至此区域上传</p>
           </Dragger>
         </div>
-        <Button icon="download" style={{ width: '100%' }} onClick={this.handleDownloadTemplate}>下载标准导入模板</Button>
+        {(template || onGenTemplate) && <Button
+          icon="download"
+          style={{ width: '100%' }}
+          onClick={this.handleDownloadTemplate}
+        >
+          下载模板
+        </Button>}
         <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />
       </DockPanel>
     );
