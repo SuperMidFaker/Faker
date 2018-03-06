@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message } from 'antd';
-import { toggleNewFeeGroupModal, addFeeGroup, loadFeeGroups } from 'common/reducers/bssSettings';
+import { toggleNewFeeGroupModal, addFeeGroup } from 'common/reducers/bssSettings';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -16,45 +16,43 @@ const formItemLayout = {
 @connect(
   state => ({
     visible: state.bssSettings.visibleNewFeeGModal,
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
+    feeGroups: state.bssSettings.feeGroupslist.data,
   }),
-  { toggleNewFeeGroupModal, addFeeGroup, loadFeeGroups }
+  { toggleNewFeeGroupModal, addFeeGroup }
 )
+@Form.create()
 export default class NewFeeGroupModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-  }
-  state = {
-    groupCode: '',
-    groupName: '',
+    reload: PropTypes.func.isRequired,
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleNewFeeGroupModal(false);
   }
   handleOk = () => {
-    const { groupCode, groupName } = this.state;
-    const { tenantId, loginId } = this.props;
-    this.props.addFeeGroup({
-      groupCode,
-      groupName,
-      tenantId,
-      loginId,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        this.props.toggleNewFeeGroupModal(false);
-        this.props.loadFeeGroups({ tenantId });
-      }
-    });
+    const data = this.props.form.getFieldsValue();
+    const repeat = this.props.feeGroups.filter(gp => gp.fee_group_code === data.fee_group_code)[0];
+    if (repeat) {
+      message.error('费用分组代码已存在，请勿重复添加', 6);
+    } else {
+      this.props.addFeeGroup({
+        groupCode: data.fee_group_code,
+        groupName: data.fee_group_name,
+      }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else {
+          this.props.toggleNewFeeGroupModal(false);
+          this.props.reload();
+        }
+      });
+    }
   }
 
   render() {
-    const { visible } = this.props;
-    const { groupCode, groupName } = this.state;
+    const { visible, form: { getFieldDecorator } } = this.props;
     return (
       <Modal
         maskClosable={false}
@@ -62,13 +60,18 @@ export default class NewFeeGroupModal extends React.Component {
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
+        destroyOnClose
       >
         <Form>
           <FormItem label="分组代码" {...formItemLayout} >
-            <Input onChange={e => this.setState({ groupCode: e.target.value })} value={groupCode} />
+            {getFieldDecorator('fee_group_code', {
+              rules: [{ required: true }],
+            })(<Input />)}
           </FormItem>
           <FormItem label="分组名称" {...formItemLayout}>
-            <Input onChange={e => this.setState({ groupName: e.target.value })} value={groupName} />
+            {getFieldDecorator('fee_group_name', {
+              rules: [{ required: true }],
+            })(<Input />)}
           </FormItem>
         </Form>
       </Modal>
