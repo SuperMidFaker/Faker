@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Breadcrumb, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/reducers/sofOrderPref';
+import moment from 'moment';
+import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal } from 'common/reducers/bssExRateSettings';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
+import EditableCell from 'client/components/EditableCell';
 import SettingMenu from './menu';
+import NewExRateModal from './modals/newExRateModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content, Sider } = Layout;
@@ -16,12 +19,12 @@ const { Content, Sider } = Layout;
 @injectIntl
 @connect(
   state => ({
-    orderTypeList: state.sofOrderPref.orderTypeList,
-    visible: state.sofOrderPref.orderTypeModal.visible,
-    modalOrderType: state.sofOrderPref.orderTypeModal.orderType,
-    reload: state.sofOrderPref.typeListReload,
+    visible: state.bssExRateSettings.visibleExRateModal,
+    exRateList: state.bssExRateSettings.exRateList,
   }),
-  { toggleOrderTypeModal, loadOrderTypes, removeOrderType }
+  {
+    toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal,
+  }
 )
 @connectNav({
   depth: 2,
@@ -34,18 +37,14 @@ export default class ExchangeRates extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentDidMount() {
-    const { orderTypeList } = this.props;
-    this.props.loadOrderTypes({
-      pageSize: orderTypeList.pageSize,
-      current: orderTypeList.current,
-    });
+  componentWillMount() {
+    this.handleRateLoad();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   itemsColumns = [{
     title: '币制',
-    dataIndex: 'src_currency',
+    dataIndex: 'currency',
     width: 200,
   }, {
     title: '本币',
@@ -55,38 +54,65 @@ export default class ExchangeRates extends Component {
     title: '汇率',
     dataIndex: 'exchange_rate',
     width: 150,
+    render: (o, record) =>
+      <EditableCell value={o} onSave={value => this.handleAlter(record.id, 'exchange_rate', value)} style={{ width: '100%' }} />,
   }, {
     title: '更新日期',
-    dataIndex: 'updated_date',
+    dataIndex: 'last_updated_date',
+    width: 200,
+    render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 90,
-    render: (o, record) => (<span>
-      <RowAction onClick={this.handleEdit} icon="edit" row={record} />
+    render: (o, record) => (
       <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
-    </span>),
+    ),
   }]
-  handleCreate = () => {
-    this.props.toggleOrderTypeModal(true, {});
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadExRates(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      return params;
+    },
+    remotes: this.props.exRateList,
+  })
+  handleCreateExRate = () => {
+    this.props.toggleNewExRateModal(true);
   }
-
-  handlePageLoad = (current, pageSize) => {
-    this.props.loadOrderTypes({
-      pageSize,
-      current,
+  handleAlter = (id, field, value) => {
+    const change = {};
+    change[field] = value;
+    this.props.alterExRateVal({ id, change });
+  }
+  handleDelete = (row) => {
+    this.props.deleteExRate(row.id).then((result) => {
+      if (!result.error) {
+        this.handleRateLoad();
+      }
+    });
+  }
+  handleRateLoad = () => {
+    this.props.loadExRates({
+      pageSize: this.props.exRateList.pageSize,
+      current: this.props.exRateList.current,
     });
   }
   render() {
-    const mockData = [{
-      src_currency: '502|USD|美元',
-      base_currency: '142|CNY|人民币',
-      exchange_rate: '6.342',
-    }, {
-      src_currency: '300|EUR|欧元',
-      base_currency: '142|CNY|人民币',
-      exchange_rate: '6.132',
-    }];
+    const { exRateList } = this.props;
+    this.dataSource.remotes = exRateList;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -104,18 +130,19 @@ export default class ExchangeRates extends Component {
         <Layout>
           <PageHeader>
             <PageHeader.Actions>
-              <Button type="primary" icon="plus" onClick={this.handleCreateFeeItem}>
-                {this.msg('添加汇率')}
+              <Button type="primary" icon="plus" onClick={this.handleCreateExRate}>
+                {this.msg('addChangeRate')}
               </Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content">
             <DataTable
               columns={this.itemsColumns}
-              dataSource={mockData}
+              dataSource={this.dataSource}
               rowKey="id"
             />
           </Content>
+          <NewExRateModal reload={this.handleRateLoad} />
         </Layout>
       </Layout>
     );

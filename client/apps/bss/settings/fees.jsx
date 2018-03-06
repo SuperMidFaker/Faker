@@ -5,7 +5,7 @@ import { Button, Breadcrumb, Dropdown, Icon, Menu, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
-import { toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFeeElements } from 'common/reducers/bssSettings';
+import { toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFeeElements } from 'common/reducers/bssFeeSettings';
 import SettingMenu from './menu';
 import FeeGroups from './feeGroups';
 import FeeElements from './feeElements';
@@ -18,15 +18,20 @@ const { Content, Sider } = Layout;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    feeGroups: state.bssSettings.feeGroups.map(fe => ({
+    feeGroupslist: state.bssFeeSettings.feeGroupslist,
+    gplistFilter: state.bssFeeSettings.gplistFilter,
+    feeElementlist: state.bssFeeSettings.feeElementlist,
+    ellistFilter: state.bssFeeSettings.ellistFilter,
+    feeGroups: state.bssFeeSettings.feeGroupslist.data.map(fe => ({
       key: fe.fee_group_code,
       text: `${fe.fee_group_name}`,
-      search: `${fe.fee_group_code}${fe.fee_group_name}`,
     })),
   }),
   {
-    toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFeeElements,
+    toggleNewFeeGroupModal,
+    toggleNewFeeElementModal,
+    loadFeeGroups,
+    loadFeeElements,
   }
 )
 @connectNav({
@@ -36,8 +41,6 @@ const { Content, Sider } = Layout;
 export default class Fees extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    feeGroups: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -45,9 +48,9 @@ export default class Fees extends Component {
   state = {
     currentTab: 'feeItems',
   }
-  componentDidMount() {
-    this.props.loadFeeElements({ tenantId: this.props.tenantId });
-    this.props.loadFeeGroups({ tenantId: this.props.tenantId });
+  componentWillMount() {
+    this.handleLoadGroups();
+    this.handleLoadElements();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -60,6 +63,20 @@ export default class Fees extends Component {
   }
   handleCreateFeeItem = () => {
     this.props.toggleNewFeeElementModal(true);
+  }
+  handleLoadGroups = () => {
+    this.props.loadFeeGroups({
+      filter: JSON.stringify(this.props.gplistFilter),
+      pageSize: this.props.feeGroupslist.pageSize,
+      current: this.props.feeGroupslist.current,
+    });
+  }
+  handleLoadElements = () => {
+    this.props.loadFeeElements({
+      filter: JSON.stringify(this.props.ellistFilter),
+      pageSize: this.props.feeElementlist.pageSize,
+      current: this.props.feeElementlist.current,
+    });
   }
   render() {
     const { currentTab } = this.state;
@@ -109,11 +126,11 @@ export default class Fees extends Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content">
-            {currentTab === 'feeItems' && <FeeElements feeGroups={feeGroups} />}
-            {currentTab === 'feeGroups' && <FeeGroups />}
+            {currentTab === 'feeItems' && <FeeElements feeGroups={feeGroups} reload={this.handleLoadElements} />}
+            {currentTab === 'feeGroups' && <FeeGroups reload={this.handleLoadGroups} />}
           </Content>
-          <NewFeeGroupModal />
-          <NewFeeElementModal feeGroups={feeGroups} />
+          <NewFeeGroupModal reload={this.handleLoadGroups} />
+          <NewFeeElementModal feeGroups={feeGroups} reload={this.handleLoadElements} />
         </Layout>
       </Layout>
     );

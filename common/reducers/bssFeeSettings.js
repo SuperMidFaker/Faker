@@ -1,7 +1,7 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/bss/settings/', [
+const actionTypes = createActionTypes('@@welogix/bss/fee/settings/', [
   'VISIBLE_NEW_GROUP_MODAL',
   'LOAD_FEE_GROUPS', 'LOAD_FEE_GROUPS_SUCCEED', 'LOAD_FEE_GROUPS_FAIL',
   'ADD_FEE_GROUP', 'ADD_FEE_GROUP_SUCCEED', 'ADD_FEE_GROUP_FAIL',
@@ -12,13 +12,31 @@ const actionTypes = createActionTypes('@@welogix/bss/settings/', [
   'ADD_FEE_ELEMENT', 'ADD_FEE_ELEMENT_SUCCEED', 'ADD_FEE_ELEMENT_FAIL',
   'ALTER_FEE_ELEMENT', 'ALTER_FEE_ELEMENT_SUCCEED', 'ALTER_FEE_ELEMENT_FAIL',
   'DELETE_FEE_ELEMENT', 'DELETE_FEE_ELEMENT_SUCCEED', 'DELETE_FEE_ELEMENT_FAIL',
+  'VISIBLE_NEW_Rate_MODAL',
 ]);
 
 const initialState = {
   visibleNewFeeGModal: false,
-  feeElements: [],
-  feeElementMap: {},
-  feeGroups: [],
+  feeGroupslist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  gplistFilter: {
+    code: '',
+  },
+  feeElementlist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  ellistFilter: {
+    code: '',
+  },
+  gpLoading: false,
+  elLoading: false,
   visibleNewElementModal: {
     visible: false,
   },
@@ -28,10 +46,22 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.VISIBLE_NEW_GROUP_MODAL:
       return { ...state, visibleNewFeeGModal: action.data };
+    case actionTypes.LOAD_FEE_GROUPS:
+      return {
+        ...state,
+        gplistFilter: JSON.parse(action.params.filter),
+        gpLoading: true,
+      };
     case actionTypes.LOAD_FEE_GROUPS_SUCCEED:
-      return { ...state, feeGroups: action.result.data };
+      return { ...state, gpLoading: false, feeGroupslist: action.result.data };
+    case actionTypes.LOAD_FEE_ELEMENTS:
+      return {
+        ...state,
+        ellistFilter: JSON.parse(action.params.filter),
+        elLoading: true,
+      };
     case actionTypes.LOAD_FEE_ELEMENTS_SUCCEED:
-      return { ...state, feeElements: action.result.data.parentItems, feeElementMap: action.result.data.childMaps };
+      return { ...state, elLoading: false, feeElementlist: action.result.data };
     case actionTypes.VISIBLE_NEW_ELEMENT_MODAL:
       return { ...state, visibleNewElementModal: action.data };
     default:
@@ -172,3 +202,4 @@ export function deleteFeeElement(code) {
     },
   };
 }
+
