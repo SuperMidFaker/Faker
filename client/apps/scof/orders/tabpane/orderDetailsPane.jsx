@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
-import { loadOrderProducts } from 'common/reducers/sofOrders';
+import { loadOrderDetails } from 'common/reducers/sofOrders';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -14,37 +14,25 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    orderProductList: state.sofOrders.dock.orderProductList,
-    productLists: state.sofOrders.dock.orderProductList.data,
-    pageSize: state.sofOrders.dock.orderProductList.pageSize,
-    current: state.sofOrders.dock.orderProductList.current,
-    totalCount: state.sofOrders.dock.orderProductList.totalCount,
+    orderDetails: state.sofOrders.orderDetails,
     currencies: state.cmsManifest.params.currencies,
     countries: state.cmsManifest.params.tradeCountries,
     invoices: state.sofOrders.invoices,
   }),
-  { loadOrderProducts }
+  { loadOrderDetails }
 )
 export default class OrderDetailsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     orderNo: PropTypes.string,
   }
-  componentWillMount() {
-    this.props.loadOrderProducts({
-      pageSize: this.props.pageSize,
-      current: this.props.current,
+  componentDidMount() {
+    const { pageSize, current } = this.props.orderDetails;
+    this.props.loadOrderDetails({
+      pageSize,
+      current,
       orderNo: this.props.orderNo,
     });
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.invoices !== this.props.invoices) {
-      this.props.loadOrderProducts({
-        pageSize: this.props.pageSize,
-        current: this.props.current,
-        orderNo: this.props.orderNo,
-      });
-    }
   }
   msg = key => formatMsg(this.props.intl, key)
   columns = [{
@@ -124,21 +112,24 @@ export default class OrderDetailsPane extends Component {
     width: 100,
   }];
   render() {
+    const {
+      pageSize, current, totalCount, data,
+    } = this.props.orderDetails;
     const pagination = {
       hideOnSinglePage: true,
-      pageSize: Number(this.props.pageSize),
-      current: Number(this.props.current),
-      total: this.props.totalCount,
+      pageSize: Number(pageSize),
+      current: Number(current),
+      total: totalCount,
       showTotal: total => `共 ${total} 条`,
       onChange: (page) => {
-        this.props.loadOrderProducts({
-          pageSize: this.props.pageSize,
+        this.props.loadOrderDetails({
+          pageSize,
           current: page,
           orderNo: this.props.orderNo,
         });
       },
     };
-    const statWt = this.props.productLists.reduce((acc, det) => ({
+    const statWt = data.reduce((acc, det) => ({
       total_amount: acc.total_amount + det.amount,
       total_net_wt: acc.total_net_wt + det.net_wt,
     }), { total_amount: 0, total_net_wt: 0 });
@@ -151,7 +142,7 @@ export default class OrderDetailsPane extends Component {
     return (
       <DataPane
         columns={this.columns}
-        dataSource={this.props.productLists}
+        dataSource={data}
         rowKey="id"
         total={this.props.totalCount}
         pagination={pagination}
@@ -162,12 +153,6 @@ export default class OrderDetailsPane extends Component {
           </DataPane.Extra>
         </DataPane.Toolbar>
       </DataPane>
-      // <DataTable
-      //   total={totCol}
-      //   columns={this.columns}
-      //   dataSource={dataSource}
-      //   rowKey="id"
-      // />
     );
   }
 }

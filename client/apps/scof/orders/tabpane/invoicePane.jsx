@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Modal, Transfer } from 'antd';
-import { removeOrderInvoice, loadUnshippedInvoices, loadOrderInvoices, addOrderInvoices } from 'common/reducers/sofOrders';
+import { removeOrderInvoice, loadUnshippedInvoices, loadOrderInvoices, addOrderInvoices, loadOrderDetails } from 'common/reducers/sofOrders';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
@@ -21,15 +20,19 @@ const formatMsg = format(messages);
     currencies: state.cmsManifest.params.currencies,
     formData: state.sofOrders.formData,
     invoices: state.sofOrders.invoices,
+    orderDetails: state.sofOrders.orderDetails,
   }),
   {
-    removeOrderInvoice, loadUnshippedInvoices, loadOrderInvoices, addOrderInvoices,
+    removeOrderInvoice,
+    loadUnshippedInvoices,
+    loadOrderInvoices,
+    addOrderInvoices,
+    loadOrderDetails,
   }
 )
 export default class InvoicePane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    orderNo: PropTypes.string,
   }
   state = {
     dataSource: [],
@@ -38,7 +41,7 @@ export default class InvoicePane extends Component {
     visible: false,
   }
   componentWillMount() {
-    this.props.loadOrderInvoices(this.props.orderNo);
+    this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
     this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
   }
   componentWillReceiveProps(nextProps) {
@@ -63,10 +66,16 @@ export default class InvoicePane extends Component {
     });
   }
   handleRemove = (row) => {
+    const { pageSize, current } = this.props.orderDetails;
     this.props.removeOrderInvoice(row.id, row.invoice_no, row.shipmt_order_no).then((result) => {
       if (!result.error) {
-        this.props.loadOrderInvoices(this.props.orderNo);
+        this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
         this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
+        this.props.loadOrderDetails({
+          pageSize,
+          current,
+          orderNo: this.props.formData.shipmt_order_no,
+        });
       }
     });
   }
@@ -77,10 +86,16 @@ export default class InvoicePane extends Component {
   }
   handleOk = () => {
     const { targetKeys } = this.state;
-    this.props.addOrderInvoices(targetKeys, this.props.orderNo).then((result) => {
+    const { pageSize, current } = this.props.orderDetails;
+    this.props.addOrderInvoices(targetKeys, this.props.formData.shipmt_order_no).then((result) => {
       if (!result.error) {
-        this.props.loadOrderInvoices(this.props.orderNo);
+        this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
         this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
+        this.props.loadOrderDetails({
+          pageSize,
+          current,
+          orderNo: this.props.formData.shipmt_order_no,
+        });
       }
     });
     this.handleCancel();

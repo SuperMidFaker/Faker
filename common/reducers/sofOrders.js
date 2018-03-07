@@ -32,6 +32,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'ORDER_CONTAINER_REMOVE', 'ORDER_CONTAINER_REMOVE_SUCCEED', 'ORDER_CONTAINER_REMOVE_FAIL',
   'LOAD_ORDER_INVOICES', 'LOAD_ORDER_INVOICES_SUCCEED', 'LOAD_ORDER_INVOICES_FAIL',
   'ADD_ORDER_INVOICES', 'ADD_ORDER_INVOICES_SUCCEED', 'ADD_ORDER_INVOICES_FAIL',
+  'LOAD_ORDDETAILS', 'LOAD_ORDDETAILS_SUCCEED', 'LOAD_ORDDETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -49,6 +50,12 @@ const initialState = {
       pageSize: 20,
       data: [],
     },
+  },
+  orderDetails: {
+    data: [],
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
   },
   dockInstMap: {},
   formData: {
@@ -160,6 +167,10 @@ export default function reducer(state = initialState, action) {
           orderProductLoading: false,
           orderProductList: action.result.data,
         },
+      };
+    case actionTypes.LOAD_ORDDETAILS_SUCCEED:
+      return {
+        ...state, orderDetails: { ...action.result.data },
       };
     case actionTypes.LOAD_ORDPRODUCTS_FAILED:
       return { ...state, dock: { ...state.dock, orderProductLoading: false } };
@@ -629,7 +640,7 @@ export function loadOrderContainers(orderNo) {
   };
 }
 
-export function orderContainerRemove(id) {
+export function removeOrderContainer(id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -670,6 +681,21 @@ export function addOrderInvoices(invoiceNos, orderNo) {
       endpoint: 'v1/sof/order/invoices/add',
       method: 'post',
       data: { invoiceNos, orderNo },
+    },
+  };
+}
+
+export function loadOrderDetails(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ORDDETAILS,
+        actionTypes.LOAD_ORDDETAILS_SUCCEED,
+        actionTypes.LOAD_ORDDETAILS_FAIL,
+      ],
+      endpoint: 'v1/sof/order/products',
+      method: 'get',
+      params,
     },
   };
 }

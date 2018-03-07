@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Checkbox, Form, Row, Col, Card, Input, Select, Table, message } from 'antd';
-import { addOrderContainer, loadOrderContainers, orderContainerRemove } from 'common/reducers/sofOrders';
+import { addOrderContainer, loadOrderContainers, removeOrderContainer } from 'common/reducers/sofOrders';
 import FormPane from 'client/components/FormPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
@@ -20,13 +20,12 @@ const { Option } = Select;
     formData: state.sofOrders.formData,
     containers: state.sofOrders.containers,
   }),
-  { addOrderContainer, loadOrderContainers, orderContainerRemove }
+  { addOrderContainer, loadOrderContainers, removeOrderContainer }
 )
 export default class ContainerForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     operation: PropTypes.oneOf(['view', 'edit', 'create']),
-    orderNo: PropTypes.string,
   }
   state = {
     cntnrNo: '',
@@ -34,7 +33,7 @@ export default class ContainerForm extends Component {
     isLcl: false,
   }
   componentWillMount() {
-    this.props.loadOrderContainers(this.props.orderNo);
+    this.props.loadOrderContainers(this.props.formData.shipmt_order_no);
   }
   msg = key => formatMsg(this.props.intl, key)
   containerColumns = [{
@@ -74,14 +73,17 @@ export default class ContainerForm extends Component {
     if (!cntnrSpec) {
       message.warn('请填写集装箱规格');
     } else {
-      this.props.addOrderContainer(this.props.orderNo, cntnrNo, cntnrSpec, isLcl).then((result) => {
+      this.props.addOrderContainer(
+        this.props.formData.shipmt_order_no,
+        cntnrNo, cntnrSpec, isLcl
+      ).then((result) => {
         if (!result.error) {
           this.setState({
             cntnrNo: '',
             cntnrSpec: '',
             isLcl: false,
           });
-          this.props.loadOrderContainers(this.props.orderNo);
+          this.props.loadOrderContainers(this.props.formData.shipmt_order_no);
         }
       });
     }
@@ -89,7 +91,7 @@ export default class ContainerForm extends Component {
   handleDelete = (row) => {
     this.props.orderContainerRemove(row.id).then((result) => {
       if (!result.error) {
-        this.props.loadOrderContainers(this.props.orderNo);
+        this.props.loadOrderContainers(this.props.formData.shipmt_order_no);
       }
     });
   }
