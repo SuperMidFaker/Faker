@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Breadcrumb, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal } from 'common/reducers/bssExRateSettings';
+import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadParams } from 'common/reducers/bssExRateSettings';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
@@ -21,9 +21,10 @@ const { Content, Sider } = Layout;
   state => ({
     visible: state.bssExRateSettings.visibleExRateModal,
     exRateList: state.bssExRateSettings.exRateList,
+    currencies: state.bssExRateSettings.currencies,
   }),
   {
-    toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal,
+    toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadParams,
   }
 )
 @connectNav({
@@ -37,8 +38,9 @@ export default class ExchangeRates extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.handleRateLoad();
+    this.props.loadParams();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -46,10 +48,20 @@ export default class ExchangeRates extends Component {
     title: '币制',
     dataIndex: 'currency',
     width: 200,
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.curr_code === o)[0];
+      const text = currency ? `${currency.curr_name}` : o;
+      return <span>{text}</span>;
+    },
   }, {
     title: '本币',
     dataIndex: 'base_currency',
     width: 200,
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.curr_code === o)[0];
+      const text = currency ? `${currency.curr_name}` : o;
+      return <span>{text}</span>;
+    },
   }, {
     title: '汇率',
     dataIndex: 'exchange_rate',
