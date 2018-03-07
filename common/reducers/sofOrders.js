@@ -211,7 +211,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_CONTAINERS_SUCCEED:
       return { ...state, containers: action.result.data };
     case actionTypes.LOAD_ORDER_INVOICES_SUCCEED:
-      return { ...state, invoices: action.result.data, reload: true };
+      return { ...state, invoices: action.result.data };
+    case actionTypes.ADD_ORDER_INVOICES_SUCCEED:
+    case actionTypes.REMOVE_ORDER_INVOICE_SUCCEED:
+      return { ...state, reload: true };
     default:
       return state;
   }
