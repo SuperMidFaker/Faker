@@ -28,16 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 
 const initialState = {
   partners: [],
-  quoteData: {
-    _id: '',
-    quote_no: '',
-    decl_way_code: [],
-    trans_mode: [],
-    modify_name: '',
-    modify_id: '',
-    valid: true,
-    fees: [],
-  },
+  quoteData: {},
   quoteSaving: false,
   quoteRevisions: [],
   quotesList: {
@@ -235,7 +226,7 @@ export function createDraftQuote(quoteNo, loginName, loginId) {
   };
 }
 
-export function loadEditQuote(quoteno, version) {
+export function loadEditQuote(quoteno) {
   return {
     [CLIENT_API]: {
       types: [
@@ -243,7 +234,7 @@ export function loadEditQuote(quoteno, version) {
         actionTypes.EDITQUOTE_LOAD_SUCCEED,
         actionTypes.EDITQUOTE_LOAD_FAIL,
       ],
-      endpoint: `v1/cms/quote/${quoteno}/${version}`,
+      endpoint: `v1/cms/quote/${quoteno}`,
       method: 'get',
       origin: 'mongo',
     },

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Tabs, message, Button } from 'antd';
@@ -17,7 +16,7 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 function fetchData({ params, dispatch }) {
-  return dispatch(loadEditQuote(params.quoteno, params.version));
+  return dispatch(loadEditQuote(params.quoteNo));
 }
 
 @connectFetch()(fetchData)
@@ -43,15 +42,6 @@ function fetchData({ params, dispatch }) {
 export default class QuotingEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    quoteData: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      quote_no: PropTypes.string.isRequired,
-      decl_way_code: PropTypes.arrayOf(PropTypes.string).isRequired,
-      trans_mode: PropTypes.arrayOf(PropTypes.string).isRequired,
-      recv_tenant_name: PropTypes.string.isRequired,
-      send_tenant_name: PropTypes.string.isRequired,
-      fees: PropTypes.arrayOf(PropTypes.shape({ fee_name: PropTypes.string.isRequired })),
-    }),
   }
   state = {
     tabKey: 'tariff',
@@ -131,7 +121,7 @@ export default class QuotingEdit extends Component {
     });
   }
   render() {
-    const { form, saving } = this.props;
+    const { form, saving, quoteData } = this.props;
     return (
       <Layout>
         <PageHeader>
@@ -157,7 +147,7 @@ export default class QuotingEdit extends Component {
                 <TariffPane />
               </TabPane>
               <TabPane tab="设置" key="setting">
-                <SettingPane form={form} />
+                <SettingPane form={form} formData={quoteData} />
               </TabPane>
             </Tabs>
           </MagicCard>

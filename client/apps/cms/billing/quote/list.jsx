@@ -134,22 +134,22 @@ export default class RatesList extends Component {
   }
   handleQuoteEdit = (row) => {
     if (row.status === 'draft') {
-      this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
+      this.context.router.push(`/clearance/billing/quote/${row.quote_no}/${row.version}`);
     } else if (row.next_version) {
-      this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
+      this.context.router.push(`/clearance/billing/quote/${row.quote_no}${row.version}`);
     } else {
       const { loginName, loginId } = this.props;
       this.props.createDraftQuote(row.quote_no, loginName, loginId).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
+          this.context.router.push(`/clearance/billing/quote/${row.quote_no}${row.version}`);
         }
       });
     }
   }
   handleQuoteView = (row) => {
-    this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
+    this.context.router.push(`/clearance/billing/quote/${row.quote_no}/${row.version}`);
   }
   handleDeleteQuote = (quoteNo) => {
     this.props.deleteQuote(quoteNo).then((result) => {
