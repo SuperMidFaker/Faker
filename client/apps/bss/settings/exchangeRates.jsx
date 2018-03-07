@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Button, Breadcrumb, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadParams } from 'common/reducers/bssExRateSettings';
+import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal } from 'common/reducers/bssExRateSettings';
+import { loadCurrencies } from 'common/reducers/cmsParams';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
@@ -21,10 +22,10 @@ const { Content, Sider } = Layout;
   state => ({
     visible: state.bssExRateSettings.visibleExRateModal,
     exRateList: state.bssExRateSettings.exRateList,
-    currencies: state.bssExRateSettings.currencies,
+    currencies: state.cmsParams.currencies,
   }),
   {
-    toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadParams,
+    toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadCurrencies,
   }
 )
 @connectNav({
@@ -40,7 +41,7 @@ export default class ExchangeRates extends Component {
   }
   componentDidMount() {
     this.handleRateLoad();
-    this.props.loadParams();
+    this.props.loadCurrencies();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
