@@ -18,7 +18,6 @@ const formatMsg = format(messages);
     currencies: state.cmsManifest.params.currencies,
     countries: state.cmsManifest.params.tradeCountries,
     invoices: state.sofOrders.invoices,
-    reload: state.sofOrders.reload,
   }),
   { loadOrderDetails }
 )
@@ -36,7 +35,7 @@ export default class OrderDetailsPane extends Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.reload) {
+    if (nextProps.orderDetails.reload) {
       const { pageSize, current } = this.props.orderDetails;
       this.props.loadOrderDetails({
         pageSize,

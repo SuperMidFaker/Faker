@@ -100,6 +100,7 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    reload: false,
   },
   orderFilters: {
     progress: 'all', transfer: 'all', partnerId: '', orderType: null, expedited: 'all',
@@ -107,7 +108,6 @@ const initialState = {
   orderBizObjects: [],
   containers: [],
   invoices: [],
-  reload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -171,11 +171,11 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.LOAD_ORDDETAILS_SUCCEED:
       return {
-        ...state, orderDetails: { ...action.result.data }, reload: false,
+        ...state, orderDetails: { ...action.result.data, reload: false },
       };
     case actionTypes.LOAD_ORDDETAILS_FAIL:
       return {
-        ...state, reload: false,
+        ...state, orderDetails: { reload: false },
       };
     case actionTypes.LOAD_ORDPRODUCTS_FAILED:
       return { ...state, dock: { ...state.dock, orderProductLoading: false } };
@@ -214,7 +214,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, invoices: action.result.data };
     case actionTypes.ADD_ORDER_INVOICES_SUCCEED:
     case actionTypes.REMOVE_ORDER_INVOICE_SUCCEED:
-      return { ...state, reload: true };
+      return { ...state, orderDetails: { ...state.orderDetails, reload: true } };
     default:
       return state;
   }
