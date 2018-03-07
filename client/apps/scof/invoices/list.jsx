@@ -15,7 +15,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { loadInvoices, deleteSofInvice, batchDeleteInvoices } from 'common/reducers/sofInvoice';
+import { loadInvoices, deleteSofInvice, batchDeleteInvoices, loadUploadRecords, emptyLoadRecords } from 'common/reducers/sofInvoice';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
@@ -52,9 +52,15 @@ function fetchData({ state, dispatch }) {
     currencies: state.cmsManifest.params.currencies,
     loading: state.sofInvoice.loading,
     adaptors: state.hubDataAdapter.modelAdaptors,
+    uploadRecords: state.sofInvoice.uploadRecords,
   }),
   {
-    loadInvoices, loadModelAdaptors, deleteSofInvice, batchDeleteInvoices,
+    loadInvoices,
+    loadModelAdaptors,
+    deleteSofInvice,
+    batchDeleteInvoices,
+    loadUploadRecords,
+    emptyLoadRecords,
   }
 )
 @connectNav({
@@ -109,6 +115,7 @@ export default class InvoiceList extends React.Component {
     },
     remotes: this.props.invoiceList,
   })
+
   columns = [{
     title: '发票号',
     dataIndex: 'invoice_no',
@@ -227,6 +234,7 @@ export default class InvoiceList extends React.Component {
     this.setState({
       importPanelVisible: false,
     });
+    this.loadRecords();
   }
   handleDelete = (row) => {
     this.props.deleteSofInvice(row.invoice_no).then((result) => {
@@ -263,6 +271,28 @@ export default class InvoiceList extends React.Component {
       this.setState({ logsPanelVisible: true });
     }
   }
+  loadRecords = (filter = {}) => {
+    const { pageSize, current } = this.props.uploadRecords;
+    this.props.loadUploadRecords({
+      pageSize,
+      current,
+      filter: JSON.stringify(filter),
+    });
+  }
+  handleEmpty = (uploadNo, filter = {}) => {
+    const { pageSize } = this.props.uploadRecords;
+    const invoiceFilter = this.props.filter;
+    this.props.emptyLoadRecords(uploadNo).then((result) => {
+      if (!result.error) {
+        this.props.loadUploadRecords({
+          pageSize,
+          current: 1,
+          filter: JSON.stringify(filter),
+        });
+        this.handleReload(invoiceFilter);
+      }
+    });
+  }
   render() {
     const {
       invoiceList, partners, loading, filter,
@@ -279,6 +309,26 @@ export default class InvoiceList extends React.Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
+    const dataSource = new DataTable.DataSource({
+      fetcher: params => this.props.loadUploadRecords(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        total: result.totalCount,
+        current: Number(resolve(result.totalCount, result.current, result.pageSize)),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: Number(result.pageSize),
+        showTotal: total => `共 ${total} 条`,
+      }),
+      getParams: (pagination) => {
+        const params = {
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+        };
+        return params;
+      },
+      remotes: this.props.uploadRecords,
+    });
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
@@ -365,7 +415,9 @@ export default class InvoiceList extends React.Component {
           <UploadLogsPanel
             visible={this.state.logsPanelVisible}
             onClose={() => { this.setState({ logsPanelVisible: false }); }}
-            logs={[]}
+            logs={dataSource}
+            handleReload={this.loadRecords}
+            handleEmpty={this.handleEmpty}
           />
         </Content>
       </Layout>
