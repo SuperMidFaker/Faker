@@ -200,7 +200,7 @@ export default class TradeItemTaskList extends React.Component {
             <DataTable
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               loading={loading}
               columns={this.columns}
               dataSource={workspaceTaskList}

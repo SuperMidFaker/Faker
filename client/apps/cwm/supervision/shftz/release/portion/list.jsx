@@ -336,7 +336,7 @@ export default class SHFTZReleaseList extends React.Component {
               bulkActions={bulkActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
               rowKey="id"

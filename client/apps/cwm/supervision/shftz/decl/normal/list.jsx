@@ -306,7 +306,7 @@ export default class NormalDeclList extends React.Component {
               rowKey="id"
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}
             />
           </Content>

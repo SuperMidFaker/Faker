@@ -361,7 +361,7 @@ export default class SHFTZEntryList extends React.Component {
               toolbarActions={toolbarActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
               indentSize={0}

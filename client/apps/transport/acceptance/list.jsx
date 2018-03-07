@@ -124,13 +124,7 @@ export default class AcceptList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchValue: '',
     selectedPartnerIds: [],
-  }
-  componentWillMount() {
-    const { filters } = this.props;
-    const filter = filters.find(item => item.name === 'name');
-    this.setState({ searchValue: filter ? filter.value : '' });
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded && !nextProps.loading) {
@@ -356,7 +350,6 @@ export default class AcceptList extends React.Component {
   handleSearch = (searchVal) => {
     const filters = mergeFilters(this.props.filters, 'name', searchVal);
     this.handleTableLoad(filters, 1);
-    this.setState({ searchValue: searchVal });
   }
   handleCustomerChange = (srPartnerId, srTenantId) => {
     let value;
@@ -530,7 +523,7 @@ export default class AcceptList extends React.Component {
             bulkActions={bulkActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             loading={loading}
             dataSource={this.dataSource}

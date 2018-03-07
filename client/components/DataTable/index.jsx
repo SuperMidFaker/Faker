@@ -54,7 +54,8 @@ class DataTable extends React.Component {
     toolbarActions: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
     bulkActions: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
     selectedRowKeys: PropTypes.arrayOf(PropTypes.string),
-    handleDeselectRows: PropTypes.func,
+    onDeselectRows: PropTypes.func,
+    onFilterSelected: PropTypes.func,
     noBorder: PropTypes.bool,
     fixedBody: PropTypes.bool,
     noSetting: PropTypes.bool,
@@ -260,6 +261,7 @@ class DataTable extends React.Component {
   render() {
     const {
       baseCls, noBorder, fixedBody, noSetting, paginationSize,
+      selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
     } = this.props;
     let { dataSource } = this.props;
     let { pagination } = this.props;
@@ -333,13 +335,15 @@ class DataTable extends React.Component {
             scroll={scrollProp}
             columns={this.state.tableColumns}
           />
-          {this.props.selectedRowKeys &&
-            <div className={`${baseCls}-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+          {selectedRowKeys &&
+            <div className={`${baseCls}-toolbar-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <Tooltip title="取消选择" placement="top">
-                <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
+                <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={onDeselectRows} />
               </Tooltip>
-              <span className={`${baseCls}-toolbar-row-selection-text`}>已选中{this.props.selectedRowKeys.length}项</span>
-              {this.props.bulkActions}
+              <span className={`${baseCls}-toolbar-row-selection-text`}>
+                已选中<a onClick={onFilterSelected}>{selectedRowKeys.length}</a>项
+              </span>
+              {bulkActions}
             </div>}
         </div>
       </div>

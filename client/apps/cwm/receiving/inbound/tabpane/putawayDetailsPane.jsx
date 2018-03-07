@@ -234,7 +234,7 @@ export default class PutawayDetailsPane extends React.Component {
           <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             <Button onClick={this.handleBatchPutAways} icon="check">
           批量上架确认

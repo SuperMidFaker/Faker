@@ -364,7 +364,7 @@ export default class PickingDetailsPane extends React.Component {
           <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             {outboundHead.shipping_mode === 'manual'
                 && outboundHead.so_type !== CWM_SO_TYPES[3].value

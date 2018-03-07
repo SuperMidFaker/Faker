@@ -536,7 +536,7 @@ export default class StockTransitionList extends React.Component {
               bulkActions={bulkActions}
               total={totCol}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               rowSelection={rowSelection}
               dataSource={dataSource}

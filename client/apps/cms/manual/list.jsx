@@ -240,7 +240,7 @@ export default class ManualList extends Component {
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={dataSource}
             rowKey="manual_no"

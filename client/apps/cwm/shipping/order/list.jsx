@@ -351,7 +351,7 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
   }
@@ -404,7 +404,8 @@ export default class ShippingOrderList extends React.Component {
   }
   render() {
     const {
-      whses, defaultWhse, owners, receivers, carriers, filters, loading,
+      whses, defaultWhse, owners, filters, loading,
+      // receivers, carriers,
     } = this.props;
     let dateVal = [];
     if (filters.endDate) {
@@ -482,6 +483,7 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
+      {/*
       <Select
         showSearch
         optionFilterProp="children"
@@ -492,7 +494,8 @@ export default class ShippingOrderList extends React.Component {
       >
         <Option value="all" key="all">全部收货人</Option>
         {
-            receivers.filter(receiver => (filters.ownerCode !== 'all' ? filters.ownerCode === receiver.owner_partner_id : true))
+            receivers.filter(receiver => (filters.ownerCode !== 'all' ?
+            filters.ownerCode === receiver.owner_partner_id : true))
             .map(receiver => (
               <Option key={receiver.code} value={receiver.code}>{receiver.name}</Option>))
           }
@@ -508,11 +511,13 @@ export default class ShippingOrderList extends React.Component {
       >
         <Option value="all" key="all">全部承运人</Option>
         {
-            carriers.filter(carrier => (filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true))
+            carriers.filter(carrier =>
+              (filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true))
             .map(carrier => (
               <Option key={carrier.code} value={carrier.code}>{carrier.name}</Option>))
           }
-      </Select>
+        </Select>
+      */}
       <RangePicker
         onChange={this.onDateChange}
         value={dateVal}
@@ -576,7 +581,7 @@ export default class ShippingOrderList extends React.Component {
             loading={loading}
             bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           />
         </Content>
         <ShippingDockPanel />

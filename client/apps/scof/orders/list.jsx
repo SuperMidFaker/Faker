@@ -461,7 +461,7 @@ export default class OrderList extends React.Component {
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             dataSource={dataSource}
             columns={columns}
             rowKey="id"

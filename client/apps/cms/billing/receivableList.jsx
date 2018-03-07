@@ -491,7 +491,7 @@ export default class ExpenseList extends Component {
               bulkActions={bulkActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
               rowKey="delg_no"

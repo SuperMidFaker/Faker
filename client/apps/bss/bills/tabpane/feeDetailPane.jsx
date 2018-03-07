@@ -106,7 +106,7 @@ export default class FeeDetailPane extends Component {
           <Button icon="download" onClick={this.handleTemplateDownload}>导出</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>

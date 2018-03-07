@@ -384,7 +384,7 @@ export default class InvoiceList extends React.Component {
             dataSource={this.dataSource}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             loading={loading}
             rowKey="invoice_no"

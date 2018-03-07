@@ -14,6 +14,9 @@ export default class SearchBox extends React.Component {
     onSearch: PropTypes.func.isRequired,
     enterButton: PropTypes.bool,
   }
+  handleFocus = (ev) => {
+    ev.target.select();
+  }
   handleChange = (ev) => {
     const { onSearch } = this.props;
     if (ev.target.value === '' && onSearch) {
@@ -27,6 +30,7 @@ export default class SearchBox extends React.Component {
         placeholder={placeholder}
         onChange={this.handleChange}
         onSearch={onSearch}
+        onFocus={this.handleFocus}
         style={{ width: this.props.width }}
         enterButton={enterButton}
       />

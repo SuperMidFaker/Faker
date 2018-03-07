@@ -230,7 +230,7 @@ export default class PermitList extends Component {
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={dataSource}
             rowKey="permit_no"

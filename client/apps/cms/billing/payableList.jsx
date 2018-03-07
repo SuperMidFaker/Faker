@@ -468,7 +468,7 @@ export default class ExpenseList extends Component {
               toolbarActions={toolbarActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               bulkActions={bulkActions}
               columns={this.columns}
               dataSource={this.dataSource}

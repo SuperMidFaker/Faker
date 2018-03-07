@@ -234,7 +234,7 @@ export default class VendorBillsList extends React.Component {
           <DataTable
             toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={mockData}
             rowSelection={rowSelection}
