@@ -9,6 +9,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { toggleDetailModal, setTemporary, splitInvoice, getInvoice } from 'common/reducers/sofInvoice';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import ExcelUploader from 'client/components/ExcelUploader';
+import Summary from 'client/components/Summary';
 import { createFilename } from 'client/util/dataTransform';
 import DetailModal from '../modal/detailModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -129,6 +130,18 @@ export default class DetailsPane extends Component {
     const {
       temporaryDetails, currencies, countries,
     } = this.props;
+    const statWt = temporaryDetails.reduce((acc, det) => ({
+      amount: acc.amount + det.amount,
+      net_wt: acc.net_wt + det.net_wt,
+      qty: acc.qty + det.qty,
+    }), { amount: 0, net_wt: 0, qty: 0 });
+    const totCol = (
+      <Summary>
+        <Summary.Item label="总数量" addonAfter="KG">{statWt.qty.toFixed(5)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{statWt.net_wt.toFixed(5)}</Summary.Item>
+        <Summary.Item label="总金额" addonAfter="KG">{statWt.amount.toFixed(5)}</Summary.Item>
+      </Summary>
+    );
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -283,6 +296,9 @@ export default class DetailsPane extends Component {
             <Button onClick={this.handleSplit}>拆分发票</Button>
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
+          <DataPane.Extra>
+            {totCol}
+          </DataPane.Extra>
         </DataPane.Toolbar>
         <DetailModal headForm={this.props.form} />
       </DataPane>
