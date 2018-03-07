@@ -15,7 +15,7 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
-import SideDrawer from 'client/components/SideDrawer';
+import Drawer from 'client/components/Drawer';
 import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
@@ -453,7 +453,7 @@ export default class ExpenseList extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
-          <SideDrawer width={160}>
+          <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.currentStatus]} onClick={this.handleMenuClick}>
               <Menu.Item key="submitted">
                 <Icon type="inbox" /> {this.msg('statusUnconfirmed')}
@@ -462,7 +462,7 @@ export default class ExpenseList extends Component {
                 <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
               </Menu.Item>
             </Menu>
-          </SideDrawer>
+          </Drawer>
           <Content className="page-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}

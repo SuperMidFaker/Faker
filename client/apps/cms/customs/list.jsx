@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Avatar, Breadcrumb, DatePicker, Icon, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Avatar, Breadcrumb, DatePicker, Icon, Layout, Menu, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import SearchBox from 'client/components/SearchBox';
+import Drawer from 'client/components/Drawer';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
@@ -18,7 +19,7 @@ import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { CMS_DECL_STATUS, CMS_DECL_TYPE, DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { Logixon } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
@@ -33,8 +34,6 @@ import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -82,6 +81,7 @@ export default class CustomsList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    currentStatus: 'all',
     selectedRows: [],
     selectedRowKeys: [],
   }
@@ -211,7 +211,7 @@ export default class CustomsList extends Component {
         let badgeStatus = decl.badge;
         if (record.status === CMS_DECL_STATUS.sent.value &&
          (Date.now() - new Date(record.epsend_date).getTime()) > 6 * 3600000) {
-          extra = <Popover content="超过6小时未接收到回执" placement="right"><Icon type="warning" style={{ color: '#f50' }} /></Popover>;
+          extra = <Popover content="超过6小时未接收到回执" placement="right"><Icon type="exclamation-circle" style={{ color: '#f50' }} /></Popover>;
           badgeStatus = 'warning';
         }
         if (record.status > CMS_DECL_STATUS.sent.value) {
@@ -306,7 +306,7 @@ export default class CustomsList extends Component {
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
-    title: '人员',
+    title: '申报人员',
     dataIndex: 'epsend_login_id',
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
@@ -423,10 +423,11 @@ export default class CustomsList extends Component {
     this.setState({ selectedRowKeys: [], selectedRows: [] });
   }
   handleStatusFilter = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
+    this.setState({ currentStatus: ev.key });
+    if (ev.key === this.props.listFilter.status) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
+    const filter = { ...this.props.listFilter, status: ev.key };
     this.handleDeselectRows();
     this.handleTableLoad(1, filter);
   }
@@ -644,52 +645,66 @@ export default class CustomsList extends Component {
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
+            {/*
             <PageHeader.Nav>
               <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter}>
                 <RadioButton value="all">{this.msg('all')}</RadioButton>
                 <RadioButton value="import">{this.msg('import')}</RadioButton>
                 <RadioButton value="export">{this.msg('export')}</RadioButton>
               </RadioGroup>
-              <span />
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
-                <RadioButton value="all">{this.msg('all')}</RadioButton>
-                {Object.keys(CMS_DECL_STATUS).map(declkey =>
-                  (<RadioButton key={declkey} value={declkey}>
-                    {CMS_DECL_STATUS[declkey].text}</RadioButton>))}
-              </RadioGroup>
-              <span />
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
-                <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
+            </PageHeader.Nav> */}
             <PageHeader.Actions>
               <Button icon="mail" onClick={this.showDeclMsgDock}>报文</Button>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              toolbarActions={toolbarActions}
-              bulkActions={bulkActions}
-              rowSelection={rowSelection}
-              selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns}
-              dataSource={this.dataSource}
-              rowKey="id"
-              loading={customslist.loading}
-              onRow={record => ({
-                onClick: () => {},
-                onDoubleClick: () => { this.handleDetail(record); },
-                onContextMenu: () => {},
-                onMouseEnter: () => {},
-                onMouseLeave: () => {},
-              })}
-            />
-            <FillCustomsNoModal reload={this.handleTableLoad} />
-            <DeclReleasedModal reload={this.handleTableLoad} />
-            <SendDeclMsgModal reload={this.handleTableLoad} />
-            <BatchSendModal reload={this.handleTableLoad} />
-          </Content>
+          <Layout>
+            <Drawer width={160}>
+              <Menu mode="inline" selectedKeys={[this.state.currentStatus]} onClick={this.handleStatusFilter}>
+                <Menu.Item key="all">
+                  <Icon type="inbox" /> {this.msg('all')}
+                </Menu.Item>
+                <Menu.ItemGroup key="gStatus" title="状态">
+                  {Object.keys(CMS_DECL_STATUS).map(declkey =>
+                  (<Menu.Item key={declkey}>
+                    <Icon type={CMS_DECL_STATUS[declkey].icon} /> {CMS_DECL_STATUS[declkey].text}
+                  </Menu.Item>))}
+                  <Menu.Item key="inspect">
+                    <Icon type="warning" />{this.msg('customsCheck')}
+                  </Menu.Item>
+                </Menu.ItemGroup>
+                <Menu.SubMenu key="gType" title={<span><Icon type="folder" /><span>报关类型</span></span>}>
+                  {Object.keys(DECL_TYPE).map(declType =>
+                  (<Menu.Item key={DECL_TYPE[declType].key}>
+                    {DECL_TYPE[declType].value}
+                  </Menu.Item>))}
+                </Menu.SubMenu>
+              </Menu>
+            </Drawer>
+            <Content className="page-content" key="main">
+              <DataTable
+                toolbarActions={toolbarActions}
+                bulkActions={bulkActions}
+                rowSelection={rowSelection}
+                selectedRowKeys={this.state.selectedRowKeys}
+                handleDeselectRows={this.handleDeselectRows}
+                columns={this.columns}
+                dataSource={this.dataSource}
+                rowKey="id"
+                loading={customslist.loading}
+                onRow={record => ({
+                  onClick: () => {},
+                  onDoubleClick: () => { this.handleDetail(record); },
+                  onContextMenu: () => {},
+                  onMouseEnter: () => {},
+                  onMouseLeave: () => {},
+                })}
+              />
+              <FillCustomsNoModal reload={this.handleTableLoad} />
+              <DeclReleasedModal reload={this.handleTableLoad} />
+              <SendDeclMsgModal reload={this.handleTableLoad} />
+              <BatchSendModal reload={this.handleTableLoad} />
+            </Content>
+          </Layout>
         </Layout>
         <DeclMsgPanel />
         <DelegationDockPanel />

@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -49,12 +50,13 @@ const { Sider, Content } = Layout;
 export default class SHFTZStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    stockDatas: PropTypes.array.isRequired,
+    stockDatas: PropTypes.arrayOf(PropTypes.shape({ owner_name: PropTypes.string })).isRequired,
   }
   state = {
     filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
     rightSiderCollapsed: true,
+    scrollOffset: 368,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -234,6 +236,7 @@ export default class SHFTZStockList extends React.Component {
     if (typeof ArrayBuffer !== 'undefined') {
       const buf = new ArrayBuffer(s.length);
       const view = new Uint8Array(buf);
+      /* eslint no-bitwise:0 */
       for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
       return buf;
     }
@@ -254,13 +257,17 @@ export default class SHFTZStockList extends React.Component {
     wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
     FileSaver.saveAs(new window.Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'shftzStocks.xlsx');
   }
+  handleCollapseChange = (collapsed) => {
+    const scrollOffset = collapsed ? 368 : 280;
+    this.setState({ scrollOffset });
+  }
   toggleRightSider = () => {
     this.setState({
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
     });
   }
   render() {
-    const columns = this.columns;
+    const { columns } = this;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -306,21 +313,23 @@ export default class SHFTZStockList extends React.Component {
               </Badge>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="page-content" key="main">
-            <Card bodyStyle={{ paddingBottom: 8 }}>
+          <Layout>
+            <Drawer top onCollapseChange={this.handleCollapseChange}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
-            </Card>
-            <DataTable
-              toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys}
-              scrollOffset={390}
-              loading={this.props.loading}
-              columns={columns}
-              dataSource={this.props.stockDatas}
-              rowSelection={rowSelection}
-              rowKey="id"
-            />
-          </Content>
+            </Drawer>
+            <Content className="page-content" key="main">
+              <DataTable
+                toolbarActions={toolbarActions}
+                selectedRowKeys={this.state.selectedRowKeys}
+                scrollOffset={this.state.scrollOffset}
+                loading={this.props.loading}
+                columns={columns}
+                dataSource={this.props.stockDatas}
+                rowSelection={rowSelection}
+                rowKey="id"
+              />
+            </Content>
+          </Layout>
         </Layout>
         <Sider
           trigger={null}

@@ -147,6 +147,9 @@ class DataTable extends React.Component {
         tableColumns,
       });
     }
+    if (nextProps.scrollOffset !== this.props.scrollOffset) {
+      this.setState({ scrollY: window.innerHeight - nextProps.scrollOffset });
+    }
   }
   isSameColumns = (nextColumns, currColumns) => {
     if (nextColumns === currColumns) {
@@ -335,9 +338,8 @@ class DataTable extends React.Component {
               <Tooltip title="取消选择" placement="top">
                 <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
               </Tooltip>
-              <h4>已选中{this.props.selectedRowKeys.length}项</h4>
+              <span className={`${baseCls}-toolbar-row-selection-text`}>已选中{this.props.selectedRowKeys.length}项</span>
               {this.props.bulkActions}
-              {this.props.total}
             </div>}
         </div>
       </div>

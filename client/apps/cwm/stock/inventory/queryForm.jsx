@@ -2,16 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Select, Radio, Row, Col, Icon, DatePicker } from 'antd';
+import { Button, Form, Input, Select, Icon, DatePicker } from 'antd';
 import { changeSearchType } from 'common/reducers/cwmInventoryStock';
-import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
+const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 @injectIntl
@@ -26,15 +24,15 @@ const { RangePicker } = DatePicker;
 export default class QueryForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     onSearch: PropTypes.func.isRequired,
   }
   state = {
     expandForm: false,
     relDateRange: [],
   };
-  handleSearchTypeChange = (ev) => {
-    this.props.changeSearchType(ev.target.value);
+  handleSearchTypeChange = (value) => {
+    this.props.changeSearchType(value);
   }
   handleFormReset = () => {
     this.props.form.resetFields();
@@ -66,69 +64,48 @@ export default class QueryForm extends React.Component {
   msg = formatMsg(this.props.intl);
   render() {
     const { form: { getFieldDecorator }, owners, filter } = this.props;
-    const formItemLayout = {
-      labelCol: { span: 5 },
-      wrapperCol: { span: 19 },
-    };
     return (
-      <Form className="form-layout-compact">
-        <Row gutter={16}>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label="货主">
-              {getFieldDecorator('owner', {
+      <Form layout="vertical">
+        <FormItem label="货主">
+          {getFieldDecorator('owner', {
                 initialValue: filter.owner,
-              })(<Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange} allowClear >
-                {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
-              </Select>)}
-            </FormItem>
-          </Col>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label="货品">
-              {getFieldDecorator('product_no', {
+          })(<Select showSearch optionFilterProp="children" allowClear >
+            {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
+          </Select>)}
+        </FormItem>
+        <FormItem label="货品">
+          {getFieldDecorator('product_no', {
                 initialValue: filter.product_no,
               })(<Input placeholder="货号" />)}
-            </FormItem>
-          </Col>
-          <Col span={8}>
-            <FormItem>
-              {getFieldDecorator('search_type', {
-                initialValue: filter.search_type,
-              })(<RadioGroup onChange={this.handleSearchTypeChange}>
-                <RadioButton value={CWM_STOCK_SEARCH_TYPE[1].value} onClick={this.checkProduct}>{CWM_STOCK_SEARCH_TYPE[1].text}</RadioButton>
-                <RadioButton value={CWM_STOCK_SEARCH_TYPE[3].value} onClick={this.checkProductLocation}>{CWM_STOCK_SEARCH_TYPE[3].text}</RadioButton>
-                <RadioButton value={CWM_STOCK_SEARCH_TYPE[0].value} onClick={this.checkOwners}>{CWM_STOCK_SEARCH_TYPE[0].text}</RadioButton>
-                <RadioButton value={CWM_STOCK_SEARCH_TYPE[2].value} onClick={this.checkLocation}>{CWM_STOCK_SEARCH_TYPE[2].text}</RadioButton>
-              </RadioGroup>)}
-            </FormItem>
-          </Col>
-          <Col span={3}>
-            <FormItem>
-              <Button type="primary" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
-            </FormItem>
-          </Col>
-          <Col span={1}>
-            <FormItem style={{ width: 50 }}>
-              <a style={{ marginLeft: 8, fontSize: 12 }} onClick={this.toggleForm}>
-                {this.state.expandForm ? '收起' : '展开'} <Icon type={this.state.expandForm ? 'up' : 'down'} />
-              </a>
-            </FormItem>
-          </Col>
-        </Row>
-        {this.state.expandForm && <Row gutter={16}>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label="库位">
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('search_type', {
+            initialValue: filter.search_type,
+          })(<Select onChange={this.handleSearchTypeChange}>
+            <Option value={CWM_STOCK_SEARCH_TYPE[1].value}>{CWM_STOCK_SEARCH_TYPE[1].text}</Option>
+            <Option value={CWM_STOCK_SEARCH_TYPE[3].value}>{CWM_STOCK_SEARCH_TYPE[3].text}</Option>
+            <Option value={CWM_STOCK_SEARCH_TYPE[0].value}>{CWM_STOCK_SEARCH_TYPE[0].text}</Option>
+            <Option value={CWM_STOCK_SEARCH_TYPE[2].value}>{CWM_STOCK_SEARCH_TYPE[2].text}</Option>
+          </Select>)}
+        </FormItem>
+        {this.state.expandForm &&
+          <div>
+            <FormItem label="库位">
               {getFieldDecorator('whse_location', {
                 initialValue: filter.whse_location,
               })(<LocationSelect />)}
             </FormItem>
-          </Col>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label="入库日期" >
+            <FormItem label="入库日期" >
               <RangePicker onChange={this.handleRelRangeChange} />
             </FormItem>
-          </Col>
-        </Row>}
+          </div>}
+        <FormItem>
+          <a style={{ marginLeft: 8, fontSize: 12 }} onClick={this.toggleForm}>
+            {this.state.expandForm ? '收起' : '更多选项'} <Icon type={this.state.expandForm ? 'up' : 'down'} />
+          </a>
+        </FormItem>
+        <Button type="primary" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
+        <Button onClick={this.handleFormReset}>重置</Button>
       </Form>
     );
   }

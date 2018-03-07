@@ -6,7 +6,7 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
-import SideDrawer from 'client/components/SideDrawer';
+import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
@@ -220,9 +220,9 @@ export default class AuditList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
-          <SideDrawer>
+          <Drawer>
             list
-          </SideDrawer>
+          </Drawer>
           <Content className="page-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}
