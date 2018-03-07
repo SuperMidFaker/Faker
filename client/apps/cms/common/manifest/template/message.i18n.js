@@ -53,10 +53,6 @@ export default defineMessages({
     id: 'cms.settings.split.special.hscode.sort',
     defaultMessage: '特殊商品分类:',
   },
-  customControlDeclare: {
-    id: 'cms.settings.split.custom.declare',
-    defaultMessage: '海关监管项独立报关',
-  },
   currencySplit: {
     id: 'cms.settings.split.diff.currency',
     defaultMessage: '不同币制独立报关',
