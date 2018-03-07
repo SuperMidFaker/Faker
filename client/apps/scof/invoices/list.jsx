@@ -94,7 +94,7 @@ export default class InvoiceList extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadUploadRecords(params),
+    fetcher: params => this.props.loadInvoices(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -104,15 +104,18 @@ export default class InvoiceList extends React.Component {
       pageSize: Number(result.pageSize),
       showTotal: total => `共 ${total} 条`,
     }),
-    getParams: (pagination) => {
+    getParams: (pagination, tblfilters) => {
+      const newfilters = { ...this.props.filter, ...tblfilters[0] };
       const params = {
         pageSize: pagination.pageSize,
         current: pagination.current,
+        filter: JSON.stringify(newfilters),
       };
       return params;
     },
     remotes: this.props.invoiceList,
   })
+
   columns = [{
     title: '发票号',
     dataIndex: 'invoice_no',
