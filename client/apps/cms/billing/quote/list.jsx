@@ -14,7 +14,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
-import CreateQtModal from '../modals/createRatesModal';
+import CreateQuoteModal from '../modals/createQuoteModal';
 
 const { Content } = Layout;
 
@@ -109,12 +109,12 @@ export default class RatesList extends Component {
       }
     });
   }
-  handleRadioChange = (key) => {
+  handleTabChange = (key) => {
     this.setState({ currentTab: key });
-    if (key === this.props.listFilter.status) {
+    if (key === this.props.listFilter.viewStatus) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: key };
+    const filter = { ...this.props.listFilter, viewStatus: key };
     this.handleQuoteTableLoad(1, filter);
   }
   handleChangeStatus = (id, status) => {
@@ -194,6 +194,7 @@ export default class RatesList extends Component {
         width: 200,
       }, {
         title: this.state.currentTab === 'clientQuote' ? this.msg('clientName') : this.msg('providerName'),
+        width: 200,
         render: (text, record) => {
           let partnerName = '';
           if (record.recv_tenant_id === tenantId) {
@@ -275,7 +276,7 @@ export default class RatesList extends Component {
     </span>);
     return (
       <Layout>
-        <PageHeader tabList={tabList} onTabChange={this.handleRadioChange}>
+        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -302,7 +303,7 @@ export default class RatesList extends Component {
             rowKey="_id"
           />
         </Content>
-        <CreateQtModal />
+        <CreateQuoteModal />
       </Layout>
     );
   }
