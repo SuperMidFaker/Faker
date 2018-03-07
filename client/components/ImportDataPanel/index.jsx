@@ -27,6 +27,13 @@ export default class ImportDataPanel extends React.Component {
     importInfo: {},
     adaptor: '',
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.adaptors !== this.props.adaptors) {
+      this.setState({
+        adaptor: '',
+      });
+    }
+  }
   msg = formatMsg(this.props.intl)
   handleUploadFile = (info) => {
     if (this.props.onBeforeUpload) {
@@ -80,6 +87,7 @@ export default class ImportDataPanel extends React.Component {
           showSearch
           placeholder="导入适配器"
           onChange={this.handleAdaptorChange}
+          value={adaptor}
           notFoundContent={this.msg('adaptorNotFound')}
           style={{ width: '100%', marginBottom: 16 }}
         >

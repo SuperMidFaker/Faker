@@ -103,7 +103,6 @@ export default class CreateOrder extends Component {
       notification.close('confirm-submit');
     }
     const { formData, tenantName } = this.props;
-    formData.orderDetails = formData.orderDetails.filter(ord => ord.invoice_detail_id);
     this.props.submitOrder({ formData, tenantName }).then((result) => {
       if (result.error) {
         notification.error({
