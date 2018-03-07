@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/bss/rate/settings/', [
   'VISIBLE_NEW_Rate_MODAL',
   'LOAD_EXCHANGE_RATES', 'LOAD_EXCHANGE_RATES_SUCCEED', 'LOAD_EXCHANGE_RATES_FAIL',
+  'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
   'ADD_EXCHANGE_RATE', 'ADD_EXCHANGE_RATE_SUCCEED', 'ADD_EXCHANGE_RATE_FAIL',
   'DELETE_EXCHANGE_RATE', 'DELETE_EXCHANGE_RATE_SUCCEED', 'DELETE_EXCHANGE_RATE_FAIL',
   'ALTER_EXCHANGE_RATE', 'ALTER_EXCHANGE_RATE_SUCCEED', 'ALTER_EXCHANGE_RATE_FAIL',
@@ -34,9 +35,10 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        exRateList: action.result.data.exRateList,
-        currencies: action.result.data.currencies,
+        exRateList: action.result.data,
       };
+    case actionTypes.LOAD_PARAMS_SUCCEED:
+      return { ...state, currencies: action.result.data };
     default:
       return state;
   }
@@ -60,6 +62,20 @@ export function loadExRates(params) {
       endpoint: 'v1/bss/exchange/rate/load',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadParams() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PARAMS,
+        actionTypes.LOAD_PARAMS_SUCCEED,
+        actionTypes.LOAD_PARAMS_FAIL,
+      ],
+      endpoint: 'v1/bss/exchange/rate/params/load',
+      method: 'get',
     },
   };
 }

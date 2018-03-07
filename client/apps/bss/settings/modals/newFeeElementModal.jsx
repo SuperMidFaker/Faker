@@ -85,7 +85,7 @@ export default class NewFeeElementModal extends React.Component {
           <FormItem label="所属分组" {...formItemLayout} >
             {getFieldDecorator('fee_group', {
               rules: [{ required: true }],
-            })(<Select>
+            })(<Select showSearch optionFilterProp="children">
               {feeGroups.map(data =>
                 <Option key={data.key} value={data.key}>{`${data.key}|${data.text}`}</Option>)}
             </Select>)}
