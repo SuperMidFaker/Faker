@@ -18,7 +18,7 @@ const formItemLayout = {
 @connect(
   state => ({
     visible: state.bssExRateSettings.visibleExRateModal,
-    currencies: state.bssExRateSettings.currencies,
+    currencies: state.cmsParams.currencies,
   }),
   { toggleNewExRateModal, addExRate }
 )
@@ -63,7 +63,7 @@ export default class NewExRateModal extends React.Component {
           <FormItem label="币制" {...formItemLayout} >
             {getFieldDecorator('currency', {
               rules: [{ required: true }],
-            })(<Select>
+            })(<Select showSearch optionFilterProp="children">
               {currencies.map(currency =>
                 (<Option key={currency.curr_code} value={currency.curr_code}>
                   {currency.curr_name}
@@ -73,7 +73,7 @@ export default class NewExRateModal extends React.Component {
           <FormItem label="本币" {...formItemLayout} >
             {getFieldDecorator('base_currency', {
               rules: [{ required: true }],
-            })(<Select>
+            })(<Select showSearch optionFilterProp="children">
               {currencies.map(currency =>
                 (<Option key={currency.curr_code} value={currency.curr_code}>
                   {currency.curr_name}

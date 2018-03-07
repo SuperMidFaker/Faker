@@ -510,10 +510,6 @@ const messages = defineMessages({
     id: 'cms.forms.modal.split.special.hscode',
     defaultMessage: '特殊商品编码独立报关',
   },
-  customControlDeclare: {
-    id: 'cms.forms.modal.split.custom.declare',
-    defaultMessage: '海关监管项独立报关',
-  },
   customOnTop: {
     id: 'cms.forms.modal.sort.custom.ontop',
     defaultMessage: '海关监管项置顶',

@@ -12,9 +12,6 @@ import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
 
-function getRowKey(row) {
-  return row.id;
-}
 function ColumnInput(props) {
   const {
     inEdit, record, field, onChange,
@@ -196,32 +193,13 @@ export default class TariffPane extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const mockData = [{
-      fee_code: '10',
-      fee_name: '报关费',
-      fee_type: 'SC',
-      group: '清关费用',
-      billing_method: '',
-    }, {
-      fee_code: '20',
-      fee_name: '联单费',
-      fee_type: 'SC',
-      group: '清关费用',
-      billing_method: '',
-    }, {
-      fee_code: '100',
-      fee_name: '港杂费',
-      fee_type: 'AP',
-      group: '清关费用',
-      billing_method: '$manual',
-    }];
     return (
       <DataPane
         fullscreen={this.props.fullscreen}
         columns={columns}
         rowSelection={rowSelection}
-        dataSource={mockData}
-        rowKey={getRowKey}
+        dataSource={quoteData.fees}
+        rowKey="id"
         loading={quoteData.loading}
       >
         <DataPane.Toolbar>

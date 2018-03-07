@@ -34,6 +34,7 @@ import cmsPreferences from './cmsPreferences';
 import cmsExpense from './cmsExpense';
 import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
+import cmsParams from './cmsParams';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
 import crmBilling from './crmBilling';
@@ -44,6 +45,7 @@ import cwmMovement from './cwmMovement';
 import cwmWarehouse from './cwmWarehouse';
 import cwmWhseLocation from './cwmWhseLocation';
 import cwmShFtz from './cwmShFtz';
+import cwmShFtzDecl from './cwmShFtzDecl';
 import cwmShippingOrder from './cwmShippingOrder';
 import cwmDashboard from './cwmDashboard';
 import cwmContext from './cwmContext';
@@ -118,6 +120,7 @@ export default combineReducers({
   cmsBrokers,
   cmsTradeManual,
   cmsAnalytics,
+  cmsParams,
   scofFlow,
   sofOrderPref,
   sofVendors,
@@ -133,6 +136,7 @@ export default combineReducers({
   cwmTransaction,
   cwmSku,
   cwmShFtz,
+  cwmShFtzDecl,
   cwmShippingOrder,
   cwmDashboard,
   cwmInventoryStock,

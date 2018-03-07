@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Checkbox, Form, Row, Col, Input, Select } from 'antd';
-import { setClientForm } from 'common/reducers/sofOrders';
 import FormPane from 'client/components/FormPane';
 import { INVOICE_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
@@ -12,18 +11,13 @@ const FormItem = Form.Item;
 const { Option } = Select;
 
 @injectIntl
-@connect(
-  state => ({
-    formData: state.sofOrders.formData,
-  }),
-  { setClientForm }
-)
+@connect(state => ({
+  formData: state.cmsQuote.quoteData,
+}))
 export default class SettingPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
-  }
-  state = {
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -40,31 +34,33 @@ export default class SettingPane extends Component {
       colon: false,
     };
     const {
-      form: { getFieldDecorator }, quoteNo, quoteName, requester, provider,
+      form: { getFieldDecorator }, formData,
     } = this.props;
-    // todo required
     return (
       <FormPane>
         <Card>
           <Row>
             <Col span={6}>
               <FormItem label="报价编号" {...formItemLayout}>
-                <Input value={quoteNo} onChange={this.handleChange} disabled />
+                <Input value={formData.quote_no} disabled />
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="报价名称" {...formItemLayout} required>
-                <Input value={quoteName} onChange={this.handleChange} />
+                {getFieldDecorator('quote_name', {
+                  rules: [{ required: true }],
+                  initialValue: formData.quote_name,
+                })(<Input />)}
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="服务需求方" {...formItemLayout}>
-                <Input value={requester} onChange={this.handleChange} disabled />
+                <Input value={formData.send_tenant_name} disabled />
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="报价提供方" {...formItemLayout}>
-                <Input value={provider} onChange={this.handleChange} disabled />
+                <Input value={formData.recv_tenant_name} disabled />
               </FormItem>
             </Col>
           </Row>
@@ -74,6 +70,7 @@ export default class SettingPane extends Component {
             <Col span={6}>
               <FormItem label="开票类型" {...formItemLayout}>
                 {getFieldDecorator('invoice_type', {
+                  initialValue: formData.invoice_type,
                   rules: [{ required: true, message: '开票类型必选', type: 'number' }],
                 })(<Select style={{ width: '100%' }} >
                   {
@@ -86,6 +83,7 @@ export default class SettingPane extends Component {
             <Col span={6}>
               <FormItem label="报关单品项数量" {...formItemLayout}>
                 {getFieldDecorator('decl_item_per_sheet', {
+                  initialValue: formData.decl_item_per_sheet,
                   rules: [{ required: true, message: '品项数必填', type: 'number' }],
                 })(<Input />)}
               </FormItem>
@@ -93,6 +91,7 @@ export default class SettingPane extends Component {
             <Col span={6}>
               <FormItem label="报检单品项数量" {...formItemLayout}>
                 {getFieldDecorator('ciq_item_per_sheet', {
+                  initialValue: formData.ciq_item_per_sheet,
                   rules: [{ required: true, message: '品项数必填', type: 'number' }],
                 })(<Input />)}
               </FormItem>
@@ -100,6 +99,7 @@ export default class SettingPane extends Component {
             <Col span={6}>
               <FormItem label="允许特殊费用" {...formItemLayout}>
                 {getFieldDecorator('allow_spcial_charges', {
+                  initialValue: formData.allow_spcial_charges || false,
                 })(<Checkbox />)}
               </FormItem>
             </Col>

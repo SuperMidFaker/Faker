@@ -5,7 +5,7 @@ import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tabs, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Radio, Tag, notification, Checkbox, message } from 'antd';
+import { Alert, Badge, Tabs, Breadcrumb, Form, Layout, Steps, Button, Card, Radio, Tag, notification, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -15,13 +15,12 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, exportNormalExitByRel,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails, clearNormalRel } from 'common/reducers/cwmShFtz';
+import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, exportNormalExitByRel, fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails, clearNormalRel } from 'common/reducers/cwmShFtz';
+import { showNormalRegSplitModal, undoNormalRegSplit } from 'common/reducers/cwmShFtzDecl';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import NormalRegMergeSplitModal from './modal/normalRegMergeSplitModal';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 const { Step } = Steps;
@@ -72,6 +71,8 @@ function fetchData({ dispatch, params }) {
     editReleaseWt,
     splitRelDetails,
     clearNormalRel,
+    showNormalRegSplitModal,
+    undoNormalRegSplit,
   }
 )
 @connectNav({
@@ -146,7 +147,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
     }
     return -1;
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   handleSend = () => {
     const { soNo } = this.props.params;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
@@ -233,6 +234,25 @@ export default class SHFTZNormalRelRegDetail extends Component {
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
   }
+  handleRegMergeSplit = () => {
+    const { relSo, relRegs } = this.props;
+    this.props.showNormalRegSplitModal({
+      visible: true,
+      pre_entry_seq_no: relRegs[0].pre_entry_seq_no,
+      owner: {
+        partner_id: relSo.owner_partner_id,
+        tenant_id: relSo.owner_tenant_id,
+      },
+    });
+  }
+  handleUndoRegMergeSplit =() => {
+    const { soNo } = this.props.params;
+    this.props.undoNormalRegSplit(soNo).then((result) => {
+      if (!result.error) {
+        this.handleRelAndDetailsReload();
+      }
+    });
+  }
   handleCheckChange = (checkedValues) => {
     this.setState({ groupVals: checkedValues });
   }
@@ -244,6 +264,9 @@ export default class SHFTZNormalRelRegDetail extends Component {
         this.props.loadRelDetails(soNo, 'normal');
       }
     });
+  }
+  handleRelAndDetailsReload = () => {
+    this.props.loadRelDetails(this.props.params.soNo, 'normal');
   }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
@@ -490,22 +513,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status =>
       status.value === relSo.outbound_status)[0];
-    let splitExtra = null;
-    if (outboundStatus >= CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value &&
-      regStatus < CWM_SHFTZ_APIREG_STATUS.processing) {
-      splitExtra = (<Form layout="inline">
-        <Form.Item>
-          <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
-            <Checkbox value="supplier">供货商</Checkbox>
-            <Checkbox value="trxn_mode">成交方式</Checkbox>
-            <Checkbox value="currency">币制</Checkbox>
-          </Checkbox.Group>
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" disabled={!this.state.groupVals.length > 0} onClick={this.handleDetailSplit}>确定</Button>
-        </Form.Item>
-      </Form>);
-    }
     const tabList = [];
     relRegs.forEach((r, index) => tabList.push({
       tab: r.ftz_rel_no || r.pre_entry_seq_no,
@@ -556,10 +563,14 @@ export default class SHFTZNormalRelRegDetail extends Component {
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {relEditable &&
-            <Popover content={splitExtra} title="拆分选项" trigger="click" placement="bottomRight">
-              <Button >拆分明细 <Icon type="down" /></Button>
-            </Popover>
+            {relEditable && relRegs.length === 1 &&
+              <Button onClick={this.handleRegMergeSplit}>拆分明细</Button>
+            }
+            {relEditable && relRegs.length > 1 &&
+              <Button onClick={this.handleUndoRegMergeSplit}>取消明细拆分</Button>
+            }
+            {relEditable && relRegs.length === 1 &&
+            <NormalRegMergeSplitModal reload={this.handleRelAndDetailsReload} />
             }
             {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&

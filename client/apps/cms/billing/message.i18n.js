@@ -67,6 +67,14 @@ const messages = defineMessages({
     id: 'cms.billing.delgNo',
     defaultMessage: '委托编号',
   },
+  client: {
+    id: 'cms.billing.client',
+    defaultMessage: '客户',
+  },
+  provider: {
+    id: 'cms.billing.provider',
+    defaultMessage: '服务商',
+  },
   clientName: {
     id: 'cms.billing.client.name',
     defaultMessage: '委托方名称',
@@ -239,6 +247,10 @@ const messages = defineMessages({
   quote: {
     id: 'cms.billing.quote',
     defaultMessage: '报价费率',
+  },
+  quoteType: {
+    id: 'cms.billing.quote.type',
+    defaultMessage: '报价类型',
   },
   clientQuote: {
     id: 'cms.billing.quote.client',

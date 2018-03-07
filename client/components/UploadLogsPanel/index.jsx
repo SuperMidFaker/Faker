@@ -15,16 +15,33 @@ export default class UploadLogsPanel extends React.Component {
     visible: PropTypes.bool.isRequired,
     onClose: PropTypes.func,
     logs: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
+    handleReload: PropTypes.func.isRequired,
+    handleEmpty: PropTypes.func.isRequired,
   }
   state = {
 
   }
+  componentDidMount() {
+    this.props.handleReload();
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
+  handleDownload = (row) => {
+    const a = document.createElement('a');
+    a.href = row.file_path;
+    a.click();
+  }
+  handleEmpty = (row) => {
+    this.props.handleEmpty(row.upload_no);
+  }
+  handleSearch = (value) => {
+    const filters = { searchText: value };
+    this.props.handleReload(filters);
+  }
   columns = [
     {
       title: this.msg('id'),
-      dataIndex: 'id',
+      dataIndex: 'upload_no',
       width: 100,
     }, {
       title: this.msg('status'),
@@ -36,7 +53,7 @@ export default class UploadLogsPanel extends React.Component {
       width: 80,
     }, {
       title: this.msg('ignoredQty'),
-      dataIndex: 'ignored_qty',
+      dataIndex: 'ignore_qty',
       width: 80,
     }, {
       title: this.msg('totalQty'),
@@ -52,7 +69,7 @@ export default class UploadLogsPanel extends React.Component {
       width: 90,
     }, {
       title: this.msg('uploadedDate'),
-      dataIndex: 'created_date',
+      dataIndex: 'upload_date',
       width: 100,
       render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
@@ -62,8 +79,8 @@ export default class UploadLogsPanel extends React.Component {
       fixed: 'right',
       width: 90,
       render: (o, record) => (<span>
-        <RowAction onClick={this.handleDetail} label="下载" row={record} />
-        <RowAction onClick={this.handleDetail} label="清空" row={record} />
+        <RowAction onClick={this.handleDownload} label="下载" row={record} />
+        <RowAction onClick={this.handleEmpty} label="清空" row={record} />
       </span>),
     },
   ];
@@ -83,7 +100,7 @@ export default class UploadLogsPanel extends React.Component {
           columns={this.columns}
           dataSource={logs}
           scrollOffset="240"
-          rowkey="id"
+          rowkey="upload_no"
           toolbarActions={<SearchBox onSearch={this.handleSearch} />}
         />
       </DockPanel>
