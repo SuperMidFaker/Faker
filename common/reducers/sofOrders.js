@@ -170,12 +170,9 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.LOAD_ORDDETAILS_SUCCEED:
-      return {
-        ...state, orderDetails: { ...action.result.data, reload: false },
-      };
     case actionTypes.LOAD_ORDDETAILS_FAIL:
       return {
-        ...state, orderDetails: { reload: false },
+        ...state, orderDetails: { ...action.result.data, reload: false },
       };
     case actionTypes.LOAD_ORDPRODUCTS_FAILED:
       return { ...state, dock: { ...state.dock, orderProductLoading: false } };
