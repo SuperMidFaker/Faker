@@ -18,6 +18,7 @@ const formatMsg = format(messages);
     currencies: state.cmsManifest.params.currencies,
     countries: state.cmsManifest.params.tradeCountries,
     invoices: state.sofOrders.invoices,
+    reload: state.sofOrders.reload,
   }),
   { loadOrderDetails }
 )
@@ -33,6 +34,16 @@ export default class OrderDetailsPane extends Component {
       current,
       orderNo: this.props.orderNo,
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      const { pageSize, current } = this.props.orderDetails;
+      this.props.loadOrderDetails({
+        pageSize,
+        current,
+        orderNo: this.props.orderNo,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   columns = [{

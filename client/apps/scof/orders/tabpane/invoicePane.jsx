@@ -20,7 +20,6 @@ const formatMsg = format(messages);
     currencies: state.cmsManifest.params.currencies,
     formData: state.sofOrders.formData,
     invoices: state.sofOrders.invoices,
-    orderDetails: state.sofOrders.orderDetails,
   }),
   {
     removeOrderInvoice,
@@ -66,16 +65,10 @@ export default class InvoicePane extends Component {
     });
   }
   handleRemove = (row) => {
-    const { pageSize, current } = this.props.orderDetails;
     this.props.removeOrderInvoice(row.id, row.invoice_no, row.shipmt_order_no).then((result) => {
       if (!result.error) {
         this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
         this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
-        this.props.loadOrderDetails({
-          pageSize,
-          current,
-          orderNo: this.props.formData.shipmt_order_no,
-        });
       }
     });
   }
@@ -86,16 +79,10 @@ export default class InvoicePane extends Component {
   }
   handleOk = () => {
     const { targetKeys } = this.state;
-    const { pageSize, current } = this.props.orderDetails;
     this.props.addOrderInvoices(targetKeys, this.props.formData.shipmt_order_no).then((result) => {
       if (!result.error) {
         this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
         this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
-        this.props.loadOrderDetails({
-          pageSize,
-          current,
-          orderNo: this.props.formData.shipmt_order_no,
-        });
       }
     });
     this.handleCancel();
