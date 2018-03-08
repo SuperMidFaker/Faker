@@ -15,6 +15,7 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
+import ToolbarAction from 'client/components/ToolbarAction';
 import Drawer from 'client/components/Drawer';
 import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
@@ -428,8 +429,10 @@ export default class ExpenseList extends Component {
     </span>);
     const bulkActions = (<span>
       {(currentStatus === 'submitted') &&
-      <Button icon="check" onClick={this.handleBatchConfirm}>{this.msg('confirm')}</Button>}
-      <Button icon="download" onClick={this.handleExpExport}>{this.gmsg('export')}</Button>
+      <ToolbarAction icon="check" onClick={this.handleBatchConfirm} label={this.gmsg('confirm')} />}
+      {(currentStatus === 'submitted') &&
+      <ToolbarAction icon="close" onClick={this.handleBatchReject} label={this.gmsg('reject')} />}
+      <ToolbarAction icon="download" onClick={this.handleExpExport} label={this.gmsg('export')} />
     </span>);
     this.dataSource.remotes = expenseList;
     return (

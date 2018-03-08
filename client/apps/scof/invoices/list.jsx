@@ -11,6 +11,7 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import UserAvatar from 'client/components/UserAvatar';
+import ToolbarAction from 'client/components/ToolbarAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
@@ -357,8 +358,8 @@ export default class InvoiceList extends React.Component {
       />
     </span>);
     const bulkActions = (<span>
-      <Button icon="download" onClick={this.handleExport}>{this.gmsg('export')}</Button>
-      <Button type="danger" icon="delete" onClick={this.handleBatchDelete}>{this.gmsg('delete')}</Button>
+      <ToolbarAction icon="download" onClick={this.handleExport} label={this.gmsg('export')} />
+      <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />
     </span>);
     return (
       <Layout>
