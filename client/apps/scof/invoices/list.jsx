@@ -15,9 +15,10 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { loadInvoices, deleteSofInvice, batchDeleteInvoices, loadUploadRecords, emptyLoadRecords } from 'common/reducers/sofInvoice';
+import { loadInvoices, deleteSofInvice, batchDeleteInvoices } from 'common/reducers/sofInvoice';
+import { loadUploadRecords, uploadRecordsBatchDelete, setUploadRecordsReload } from 'common/reducers/uploadRecords';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
-import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -52,7 +53,7 @@ function fetchData({ state, dispatch }) {
     currencies: state.cmsManifest.params.currencies,
     loading: state.sofInvoice.loading,
     adaptors: state.hubDataAdapter.modelAdaptors,
-    uploadRecords: state.sofInvoice.uploadRecords,
+    uploadRecords: state.uploadRecords.uploadRecords,
   }),
   {
     loadInvoices,
@@ -60,7 +61,8 @@ function fetchData({ state, dispatch }) {
     deleteSofInvice,
     batchDeleteInvoices,
     loadUploadRecords,
-    emptyLoadRecords,
+    uploadRecordsBatchDelete,
+    setUploadRecordsReload,
   }
 )
 @connectNav({
@@ -234,7 +236,7 @@ export default class InvoiceList extends React.Component {
     this.setState({
       importPanelVisible: false,
     });
-    this.loadRecords();
+    this.props.setUploadRecordsReload(true);
   }
   handleDelete = (row) => {
     this.props.deleteSofInvice(row.invoice_no).then((result) => {
@@ -276,17 +278,19 @@ export default class InvoiceList extends React.Component {
     this.props.loadUploadRecords({
       pageSize,
       current,
+      type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
       filter: JSON.stringify(filter),
     });
   }
-  handleEmpty = (uploadNo, filter = {}) => {
+  removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
     const { pageSize } = this.props.uploadRecords;
     const invoiceFilter = this.props.filter;
-    this.props.emptyLoadRecords(uploadNo).then((result) => {
+    this.props.uploadRecordsBatchDelete(uploadNo).then((result) => {
       if (!result.error) {
         this.props.loadUploadRecords({
           pageSize,
           current: 1,
+          type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
           filter: JSON.stringify(filter),
         });
         this.handleReload(invoiceFilter);
@@ -324,6 +328,7 @@ export default class InvoiceList extends React.Component {
         const params = {
           pageSize: pagination.pageSize,
           current: pagination.current,
+          type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
         };
         return params;
       },
@@ -417,7 +422,8 @@ export default class InvoiceList extends React.Component {
             onClose={() => { this.setState({ logsPanelVisible: false }); }}
             logs={dataSource}
             handleReload={this.loadRecords}
-            handleEmpty={this.handleEmpty}
+            onUploadBatchDelete={this.removeInvoiceByBatchUpload}
+            reload={this.props.uploadRecords.reload}
           />
         </Content>
       </Layout>

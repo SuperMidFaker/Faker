@@ -16,7 +16,8 @@ export default class UploadLogsPanel extends React.Component {
     onClose: PropTypes.func,
     logs: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
     handleReload: PropTypes.func.isRequired,
-    handleEmpty: PropTypes.func.isRequired,
+    onUploadBatchDelete: PropTypes.func.isRequired,
+    reload: PropTypes.bool.isRequired,
   }
   state = {
 
@@ -24,15 +25,18 @@ export default class UploadLogsPanel extends React.Component {
   componentDidMount() {
     this.props.handleReload();
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload !== this.props.reload && nextProps.reload) {
+      this.props.handleReload();
+    }
+  }
+  onUploadBatchDelete = (row) => {
+    this.props.onUploadBatchDelete(row.upload_no);
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleDownload = (row) => {
-    const a = document.createElement('a');
-    a.href = row.file_path;
-    a.click();
-  }
-  handleEmpty = (row) => {
-    this.props.handleEmpty(row.upload_no);
+    window.open(row.file_path);
   }
   handleSearch = (value) => {
     const filters = { searchText: value };
@@ -80,7 +84,7 @@ export default class UploadLogsPanel extends React.Component {
       width: 90,
       render: (o, record) => (<span>
         <RowAction onClick={this.handleDownload} label="下载" row={record} />
-        <RowAction onClick={this.handleEmpty} label="清空" row={record} />
+        <RowAction onClick={this.onUploadBatchDelete} label="清空" row={record} />
       </span>),
     },
   ];

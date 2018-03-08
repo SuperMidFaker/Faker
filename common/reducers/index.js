@@ -73,6 +73,7 @@ import transportKpi from './transportKpi';
 import template from './template';
 import sofDashboard from './sofDashboard';
 import sofInvoice from './sofInvoice';
+import uploadRecords from './uploadRecords';
 
 export default combineReducers({
   activities,
@@ -149,4 +150,5 @@ export default combineReducers({
   template,
   sofDashboard,
   sofInvoice,
+  uploadRecords,
 });

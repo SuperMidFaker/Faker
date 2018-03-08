@@ -11,8 +11,6 @@ const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'DELETE_SOF_INVOICE', 'DELETE_SOF_INVOICE_SUCCEED', 'DELETE_SOF_INVOICE_FAIL',
   'SPLIT_SOF_INVOICE', 'SPLIT_SOF_INVOICE_SUCCEED', 'SPLIT_SOF_INVOICE_FAIL',
   'BATCH_DELETE_INVOICES', 'BATCH_DELETE_INVOICES_SUCCEED', 'BATCH_DELETE_INVOICES_FAIL',
-  'UPLOAD_RECORDS_LOAD', 'UPLOAD_RECORDS_LOAD_SUCCEED', 'UPLOAD_RECORDS_LOAD_FAIL',
-  'EMPTY_UPLOAD_RECORDS', 'EMPTY_UPLOAD_RECORDS_SUCCEED', 'EMPTY_UPLOAD_RECORDS_FAIL',
 ]);
 
 const initialState = {
@@ -28,13 +26,6 @@ const initialState = {
   detailModal: {
     visible: false,
     record: {},
-  },
-  uploadRecords: {
-    totalCount: 0,
-    pageSize: 20,
-    current: 1,
-    data: [],
-    reload: false,
   },
 };
 
@@ -67,12 +58,6 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.CLEAR_INVOICE:
       return { ...state, temporaryDetails: [], invoiceHead: {} };
-    case actionTypes.UPLOAD_RECORDS_LOAD:
-      return { ...state, uploadRecords: { ...state.uploadRecords, reload: true } };
-    case actionTypes.UPLOAD_RECORDS_LOAD_SUCCEED:
-      return { ...state, uploadRecords: { ...action.result.data, reload: false } };
-    case actionTypes.UPLOAD_RECORDS_LOAD_FAIL:
-      return { ...state, uploadRecords: { ...state.uploadRecords, reload: false } };
     default:
       return state;
   }
@@ -207,36 +192,6 @@ export function batchDeleteInvoices(invoiceNos) {
       endpoint: 'v1/sof/invoices/batch/delete',
       method: 'post',
       data: { invoiceNos },
-    },
-  };
-}
-
-export function loadUploadRecords({ pageSize, current, filter }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPLOAD_RECORDS_LOAD,
-        actionTypes.UPLOAD_RECORDS_LOAD_SUCCEED,
-        actionTypes.UPLOAD_RECORDS_LOAD_FAIL,
-      ],
-      endpoint: 'v1/sof/invoices/upload/record/load',
-      method: 'get',
-      params: { pageSize, current, filter },
-    },
-  };
-}
-
-export function emptyLoadRecords(uploadNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.EMPTY_UPLOAD_RECORDS,
-        actionTypes.EMPTY_UPLOAD_RECORDS_SUCCEED,
-        actionTypes.EMPTY_UPLOAD_RECORDS_FAIL,
-      ],
-      endpoint: 'v1/sof/invoices/upload/record/empty',
-      method: 'post',
-      data: { uploadNo },
     },
   };
 }
