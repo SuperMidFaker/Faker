@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Button, Dropdown, Menu } from 'antd';
+import { Button, Dropdown, Menu } from 'antd';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 
@@ -36,7 +36,7 @@ export default function WsItemExportButton(props) {
       formData={{ data: JSON.stringify({ }) }}
       onUploaded={handleWorkItemImport}
     >
-      <Button ><Icon type="upload" /> 导入</Button>
+      <Button icon="upload">导入</Button>
     </ExcelUploader>
   </React.Fragment>);
 }
