@@ -34,7 +34,7 @@ function fetchData({ params, dispatch }) {
     loginName: state.account.username,
   }),
   {
-    reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal,
+    reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal, loadQuoteElements,
   }
 )
 @Form.create()
@@ -115,6 +115,9 @@ export default class QuotingEdit extends Component {
       }
     });
   }
+  handleElementLoad = () => {
+    this.props.loadQuoteElements({ quoteNo: this.props.quoteData.quote_no });
+  }
   render() {
     const { form, saving, quoteData } = this.props;
     return (
@@ -139,7 +142,7 @@ export default class QuotingEdit extends Component {
           <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="费率" key="tariff">
-                <TariffPane />
+                <TariffPane reload={this.handleElementLoad} />
               </TabPane>
               <TabPane tab="设置" key="setting">
                 <SettingPane form={form} formData={quoteData} />

@@ -22,11 +22,8 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
     visible: state.cmsQuote.visibleCreateModal,
     partners: state.partner.partners,
-    quoteData: state.cmsQuote.quoteData,
   }),
   { toggleQtCreateModal, loadPartners, createQuote }
 )
@@ -46,7 +43,7 @@ export default class CreateQuoteModal extends React.Component {
   }
   state = {
     partners: [],
-    partnerLabel: this.msg('client'),
+    partnerLabel: '客户',
   }
   componentDidMount() {
     this.props.loadPartners({

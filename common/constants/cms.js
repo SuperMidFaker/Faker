@@ -74,14 +74,26 @@ export const CIQ_SUP_STATUS = [
 ];
 
 export const FEE_TYPE = [
-  { value: 'service', text: '服务费' },
-  { value: 'advance', text: '代垫费' },
+  { value: 'SC', text: '服务费' },
+  { value: 'AP', text: '代垫费' },
+];
+export const FEE_GROUP = [
+  { value: 'TR', text: '运输' },
+  { value: 'CCL', text: '清关' },
 ];
 export const FEE_CATEGORY = [
   { value: 'transport_expenses', text: '运输' },
   { value: 'customs_expenses', text: '报关' },
   { value: 'ciq_expenses', text: '报检' },
   { value: 'certs_expenses', text: '鉴定办证' },
+];
+export const FORMULA_PARAMS = [
+  { value: 'shipmt_qty', text: '货运数量' },
+  { value: 'decl_qty', text: '报关单数量' },
+  { value: 'decl_sheet_qty', text: '联单数量' },
+  { value: 'decl_item_qty', text: '品项数量' },
+  { value: 'trade_item_qty', text: '料件数量' },
+  { value: 'trade_amt', text: '进出口金额' },
 ];
 export const BILLING_METHOD = [
   {

@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'VISIBLE_CREATE_MODAL',
+  'VISIBLE_ADD_FEE_MODAL',
   'QUOTE_MODEL_LOAD', 'QUOTE_MODEL_LOAD_SUCCEED', 'QUOTE_MODEL_LOAD_FAIL',
   'CREATE_QUOTE', 'CREATE_QUOTE_SUCCEED', 'CREATE_QUOTE_FAIL',
   'QUOTES_LOAD', 'QUOTES_LOAD_SUCCEED', 'QUOTES_LOAD_FAIL',
@@ -44,12 +45,15 @@ const initialState = {
   publishModalVisible: false,
   trialModalVisible: false,
   trialBegin: false,
+  visibleAddFeeModal: false,
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.VISIBLE_CREATE_MODAL:
       return { ...state, visibleCreateModal: action.data };
+    case actionTypes.VISIBLE_ADD_FEE_MODAL:
+      return { ...state, visibleAddFeeModal: action.data };
     case actionTypes.QUOTE_MODEL_LOAD:
       return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
     case actionTypes.QUOTE_MODEL_LOAD_SUCCEED:
@@ -100,6 +104,13 @@ export default function reducer(state = initialState, action) {
 export function toggleQtCreateModal(visible) {
   return {
     type: actionTypes.VISIBLE_CREATE_MODAL,
+    data: visible,
+  };
+}
+
+export function toggleAddFeeModal(visible) {
+  return {
+    type: actionTypes.VISIBLE_ADD_FEE_MODAL,
     data: visible,
   };
 }
@@ -287,7 +298,7 @@ export function feeUpdate(params, row) {
   };
 }
 
-export function feeAdd(params, row) {
+export function addFee(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -295,15 +306,14 @@ export function feeAdd(params, row) {
         actionTypes.FEE_ADD_SUCCEED,
         actionTypes.FEE_ADD_FAIL,
       ],
-      endpoint: 'v1/cms/quote/feeadd',
+      endpoint: 'v1/cms/quote/fee/add',
       method: 'post',
-      data: { params, row },
-      origin: 'mongo',
+      data,
     },
   };
 }
 
-export function feeDelete(params, feeId) {
+export function feeDelete(feeId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -311,10 +321,9 @@ export function feeDelete(params, feeId) {
         actionTypes.FEE_DELETE_SUCCEED,
         actionTypes.FEE_DELETE_FAIL,
       ],
-      endpoint: 'v1/cms/quote/feedelete',
+      endpoint: 'v1/cms/quote/fee/delete',
       method: 'post',
-      data: { params, feeId },
-      origin: 'mongo',
+      data: { feeId },
     },
   };
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Checkbox, Form, Row, Col, Input, Select } from 'antd';
+import { Card, Checkbox, Form, Row, Col, Input, Select, InputNumber } from 'antd';
 import FormPane from 'client/components/FormPane';
 import { INVOICE_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
@@ -83,17 +83,17 @@ export default class SettingPane extends Component {
             <Col span={6}>
               <FormItem label="报关单品项数量" {...formItemLayout}>
                 {getFieldDecorator('cus_item_per_sheet', {
-                  initialValue: formData.cus_item_per_sheet,
-                  rules: [{ required: true, message: '品项数必填', type: 'number' }],
-                })(<Input />)}
+                  initialValue: Number(formData.cus_item_per_sheet),
+                  rules: [{ required: true, message: '品项数必填' }],
+                })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="报检单品项数量" {...formItemLayout}>
                 {getFieldDecorator('ciq_item_per_sheet', {
-                  initialValue: formData.ciq_item_per_sheet,
-                  rules: [{ required: true, message: '品项数必填', type: 'number' }],
-                })(<Input />)}
+                  initialValue: Number(formData.ciq_item_per_sheet),
+                  rules: [{ required: true, message: '品项数必填' }],
+                })(<InputNumber style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
             <Col span={6}>
