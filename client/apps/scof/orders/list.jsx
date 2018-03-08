@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
+import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
-import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
 import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
+import { loadUploadRecords, uploadRecordsBatchDelete, setUploadRecordsReload } from 'common/reducers/uploadRecords';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -20,6 +21,7 @@ import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import OrderDockPanel from './docks/orderDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
@@ -29,7 +31,7 @@ import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 import CreatorSelect from './creatorSelect';
-import { formatMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -66,6 +68,7 @@ function fetchData({ state, dispatch }) {
   adaptors: state.hubDataAdapter.modelAdaptors,
   flows: state.scofFlow.partnerFlows,
   orderTypes: state.sofOrderPref.requireOrderTypes,
+  uploadRecords: state.uploadRecords.uploadRecords,
 }), {
   loadOrders,
   removeOrder,
@@ -77,6 +80,9 @@ function fetchData({ state, dispatch }) {
   hideDock,
   loadRequireOrderTypes,
   loadOrderDetail,
+  loadUploadRecords,
+  uploadRecordsBatchDelete,
+  setUploadRecordsReload,
 })
 @connectNav({
   depth: 2,
@@ -107,6 +113,7 @@ export default class OrderList extends React.Component {
       customer_partner_id: undefined,
       flow_id: undefined,
     },
+    logsPanelVisible: false,
   }
   componentWillMount() {
     const filters = {
@@ -163,6 +170,7 @@ export default class OrderList extends React.Component {
     });
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleImport = () => {
     this.setState({ importPanel: { visible: true } });
   }
@@ -287,6 +295,34 @@ export default class OrderList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleImportMenuClick = (ev) => {
+    if (ev.key === 'logs') {
+      this.setState({ logsPanelVisible: true });
+    }
+  }
+  loadRecords = (filter = {}) => {
+    const { pageSize, current } = this.props.uploadRecords;
+    this.props.loadUploadRecords({
+      pageSize,
+      current,
+      type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
+      filter: JSON.stringify(filter),
+    });
+  }
+  removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
+    const { pageSize } = this.props.uploadRecords;
+    this.props.uploadRecordsBatchDelete(uploadNo).then((result) => {
+      if (!result.error) {
+        this.props.loadUploadRecords({
+          pageSize,
+          current: 1,
+          type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
+          filter: JSON.stringify(filter),
+        });
+        this.handleTableLoad();
+      }
+    });
+  }
   render() {
     const {
       loading, filters, flows, partners, orderTypes,
@@ -302,7 +338,32 @@ export default class OrderList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-
+    const recordDataSource = new DataTable.DataSource({
+      fetcher: params => this.props.loadUploadRecords(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        total: result.totalCount,
+        current: Number(resolve(result.totalCount, result.current, result.pageSize)),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: Number(result.pageSize),
+        showTotal: total => `共 ${total} 条`,
+      }),
+      getParams: (pagination) => {
+        const params = {
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
+        };
+        return params;
+      },
+      remotes: this.props.uploadRecords,
+    });
+    const menu = (
+      <Menu onClick={this.handleImportMenuClick}>
+        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
+      </Menu>
+    );
     const columns = [{
       title: '订单',
       width: 180,
@@ -446,9 +507,9 @@ export default class OrderList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button icon="upload" onClick={this.handleImport}>
+            <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
               {this.msg('orderImport')}
-            </Button>
+            </Dropdown.Button>
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}
             </Button>
@@ -484,6 +545,7 @@ export default class OrderList extends React.Component {
           onUploaded={() => {
             this.setState({ importPanel: { visible: false } });
             this.handleTableLoad();
+            this.props.setUploadRecordsReload(true);
 }}
           template={`${XLSX_CDN}/订单导入模板.xlsx`}
         >
@@ -511,6 +573,14 @@ export default class OrderList extends React.Component {
             {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
           </Select>
         </ImportDataPanel>
+        <UploadLogsPanel
+          visible={this.state.logsPanelVisible}
+          onClose={() => { this.setState({ logsPanelVisible: false }); }}
+          logs={recordDataSource}
+          handleReload={this.loadRecords}
+          onUploadBatchDelete={this.removeInvoiceByBatchUpload}
+          reload={this.props.uploadRecords.reload}
+        />
       </QueueAnim>
     );
   }
