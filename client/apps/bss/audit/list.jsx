@@ -7,6 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
+import EmptyState from 'client/components/EmptyState';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
@@ -199,6 +200,13 @@ export default class AuditList extends React.Component {
       <Button icon="plus-square-o" onClick={this.handleBatchRelease}>加入账单</Button>
       <Button icon="plus" onClick={this.handleBatchRelease}>新建账单</Button>
     </span>);
+    const emptyProps = {
+      header: 'This is Header',
+      imageUrl: 'https://atlaskit.atlassian.com/b9c4dc7ef2c2a1036fe13a5b229d39df.svg',
+      description: 'lots of descritions',
+      primaryAction: <Button type="primary">Primary</Button>,
+      secondaryAction: <Button>Secondary</Button>,
+    };
     return (
       <Layout>
         <PageHeader>
@@ -234,7 +242,7 @@ export default class AuditList extends React.Component {
               rowSelection={rowSelection}
               rowKey="id"
               loading={loading}
-              locale={{ emptyText: <span><Button icon="plus" /></span> }}
+              locale={{ emptyText: <EmptyState {...emptyProps} /> }}
             />
           </Content>
         </Layout>
