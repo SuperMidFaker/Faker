@@ -110,7 +110,7 @@ export default class EditOrder extends Component {
         });
       } else {
         message.success('保存成功');
-        this.context.router.push('/scof/orders');
+        this.handleCancel();
       }
     });
   }
