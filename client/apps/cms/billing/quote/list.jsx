@@ -9,6 +9,7 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
+import ToolbarAction from 'client/components/ToolbarAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -173,7 +174,11 @@ export default class RatesList extends Component {
         render: (o, record) =>
           (<span>
             <RowAction onClick={this.handleQuoteEdit} icon="edit" row={record} />
-            <RowAction danger confirm="确定删除?" onConfirm={this.handleDeleteQuote} icon="delete" row={record} />
+            {/*
+            <RowAction
+              danger
+              confirm="确定删除?" onConfirm={this.handleDeleteQuote} icon="delete" row={record} />
+            */}
           </span>),
       },
     ];
@@ -196,7 +201,7 @@ export default class RatesList extends Component {
       },
     };
     const bulkActions = (<span>
-      <Button icon="delete" onClick={this.handleBatchDelete}>{this.gmsg('delete')}</Button>
+      <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />
     </span>);
     return (
       <Layout>
