@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { locationShape } from 'react-router';
 import { loadTrackings } from 'common/reducers/sofTracking';
 import { format } from 'client/common/i18n/helpers';
-import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
+import Navigation from 'client/components/Navigation';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -154,7 +154,7 @@ export default class ModuleSCOF extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout
+      <Navigation
         links={this.state.linkMenus}
         appMenus={this.state.appMenus}
         childContent={this.props.children}

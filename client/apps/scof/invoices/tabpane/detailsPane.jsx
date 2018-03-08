@@ -291,7 +291,7 @@ export default class DetailsPane extends Component {
           <Button icon="download" onClick={this.handleExport} style={{ marginLeft: 8 }}>明细导出</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             <Button onClick={this.handleSplit}>拆分发票</Button>
             <Button onClick={this.handleBatchDelete} icon="delete" />

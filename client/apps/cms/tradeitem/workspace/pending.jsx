@@ -230,7 +230,7 @@ export default class PendingItemsList extends React.Component {
             <DataTable
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={dataSource}
               rowSelection={rowSelection}

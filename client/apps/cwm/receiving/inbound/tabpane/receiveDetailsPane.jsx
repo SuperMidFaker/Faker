@@ -276,7 +276,7 @@ export default class ReceiveDetailsPane extends React.Component {
           <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             {inboundHead.rec_mode === 'manual' &&
             <Button onClick={this.handleBatchProductReceive}>

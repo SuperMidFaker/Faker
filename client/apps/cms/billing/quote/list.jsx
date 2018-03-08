@@ -295,7 +295,7 @@ export default class RatesList extends Component {
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             bulkActions={bulkActions}
             columns={columns}
             dataSource={this.dataSource}

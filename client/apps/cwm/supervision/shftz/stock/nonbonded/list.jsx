@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
+import { Breadcrumb, Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadNonbondedStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -45,11 +46,12 @@ const { Sider, Content } = Layout;
 export default class SHFTZNonBondedStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    stockDatas: PropTypes.array.isRequired,
+    stockDatas: PropTypes.arrayOf(PropTypes.shape({ owner_name: PropTypes.string })).isRequired,
   }
   state = {
     filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
+    scrollOffset: 368,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -218,8 +220,12 @@ export default class SHFTZNonBondedStockList extends React.Component {
     const filter = { ...this.state.filter, ...searchForm };
     this.handleStockQuery(filter);
   }
+  handleCollapseChange = (collapsed) => {
+    const scrollOffset = collapsed ? 368 : 280;
+    this.setState({ scrollOffset });
+  }
   render() {
-    const columns = this.columns;
+    const { columns } = this;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -258,21 +264,23 @@ export default class SHFTZNonBondedStockList extends React.Component {
               </Button>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="page-content" key="main">
-            <Card bodyStyle={{ paddingBottom: 8 }}>
+          <Layout>
+            <Drawer top onCollapseChange={this.handleCollapseChange}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
-            </Card>
-            <DataTable
-              toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys}
-              scrollOffset={390}
-              loading={this.props.loading}
-              columns={columns}
-              dataSource={this.props.stockDatas}
-              rowSelection={rowSelection}
-              rowKey="id"
-            />
-          </Content>
+            </Drawer>
+            <Content className="page-content" key="main">
+              <DataTable
+                toolbarActions={toolbarActions}
+                selectedRowKeys={this.state.selectedRowKeys}
+                scrollOffset={this.state.scrollOffset}
+                loading={this.props.loading}
+                columns={columns}
+                dataSource={this.props.stockDatas}
+                rowSelection={rowSelection}
+                rowKey="id"
+              />
+            </Content>
+          </Layout>
         </Layout>
       </Layout>
     );

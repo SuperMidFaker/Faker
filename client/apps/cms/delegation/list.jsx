@@ -673,7 +673,7 @@ export default class DelegationList extends Component {
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={columns}
             dataSource={dataSource}
             rowKey="delg_no"

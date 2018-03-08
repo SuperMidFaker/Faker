@@ -633,7 +633,7 @@ export default class RepoContent extends Component {
             bulkActions={bulkActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             loading={this.props.tradeItemsLoading}
             rowKey="id"
             columns={columns}

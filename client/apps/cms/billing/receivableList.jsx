@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Breadcrumb, Button, DatePicker, Icon, Select, Menu, Layout, message } from 'antd';
+import { Breadcrumb, Button, Checkbox, DatePicker, Icon, Select, Menu, Layout, message } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -16,7 +16,7 @@ import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import RowAction from 'client/components/RowAction';
-import SideDrawer from 'client/components/SideDrawer';
+import Drawer from 'client/components/Drawer';
 import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
@@ -469,7 +469,7 @@ export default class ExpenseList extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
-          <SideDrawer width={160}>
+          <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.currentStatus]} onClick={this.handleMenuClick}>
               <Menu.Item key="billing">
                 <Icon type="loading" /> {this.msg('statusBilling')}
@@ -484,14 +484,14 @@ export default class ExpenseList extends Component {
                 <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
               </Menu.Item>
             </Menu>
-          </SideDrawer>
+          </Drawer>
           <Content className="page-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
               rowKey="delg_no"
@@ -516,12 +516,13 @@ export default class ExpenseList extends Component {
               onChange={this.handlePartnerChange}
               dropdownMatchSelectWidth={false}
               dropdownStyle={{ width: 360 }}
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginBottom: 16 }}
             >
               {partners.customer.map(data => (<Option key={data.name} value={data.partner_id}>
                 {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
               </Option>))}
             </Select>
+            <Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>
           </ImportDataPanel>
         </Layout>
         <DelegationDockPanel />

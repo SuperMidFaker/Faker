@@ -105,14 +105,9 @@ export default class OutboundList extends React.Component {
     title: '出库单号',
     dataIndex: 'outbound_no',
     width: 180,
-  }, {
-    title: 'SO/波次编号',
-    dataIndex: 'so_no',
-    width: 180,
-    render: (soNo, record) => (soNo ? <a onClick={() =>
-       this.handlePreview(soNo, record.outbound_no)}
-    >{soNo}</a> :
-    <span>{record.wave_no}</span>),
+    render: (o, record) => (record.so_no ?
+      <a onClick={() => this.handlePreview(record.so_no, record.outbound_no)}>{o}</a>
+      : <span>{o}</span>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
@@ -237,7 +232,7 @@ export default class OutboundList extends React.Component {
     this.props.loadOutbounds({
       whseCode,
       pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
+      current: 1,
       filters,
     });
   }
@@ -355,7 +350,7 @@ export default class OutboundList extends React.Component {
             loading={loading}
             toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           />
         </Content>
         <ShippingDockPanel />

@@ -2,21 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
+import { Breadcrumb, Button, Select, Layout, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTransactions } from 'common/reducers/cwmTransaction';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
+import PageHeader from 'client/components/PageHeader';
+import Drawer from 'client/components/Drawer';
 import QueryForm from './queryForm';
 import TraceIdPopover from '../../common/popover/traceIdPopover';
-import PageHeader from 'client/components/PageHeader';
 import { transactionColumns, commonTraceColumns } from '../commonColumns';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -38,13 +39,13 @@ export default class StockTransactionsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loading: PropTypes.bool.isRequired,
-    transactionlist: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    sortFilter: PropTypes.object.isRequired,
+    transactionlist: PropTypes.shape({ current: PropTypes.number }).isRequired,
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
+    sortFilter: PropTypes.shape({ field: PropTypes.string }).isRequired,
   }
   state = {
-    collapsed: false,
     selectedRowKeys: [],
+    scrollOffset: 368,
   }
   componentDidMount() {
     const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
@@ -99,7 +100,11 @@ export default class StockTransactionsList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (searchForm) => {
-    const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
+    const filter = {
+      ...this.props.listFilter,
+      ...searchForm,
+      whse_code: this.props.defaultWhse.code,
+    };
     this.handleStockQuery(1, filter);
   }
   handleExportExcel = () => {
@@ -107,11 +112,15 @@ export default class StockTransactionsList extends React.Component {
     window.open(`${API_ROOTS.default}v1/cwm/transactions/exportTransactionsExcel/${createFilename('transactions')}.xlsx?filters=${
       JSON.stringify(listFilter)}&sorter=${JSON.stringify(sortFilter)}`);
   }
+  handleCollapseChange = (collapsed) => {
+    const scrollOffset = collapsed ? 368 : 280;
+    this.setState({ scrollOffset });
+  }
   render() {
     const {
       defaultWhse, whses, loading, listFilter,
     } = this.props;
-    const columns = this.columns;
+    const { columns } = this;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -119,7 +128,10 @@ export default class StockTransactionsList extends React.Component {
       },
     };
     const dataSource = new DataTable.DataSource({
-      fetcher: (params) => { this.props.loadTransactions(params); this.setState({ selectedRowKeys: [] }); },
+      fetcher: (params) => {
+        this.props.loadTransactions(params);
+        this.setState({ selectedRowKeys: [] });
+      },
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -142,7 +154,7 @@ export default class StockTransactionsList extends React.Component {
         const filter = { ...listFilter };
         Object.keys(filters).forEach((flt) => {
           if (filters[flt].length > 0) {
-            filter[flt] = filters[flt][0];
+            [filter[flt]] = filters[flt];
           } else {
             delete filter[flt];
           }
@@ -160,7 +172,8 @@ export default class StockTransactionsList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
+                  {whses.map(warehouse =>
+                  (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
@@ -174,20 +187,22 @@ export default class StockTransactionsList extends React.Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <Card bodyStyle={{ paddingBottom: 8 }}>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
             <QueryForm onSearch={this.handleSearch} />
-          </Card>
-          <DataTable
-            selectedRowKeys={this.state.selectedRowKeys}
-            scrollOffset={390}
-            columns={columns}
-            dataSource={dataSource}
-            rowSelection={rowSelection}
-            rowKey="id"
-            loading={loading}
-          />
-        </Content>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              selectedRowKeys={this.state.selectedRowKeys}
+              scrollOffset={this.state.scrollOffset}
+              columns={columns}
+              dataSource={dataSource}
+              rowSelection={rowSelection}
+              rowKey="id"
+              loading={loading}
+            />
+          </Content>
+        </Layout>
       </Layout>
     );
   }

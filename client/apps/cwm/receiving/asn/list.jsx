@@ -475,7 +475,7 @@ export default class ReceivingASNList extends React.Component {
             toolbarActions={toolbarActions}
             bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={dataSource}
             rowSelection={rowSelection}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
-import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
+import Navigation from 'client/components/Navigation';
 import { loadWhse, switchDefaultWhse } from 'common/reducers/cwmContext';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -190,7 +190,7 @@ export default class ModuleCWM extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout
+      <Navigation
         links={this.state.linkMenus}
         appMenus={this.state.appMenus}
         childContent={this.props.children}

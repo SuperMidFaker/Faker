@@ -10,20 +10,20 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
-import ModuleMenu from '../../menu';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import TransferSelfModal from './modal/transferSelfModal';
 import PageHeader from 'client/components/PageHeader';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import TransferSelfModal from './modal/transferSelfModal';
+import ModuleMenu from '../../menu';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
+const { OptGroup } = Select;
 
 @injectIntl
 @connect(
@@ -47,24 +47,22 @@ const OptGroup = Select.OptGroup;
 export default class SHFTZTransferSelfList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    entryList: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
+    entryList: PropTypes.shape({ current: PropTypes.number }).isRequired,
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
+    const { listFilter } = this.props;
+    let { status } = listFilter;
     if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
-    let ownerView = listFilter.ownerView;
+    let { ownerView } = listFilter;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
@@ -101,6 +99,7 @@ export default class SHFTZTransferSelfList extends React.Component {
       } else if (o === 2) {
         return (<Badge status="success" text="已转入" />);
       }
+      return null;
     },
   }, {
     title: '货主',
@@ -121,25 +120,18 @@ export default class SHFTZTransferSelfList extends React.Component {
     title: '转入时间',
     width: 150,
     dataIndex: 'ftz_ent_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && moment(o).format('MM.DD HH:mm'),
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o)
+    && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -307,7 +299,7 @@ export default class SHFTZTransferSelfList extends React.Component {
               defaultExpandedRowKeys={['1']}
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}
             />
             <TransferSelfModal reload={this.handleEntryListLoad} />

@@ -96,7 +96,7 @@ export default class PaymentReceivedPane extends Component {
           <Button icon="plus-circle-o" onClick={this.handleTemplateDownload}>记录收款</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>

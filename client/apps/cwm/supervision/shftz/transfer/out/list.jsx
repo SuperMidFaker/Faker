@@ -9,23 +9,23 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
-import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
-import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import PageHeader from 'client/components/PageHeader';
-import ModuleMenu from '../../menu';
-import NewTransfOutModal from './newTransfOutModal';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { openNewTransfOutModal, loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
+import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import messages from '../../message.i18n';
+import ModuleMenu from '../../menu';
+import NewTransfOutModal from './newTransfOutModal';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -51,24 +51,22 @@ const RadioButton = Radio.Button;
 export default class SHFTZTransferOutList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    releaseList: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
+    releaseList: PropTypes.shape({ current: PropTypes.number }).isRequired,
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
+    const { listFilter } = this.props;
+    let { status } = listFilter;
     if (['all', 'pending', 'sent', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
-    let ownerView = listFilter.ownerView;
+    let { ownerView } = listFilter;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
@@ -93,6 +91,7 @@ export default class SHFTZTransferOutList extends React.Component {
       if (regtype) {
         return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
       }
+      return null;
     },
   }, {
     title: '状态',
@@ -106,6 +105,7 @@ export default class SHFTZTransferOutList extends React.Component {
       } else if (o === 2) {
         return (<Badge status="success" text="已转出" />);
       }
+      return null;
     },
   }, {
     title: 'SO编号',
@@ -143,16 +143,13 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && moment(o).format('MM.DD HH:mm'),
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o)
+    && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -300,7 +297,7 @@ export default class SHFTZTransferOutList extends React.Component {
               indentSize={8}
               rowKey="id"
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}
             />
             <ShippingDockPanel />

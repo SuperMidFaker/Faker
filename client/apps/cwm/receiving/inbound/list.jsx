@@ -104,11 +104,7 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'inbound_no',
     width: 160,
     fixed: 'left',
-  }, {
-    title: 'ASN编号',
-    width: 150,
-    dataIndex: 'asn_no',
-    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
+    render: (o, record) => (<a onClick={() => this.handlePreview(record.asn_no)}>{o}</a>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
@@ -234,7 +230,7 @@ export default class ReceivingInboundList extends React.Component {
     this.props.loadInbounds({
       whseCode: this.props.defaultWhse.code,
       pageSize: this.props.inbound.pageSize,
-      current: this.props.inbound.current,
+      current: 1,
       filters,
     });
   }
@@ -334,7 +330,7 @@ export default class ReceivingInboundList extends React.Component {
           <DataTable
             toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={dataSource}
             rowSelection={rowSelection}

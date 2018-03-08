@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Select, Upload } from 'antd';
+import { Button, Form, Icon, Radio, Select, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import UploadMask from '../UploadMask';
@@ -72,6 +72,10 @@ export default class ImportDataPanel extends React.Component {
       endpoint, formData = {}, children, visible, title, onUploaded,
       adaptors, template, onGenTemplate,
     } = this.props;
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    };
     const { importInfo, adaptor } = this.state;
     if (adaptor) {
       formData.adaptor = adaptor;
@@ -85,7 +89,7 @@ export default class ImportDataPanel extends React.Component {
         <Select
           allowClear
           showSearch
-          placeholder="导入适配器"
+          placeholder="选择数据适配器"
           onChange={this.handleAdaptorChange}
           value={adaptor}
           notFoundContent={this.msg('adaptorNotFound')}
@@ -94,6 +98,13 @@ export default class ImportDataPanel extends React.Component {
           {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
         </Select>
         }
+        {(template || onGenTemplate) && <Button
+          icon="download"
+          style={{ width: '100%', marginBottom: 16 }}
+          onClick={this.handleDownloadTemplate}
+        >
+          下载模板
+        </Button>}
         <div style={{ height: 200, marginBottom: 16 }}>
           <Dragger
             accept=".xls,.xlsx,.csv"
@@ -110,13 +121,15 @@ export default class ImportDataPanel extends React.Component {
             <p className="ant-upload-text">点击或拖拽文件至此区域上传</p>
           </Dragger>
         </div>
-        {(template || onGenTemplate) && <Button
-          icon="download"
-          style={{ width: '100%' }}
-          onClick={this.handleDownloadTemplate}
+        <Form.Item
+          {...formItemLayout}
+          label="数据选项"
         >
-          下载模板
-        </Button>}
+          <Radio.Group onChange={this.onChange} value={this.state.value}>
+            <Radio value={1}>覆盖原数据</Radio>
+            <Radio value={2}>忽略重复数据</Radio>
+          </Radio.Group>
+        </Form.Item>
         <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />
       </DockPanel>
     );

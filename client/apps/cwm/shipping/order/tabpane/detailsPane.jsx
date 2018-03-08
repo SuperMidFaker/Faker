@@ -217,7 +217,7 @@ export default class DetailsPane extends Component {
           <Button disabled={crossAsnDisabled} onClick={this.showAsnSelectModal}>选择ASN</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>

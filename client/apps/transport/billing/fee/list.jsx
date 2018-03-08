@@ -8,26 +8,26 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import { loadFees, changeFeesFilter, loadPartners, showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
-import TrimSpan from 'client/components/trimSpan';
-import AddressColumn from '../../common/addressColumn';
 import { createFilename } from 'client/util/dataTransform';
+import TrimSpan from 'client/components/trimSpan';
+import SearchBox from 'client/components/SearchBox';
+import AddressColumn from '../../common/addressColumn';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
-import { loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import ActualDate from '../../common/actualDate';
-import SearchBox from 'client/components/SearchBox';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const RangePicker = DatePicker.RangePicker;
+const { RangePicker } = DatePicker;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -63,7 +63,12 @@ function fetchData({ cookie, state, dispatch }) {
     loaded: state.transportBilling.loaded,
   }),
   {
-    loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, showAdvanceModal, showSpecialChargeModal,
+    loadFees,
+    loadShipmtDetail,
+    changeFeesFilter,
+    loadPartners,
+    showAdvanceModal,
+    showSpecialChargeModal,
   }
 )
 
@@ -71,10 +76,8 @@ export default class FeesList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
     loadFees: PropTypes.func.isRequired,
-    fees: PropTypes.object.isRequired,
+    fees: PropTypes.shape({ currentPage: PropTypes.number }).isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     changeFeesFilter: PropTypes.func.isRequired,
     loadPartners: PropTypes.func.isRequired,
@@ -90,10 +93,18 @@ export default class FeesList extends React.Component {
     billingType: 'costAndRevenue',
   }
   componentWillMount() {
-    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+    this.props.loadPartners(
+      this.props.tenantId,
+      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
+      [PARTNER_BUSINESSE_TYPES.transport]
+    ).then((result) => {
       this.setState({ customers: result.data });
     });
-    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+    this.props.loadPartners(
+      this.props.tenantId,
+      [PARTNER_ROLES.SUP],
+      [PARTNER_BUSINESSE_TYPES.transport]
+    ).then((result) => {
       this.setState({ carriers: result.data });
     });
   }
@@ -437,12 +448,14 @@ export default class FeesList extends React.Component {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
       width: 100,
-      render: (o, record) => <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际送货时间',
       dataIndex: 'deliver_act_date',
       width: 100,
-      render: (o, record) => <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',
@@ -536,7 +549,7 @@ export default class FeesList extends React.Component {
             scroll={{ x: tableWidth }}
             loading={loading}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleSelectionClear}
+            onDeselectRows={this.handleSelectionClear}
           />
         </Content>
         <ShipmentDockPanel />

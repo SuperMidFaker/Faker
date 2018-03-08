@@ -9,15 +9,16 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadExcpShipments, changeExcpFilter } from 'common/reducers/trackingLandException';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
+import TrimSpan from 'client/components/trimSpan';
+import SearchBox from 'client/components/SearchBox';
+import { format } from 'client/common/i18n/helpers';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import AddressColumn from '../../common/addressColumn';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
-import TrimSpan from 'client/components/trimSpan';
-import SearchBox from 'client/components/SearchBox';
-import { format } from 'client/common/i18n/helpers';
+
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -75,7 +76,6 @@ function renderActDate(recordActDate, recordEstDate) {
     shipmentlist: state.trackingLandException.shipmentlist,
     filters: state.trackingLandException.filters,
     loading: state.trackingLandException.loading,
-    clients: state.shipment.formRequire.clients,
     carriers: state.shipment.partners,
   }),
   { loadExcpShipments, loadShipmtDetail, changeExcpFilter }
@@ -84,34 +84,20 @@ export default class TrackingExceptionList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    filters: PropTypes.array.isRequired,
-    /*
-    sortField: PropTypes.string.isRequired,
-    sortOrder: PropTypes.string.isRequired,
-   */
+    filters: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string, value: PropTypes.string,
+    })).isRequired,
     loading: PropTypes.bool.isRequired,
-    shipmentlist: PropTypes.object.isRequired,
+    shipmentlist: PropTypes.shape({ current: PropTypes.number }).isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadExcpShipments: PropTypes.func.isRequired,
     changeExcpFilter: PropTypes.func.isRequired,
-    clients: PropTypes.array.isRequired,
-    carriers: PropTypes.array.isRequired,
+    carriers: PropTypes.arrayOf(PropTypes.shape({ partner_code: PropTypes.string })).isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
     advancedSearchVisible: false,
   }
-
-  componentWillMount() {
-    let searchInput;
-    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
-    if (nos.length === 1) {
-      searchInput = nos[0].value;
-    }
-    this.setState({ searchInput });
-  }
-
   componentWillReceiveProps(nextProps) {
     let newfilters;
     if (nextProps.params.state !== this.props.params.state) {
@@ -178,7 +164,12 @@ export default class TrackingExceptionList extends React.Component {
     dataIndex: 'shipmt_no',
     fixed: 'left',
     width: 130,
-    render: (o, record) => <ShipmtnoColumn shipmtNo={record.shipmt_no} shipment={record} onClick={this.handleShipmtPreview} />,
+    render: (o, record) =>
+      (<ShipmtnoColumn
+        shipmtNo={record.shipmt_no}
+        shipment={record}
+        onClick={this.handleShipmtPreview}
+      />),
   }, {
     fixed: 'left',
     dataIndex: 'excp_count',
@@ -398,23 +389,11 @@ export default class TrackingExceptionList extends React.Component {
       }
     });
   }
-  mergeFilters(curFilters, name, value) {
-    const merged = curFilters.filter(flt => flt.name !== name);
-    if (value !== null && value !== undefined && value !== '') {
-      merged.push({
-        name,
-        value,
-      });
-    }
-    return merged;
-  }
-
   handleShipmentViewSelect = (searchVals) => {
     this.props.changeExcpFilter('viewStatus', searchVals.viewStatus);
   }
 
   handleSearchInput = (value) => {
-    this.setState({ searchInput: value });
     this.props.changeExcpFilter('shipmt_no', value);
   }
 
@@ -463,7 +442,11 @@ export default class TrackingExceptionList extends React.Component {
     </span>);
     return (
       <div>
-        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+        <AdvancedSearchBar
+          visible={this.state.advancedSearchVisible}
+          onSearch={this.handleAdvancedSearch}
+          toggle={this.toggleAdvancedSearch}
+        />
         <DataTable
           toolbarActions={toolbarActions}
           rowSelection={rowSelection}
@@ -472,7 +455,7 @@ export default class TrackingExceptionList extends React.Component {
           dataSource={this.dataSource}
           scroll={{ x: 2780 }}
           selectedRowKeys={this.state.selectedRowKeys}
-          handleDeselectRows={this.handleSelectionClear}
+          onDeselectRows={this.handleSelectionClear}
         />
       </div>
     );

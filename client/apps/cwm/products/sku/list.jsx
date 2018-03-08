@@ -360,7 +360,7 @@ export default class CWMSkuList extends React.Component {
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
             />
           </Content>
         </Layout>

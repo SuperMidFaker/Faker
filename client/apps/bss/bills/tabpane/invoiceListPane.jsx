@@ -118,7 +118,7 @@ export default class InvoiceListPane extends Component {
           <Button type="primary" icon="plus-circle-o" onClick={this.handleTemplateDownload}>添加发票</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>

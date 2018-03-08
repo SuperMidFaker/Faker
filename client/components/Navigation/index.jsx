@@ -23,7 +23,7 @@ function isInclusivePath(pathTarget, pathSource) {
     (pathA.split('/').length > 3 && pathB.indexOf(pathA) === 0);
 }
 
-export default class CollapsibleSiderLayout extends PureComponent {
+export default class Navigation extends PureComponent {
   static propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string,
