@@ -26,7 +26,7 @@ export default class UploadLogsPanel extends React.Component {
     this.props.handleReload();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.reload !== this.props.reload && nextProps.reload) {
+    if (nextProps.reload) {
       this.props.handleReload();
     }
   }
