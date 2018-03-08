@@ -19,6 +19,7 @@ import { loadInvoices, deleteSofInvice, batchDeleteInvoices } from 'common/reduc
 import { loadUploadRecords, uploadRecordsBatchDelete, setUploadRecordsReload } from 'common/reducers/uploadRecords';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
+import { createFilename } from 'client/util/dataTransform';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -296,6 +297,10 @@ export default class InvoiceList extends React.Component {
         this.handleReload(invoiceFilter);
       }
     });
+  }
+  handleExport = () => {
+    const { selectedRowKeys } = this.state;
+    window.open(`${API_ROOTS.default}v1/scof/invoices/${createFilename('invoices')}.xlsx?invoiceNos=${selectedRowKeys}`);
   }
   render() {
     const {

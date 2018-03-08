@@ -95,7 +95,7 @@ export default class DetailsPane extends Component {
   }
   handleExport = () => {
     const { invoiceNo } = this.props;
-    window.open(`${API_ROOTS.default}v1/scof/invoice/${createFilename(`${invoiceNo}`)}.xlsx?invoiceNo=${invoiceNo}`);
+    window.open(`${API_ROOTS.default}v1/scof/invoice/details/${createFilename(`${invoiceNo}`)}.xlsx?invoiceNo=${invoiceNo}`);
   }
   toggleDetailModal = () => {
     this.props.toggleDetailModal(true);
