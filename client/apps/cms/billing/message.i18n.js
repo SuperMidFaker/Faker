@@ -151,8 +151,8 @@ const messages = defineMessages({
     id: 'cms.billing.fee.name',
     defaultMessage: '费用名称',
   },
-  feeCategory: {
-    id: 'cms.billing.fee.category',
+  feeGroup: {
+    id: 'cms.billing.fee.group',
     defaultMessage: '费用分组',
   },
   feeType: {
@@ -224,6 +224,10 @@ const messages = defineMessages({
     id: 'cms.modals.expense.invoiceEn',
     defaultMessage: '是否计税',
   },
+  taxRate: {
+    id: 'cms.modals.tax.rate',
+    defaultMessage: '税率',
+  },
   recipient: {
     id: 'cms.modals.expense.recipient',
     defaultMessage: '收款方',
@@ -268,8 +272,8 @@ const messages = defineMessages({
     id: 'cms.billing.quote.params',
     defaultMessage: '计费参数',
   },
-  billingMethod: {
-    id: 'cms.billing.quote.method',
+  billingWay: {
+    id: 'cms.billing.quote.billing.way',
     defaultMessage: '计费方式',
   },
   formulaFactor: {

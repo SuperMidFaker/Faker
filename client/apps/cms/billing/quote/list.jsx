@@ -11,8 +11,8 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote } from 'common/reducers/cmsQuote';
+import withPrivilege from 'client/common/decorators/withPrivilege';
+import { toggleQuoteCreateModal, loadQuoteTable, deleteQuote } from 'common/reducers/cmsQuote';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 import CreateQuoteModal from '../modals/createQuoteModal';
 
@@ -20,7 +20,6 @@ const { Content } = Layout;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadQuoteTable({
-    tenantId: state.account.tenantId,
     filter: JSON.stringify(state.cmsQuote.listFilter),
     pageSize: state.cmsQuote.quotesList.pageSize,
     current: state.cmsQuote.quotesList.current,
@@ -33,17 +32,13 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    loginName: state.account.username,
     quotesList: state.cmsQuote.quotesList,
     listFilter: state.cmsQuote.listFilter,
   }),
   {
+    toggleQuoteCreateModal,
     loadQuoteTable,
-    updateQuoteStatus,
     deleteQuote,
-    deleteDraftQuote,
-    openCreateModal,
-    createDraftQuote,
   }
 )
 @connectNav({
@@ -79,8 +74,6 @@ export default class RatesList extends Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        ietype: this.props.ietype,
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         current: pagination.current,
       };
@@ -90,16 +83,12 @@ export default class RatesList extends Component {
     },
     remotes: this.props.quotesList,
   })
-  handleNavigationTo(to, query) {
-    this.context.router.push({ pathname: to, query });
-  }
   handleQuoteTableLoad = (currentPage, filter) => {
     const {
-      tenantId, listFilter,
+      listFilter,
       quotesList: { pageSize, current },
     } = this.props;
     this.props.loadQuoteTable({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       current: currentPage || current,
@@ -117,51 +106,11 @@ export default class RatesList extends Component {
     const filter = { ...this.props.listFilter, viewStatus: key };
     this.handleQuoteTableLoad(1, filter);
   }
-  handleChangeStatus = (id, status) => {
-    this.props.updateQuoteStatus(
-      id,
-      status,
-      this.props.tenantId,
-      this.props.loginName,
-      this.props.loginId,
-    ).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleQuoteTableLoad();
-      }
-    });
-  }
   handleQuoteEdit = (row) => {
-    if (row.status === 'draft') {
-      this.context.router.push(`/clearance/billing/quote/${row.quote_no}/${row.version}`);
-    } else if (row.next_version) {
-      this.context.router.push(`/clearance/billing/quote/${row.quote_no}${row.version}`);
-    } else {
-      const { loginName, loginId } = this.props;
-      this.props.createDraftQuote(row.quote_no, loginName, loginId).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.context.router.push(`/clearance/billing/quote/${row.quote_no}${row.version}`);
-        }
-      });
-    }
+    this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
   }
-  handleQuoteView = (row) => {
-    this.context.router.push(`/clearance/billing/quote/${row.quote_no}/${row.version}`);
-  }
-  handleDeleteQuote = (quoteNo) => {
-    this.props.deleteQuote(quoteNo).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleQuoteTableLoad();
-      }
-    });
-  }
-  handleDeleteDraft = (quoteId, quoteNo) => {
-    this.props.deleteDraftQuote(quoteId, quoteNo).then((result) => {
+  handleDeleteQuote = (row) => {
+    this.props.deleteQuote(row.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -170,7 +119,7 @@ export default class RatesList extends Component {
     });
   }
   handleCreate = () => {
-    this.props.openCreateModal();
+    this.props.toggleQuoteCreateModal(true);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -182,12 +131,6 @@ export default class RatesList extends Component {
         title: this.msg('quoteNo'),
         dataIndex: 'quote_no',
         width: 140,
-        render: (o, record) => {
-          if (record.valid) {
-            return o;
-          }
-          return <span className="mdc-text-grey">{o}</span>;
-        },
       }, {
         title: this.msg('quoteName'),
         dataIndex: 'quote_name',
@@ -197,10 +140,10 @@ export default class RatesList extends Component {
         width: 200,
         render: (text, record) => {
           let partnerName = '';
-          if (record.recv_tenant_id === tenantId) {
-            partnerName = record.send_tenant_name;
-          } else if (record.send_tenant_id === tenantId) {
-            partnerName = record.recv_tenant_name;
+          if (record.buyer_tenant_id === tenantId) {
+            partnerName = record.seller_name;
+          } else if (record.seller_tenant_id === tenantId) {
+            partnerName = record.buyer_name;
           }
           return partnerName;
         },
@@ -227,30 +170,11 @@ export default class RatesList extends Component {
         align: 'right',
         fixed: 'right',
         width: 60,
-        render: (o, record) => {
-          let auth = '';
-          if (record.create_tenant_id === tenantId) {
-            auth = 'modify';
-          } else if (record.partner_permission === 2) {
-            auth = 'modify';
-          } else if (record.partner_permission === 1) {
-            auth = 'read';
-          }
-          if (auth === 'modify') {
-            return (
-              <PrivilegeCover module="clearance" feature="quote" action="edit">
-                <RowAction icon="edit" tooltip={this.msg('edit')} onClick={() => this.handleQuoteEdit(record)} />
-              </PrivilegeCover>
-            );
-          } else if (auth === 'read') {
-            return (
-              <PrivilegeCover module="clearance" feature="quote" action="view">
-                <RowAction icon="eye-o" label={this.msg('view')} onClick={() => this.handleQuoteView(record)} />
-              </PrivilegeCover>
-            );
-          }
-          return null;
-        },
+        render: (o, record) =>
+          (<span>
+            <RowAction onClick={this.handleQuoteEdit} icon="edit" row={record} />
+            <RowAction danger confirm="确定删除?" onConfirm={this.handleDeleteQuote} icon="delete" row={record} />
+          </span>),
       },
     ];
     this.dataSource.remotes = quotesList;

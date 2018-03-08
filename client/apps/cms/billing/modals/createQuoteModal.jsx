@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Input, Modal, message, Form, Radio, Select } from 'antd';
-import { closeCreateModal, createQuote } from 'common/reducers/cmsQuote';
+import { toggleQuoteCreateModal, createQuote } from 'common/reducers/cmsQuote';
 import { loadPartners } from 'common/reducers/partner';
 import { QUOTE_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -22,13 +22,10 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
     visible: state.cmsQuote.visibleCreateModal,
     partners: state.partner.partners,
-    quoteData: state.cmsQuote.quoteData,
   }),
-  { closeCreateModal, loadPartners, createQuote }
+  { toggleQuoteCreateModal, loadPartners, createQuote }
 )
 @Form.create()
 export default class CreateQuoteModal extends React.Component {
@@ -44,20 +41,19 @@ export default class CreateQuoteModal extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = formatMsg(this.props.intl)
   state = {
     partners: [],
-    partnerLabel: this.msg('client'),
+    partnerLabel: '客户',
   }
   componentDidMount() {
     this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role: [ PARTNER_ROLES.CUS, PARTNER_ROLES.SUP],
+      role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP],
       businessType: PARTNER_BUSINESSE_TYPES.clearance,
     });
   }
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.props.closeCreateModal();
+    this.props.toggleQuoteCreateModal(false);
   }
   handleOk = () => {
     const quoteData = {};
@@ -67,39 +63,36 @@ export default class CreateQuoteModal extends React.Component {
       [quoteData.partner] = selpartners;
     }
     if (field.quote_type === 'sales') {
-      quoteData.send_tenant_id = quoteData.partner.tid;
-      quoteData.send_tenant_name = quoteData.partner.name;
-      quoteData.send_partner_id = quoteData.partner.id;
-      quoteData.recv_tenant_id = this.props.tenantId;
-      quoteData.recv_tenant_name = this.props.tenantName;
+      quoteData.seller_tenant_id = quoteData.partner.partner_tenant_id;
+      quoteData.seller_name = quoteData.partner.name;
+      quoteData.seller_partner_id = quoteData.partner.id;
+      quoteData.buyer_tenant_id = this.props.tenantId;
+      quoteData.buyer_name = this.props.tenantName;
     } else if (field.quote_type === 'cost') {
-      quoteData.send_tenant_id = this.props.tenantId;
-      quoteData.send_tenant_name = this.props.tenantName;
-      quoteData.recv_tenant_id = quoteData.partner.tid;
-      quoteData.recv_tenant_name = quoteData.partner.name;
-      quoteData.recv_partner_id = quoteData.partner.id;
+      quoteData.seller_tenant_id = this.props.tenantId;
+      quoteData.seller_tenant_name = this.props.tenantName;
+      quoteData.buyer_tenant_id = quoteData.partner.partner_tenant_id;
+      quoteData.buyer_name = quoteData.partner.name;
+      quoteData.buyer_partner_id = quoteData.partner.id;
     }
     quoteData.quote_name = field.quote_name;
-    quoteData.tenantId = this.props.tenantId;
-    quoteData.modifyById = this.props.loginId;
-    quoteData.modifyBy = this.props.loginName;
     const prom = this.props.createQuote(quoteData);
     prom.then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.closeCreateModal();
+        this.props.toggleQuoteCreateModal(false);
         const { quoteNo } = result.data;
         this.context.router.push(`/clearance/billing/quote/${quoteNo}`);
       }
     });
   }
-  handleKindSelect = (ev) => {
-    const tariffKind = ev.target.value;
-    if (tariffKind === 'sales') {
+  handleTypeSelect = (ev) => {
+    const quoteType = ev.target.value;
+    if (quoteType === 'sales') {
       const client = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
       this.setState({ partners: client, partnerLabel: this.msg('client') });
-    } else if (tariffKind === 'cost') {
+    } else if (quoteType === 'cost') {
       const service = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
       this.setState({ partners: service, partnerLabel: this.msg('provider') });
     }
@@ -131,7 +124,7 @@ export default class CreateQuoteModal extends React.Component {
           <FormItem label={this.msg('quoteType')} {...formItemLayout}>
             {getFieldDecorator('quote_type', {
               rules: [{ required: true, message: '报价类型必选' }],
-            })(<RadioGroup onChange={this.handleKindSelect}>
+            })(<RadioGroup onChange={this.handleTypeSelect}>
               {
                 QUOTE_TYPE.map(qt =>
                   <RadioButton value={qt.value} key={qt.value}>{qt.text}</RadioButton>)
@@ -151,7 +144,6 @@ export default class CreateQuoteModal extends React.Component {
               {
                 this.state.partners.map(pt => (
                   <Option
-                    
                     value={pt.id}
                     key={pt.id}
                   >{pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
