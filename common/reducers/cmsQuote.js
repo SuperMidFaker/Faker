@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
-  'VISIBLE_CREATE_MODAL',
+  'VISIBLE_QUOTE_CREATE_MODAL',
   'VISIBLE_ADD_FEE_MODAL',
   'QUOTE_MODEL_LOAD', 'QUOTE_MODEL_LOAD_SUCCEED', 'QUOTE_MODEL_LOAD_FAIL',
   'CREATE_QUOTE', 'CREATE_QUOTE_SUCCEED', 'CREATE_QUOTE_FAIL',
@@ -50,7 +50,7 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.VISIBLE_CREATE_MODAL:
+    case actionTypes.VISIBLE_QUOTE_CREATE_MODAL:
       return { ...state, visibleCreateModal: action.data };
     case actionTypes.VISIBLE_ADD_FEE_MODAL:
       return { ...state, visibleAddFeeModal: action.data };
@@ -101,9 +101,9 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function toggleQtCreateModal(visible) {
+export function toggleQuoteCreateModal(visible) {
   return {
-    type: actionTypes.VISIBLE_CREATE_MODAL,
+    type: actionTypes.VISIBLE_QUOTE_CREATE_MODAL,
     data: visible,
   };
 }

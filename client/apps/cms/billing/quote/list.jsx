@@ -12,7 +12,7 @@ import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { toggleQtCreateModal, loadQuoteTable, deleteQuote } from 'common/reducers/cmsQuote';
+import { toggleQuoteCreateModal, loadQuoteTable, deleteQuote } from 'common/reducers/cmsQuote';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 import CreateQuoteModal from '../modals/createQuoteModal';
 
@@ -36,7 +36,7 @@ function fetchData({ state, dispatch }) {
     listFilter: state.cmsQuote.listFilter,
   }),
   {
-    toggleQtCreateModal,
+    toggleQuoteCreateModal,
     loadQuoteTable,
     deleteQuote,
   }
@@ -119,7 +119,7 @@ export default class RatesList extends Component {
     });
   }
   handleCreate = () => {
-    this.props.toggleQtCreateModal(true);
+    this.props.toggleQuoteCreateModal(true);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });

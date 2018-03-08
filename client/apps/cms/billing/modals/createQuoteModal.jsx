@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Input, Modal, message, Form, Radio, Select } from 'antd';
-import { toggleQtCreateModal, createQuote } from 'common/reducers/cmsQuote';
+import { toggleQuoteCreateModal, createQuote } from 'common/reducers/cmsQuote';
 import { loadPartners } from 'common/reducers/partner';
 import { QUOTE_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -25,7 +25,7 @@ const formItemLayout = {
     visible: state.cmsQuote.visibleCreateModal,
     partners: state.partner.partners,
   }),
-  { toggleQtCreateModal, loadPartners, createQuote }
+  { toggleQuoteCreateModal, loadPartners, createQuote }
 )
 @Form.create()
 export default class CreateQuoteModal extends React.Component {
@@ -53,7 +53,7 @@ export default class CreateQuoteModal extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.props.toggleQtCreateModal(false);
+    this.props.toggleQuoteCreateModal(false);
   }
   handleOk = () => {
     const quoteData = {};
@@ -63,7 +63,7 @@ export default class CreateQuoteModal extends React.Component {
       [quoteData.partner] = selpartners;
     }
     if (field.quote_type === 'sales') {
-      quoteData.seller_tenant_id = quoteData.partner.tid;
+      quoteData.seller_tenant_id = quoteData.partner.partner_tenant_id;
       quoteData.seller_name = quoteData.partner.name;
       quoteData.seller_partner_id = quoteData.partner.id;
       quoteData.buyer_tenant_id = this.props.tenantId;
@@ -71,7 +71,7 @@ export default class CreateQuoteModal extends React.Component {
     } else if (field.quote_type === 'cost') {
       quoteData.seller_tenant_id = this.props.tenantId;
       quoteData.seller_tenant_name = this.props.tenantName;
-      quoteData.buyer_tenant_id = quoteData.partner.tid;
+      quoteData.buyer_tenant_id = quoteData.partner.partner_tenant_id;
       quoteData.buyer_name = quoteData.partner.name;
       quoteData.buyer_partner_id = quoteData.partner.id;
     }
@@ -81,7 +81,7 @@ export default class CreateQuoteModal extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.toggleQtCreateModal(false);
+        this.props.toggleQuoteCreateModal(false);
         const { quoteNo } = result.data;
         this.context.router.push(`/clearance/billing/quote/${quoteNo}`);
       }
