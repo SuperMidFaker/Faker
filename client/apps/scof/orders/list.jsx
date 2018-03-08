@@ -19,6 +19,7 @@ import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
+import ToolbarAction from 'client/components/ToolbarAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
@@ -229,6 +230,7 @@ export default class OrderList extends React.Component {
       current: this.props.orders.current,
       filters,
     });
+    this.setState({ selectedRowKeys: [] });
   }
   handleExpeditedChange = (e) => {
     const filters = { ...this.props.filters, expedited: e.target.value };
@@ -238,15 +240,7 @@ export default class OrderList extends React.Component {
       current: this.props.orders.current,
       filters,
     });
-  }
-  handleTransferChange = (ev) => {
-    const filters = { ...this.props.filters, transfer: ev.target.value };
-    this.props.loadOrders({
-      tenantId: this.props.tenantId,
-      pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
-      filters,
-    });
+    this.setState({ selectedRowKeys: [] });
   }
   handleClientSelectChange = (value) => {
     const filters = { ...this.props.filters, partnerId: value };
@@ -480,6 +474,12 @@ export default class OrderList extends React.Component {
       />
     </span>
     );
+    const bulkActions = (<span>
+      {filters.progress === 'pending' &&
+      <ToolbarAction icon="caret-right" onClick={this.handleBatchStart} label={this.msg('startOrder')} />}
+      {filters.progress === 'pending' &&
+      <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />}
+    </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>
@@ -520,6 +520,7 @@ export default class OrderList extends React.Component {
             noSetting
             fixedBody={false}
             toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}

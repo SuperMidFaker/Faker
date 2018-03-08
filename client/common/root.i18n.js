@@ -105,6 +105,10 @@ const messages = defineMessages({
     id: 'root.actions.setting',
     defaultMessage: '设置',
   },
+  confirm: {
+    id: 'root.actions.confirm',
+    defaultMessage: '确认',
+  },
   accept: {
     id: 'root.actions.accept',
     defaultMessage: '接受',
