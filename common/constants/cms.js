@@ -162,8 +162,8 @@ export const TRANS_MODE = [
   },
 ];
 export const INVOICE_TYPE = [
-  { value: 0, text: '增值税专用发票' },
-  { value: 1, text: '增值税普通发票' },
+  { value: 'vat', text: '增值税专用发票' },
+  { value: 'general', text: '增值税普通发票' },
 ];
 
 export const CMS_DELEGATION_STATUS = {

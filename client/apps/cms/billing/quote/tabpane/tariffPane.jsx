@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Input, message, Mention, TreeSelect } from 'antd';
-import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote } from 'common/reducers/cmsQuote';
+import { feeUpdate, feeAdd, feeDelete, saveQuoteBatchEdit } from 'common/reducers/cmsQuote';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 // import SearchBox from 'client/components/SearchBox';
@@ -47,7 +47,7 @@ ColumnInput.propTypes = {
     loginName: state.account.username,
   }),
   {
-    feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote,
+    feeUpdate, feeAdd, feeDelete, saveQuoteBatchEdit,
   }
 )
 export default class TariffPane extends Component {

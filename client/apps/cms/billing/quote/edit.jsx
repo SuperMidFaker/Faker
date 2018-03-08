@@ -5,7 +5,7 @@ import { Breadcrumb, Form, Layout, Tabs, message, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadEditQuote, reviseQuote, copyQuote, openPublishModal, openTrialModal } from 'common/reducers/cmsQuote';
+import { loadQuoteElements, reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal } from 'common/reducers/cmsQuote';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import TariffPane from './tabpane/tariffPane';
@@ -16,7 +16,7 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 function fetchData({ params, dispatch }) {
-  return dispatch(loadEditQuote(params.quoteNo));
+  return dispatch(loadQuoteElements({ quoteNo: params.quoteNo }));
 }
 
 @connectFetch()(fetchData)
@@ -34,7 +34,7 @@ function fetchData({ params, dispatch }) {
     loginName: state.account.username,
   }),
   {
-    reviseQuote, copyQuote, openPublishModal, openTrialModal,
+    reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal,
   }
 )
 @Form.create()
@@ -63,17 +63,12 @@ export default class QuotingEdit extends Component {
           ...this.props.quoteData,
           ...this.props.form.getFieldsValue(),
         };
-        if (!quoteData.fees || quoteData.fees.length === 0) {
-          message.error('无报价费用模板', 5);
-        }
-        const { loginId, loginName } = this.props;
-        const prom = this.props.reviseQuote(quoteData, loginName, loginId);
+        const prom = this.props.reviseQuoteSetting(quoteData);
         prom.then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
             message.info('保存成功', 5);
-            // this.context.router.push('/clearance/quote');
           }
         });
       } else {

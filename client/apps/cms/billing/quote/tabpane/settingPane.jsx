@@ -55,12 +55,12 @@ export default class SettingPane extends Component {
             </Col>
             <Col span={6}>
               <FormItem label="服务需求方" {...formItemLayout}>
-                <Input value={formData.send_tenant_name} disabled />
+                <Input value={formData.seller_name} disabled />
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="报价提供方" {...formItemLayout}>
-                <Input value={formData.recv_tenant_name} disabled />
+                <Input value={formData.buyer_name} disabled />
               </FormItem>
             </Col>
           </Row>
@@ -71,7 +71,7 @@ export default class SettingPane extends Component {
               <FormItem label="开票类型" {...formItemLayout}>
                 {getFieldDecorator('invoice_type', {
                   initialValue: formData.invoice_type,
-                  rules: [{ required: true, message: '开票类型必选', type: 'number' }],
+                  rules: [{ required: true, message: '开票类型必选' }],
                 })(<Select style={{ width: '100%' }} >
                   {
                       INVOICE_TYPE.map(inv =>
@@ -82,8 +82,8 @@ export default class SettingPane extends Component {
             </Col>
             <Col span={6}>
               <FormItem label="报关单品项数量" {...formItemLayout}>
-                {getFieldDecorator('decl_item_per_sheet', {
-                  initialValue: formData.decl_item_per_sheet,
+                {getFieldDecorator('cus_item_per_sheet', {
+                  initialValue: formData.cus_item_per_sheet,
                   rules: [{ required: true, message: '品项数必填', type: 'number' }],
                 })(<Input />)}
               </FormItem>
@@ -98,8 +98,8 @@ export default class SettingPane extends Component {
             </Col>
             <Col span={6}>
               <FormItem label="允许特殊费用" {...formItemLayout}>
-                {getFieldDecorator('allow_spcial_charges', {
-                  initialValue: formData.allow_spcial_charges || false,
+                {getFieldDecorator('special_fee_allowed', {
+                  initialValue: formData.special_fee_allowed || false,
                 })(<Checkbox />)}
               </FormItem>
             </Col>
