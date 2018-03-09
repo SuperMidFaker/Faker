@@ -274,11 +274,11 @@ export default class InvoiceList extends React.Component {
       this.props.togglePanelVisible(true);
     }
   }
-  removeInvoiceByBatchUpload = (uploadNo, reload) => {
+  removeInvoiceByBatchUpload = (uploadNo, uploadLogReload) => {
     const invoiceFilter = this.props.filter;
     this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
-        reload();
+        uploadLogReload();
         this.handleReload(invoiceFilter);
       }
     });

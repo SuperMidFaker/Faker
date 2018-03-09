@@ -34,7 +34,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, uploadRecords: { ...state.uploadRecords, reload: action.reload } };
     }
     case actionTypes.TOGGLE_PANEL_VISIBLE: {
-      return { ...state, visible: action.visible };
+      return {
+        ...state,
+        visible: action.visible,
+        filter: action.visible ? { ...state.filter } : {},
+        uploadRecords: action.visible ? { ...state.uploadRecords, reload: true } :
+          { ...state.uploadRecords },
+      };
     }
     default:
       return state;

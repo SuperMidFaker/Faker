@@ -325,10 +325,10 @@ export default class OrderList extends React.Component {
       this.props.togglePanelVisible(true);
     }
   }
-  removeOrdersByBatchUpload = (uploadNo, reload) => {
+  removeOrdersByBatchUpload = (uploadNo, uploadLogReload) => {
     this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
-        reload();
+        uploadLogReload();
         this.handleTableLoad();
       }
     });
