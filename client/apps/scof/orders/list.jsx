@@ -326,16 +326,7 @@ export default class OrderList extends React.Component {
       this.setState({ logsPanelVisible: true });
     }
   }
-  loadRecords = (filter = {}) => {
-    const { pageSize, current } = this.props.uploadRecords;
-    this.props.loadUploadRecords({
-      pageSize,
-      current,
-      type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
-      filter: JSON.stringify(filter),
-    });
-  }
-  removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
+  removeOrdersByBatchUpload = (uploadNo, filter = {}) => {
     const { pageSize } = this.props.uploadRecords;
     this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
@@ -357,15 +348,6 @@ export default class OrderList extends React.Component {
     if (filters.endDate) {
       dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
     }
-    let bulkActions = (<span>
-      <Button icon="delete" onClick={this.handleBatchDelete}>{this.msg('batchDelete')}</Button>
-    </span>);
-    if (filters.progress === 'pending') {
-      bulkActions = (<span>
-        <Button icon="play-circle-o" onClick={this.handleBatchStart}>{this.msg('batchStart')}</Button>
-        <Button icon="delete" onClick={this.handleBatchDelete}>{this.msg('batchDelete')}</Button>
-      </span>);
-    }
     const { importPanel } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -373,27 +355,6 @@ export default class OrderList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const recordDataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadUploadRecords(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: Number(resolve(result.totalCount, result.current, result.pageSize)),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: Number(result.pageSize),
-        showTotal: total => `共 ${total} 条`,
-      }),
-      getParams: (pagination) => {
-        const params = {
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
-        };
-        return params;
-      },
-      remotes: this.props.uploadRecords,
-    });
     const menu = (
       <Menu onClick={this.handleImportMenuClick}>
         <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
@@ -567,7 +528,7 @@ export default class OrderList extends React.Component {
             onDeselectRows={this.handleDeselectRows}
             dataSource={dataSource}
             columns={columns}
-            rowKey="id"
+            rowKey="shipmt_order_no"
             loading={loading}
           />
         </Content>
@@ -618,10 +579,9 @@ export default class OrderList extends React.Component {
         <UploadLogsPanel
           visible={this.state.logsPanelVisible}
           onClose={() => { this.setState({ logsPanelVisible: false }); }}
-          logs={recordDataSource}
-          handleReload={this.loadRecords}
-          onUploadBatchDelete={this.removeInvoiceByBatchUpload}
+          onUploadBatchDelete={this.removeOrdersByBatchUpload}
           reload={this.props.uploadRecords.reload}
+          type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
         />
       </QueueAnim>
     );

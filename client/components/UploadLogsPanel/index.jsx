@@ -1,37 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
+import { loadUploadRecords } from 'common/reducers/uploadRecords';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 @injectIntl
+@connect(state => ({
+  uploadRecords: state.uploadRecords.uploadRecords,
+}), {
+  loadUploadRecords,
+})
 export default class UploadLogsPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     onClose: PropTypes.func,
-    logs: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
-    handleReload: PropTypes.func.isRequired,
     onUploadBatchDelete: PropTypes.func.isRequired,
     reload: PropTypes.bool.isRequired,
-  }
-  state = {
-
+    type: PropTypes.string.isRequired,
   }
   componentDidMount() {
-    this.props.handleReload();
+    this.handleReload();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.reload !== this.props.reload && nextProps.reload) {
-      this.props.handleReload();
+    if (nextProps.reload) {
+      this.handleReload();
     }
   }
   onUploadBatchDelete = (row) => {
     this.props.onUploadBatchDelete(row.upload_no);
+  }
+  handleReload = (filter = {}) => {
+    const { pageSize, current } = this.props.uploadRecords;
+    this.props.loadUploadRecords({
+      pageSize,
+      current,
+      type: this.props.type,
+      filter: JSON.stringify(filter),
+    });
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -94,15 +106,34 @@ export default class UploadLogsPanel extends React.Component {
     }
   }
   render() {
-    const {
-      logs, visible,
-    } = this.props;
+    const { visible } = this.props;
+    const dataSource = new DataTable.DataSource({
+      fetcher: params => this.props.loadUploadRecords(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        total: result.totalCount,
+        current: Number(resolve(result.totalCount, result.current, result.pageSize)),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: Number(result.pageSize),
+        showTotal: total => `共 ${total} 条`,
+      }),
+      getParams: (pagination) => {
+        const params = {
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          type: this.props.type,
+        };
+        return params;
+      },
+      remotes: this.props.uploadRecords,
+    });
     return (
       <DockPanel title={this.gmsg('importLogs')} size="large" visible={visible} onClose={this.handleClose}>
         <DataTable
           size="middle"
           columns={this.columns}
-          dataSource={logs}
+          dataSource={dataSource}
           scrollOffset="240"
           rowkey="upload_no"
           toolbarActions={<SearchBox onSearch={this.handleSearch} />}

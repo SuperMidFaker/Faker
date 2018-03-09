@@ -275,15 +275,6 @@ export default class InvoiceList extends React.Component {
       this.setState({ logsPanelVisible: true });
     }
   }
-  loadRecords = (filter = {}) => {
-    const { pageSize, current } = this.props.uploadRecords;
-    this.props.loadUploadRecords({
-      pageSize,
-      current,
-      type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
-      filter: JSON.stringify(filter),
-    });
-  }
   removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
     const { pageSize } = this.props.uploadRecords;
     const invoiceFilter = this.props.filter;
@@ -319,27 +310,6 @@ export default class InvoiceList extends React.Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
-    const dataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadUploadRecords(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: Number(resolve(result.totalCount, result.current, result.pageSize)),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: Number(result.pageSize),
-        showTotal: total => `共 ${total} 条`,
-      }),
-      getParams: (pagination) => {
-        const params = {
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
-        };
-        return params;
-      },
-      remotes: this.props.uploadRecords,
-    });
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
@@ -426,10 +396,9 @@ export default class InvoiceList extends React.Component {
           <UploadLogsPanel
             visible={this.state.logsPanelVisible}
             onClose={() => { this.setState({ logsPanelVisible: false }); }}
-            logs={dataSource}
-            handleReload={this.loadRecords}
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}
             reload={this.props.uploadRecords.reload}
+            type={UPLOAD_BATCH_OBJECT.SCOF_INVOICE}
           />
         </Content>
       </Layout>

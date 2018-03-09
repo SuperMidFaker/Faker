@@ -723,7 +723,7 @@ export function batchDeleteByUploadNo(uploadNo) {
   };
 }
 
-export function batchStart(ids, username) {
+export function batchStart(orderNos, username) {
   return {
     [CLIENT_API]: {
       types: [
@@ -731,14 +731,14 @@ export function batchStart(ids, username) {
         actionTypes.BATCH_START_SUCCEED,
         actionTypes.BATCH_START_FAIL,
       ],
-      endpoint: 'v1/sof/orders/batch/start',
+      endpoint: 'v1/sof/order/batch/accept',
       method: 'post',
-      data: { ids, username },
+      data: { orderNos, username },
     },
   };
 }
 
-export function batchDelete(ids, username) {
+export function batchDelete(orderNos, username) {
   return {
     [CLIENT_API]: {
       types: [
@@ -746,9 +746,9 @@ export function batchDelete(ids, username) {
         actionTypes.BATCH_DELETE_SUCCEED,
         actionTypes.BATCH_DELETE_FAIL,
       ],
-      endpoint: 'v1/sof/orders/batch/delete',
+      endpoint: 'v1/sof/order/batch/delete',
       method: 'post',
-      data: { ids, username },
+      data: { orderNos, username },
     },
   };
 }

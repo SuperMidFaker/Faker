@@ -19,11 +19,11 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPLOAD_RECORDS_LOAD:
-      return { ...state, uploadRecords: { ...state.uploadRecords } };
-    case actionTypes.UPLOAD_RECORDS_LOAD_SUCCEED:
-      return { ...state, uploadRecords: { ...action.result.data, reload: false } };
-    case actionTypes.UPLOAD_RECORDS_LOAD_FAIL:
       return { ...state, uploadRecords: { ...state.uploadRecords, reload: false } };
+    case actionTypes.UPLOAD_RECORDS_LOAD_SUCCEED:
+      return { ...state, uploadRecords: { ...action.result.data } };
+    case actionTypes.UPLOAD_RECORDS_LOAD_FAIL:
+      return { ...state, uploadRecords: { ...state.uploadRecords } };
     case actionTypes.SET_RECORDS_RELOAD: {
       return { ...state, uploadRecords: { ...state.uploadRecords, reload: action.reload } };
     }
