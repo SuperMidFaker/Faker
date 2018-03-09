@@ -97,18 +97,6 @@ export default class CreateQuoteModal extends React.Component {
       this.setState({ partners: service, partnerLabel: this.msg('provider') });
     }
   }
-  handleClientChange = (value) => {
-    if (typeof value === 'string') {
-      return value;
-    }
-    const selPartnerId = Number(value);
-    const partners = this.props.partners.filter(cl => cl.id === selPartnerId);
-    if (partners.length === 1) {
-      const partner = partners[0];
-      return partner.name;
-    }
-    return value;
-  }
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
@@ -134,7 +122,6 @@ export default class CreateQuoteModal extends React.Component {
           <FormItem label={this.state.partnerLabel} {...formItemLayout}>
             {getFieldDecorator('partner.name', {
               rules: [{ required: true, message: '必选' }],
-              getValueFromEvent: this.handleClientChange,
             })(<Select
               showSearch
               showArrow
@@ -144,8 +131,8 @@ export default class CreateQuoteModal extends React.Component {
               {
                 this.state.partners.map(pt => (
                   <Option
-                    value={pt.id}
-                    key={pt.id}
+                    value={pt.name}
+                    key={pt.name}
                   >{pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
                   </Option>))
               }
