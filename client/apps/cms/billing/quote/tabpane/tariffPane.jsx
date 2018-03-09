@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Input, message, Mention, Modal, Transfer, TreeSelect, Badge } from 'antd';
-import { feeUpdate, feeAdd, feeDelete, saveQuoteBatchEdit, toggleAddFeeModal } from 'common/reducers/cmsQuote';
+import { feeUpdate, addFees, feeDelete, saveQuoteBatchEdit, loadQuoteElements } from 'common/reducers/cmsQuote';
+import { loadAllFeeGroups, loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
-// import SearchBox from 'client/components/SearchBox';
 import { BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
-// import AddFeeModal from '../modal/addFeeModal';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
@@ -46,17 +45,23 @@ ColumnInput.propTypes = {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    allFeeElements: state.bssFeeSettings.allFeeElements,
+    allFeeGroups: state.bssFeeSettings.allFeeGroups,
   }),
   {
-    feeUpdate, feeAdd, feeDelete, saveQuoteBatchEdit, toggleAddFeeModal,
+    feeUpdate,
+    addFees,
+    feeDelete,
+    saveQuoteBatchEdit,
+    loadQuoteElements,
+    loadAllFeeElements,
+    loadAllFeeGroups,
   }
 )
 export default class TariffPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     quoteData: PropTypes.shape({ quote_no: PropTypes.string }).isRequired,
-    // editable: PropTypes.bool.isRequired,
-    feeDelete: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -68,9 +73,15 @@ export default class TariffPane extends Component {
     selectedKeys: [],
     visible: false,
   };
+  componentDidMount() {
+    this.props.loadAllFeeGroups();
+    this.props.loadAllFeeElements();
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-
+  handleElementLoad = () => {
+    this.props.loadQuoteElements({ quoteNo: this.props.quoteData.quote_no });
+  }
   handleEditChange = (record, field, value) => {
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
@@ -85,7 +96,7 @@ export default class TariffPane extends Component {
       }
     });
   }
-  handleSearch = (value) => {
+  handleFormulaSearch = (value) => {
     const searchValue = value.toLowerCase();
     const filtered = FORMULA_PARAMS.filter(item =>
       item.value.toLowerCase().indexOf(searchValue) !== -1);
@@ -95,20 +106,30 @@ export default class TariffPane extends Component {
       </Nav>));
     this.setState({ suggestions });
   }
-  handleonChange = (record, editorState) => {
+  handleFormulaChange = (record, editorState) => {
     record.formula_factor = Mention.toString(editorState); // eslint-disable-line no-param-reassign
   }
-  handleCancel = () => {
+  handleTransferChange = (nextTargetKeys) => {
+    this.setState({ targetKeys: nextTargetKeys });
+  }
+  handleTransferSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+    this.setState({ selectedKeys: [...sourceSelectedKeys, ...targetSelectedKeys] });
+  }
+  handleTransferCancel = () => {
     this.setState({
       visible: false,
     });
   }
-  handleOk = () => {
-    // TODO
-    this.handleCancel();
+  handleTransferOk = () => {
+    const { targetKeys } = this.state;
+    this.props.addFees(targetKeys, this.props.quoteData.quote_no).then((result) => {
+      if (!result.error) {
+        this.handleElementLoad();
+      }
+    });
+    this.handleTransferCancel();
   }
   toggleAddFeeModal = () => {
-    // this.props.toggleAddFeeModal(true);
     this.setState({
       visible: true,
     });
@@ -167,10 +188,10 @@ export default class TariffPane extends Component {
             return (<Mention
               suggestions={this.state.suggestions}
               prefix="$"
-              onSearchChange={this.handleSearch}
+              onSearchChange={this.handleFormulaSearch}
               defaultValue={Mention.toContentState(o)}
               placeholder="$公式"
-              onChange={editorState => this.handleonChange(record, editorState)}
+              onChange={editorState => this.handleFormulaChange(record, editorState)}
               multiLines
               style={{ width: '100%', height: '100%' }}
             />);
@@ -227,24 +248,23 @@ export default class TariffPane extends Component {
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
-        {/* <AddFeeModal reload={this.props.reload} /> */}
         <Modal
           title="选择费用元素"
           width={695}
           visible={visible}
-          onCancel={this.handleCancel}
-          onOk={this.handleOk}
+          onCancel={this.handleTransferCancel}
+          onOk={this.handleTransferOk}
         >
           <Transfer
-            dataSource={this.state.dataSource}
+            dataSource={this.props.allFeeElements}
             showSearch
             titles={['可选', '已选']}
             targetKeys={targetKeys}
             selectedKeys={selectedKeys}
-            onChange={this.handleChange}
-            onSelectChange={this.handleSelectChange}
-            render={item => item.invoice_no}
-            rowKey={item => item.invoice_no}
+            onChange={this.handleTransferChange}
+            onSelectChange={this.handleTransferSelectChange}
+            render={item => `${item.fee_code}-${item.fee_name}`}
+            rowKey={item => item.fee_code}
             listStyle={{
               width: 300,
               height: 400,

@@ -10,7 +10,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'QUOTE_ELEMENTS_LOAD', 'QUOTE_ELEMENTS_LOAD_SUCCEED', 'QUOTE_ELEMENTS_LOAD_FAIL',
   'QUOTE_COPY', 'QUOTE_COPY_SUCCEED', 'QUOTE_COPY_FAIL',
   'QUOTES_DELETE', 'QUOTES_DELETE_SUCCEED', 'QUOTES_DELETE_FAIL',
-  'FEE_ADD', 'FEE_ADD_SUCCEED', 'FEE_ADD_FAIL',
+  'FEES_ADD', 'FEES_ADD_SUCCEED', 'FEES_ADD_FAIL',
   'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
   'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
   'REVISE_QUOTE_SETTING', 'REVISE_QUOTE_SETTING_SUCCEED', 'REVISE_QUOTE_SETTING_FAIL',
@@ -298,17 +298,17 @@ export function feeUpdate(params, row) {
   };
 }
 
-export function addFee(data) {
+export function addFees(feeCodes, quoteNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.FEE_ADD,
-        actionTypes.FEE_ADD_SUCCEED,
-        actionTypes.FEE_ADD_FAIL,
+        actionTypes.FEES_ADD,
+        actionTypes.FEES_ADD_SUCCEED,
+        actionTypes.FEES_ADD_FAIL,
       ],
-      endpoint: 'v1/cms/quote/fee/add',
+      endpoint: 'v1/cms/quote/fees/add',
       method: 'post',
-      data,
+      data: { feeCodes, quoteNo },
     },
   };
 }
