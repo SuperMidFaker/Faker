@@ -2,41 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Input, message, Mention, Modal, Transfer, TreeSelect, Badge } from 'antd';
-import { feeUpdate, addFees, feeDelete, saveQuoteBatchEdit, loadQuoteElements } from 'common/reducers/cmsQuote';
+import { Button, Input, message, Mention, Modal, Transfer, TreeSelect } from 'antd';
+import { updateFee, addFees, deleteFees, saveQuoteBatchEdit, loadQuoteElements } from 'common/reducers/cmsQuote';
 import { loadAllFeeGroups, loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
-import { BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
+import ToolbarAction from 'client/components/ToolbarAction';
+import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
-
-function ColumnInput(props) {
-  const {
-    inEdit, record, field, onChange,
-  } = props;
-  function handleChange(ev) {
-    if (onChange) {
-      onChange(record, field, ev.target.value);
-    }
-  }
-  let style = {};
-  if (!record.enabled) {
-    style = { color: '#CCCCCC' };
-  }
-  if (record.fee_style === 'advance' && field !== 'fee_name') {
-    return <span />;
-  }
-  return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
-    : <span style={style}>{record[field] || ''}</span>;
-}
-ColumnInput.propTypes = {
-  inEdit: PropTypes.bool,
-  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
-  field: PropTypes.string.isRequired,
-  onChange: PropTypes.func,
-};
 
 @injectIntl
 @connect(
@@ -49,9 +24,9 @@ ColumnInput.propTypes = {
     allFeeGroups: state.bssFeeSettings.allFeeGroups,
   }),
   {
-    feeUpdate,
+    updateFee,
     addFees,
-    feeDelete,
+    deleteFees,
     saveQuoteBatchEdit,
     loadQuoteElements,
     loadAllFeeElements,
@@ -72,29 +47,39 @@ export default class TariffPane extends Component {
     targetKeys: [],
     selectedKeys: [],
     visible: false,
+    fees: [],
+    editItem: {},
+    onEdit: false,
   };
   componentDidMount() {
     this.props.loadAllFeeGroups();
     this.props.loadAllFeeElements();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.quoteData &&
+        nextProps.quoteData.fees !== this.props.quoteData.fees) {
+      this.setState({ fees: nextProps.quoteData.fees });
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleElementLoad = () => {
     this.props.loadQuoteElements({ quoteNo: this.props.quoteData.quote_no });
   }
-  handleEditChange = (record, field, value) => {
-    record[field] = value; // eslint-disable-line no-param-reassign
-    this.forceUpdate();
-  }
-  handleFeeDelete = (row) => {
-    this.props.feeDelete(row.id).then((result) => {
+  handleFeesBatchDelete = () => {
+    const feeCodes = this.state.selectedRowKeys;
+    this.props.deleteFees(feeCodes).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
         message.info('删除成功', 5);
-        this.props.reload();
+        this.handleDeselectRows();
+        this.handleElementLoad();
       }
     });
+  }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
   }
   handleFormulaSearch = (value) => {
     const searchValue = value.toLowerCase();
@@ -106,8 +91,14 @@ export default class TariffPane extends Component {
       </Nav>));
     this.setState({ suggestions });
   }
-  handleFormulaChange = (record, editorState) => {
-    record.formula_factor = Mention.toString(editorState); // eslint-disable-line no-param-reassign
+  handleEditChange = (id, field, value) => {
+    const item = this.state.editItem;
+    item[field] = value;
+    this.setState({ editItem: item });
+  }
+  handleFormulaChange = (id, editorState) => {
+    const formula = Mention.toString(editorState);
+    this.handleEditChange(id, 'formula_factor', formula);
   }
   handleTransferChange = (nextTargetKeys) => {
     this.setState({ targetKeys: nextTargetKeys });
@@ -134,10 +125,22 @@ export default class TariffPane extends Component {
       visible: true,
     });
   }
+  handleFeeEdit = (row) => {
+    this.setState({ onEdit: true, editItem: row });
+  }
+  handleFeeSave = () => {
+    this.setState({ onEdit: false });
+    const item = this.state.editItem;
+    this.props.updateFee({
+      id: item.id,
+      billing_way: item.billing_way,
+      formula_factor: item.formula_factor,
+    });
+  }
   render() {
-    const { quoteData } = this.props;
+    const { quoteData, allFeeGroups, readOnly } = this.props;
     const {
-      targetKeys, selectedKeys, visible,
+      targetKeys, selectedKeys, visible, fees, onEdit,
     } = this.state;
     const columns = [
       {
@@ -158,6 +161,9 @@ export default class TariffPane extends Component {
         title: this.msg('feeGroup'),
         dataIndex: 'fee_group',
         width: 150,
+        render: o =>
+          allFeeGroups.find(fg => fg.fee_group_code === o) &&
+          allFeeGroups.find(fg => fg.fee_group_code === o).fee_group_name,
       }, {
         title: this.msg('feeType'),
         dataIndex: 'fee_type',
@@ -166,64 +172,63 @@ export default class TariffPane extends Component {
           { text: '代垫', value: 'AP' },
         ],
         width: 150,
+        render: o =>
+          FEE_TYPE.find(ft => ft.value === o) &&
+          FEE_TYPE.find(ft => ft.value === o).text,
       }, {
         title: this.msg('billingWay'),
         dataIndex: 'billing_way',
         width: 200,
-        render: o =>
-          (<TreeSelect
+        render: (o, record) => {
+          if (!onEdit) {
+            return o;
+          }
+          return (<TreeSelect
             style={{ width: '100%' }}
             value={o}
             dropdownStyle={{ overflow: 'auto' }}
             treeData={BILLING_METHOD}
             treeDefaultExpandAll
-            onChange={this.handleEditChange}
-          />),
+            onChange={value => this.handleEditChange(record.id, 'billing_way', value)}
+          />);
+        },
       }, {
         title: this.msg('formulaFactor'),
         dataIndex: 'formula_factor',
         width: 250,
         render: (o, record) => {
-          if (record.billing_way === '$formula') {
+          const formulaChildren = BILLING_METHOD.find(bl => bl.key === '$formula').children;
+          if (!onEdit) {
+            return o;
+          } else if (formulaChildren.find(fl => fl.key === record.billing_way)) {
             return (<Mention
               suggestions={this.state.suggestions}
               prefix="$"
               onSearchChange={this.handleFormulaSearch}
-              defaultValue={Mention.toContentState(o)}
+              defaultValue={o ? Mention.toContentState(o) : null}
               placeholder="$公式"
-              onChange={editorState => this.handleFormulaChange(record, editorState)}
+              onChange={editorState => this.handleFormulaChange(record.id, editorState)}
               multiLines
               style={{ width: '100%', height: '100%' }}
             />);
           }
-          return (<ColumnInput
-            field="formula_factor"
-            inEdit
-            record={record}
-            onChange={this.handleEditChange}
-          />);
+          return (
+            <Input value={o} onChange={e => this.handleEditChange(record.id, 'formula_factor', e.target.value)} style={{ width: '100%' }} />
+          );
         },
-      }, {
-        title: this.msg('invoiceEn'),
-        dataIndex: 'tax_included',
-        width: 100,
-        render: (o) => {
-          if (o) {
-            return <Badge status="success" />;
-          }
-          return <Badge status="default" />;
-        },
-      }, {
-        title: this.msg('taxRate'),
-        dataIndex: 'tax_rate',
-        width: 150,
-      }, {
-        width: 100,
-        fixed: 'right',
-        render: (o, record) =>
-          <RowAction danger icon="minus-circle-o" tooltip={this.gmsg('remove')} onClick={this.handleFeeDelete} row={record} />,
       },
     ];
+    if (!readOnly) {
+      columns.push({
+        width: 100,
+        render: (o, record) => {
+          if (!onEdit) {
+            return (<RowAction onClick={this.handleFeeEdit} icon="edit" row={record} />);
+          }
+          return (<RowAction onClick={this.handleFeeSave} icon="save" row={record} />);
+        },
+      });
+    }
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -235,17 +240,19 @@ export default class TariffPane extends Component {
         fullscreen={this.props.fullscreen}
         columns={columns}
         rowSelection={rowSelection}
-        dataSource={quoteData.fees}
+        dataSource={fees}
         rowKey="id"
         loading={quoteData.loading}
       >
         <DataPane.Toolbar>
-          <Button type="primary" icon="plus-circle-o" onClick={this.toggleAddFeeModal}>{this.gmsg('add')}</Button>
+          {!readOnly && <Button type="primary" icon="plus-circle-o" onClick={this.toggleAddFeeModal}>{this.gmsg('add')}</Button>}
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}
           >
-            <Button onClick={this.handleBatchDelete} icon="delete" />
+            {!readOnly &&
+              <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleFeesBatchDelete} />
+            }
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <Modal

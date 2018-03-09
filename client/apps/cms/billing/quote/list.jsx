@@ -116,6 +116,7 @@ export default class RatesList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        this.handleDeselectRows();
         this.handleQuoteTableLoad();
       }
     });
@@ -172,10 +173,16 @@ export default class RatesList extends Component {
         align: 'right',
         fixed: 'right',
         width: 60,
-        render: (o, record) =>
-          (<span>
-            <RowAction onClick={this.handleQuoteEdit} icon="edit" row={record} />
-          </span>),
+        render: (o, record) => {
+          if (record.tenant_id === tenantId) {
+            return (
+              <RowAction onClick={this.handleQuoteEdit} icon="edit" row={record} />
+            );
+          }
+          return (
+            <RowAction onClick={this.handleQuoteEdit} icon="eye-o" row={record} />
+          );
+        },
       },
     ];
     this.dataSource.remotes = quotesList;

@@ -30,6 +30,7 @@ function fetchData({ params, dispatch }) {
   state => ({
     quoteData: state.cmsQuote.quoteData,
     saving: state.cmsQuote.quoteSaving,
+    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
@@ -45,6 +46,14 @@ export default class QuotingEdit extends Component {
   }
   state = {
     tabKey: 'tariff',
+    readOnly: false,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.quoteData !== this.props.quoteData) {
+      if (this.props.tenantId !== nextProps.quoteData.tenant_id) {
+        this.setState({ readOnly: true });
+      }
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -139,10 +148,10 @@ export default class QuotingEdit extends Component {
           <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="费率" key="tariff">
-                <TariffPane />
+                <TariffPane readOnly={this.state.readOnly} />
               </TabPane>
               <TabPane tab="设置" key="setting">
-                <SettingPane form={form} formData={quoteData} />
+                <SettingPane form={form} formData={quoteData} readOnly={this.state.readOnly} />
               </TabPane>
             </Tabs>
           </MagicCard>

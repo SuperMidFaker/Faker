@@ -12,7 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'QUOTES_DELETE', 'QUOTES_DELETE_SUCCEED', 'QUOTES_DELETE_FAIL',
   'FEES_ADD', 'FEES_ADD_SUCCEED', 'FEES_ADD_FAIL',
   'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
-  'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
+  'FEES_DELETE', 'FEES_DELETE_SUCCEED', 'FEES_DELETE_FAIL',
   'REVISE_QUOTE_SETTING', 'REVISE_QUOTE_SETTING_SUCCEED', 'REVISE_QUOTE_SETTING_FAIL',
   'PUBLISH_QUOTE', 'PUBLISH_QUOTE_SUCCEED', 'PUBLISH_QUOTE_FAIL',
   'CLOSE_PUBLISH_MODAL', 'OPEN_PUBLISH_MODAL',
@@ -282,7 +282,7 @@ export function deleteQuotes(quoteNos) {
   };
 }
 
-export function feeUpdate(params, row) {
+export function updateFee(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -290,10 +290,9 @@ export function feeUpdate(params, row) {
         actionTypes.FEE_UPDATE_SUCCEED,
         actionTypes.FEE_UPDATE_FAIL,
       ],
-      endpoint: 'v1/cms/quote/feeupdate',
+      endpoint: 'v1/cms/quote/fee/update',
       method: 'post',
-      data: { params, row },
-      origin: 'mongo',
+      data,
     },
   };
 }
@@ -313,17 +312,17 @@ export function addFees(feeCodes, quoteNo) {
   };
 }
 
-export function feeDelete(feeId) {
+export function deleteFees(feeIds) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.FEE_DELETE,
-        actionTypes.FEE_DELETE_SUCCEED,
-        actionTypes.FEE_DELETE_FAIL,
+        actionTypes.FEES_DELETE,
+        actionTypes.FEES_DELETE_SUCCEED,
+        actionTypes.FEES_DELETE_FAIL,
       ],
-      endpoint: 'v1/cms/quote/fee/delete',
+      endpoint: 'v1/cms/quote/fees/batch/delete',
       method: 'post',
-      data: { feeId },
+      data: { feeIds },
     },
   };
 }
