@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Input, message, Mention, TreeSelect, Badge } from 'antd';
+import { Button, Input, message, Mention, Modal, Transfer, TreeSelect, Badge } from 'antd';
 import { feeUpdate, feeAdd, feeDelete, saveQuoteBatchEdit, toggleAddFeeModal } from 'common/reducers/cmsQuote';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 // import SearchBox from 'client/components/SearchBox';
 import { BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
-import AddFeeModal from '../../modals/addFeeModal';
+// import AddFeeModal from '../modal/addFeeModal';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
@@ -64,6 +64,9 @@ export default class TariffPane extends Component {
   state = {
     suggestions: [],
     selectedRowKeys: [],
+    targetKeys: [],
+    selectedKeys: [],
+    visible: false,
   };
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -95,11 +98,26 @@ export default class TariffPane extends Component {
   handleonChange = (record, editorState) => {
     record.formula_factor = Mention.toString(editorState); // eslint-disable-line no-param-reassign
   }
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  }
+  handleOk = () => {
+    // TODO
+    this.handleCancel();
+  }
   toggleAddFeeModal = () => {
-    this.props.toggleAddFeeModal(true);
+    // this.props.toggleAddFeeModal(true);
+    this.setState({
+      visible: true,
+    });
   }
   render() {
     const { quoteData } = this.props;
+    const {
+      targetKeys, selectedKeys, visible,
+    } = this.state;
     const columns = [
       {
         title: this.gmsg('seqNo'),
@@ -209,7 +227,30 @@ export default class TariffPane extends Component {
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
-        <AddFeeModal reload={this.props.reload} />
+        {/* <AddFeeModal reload={this.props.reload} /> */}
+        <Modal
+          title="选择费用元素"
+          width={695}
+          visible={visible}
+          onCancel={this.handleCancel}
+          onOk={this.handleOk}
+        >
+          <Transfer
+            dataSource={this.state.dataSource}
+            showSearch
+            titles={['可选', '已选']}
+            targetKeys={targetKeys}
+            selectedKeys={selectedKeys}
+            onChange={this.handleChange}
+            onSelectChange={this.handleSelectChange}
+            render={item => item.invoice_no}
+            rowKey={item => item.invoice_no}
+            listStyle={{
+              width: 300,
+              height: 400,
+            }}
+          />
+        </Modal>
       </DataPane>
     );
   }
