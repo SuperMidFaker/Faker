@@ -173,8 +173,8 @@ export default class TariffPane extends Component {
         ],
         width: 150,
         render: o =>
-          FEE_TYPE.find(ft => ft.value === o) &&
-          FEE_TYPE.find(ft => ft.value === o).text,
+          FEE_TYPE.find(ft => ft.key === o) &&
+          FEE_TYPE.find(ft => ft.key === o).text,
       }, {
         title: this.msg('billingWay'),
         dataIndex: 'billing_way',

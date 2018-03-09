@@ -193,12 +193,12 @@ export default class SurchargeForm extends React.Component {
             return (
               <Select value={o} style={{ width: '100%' }} onChange={e => this.handleFeeStyleChange(index, e)} >
                 {
-                  FEE_TYPE.map(opt => <Option value={opt.value} key={opt.value}>{opt.text}</Option>)
+                  FEE_TYPE.map(opt => <Option value={opt.key} key={opt.key}>{opt.text}</Option>)
                 }
               </Select>
             );
           }
-          const style = FEE_TYPE.find(item => item.value === o);
+          const style = FEE_TYPE.find(item => item.key === o);
           return style ? style.text : '';
         },
       }, {

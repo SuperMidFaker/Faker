@@ -87,7 +87,7 @@ export default class ExpenseDetail extends Component {
     dataIndex: 'fee_type',
     width: 100,
     render: (o) => {
-      const type = FEE_TYPE.filter(fe => fe.value === o)[0];
+      const type = FEE_TYPE.filter(fe => fe.key === o)[0];
       return type ? <span>{type.text}</span> : <span />;
     },
   }, {
