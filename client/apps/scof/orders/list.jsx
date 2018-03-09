@@ -8,7 +8,7 @@ import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo } from 'common/reducers/sofOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo, batchStart, batchDelete } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
@@ -84,6 +84,8 @@ function fetchData({ state, dispatch }) {
   loadUploadRecords,
   batchDeleteByUploadNo,
   setUploadRecordsReload,
+  batchStart,
+  batchDelete,
 })
 @connectNav({
   depth: 2,
@@ -193,6 +195,21 @@ export default class OrderList extends React.Component {
       }
     });
   }
+  handleBatchDelete = () => {
+    const { selectedRowKeys } = this.state;
+    const { username } = this.props;
+    this.props.batchDelete(selectedRowKeys, username).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('删除成功');
+        this.setState({
+          selectedRowKeys: [],
+        });
+        this.handleTableLoad();
+      }
+    });
+  }
   handleStart = (row) => {
     const { loginId, username } = this.props;
     const shipmtOrderNo = row.shipmt_order_no;
@@ -201,6 +218,21 @@ export default class OrderList extends React.Component {
         message.error(result.error.message, 10);
       } else {
         message.info('订单流程已启动');
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleBatchStart = () => {
+    const { selectedRowKeys } = this.state;
+    const { username } = this.props;
+    this.props.batchStart(selectedRowKeys, username).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('订单流程已启动');
+        this.setState({
+          selectedRowKeys: [],
+        });
         this.handleTableLoad();
       }
     });
@@ -324,6 +356,15 @@ export default class OrderList extends React.Component {
     let dateVal = [];
     if (filters.endDate) {
       dateVal = [moment(filters.startDate, 'YYYY-MM-DD'), moment(filters.endDate, 'YYYY-MM-DD')];
+    }
+    let bulkActions = (<span>
+      <Button icon="delete" onClick={this.handleBatchDelete}>{this.msg('batchDelete')}</Button>
+    </span>);
+    if (filters.progress === 'pending') {
+      bulkActions = (<span>
+        <Button icon="play-circle-o" onClick={this.handleBatchStart}>{this.msg('batchStart')}</Button>
+        <Button icon="delete" onClick={this.handleBatchDelete}>{this.msg('batchDelete')}</Button>
+      </span>);
     }
     const { importPanel } = this.state;
     const rowSelection = {
