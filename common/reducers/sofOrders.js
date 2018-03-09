@@ -33,6 +33,9 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ORDER_INVOICES', 'LOAD_ORDER_INVOICES_SUCCEED', 'LOAD_ORDER_INVOICES_FAIL',
   'ADD_ORDER_INVOICES', 'ADD_ORDER_INVOICES_SUCCEED', 'ADD_ORDER_INVOICES_FAIL',
   'LOAD_ORDDETAILS', 'LOAD_ORDDETAILS_SUCCEED', 'LOAD_ORDDETAILS_FAIL',
+  'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
+  'BATCH_START', 'BATCH_START_SUCCEED', 'BATCH_START_FAIL',
+  'BATCH_DELETE', 'BATCH_DELETE_SUCCEED', 'BATCH_DELETE_FAIL',
 ]);
 
 const initialState = {
@@ -701,6 +704,51 @@ export function loadOrderDetails(params) {
       endpoint: 'v1/sof/order/products',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function batchDeleteByUploadNo(uploadNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_DELETE_BY_UPLOADNO,
+        actionTypes.BATCH_DELETE_BY_UPLOADNO_SUCCEED,
+        actionTypes.BATCH_DELETE_BY_UPLOADNO_FAIL,
+      ],
+      endpoint: 'v1/sof/order/batch/delete/by/uploadno',
+      method: 'post',
+      data: { uploadNo },
+    },
+  };
+}
+
+export function batchStart(orderNos, username) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_START,
+        actionTypes.BATCH_START_SUCCEED,
+        actionTypes.BATCH_START_FAIL,
+      ],
+      endpoint: 'v1/sof/order/batch/accept',
+      method: 'post',
+      data: { orderNos, username },
+    },
+  };
+}
+
+export function batchDelete(orderNos, username) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_DELETE,
+        actionTypes.BATCH_DELETE_SUCCEED,
+        actionTypes.BATCH_DELETE_FAIL,
+      ],
+      endpoint: 'v1/sof/order/batch/delete',
+      method: 'post',
+      data: { orderNos, username },
     },
   };
 }

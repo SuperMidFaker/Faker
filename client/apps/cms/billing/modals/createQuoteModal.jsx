@@ -57,23 +57,23 @@ export default class CreateQuoteModal extends React.Component {
   }
   handleOk = () => {
     const quoteData = {};
+    let selectedpartner = { partner_tenant_id: null, name: '', id: null };
     const field = this.props.form.getFieldsValue();
-    if (field.partner.name) {
-      const selpartners = this.props.partners.filter(pt => pt.name === field.partner.name);
-      [quoteData.partner] = selpartners;
+    if (field.partnerId) {
+      [selectedpartner] = this.props.partners.filter(pt => String(pt.id) === field.partnerId);
     }
     if (field.quote_type === 'sales') {
-      quoteData.seller_tenant_id = quoteData.partner.partner_tenant_id;
-      quoteData.seller_name = quoteData.partner.name;
-      quoteData.seller_partner_id = quoteData.partner.id;
+      quoteData.seller_tenant_id = selectedpartner.partner_tenant_id;
+      quoteData.seller_name = selectedpartner.name;
+      quoteData.seller_partner_id = selectedpartner.id;
       quoteData.buyer_tenant_id = this.props.tenantId;
       quoteData.buyer_name = this.props.tenantName;
     } else if (field.quote_type === 'cost') {
       quoteData.seller_tenant_id = this.props.tenantId;
       quoteData.seller_tenant_name = this.props.tenantName;
-      quoteData.buyer_tenant_id = quoteData.partner.partner_tenant_id;
-      quoteData.buyer_name = quoteData.partner.name;
-      quoteData.buyer_partner_id = quoteData.partner.id;
+      quoteData.buyer_tenant_id = selectedpartner.partner_tenant_id;
+      quoteData.buyer_name = selectedpartner.name;
+      quoteData.buyer_partner_id = selectedpartner.id;
     }
     quoteData.quote_name = field.quote_name;
     const prom = this.props.createQuote(quoteData);
@@ -96,18 +96,6 @@ export default class CreateQuoteModal extends React.Component {
       const service = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
       this.setState({ partners: service, partnerLabel: this.msg('provider') });
     }
-  }
-  handleClientChange = (value) => {
-    if (typeof value === 'string') {
-      return value;
-    }
-    const selPartnerId = Number(value);
-    const partners = this.props.partners.filter(cl => cl.id === selPartnerId);
-    if (partners.length === 1) {
-      const partner = partners[0];
-      return partner.name;
-    }
-    return value;
   }
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
@@ -132,9 +120,8 @@ export default class CreateQuoteModal extends React.Component {
             </RadioGroup>)}
           </FormItem>
           <FormItem label={this.state.partnerLabel} {...formItemLayout}>
-            {getFieldDecorator('partner.name', {
+            {getFieldDecorator('partnerId', {
               rules: [{ required: true, message: '必选' }],
-              getValueFromEvent: this.handleClientChange,
             })(<Select
               showSearch
               showArrow
@@ -144,8 +131,8 @@ export default class CreateQuoteModal extends React.Component {
               {
                 this.state.partners.map(pt => (
                   <Option
-                    value={pt.id}
-                    key={pt.id}
+                    value={String(pt.id)}
+                    key={String(pt.id)}
                   >{pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
                   </Option>))
               }

@@ -4,8 +4,8 @@ export const BSS_PLUGINS = [
   { key: 'vendorBills', name: '服务商账单' },
 ];
 
-export const BSS_FEE_TYPE = [
-  { key: 'SC', text: '服务费' },
-  { key: 'AP', text: '代垫费' },
-  { key: 'SP', text: '特殊费用' },
+export const FEE_TYPE = [
+  { value: 'SC', text: '服务费' },
+  { value: 'AP', text: '代垫费' },
+  { value: 'SP', text: '特殊费用' },
 ];

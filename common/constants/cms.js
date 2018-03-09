@@ -73,14 +73,6 @@ export const CIQ_SUP_STATUS = [
   { value: 4, text: '已完成' },
 ];
 
-export const FEE_TYPE = [
-  { value: 'SC', text: '服务费' },
-  { value: 'AP', text: '代垫费' },
-];
-export const FEE_GROUP = [
-  { value: 'TR', text: '运输' },
-  { value: 'CCL', text: '清关' },
-];
 export const FEE_CATEGORY = [
   { value: 'transport_expenses', text: '运输' },
   { value: 'customs_expenses', text: '报关' },
@@ -93,7 +85,7 @@ export const FORMULA_PARAMS = [
   { value: 'decl_sheet_qty', text: '联单数量' },
   { value: 'decl_item_qty', text: '品项数量' },
   { value: 'trade_item_qty', text: '料件数量' },
-  { value: 'trade_amt', text: '进出口金额' },
+  { value: 'trade_amount', text: '进出口金额' },
 ];
 export const BILLING_METHOD = [
   {
@@ -174,8 +166,8 @@ export const TRANS_MODE = [
   },
 ];
 export const INVOICE_TYPE = [
-  { value: 'vat', text: '增值税专用发票' },
-  { value: 'general', text: '增值税普通发票' },
+  { value: 'vatSpecial', text: '增值税专用发票' },
+  { value: 'vatGeneral', text: '增值税普通发票' },
 ];
 
 export const CMS_DELEGATION_STATUS = {

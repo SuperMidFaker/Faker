@@ -30,11 +30,12 @@ function fetchData({ params, dispatch }) {
   state => ({
     quoteData: state.cmsQuote.quoteData,
     saving: state.cmsQuote.quoteSaving,
+    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
   {
-    reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal, loadQuoteElements,
+    reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal,
   }
 )
 @Form.create()
@@ -115,11 +116,14 @@ export default class QuotingEdit extends Component {
       }
     });
   }
-  handleElementLoad = () => {
-    this.props.loadQuoteElements({ quoteNo: this.props.quoteData.quote_no });
-  }
   render() {
-    const { form, saving, quoteData } = this.props;
+    const {
+      form, saving, quoteData, tenantId,
+    } = this.props;
+    let readOnly = false;
+    if (tenantId !== quoteData.tenant_id) {
+      readOnly = true;
+    }
     return (
       <Layout>
         <PageHeader>
@@ -142,10 +146,10 @@ export default class QuotingEdit extends Component {
           <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="费率" key="tariff">
-                <TariffPane reload={this.handleElementLoad} />
+                <TariffPane readOnly={readOnly} />
               </TabPane>
               <TabPane tab="设置" key="setting">
-                <SettingPane form={form} formData={quoteData} />
+                <SettingPane form={form} formData={quoteData} readOnly={readOnly} />
               </TabPane>
             </Tabs>
           </MagicCard>
