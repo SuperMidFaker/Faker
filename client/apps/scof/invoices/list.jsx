@@ -275,6 +275,16 @@ export default class InvoiceList extends React.Component {
       this.setState({ logsPanelVisible: true });
     }
   }
+  handleClose = () => {
+    this.setState({ logsPanelVisible: false });
+    const { pageSize } = this.props.uploadRecords;
+    this.props.loadUploadRecords({
+      pageSize,
+      current: 1,
+      type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
+      filter: JSON.stringify({}),
+    });
+  }
   removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
     const { pageSize } = this.props.uploadRecords;
     const invoiceFilter = this.props.filter;
@@ -395,9 +405,8 @@ export default class InvoiceList extends React.Component {
           </ImportDataPanel>
           <UploadLogsPanel
             visible={this.state.logsPanelVisible}
-            onClose={() => { this.setState({ logsPanelVisible: false }); }}
+            onClose={this.handleClose}
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}
-            reload={this.props.uploadRecords.reload}
             type={UPLOAD_BATCH_OBJECT.SCOF_INVOICE}
           />
         </Content>

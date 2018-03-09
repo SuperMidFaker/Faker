@@ -14,12 +14,17 @@ const initialState = {
     data: [],
     reload: false,
   },
+  filter: {},
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPLOAD_RECORDS_LOAD:
-      return { ...state, uploadRecords: { ...state.uploadRecords, reload: false } };
+      return {
+        ...state,
+        uploadRecords: { ...state.uploadRecords, reload: false },
+        filter: JSON.parse(action.params.filter),
+      };
     case actionTypes.UPLOAD_RECORDS_LOAD_SUCCEED:
       return { ...state, uploadRecords: { ...action.result.data } };
     case actionTypes.UPLOAD_RECORDS_LOAD_FAIL:

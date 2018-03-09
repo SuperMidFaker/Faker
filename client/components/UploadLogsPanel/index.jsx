@@ -13,6 +13,7 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 @injectIntl
 @connect(state => ({
   uploadRecords: state.uploadRecords.uploadRecords,
+  filter: state.uploadRecords.filter,
 }), {
   loadUploadRecords,
 })
@@ -22,14 +23,13 @@ export default class UploadLogsPanel extends React.Component {
     visible: PropTypes.bool.isRequired,
     onClose: PropTypes.func,
     onUploadBatchDelete: PropTypes.func.isRequired,
-    reload: PropTypes.bool.isRequired,
     type: PropTypes.string.isRequired,
   }
   componentDidMount() {
     this.handleReload();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.reload) {
+    if (nextProps.uploadRecords.reload) {
       this.handleReload();
     }
   }
@@ -51,8 +51,8 @@ export default class UploadLogsPanel extends React.Component {
     window.open(row.file_path);
   }
   handleSearch = (value) => {
-    const filters = { searchText: value };
-    this.props.handleReload(filters);
+    const filter = { ...this.props.filter, searchText: value };
+    this.handleReload(filter);
   }
   columns = [
     {
