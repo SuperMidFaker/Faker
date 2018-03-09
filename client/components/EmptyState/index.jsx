@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './style.less';
 
 export default function EmptyState(props) {
   const {
@@ -8,7 +9,7 @@ export default function EmptyState(props) {
     primaryAction, secondaryAction,
   } = props;
   return (
-    <div>
+    <div className="welo-empty-state">
       {imageUrl && <img src={imageUrl} alt="img" style={{ maxWidth: maxImageWidth, maxHeight: maxImageHeight }} />}
       <h4>{header}</h4>
       {description && <p>{description}</p>}
