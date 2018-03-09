@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export default class Nav extends Component {
-  render() {
-    return (
-      <span className="welo-page-header-nav">{this.props.children}</span>
-    );
-  }
+export default function Nav(props) {
+  return (
+    <span className="welo-page-header-nav">{props.children}</span>
+  );
 }
+Nav.props = {
+  children: PropTypes.node,
+};

@@ -4,7 +4,7 @@ import './style.less';
 
 export default function EmptyState(props) {
   const {
-    header, description,
+    header = 'Empty here', description,
     imageUrl, maxImageWidth = 160, maxImageHeight = 160,
     primaryAction, secondaryAction,
   } = props;

@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export default class Title extends Component {
-  render() {
-    return (
-      <div className="welo-page-header-title">{this.props.children}</div>
-    );
-  }
+export default function Title(props) {
+  return (
+    <div className="welo-page-header-title">{props.children}</div>
+  );
 }
+Title.props = {
+  children: PropTypes.node,
+};

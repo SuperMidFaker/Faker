@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chart, Tooltip, Geom } from 'bizcharts';
 import autoHeight from '../autoHeight';
-import '../index.less';
+import '../style.less';
 
 @autoHeight()
 export default class MiniBar extends React.Component {

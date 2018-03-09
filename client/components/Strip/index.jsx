@@ -1,7 +1,8 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'antd';
-import './index.less';
+import './style.less';
 
 export default class Strip extends Component {
   static propTypes = {

@@ -28,7 +28,7 @@ export default class ButtonToggle extends React.Component {
   }
   handleClick = (e) => {
     this.setState({ toggle: !this.state.toggle });
-    const onClick = this.props.onClick;
+    const { onClick } = this.props;
     if (onClick) {
       onClick(e, !this.state.toggle);
     }
@@ -43,11 +43,27 @@ export default class ButtonToggle extends React.Component {
     const toggleTip = this.state.toggle ? `收起${tooltip}` : `打开${tooltip}`;
     return (
       tooltip ? <Tooltip title={toggleTip} placement="bottom" mouseEnterDelay={1}>
-        <Button type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick} disabled={disabled}>
+        <Button
+          type={type}
+          shape={shape}
+          size={size}
+          icon={toggleIcon}
+          lassName={toggleCls}
+          onClick={this.handleClick}
+          disabled={disabled}
+        >
           {children}
         </Button>
       </Tooltip> :
-      <Button type={type} shape={shape} size={size} icon={toggleIcon} className={toggleCls} onClick={this.handleClick} disabled={disabled}>
+      <Button
+        type={type}
+        shape={shape}
+        size={size}
+        icon={toggleIcon}
+        className={toggleCls}
+        onClick={this.handleClick}
+        disabled={disabled}
+      >
         {children}
       </Button>
     );

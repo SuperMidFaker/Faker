@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, Icon, Col, Row, Input } from 'antd';
@@ -5,7 +6,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import EditableCell from '../EditableCell';
 
-import './index.less';
+import './style.less';
 
 function getColCls(col) {
   if (col) {

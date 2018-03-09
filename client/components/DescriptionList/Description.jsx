@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Col } from 'antd';
 import responsive from './responsive';
-import './index.less';
+import './style.less';
 
 export default class Description extends PureComponent {
   static defaultProps = {
     prefixCls: 'welo-desc-list-item',
   };
   static propTypes = {
+    prefixCls: PropTypes.string,
     term: PropTypes.string,
     column: PropTypes.number,
     className: PropTypes.string,
-    children: PropTypes.any,
+    children: PropTypes.node,
   }
   render() {
     const {

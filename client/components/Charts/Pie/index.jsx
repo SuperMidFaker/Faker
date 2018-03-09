@@ -8,7 +8,7 @@ import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import autoHeight from '../autoHeight';
 
-import './index.less';
+import './style.less';
 
 /* eslint react/no-danger:0 */
 /* eslint react/no-restrict-global:0 */

@@ -8,7 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 import NavLink from './NavLink';
 import { Logixon } from './FontIcon';
 import messages from './message.i18n';
-import './HeaderNavBar/index.less';
+import './HeaderNavBar/style.less';
 
 const formatMsg = format(messages);
 

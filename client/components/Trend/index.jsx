@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from 'antd';
 import classNames from 'classnames';
-import './index.less';
+import './style.less';
 
 const Trend = ({
   flag, children, className, ...rest

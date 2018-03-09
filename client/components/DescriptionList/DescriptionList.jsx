@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Row } from 'antd';
-import './index.less';
+import './style.less';
 
 export default class DescriptionList extends PureComponent {
   static defaultProps = {
@@ -12,12 +12,13 @@ export default class DescriptionList extends PureComponent {
     layout: 'horizontal',
   };
   static propTypes = {
-    title: PropTypes.any,
+    prefixCls: PropTypes.string,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     col: PropTypes.number,
     layout: PropTypes.oneOf(['horizontal', 'vertical']),
     size: PropTypes.oneOf(['small', 'large']),
     gutter: PropTypes.number,
-    children: PropTypes.any,
+    children: PropTypes.node,
     className: PropTypes.string,
   }
 
