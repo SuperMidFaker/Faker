@@ -73,12 +73,6 @@ export const CIQ_SUP_STATUS = [
   { value: 4, text: '已完成' },
 ];
 
-export const FEE_TYPE = [
-  { value: 'SC', text: '服务费' },
-  { value: 'AP', text: '代垫费' },
-  { value: 'SP', text: '特殊费用' },
-];
-
 export const FEE_CATEGORY = [
   { value: 'transport_expenses', text: '运输' },
   { value: 'customs_expenses', text: '报关' },

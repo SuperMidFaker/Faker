@@ -68,7 +68,7 @@ export default class TariffPane extends Component {
   }
   handleFeesBatchDelete = () => {
     const feeCodes = this.state.selectedRowKeys;
-    this.props.deleteFees(feeCodes).then((result) => {
+    this.props.deleteFees(feeCodes, this.props.quoteData.quote_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -241,7 +241,7 @@ export default class TariffPane extends Component {
         columns={columns}
         rowSelection={rowSelection}
         dataSource={fees}
-        rowKey="id"
+        rowKey="fee_code"
         loading={quoteData.loading}
       >
         <DataPane.Toolbar>

@@ -312,7 +312,7 @@ export function addFees(feeCodes, quoteNo) {
   };
 }
 
-export function deleteFees(feeIds) {
+export function deleteFees(feeCodes, quoteNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -322,7 +322,7 @@ export function deleteFees(feeIds) {
       ],
       endpoint: 'v1/cms/quote/fees/batch/delete',
       method: 'post',
-      data: { feeIds },
+      data: { feeCodes, quoteNo },
     },
   };
 }

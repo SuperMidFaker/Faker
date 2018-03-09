@@ -46,14 +46,6 @@ export default class QuotingEdit extends Component {
   }
   state = {
     tabKey: 'tariff',
-    readOnly: false,
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.quoteData !== this.props.quoteData) {
-      if (this.props.tenantId !== nextProps.quoteData.tenant_id) {
-        this.setState({ readOnly: true });
-      }
-    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -125,7 +117,13 @@ export default class QuotingEdit extends Component {
     });
   }
   render() {
-    const { form, saving, quoteData } = this.props;
+    const {
+      form, saving, quoteData, tenantId,
+    } = this.props;
+    let readOnly = false;
+    if (tenantId !== quoteData.tenant_id) {
+      readOnly = true;
+    }
     return (
       <Layout>
         <PageHeader>
@@ -148,10 +146,10 @@ export default class QuotingEdit extends Component {
           <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="费率" key="tariff">
-                <TariffPane readOnly={this.state.readOnly} />
+                <TariffPane readOnly={readOnly} />
               </TabPane>
               <TabPane tab="设置" key="setting">
-                <SettingPane form={form} formData={quoteData} readOnly={this.state.readOnly} />
+                <SettingPane form={form} formData={quoteData} readOnly={readOnly} />
               </TabPane>
             </Tabs>
           </MagicCard>
