@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Alert, Badge, Breadcrumb, Button, Popover, Spin } from 'antd';
 import classNames from 'classnames';
-import './index.less';
+import './style.less';
 
 function noop() {}
 

@@ -80,7 +80,7 @@ export default class SelectItem extends Component {
     checked: PropTypes.bool.isRequired,
     title: PropTypes.string,
     index: PropTypes.number.isRequired,
-    moveSelect: PropTypes.func.isRequired,
+    // moveSelect: PropTypes.func.isRequired,
     onFixed: PropTypes.func.isRequired,
     fixed: PropTypes.string,
   };

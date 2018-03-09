@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Dropdown, Icon, Popconfirm, Popover, Tooltip } from 'antd';
-import './index.less';
+import './style.less';
 
 export default class RowAction extends Component {
   static defaultProps = {

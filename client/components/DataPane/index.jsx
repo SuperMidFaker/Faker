@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'antd';
-import './index.less';
+import './style.less';
 import toolbar from './toolbar';
 import actions from './actions';
 import extra from './extra';

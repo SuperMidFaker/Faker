@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -9,8 +10,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import world from './worldwide-regions.json';
 
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
+const { Option } = Select;
+const { OptGroup } = Select;
 const formatMsg = format(messages);
 
 function getRegionProps(nextRegion) {
@@ -90,7 +91,6 @@ export default class RegionCascader extends React.Component {
     provLoaded: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired, // value参数 ['region_code', 'province', 'city','district', 'street'], country
     loadProvinces: PropTypes.func.isRequired,
-    loadNextRegionList: PropTypes.func.isRequired,
   }
   constructor(...args) {
     super(...args);
@@ -235,15 +235,22 @@ export default class RegionCascader extends React.Component {
           <Select value={country} style={{ width: '100%', marginBottom: 8 }} onChange={this.handleCountryChange}>
             <OptGroup label={formatMsg(intl, 'selectCountry')}>
               {
-              world.countries.map(ctry => <Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>)
+              world.countries.map(ctry =>
+                <Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>)
             }
             </OptGroup>
           </Select>
         }
-        <Cascader options={chinaRegions} disabled={disableCascader} style={{ width: '100%' }}
+        <Cascader
+          options={chinaRegions}
+          disabled={disableCascader}
+          style={{ width: '100%' }}
           placeholder={formatMsg(intl, 'defaultCascaderRegion')}
-          loadData={this.handleRegionLoad} changeOnSelect
-          onChange={this.handleRegionChange} value={cascadeRegion} showSearch
+          loadData={this.handleRegionLoad}
+          changeOnSelect
+          onChange={this.handleRegionChange}
+          value={cascadeRegion}
+          showSearch
         />
       </Row>
     );

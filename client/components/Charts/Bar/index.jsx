@@ -3,7 +3,7 @@ import { Chart, Axis, Tooltip, Geom } from 'bizcharts';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import autoHeight from '../autoHeight';
-import '../index.less';
+import '../style.less';
 
 @autoHeight()
 class Bar extends Component {

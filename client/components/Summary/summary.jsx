@@ -1,20 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import './index.less';
+import './style.less';
 
-export default class Summary extends Component {
-  static defaultProps = {
-    prefixCls: 'welo-summary',
-  };
-  static propTypes = {
-    children: PropTypes.any,
-  }
-  render() {
-    const { prefixCls, children } = this.props;
-    return (
-      <div className={prefixCls}>
-        {children}
-      </div>
-    );
-  }
+export default function Summary(props) {
+  const { prefixCls = 'welo-summary', children } = props;
+  return (
+    <div className={prefixCls}>
+      {children}
+    </div>
+  );
 }
+
+Summary.props = {
+  prefixCls: PropTypes.string,
+  children: PropTypes.node,
+};

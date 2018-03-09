@@ -11,7 +11,7 @@ import NavLink from './NavLink';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from '../../common/reducers/preference';
 import { showActivitiesDock } from '../../common/reducers/activities';
 import messages from './message.i18n';
-import './HeaderNavBar/index.less';
+import './HeaderNavBar/style.less';
 
 const formatMsg = format(messages);
 

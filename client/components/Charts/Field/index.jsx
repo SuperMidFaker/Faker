@@ -1,6 +1,5 @@
 import React from 'react';
-
-import './index.less';
+import './style.less';
 
 const Field = ({ label, value, ...rest }) => (
   <div className="field" {...rest}>

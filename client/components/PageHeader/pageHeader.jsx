@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Tabs } from 'antd';
-import './index.less';
+import './style.less';
 
 const { Header } = Layout;
 const { TabPane } = Tabs;

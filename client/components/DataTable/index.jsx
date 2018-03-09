@@ -6,7 +6,7 @@ import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import SelectItem from './selectItem';
-import './index.less';
+import './style.less';
 
 function noop() {
 }

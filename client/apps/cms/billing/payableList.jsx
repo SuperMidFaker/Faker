@@ -2,29 +2,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Breadcrumb, Button, DatePicker, Icon, Menu, Layout, Select, message } from 'antd';
-import PageHeader from 'client/components/PageHeader';
-import DataTable from 'client/components/DataTable';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import withPrivilege from 'client/common/decorators/withPrivilege';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message } from 'antd';
+import { UPLOAD_BATCH_OBJECT } from 'common/constants';
 import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
+import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import withPrivilege from 'client/common/decorators/withPrivilege';
+import connectNav from 'client/common/decorators/connect-nav';
+import PageHeader from 'client/components/PageHeader';
+import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
+import ImportDataPanel from 'client/components/ImportDataPanel';
+import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import Drawer from 'client/components/Drawer';
 import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
-import ExpEptModal from './modals/expEptModal';
-import AdvModelModal from './modals/advModelModal';
-import AdvExpsImpTempModal from './modals/advExpImpTempModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
-
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -73,6 +72,7 @@ function fetchData({ state, dispatch }) {
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
     partners: state.cmsExpense.partners,
+    uploadRecords: state.uploadRecords.uploadRecords,
   }),
   {
     loadCurrencies,
@@ -81,6 +81,8 @@ function fetchData({ state, dispatch }) {
     loadAdvanceParties,
     showAdvModelModal,
     loadQuoteModel,
+    togglePanelVisible,
+    setUploadRecordsReload,
   }
 )
 @connectNav({
@@ -108,10 +110,9 @@ export default class ExpenseList extends Component {
   state = {
     currentStatus: 'submitted',
     selectedRowKeys: [],
-    expEptVisible: false,
+    importPanelVisible: false,
     supeFilter: [],
     sortedInfo: { field: '', order: '' },
-    advUploadVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -320,25 +321,10 @@ export default class ExpenseList extends Component {
     const filters = mergeFilters(this.props.listFilter, searchVal);
     this.handleExpListLoad(1, filters);
   }
-  handleAddAdvanceIncome = (row) => {
-    this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'recv');
-  }
-  handleAddAdvancePayment = (row) => {
-    this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'send');
-  }
-  handleAdvFeesImport = () => {
-    this.toggleAdvUploadModal();
-  }
-  handleExpExport = () => {
+  handleImportExpense = () => {
     this.setState({
-      expEptVisible: true,
+      importPanelVisible: true,
     });
-  }
-  toggleEptModal = () => {
-    this.setState({ expEptVisible: !this.state.expEptVisible });
-  }
-  toggleAdvUploadModal = () => {
-    this.setState({ advUploadVisible: !this.state.advUploadVisible });
   }
   handleAcptDateChange = (dates) => {
     let filter = this.props.listFilter;
@@ -398,6 +384,11 @@ export default class ExpenseList extends Component {
     const link = `/clearance/billing/expense/${row.delg_no}/payable/${row.disp_id}`;
     this.context.router.push(link);
   }
+  showImportLogs = (ev) => {
+    if (ev.key === 'logs') {
+      this.props.togglePanelVisible(true);
+    }
+  }
   render() {
     const { expenseList, partners } = this.props;
     const { currentStatus } = this.state;
@@ -407,6 +398,11 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const menu = (
+      <Menu onClick={this.showImportLogs}>
+        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
+      </Menu>
+    );
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
@@ -429,9 +425,9 @@ export default class ExpenseList extends Component {
     </span>);
     const bulkActions = (<span>
       {(currentStatus === 'submitted') &&
-      <ToolbarAction icon="check" onClick={this.handleBatchConfirm} label={this.gmsg('confirm')} />}
+      <ToolbarAction icon="check" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchConfirm} label={this.gmsg('confirm')} />}
       {(currentStatus === 'submitted') &&
-      <ToolbarAction icon="close" onClick={this.handleBatchReject} label={this.gmsg('reject')} />}
+      <ToolbarAction icon="close" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchReject} label={this.gmsg('reject')} />}
       <ToolbarAction icon="download" onClick={this.handleExpExport} label={this.gmsg('export')} />
     </span>);
     this.dataSource.remotes = expenseList;
@@ -446,20 +442,23 @@ export default class ExpenseList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="upload" onClick={this.handleExpExport}>
+            <Dropdown.Button icon="upload" onClick={this.handleImportExpense} overlay={menu}>
               {this.msg('importFees')}
-            </Button>
-            {currentStatus === 'submitted' &&
-            <Button type="primary" icon="check-circle-o" onClick={this.handleExpExport}>
-              {this.msg('confirmAll')}
-            </Button>}
+            </Dropdown.Button>
+            <ToolbarAction
+              icon="check"
+              confirm={this.gmsg('confirmOp')}
+              onConfirm={this.handleAllConfirm}
+              label={this.msg('confirmAll')}
+              disabled={currentStatus !== 'confirmed'}
+            />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.currentStatus]} onClick={this.handleMenuClick}>
               <Menu.Item key="submitted">
-                <Icon type="inbox" /> {this.msg('statusUnconfirmed')}
+                <Icon type="upload" /> {this.msg('statusSubmitted')}
               </Menu.Item>
               <Menu.Item key="confirmed">
                 <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
@@ -480,12 +479,36 @@ export default class ExpenseList extends Component {
               bordered
             />
           </Content>
+          <ImportDataPanel
+            title={this.msg('importFees')}
+            visible={this.state.importPanelVisible}
+            endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
+            formData={{}}
+            onClose={() => { this.setState({ importPanelVisible: false }); }}
+            onUploaded={this.invoicesUploaded}
+            onGenTemplate={this.handleGenTemplate}
+          >
+            <Select
+              placeholder="请选择服务商"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              onChange={this.handlePartnerChange}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ width: 360 }}
+              style={{ width: '100%', marginBottom: 16 }}
+            >
+              {partners.customer.map(data => (<Option key={data.name} value={data.partner_id}>
+                {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+              </Option>))}
+            </Select>
+            <Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>
+          </ImportDataPanel>
+          <UploadLogsPanel
+            type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
+          />
         </Layout>
         <DelegationDockPanel />
-        <DelgAdvanceExpenseModal />
-        <AdvModelModal />
-        <AdvExpsImpTempModal onload={() => this.handleExpListLoad()} />
-        <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </Layout>
     );
   }

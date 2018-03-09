@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Tooltip } from 'antd';
-import './index.less';
+import './style.less';
 
 const { Sider } = Layout;
 

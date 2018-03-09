@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Card } from 'antd';
 import ButtonToggle from '../ButtonToggle';
-import './index.less';
+import './style.less';
 
 export default class MagicCard extends React.Component {
   static defaultProps = {

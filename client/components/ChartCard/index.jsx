@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Spin } from 'antd';
 import classNames from 'classnames';
 import { Link } from 'react-router';
-import './index.less';
+import './style.less';
 
 
 const ChartCard = ({

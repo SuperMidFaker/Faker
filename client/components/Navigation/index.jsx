@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Menu } from 'antd';
 import NavLink from '../NavLink';
-import './index.less';
+import './style.less';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;

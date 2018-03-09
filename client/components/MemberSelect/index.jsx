@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Popover, Input, Tabs, Menu, Avatar, Tree } from 'antd';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import InfoItem from 'client/components/InfoItem';
 import { loadTeamUserIds } from 'common/reducers/sofCustomers';
 import { loadDepartments, loadDepartmentMembers } from 'common/reducers/personnel';
 
-const TabPane = Tabs.TabPane;
-const Search = Input.Search;
-const TreeNode = Tree.TreeNode;
+const { TabPane } = Tabs;
+const { Search } = Input;
+const { TreeNode } = Tree;
 
 @injectIntl
 @connect(
@@ -21,7 +21,7 @@ const TreeNode = Tree.TreeNode;
 )
 export default class MemberSelect extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
     preparerName: PropTypes.string,
     editable: PropTypes.bool.isRequired,
     partnerId: PropTypes.number.isRequired,
@@ -70,7 +70,8 @@ export default class MemberSelect extends React.Component {
     const teamId = treeNode.props.dataRef.id;
     this.props.loadDepartmentMembers(teamId).then((result) => {
       if (!result.error) {
-        const departmentMember = userMembers.filter(member => result.data.find(data => data.user_id === member.user_id)).map(user => ({
+        const departmentMember = userMembers.filter(member =>
+          result.data.find(data => data.user_id === member.user_id)).map(user => ({
           ...user,
           isLeaf: true,
         }));
@@ -122,7 +123,8 @@ export default class MemberSelect extends React.Component {
   render() {
     const { teamUserIds, departments, allUsers } = this.state;
     const { preparerName, editable, userMembers } = this.props;
-    const teamMembers = teamUserIds.map(userId => userMembers.find(member => Number(member.user_id) === Number(userId.user_id)));
+    const teamMembers = teamUserIds.map(userId =>
+      userMembers.find(member => Number(member.user_id) === Number(userId.user_id)));
     const content = (
       <div>
         <Tabs defaultActiveKey="1" >
@@ -142,7 +144,11 @@ export default class MemberSelect extends React.Component {
             </Tree>
           </TabPane>
           <TabPane tab="全部" key="3">
-            <Search style={{ width: 252 }} value={this.state.searchText} onChange={this.handleChange} />
+            <Search
+              style={{ width: 252 }}
+              value={this.state.searchText}
+              onChange={this.handleChange}
+            />
             <Menu
               style={{ width: 253 }}
               mode="inline"

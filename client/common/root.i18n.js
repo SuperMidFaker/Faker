@@ -105,6 +105,10 @@ const messages = defineMessages({
     id: 'root.actions.setting',
     defaultMessage: '设置',
   },
+  submit: {
+    id: 'root.actions.submit',
+    defaultMessage: '提交',
+  },
   confirm: {
     id: 'root.actions.confirm',
     defaultMessage: '确认',
@@ -140,6 +144,10 @@ const messages = defineMessages({
   deleteConfirm: {
     id: 'root.delete.confirm',
     defaultMessage: '确定删除?',
+  },
+  confirmOp: {
+    id: 'root.confirm.op',
+    defaultMessage: '确定操作?',
   },
   savedSuccess: {
     id: 'root.saved.success',

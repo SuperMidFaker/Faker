@@ -1,7 +1,6 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-
-import './index.less';
+import './style.less';
 
 const MiniProgress = ({
   target, color = 'rgb(19, 194, 194)', strokeWidth, percent,

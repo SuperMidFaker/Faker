@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
-import { Avatar, Menu, Radio, Modal, Popover, Icon, Tooltip } from 'antd';
+import { Avatar, Menu, Popover, Icon, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from 'common/reducers/preference';
 import { showActivitiesDock } from 'common/reducers/activities';
@@ -11,17 +11,15 @@ import { goBackNav } from 'common/reducers/navbar';
 import ModuleMenu from 'client/components/ModuleMenu';
 import { format } from 'client/common/i18n/helpers';
 import NotifyPopover from './notifyPopover';
-import HelpPopover from './helpPopover';
 import NavLink from '../NavLink';
 import { Logixon } from '../FontIcon';
 import messages from '../message.i18n';
-import './index.less';
+import './style.less';
 
 const formatMsg = format(messages);
 const MenuItem = Menu.Item;
 const MenuDivider = Menu.Divider;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
+
 
 @injectIntl
 @connect(
@@ -48,7 +46,6 @@ export default class HeaderNavBar extends React.Component {
     avatar: PropTypes.string,
     name: PropTypes.string,
     loginId: PropTypes.number.isRequired,
-    locale: PropTypes.oneOf(['en', 'zh']),
     changeUserLocale: PropTypes.func.isRequired,
     loadTranslation: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired,
@@ -60,19 +57,11 @@ export default class HeaderNavBar extends React.Component {
     compact: false,
   }
   state = {
-    visible: false,
     userPopoverVisible: false,
-  }
-  handleLanguageSetting = () => {
-    this.setState({ visible: true });
-  }
-  handleCancel = () => {
-    this.setState({ visible: false });
   }
   handleLocaleChange = (ev) => {
     this.props.loadTranslation(ev.target.value);
     this.props.changeUserLocale(this.props.loginId, ev.target.value);
-    this.setState({ visible: false });
   }
   handleShowPreference = () => {
     this.setState({ userPopoverVisible: false });
@@ -106,42 +95,59 @@ export default class HeaderNavBar extends React.Component {
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   render() {
     const {
-      intl, avatar, name, locale, compact, navTitle,
+      intl, avatar, name, compact, navTitle,
     } = this.props;
-    const userPopoverContent = (
-      <div className="navbar-popover">
-        <Menu>
-          {!compact && <MenuItem>
-            <a role="presentation" onClick={this.handleGoAccount}>
-              <Icon type="user" />
-              <span>{formatMsg(intl, 'userAccount')}</span>
-            </a>
-          </MenuItem>}
-          {!compact && <MenuItem>
-            <a role="presentation" onClick={this.handleShowPreference}>
-              <Icon type="tool" />
-              <span>{formatMsg(intl, 'userPreference')}</span>
-            </a>
-          </MenuItem>}
-          {!compact && <MenuDivider />}
-          {!compact && <MenuItem>
-            <a role="presentation" onClick={this.handleShowActivities}>
-              <Icon type="solution" />
-              <span>{formatMsg(intl, 'userActivities')}</span>
-            </a>
-          </MenuItem>}
-          {!compact && <MenuDivider />}
-          <MenuItem>
-            <a role="presentation" onClick={this.handleLogout}>
-              <Icon type="poweroff" />
-              <span>{formatMsg(intl, 'userLogout')}</span>
-            </a>
-          </MenuItem>
-        </Menu>
-      </div>
+    const helpPopoverContent = (
+      <Menu>
+        <MenuItem>
+          <a role="presentation" onClick={this.handleOnlineService}>
+            <Icon type="customerservice" />
+            <span>{this.msg('online')}</span>
+          </a>
+        </MenuItem>
+        <MenuItem>
+          <a role="presentation" onClick={this.handleGuide}>
+            <Icon type="bulb" />
+            <span>{this.msg('guide')}</span>
+          </a>
+        </MenuItem>
+      </Menu>
     );
-    const helpcenterContent = (<HelpPopover />);
-
+    const userPopoverContent = (
+      <Menu>
+        {!compact &&
+        <MenuItem>
+          <a role="presentation" onClick={this.handleGoAccount}>
+            <Icon type="user" />
+            <span>{formatMsg(intl, 'userAccount')}</span>
+          </a>
+          </MenuItem>}
+        {!compact &&
+        <MenuItem>
+          <a role="presentation" onClick={this.handleShowPreference}>
+            <Icon type="tool" />
+            <span>{formatMsg(intl, 'userPreference')}</span>
+          </a>
+          </MenuItem>}
+        {!compact &&
+        <MenuDivider />}
+        {!compact &&
+        <MenuItem>
+          <a role="presentation" onClick={this.handleShowActivities}>
+            <Icon type="solution" />
+            <span>{formatMsg(intl, 'userActivities')}</span>
+          </a>
+          </MenuItem>}
+        {!compact &&
+        <MenuDivider />}
+        <MenuItem>
+          <a role="presentation" onClick={this.handleLogout}>
+            <Icon type="poweroff" />
+            <span>{formatMsg(intl, 'userLogout')}</span>
+          </a>
+        </MenuItem>
+      </Menu>
+    );
     let { moduleName } = navTitle;
     let navMenu = null;
     let brandNav = (<NavLink to="/" className="navbar-brand" />);
@@ -181,11 +187,18 @@ export default class HeaderNavBar extends React.Component {
         </div>
         <div className="nav navbar-right">
           <Menu mode="horizontal">
-            {!compact && <MenuItem>
+            {!compact &&
+            <MenuItem>
               <NotifyPopover />
             </MenuItem>}
-            {!compact && <MenuItem>
-              <Popover content={helpcenterContent} placement="bottomRight" trigger="click">
+            {!compact &&
+            <MenuItem>
+              <Popover
+                content={helpPopoverContent}
+                placement="bottomRight"
+                trigger="click"
+                overlayClassName="navbar-popover"
+              >
                 <div><Icon type="question-circle-o" /></div>
               </Popover>
             </MenuItem>}
@@ -196,6 +209,7 @@ export default class HeaderNavBar extends React.Component {
                 trigger="click"
                 visible={this.state.userPopoverVisible}
                 onVisibleChange={this.handleVisibleChange}
+                overlayClassName="navbar-popover"
               >
                 <div>
                   {avatar ? <Avatar src={avatar} /> : <Avatar >{name}</Avatar>}
@@ -207,20 +221,6 @@ export default class HeaderNavBar extends React.Component {
         <div className="navbar-search">
           <input type="search" placeholder={this.msg('search')} />
         </div>
-        <Modal
-          maskClosable={false}
-          visible={this.state.visible}
-          footer={[]}
-          title={formatMsg(intl, 'userLanguage')}
-          onCancel={this.handleCancel}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <RadioGroup onChange={this.handleLocaleChange} value={locale}>
-              <RadioButton value="zh">简体中文</RadioButton>
-              <RadioButton value="en">English</RadioButton>
-            </RadioGroup>
-          </div>
-        </Modal>
       </nav>);
   }
 }
