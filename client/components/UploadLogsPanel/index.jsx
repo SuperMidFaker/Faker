@@ -7,21 +7,20 @@ import DockPanel from 'client/components/DockPanel';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import { loadUploadRecords } from 'common/reducers/uploadRecords';
+import { loadUploadRecords, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 @injectIntl
 @connect(state => ({
   uploadRecords: state.uploadRecords.uploadRecords,
   filter: state.uploadRecords.filter,
+  visible: state.uploadRecords.visible,
 }), {
-  loadUploadRecords,
+  loadUploadRecords, togglePanelVisible,
 })
 export default class UploadLogsPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    visible: PropTypes.bool.isRequired,
-    onClose: PropTypes.func,
     onUploadBatchDelete: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired,
   }
@@ -34,7 +33,7 @@ export default class UploadLogsPanel extends React.Component {
     }
   }
   onUploadBatchDelete = (row) => {
-    this.props.onUploadBatchDelete(row.upload_no);
+    this.props.onUploadBatchDelete(row.upload_no, this.handleReload);
   }
   handleReload = (filter = {}) => {
     const { pageSize, current } = this.props.uploadRecords;
@@ -101,9 +100,14 @@ export default class UploadLogsPanel extends React.Component {
     },
   ];
   handleClose = () => {
-    if (this.props.onClose) {
-      this.props.onClose();
-    }
+    const { pageSize } = this.props.uploadRecords;
+    this.props.togglePanelVisible(false);
+    this.props.loadUploadRecords({
+      pageSize,
+      current: 1,
+      type: this.props.type,
+      filter: JSON.stringify({}),
+    });
   }
   render() {
     const { visible } = this.props;

@@ -17,7 +17,7 @@ import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo } from 'common/reducers/sofInvoice';
-import { loadUploadRecords, setUploadRecordsReload } from 'common/reducers/uploadRecords';
+import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
 import { createFilename } from 'client/util/dataTransform';
@@ -62,9 +62,9 @@ function fetchData({ state, dispatch }) {
     loadModelAdaptors,
     deleteSofInvice,
     batchDeleteInvoices,
-    loadUploadRecords,
     batchDeleteByUploadNo,
     setUploadRecordsReload,
+    togglePanelVisible,
   }
 )
 @connectNav({
@@ -80,7 +80,6 @@ export default class InvoiceList extends React.Component {
   }
   state = {
     importPanelVisible: false,
-    logsPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
   }
@@ -272,30 +271,14 @@ export default class InvoiceList extends React.Component {
   }
   handleMenuClick = (ev) => {
     if (ev.key === 'logs') {
-      this.setState({ logsPanelVisible: true });
+      this.props.togglePanelVisible(true);
     }
   }
-  handleClose = () => {
-    this.setState({ logsPanelVisible: false });
-    const { pageSize } = this.props.uploadRecords;
-    this.props.loadUploadRecords({
-      pageSize,
-      current: 1,
-      type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
-      filter: JSON.stringify({}),
-    });
-  }
-  removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
-    const { pageSize } = this.props.uploadRecords;
+  removeInvoiceByBatchUpload = (uploadNo, reload) => {
     const invoiceFilter = this.props.filter;
     this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
-        this.props.loadUploadRecords({
-          pageSize,
-          current: 1,
-          type: UPLOAD_BATCH_OBJECT.SCOF_INVOICE,
-          filter: JSON.stringify(filter),
-        });
+        reload();
         this.handleReload(invoiceFilter);
       }
     });
@@ -404,8 +387,6 @@ export default class InvoiceList extends React.Component {
             </Select>
           </ImportDataPanel>
           <UploadLogsPanel
-            visible={this.state.logsPanelVisible}
-            onClose={this.handleClose}
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}
             type={UPLOAD_BATCH_OBJECT.SCOF_INVOICE}
           />

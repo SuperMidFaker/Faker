@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/upload/records/', [
   'UPLOAD_RECORDS_LOAD', 'UPLOAD_RECORDS_LOAD_SUCCEED', 'UPLOAD_RECORDS_LOAD_FAIL',
-  'SET_RECORDS_RELOAD',
+  'SET_RECORDS_RELOAD', 'TOGGLE_PANEL_VISIBLE',
 ]);
 
 const initialState = {
@@ -15,6 +15,7 @@ const initialState = {
     reload: false,
   },
   filter: {},
+  visible: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -31,6 +32,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, uploadRecords: { ...state.uploadRecords } };
     case actionTypes.SET_RECORDS_RELOAD: {
       return { ...state, uploadRecords: { ...state.uploadRecords, reload: action.reload } };
+    }
+    case actionTypes.TOGGLE_PANEL_VISIBLE: {
+      return { ...state, visible: action.visible };
     }
     default:
       return state;
@@ -60,5 +64,12 @@ export function setUploadRecordsReload(reload) {
   return {
     type: actionTypes.SET_RECORDS_RELOAD,
     reload,
+  };
+}
+
+export function togglePanelVisible(visible) {
+  return {
+    type: actionTypes.TOGGLE_PANEL_VISIBLE,
+    visible,
   };
 }

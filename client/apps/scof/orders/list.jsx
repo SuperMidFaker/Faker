@@ -13,7 +13,7 @@ import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
-import { loadUploadRecords, setUploadRecordsReload } from 'common/reducers/uploadRecords';
+import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -81,11 +81,11 @@ function fetchData({ state, dispatch }) {
   hideDock,
   loadRequireOrderTypes,
   loadOrderDetail,
-  loadUploadRecords,
   batchDeleteByUploadNo,
   setUploadRecordsReload,
   batchStart,
   batchDelete,
+  togglePanelVisible,
 })
 @connectNav({
   depth: 2,
@@ -116,7 +116,6 @@ export default class OrderList extends React.Component {
       customer_partner_id: undefined,
       flow_id: undefined,
     },
-    logsPanelVisible: false,
   }
   componentWillMount() {
     const filters = {
@@ -323,29 +322,13 @@ export default class OrderList extends React.Component {
   }
   handleImportMenuClick = (ev) => {
     if (ev.key === 'logs') {
-      this.setState({ logsPanelVisible: true });
+      this.props.togglePanelVisible(true);
     }
   }
-  handleClose = () => {
-    this.setState({ logsPanelVisible: false });
-    const { pageSize } = this.props.uploadRecords;
-    this.props.loadUploadRecords({
-      pageSize,
-      current: 1,
-      type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
-      filter: JSON.stringify({}),
-    });
-  }
-  removeOrdersByBatchUpload = (uploadNo, filter = {}) => {
-    const { pageSize } = this.props.uploadRecords;
+  removeOrdersByBatchUpload = (uploadNo, reload) => {
     this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
-        this.props.loadUploadRecords({
-          pageSize,
-          current: 1,
-          type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
-          filter: JSON.stringify(filter),
-        });
+        reload();
         this.handleTableLoad();
       }
     });
@@ -587,8 +570,6 @@ export default class OrderList extends React.Component {
           </Select>
         </ImportDataPanel>
         <UploadLogsPanel
-          visible={this.state.logsPanelVisible}
-          onClose={this.handleClose}
           onUploadBatchDelete={this.removeOrdersByBatchUpload}
           type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
         />
