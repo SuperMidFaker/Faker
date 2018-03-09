@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message, Select } from 'antd';
 import { toggleNewFeeElementModal, addFeeElement } from 'common/reducers/bssFeeSettings';
-import { BSS_FEE_TYPE } from 'common/constants';
+import { FEE_TYPE } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 
@@ -78,7 +78,7 @@ export default class NewFeeElementModal extends React.Component {
             {getFieldDecorator('fee_type', {
               rules: [{ required: true }],
             })(<Select>
-              {BSS_FEE_TYPE.map(type =>
+              {FEE_TYPE.map(type =>
                 <Option key={type.key} value={type.key}>{`${type.key}|${type.text}`}</Option>)}
             </Select>)}
           </FormItem>

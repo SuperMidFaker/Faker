@@ -34,7 +34,7 @@ export default class SettingPane extends Component {
       colon: false,
     };
     const {
-      form: { getFieldDecorator }, formData,
+      form: { getFieldDecorator }, formData, readOnly,
     } = this.props;
     return (
       <FormPane>
@@ -50,7 +50,7 @@ export default class SettingPane extends Component {
                 {getFieldDecorator('quote_name', {
                   rules: [{ required: true }],
                   initialValue: formData.quote_name,
-                })(<Input />)}
+                })(<Input disabled={readOnly} />)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -72,7 +72,7 @@ export default class SettingPane extends Component {
                 {getFieldDecorator('invoice_type', {
                   initialValue: formData.invoice_type,
                   rules: [{ required: true, message: '开票类型必选' }],
-                })(<Select style={{ width: '100%' }} >
+                })(<Select style={{ width: '100%' }} disabled={readOnly}>
                   {
                       INVOICE_TYPE.map(inv =>
                         <Option value={inv.value} key={inv.value}>{inv.text}</Option>)
@@ -85,7 +85,7 @@ export default class SettingPane extends Component {
                 {getFieldDecorator('cus_item_per_sheet', {
                   initialValue: Number(formData.cus_item_per_sheet),
                   rules: [{ required: true, message: '品项数必填' }],
-                })(<InputNumber style={{ width: '100%' }} />)}
+                })(<InputNumber style={{ width: '100%' }} disabled={readOnly} />)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -93,14 +93,14 @@ export default class SettingPane extends Component {
                 {getFieldDecorator('ciq_item_per_sheet', {
                   initialValue: Number(formData.ciq_item_per_sheet),
                   rules: [{ required: true, message: '品项数必填' }],
-                })(<InputNumber style={{ width: '100%' }} />)}
+                })(<InputNumber style={{ width: '100%' }} disabled={readOnly} />)}
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="允许特殊费用" {...formItemLayout}>
                 {getFieldDecorator('special_fee_allowed', {
                   initialValue: formData.special_fee_allowed || false,
-                })(<Checkbox />)}
+                })(<Checkbox disabled={readOnly} />)}
               </FormItem>
             </Col>
           </Row>
