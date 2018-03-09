@@ -13,7 +13,7 @@ import ToolbarAction from 'client/components/ToolbarAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { toggleQuoteCreateModal, loadQuoteTable, deleteQuote } from 'common/reducers/cmsQuote';
+import { toggleQuoteCreateModal, loadQuoteTable, deleteQuotes } from 'common/reducers/cmsQuote';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 import CreateQuoteModal from '../modals/createQuoteModal';
 
@@ -39,7 +39,7 @@ function fetchData({ state, dispatch }) {
   {
     toggleQuoteCreateModal,
     loadQuoteTable,
-    deleteQuote,
+    deleteQuotes,
   }
 )
 @connectNav({
@@ -110,8 +110,9 @@ export default class RatesList extends Component {
   handleQuoteEdit = (row) => {
     this.context.router.push(`/clearance/billing/quote/${row.quote_no}`);
   }
-  handleDeleteQuote = (row) => {
-    this.props.deleteQuote(row.id).then((result) => {
+  handleBatchDelete = () => {
+    const quoteNos = this.state.selectedRowKeys;
+    this.props.deleteQuotes(quoteNos).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -174,11 +175,6 @@ export default class RatesList extends Component {
         render: (o, record) =>
           (<span>
             <RowAction onClick={this.handleQuoteEdit} icon="edit" row={record} />
-            {/*
-            <RowAction
-              danger
-              confirm="确定删除?" onConfirm={this.handleDeleteQuote} icon="delete" row={record} />
-            */}
           </span>),
       },
     ];
@@ -229,7 +225,7 @@ export default class RatesList extends Component {
             columns={columns}
             dataSource={this.dataSource}
             loading={quotesList.loading}
-            rowKey="_id"
+            rowKey="quote_no"
           />
         </Content>
         <CreateQuoteModal />

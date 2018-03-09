@@ -9,7 +9,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'QUOTES_LOAD', 'QUOTES_LOAD_SUCCEED', 'QUOTES_LOAD_FAIL',
   'QUOTE_ELEMENTS_LOAD', 'QUOTE_ELEMENTS_LOAD_SUCCEED', 'QUOTE_ELEMENTS_LOAD_FAIL',
   'QUOTE_COPY', 'QUOTE_COPY_SUCCEED', 'QUOTE_COPY_FAIL',
-  'QUOTE_DELETE', 'QUOTE_DELETE_SUCCEED', 'QUOTE_DELETE_FAIL',
+  'QUOTES_DELETE', 'QUOTES_DELETE_SUCCEED', 'QUOTES_DELETE_FAIL',
   'FEE_ADD', 'FEE_ADD_SUCCEED', 'FEE_ADD_FAIL',
   'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
   'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
@@ -267,17 +267,17 @@ export function copyQuote(params) {
   };
 }
 
-export function deleteQuote(id) {
+export function deleteQuotes(quoteNos) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.QUOTE_DELETE,
-        actionTypes.QUOTE_DELETE_SUCCEED,
-        actionTypes.QUOTE_DELETE_FAIL,
+        actionTypes.QUOTES_DELETE,
+        actionTypes.QUOTES_DELETE_SUCCEED,
+        actionTypes.QUOTES_DELETE_FAIL,
       ],
-      endpoint: 'v1/cms/quote/delete',
+      endpoint: 'v1/cms/quote/batch/delete',
       method: 'post',
-      data: { id },
+      data: { quoteNos },
     },
   };
 }
