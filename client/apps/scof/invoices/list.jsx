@@ -16,8 +16,8 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { loadInvoices, deleteSofInvice, batchDeleteInvoices } from 'common/reducers/sofInvoice';
-import { loadUploadRecords, uploadRecordsBatchDelete, setUploadRecordsReload } from 'common/reducers/uploadRecords';
+import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo } from 'common/reducers/sofInvoice';
+import { loadUploadRecords, setUploadRecordsReload } from 'common/reducers/uploadRecords';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
 import { createFilename } from 'client/util/dataTransform';
@@ -63,7 +63,7 @@ function fetchData({ state, dispatch }) {
     deleteSofInvice,
     batchDeleteInvoices,
     loadUploadRecords,
-    uploadRecordsBatchDelete,
+    batchDeleteByUploadNo,
     setUploadRecordsReload,
   }
 )
@@ -287,7 +287,7 @@ export default class InvoiceList extends React.Component {
   removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
     const { pageSize } = this.props.uploadRecords;
     const invoiceFilter = this.props.filter;
-    this.props.uploadRecordsBatchDelete(uploadNo).then((result) => {
+    this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
         this.props.loadUploadRecords({
           pageSize,

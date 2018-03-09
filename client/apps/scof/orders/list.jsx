@@ -8,12 +8,12 @@ import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/sofOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
-import { loadUploadRecords, uploadRecordsBatchDelete, setUploadRecordsReload } from 'common/reducers/uploadRecords';
+import { loadUploadRecords, setUploadRecordsReload } from 'common/reducers/uploadRecords';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -82,7 +82,7 @@ function fetchData({ state, dispatch }) {
   loadRequireOrderTypes,
   loadOrderDetail,
   loadUploadRecords,
-  uploadRecordsBatchDelete,
+  batchDeleteByUploadNo,
   setUploadRecordsReload,
 })
 @connectNav({
@@ -305,7 +305,7 @@ export default class OrderList extends React.Component {
   }
   removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
     const { pageSize } = this.props.uploadRecords;
-    this.props.uploadRecordsBatchDelete(uploadNo).then((result) => {
+    this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
         this.props.loadUploadRecords({
           pageSize,

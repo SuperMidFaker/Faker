@@ -3,7 +3,6 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/upload/records/', [
   'UPLOAD_RECORDS_LOAD', 'UPLOAD_RECORDS_LOAD_SUCCEED', 'UPLOAD_RECORDS_LOAD_FAIL',
-  'UPLOAD_RECORDS_BATCH_DELETE', 'UPLOAD_RECORDS_BATCH_DELETE_SUCCEED', 'UPLOAD_RECORDS_BATCH_DELETE_FAIL',
   'SET_RECORDS_RELOAD',
 ]);
 
@@ -48,21 +47,6 @@ export function loadUploadRecords({
       params: {
         pageSize, current, type, filter,
       },
-    },
-  };
-}
-
-export function uploadRecordsBatchDelete(uploadNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPLOAD_RECORDS_BATCH_DELETE,
-        actionTypes.UPLOAD_RECORDS_BATCH_DELETE_SUCCEED,
-        actionTypes.UPLOAD_RECORDS_BATCH_DELETE_FAIL,
-      ],
-      endpoint: 'v1/upload/records/batch/delete',
-      method: 'post',
-      data: { uploadNo },
     },
   };
 }
