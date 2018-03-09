@@ -8,12 +8,12 @@ import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/sofOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo, batchStart, batchDelete } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
-import { loadUploadRecords, uploadRecordsBatchDelete, setUploadRecordsReload } from 'common/reducers/uploadRecords';
+import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -81,9 +81,11 @@ function fetchData({ state, dispatch }) {
   hideDock,
   loadRequireOrderTypes,
   loadOrderDetail,
-  loadUploadRecords,
-  uploadRecordsBatchDelete,
+  batchDeleteByUploadNo,
   setUploadRecordsReload,
+  batchStart,
+  batchDelete,
+  togglePanelVisible,
 })
 @connectNav({
   depth: 2,
@@ -114,7 +116,6 @@ export default class OrderList extends React.Component {
       customer_partner_id: undefined,
       flow_id: undefined,
     },
-    logsPanelVisible: false,
   }
   componentWillMount() {
     const filters = {
@@ -193,6 +194,21 @@ export default class OrderList extends React.Component {
       }
     });
   }
+  handleBatchDelete = () => {
+    const { selectedRowKeys } = this.state;
+    const { username } = this.props;
+    this.props.batchDelete(selectedRowKeys, username).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('删除成功');
+        this.setState({
+          selectedRowKeys: [],
+        });
+        this.handleTableLoad();
+      }
+    });
+  }
   handleStart = (row) => {
     const { loginId, username } = this.props;
     const shipmtOrderNo = row.shipmt_order_no;
@@ -201,6 +217,21 @@ export default class OrderList extends React.Component {
         message.error(result.error.message, 10);
       } else {
         message.info('订单流程已启动');
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleBatchStart = () => {
+    const { selectedRowKeys } = this.state;
+    const { username } = this.props;
+    this.props.batchStart(selectedRowKeys, username).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('订单流程已启动');
+        this.setState({
+          selectedRowKeys: [],
+        });
         this.handleTableLoad();
       }
     });
@@ -291,28 +322,13 @@ export default class OrderList extends React.Component {
   }
   handleImportMenuClick = (ev) => {
     if (ev.key === 'logs') {
-      this.setState({ logsPanelVisible: true });
+      this.props.togglePanelVisible(true);
     }
   }
-  loadRecords = (filter = {}) => {
-    const { pageSize, current } = this.props.uploadRecords;
-    this.props.loadUploadRecords({
-      pageSize,
-      current,
-      type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
-      filter: JSON.stringify(filter),
-    });
-  }
-  removeInvoiceByBatchUpload = (uploadNo, filter = {}) => {
-    const { pageSize } = this.props.uploadRecords;
-    this.props.uploadRecordsBatchDelete(uploadNo).then((result) => {
+  removeOrdersByBatchUpload = (uploadNo, uploadLogReload) => {
+    this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
-        this.props.loadUploadRecords({
-          pageSize,
-          current: 1,
-          type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
-          filter: JSON.stringify(filter),
-        });
+        uploadLogReload();
         this.handleTableLoad();
       }
     });
@@ -332,27 +348,6 @@ export default class OrderList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const recordDataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadUploadRecords(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: Number(resolve(result.totalCount, result.current, result.pageSize)),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: Number(result.pageSize),
-        showTotal: total => `共 ${total} 条`,
-      }),
-      getParams: (pagination) => {
-        const params = {
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          type: UPLOAD_BATCH_OBJECT.SCOF_ORDER,
-        };
-        return params;
-      },
-      remotes: this.props.uploadRecords,
-    });
     const menu = (
       <Menu onClick={this.handleImportMenuClick}>
         <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
@@ -526,7 +521,7 @@ export default class OrderList extends React.Component {
             onDeselectRows={this.handleDeselectRows}
             dataSource={dataSource}
             columns={columns}
-            rowKey="id"
+            rowKey="shipmt_order_no"
             loading={loading}
           />
         </Content>
@@ -575,12 +570,8 @@ export default class OrderList extends React.Component {
           </Select>
         </ImportDataPanel>
         <UploadLogsPanel
-          visible={this.state.logsPanelVisible}
-          onClose={() => { this.setState({ logsPanelVisible: false }); }}
-          logs={recordDataSource}
-          handleReload={this.loadRecords}
-          onUploadBatchDelete={this.removeInvoiceByBatchUpload}
-          reload={this.props.uploadRecords.reload}
+          onUploadBatchDelete={this.removeOrdersByBatchUpload}
+          type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
         />
       </QueueAnim>
     );

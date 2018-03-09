@@ -3,8 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/upload/records/', [
   'UPLOAD_RECORDS_LOAD', 'UPLOAD_RECORDS_LOAD_SUCCEED', 'UPLOAD_RECORDS_LOAD_FAIL',
-  'UPLOAD_RECORDS_BATCH_DELETE', 'UPLOAD_RECORDS_BATCH_DELETE_SUCCEED', 'UPLOAD_RECORDS_BATCH_DELETE_FAIL',
-  'SET_RECORDS_RELOAD',
+  'SET_RECORDS_RELOAD', 'TOGGLE_PANEL_VISIBLE',
 ]);
 
 const initialState = {
@@ -15,18 +14,33 @@ const initialState = {
     data: [],
     reload: false,
   },
+  filter: {},
+  visible: false,
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.UPLOAD_RECORDS_LOAD:
-      return { ...state, uploadRecords: { ...state.uploadRecords } };
+      return {
+        ...state,
+        uploadRecords: { ...state.uploadRecords, reload: false },
+        filter: JSON.parse(action.params.filter),
+      };
     case actionTypes.UPLOAD_RECORDS_LOAD_SUCCEED:
-      return { ...state, uploadRecords: { ...action.result.data, reload: false } };
+      return { ...state, uploadRecords: { ...action.result.data } };
     case actionTypes.UPLOAD_RECORDS_LOAD_FAIL:
-      return { ...state, uploadRecords: { ...state.uploadRecords, reload: false } };
+      return { ...state, uploadRecords: { ...state.uploadRecords } };
     case actionTypes.SET_RECORDS_RELOAD: {
       return { ...state, uploadRecords: { ...state.uploadRecords, reload: action.reload } };
+    }
+    case actionTypes.TOGGLE_PANEL_VISIBLE: {
+      return {
+        ...state,
+        visible: action.visible,
+        filter: action.visible ? { ...state.filter } : {},
+        uploadRecords: action.visible ? { ...state.uploadRecords, reload: true } :
+          { ...state.uploadRecords },
+      };
     }
     default:
       return state;
@@ -52,24 +66,16 @@ export function loadUploadRecords({
   };
 }
 
-export function uploadRecordsBatchDelete(uploadNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPLOAD_RECORDS_BATCH_DELETE,
-        actionTypes.UPLOAD_RECORDS_BATCH_DELETE_SUCCEED,
-        actionTypes.UPLOAD_RECORDS_BATCH_DELETE_FAIL,
-      ],
-      endpoint: 'v1/upload/records/batch/delete',
-      method: 'post',
-      data: { uploadNo },
-    },
-  };
-}
-
 export function setUploadRecordsReload(reload) {
   return {
     type: actionTypes.SET_RECORDS_RELOAD,
     reload,
+  };
+}
+
+export function togglePanelVisible(visible) {
+  return {
+    type: actionTypes.TOGGLE_PANEL_VISIBLE,
+    visible,
   };
 }
