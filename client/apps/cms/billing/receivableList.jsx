@@ -2,27 +2,27 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectNav from 'client/common/decorators/connect-nav';
 import moment from 'moment';
-import { Breadcrumb, Button, Checkbox, DatePicker, Icon, Select, Menu, Layout, message } from 'antd';
-import PageHeader from 'client/components/PageHeader';
-import DataTable from 'client/components/DataTable';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import withPrivilege from 'client/common/decorators/withPrivilege';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message } from 'antd';
+import { UPLOAD_BATCH_OBJECT } from 'common/constants';
 import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
+import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import withPrivilege from 'client/common/decorators/withPrivilege';
+import connectNav from 'client/common/decorators/connect-nav';
+import PageHeader from 'client/components/PageHeader';
+import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
-import ImportDataPanel from 'client/components/ImportDataPanel';
 import RowAction from 'client/components/RowAction';
+import ToolbarAction from 'client/components/ToolbarAction';
+import ImportDataPanel from 'client/components/ImportDataPanel';
+import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import Drawer from 'client/components/Drawer';
 import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
-import ExpEptModal from './modals/expEptModal';
-import AdvModelModal from './modals/advModelModal';
-import AdvExpsImpTempModal from './modals/advExpImpTempModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 
@@ -73,6 +73,7 @@ function fetchData({ state, dispatch }) {
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
     partners: state.cmsExpense.partners,
+    uploadRecords: state.uploadRecords.uploadRecords,
   }),
   {
     loadCurrencies,
@@ -81,6 +82,8 @@ function fetchData({ state, dispatch }) {
     loadAdvanceParties,
     showAdvModelModal,
     loadQuoteModel,
+    togglePanelVisible,
+    setUploadRecordsReload,
   }
 )
 @connectNav({
@@ -110,7 +113,7 @@ export default class ExpenseList extends Component {
     selectedRowKeys: [],
     expEptVisible: false,
     sortedInfo: { field: '', order: '' },
-    importFeesModalVisible: false,
+    importPanelVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -318,29 +321,13 @@ export default class ExpenseList extends Component {
       }
     });
   }
-  handleRadioChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleExpListLoad(1, filter);
-  }
   handleSearch = (searchVal) => {
     const filters = mergeFilters(this.props.listFilter, searchVal);
     this.handleExpListLoad(1, filters);
   }
-  handleAddAdvanceIncome = (row) => {
-    this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'recv');
-  }
-  handleAddAdvancePayment = (row) => {
-    this.props.loadAdvanceParties(row.delg_no, this.props.tenantId, 'send');
-  }
-  handleAdvFeesImport = () => {
-    this.toggleImportFeesModal();
-  }
-  handleExpExport = () => {
+  handleImportExpense = () => {
     this.setState({
-      expEptVisible: true,
+      importPanelVisible: true,
     });
   }
   toggleEptModal = () => {
@@ -407,6 +394,11 @@ export default class ExpenseList extends Component {
     const link = `/clearance/billing/expense/${row.delg_no}/receivable/${row.disp_id}`;
     this.context.router.push(link);
   }
+  showImportLogs = (ev) => {
+    if (ev.key === 'logs') {
+      this.props.togglePanelVisible(true);
+    }
+  }
   render() {
     const { expenseList, partners } = this.props;
     const { currentStatus } = this.state;
@@ -416,6 +408,11 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const menu = (
+      <Menu onClick={this.showImportLogs}>
+        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
+      </Menu>
+    );
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
       <Select
@@ -439,8 +436,8 @@ export default class ExpenseList extends Component {
     </span>);
     const bulkActions = (<span>
       {(currentStatus === 'billing' || currentStatus === 'pending') &&
-      <Button icon="arrow-up" onClick={this.handleBatchSubmit}>{this.gmsg('submit')}</Button>}
-      <Button icon="download" onClick={this.handleExpExport}>{this.gmsg('export')}</Button>
+      <ToolbarAction icon="arrow-up" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchSubmit} label={this.gmsg('submit')} />}
+      <ToolbarAction icon="download" onClick={this.handleExpExport} label={this.gmsg('export')} />
     </span>);
     this.dataSource.remotes = expenseList;
     return (
@@ -454,18 +451,22 @@ export default class ExpenseList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            {/*  <Button icon="download" onClick={this.handleAdvModelEpt}>
-              {this.msg('eptAdvModel')}
-            </Button>
-            */}
-            {(currentStatus === 'billing' || currentStatus === 'pending') &&
-            <Button type="primary" ghost={currentStatus === 'pending'} icon="upload" onClick={this.handleAdvFeesImport}>
+            <ToolbarAction
+              icon="arrow-up"
+              confirm={this.gmsg('confirmOp')}
+              onConfirm={this.handleAllSubmit}
+              label={this.msg('submitAll')}
+              disabled={currentStatus !== 'pending'}
+            />
+            <Dropdown.Button
+              type="primary"
+              icon="upload"
+              onClick={this.handleImportExpense}
+              overlay={menu}
+              disabled={currentStatus === 'submitted' || currentStatus === 'confirmed'}
+            >
               {this.msg('importFees')}
-            </Button>}
-            {currentStatus === 'pending' &&
-            <Button type="primary" icon="arrow-up" onClick={this.handleAllSubmit}>
-              {this.msg('submitAll')}
-            </Button>}
+            </Dropdown.Button>
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
@@ -501,10 +502,10 @@ export default class ExpenseList extends Component {
           </Content>
           <ImportDataPanel
             title={this.msg('importFees')}
-            visible={this.state.importFeesModalVisible}
+            visible={this.state.importPanelVisible}
             endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
             formData={{}}
-            onClose={() => { this.setState({ importFeesModalVisible: false }); }}
+            onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
@@ -524,12 +525,11 @@ export default class ExpenseList extends Component {
             </Select>
             <Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>
           </ImportDataPanel>
+          <UploadLogsPanel
+            type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
+          />
         </Layout>
         <DelegationDockPanel />
-        <DelgAdvanceExpenseModal />
-        <AdvModelModal />
-        <AdvExpsImpTempModal onload={() => this.handleExpListLoad()} />
-        <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </Layout>
     );
   }

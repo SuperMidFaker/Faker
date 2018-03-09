@@ -47,6 +47,14 @@ const messages = defineMessages({
     id: 'cms.billing.import.fees',
     defaultMessage: '导入费用',
   },
+  submitAll: {
+    id: 'cms.billing.submit.all',
+    defaultMessage: '全部提交',
+  },
+  confirmAll: {
+    id: 'cms.billing.confirm.all',
+    defaultMessage: '全部确认',
+  },
   chooseModel: {
     id: 'cms.billing.export.chooseModel',
     defaultMessage: '范围方式',

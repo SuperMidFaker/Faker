@@ -21,7 +21,7 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 export default class UploadLogsPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    onUploadBatchDelete: PropTypes.func.isRequired,
+    onUploadBatchDelete: PropTypes.func,
     type: PropTypes.string.isRequired,
   }
   componentDidMount() {
@@ -33,7 +33,10 @@ export default class UploadLogsPanel extends React.Component {
     }
   }
   onUploadBatchDelete = (row) => {
-    this.props.onUploadBatchDelete(row.upload_no, this.handleReload);
+    const { onUploadBatchDelete } = this.props;
+    if (onUploadBatchDelete) {
+      onUploadBatchDelete(row.upload_no, this.handleReload);
+    }
   }
   handleReload = (filter = {}) => {
     const { pageSize, current } = this.props.uploadRecords;
@@ -94,8 +97,9 @@ export default class UploadLogsPanel extends React.Component {
       fixed: 'right',
       width: 90,
       render: (o, record) => (<span>
+        {this.props.onUploadBatchDelete &&
+        <RowAction confirm={this.gmsg('confirmOp')} onConfirm={this.onUploadBatchDelete} label="清空" row={record} />}
         <RowAction onClick={this.handleDownload} label="下载" row={record} />
-        <RowAction onClick={this.onUploadBatchDelete} label="清空" row={record} />
       </span>),
     },
   ];

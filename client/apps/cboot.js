@@ -8,11 +8,12 @@ import { polyfill } from 'client/common/i18n/helpers';
 
 const store = configureStore(window.__INITIAL_STATE__);
 const App = appWrapped(require('./routes'));
+
 polyfill(() => {
   addLocaleData(require('react-intl/locale-data/en'));
   addLocaleData(require('react-intl/locale-data/zh'));
   ReactDom.render(
-    <App routerHistory={browserHistory} store={store} />,
+    <App routerHistory={browserHistory} store={store} />, // eslint-disable-line
     document.getElementById('mount')
   );
 });
