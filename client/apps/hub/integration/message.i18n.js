@@ -182,9 +182,13 @@ const messages = defineMessages({
     id: 'hub.integration.arctm.hook.url',
     defaultMessage: '输入接口',
   },
-  webserviceUrl: {
-    id: 'hub.integration.arctm.webservice.url',
-    defaultMessage: 'web service接口',
+  webservice303Url: {
+    id: 'hub.integration.arctm.webservice.303.url',
+    defaultMessage: '303回执发送地址',
+  },
+  webservice305Url: {
+    id: 'hub.integration.arctm.webservice.305.url',
+    defaultMessage: '305回执发送地址',
   },
   apiConfig: {
     id: 'hub.integration.shftz.api.config',

@@ -47,6 +47,7 @@ export default class PickingDetailsPane extends React.Component {
     selectedRowKeys: [],
     selectedRows: [],
     currentStep: null,
+    batchPickedUnShipped: false,
     operationMode: null,
     searchValue: '',
     loading: false,
@@ -170,13 +171,17 @@ export default class PickingDetailsPane extends React.Component {
           case 3: // 部分拣货
             return (
               <span>
-                <RowAction onClick={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty, record.sku_pack_qty, record.trace_id)} icon="check-circle-o" label="拣货确认" row={record} />
+                <RowAction onClick={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty - record.picked_qty, record.sku_pack_qty, record.trace_id)} icon="check-circle-o" label="拣货确认" row={record} />
+                {record.picked_qty > record.shipped_qty &&
+                <RowAction onClick={() => this.handleConfirmShipped(record.id, record.picked_qty - record.shipped_qty, record.sku_pack_qty)} icon="check-circle-o" label="拣货部分发货确认" row={record} />}
                 <RowAction onClick={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} icon="close-circle-o" tooltip="取消拣货" row={record} disabled={submitting} />
               </span>
             );
           case 4: // 已拣货
             return (<span>
-              <RowAction onClick={() => this.handleConfirmShipped(record.id, record.picked_qty, record.sku_pack_qty)} icon="check-circle-o" label="发货确认" row={record} />
+              {record.picked_qty < record.alloc_qty &&
+                <RowAction onClick={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty - record.picked_qty, record.sku_pack_qty, record.trace_id)} icon="check-circle-o" label="拣货确认" row={record} />}
+              <RowAction onClick={() => this.handleConfirmShipped(record.id, record.picked_qty - record.shipped_qty, record.sku_pack_qty)} icon="check-circle-o" label="发货确认" row={record} />
               <RowAction onClick={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} icon="close-circle-o" tooltip="取消拣货" row={record} disabled={submitting} />
             </span>);
           case 5: // 已复核装箱
@@ -184,7 +189,8 @@ export default class PickingDetailsPane extends React.Component {
               <RowAction onClick={() => this.handleConfirmShipped(record.id, record.picked_qty, record.sku_pack_qty)} icon="check-circle-o" label="发货确认" row={record} />
             </span>);
           default:
-            break;
+            return (record.picked_qty < record.alloc_qty ?
+              <RowAction onClick={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty - record.picked_qty, record.sku_pack_qty, record.trace_id)} icon="check-circle-o" label="拣货确认" row={record} /> : null);
         }
       } else if (outboundHead.shipping_mode === 'scan') {
         switch (record.status) { // 分配明细的状态 2 已分配 4 已拣货 6 已发运
@@ -279,9 +285,26 @@ export default class PickingDetailsPane extends React.Component {
       selectedRowKeys: [],
     });
   }
+  handleSelectRowsChange = (selectedRowKeys, selectedRows) => {
+    let status = null;
+    const allocated = selectedRows.filter(item => item.status ===
+      CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
+    const picked = selectedRows.filter(item => item.status ===
+      CWM_OUTBOUND_STATUS.ALL_PICKED.value);
+    if (allocated && allocated.length === selectedRows.length) {
+      status = 'allAllocated';
+    } else if (picked && picked.length === selectedRows.length) {
+      status = 'allPicked';
+    }
+    const batchPickedUnShipped = selectedRows.filter(item => item.picked_qty > 0
+      && item.picked_qty > item.shipped_qty).length > 0;
+    this.setState({
+      selectedRowKeys, selectedRows, currentStep: status, batchPickedUnShipped,
+    });
+  }
   render() {
     const { pickDetails, outboundHead, submitting } = this.props;
-    const { currentStep } = this.state;
+    const { currentStep, batchPickedUnShipped } = this.state;
     const dataSource = pickDetails.filter((item) => {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
@@ -291,39 +314,13 @@ export default class PickingDetailsPane extends React.Component {
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys, selectedRows) => {
-        let status = null;
-        const allocated = selectedRows.filter(item => item.status ===
-          CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
-        const picked = selectedRows.filter(item => item.status ===
-          CWM_OUTBOUND_STATUS.ALL_PICKED.value);
-        if (allocated && allocated.length === selectedRows.length) {
-          status = 'allAllocated';
-        } else if (picked && picked.length === selectedRows.length) {
-          status = 'allPicked';
-        }
-        this.setState({ selectedRowKeys, selectedRows, currentStep: status });
-      },
+      onChange: this.handleSelectRowsChange,
       selections: [{
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
           const selectedRowKeys = dataSource.map(item => item.id);
-          let status = null;
-          const allocated = dataSource.filter(item => item.status ===
-            CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
-          const picked = dataSource.filter(item => item.status ===
-            CWM_OUTBOUND_STATUS.ALL_PICKED.value);
-          if (allocated && allocated.length === dataSource.length) {
-            status = 'allAllocated';
-          } else if (picked && picked.length === dataSource.length) {
-            status = 'allPicked';
-          }
-          this.setState({
-            selectedRowKeys,
-            selectedRows: dataSource,
-            currentStep: status,
-          });
+          this.handleSelectRowsChange(selectedRowKeys, dataSource);
         },
       }, {
         key: 'opposite-data',
@@ -332,21 +329,7 @@ export default class PickingDetailsPane extends React.Component {
           const fDataSource = dataSource.filter(item => !this.state.selectedRowKeys.find(item1 =>
             item1 === item.id));
           const selectedRowKeys = fDataSource.map(item => item.id);
-          let status = null;
-          const allocated = fDataSource.filter(item => item.status ===
-            CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
-          const picked = fDataSource.filter(item => item.status ===
-            CWM_OUTBOUND_STATUS.ALL_PICKED.value);
-          if (allocated && allocated.length === fDataSource.length) {
-            status = 'allAllocated';
-          } else if (picked && picked.length === fDataSource.length) {
-            status = 'allPicked';
-          }
-          this.setState({
-            selectedRowKeys,
-            selectedRows: fDataSource,
-            currentStep: status,
-          });
+          this.handleSelectRowsChange(selectedRowKeys, fDataSource);
         },
       }],
     };
@@ -377,14 +360,14 @@ export default class PickingDetailsPane extends React.Component {
             </Button>}
             {outboundHead.shipping_mode === 'manual'
                 && outboundHead.so_type !== CWM_SO_TYPES[3].value
-                && currentStep === 'allPicked' && <Button onClick={this.handleBatchConfirmShipped}>
+                && batchPickedUnShipped && <Button onClick={this.handleBatchConfirmShipped}>
                   <MdIcon type="check-all" />批量发货确认
                 </Button>}
             {outboundHead.shipping_mode === 'manual'
-                && outboundHead.so_type !== CWM_SO_TYPES[3].value
-                && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
-              批量取消拣货
-                </Button>}
+                    && outboundHead.so_type !== CWM_SO_TYPES[3].value
+                    && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
+                      批量取消拣货
+                    </Button>}
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <PickingModal

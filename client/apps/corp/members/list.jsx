@@ -305,7 +305,7 @@ export default class MemberDepartmentView extends React.Component {
   toggleUserModal = (key) => {
     this.props.toggleUserModal(true, key);
   }
-  renderColumnText(status, text) { // eslint-disable-line
+  renderColumnText = (status, text) => {
     let style = {};
     if (status === ACCOUNT_STATUS.blocked.id) {
       style = { color: '#CCC' };

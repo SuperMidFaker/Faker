@@ -3,11 +3,10 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'VISIBLE_QUOTE_CREATE_MODAL',
-  'VISIBLE_ADD_FEE_MODAL',
-  'QUOTE_MODEL_LOAD', 'QUOTE_MODEL_LOAD_SUCCEED', 'QUOTE_MODEL_LOAD_FAIL',
   'CREATE_QUOTE', 'CREATE_QUOTE_SUCCEED', 'CREATE_QUOTE_FAIL',
   'QUOTES_LOAD', 'QUOTES_LOAD_SUCCEED', 'QUOTES_LOAD_FAIL',
-  'QUOTE_ELEMENTS_LOAD', 'QUOTE_ELEMENTS_LOAD_SUCCEED', 'QUOTE_ELEMENTS_LOAD_FAIL',
+  'QUOTE_PARAMS_LOAD', 'QUOTE_PARAMS_LOAD_SUCCEED', 'QUOTE_PARAMS_LOAD_FAIL',
+  'QUOTE_FEES_LOAD', 'QUOTE_FEES_LOAD_SUCCEED', 'QUOTE_FEES_LOAD_FAIL',
   'QUOTE_COPY', 'QUOTE_COPY_SUCCEED', 'QUOTE_COPY_FAIL',
   'QUOTES_DELETE', 'QUOTES_DELETE_SUCCEED', 'QUOTES_DELETE_FAIL',
   'FEES_ADD', 'FEES_ADD_SUCCEED', 'FEES_ADD_FAIL',
@@ -17,7 +16,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'PUBLISH_QUOTE', 'PUBLISH_QUOTE_SUCCEED', 'PUBLISH_QUOTE_FAIL',
   'CLOSE_PUBLISH_MODAL', 'OPEN_PUBLISH_MODAL',
   'SAVE_QUOTE_EDIT', 'SAVE_QUOTE_EDIT_SUCCEED', 'SAVE_QUOTE_EDIT_FAIL',
-  'LOAD_QUOTEREVS', 'LOAD_QUOTEREVS_SUCCEED', 'LOAD_QUOTEREVS_FAIL',
   'RESTORE_QUOTE', 'RESTORE_QUOTE_SUCCEED', 'RESTORE_QUOTE_FAIL',
   'CLOSE_TRIAL_MODAL', 'OPEN_TRIAL_MODAL',
   'TRIAL_QUOTE', 'TRIAL_QUOTE_SUCCEED', 'TRIAL_QUOTE_FAIL',
@@ -25,7 +23,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 
 const initialState = {
   partners: [],
+  quoteNo: '',
   quoteData: {},
+  quoteFees: [],
   quoteSaving: false,
   quoteRevisions: [],
   quotesList: {
@@ -41,6 +41,7 @@ const initialState = {
     viewStatus: 'clientQuote',
   },
   quotesLoading: false,
+  quoteFeesLoading: false,
   visibleCreateModal: false,
   publishModalVisible: false,
   trialModalVisible: false,
@@ -52,12 +53,6 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.VISIBLE_QUOTE_CREATE_MODAL:
       return { ...state, visibleCreateModal: action.data };
-    case actionTypes.VISIBLE_ADD_FEE_MODAL:
-      return { ...state, visibleAddFeeModal: action.data };
-    case actionTypes.QUOTE_MODEL_LOAD:
-      return { ...state, quoteData: { ...initialState.quoteData, loading: true } };
-    case actionTypes.QUOTE_MODEL_LOAD_SUCCEED:
-      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     case actionTypes.QUOTES_LOAD:
       return {
         ...state,
@@ -69,24 +64,28 @@ export default function reducer(state = initialState, action) {
         ...state,
         quotesList: { ...state.quotesList, ...action.result.data, quotesLoading: false },
       };
-    case actionTypes.QUOTE_ELEMENTS_LOAD_SUCCEED:
+    case actionTypes.QUOTE_PARAMS_LOAD:
+      return { ...state, quoteNo: action.params.quoteNo };
+    case actionTypes.QUOTE_PARAMS_LOAD_SUCCEED:
       return { ...state, quoteData: action.result.data };
+    case actionTypes.QUOTE_FEES_LOAD:
+      return { ...state, quoteFeesLoading: true };
+    case actionTypes.QUOTE_FEES_LOAD_SUCCEED:
+      return { ...state, quoteFeesLoading: false, quoteFees: action.result.data };
     case actionTypes.REVISE_QUOTE_SETTING:
       return { ...state, quoteSaving: true };
     case actionTypes.REVISE_QUOTE_SETTING_FAIL:
       return { ...state, quoteSaving: false };
     case actionTypes.REVISE_QUOTE_SETTING_SUCCEED:
       return { ...state, quoteData: action.data, quoteSaving: false };
-    case actionTypes.QUOTE_COPY:
-      return { ...state, quoteData: { ...state.quoteData, loading: true } };
-    case actionTypes.QUOTE_COPY_SUCCEED:
-      return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
+    // case actionTypes.QUOTE_COPY:
+    //   return { ...state, quoteData: { ...state.quoteData, loading: true } };
+    // case actionTypes.QUOTE_COPY_SUCCEED:
+    //   return { ...state, quoteData: { ...action.result.data.quoteData, loading: false } };
     case actionTypes.OPEN_PUBLISH_MODAL:
       return { ...state, publishModalVisible: true };
     case actionTypes.CLOSE_PUBLISH_MODAL:
       return { ...state, publishModalVisible: false };
-    case actionTypes.LOAD_QUOTEREVS_SUCCEED:
-      return { ...state, quoteRevisions: action.result.data };
     case actionTypes.OPEN_TRIAL_MODAL:
       return { ...state, trialModalVisible: true };
     case actionTypes.CLOSE_TRIAL_MODAL:
@@ -105,29 +104,6 @@ export function toggleQuoteCreateModal(visible) {
   return {
     type: actionTypes.VISIBLE_QUOTE_CREATE_MODAL,
     data: visible,
-  };
-}
-
-export function toggleAddFeeModal(visible) {
-  return {
-    type: actionTypes.VISIBLE_ADD_FEE_MODAL,
-    data: visible,
-  };
-}
-
-export function loadQuoteModel(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.QUOTE_MODEL_LOAD,
-        actionTypes.QUOTE_MODEL_LOAD_SUCCEED,
-        actionTypes.QUOTE_MODEL_LOAD_FAIL,
-      ],
-      endpoint: 'v1/cms/quote/loadModel',
-      method: 'get',
-      params: { tenantId },
-      origin: 'mongo',
-    },
   };
 }
 
@@ -193,17 +169,32 @@ export function loadQuoteTable(params) {
   };
 }
 
-export function loadQuoteElements(params) {
+export function loadQuoteParams(quoteNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.QUOTE_ELEMENTS_LOAD,
-        actionTypes.QUOTE_ELEMENTS_LOAD_SUCCEED,
-        actionTypes.QUOTE_ELEMENTS_LOAD_FAIL,
+        actionTypes.QUOTE_PARAMS_LOAD,
+        actionTypes.QUOTE_PARAMS_LOAD_SUCCEED,
+        actionTypes.QUOTE_PARAMS_LOAD_FAIL,
       ],
-      endpoint: 'v1/cms/quote/elements',
+      endpoint: 'v1/cms/quote/params',
       method: 'get',
-      params,
+      params: { quoteNo },
+    },
+  };
+}
+
+export function loadQuoteFees(quoteNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUOTE_FEES_LOAD,
+        actionTypes.QUOTE_FEES_LOAD_SUCCEED,
+        actionTypes.QUOTE_FEES_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cms/quote/fees',
+      method: 'get',
+      params: { quoteNo },
     },
   };
 }
@@ -323,22 +314,6 @@ export function deleteFees(feeCodes, quoteNo) {
       endpoint: 'v1/cms/quote/fees/batch/delete',
       method: 'post',
       data: { feeCodes, quoteNo },
-    },
-  };
-}
-
-export function loadQuoteRevisions(quoteNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_QUOTEREVS,
-        actionTypes.LOAD_QUOTEREVS_SUCCEED,
-        actionTypes.LOAD_QUOTEREVS_FAIL,
-      ],
-      endpoint: 'v1/cms/quote/revisons',
-      method: 'get',
-      params: { quoteNo },
-      origin: 'mongo',
     },
   };
 }

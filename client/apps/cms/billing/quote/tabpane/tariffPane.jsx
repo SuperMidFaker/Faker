@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Input, message, Mention, Modal, Transfer, TreeSelect } from 'antd';
-import { updateFee, addFees, deleteFees, saveQuoteBatchEdit, loadQuoteElements } from 'common/reducers/cmsQuote';
+import { updateFee, addFees, deleteFees, saveQuoteBatchEdit, loadQuoteFees } from 'common/reducers/cmsQuote';
 import { loadAllFeeGroups, loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
@@ -16,10 +16,8 @@ const { Nav } = Mention;
 @injectIntl
 @connect(
   state => ({
-    quoteData: state.cmsQuote.quoteData,
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
+    quoteNo: state.cmsQuote.quoteNo,
+    quoteFeesLoading: state.cmsQuote.quoteFeesLoading,
     allFeeElements: state.bssFeeSettings.allFeeElements,
     allFeeGroups: state.bssFeeSettings.allFeeGroups,
   }),
@@ -28,7 +26,7 @@ const { Nav } = Mention;
     addFees,
     deleteFees,
     saveQuoteBatchEdit,
-    loadQuoteElements,
+    loadQuoteFees,
     loadAllFeeElements,
     loadAllFeeGroups,
   }
@@ -36,7 +34,6 @@ const { Nav } = Mention;
 export default class TariffPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    quoteData: PropTypes.shape({ quote_no: PropTypes.string }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -50,31 +47,40 @@ export default class TariffPane extends Component {
     fees: [],
     editItem: {},
     onEdit: false,
+    transferData: [],
+    editIndex: -1,
   };
   componentDidMount() {
     this.props.loadAllFeeGroups();
-    this.props.loadAllFeeElements();
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.quoteData &&
-        nextProps.quoteData.fees !== this.props.quoteData.fees) {
-      this.setState({ fees: nextProps.quoteData.fees });
-    }
+    this.props.loadAllFeeElements().then((result) => {
+      this.handleElementLoad(result.data);
+    });
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  handleElementLoad = () => {
-    this.props.loadQuoteElements({ quoteNo: this.props.quoteData.quote_no });
+  handleElementLoad = (allFeeElements) => {
+    this.props.loadQuoteFees(this.props.quoteNo).then((result) => {
+      const quoteFees = result.data;
+      const existFeeCodes = quoteFees.map(fe => fe.fee_code);
+      const allFeeCodes = allFeeElements.map(fe => fe.fee_code);
+      const diffCodes = allFeeCodes.filter(code => !existFeeCodes.includes(code));
+      const transferData = allFeeElements.filter(fee => diffCodes.includes(fee.fee_code));
+      this.setState({ fees: result.data, transferData });
+    });
   }
   handleFeesBatchDelete = () => {
     const feeCodes = this.state.selectedRowKeys;
-    this.props.deleteFees(feeCodes, this.props.quoteData.quote_no).then((result) => {
+    this.props.deleteFees(feeCodes, this.props.quoteNo).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
         message.info('删除成功', 5);
         this.handleDeselectRows();
-        this.handleElementLoad();
+        const addData = this.props.allFeeElements.filter(fe =>
+          feeCodes.includes(fe.fee_code));
+        const data = this.state.transferData.concat(addData);
+        const fees = this.state.fees.filter(fe => !feeCodes.includes(fe.fee_code));
+        this.setState({ transferData: data, fees });
       }
     });
   }
@@ -109,13 +115,14 @@ export default class TariffPane extends Component {
   handleTransferCancel = () => {
     this.setState({
       visible: false,
+      targetKeys: [],
     });
   }
   handleTransferOk = () => {
     const { targetKeys } = this.state;
-    this.props.addFees(targetKeys, this.props.quoteData.quote_no).then((result) => {
+    this.props.addFees(targetKeys, this.props.quoteNo).then((result) => {
       if (!result.error) {
-        this.handleElementLoad();
+        this.handleElementLoad(this.props.allFeeElements);
       }
     });
     this.handleTransferCancel();
@@ -125,11 +132,11 @@ export default class TariffPane extends Component {
       visible: true,
     });
   }
-  handleFeeEdit = (row) => {
-    this.setState({ onEdit: true, editItem: row });
+  handleFeeEdit = (row, index) => {
+    this.setState({ onEdit: true, editIndex: index, editItem: row });
   }
   handleFeeSave = () => {
-    this.setState({ onEdit: false });
+    this.setState({ onEdit: false, editIndex: -1, editItem: {} });
     const item = this.state.editItem;
     this.props.updateFee({
       id: item.id,
@@ -138,9 +145,11 @@ export default class TariffPane extends Component {
     });
   }
   render() {
-    const { quoteData, allFeeGroups, readOnly } = this.props;
     const {
-      targetKeys, selectedKeys, visible, fees, onEdit,
+      quoteFeesLoading, allFeeGroups, readOnly,
+    } = this.props;
+    const {
+      targetKeys, selectedKeys, visible, fees, onEdit, editIndex, transferData,
     } = this.state;
     const columns = [
       {
@@ -179,53 +188,54 @@ export default class TariffPane extends Component {
         title: this.msg('billingWay'),
         dataIndex: 'billing_way',
         width: 200,
-        render: (o, record) => {
-          if (!onEdit) {
-            return o;
+        render: (o, record, index) => {
+          if (onEdit && editIndex === index) {
+            return (<TreeSelect
+              style={{ width: '100%' }}
+              value={o}
+              dropdownStyle={{ overflow: 'auto' }}
+              treeData={BILLING_METHOD}
+              treeDefaultExpandAll
+              onChange={value => this.handleEditChange(record.id, 'billing_way', value)}
+            />);
           }
-          return (<TreeSelect
-            style={{ width: '100%' }}
-            value={o}
-            dropdownStyle={{ overflow: 'auto' }}
-            treeData={BILLING_METHOD}
-            treeDefaultExpandAll
-            onChange={value => this.handleEditChange(record.id, 'billing_way', value)}
-          />);
+          return o;
         },
       }, {
         title: this.msg('formulaFactor'),
         dataIndex: 'formula_factor',
         width: 250,
-        render: (o, record) => {
+        render: (o, record, index) => {
           const formulaChildren = BILLING_METHOD.find(bl => bl.key === '$formula').children;
-          if (!onEdit) {
-            return o;
-          } else if (formulaChildren.find(fl => fl.key === record.billing_way)) {
-            return (<Mention
-              suggestions={this.state.suggestions}
-              prefix="$"
-              onSearchChange={this.handleFormulaSearch}
-              defaultValue={o ? Mention.toContentState(o) : null}
-              placeholder="$公式"
-              onChange={editorState => this.handleFormulaChange(record.id, editorState)}
-              multiLines
-              style={{ width: '100%', height: '100%' }}
-            />);
+          if (onEdit && editIndex === index) {
+            if (formulaChildren.find(fl => fl.key === record.billing_way)) {
+              return (<Mention
+                suggestions={this.state.suggestions}
+                prefix="$"
+                onSearchChange={this.handleFormulaSearch}
+                defaultValue={o ? Mention.toContentState(o) : null}
+                placeholder="$公式"
+                onChange={editorState => this.handleFormulaChange(record.id, editorState)}
+                multiLines
+                style={{ width: '100%', height: '100%' }}
+              />);
+            }
+            return (
+              <Input value={o} onChange={e => this.handleEditChange(record.id, 'formula_factor', e.target.value)} style={{ width: '100%' }} />
+            );
           }
-          return (
-            <Input value={o} onChange={e => this.handleEditChange(record.id, 'formula_factor', e.target.value)} style={{ width: '100%' }} />
-          );
+          return o;
         },
       },
     ];
     if (!readOnly) {
       columns.push({
-        width: 100,
-        render: (o, record) => {
-          if (!onEdit) {
-            return (<RowAction onClick={this.handleFeeEdit} icon="edit" row={record} />);
+        width: 80,
+        render: (o, record, index) => {
+          if (onEdit && editIndex === index) {
+            return (<RowAction onClick={this.handleFeeSave} icon="save" row={record} index={index} />);
           }
-          return (<RowAction onClick={this.handleFeeSave} icon="save" row={record} />);
+          return (<RowAction onClick={this.handleFeeEdit} index={index} icon="edit" row={record} />);
         },
       });
     }
@@ -242,7 +252,7 @@ export default class TariffPane extends Component {
         rowSelection={rowSelection}
         dataSource={fees}
         rowKey="fee_code"
-        loading={quoteData.loading}
+        loading={quoteFeesLoading}
       >
         <DataPane.Toolbar>
           {!readOnly && <Button type="primary" icon="plus-circle-o" onClick={this.toggleAddFeeModal}>{this.gmsg('add')}</Button>}
@@ -263,7 +273,7 @@ export default class TariffPane extends Component {
           onOk={this.handleTransferOk}
         >
           <Transfer
-            dataSource={this.props.allFeeElements}
+            dataSource={transferData}
             showSearch
             titles={['可选', '已选']}
             targetKeys={targetKeys}

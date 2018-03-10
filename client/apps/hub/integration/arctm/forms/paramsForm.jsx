@@ -1,20 +1,46 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Form, Select, Input, Col, Row, message } from 'antd';
+import { Icon, Button, Form, Select, Input, Col, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateArCtmApp } from 'common/reducers/hubIntegration';
 import { loadPartners } from 'common/reducers/partner';
 import { loadPartnerFlowList } from 'common/reducers/scofFlow';
-import { uuidWithoutDash } from 'client/common/uuid';
 import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const ButtonGroup = Button.Group;
 
 const OpenapiHost = API_ROOTS.openapi;
+
+const fixHttpSchema = (url) => {
+  if (!url) {
+    return '';
+  }
+  url.trim();
+  let schema = 'http';
+  let colonPos = 4;
+  // https:// http://
+  const httpsch = url.slice(0, 4);
+  if (httpsch === 'http') {
+    const isS = url[4] === 's';
+    if (isS) {
+      schema = 'https';
+      colonPos = 5;
+    }
+  } else {
+    colonPos = url.indexOf(':');
+    if (colonPos === -1) {
+      colonPos = 0;
+    }
+  }
+  while (url[colonPos] === ':' || url[colonPos] === '/') {
+    colonPos += 1;
+  }
+  const hostPart = url.slice(colonPos);
+  return `${schema}://${hostPart}`;
+};
 
 @injectIntl
 @connect(
@@ -32,7 +58,7 @@ export default class ParamsForm extends Component {
     form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     formData: PropTypes.shape({ customer_partner_id: PropTypes.number }),
     partners: PropTypes.arrayOf(PropTypes.shape({
-      code: PropTypes.string.isRequired,
+      code: PropTypes.string,
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
     })),
@@ -48,6 +74,27 @@ export default class ParamsForm extends Component {
   handleCustomerChange = (customerPartnerId) => {
     this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
   }
+  handleHookCopy = (hookUrl) => {
+    if (window.clipboardData && window.clipboardData.setData) {
+      window.clipboardData.setData('text/plain', hookUrl);
+    } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+      const textarea = document.createElement('textarea');
+      textarea.textContent = hookUrl;
+      textarea.style.position = 'fixed'; // Prevent scrolling to bottom of page in MS Edge.
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy'); // Security exception may be thrown by some browsers.
+      } catch (ex) {
+        message.error('接口地址已复制失败');
+        return false;
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+    message.info('接口地址已复制');
+    return true;
+  }
   handleSave = () => {
     this.props.form.validateFields((err, values) => {
       const customer = this.props.partners.filter(pt => pt.id === values.customer_partner_id)[0];
@@ -57,9 +104,10 @@ export default class ParamsForm extends Component {
         customer_name: customer && customer.name,
         user: values.username,
         password: values.password,
-        webservice_url: values.webservice_url,
+        webservice_303_url: fixHttpSchema(values.webservice_303_url),
+        webservice_305_url: fixHttpSchema(values.webservice_305_url),
         flow_id: values.flow_id,
-        uuid: values.uuid,
+        uuid: this.props.formData.uuid,
       };
       this.props.updateArCtmApp(arctm).then((result) => {
         if (result.error) {
@@ -70,16 +118,11 @@ export default class ParamsForm extends Component {
       });
     });
   }
-  handleGenUuid = () => {
-    if (!this.props.formData.uuid) {
-      const uuid = uuidWithoutDash();
-      this.props.form.setFieldsValue({ uuid, hook_url: `${OpenapiHost}ar/hook/${uuid}` });
-    }
-  }
   render() {
     const {
       partners, flows, formData, form: { getFieldDecorator },
     } = this.props;
+    const hookUrl = `${OpenapiHost}ar/hook/${formData.uuid}`;
     return (
       <Form>
         <Row gutter={16}>
@@ -121,30 +164,29 @@ export default class ParamsForm extends Component {
               })(<Input />)}
             </FormItem>
           </Col>
-          {getFieldDecorator('uuid', { initialValue: formData.uuid })}
           <Col sm={24} lg={24}>
             <FormItem label={this.msg('hookUrl')} >
-              {getFieldDecorator('hook_url', {
-                rules: [{ required: true, message: '输入接口地址需要生成' }],
-                initialValue: formData.uuid && `${OpenapiHost}ar/hook/${formData.uuid}`,
-              })(<Input
-                addonAfter={
-                  <ButtonGroup size="small">
-                    <Button disabled={this.props.form.getFieldValue('uuid')} icon="tag" onClick={this.handleGenUuid} />
-                    <Button icon="copy" />
-                  </ButtonGroup>
-                }
+              <Input
+                defaultValue={hookUrl}
+                addonAfter={<a onClick={() => this.handleHookCopy(hookUrl)}><Icon type="copy" /></a>}
                 readOnly
-              />)
-                  }
+              />
             </FormItem>
           </Col>
           <Col sm={24} lg={24}>
-            <FormItem label={this.msg('webserviceUrl')} >
-              {getFieldDecorator('webservice_url', {
-                rules: [{ required: true, message: 'webservice url必填' }],
-                initialValue: formData.webservice_url,
-              })(<Input placeholder="https:/stage.easytms.net/webservice/InboundWebService.aspx" />)}
+            <FormItem label={this.msg('webservice303Url')}>
+              {getFieldDecorator('webservice_303_url', {
+                rules: [{ required: true, message: '303回执webservice地址必填' }],
+                initialValue: formData.webservice_303_url || 'https://stage.easytms.net/webservice/InboundWebService.aspx',
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={24}>
+            <FormItem label={this.msg('webservice305Url')}>
+              {getFieldDecorator('webservice_305_url', {
+                rules: [{ required: true, message: '305回执webservice地址必填' }],
+                initialValue: formData.webservice_305_url || 'https://stage.easytms.net/webservice/InboundWebService.aspx',
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={24}>
