@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Form, Input, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { uuidWithoutDash } from 'client/common/uuid';
 import { installSFExpressApp, installArCtmApp, installShftzApp, installEasipassApp, toggleInstallAppModal } from 'common/reducers/hubIntegration';
 import { formatMsg } from '../message.i18n';
 
@@ -39,7 +38,6 @@ export default class InstallAppModal extends Component {
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const uuid = uuidWithoutDash();
         const { type } = this.props;
         let installApp = null;
         let appType = null;
@@ -57,12 +55,13 @@ export default class InstallAppModal extends Component {
           appType = 'easipass';
         }
         installApp({
-          ...values, uuid, app_type: type, tenant_id: this.props.tenantId,
+          ...values, app_type: type, tenant_id: this.props.tenantId,
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
             this.handleCancel();
+            const { uuid } = result.data;
             this.context.router.push(`/hub/integration/${appType}/config/${uuid}`);
           }
         });
