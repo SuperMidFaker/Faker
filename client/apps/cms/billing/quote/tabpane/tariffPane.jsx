@@ -138,10 +138,19 @@ export default class TariffPane extends Component {
     });
   }
   render() {
-    const { quoteData, allFeeGroups, readOnly } = this.props;
+    const {
+      quoteData, allFeeGroups, readOnly, allFeeElements,
+    } = this.props;
     const {
       targetKeys, selectedKeys, visible, fees, onEdit,
     } = this.state;
+    let transferData = allFeeElements;
+    if (fees.length > 0) {
+      const existFeeCodes = fees.map(fe => fe.fee_code);
+      const allFeeCodes = allFeeElements.map(fe => fe.fee_code);
+      const diffCodes = allFeeCodes.filter(code => !existFeeCodes.includes(code));
+      transferData = allFeeElements.filter(fee => diffCodes.includes(fee.fee_code));
+    }
     const columns = [
       {
         title: this.gmsg('seqNo'),
@@ -263,7 +272,7 @@ export default class TariffPane extends Component {
           onOk={this.handleTransferOk}
         >
           <Transfer
-            dataSource={this.props.allFeeElements}
+            dataSource={transferData}
             showSearch
             titles={['可选', '已选']}
             targetKeys={targetKeys}
