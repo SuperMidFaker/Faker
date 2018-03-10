@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { DatePicker, Form, Modal, Input } from 'antd';
+import { DatePicker, Form, Modal, Input, InputNumber } from 'antd';
+import { closePickingModal, pickConfirm, loadOutboundHead } from 'common/reducers/cwmOutbound';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closePickingModal, pickConfirm, loadOutboundHead } from 'common/reducers/cwmOutbound';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -32,7 +32,7 @@ export default class PickingModal extends Component {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
     pickMode: PropTypes.string,
-    selectedRows: PropTypes.array,
+    selectedRows: PropTypes.arrayOf(PropTypes.shape({ alloc_qty: PropTypes.number.isRequired })),
     resetState: PropTypes.func,
   }
   componentWillReceiveProps(nextProps) {
@@ -73,7 +73,10 @@ export default class PickingModal extends Component {
             list.push(data);
           }
         }
-        this.props.pickConfirm(outboundNo, list, loginId, values.pickedBy, values.pickedDate).then((result) => {
+        this.props.pickConfirm(
+          outboundNo, list, loginId,
+          values.pickedBy, values.pickedDate
+        ).then((result) => {
           if (!result.error) {
             this.props.closePickingModal();
             this.props.resetState();
@@ -84,7 +87,7 @@ export default class PickingModal extends Component {
   }
   render() {
     const {
-      form: { getFieldDecorator }, traceId, location, pickMode, username, submitting,
+      form: { getFieldDecorator }, traceId, location, pickMode, username, submitting, allocQty,
     } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -109,7 +112,7 @@ export default class PickingModal extends Component {
           </FormItem>}
           {pickMode === 'single' && <FormItem {...formItemLayout} label="拣货数量" >
             {
-              getFieldDecorator('picked_qty')(<Input />)
+              getFieldDecorator('picked_qty')(<InputNumber min={1} max={allocQty} style={{ width: '100%' }} />)
             }
           </FormItem>}
           <FormItem {...formItemLayout} label="拣货人员" >
