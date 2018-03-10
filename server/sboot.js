@@ -1,10 +1,8 @@
-/* eslint-disable */
+/* eslint no-console:0 no-undef:0 */
 const path = require('path');
-
 process.env.NODE_PATH = path.resolve(__dirname, '..');
 require('module').Module._initPaths();
 require('babel-core/register');
-
 console.time('starting web server');
 
 const argv = require('./util/minimist')(process.argv.slice(2));
@@ -28,8 +26,8 @@ global.__PORT__ = process.env.PORT || config.get('server_port');
 global.__CDN__ = config.get('CDN_URL');
 global.XLSX_CDN = config.get('XLSX_CDN');
 global.API_ROOTS = {
-  default: 'http://localhost:63030/',
-  mongo: 'http://localhost:63032/',
+  default: 'http://localhost:3030/',
+  mongo: 'http://localhost:3032/',
   self: `http://localhost:${__PORT__}/`,
 };
 const isomorphic = require('../webpack/isomorphic');
