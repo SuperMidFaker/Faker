@@ -167,9 +167,9 @@ export default class CorpEdit extends React.Component {
       formData: {
         name, username, phone, email, position,
       },
-      intl, form: { getFieldDecorator, getFieldValue }, code, roles, visible,
+      pid, intl, form: { getFieldDecorator, getFieldValue }, code, roles, visible,
     } = this.props;
-    const isCreating = !this.props.pid && this.props.pid !== 0;
+    const isCreating = visible && !pid && pid !== 0;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
