@@ -6,6 +6,6 @@ COPY package.json /opt/apps/welogix-web
 RUN npm install
 COPY .  /opt/apps/welogix-web
 
-EXPOSE 3030
+EXPOSE 3022
 
 CMD [ "npm", "run", "start" ]
