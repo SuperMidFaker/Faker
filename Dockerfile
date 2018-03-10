@@ -5,7 +5,8 @@ WORKDIR /opt/apps/welogix-web
 COPY package.json /opt/apps/welogix-web
 RUN npm install
 COPY .  /opt/apps/welogix-web
+RUN npm run hot
 
 EXPOSE 3030
 
-CMD [ "npm", "run", "hot" ]
+CMD [ "npm", "run", "dev" ]
