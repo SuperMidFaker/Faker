@@ -205,7 +205,7 @@ export default class OrderList extends React.Component {
         this.setState({
           selectedRowKeys: [],
         });
-        this.handleTableLoad();
+        this.handleTableLoad(1);
       }
     });
   }
@@ -236,11 +236,11 @@ export default class OrderList extends React.Component {
       }
     });
   }
-  handleTableLoad = () => {
+  handleTableLoad = (currentPage) => {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: currentPage || this.props.orders.current,
       filters: this.props.filters,
     });
   }
@@ -329,7 +329,7 @@ export default class OrderList extends React.Component {
     this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
       if (!result.error) {
         uploadLogReload();
-        this.handleTableLoad();
+        this.handleTableLoad(1);
       }
     });
   }
