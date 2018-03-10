@@ -5,7 +5,7 @@ import { Breadcrumb, Form, Layout, Tabs, message, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadQuoteElements, reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal } from 'common/reducers/cmsQuote';
+import { loadQuoteParams, reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal } from 'common/reducers/cmsQuote';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
 import TariffPane from './tabpane/tariffPane';
@@ -16,7 +16,7 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 
 function fetchData({ params, dispatch }) {
-  return dispatch(loadQuoteElements({ quoteNo: params.quoteNo }));
+  return dispatch(loadQuoteParams(params.quoteNo));
 }
 
 @connectFetch()(fetchData)
