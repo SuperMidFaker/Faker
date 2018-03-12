@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form  } from 'antd';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadBills } from 'common/reducers/cmsExpense';
-import { loadPartners } from 'common/reducers/partner';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -78,7 +77,6 @@ function fetchData({ state, dispatch }) {
 @withPrivilege({ module: 'clearance', feature: 'expense' })
 export default class ExpenseList extends Component {
   static propTypes = {
-    tenantId: PropTypes.number.isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
   }
@@ -89,7 +87,6 @@ export default class ExpenseList extends Component {
     status: 'billing',
     selectedRowKeys: [],
     importPanelVisible: false,
-    partners: [],
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
