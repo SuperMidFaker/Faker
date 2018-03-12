@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message } from 'antd';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form  } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadBills } from 'common/reducers/cmsExpense';
+import { loadPartners } from 'common/reducers/partner';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectNav from 'client/common/decorators/connect-nav';
+import { createFilename } from 'client/util/dataTransform';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
@@ -25,7 +27,7 @@ import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
-
+const FormItem = Form.Item;
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -46,6 +48,7 @@ function fetchData({ state, dispatch }) {
   })));
   return Promise.all(promises);
 }
+
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
@@ -71,6 +74,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
+@Form.create()
 @withPrivilege({ module: 'clearance', feature: 'expense' })
 export default class ExpenseList extends Component {
   static propTypes = {
@@ -85,6 +89,7 @@ export default class ExpenseList extends Component {
     status: 'billing',
     selectedRowKeys: [],
     importPanelVisible: false,
+    partners: [],
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -256,7 +261,9 @@ export default class ExpenseList extends Component {
     this.handleBillsLoad(1, filter);
   }
   handleGenTemplate = () => {
-    this.props.loadQuoteModel(this.props.tenantId);
+    const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
+    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/${createFilename('expense')}.xlsx?params=${
+      JSON.stringify(params)}`);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -271,7 +278,7 @@ export default class ExpenseList extends Component {
     }
   }
   render() {
-    const { bills, partners } = this.props;
+    const { bills, partners, form: { getFieldDecorator } } = this.props;
     const { status } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -296,7 +303,7 @@ export default class ExpenseList extends Component {
         dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部</Option>
-        {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+        {partners.map(data => (<Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
@@ -378,19 +385,28 @@ export default class ExpenseList extends Component {
             onUploaded={this.invoicesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
-            <Select
-              placeholder="请选择委托方"
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              onChange={this.handlePartnerChange}
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ width: 360 }}
-              style={{ width: '100%', marginBottom: 16 }}
-            >
-              {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-            </Select>
-            <Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>
+            <FormItem>
+              {getFieldDecorator('partnerId', {
+              })(<Select
+                placeholder="请选择委托方"
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 360 }}
+                style={{ width: '100%', marginBottom: 16 }}
+              >
+                {partners.map(pt => (
+                  <Option value={String(pt.id)} key={String(pt.id)}>
+                    {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+                  </Option>))
+                }
+              </Select>)}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('dataInclude', {
+              })(<Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>)}
+            </FormItem>
           </ImportDataPanel>
           <UploadLogsPanel
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
