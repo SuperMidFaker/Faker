@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message } from 'antd';
-import { UPLOAD_BATCH_OBJECT } from 'common/constants';
-import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { loadExpense, loadCurrencies, loadAdvanceParties, showAdvModelModal } from 'common/reducers/cmsExpense';
+import { loadPartners } from 'common/reducers/partner';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectNav from 'client/common/decorators/connect-nav';
+import { createFilename } from 'client/util/dataTransform';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
@@ -25,7 +27,7 @@ import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
-
+const FormItem = Form.Item;
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -60,19 +62,22 @@ function fetchData({ state, dispatch }) {
     pageSize: state.cmsExpense.expenseList.pageSize,
     currentPage: state.cmsExpense.expenseList.current,
   })));
-  promises.push(dispatch(loadPartnersForFilter(state.account.tenantId)));
+  promises.push(dispatch(loadPartners({
+    role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP],
+    businessType: PARTNER_BUSINESSE_TYPES.clearance,
+  })));
   return Promise.all(promises);
 }
+
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
     expenseList: state.cmsExpense.expenseList,
     listFilter: state.cmsExpense.listFilter,
     saved: state.cmsExpense.saved,
-    partners: state.cmsExpense.partners,
+    partners: state.partner.partners,
     uploadRecords: state.uploadRecords.uploadRecords,
   }),
   {
@@ -90,20 +95,16 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
+@Form.create()
 @withPrivilege({ module: 'clearance', feature: 'expense' })
 export default class ExpenseList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
-    tenantName: PropTypes.string.isRequired,
     expenseList: PropTypes.shape({ current: PropTypes.number }).isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
     loadExpense: PropTypes.func.isRequired,
     saved: PropTypes.bool.isRequired,
-    partners: PropTypes.shape({
-      customer: PropTypes.array,
-      supplier: PropTypes.array,
-    }),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -114,35 +115,15 @@ export default class ExpenseList extends Component {
     expEptVisible: false,
     sortedInfo: { field: '', order: '' },
     importPanelVisible: false,
+    partners: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
       this.handleExpListLoad();
     }
     if (nextProps.partners !== this.props.partners) {
-      const { partners } = nextProps;
-      const custFilter = [];
-      const supeFilter = [];
-      for (let i = 0; i < partners.customer.length; i++) {
-        const customer = partners.customer[i];
-        const obj = {
-          text: customer.name,
-          value: customer.name,
-        };
-        custFilter.push(obj);
-      }
-      for (let i = 0; i < partners.supplier.length; i++) {
-        const supplier = partners.supplier[i];
-        const obj = {
-          text: `${supplier.partner_code} | ${supplier.name}`,
-          value: `partnerId:${supplier.partner_id}`,
-        };
-        supeFilter.push(obj);
-      }
-      supeFilter.push({
-        text: `${this.props.tenantId} | ${this.props.tenantName}`,
-        value: `tenantId:${this.props.tenantId}`,
-      });
+      const client = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
+      this.setState({ partners: client });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -384,8 +365,9 @@ export default class ExpenseList extends Component {
     this.handleExpListLoad(1, filter);
   }
   handleGenTemplate = () => {
-    // this.props.showAdvModelModal(true);
-    this.props.loadQuoteModel(this.props.tenantId);
+    const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
+    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/${createFilename('expense')}.xlsx?params=${
+      JSON.stringify(params)}`);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -400,8 +382,8 @@ export default class ExpenseList extends Component {
     }
   }
   render() {
-    const { expenseList, partners } = this.props;
-    const { currentStatus } = this.state;
+    const { expenseList, form: { getFieldDecorator } } = this.props;
+    const { currentStatus, partners } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -424,9 +406,11 @@ export default class ExpenseList extends Component {
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >
-        {partners.customer.map(data => (<Option key={data.name} value={data.partner_id}>
-          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
-        </Option>))}
+        {partners.map(pt => (
+          <Option value={String(pt.id)} key={String(pt.id)}>
+            {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+          </Option>
+        ))}
       </Select>
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
@@ -509,21 +493,28 @@ export default class ExpenseList extends Component {
             onUploaded={this.invoicesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
-            <Select
-              placeholder="请选择委托方"
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              onChange={this.handlePartnerChange}
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ width: 360 }}
-              style={{ width: '100%', marginBottom: 16 }}
-            >
-              {partners.customer.map(data => (<Option key={data.name} value={data.partner_id}>
-                {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
-              </Option>))}
-            </Select>
-            <Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>
+            <FormItem>
+              {getFieldDecorator('partnerId', {
+              })(<Select
+                placeholder="请选择委托方"
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 360 }}
+                style={{ width: '100%', marginBottom: 16 }}
+              >
+                {partners.map(pt => (
+                  <Option value={String(pt.id)} key={String(pt.id)}>
+                    {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+                  </Option>))
+                }
+              </Select>)}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('dataInclude', {
+              })(<Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>)}
+            </FormItem>
           </ImportDataPanel>
           <UploadLogsPanel
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}

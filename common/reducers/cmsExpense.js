@@ -25,7 +25,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_DECLADVPARTIES', 'LOAD_DECLADVPARTIES_SUCCEED', 'LOAD_DECLADVPARTIES_FAIL',
   'COMPUTE_DECLADVFEES', 'COMPUTE_DECLADVFEES_SUCCEED', 'COMPUTE_DECLADVFEES_FAIL',
   'CERT_PANEL_LOAD', 'CERT_PANEL_LOAD_SUCCEED', 'CERT_PANEL_LOAD_FAIL',
-  'LOAD_FILTER_PARTNERS', 'LOAD_FILTER_PARTNERS_SUCCEED', 'LOAD_FILTER_PARTNERS_FAIL',
   'SET_ADV_MODAL_VISIBLE', 'SET_ADV_TEMP_MODAL_VISIBLE',
   'ADV_EXP_IMPORT', 'ADV_EXP_IMPORT_SUCCEED', 'ADV_EXP_IMPORT_FAIL',
   'SAVE_IMPT_ADVFEES', 'SAVE_IMPT_ADVFEES_SUCCEED', 'SAVE_IMPT_ADVFEES_FAIL',
@@ -93,10 +92,6 @@ const initialState = {
   /* certPanel: {
     fees: [],
   }, */
-  partners: {
-    customer: [],
-    supplier: [],
-  },
   visibleAdvModal: false,
   advImport: {
     tableTitle: { title: [], dataIndex: [] },
@@ -229,8 +224,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, saved: true };
     case actionTypes.CERT_PANEL_LOAD_SUCCEED:
       return { ...state, certPanel: action.result.data };
-    case actionTypes.LOAD_FILTER_PARTNERS_SUCCEED:
-      return { ...state, partners: action.result.data };
     case actionTypes.SET_ADV_MODAL_VISIBLE:
       return { ...state, visibleAdvModal: action.data };
     case actionTypes.ADV_EXP_IMPORT:
@@ -242,21 +235,6 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-export function loadPartnersForFilter(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_FILTER_PARTNERS,
-        actionTypes.LOAD_FILTER_PARTNERS_SUCCEED,
-        actionTypes.LOAD_FILTER_PARTNERS_FAIL,
-      ],
-      endpoint: 'v1/expense/filter/partners',
-      method: 'get',
-      params: { tenantId },
-    },
-  };
 }
 
 /*
