@@ -10,7 +10,7 @@ const actionTypes = createActionTypes('@@welogix/bss/fee/settings/', [
   'VISIBLE_NEW_ELEMENT_MODAL',
   'LOAD_FEE_ELEMENTS', 'LOAD_FEE_ELEMENTS_SUCCEED', 'LOAD_FEE_ELEMENTS_FAIL',
   'LOAD_ALL_FEE_GROUPS', 'LOAD_ALL_FEE_GROUPS_SUCCEED', 'LOAD_ALL_FEE_GROUPS_FAIL',
-  'LOAD_ALL_FEE_ELEMENTS', 'LOAD_ALL_FEE_ELEMENTS_SUCCEED', 'LOAD_ALL_FEE_ELEMENTS_FAIL',
+  'LOAD_PARENT_FEE_ELEMENTS', 'LOAD_PARENT_FEE_ELEMENTS_SUCCEED', 'LOAD_PARENT_FEE_ELEMENTS_FAIL',
   'ADD_FEE_ELEMENT', 'ADD_FEE_ELEMENT_SUCCEED', 'ADD_FEE_ELEMENT_FAIL',
   'ALTER_FEE_ELEMENT', 'ALTER_FEE_ELEMENT_SUCCEED', 'ALTER_FEE_ELEMENT_FAIL',
   'DELETE_FEE_ELEMENT', 'DELETE_FEE_ELEMENT_SUCCEED', 'DELETE_FEE_ELEMENT_FAIL',
@@ -43,7 +43,7 @@ const initialState = {
     visible: false,
   },
   allFeeGroups: [],
-  allFeeElements: [],
+  parentFeeElements: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -68,8 +68,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, elLoading: false, feeElementlist: action.result.data };
     case actionTypes.LOAD_ALL_FEE_GROUPS_SUCCEED:
       return { ...state, allFeeGroups: action.result.data };
-    case actionTypes.LOAD_ALL_FEE_ELEMENTS_SUCCEED:
-      return { ...state, allFeeElements: action.result.data };
+    case actionTypes.LOAD_PARENT_FEE_ELEMENTS_SUCCEED:
+      return { ...state, parentFeeElements: action.result.data };
     case actionTypes.VISIBLE_NEW_ELEMENT_MODAL:
       return { ...state, visibleNewElementModal: action.data };
     default:
@@ -180,15 +180,15 @@ export function loadFeeElements(params) {
   };
 }
 
-export function loadAllFeeElements() {
+export function loadParentFeeElements() {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_ALL_FEE_ELEMENTS,
-        actionTypes.LOAD_ALL_FEE_ELEMENTS_SUCCEED,
-        actionTypes.LOAD_ALL_FEE_ELEMENTS_FAIL,
+        actionTypes.LOAD_PARENT_FEE_ELEMENTS,
+        actionTypes.LOAD_PARENT_FEE_ELEMENTS_SUCCEED,
+        actionTypes.LOAD_PARENT_FEE_ELEMENTS_FAIL,
       ],
-      endpoint: 'v1/bss/all/fee/elements/load',
+      endpoint: 'v1/bss/parent/fee/elements/load',
       method: 'get',
     },
   };

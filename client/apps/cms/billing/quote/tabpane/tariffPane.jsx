@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Input, message, Mention, Modal, Transfer, TreeSelect } from 'antd';
 import { updateFee, addFees, deleteFees, saveQuoteBatchEdit, loadQuoteFees } from 'common/reducers/cmsQuote';
-import { loadAllFeeGroups, loadAllFeeElements } from 'common/reducers/bssFeeSettings';
+import { loadAllFeeGroups, loadParentFeeElements } from 'common/reducers/bssFeeSettings';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ToolbarAction from 'client/components/ToolbarAction';
@@ -18,7 +18,7 @@ const { Nav } = Mention;
   state => ({
     quoteNo: state.cmsQuote.quoteNo,
     quoteFeesLoading: state.cmsQuote.quoteFeesLoading,
-    allFeeElements: state.bssFeeSettings.allFeeElements,
+    parentFeeElements: state.bssFeeSettings.parentFeeElements,
     allFeeGroups: state.bssFeeSettings.allFeeGroups,
   }),
   {
@@ -27,7 +27,7 @@ const { Nav } = Mention;
     deleteFees,
     saveQuoteBatchEdit,
     loadQuoteFees,
-    loadAllFeeElements,
+    loadParentFeeElements,
     loadAllFeeGroups,
   }
 )
@@ -52,19 +52,19 @@ export default class TariffPane extends Component {
   };
   componentDidMount() {
     this.props.loadAllFeeGroups();
-    this.props.loadAllFeeElements().then((result) => {
+    this.props.loadParentFeeElements().then((result) => {
       this.handleElementLoad(result.data);
     });
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  handleElementLoad = (allFeeElements) => {
+  handleElementLoad = (parentFeeElements) => {
     this.props.loadQuoteFees(this.props.quoteNo).then((result) => {
       const quoteFees = result.data;
       const existFeeCodes = quoteFees.map(fe => fe.fee_code);
-      const allFeeCodes = allFeeElements.map(fe => fe.fee_code);
+      const allFeeCodes = parentFeeElements.map(fe => fe.fee_code);
       const diffCodes = allFeeCodes.filter(code => !existFeeCodes.includes(code));
-      const transferData = allFeeElements.filter(fee => diffCodes.includes(fee.fee_code));
+      const transferData = parentFeeElements.filter(fee => diffCodes.includes(fee.fee_code));
       this.setState({ fees: result.data, transferData });
     });
   }
@@ -76,7 +76,7 @@ export default class TariffPane extends Component {
       } else {
         message.info('删除成功', 5);
         this.handleDeselectRows();
-        const addData = this.props.allFeeElements.filter(fe =>
+        const addData = this.props.parentFeeElements.filter(fe =>
           feeCodes.includes(fe.fee_code));
         const data = this.state.transferData.concat(addData);
         const fees = this.state.fees.filter(fe => !feeCodes.includes(fe.fee_code));
@@ -122,7 +122,7 @@ export default class TariffPane extends Component {
     const { targetKeys } = this.state;
     this.props.addFees(targetKeys, this.props.quoteNo).then((result) => {
       if (!result.error) {
-        this.handleElementLoad(this.props.allFeeElements);
+        this.handleElementLoad(this.props.parentFeeElements);
       }
     });
     this.handleTransferCancel();
