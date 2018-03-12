@@ -29,6 +29,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SET_ADV_MODAL_VISIBLE', 'SET_ADV_TEMP_MODAL_VISIBLE',
   'ADV_EXP_IMPORT', 'ADV_EXP_IMPORT_SUCCEED', 'ADV_EXP_IMPORT_FAIL',
   'SAVE_IMPT_ADVFEES', 'SAVE_IMPT_ADVFEES_SUCCEED', 'SAVE_IMPT_ADVFEES_FAIL',
+  'LOAD_BILLINGS', 'LOAD_BILLINGS_SUCCEED', 'LOAD_BILLINGS_FAIL',
 ]);
 
 const initialState = {
@@ -52,11 +53,6 @@ const initialState = {
     fields: [],
   },
   listFilter: {
-    status: 'all',
-    mode: 'receivable',
-    tabkey: 'byDelegation',
-    acptDate: { en: false },
-    cleanDate: { en: false },
   },
   // showInputModal: false,
   currencies: [],
@@ -112,6 +108,12 @@ const initialState = {
   },
   advImpTempVisible: false,
   expDetails: [],
+  bills: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -239,6 +241,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, advImport: action.result.data };
     case actionTypes.SET_ADV_TEMP_MODAL_VISIBLE:
       return { ...state, advImpTempVisible: action.data };
+    case actionTypes.LOAD_BILLINGS_SUCCEED:
+      return { ...state, bills: action.result.data, listFilter: JSON.parse(action.params.filter) };
     default:
       return state;
   }
@@ -628,3 +632,18 @@ export function computeDeclAdvanceFee(formData) {
     },
   };
 } */
+
+export function loadBills(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILLINGS,
+        actionTypes.LOAD_BILLINGS_SUCCEED,
+        actionTypes.LOAD_BILLINGS_FAIL,
+      ],
+      endpoint: 'v1/cms/bills/load',
+      method: 'get',
+      params,
+    },
+  };
+}
