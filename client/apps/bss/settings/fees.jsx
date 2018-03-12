@@ -91,7 +91,7 @@ export default class Fees extends Component {
         importPanelVisible: true,
       });
     } else {
-      window.open(`${API_ROOTS.default}v1/bss/settings/fees/${createFilename('fees')}.xlsx`);
+      window.open(`${API_ROOTS.default}v1/bss/settings/fees/export/${createFilename('fees')}.xlsx`);
     }
   }
   render() {
@@ -148,7 +148,7 @@ export default class Fees extends Component {
           <NewFeeGroupModal reload={this.handleLoadGroups} />
           <NewFeeElementModal feeGroups={feeGroups} reload={this.handleLoadElements} />
           <ImportDataPanel
-            adaptors={this.props.adaptors}
+            adaptors={null}
             title="费用元素导入"
             visible={this.state.importPanelVisible}
             endpoint={`${API_ROOTS.default}v1/bss/settings/fees/import`}
