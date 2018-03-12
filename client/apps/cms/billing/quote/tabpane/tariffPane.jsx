@@ -48,7 +48,6 @@ export default class TariffPane extends Component {
     editItem: {},
     onEdit: false,
     transferData: [],
-    editId: -1,
   };
   componentDidMount() {
     this.props.loadAllFeeGroups();
@@ -133,10 +132,10 @@ export default class TariffPane extends Component {
     });
   }
   handleFeeEdit = (row) => {
-    this.setState({ onEdit: true, editId: row.id, editItem: { ...row } });
+    this.setState({ onEdit: true, editItem: { ...row } });
   }
   handleFeeEditCancel = () => {
-    this.setState({ onEdit: false, editId: -1, editItem: {} });
+    this.setState({ onEdit: false, editItem: {} });
   }
   handleFeeSave = () => {
     const item = this.state.editItem;
@@ -146,10 +145,10 @@ export default class TariffPane extends Component {
       formula_factor: item.formula_factor,
     });
     const fees = [...this.state.fees];
-    const feeIndex = fees.findIndex(fe => fe.id === this.state.editId);
+    const feeIndex = fees.findIndex(fe => fe.id === item.id);
     fees[feeIndex] = item;
     this.setState({
-      onEdit: false, editId: -1, editItem: {}, fees,
+      onEdit: false, editItem: {}, fees,
     });
   }
   render() {
@@ -157,7 +156,7 @@ export default class TariffPane extends Component {
       quoteFeesLoading, allFeeGroups, readOnly,
     } = this.props;
     const {
-      targetKeys, selectedKeys, visible, fees, onEdit, editId, transferData, editItem,
+      targetKeys, selectedKeys, visible, fees, onEdit, transferData, editItem,
     } = this.state;
     const columns = [
       {
@@ -197,7 +196,7 @@ export default class TariffPane extends Component {
         dataIndex: 'billing_way',
         width: 200,
         render: (o, record) => {
-          if (onEdit && editId === record.id) {
+          if (onEdit && editItem.id === record.id) {
             return (<TreeSelect
               style={{ width: '100%' }}
               defaultValue={o}
@@ -216,7 +215,7 @@ export default class TariffPane extends Component {
         width: 250,
         render: (o, record) => {
           const formulaChildren = BILLING_METHOD.find(bl => bl.key === '$formula').children;
-          if (onEdit && editId === record.id) {
+          if (onEdit && editItem.id === record.id) {
             if (formulaChildren.find(fl => fl.key === editItem.billing_way)) {
               return (<Mention
                 suggestions={this.state.suggestions}
@@ -241,7 +240,7 @@ export default class TariffPane extends Component {
       columns.push({
         width: 80,
         render: (o, record) => {
-          if (onEdit && editId === record.id) {
+          if (onEdit && editItem.id === record.id) {
             return (<span>
               <RowAction onClick={this.handleFeeSave} icon="save" row={record} />
               <RowAction shape="circle" onClick={this.handleFeeEditCancel} icon="close" tooltip="取消" />

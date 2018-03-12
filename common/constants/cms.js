@@ -95,7 +95,7 @@ export const BILLING_METHODS = [
   { key: 'decl_item_qty', label: '按品名数量' },
   { key: 'trade_item_qty', label: '按料件数量' },
   { key: '$manual', label: '手动计费' },
-  { key: '$included', label: '包干不计费' },
+  { key: '$nonsettle', label: '计费不结算' },
 ];
 
 export const BILLING_METHOD = [
@@ -112,7 +112,7 @@ export const BILLING_METHOD = [
     ],
   },
   { key: '$manual', value: '$manual', label: '手动计费' },
-  { key: '$included', value: '$included', label: '包干不计费' },
+  { key: '$nonsettle', value: '$nonsettle', label: '计费不结算' },
 ];
 
 export const CERTS = [
