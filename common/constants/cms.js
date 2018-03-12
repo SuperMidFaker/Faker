@@ -87,6 +87,17 @@ export const FORMULA_PARAMS = [
   { value: 'trade_item_qty', text: '料件数量' },
   { value: 'trade_amount', text: '进出口金额' },
 ];
+
+export const BILLING_METHODS = [
+  { key: 'shipmt_qty', label: '按货运数量' },
+  { key: 'decl_qty', label: '按报关单数量' },
+  { key: 'decl_sheet_qty', label: '按联单数量' },
+  { key: 'decl_item_qty', label: '按品名数量' },
+  { key: 'trade_item_qty', label: '按料件数量' },
+  { key: '$manual', label: '手动计费' },
+  { key: '$included', label: '包干不计费' },
+];
+
 export const BILLING_METHOD = [
   {
     label: '自动计费',

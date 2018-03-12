@@ -8,7 +8,7 @@ import { loadAllFeeGroups, loadAllFeeElements } from 'common/reducers/bssFeeSett
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
+import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS, BILLING_METHODS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
@@ -48,7 +48,7 @@ export default class TariffPane extends Component {
     editItem: {},
     onEdit: false,
     transferData: [],
-    editIndex: -1,
+    editId: -1,
   };
   componentDidMount() {
     this.props.loadAllFeeGroups();
@@ -97,14 +97,14 @@ export default class TariffPane extends Component {
       </Nav>));
     this.setState({ suggestions });
   }
-  handleEditChange = (id, field, value) => {
-    const item = this.state.editItem;
-    item[field] = value;
-    this.setState({ editItem: item });
+  handleEditChange = (field, value) => {
+    this.setState({
+      editItem: { ...this.state.editItem, [field]: value },
+    });
   }
-  handleFormulaChange = (id, editorState) => {
+  handleFormulaChange = (editorState) => {
     const formula = Mention.toString(editorState);
-    this.handleEditChange(id, 'formula_factor', formula);
+    this.handleEditChange('formula_factor', formula);
   }
   handleTransferChange = (nextTargetKeys) => {
     this.setState({ targetKeys: nextTargetKeys });
@@ -132,16 +132,24 @@ export default class TariffPane extends Component {
       visible: true,
     });
   }
-  handleFeeEdit = (row, index) => {
-    this.setState({ onEdit: true, editIndex: index, editItem: row });
+  handleFeeEdit = (row) => {
+    this.setState({ onEdit: true, editId: row.id, editItem: { ...row } });
+  }
+  handleFeeEditCancel = () => {
+    this.setState({ onEdit: false, editId: -1, editItem: {} });
   }
   handleFeeSave = () => {
-    this.setState({ onEdit: false, editIndex: -1, editItem: {} });
     const item = this.state.editItem;
     this.props.updateFee({
       id: item.id,
       billing_way: item.billing_way,
       formula_factor: item.formula_factor,
+    });
+    const fees = [...this.state.fees];
+    const feeIndex = fees.findIndex(fe => fe.id === this.state.editId);
+    fees[feeIndex] = item;
+    this.setState({
+      onEdit: false, editId: -1, editItem: {}, fees,
     });
   }
   render() {
@@ -149,7 +157,7 @@ export default class TariffPane extends Component {
       quoteFeesLoading, allFeeGroups, readOnly,
     } = this.props;
     const {
-      targetKeys, selectedKeys, visible, fees, onEdit, editIndex, transferData,
+      targetKeys, selectedKeys, visible, fees, onEdit, editId, transferData, editItem,
     } = this.state;
     const columns = [
       {
@@ -188,40 +196,41 @@ export default class TariffPane extends Component {
         title: this.msg('billingWay'),
         dataIndex: 'billing_way',
         width: 200,
-        render: (o, record, index) => {
-          if (onEdit && editIndex === index) {
+        render: (o, record) => {
+          if (onEdit && editId === record.id) {
             return (<TreeSelect
               style={{ width: '100%' }}
-              value={o}
+              defaultValue={o}
               dropdownStyle={{ overflow: 'auto' }}
               treeData={BILLING_METHOD}
               treeDefaultExpandAll
-              onChange={value => this.handleEditChange(record.id, 'billing_way', value)}
+              onChange={value => this.handleEditChange('billing_way', value)}
             />);
           }
-          return o;
+          const method = BILLING_METHODS.filter(bl => bl.key === o)[0];
+          return method ? method.label : '';
         },
       }, {
         title: this.msg('formulaFactor'),
         dataIndex: 'formula_factor',
         width: 250,
-        render: (o, record, index) => {
+        render: (o, record) => {
           const formulaChildren = BILLING_METHOD.find(bl => bl.key === '$formula').children;
-          if (onEdit && editIndex === index) {
-            if (formulaChildren.find(fl => fl.key === record.billing_way)) {
+          if (onEdit && editId === record.id) {
+            if (formulaChildren.find(fl => fl.key === editItem.billing_way)) {
               return (<Mention
                 suggestions={this.state.suggestions}
                 prefix="$"
                 onSearchChange={this.handleFormulaSearch}
                 defaultValue={o ? Mention.toContentState(o) : null}
                 placeholder="$公式"
-                onChange={editorState => this.handleFormulaChange(record.id, editorState)}
+                onChange={editorState => this.handleFormulaChange(editorState)}
                 multiLines
                 style={{ width: '100%', height: '100%' }}
               />);
             }
             return (
-              <Input value={o} onChange={e => this.handleEditChange(record.id, 'formula_factor', e.target.value)} style={{ width: '100%' }} />
+              <Input defaultValue={o} onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
             );
           }
           return o;
@@ -231,11 +240,15 @@ export default class TariffPane extends Component {
     if (!readOnly) {
       columns.push({
         width: 80,
-        render: (o, record, index) => {
-          if (onEdit && editIndex === index) {
-            return (<RowAction onClick={this.handleFeeSave} icon="save" row={record} index={index} />);
+        render: (o, record) => {
+          if (onEdit && editId === record.id) {
+            return (<span>
+              <RowAction onClick={this.handleFeeSave} icon="save" row={record} />
+              <RowAction shape="circle" onClick={this.handleFeeEditCancel} icon="close" tooltip="取消" />
+            </span>
+            );
           }
-          return (<RowAction onClick={this.handleFeeEdit} index={index} icon="edit" row={record} />);
+          return (<RowAction onClick={this.handleFeeEdit} icon="edit" row={record} />);
         },
       });
     }
