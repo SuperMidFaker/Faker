@@ -5,6 +5,8 @@ import { Button, Breadcrumb, Dropdown, Icon, Menu, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
+import ImportDataPanel from 'client/components/ImportDataPanel';
+import { createFilename } from 'client/util/dataTransform';
 import { toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFeeElements } from 'common/reducers/bssFeeSettings';
 import SettingMenu from './menu';
 import FeeGroups from './feeGroups';
@@ -47,6 +49,7 @@ export default class Fees extends Component {
   }
   state = {
     currentTab: 'feeItems',
+    importPanelVisible: false,
   }
   componentWillMount() {
     this.handleLoadGroups();
@@ -77,6 +80,19 @@ export default class Fees extends Component {
       pageSize: this.props.feeElementlist.pageSize,
       current: this.props.feeElementlist.current,
     });
+  }
+  handleFeesUpload = () => {
+    this.setState({ importPanelVisible: false });
+    this.handleLoadElements();
+  }
+  handleMoreMenuClick = (e) => {
+    if (e.key === 'import') {
+      this.setState({
+        importPanelVisible: true,
+      });
+    } else {
+      window.open(`${API_ROOTS.default}v1/bss/settings/fees/${createFilename('fees')}.xlsx`);
+    }
   }
   render() {
     const { currentTab } = this.state;
@@ -131,6 +147,16 @@ export default class Fees extends Component {
           </Content>
           <NewFeeGroupModal reload={this.handleLoadGroups} />
           <NewFeeElementModal feeGroups={feeGroups} reload={this.handleLoadElements} />
+          <ImportDataPanel
+            adaptors={this.props.adaptors}
+            title="费用元素导入"
+            visible={this.state.importPanelVisible}
+            endpoint={`${API_ROOTS.default}v1/bss/settings/fees/import`}
+            formData={{ }}
+            onClose={() => { this.setState({ importPanelVisible: false }); }}
+            onUploaded={this.handleFeesUpload}
+            template={`${XLSX_CDN}/费用元素导入模板.xlsx`}
+          />
         </Layout>
       </Layout>
     );
