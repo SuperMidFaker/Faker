@@ -26,6 +26,7 @@ export default class ImportDataPanel extends React.Component {
   state = {
     importInfo: {},
     adaptor: '',
+    skipMode: 2,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.adaptors !== this.props.adaptors) {
@@ -33,6 +34,11 @@ export default class ImportDataPanel extends React.Component {
         adaptor: '',
       });
     }
+  }
+  onChange = (e) => {
+    this.setState({
+      skipMode: e.target.value,
+    });
   }
   msg = formatMsg(this.props.intl)
   handleUploadFile = (info) => {
@@ -76,10 +82,11 @@ export default class ImportDataPanel extends React.Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
     };
-    const { importInfo, adaptor } = this.state;
+    const { importInfo, adaptor, skipMode } = this.state;
     if (adaptor) {
       formData.adaptor = adaptor;
     }
+    formData.skipMode = skipMode;
     return (
       <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose}>
         <div style={{ marginBottom: 16 }}>
@@ -125,7 +132,7 @@ export default class ImportDataPanel extends React.Component {
           {...formItemLayout}
           label="数据选项"
         >
-          <Radio.Group onChange={this.onChange} value={this.state.value}>
+          <Radio.Group onChange={this.onChange} value={skipMode}>
             <Radio value={1}>覆盖原数据</Radio>
             <Radio value={2}>忽略重复数据</Radio>
           </Radio.Group>

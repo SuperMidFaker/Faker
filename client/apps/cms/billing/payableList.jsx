@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message } from 'antd';
-import { UPLOAD_BATCH_OBJECT } from 'common/constants';
-import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form  } from 'antd';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { loadPartners } from 'common/reducers/partner';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadBills } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectNav from 'client/common/decorators/connect-nav';
+import { createFilename } from 'client/util/dataTransform';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
-import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
@@ -25,80 +26,60 @@ import UserAvatar from 'client/components/UserAvatar';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
+const FormItem = Form.Item;
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-function mergeFilters(curFilters, value) {
-  const newFilters = {};
-  Object.keys(curFilters).forEach((key) => {
-    if (key !== 'filterNo') {
-      newFilters[key] = curFilters[key];
-    }
-  });
-  if (value !== null && value !== undefined && value !== '') {
-    newFilters.filterNo = value;
-  }
-  return newFilters;
-}
-
 function fetchData({ state, dispatch }) {
   const promises = [];
-  const endDay = new Date();
-  const firstDay = new Date();
-  firstDay.setDate(1);
-  promises.push(dispatch(loadExpense({
-    tenantId: state.account.tenantId,
+  promises.push(dispatch(loadBills({
     filter: JSON.stringify({
-      status: 'all',
+      status: 'submitted',
       mode: 'payable',
-      tabkey: 'byDelegation',
-      acptDate: { en: false, firstDay, endDay },
-      cleanDate: { en: false, firstDay, endDay },
     }),
-    pageSize: state.cmsExpense.expenseList.pageSize,
-    currentPage: state.cmsExpense.expenseList.current,
+    pageSize: state.cmsExpense.bills.pageSize,
+    current: state.cmsExpense.bills.current,
   })));
-  promises.push(dispatch(loadPartnersForFilter(state.account.tenantId)));
+  promises.push(dispatch(loadPartners({
+    tenantId: state.account.tenantId,
+    role: PARTNER_ROLES.CUS,
+  })));
   return Promise.all(promises);
 }
+
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
-    expenseList: state.cmsExpense.expenseList,
+    bills: state.cmsExpense.bills,
     listFilter: state.cmsExpense.listFilter,
-    saved: state.cmsExpense.saved,
-    partners: state.cmsExpense.partners,
+    partners: state.partner.partners,
     uploadRecords: state.uploadRecords.uploadRecords,
   }),
   {
     loadCurrencies,
-    loadExpense,
     showPreviewer,
     loadAdvanceParties,
     showAdvModelModal,
     loadQuoteModel,
     togglePanelVisible,
     setUploadRecordsReload,
+    loadBills,
   }
 )
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
 })
+@Form.create()
 @withPrivilege({ module: 'clearance', feature: 'expense' })
 export default class ExpenseList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    expenseList: PropTypes.shape({ current: PropTypes.number }).isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
-    loadExpense: PropTypes.func.isRequired,
-    saved: PropTypes.bool.isRequired,
     partners: PropTypes.shape({
       customer: PropTypes.array,
       supplier: PropTypes.array,
@@ -108,42 +89,9 @@ export default class ExpenseList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    currentStatus: 'submitted',
+    status: 'submitted',
     selectedRowKeys: [],
     importPanelVisible: false,
-    supeFilter: [],
-    sortedInfo: { field: '', order: '' },
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.saved !== this.props.saved) {
-      this.handleExpListLoad();
-    }
-    if (nextProps.partners !== this.props.partners) {
-      const { partners } = nextProps;
-      const custFilter = [];
-      const supeFilter = [];
-      for (let i = 0; i < partners.customer.length; i++) {
-        const customer = partners.customer[i];
-        const obj = {
-          text: customer.name,
-          value: customer.name,
-        };
-        custFilter.push(obj);
-      }
-      for (let i = 0; i < partners.supplier.length; i++) {
-        const supplier = partners.supplier[i];
-        const obj = {
-          text: `${supplier.partner_code} | ${supplier.name}`,
-          value: `partnerId:${supplier.partner_id}`,
-        };
-        supeFilter.push(obj);
-      }
-      supeFilter.push({
-        text: `${this.props.tenantId} | ${this.props.tenantName}`,
-        value: `tenantId:${this.props.tenantId}`,
-      });
-      this.setState({ supeFilter });
-    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -158,11 +106,11 @@ export default class ExpenseList extends Component {
           {o}
         </a>),
     }, {
-      title: this.msg('providerName'),
-      dataIndex: 'provider_name',
+      title: this.msg('clientName'),
+      dataIndex: 'buyer_tenant_id',
       width: 200,
-      filters: this.state.supeFilter,
-      render: o => <TrimSpan text={o} maxLen={12} />,
+      render: o => this.props.partners.find(partner => partner.partner_tenant_id === Number(o)) &&
+      this.props.partners.find(partner => partner.partner_tenant_id === Number(o)).name,
     }, {
       title: this.msg('custOrderNo'),
       dataIndex: 'cust_order_no',
@@ -173,34 +121,32 @@ export default class ExpenseList extends Component {
       width: 180,
     }, {
       title: this.msg('cusDeclNo'),
-      dataIndex: 'cus_decl_nos',
+      dataIndex: 'customs_entry_nos',
       width: 120,
     }, {
-      title: this.msg('bizStatus'),
-      dataIndex: 'biz_status',
-      width: 80,
-    }, {
       title: this.msg('serviceSummary'),
-      dataIndex: 'sum_svc_charges',
+      dataIndex: 'sum_svc_charge',
       width: 90,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
       title: this.msg('advanceSummary'),
-      dataIndex: 'sum_adv_charges',
+      dataIndex: 'sum_adv_charge',
       width: 90,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('payableTotal'),
-      dataIndex: 'total_charges',
-      width: 120,
+      title: this.msg('spcSummary'),
+      dataIndex: 'sum_spc_charge',
+      width: 90,
       align: 'right',
       render: o => o && o.toFixed(2),
     }, {
-      title: this.msg('expStatus'),
-      dataIndex: 'exp_status',
-      width: 80,
+      title: this.msg('receivableTotal'),
+      dataIndex: 'total_charge',
+      align: 'right',
+      render: (o, record) => ((record.sum_svc_charge || 0) + (record.sum_adv_charge || 0) +
+       (record.sum_spc_charge || 0)).toFixed(2),
     }, {
       title: this.msg('declQty'),
       dataIndex: 'decl_qty',
@@ -237,12 +183,12 @@ export default class ExpenseList extends Component {
       render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
       title: '计费人员',
-      dataIndex: 'charged_by',
+      dataIndex: 'created_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
     }, {
       title: '审核人员',
-      dataIndex: 'audited_by',
+      dataIndex: 'confirmed_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
     }, {
@@ -251,11 +197,16 @@ export default class ExpenseList extends Component {
       align: 'right',
       fixed: 'right',
       width: 120,
-      render: (o, record) => <RowAction icon="eye-o" onClick={this.handleDetail} label="应付明细" row={record} />,
+      render: (o, record) => {
+        if (record.exp_status < 3) {
+          return <RowAction icon="form" onClick={this.handleDetail} label="应收明细" row={record} />;
+        }
+        return <RowAction icon="eye-o" onClick={this.handleDetail} label="应收明细" row={record} />;
+      },
     },
   ];
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadExpense(params),
+    fetcher: params => this.props.loadBills(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -265,124 +216,66 @@ export default class ExpenseList extends Component {
       pageSize: result.pageSize,
       showTotal: total => `共 ${total} 条`,
     }),
-    getParams: (pagination, filters, sorter) => {
-      this.setState({
-        sortedInfo: sorter,
-      });
+    getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
-        currentPage: pagination.current,
+        current: pagination.current,
       };
-      const enFilter = { ...filters };
-      if (filters.agent_name) {
-        const agentPartnerIds = [];
-        filters.agent_name.forEach((agent) => {
-          if (agent.indexOf('partnerId') !== -1) {
-            const partnerId = agent.substring(10);
-            agentPartnerIds.push(parseInt(partnerId, 10));
-            enFilter.agentPartnerIds = agentPartnerIds;
-          } else if (agent.indexOf('tenantId') !== -1) {
-            enFilter.agentTenantId = this.props.tenantId;
-          }
-        });
-      }
       const filter = {
         ...this.props.listFilter,
-        enFilter,
-        sortField: sorter.field,
-        sortOrder: sorter.order,
       };
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.expenseList,
+    remotes: this.props.bills,
   })
+
   handleMenuClick = (ev) => {
-    this.setState({ currentStatus: ev.key });
+    this.setState({ status: ev.key });
+    const filter = { ...this.props.listFilter, status: ev.key };
+    this.handleBillsLoad('', filter);
   }
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'shipment');
   }
-  handleExpListLoad = (currentPage, filter) => {
-    const { tenantId, listFilter, expenseList: { pageSize, current } } = this.props;
-    this.props.loadExpense({
-      tenantId,
+  handleBillsLoad = (currentPage, filter) => {
+    const { listFilter, bills: { pageSize, current } } = this.props;
+    this.props.loadBills({
       filter: JSON.stringify(filter || listFilter),
       pageSize,
-      currentPage: currentPage || current,
+      current: currentPage || current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
     });
   }
-  handleSearch = (searchVal) => {
-    const filters = mergeFilters(this.props.listFilter, searchVal);
-    this.handleExpListLoad(1, filters);
-  }
   handleImportExpense = () => {
     this.setState({
       importPanelVisible: true,
     });
   }
-  handleAcptDateChange = (dates) => {
-    let filter = this.props.listFilter;
-    if (dates.length > 0) {
-      const acptDate = {
-        en: true,
-        firstDay: dates[0].toDate(),
-        endDay: dates[1].toDate(),
-      };
-      const { sortedInfo } = this.state;
-      filter = {
-        ...this.props.listFilter,
-        sortField: sortedInfo.field,
-        sortOrder: sortedInfo.order,
-        acptDate,
-      };
-    }
-    this.handleExpListLoad(1, filter);
+  toggleImportFeesModal = () => {
+    this.setState({ importFeesModalVisible: !this.state.importFeesModalVisible });
   }
-  handleCleanDateChange = (dates) => {
-    const cleanDate = {
-      en: true,
-      firstDay: dates[0].toDate(),
-      endDay: dates[1].toDate(),
-    };
-    const { sortedInfo } = this.state;
-    const filter = {
-      ...this.props.listFilter,
-      sortField: sortedInfo.field,
-      sortOrder: sortedInfo.order,
-      cleanDate,
-    };
-    this.handleExpListLoad(1, filter);
+  handleDateChange = (data, dataString) => {
+    const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
+    this.handleBillsLoad(1, filter);
   }
-  handleStatusChange = (value) => {
-    if (value === this.props.listFilter.status) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, status: value };
-    this.handleExpListLoad(1, filter);
-  }
-  handleTabChange = (key) => {
-    if (key === this.props.listFilter.tabkey) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, tabkey: key };
-    this.handleExpListLoad(1, filter);
-  }
-  handleAdvModelEpt = () => {
-    this.props.showAdvModelModal(true);
+  handleGenTemplate = () => {
     this.props.loadQuoteModel(this.props.tenantId);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
   handleDetail = (row) => {
-    const link = `/clearance/billing/expense/${row.delg_no}/payable/${row.disp_id}`;
+    const link = `/clearance/billing/expense/${row.delg_no}/receivable/${row.disp_id}`;
     this.context.router.push(link);
+  }
+  handleGenTemplate = () => {
+    const params = { ...this.props.form.getFieldsValue(), mode: 'payable' };
+    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/${createFilename('expense')}.xlsx?params=${
+      JSON.stringify(params)}`);
   }
   showImportLogs = (ev) => {
     if (ev.key === 'logs') {
@@ -390,8 +283,8 @@ export default class ExpenseList extends Component {
     }
   }
   render() {
-    const { expenseList, partners } = this.props;
-    const { currentStatus } = this.state;
+    const { bills, partners, form: { getFieldDecorator } } = this.props;
+    const { status } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -413,24 +306,23 @@ export default class ExpenseList extends Component {
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >
-        {partners.supplier.map(data => (<Option key={data.name} value={data.partner_id}>
-          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
-        </Option>))}
+        <Option value="all" key="all">全部</Option>
+        {partners.map(data => (<Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
       <RangePicker
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-        onChange={this.handleAcptDateChange}
+        onChange={this.handleDateChange}
         style={{ width: 256 }}
       />
     </span>);
     const bulkActions = (<span>
-      {(currentStatus === 'submitted') &&
+      {(status === 'submitted') &&
       <ToolbarAction icon="check" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchConfirm} label={this.gmsg('confirm')} />}
-      {(currentStatus === 'submitted') &&
+      {(status === 'submitted') &&
       <ToolbarAction icon="close" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchReject} label={this.gmsg('reject')} />}
       <ToolbarAction icon="download" onClick={this.handleExpExport} label={this.gmsg('export')} />
     </span>);
-    this.dataSource.remotes = expenseList;
+    this.dataSource.remotes = bills;
     return (
       <Layout>
         <PageHeader>
@@ -450,13 +342,13 @@ export default class ExpenseList extends Component {
               confirm={this.gmsg('confirmOp')}
               onConfirm={this.handleAllConfirm}
               label={this.msg('confirmAll')}
-              disabled={currentStatus !== 'confirmed'}
+              disabled={status !== 'confirmed'}
             />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
           <Drawer width={160}>
-            <Menu mode="inline" selectedKeys={[this.state.currentStatus]} onClick={this.handleMenuClick}>
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleMenuClick}>
               <Menu.Item key="submitted">
                 <Icon type="upload" /> {this.msg('statusSubmitted')}
               </Menu.Item>
@@ -475,7 +367,6 @@ export default class ExpenseList extends Component {
               columns={this.columns}
               dataSource={this.dataSource}
               rowKey="delg_no"
-              loading={expenseList.loading}
               bordered
             />
           </Content>
@@ -488,21 +379,28 @@ export default class ExpenseList extends Component {
             onUploaded={this.invoicesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
-            <Select
-              placeholder="请选择服务商"
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              onChange={this.handlePartnerChange}
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ width: 360 }}
-              style={{ width: '100%', marginBottom: 16 }}
-            >
-              {partners.customer.map(data => (<Option key={data.name} value={data.partner_id}>
-                {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
-              </Option>))}
-            </Select>
-            <Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>
+            <FormItem>
+              {getFieldDecorator('partnerId', {
+              })(<Select
+                placeholder="请选择服务商"
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 360 }}
+                style={{ width: '100%', marginBottom: 16 }}
+              >
+                {partners.map(pt => (
+                  <Option value={String(pt.id)} key={String(pt.id)}>
+                    {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+                  </Option>))
+                }
+              </Select>)}
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('dataInclude', {
+              })(<Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>)}
+            </FormItem>
           </ImportDataPanel>
           <UploadLogsPanel
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
