@@ -223,12 +223,12 @@ export default class ExpenseList extends Component {
 
   handleMenuClick = (ev) => {
     const filter = { ...this.props.listFilter, status: ev.key };
-    this.handleBillsLoad('', filter);
+    this.handleExpensesLoad('', filter);
   }
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'shipment');
   }
-  handleBillsLoad = (currentPage, filter) => {
+  handleExpensesLoad = (currentPage, filter) => {
     const { listFilter, expensesList: { pageSize, current } } = this.props;
     this.props.loadExpenses({
       filter: JSON.stringify(filter || listFilter),
@@ -250,7 +250,7 @@ export default class ExpenseList extends Component {
   }
   handleDateChange = (data, dataString) => {
     const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
-    this.handleBillsLoad(1, filter);
+    this.handleExpensesLoad(1, filter);
   }
   handleGenTemplate = () => {
     const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
