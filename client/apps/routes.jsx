@@ -298,7 +298,6 @@ export default(store) => {
             <Route path="import">
               <IndexRedirect to="/clearance/import/manifest" />
               <Route path="manifest">
-                <IndexRoute component={CMSImportManifest.List} />
                 <Route path=":billno" component={CMSImportManifest.Make} />
                 <Route path="view/:billno" component={CMSImportManifest.View} />
                 <Route path="rules/edit/:id" component={CMSImportManifest.RuleEdit} />
@@ -308,7 +307,6 @@ export default(store) => {
             <Route path="export">
               <IndexRedirect to="/clearance/export/manifest" />
               <Route path="manifest">
-                <IndexRoute component={CMSExportManifest.List} />
                 <Route path=":billno" component={CMSExportManifest.Make} />
                 <Route path="view/:billno" component={CMSExportManifest.View} />
                 <Route path="rules/edit/:id" component={CMSExportManifest.RuleEdit} />

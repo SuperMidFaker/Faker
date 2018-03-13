@@ -327,7 +327,6 @@ export default class StockInventoryList extends React.Component {
           <Content className="page-content" key="main">
             <DataTable
               selectedRowKeys={this.state.selectedRowKeys}
-              scrollOffset={390}
               onDeselectRows={this.handleDeselectRows}
               total={totCol}
               columns={this.columns}
