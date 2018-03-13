@@ -4,8 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, DatePicker, Layout, Select } from 'antd';
+import { Button, Breadcrumb, DatePicker, Icon, Layout, Menu, Select } from 'antd';
+import ButtonToggle from 'client/components/ButtonToggle';
 import DataTable from 'client/components/DataTable';
+import DockPanel from 'client/components/DockPanel';
+import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
@@ -42,6 +45,7 @@ export default class CustomerBillsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    extraVisible: false,
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -154,6 +158,9 @@ export default class CustomerBillsList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  toggleExtra = () => {
+    this.setState({ extraVisible: !this.state.extraVisible });
+  }
   render() {
     const { loading } = this.props;
     const mockData = [{
@@ -233,22 +240,68 @@ export default class CustomerBillsList extends React.Component {
             <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('新建账单')}
             </Button>
-            <Button icon="setting">模板设置</Button>
+            <ButtonToggle iconOff="bars" iconOn="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys}
-            onDeselectRows={this.handleDeselectRows}
-            columns={this.columns}
-            dataSource={mockData}
-            rowSelection={rowSelection}
-            rowKey="id"
-            loading={loading}
-            total={totCol}
-          />
-        </Content>
+        <Layout>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.msg('未入账单的费用')}
+              </Menu.Item>
+              <Menu.ItemGroup key="billsStatus" title={this.msg('billsStatus')}>
+                <Menu.Item key="draft">
+                  <Icon type="inbox" /> {this.msg('statusDraft')}
+                </Menu.Item>
+                <Menu.Item key="pending">
+                  <Icon type="loading" /> {this.msg('statusPending')}
+                </Menu.Item>
+                <Menu.Item key="accepted">
+                  <Icon type="check-square-o" /> {this.msg('statusAccepted')}
+                </Menu.Item>
+                <Menu.Item key="offline">
+                  <Icon type="disconnect" /> {this.msg('statusOffline')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={mockData}
+              rowSelection={rowSelection}
+              rowKey="id"
+              loading={loading}
+              total={totCol}
+            />
+          </Content>
+          <DockPanel
+            title={this.gmsg('extraMenu')}
+            mode="inner"
+            size="small"
+            visible={this.state.extraVisible}
+            onClose={this.toggleExtra}
+          >
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleExtraMenuClick}>
+              <Menu.ItemGroup key="views" title={this.gmsg('views')}>
+                <Menu.Item key="table">
+                  <Icon type="table" /> {this.gmsg('tableView')}
+                </Menu.Item>
+                <Menu.Item key="board" disabled>
+                  <Icon type="layout" /> {this.gmsg('boardView')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
+                <Menu.Item key="rules">
+                  <Icon type="tool" /> {this.msg('billTemplates')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
+          </DockPanel>
+        </Layout>
       </Layout>
     );
   }
