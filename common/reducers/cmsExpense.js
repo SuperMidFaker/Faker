@@ -28,7 +28,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SET_ADV_MODAL_VISIBLE', 'SET_ADV_TEMP_MODAL_VISIBLE',
   'ADV_EXP_IMPORT', 'ADV_EXP_IMPORT_SUCCEED', 'ADV_EXP_IMPORT_FAIL',
   'SAVE_IMPT_ADVFEES', 'SAVE_IMPT_ADVFEES_SUCCEED', 'SAVE_IMPT_ADVFEES_FAIL',
-  'LOAD_BILLINGS', 'LOAD_BILLINGS_SUCCEED', 'LOAD_BILLINGS_FAIL',
 ]);
 
 const initialState = {
@@ -38,7 +37,7 @@ const initialState = {
     allcost: [],
     parameters: [],
   },
-  expenseList: {
+  expensesList: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
@@ -124,23 +123,9 @@ export default function reducer(state = initialState, action) {
         expensesLoading: false,
       };
     case actionTypes.EXP_LOAD:
-      return {
-        ...state,
-        expenseList: { ...initialState.expenseList, loading: true },
-        saved: false,
-      };
+      return { ...state, expensesLoading: true, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.EXP_LOAD_SUCCEED: {
-      const expFeesMap = {};
-      const exps = action.result.data;
-      exps.data.forEach((exp) => {
-        expFeesMap[exp.delg_no] = {};
-      });
-      return {
-        ...state,
-        expenseList: { ...state.expenseList, ...exps, loading: false },
-        expFeesMap,
-        listFilter: JSON.parse(action.params.filter),
-      };
+      return { ...state, expensesList: action.result.data, expensesLoading: false };
     }
     case actionTypes.DECL_EXPS_LOAD:
       return { ...state, declexps: { ...state.declexps, loading: true }, saved: false };
@@ -234,8 +219,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, advImport: action.result.data };
     case actionTypes.SET_ADV_TEMP_MODAL_VISIBLE:
       return { ...state, advImpTempVisible: action.data };
-    case actionTypes.LOAD_BILLINGS_SUCCEED:
-      return { ...state, bills: action.result.data, listFilter: JSON.parse(action.params.filter) };
     default:
       return state;
   }
@@ -316,7 +299,7 @@ export function loadDeclExps(params) {
 }
 */
 
-export function loadExpense(params) {
+export function loadExpenses(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -324,7 +307,7 @@ export function loadExpense(params) {
         actionTypes.EXP_LOAD_SUCCEED,
         actionTypes.EXP_LOAD_FAIL,
       ],
-      endpoint: 'v1/cms/expense/load',
+      endpoint: 'v1/cms/billing/expenses',
       method: 'get',
       params,
     },
@@ -610,18 +593,3 @@ export function computeDeclAdvanceFee(formData) {
     },
   };
 } */
-
-export function loadBills(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_BILLINGS,
-        actionTypes.LOAD_BILLINGS_SUCCEED,
-        actionTypes.LOAD_BILLINGS_FAIL,
-      ],
-      endpoint: 'v1/cms/bills/load',
-      method: 'get',
-      params,
-    },
-  };
-}

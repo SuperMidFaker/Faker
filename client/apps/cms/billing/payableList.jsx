@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form  } from 'antd';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadBills } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -33,17 +33,16 @@ const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
-  promises.push(dispatch(loadBills({
+  promises.push(dispatch(loadExpenses({
     filter: JSON.stringify({
       status: 'submitted',
       mode: 'payable',
     }),
-    pageSize: state.cmsExpense.bills.pageSize,
-    current: state.cmsExpense.bills.current,
+    pageSize: state.cmsExpense.expensesList.pageSize,
+    current: state.cmsExpense.expensesList.current,
   })));
   promises.push(dispatch(loadPartners({
-    tenantId: state.account.tenantId,
-    role: PARTNER_ROLES.CUS,
+    role: PARTNER_ROLES.SUP,
   })));
   return Promise.all(promises);
 }
@@ -53,10 +52,10 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    bills: state.cmsExpense.bills,
+    expensesList: state.cmsExpense.expensesList,
     listFilter: state.cmsExpense.listFilter,
     partners: state.partner.partners,
-    uploadRecords: state.uploadRecords.uploadRecords,
+    expensesLoading: state.cmsExpense.expensesLoading,
   }),
   {
     loadCurrencies,
@@ -66,7 +65,7 @@ function fetchData({ state, dispatch }) {
     loadQuoteModel,
     togglePanelVisible,
     setUploadRecordsReload,
-    loadBills,
+    loadExpenses,
   }
 )
 @connectNav({
@@ -89,7 +88,6 @@ export default class ExpenseList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    status: 'submitted',
     selectedRowKeys: [],
     importPanelVisible: false,
   }
@@ -107,10 +105,8 @@ export default class ExpenseList extends Component {
         </a>),
     }, {
       title: this.msg('clientName'),
-      dataIndex: 'buyer_tenant_id',
+      dataIndex: 'seller_name',
       width: 200,
-      render: o => this.props.partners.find(partner => partner.partner_tenant_id === Number(o)) &&
-      this.props.partners.find(partner => partner.partner_tenant_id === Number(o)).name,
     }, {
       title: this.msg('custOrderNo'),
       dataIndex: 'cust_order_no',
@@ -206,7 +202,7 @@ export default class ExpenseList extends Component {
     },
   ];
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadBills(params),
+    fetcher: params => this.props.loadExpenses(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -227,20 +223,19 @@ export default class ExpenseList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.bills,
+    remotes: this.props.expensesList,
   })
 
   handleMenuClick = (ev) => {
-    this.setState({ status: ev.key });
     const filter = { ...this.props.listFilter, status: ev.key };
-    this.handleBillsLoad('', filter);
+    this.handleExpensesLoad('', filter);
   }
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'shipment');
   }
-  handleBillsLoad = (currentPage, filter) => {
-    const { listFilter, bills: { pageSize, current } } = this.props;
-    this.props.loadBills({
+  handleExpensesLoad = (currentPage, filter) => {
+    const { listFilter, expensesList: { pageSize, current } } = this.props;
+    this.props.loadExpenses({
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       current: currentPage || current,
@@ -260,7 +255,7 @@ export default class ExpenseList extends Component {
   }
   handleDateChange = (data, dataString) => {
     const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
-    this.handleBillsLoad(1, filter);
+    this.handleExpensesLoad(1, filter);
   }
   handleGenTemplate = () => {
     this.props.loadQuoteModel(this.props.tenantId);
@@ -269,7 +264,7 @@ export default class ExpenseList extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleDetail = (row) => {
-    const link = `/clearance/billing/expense/${row.delg_no}/receivable/${row.disp_id}`;
+    const link = `/clearance/billing/expense/${row.delg_no}/fees`;
     this.context.router.push(link);
   }
   handleGenTemplate = () => {
@@ -283,8 +278,10 @@ export default class ExpenseList extends Component {
     }
   }
   render() {
-    const { bills, partners, form: { getFieldDecorator } } = this.props;
-    const { status } = this.state;
+    const {
+      expensesList, partners, form: { getFieldDecorator }, expensesLoading,
+    } = this.props;
+    const { status } = this.props.listFilter;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -310,7 +307,7 @@ export default class ExpenseList extends Component {
         {partners.map(data => (<Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
       <RangePicker
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        ranges={{ 当天: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
         onChange={this.handleDateChange}
         style={{ width: 256 }}
       />
@@ -322,7 +319,7 @@ export default class ExpenseList extends Component {
       <ToolbarAction icon="close" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchReject} label={this.gmsg('reject')} />}
       <ToolbarAction icon="download" onClick={this.handleExpExport} label={this.gmsg('export')} />
     </span>);
-    this.dataSource.remotes = bills;
+    this.dataSource.remotes = expensesList;
     return (
       <Layout>
         <PageHeader>
@@ -348,7 +345,7 @@ export default class ExpenseList extends Component {
         </PageHeader>
         <Layout>
           <Drawer width={160}>
-            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleMenuClick}>
+            <Menu mode="inline" selectedKeys={[status]} onClick={this.handleMenuClick}>
               <Menu.Item key="submitted">
                 <Icon type="upload" /> {this.msg('statusSubmitted')}
               </Menu.Item>
@@ -367,6 +364,7 @@ export default class ExpenseList extends Component {
               columns={this.columns}
               dataSource={this.dataSource}
               rowKey="delg_no"
+              loading={expensesLoading}
               bordered
             />
           </Content>
