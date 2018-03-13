@@ -25,6 +25,14 @@ const messages = defineMessages({
     id: 'root.all',
     defaultMessage: '全部',
   },
+  status: {
+    id: 'root.status',
+    defaultMessage: '状态',
+  },
+  todo: {
+    id: 'root.todo',
+    defaultMessage: '待办',
+  },
   op: {
     id: 'root.op',
     defaultMessage: '操作',

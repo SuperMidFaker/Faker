@@ -226,7 +226,7 @@ export default class ExpenseList extends Component {
     remotes: this.props.expensesList,
   })
 
-  handleMenuClick = (ev) => {
+  handleFilterMenuClick = (ev) => {
     const filter = { ...this.props.listFilter, status: ev.key };
     this.handleExpensesLoad('', filter);
   }
@@ -349,13 +349,18 @@ export default class ExpenseList extends Component {
         </PageHeader>
         <Layout>
           <Drawer width={160}>
-            <Menu mode="inline" selectedKeys={[status]} onClick={this.handleMenuClick}>
-              <Menu.Item key="submitted">
-                <Icon type="upload" /> {this.msg('statusSubmitted')}
+            <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.gmsg('all')}
               </Menu.Item>
-              <Menu.Item key="confirmed">
-                <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
-              </Menu.Item>
+              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
+                <Menu.Item key="submitted">
+                  <Icon type="upload" /> {this.msg('statusSubmitted')}
+                </Menu.Item>
+                <Menu.Item key="confirmed">
+                  <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
+                </Menu.Item>
+              </Menu.ItemGroup>
             </Menu>
           </Drawer>
           <Content className="page-content" key="main">

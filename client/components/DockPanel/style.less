@@ -34,6 +34,30 @@
     right: 0;
     transform: translate(0);
   }
+  &-inner {
+    top: 96px;
+    z-index: 20;
+    background-color: #f7f7f7;
+    box-shadow: -3px 0 3px rgba(0,0,0,.1);
+    .welo-dock-panel-head {
+      background: transparent;
+      box-shadow: none;
+      border-bottom: 1px solid #e9e9e9;
+    }
+    .welo-dock-panel-head-close {
+      .ant-btn {
+        border: none;
+        background-color: transparent;
+      }
+    }
+    .welo-dock-panel-body {
+      padding: 0;
+    }
+    .ant-menu {
+      margin-top: 16px;
+      background: transparent;
+    }
+  }
   &-head {
     position: relative;
     overflow: hidden;

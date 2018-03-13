@@ -12,6 +12,7 @@ export default class ButtonToggle extends React.Component {
     type: PropTypes.string,
     shape: PropTypes.oneOf(['circle', 'circle-outline']),
     size: PropTypes.oneOf(['large', 'default', 'small']),
+    state: PropTypes.bool,
     onClick: PropTypes.func,
     iconOn: PropTypes.string,
     iconOff: PropTypes.string,
@@ -36,11 +37,12 @@ export default class ButtonToggle extends React.Component {
 
   render() {
     const {
-      type, shape, size = '', children, iconOn, iconOff, tooltip, disabled,
+      type, shape, size = '', children, iconOn, iconOff, tooltip, disabled, state,
     } = this.props;
-    const toggleCls = this.state.toggle ? 'btn-toggle-on' : 'btn-toggle-off';
-    const toggleIcon = this.state.toggle ? iconOn : iconOff;
-    const toggleTip = this.state.toggle ? `收起${tooltip}` : `打开${tooltip}`;
+    const toggleState = state;
+    const toggleCls = toggleState ? 'btn-toggle-on' : 'btn-toggle-off';
+    const toggleIcon = toggleState ? iconOn : iconOff;
+    const toggleTip = toggleState ? `收起${tooltip}` : `打开${tooltip}`;
     return (
       tooltip ? <Tooltip title={toggleTip} placement="bottom" mouseEnterDelay={1}>
         <Button
