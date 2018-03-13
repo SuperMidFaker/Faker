@@ -270,7 +270,9 @@ export default class ExpenseList extends Component {
     }
   }
   render() {
-    const { bills, partners, form: { getFieldDecorator }, expensesLoading } = this.props;
+    const {
+      expensesList, partners, form: { getFieldDecorator }, expensesLoading,
+    } = this.props;
     const { status } = this.props.listFilter;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

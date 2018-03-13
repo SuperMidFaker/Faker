@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form  } from 'antd';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
@@ -278,7 +278,9 @@ export default class ExpenseList extends Component {
     }
   }
   render() {
-    const { bills, partners, form: { getFieldDecorator }, expensesLoading } = this.props;
+    const {
+      expensesList, partners, form: { getFieldDecorator }, expensesLoading,
+    } = this.props;
     const { status } = this.props.listFilter;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
