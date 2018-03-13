@@ -105,10 +105,11 @@ export default class DeclReleasedModal extends React.Component {
       }
     });
   }
-  
   render() {
     const { visible } = this.props;
-    const { entryNo, validateStatus } = this.state;
+    const {
+      entryNo, validateStatus, ieLabel, ieTime, clearTime,
+    } = this.state;
     let validate = null;
     if (entryNo && entryNo.length === 18) {
       validate = { validateStatus };
@@ -126,10 +127,10 @@ export default class DeclReleasedModal extends React.Component {
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} hasFeedback={!!(entryNo && entryNo.length === 18)} {...validate}>
             <Input onChange={this.handleEntryNoChange} value={entryNo} />
           </FormItem>
-          <FormItem label={this.state.ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label={ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker
               onChange={this.handleIEDateChange}
-              value={this.state.ieTime && moment(this.state.ieTime)}
+              value={ieTime && moment(ieTime)}
               style={{ width: '100%' }}
               format="YYYY-MM-DD"
             />
@@ -137,7 +138,7 @@ export default class DeclReleasedModal extends React.Component {
           <FormItem label="放行时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker
               onChange={this.handleClearDateChange}
-              value={this.state.clearTime && moment(this.state.clearTime)}
+              value={clearTime && moment(clearTime)}
               style={{ width: '100%' }}
               format="YYYY-MM-DD HH:mm"
               showTime

@@ -19,7 +19,7 @@ const { Option } = Select;
 @connect(
   state => ({
     formRequires: state.sofOrders.formRequires,
-    cmsQuotes: state.scofFlow.cmsQuotes,
+    // cmsQuotes: state.scofFlow.cmsQuotes,
     serviceTeam: state.sofCustomers.operators,
     tenantId: state.account.tenantId,
   }),
@@ -99,7 +99,7 @@ export default class CMSDelegateForm extends Component {
   }
   render() {
     const {
-      formData, formRequires, serviceTeam, cmsQuotes, tenantId,
+      formData, formRequires, serviceTeam, tenantId,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -169,16 +169,17 @@ export default class CMSDelegateForm extends Component {
                 </Select>
               </FormItem>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <FormItem label={this.msg('quoteNo')} {...formItemLayout}>
-                <Select allowClear value={provider ? node.quote_no : null} disabled={!provider} onChange={value => this.handleChange('quote_no', value)}>
+                <Select allowClear value={provider ? node.quote_no : null}
+                disabled={!provider} onChange={value => this.handleChange('quote_no', value)}>
                   {
                     cmsQuotes.map(cq =>
                       <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
                   }
                 </Select>
               </FormItem>
-            </Col>
+            </Col> */}
           </Row>
         </Card>
       </FormPane>

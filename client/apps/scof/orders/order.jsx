@@ -5,7 +5,7 @@ import { Collapse, Form, Row, Col, Card, Input, Select, Steps, Tag, Tabs } from 
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/sofOrders';
-import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadCwmBizParams } from 'common/reducers/scofFlow';
+import { loadPartnerFlowList, loadFlowGraph, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/sofCustomers';
 import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
@@ -48,7 +48,6 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
     setClientForm,
     loadPartnerFlowList,
     loadFlowGraph,
-    loadCustomerCmsQuotes,
     loadOperators,
     loadCwmBizParams,
   }
@@ -80,7 +79,6 @@ export default class OrderForm extends Component {
         tenantId: this.props.tenantId,
       });
       this.props.loadCwmBizParams(this.props.tenantId, formData.customer_partner_id);
-      this.props.loadCustomerCmsQuotes(this.props.tenantId, formData.customer_partner_id);
       this.props.loadOperators(formData.customer_partner_id, this.props.tenantId);
     }
   }

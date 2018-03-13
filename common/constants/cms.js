@@ -176,9 +176,10 @@ export const TRANS_MODE = [
     value: 'H', text: '边境特殊', icon: 'border-outer', desc: '境内运入深港西部通道港方口岸区的货物',
   },
 ];
+
 export const INVOICE_TYPE = [
-  { value: 'vatSpecial', text: '增值税专用发票' },
-  { value: 'vatGeneral', text: '增值税普通发票' },
+  { value: 'VatSpecial', text: '增值税专用发票' },
+  { value: 'VatGeneral', text: '增值税普通发票' },
 ];
 
 export const CMS_DELEGATION_STATUS = {

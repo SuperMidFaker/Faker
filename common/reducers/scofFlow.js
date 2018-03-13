@@ -14,7 +14,8 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_EPLIST', 'LOAD_EPLIST_SUCCEED', 'LOAD_EPLIST_FAIL',
   'LOAD_TMSBIZPARAMS', 'LOAD_TMSBIZPARAMS_SUCCEED', 'LOAD_TMSBIZPARAMS_FAIL',
   'LOAD_CWMBIZPARAMS', 'LOAD_CWMBIZPARAMS_SUCCEED', 'LOAD_CWMBIZPARAMS_FAIL',
-  'LOAD_CUSTOMERQUOTES', 'LOAD_CUSTOMERQUOTES_SUCCEED', 'LOAD_CUSTOMERQUOTES_FAIL',
+  'LOAD_PROVDQUOTES', 'LOAD_PROVDQUOTES_SUCCEED', 'LOAD_PROVDQUOTES_FAIL',
+  'LOAD_CUSTMQUOTES', 'LOAD_CUSTMQUOTES_SUCCEED', 'LOAD_CUSTMQUOTES_FAIL',
   'SAVE_FLOW', 'SAVE_FLOW_SUCCEED', 'SAVE_FLOW_FAIL',
   'EDIT_FLOW', 'EDIT_FLOW_SUCCEED', 'EDIT_FLOW_FAIL',
   'DEL_FLOW', 'DEL_FLOW_SUCCEED', 'DEL_FLOW_FAIL',
@@ -73,12 +74,12 @@ const initialState = {
   nodeActions: [],
   cmsParams: {
     bizDelegation: { declPorts: [], customsBrokers: [], ciqBrokers: [] },
-    quotes: [],
+    providerQuotes: [],
+    customsQuotes: [],
     bizManifest: { trades: [], agents: [], templates: [] },
   },
   eplist: [],
   qplist: [],
-  cmsQuotes: [],
   tmsParams: {
     consigners: [], consignees: [], transitModes: [], packagings: [],
   },
@@ -151,8 +152,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, cmsParams: { ...state.cmsParams, ...action.result.data } };
     case actionTypes.LOAD_EPLIST_SUCCEED:
       return { ...state, eplist: action.result.data };
-    case actionTypes.LOAD_CUSTOMERQUOTES_SUCCEED:
-      return { ...state, cmsQuotes: action.result.data };
+    case actionTypes.LOAD_PROVDQUOTES_SUCCEED:
+      return { ...state, cmsParams: { ...state.cmsParams, providerQuotes: action.result.data } };
+    case actionTypes.LOAD_CUSTMQUOTES_SUCCEED:
+      return { ...state, cmsParams: { ...state.cmsParams, customsQuotes: action.result.data } };
     case actionTypes.LOAD_TMSBIZPARAMS_SUCCEED:
       return { ...state, tmsParams: action.result.data };
     case actionTypes.LOAD_CWMBIZPARAMS_SUCCEED:
@@ -198,7 +201,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PTFLOWLIST_SUCCEED:
       return { ...state, partnerFlows: action.result.data };
     case actionTypes.EMPTY_FLOWS:
-      return { ...state, partnerFlows: [], cmsQuotes: [] };
+      return { ...state, partnerFlows: [], cmsParams: initialState.cmsParams };
     case actionTypes.EDIT_FLOW_SUCCEED:
       return {
         ...state,
@@ -407,7 +410,7 @@ export function closeAddTriggerModal() {
   };
 }
 
-export function loadCmsBizParams(tenantId, partnerId, ietype) {
+export function loadCmsBizParams(partnerId, ietype) {
   return {
     [CLIENT_API]: {
       types: [
@@ -417,7 +420,7 @@ export function loadCmsBizParams(tenantId, partnerId, ietype) {
       ],
       endpoint: 'v1/scof/flow/cms/params',
       method: 'get',
-      params: { tenantId, partnerId, ietype },
+      params: { partnerId, ietype },
     },
   };
 }
@@ -437,18 +440,32 @@ export function loadEpList(tenantId, agentCustCo) {
   };
 }
 
-export function loadCustomerCmsQuotes(tenantId, customerPartnerId) {
+export function loadCmsProviderQuotes(buyer, seller) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_CUSTOMERQUOTES,
-        actionTypes.LOAD_CUSTOMERQUOTES_SUCCEED,
-        actionTypes.LOAD_CUSTOMERQUOTES_FAIL,
+        actionTypes.LOAD_PROVDQUOTES,
+        actionTypes.LOAD_PROVDQUOTES_SUCCEED,
+        actionTypes.LOAD_PROVDQUOTES_FAIL,
       ],
-      endpoint: 'v1/cms/send/partner/quotes',
+      endpoint: 'v1/cms/quotes/bybuyerseller',
       method: 'get',
-      origin: 'mongo',
-      params: { recv_tenant_id: tenantId, send_partner_id: customerPartnerId },
+      params: { buyer: JSON.stringify(buyer), seller: JSON.stringify(seller) },
+    },
+  };
+}
+
+export function loadCmsCustomsQuotes(buyer, seller) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CUSTMQUOTES,
+        actionTypes.LOAD_CUSTMQUOTES_SUCCEED,
+        actionTypes.LOAD_CUSTMQUOTES_FAIL,
+      ],
+      endpoint: 'v1/cms/quotes/bybuyerseller',
+      method: 'get',
+      params: { buyer: JSON.stringify(buyer), seller: JSON.stringify(seller) },
     },
   };
 }

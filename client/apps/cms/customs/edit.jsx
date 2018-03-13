@@ -189,7 +189,10 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleMarkReleasedModal = () => {
     const { head } = this.props;
-    this.props.openDeclReleasedModal(head.entry_id, head.pre_entry_seq_no, head.delg_no);
+    this.props.openDeclReleasedModal(
+      head.entry_id,
+      head.pre_entry_seq_no, head.delg_no, head.i_e_type
+    );
   }
   reloadEntry = () => {
     this.props.loadEntry(

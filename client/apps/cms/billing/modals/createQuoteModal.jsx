@@ -56,27 +56,12 @@ export default class CreateQuoteModal extends React.Component {
     this.props.toggleQuoteCreateModal(false);
   }
   handleOk = () => {
-    const quoteData = {};
-    let selectedpartner = { partner_tenant_id: null, name: '', id: null };
     const field = this.props.form.getFieldsValue();
-    if (field.partnerId) {
-      [selectedpartner] = this.props.partners.filter(pt => String(pt.id) === field.partnerId);
-    }
-    if (field.quote_type === 'sales') {
-      quoteData.seller_tenant_id = selectedpartner.partner_tenant_id;
-      quoteData.seller_name = selectedpartner.name;
-      quoteData.seller_partner_id = selectedpartner.id;
-      quoteData.buyer_tenant_id = this.props.tenantId;
-      quoteData.buyer_name = this.props.tenantName;
-    } else if (field.quote_type === 'cost') {
-      quoteData.seller_tenant_id = this.props.tenantId;
-      quoteData.seller_tenant_name = this.props.tenantName;
-      quoteData.buyer_tenant_id = selectedpartner.partner_tenant_id;
-      quoteData.buyer_name = selectedpartner.name;
-      quoteData.buyer_partner_id = selectedpartner.id;
-    }
-    quoteData.quote_name = field.quote_name;
-    const prom = this.props.createQuote(quoteData);
+    const prom = this.props.createQuote({
+      quote_partner_id: Number(field.partnerId),
+      quote_type: field.quote_type,
+      quote_name: field.quote_name,
+    });
     prom.then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
