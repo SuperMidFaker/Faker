@@ -15,7 +15,26 @@ const messages = defineMessages({
     id: 'bss.bills.vendor.bills',
     defaultMessage: '服务商账单',
   },
-
+  billsStatus: {
+    id: 'bss.bills.status',
+    defaultMessage: '账单状态',
+  },
+  statusDraft: {
+    id: 'bss.bills.status.draft',
+    defaultMessage: '草稿',
+  },
+  statusPending: {
+    id: 'bss.bills.status.pending',
+    defaultMessage: '待对账',
+  },
+  statusAccepted: {
+    id: 'bss.bills.status.accepted',
+    defaultMessage: '已接受',
+  },
+  statusOffline: {
+    id: 'bss.bills.status.offline',
+    defaultMessage: '线下账单',
+  },
 });
 
 export default messages;

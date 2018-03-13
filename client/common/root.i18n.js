@@ -37,6 +37,26 @@ const messages = defineMessages({
     id: 'root.op',
     defaultMessage: '操作',
   },
+  extraMenu: {
+    id: 'root.extra.menu',
+    defaultMessage: '更多菜单',
+  },
+  views: {
+    id: 'root.views',
+    defaultMessage: '视图',
+  },
+  tableView: {
+    id: 'root.views.table.view',
+    defaultMessage: '表格视图',
+  },
+  boardView: {
+    id: 'root.views.board.view',
+    defaultMessage: '看板视图',
+  },
+  settings: {
+    id: 'root.settings',
+    defaultMessage: '设置',
+  },
   yes: {
     id: 'root.yes',
     defaultMessage: '是',

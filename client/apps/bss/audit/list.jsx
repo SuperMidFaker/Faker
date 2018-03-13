@@ -268,15 +268,15 @@ export default class AuditList extends React.Component {
               <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleExtraMenuClick}>
                 <Menu.ItemGroup key="views" title={this.gmsg('views')}>
                   <Menu.Item key="table">
-                    <Icon type="table" /> {this.msg('viewTable')}
+                    <Icon type="table" /> {this.gmsg('tableView')}
                   </Menu.Item>
                   <Menu.Item key="board" disabled>
-                    <Icon type="laptop" /> {this.msg('viewBoard')}
+                    <Icon type="layout" /> {this.gmsg('boardView')}
                   </Menu.Item>
                 </Menu.ItemGroup>
                 <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
                   <Menu.Item key="rules">
-                    <Icon type="upload" /> {this.msg('statusSubmitted')}
+                    <Icon type="tool" /> {this.msg('auditRules')}
                   </Menu.Item>
                 </Menu.ItemGroup>
               </Menu>

@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, DatePicker, Layout, Select } from 'antd';
+import { Breadcrumb, DatePicker, Icon, Layout, Menu, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
+import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
@@ -230,19 +231,33 @@ export default class VendorBillsList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys}
-            onDeselectRows={this.handleDeselectRows}
-            columns={this.columns}
-            dataSource={mockData}
-            rowSelection={rowSelection}
-            rowKey="id"
-            loading={loading}
-            total={totCol}
-          />
-        </Content>
+        <Layout>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.ItemGroup key="billsStatus" title={this.msg('billsStatus')}>
+                <Menu.Item key="pending">
+                  <Icon type="loading" /> {this.msg('statusPending')}
+                </Menu.Item>
+                <Menu.Item key="accepted">
+                  <Icon type="check-square-o" /> {this.msg('statusAccepted')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={mockData}
+              rowSelection={rowSelection}
+              rowKey="id"
+              loading={loading}
+              total={totCol}
+            />
+          </Content>
+        </Layout>
       </Layout>
     );
   }
