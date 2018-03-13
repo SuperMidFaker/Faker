@@ -52,7 +52,9 @@ export default class Drawer extends React.Component {
           collapsed={this.state.collapsed}
           className="welo-side-drawer"
         >
-          {children}
+          <div className="welo-side-drawer-inner">
+            {children}
+          </div>
           <Tooltip title={collapsed ? '展开' : '收起'} placement="right" mouseEnterDelay={1.5} mouseLeaveDelay={0}>
             <a className="welo-side-drawer-trigger-wrapper" onClick={this.toggle}>
               <i className={`drawer-trigger ${collapsed ? 'right' : 'left'}`} />

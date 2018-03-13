@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -343,9 +342,6 @@ export default class CiqDeclList extends Component {
               <RadioButton value="export">{this.msg('export')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
-          <PageHeader.Actions>
-            <PageHint />
-          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable

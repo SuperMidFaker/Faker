@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
+import { Button, Breadcrumb, DatePicker, Icon, Layout, Menu, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
+import ButtonToggle from 'client/components/ButtonToggle';
 import Drawer from 'client/components/Drawer';
+import DockPanel from 'client/components/DockPanel';
 import EmptyState from 'client/components/EmptyState';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -18,8 +20,6 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 
 @connectFetch()()
@@ -44,6 +44,7 @@ export default class AuditList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    extraVisible: false,
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -67,15 +68,15 @@ export default class AuditList extends React.Component {
     width: 100,
     dataIndex: 'status',
   }, {
-    title: '应收营收',
+    title: '应收金额',
     dataIndex: 'rec_amount',
     width: 150,
   }, {
-    title: '应付成本',
+    title: '应付金额',
     dataIndex: 'pay_amount',
     width: 150,
   }, {
-    title: '利润',
+    title: '盈亏金额',
     dataIndex: 'profit',
     width: 150,
   }, {
@@ -144,6 +145,9 @@ export default class AuditList extends React.Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
+  }
+  toggleExtra = () => {
+    this.setState({ extraVisible: !this.state.extraVisible });
   }
   render() {
     const { loading } = this.props;
@@ -217,19 +221,29 @@ export default class AuditList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
-          <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} >
-              <RadioButton value="pending">待审核</RadioButton>
-              <RadioButton value="confirmed">已确认</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button icon="file-excel">导出</Button>
+            <Button type="primary" icon="file-excel">导出</Button>
+            <ButtonToggle iconOff="bars" iconOn="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
-          <Drawer>
-            list
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.gmsg('all')}
+              </Menu.Item>
+              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
+                <Menu.Item key="submitted">
+                  <Icon type="upload" /> {this.msg('statusSubmitted')}
+                </Menu.Item>
+                <Menu.Item key="warning">
+                  <Icon type="warning" /> {this.msg('statusWarning')}
+                </Menu.Item>
+                <Menu.Item key="confirmed">
+                  <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
           </Drawer>
           <Content className="page-content" key="main">
             <DataTable
@@ -244,6 +258,30 @@ export default class AuditList extends React.Component {
               loading={loading}
               locale={{ emptyText: <EmptyState {...emptyProps} /> }}
             />
+            <DockPanel
+              title={this.gmsg('extraMenu')}
+              mode="inner"
+              size="small"
+              visible={this.state.extraVisible}
+              onClose={this.toggleExtra}
+            >
+              <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleExtraMenuClick}>
+                <Menu.Item key="all">
+                  {this.gmsg('all')}
+                </Menu.Item>
+                <Menu.ItemGroup key="status" title={this.gmsg('status')}>
+                  <Menu.Item key="submitted">
+                    <Icon type="upload" /> {this.msg('statusSubmitted')}
+                  </Menu.Item>
+                  <Menu.Item key="warning">
+                    <Icon type="warning" /> {this.msg('statusWarning')}
+                  </Menu.Item>
+                  <Menu.Item key="confirmed">
+                    <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
+                  </Menu.Item>
+                </Menu.ItemGroup>
+              </Menu>
+            </DockPanel>
           </Content>
         </Layout>
       </Layout>

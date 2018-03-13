@@ -18,6 +18,7 @@ export default class DockPanel extends PureComponent {
     visible: PropTypes.bool.isRequired,
     size: PropTypes.string,
     title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+    mode: PropTypes.string,
     uppperLevel: PropTypes.node,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,
@@ -65,7 +66,8 @@ export default class DockPanel extends PureComponent {
   }
   render() {
     const {
-      prefixCls, size = '', className, visible, title, uppperLevel, status, statusText, overlay, extra, loading, alert, alertType, children,
+      prefixCls, size = '', className, visible, title, mode, uppperLevel, status, statusText,
+      overlay, extra, loading, alert, alertType, children,
     } = this.props;
     const sizeCls = ({
       large: 'lg',
@@ -75,8 +77,12 @@ export default class DockPanel extends PureComponent {
     const classes = classNames(prefixCls, {
       [`${prefixCls}-${sizeCls}`]: sizeCls,
       [`${prefixCls}-visible`]: visible,
+      [`${prefixCls}-inner`]: mode === 'inner',
     }, className);
-    const maskClasses = classNames(`${prefixCls}-mask`, { [`${prefixCls}-mask-hidden`]: !visible });
+    const maskClasses = classNames(
+      `${prefixCls}-mask`,
+      { [`${prefixCls}-mask-hidden`]: (!visible || mode === 'inner') },
+    );
     const bodyCls = extra ? `${prefixCls}-body with-header-extra` : `${prefixCls}-body`;
     return (
       <div>

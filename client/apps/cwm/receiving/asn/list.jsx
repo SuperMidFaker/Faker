@@ -10,7 +10,6 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
@@ -464,7 +463,6 @@ export default class ReceivingASNList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <PageHint />
             <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>

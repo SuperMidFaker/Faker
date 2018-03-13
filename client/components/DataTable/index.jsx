@@ -321,7 +321,7 @@ class DataTable extends React.Component {
               onVisibleChange={this.handleVisibleChange}
             >
               <Tooltip title="表头设置">
-                <Button shape="circle" icon="table" />
+                <Button shape="circle" icon="setting" />
               </Tooltip>
             </Popover>}
           </div>
