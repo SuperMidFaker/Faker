@@ -258,9 +258,13 @@ export default class ExpenseList extends Component {
     this.handleBillsLoad(1, filter);
   }
   handleGenTemplate = () => {
-    const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
-    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/export/${createFilename('delegation_expense')}.xlsx?params=${
-      JSON.stringify(params)}`);
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
+        window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/export/${createFilename('delegation_expense')}.xlsx?params=${
+          JSON.stringify(params)}`);
+      }
+    });
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -376,7 +380,7 @@ export default class ExpenseList extends Component {
           <ImportDataPanel
             title={this.msg('importFees')}
             visible={this.state.importPanelVisible}
-            endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
+            endpoint={`${API_ROOTS.default}v1/cms/billing/expense/import`}
             formData={{}}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
