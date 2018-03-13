@@ -259,7 +259,7 @@ export default class ExpenseList extends Component {
   }
   handleGenTemplate = () => {
     const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
-    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/${createFilename('expense')}.xlsx?params=${
+    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/export/${createFilename('delegation_expense')}.xlsx?params=${
       JSON.stringify(params)}`);
   }
   handleDeselectRows = () => {
@@ -384,6 +384,7 @@ export default class ExpenseList extends Component {
           >
             <FormItem>
               {getFieldDecorator('partnerId', {
+                rules: [{ required: true, message: '委托方必选' }],
               })(<Select
                 placeholder="请选择委托方"
                 showSearch
@@ -401,7 +402,7 @@ export default class ExpenseList extends Component {
               </Select>)}
             </FormItem>
             <FormItem>
-              {getFieldDecorator('dataInclude', {
+              {getFieldDecorator('withExpenseFees', {
               })(<Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>)}
             </FormItem>
           </ImportDataPanel>

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form  } from 'antd';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { Breadcrumb, Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadBills } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
@@ -274,7 +274,7 @@ export default class ExpenseList extends Component {
   }
   handleGenTemplate = () => {
     const params = { ...this.props.form.getFieldsValue(), mode: 'payable' };
-    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/${createFilename('expense')}.xlsx?params=${
+    window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/export/${createFilename('delegation_expense')}.xlsx?params=${
       JSON.stringify(params)}`);
   }
   showImportLogs = (ev) => {
@@ -381,6 +381,7 @@ export default class ExpenseList extends Component {
           >
             <FormItem>
               {getFieldDecorator('partnerId', {
+                rules: [{ required: true, message: '服务商必选' }],
               })(<Select
                 placeholder="请选择服务商"
                 showSearch
@@ -398,7 +399,7 @@ export default class ExpenseList extends Component {
               </Select>)}
             </FormItem>
             <FormItem>
-              {getFieldDecorator('dataInclude', {
+              {getFieldDecorator('withExpenseFees', {
               })(<Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>)}
             </FormItem>
           </ImportDataPanel>
