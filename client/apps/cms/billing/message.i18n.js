@@ -107,6 +107,10 @@ const messages = defineMessages({
     id: 'cms.billing.advance.summary',
     defaultMessage: '代垫费小计',
   },
+  spcSummary: {
+    id: 'cms.billing.spc.summary',
+    defaultMessage: '特殊费用合计',
+  },
   receivableTotal: {
     id: 'cms.billing.receivable.total',
     defaultMessage: '应收合计',
@@ -228,6 +232,22 @@ const messages = defineMessages({
     id: 'cms.modals.expense.fee.code',
     defaultMessage: '费用代码',
   },
+  baseAmount: {
+    id: 'cms.billing.expense.fee.baseAmount',
+    defaultMessage: '计费金额(人民币)',
+  },
+  origAmount: {
+    id: 'cms.billing.expense.fee.origAmount',
+    defaultMessage: '外币金额',
+  },
+  origCurrency: {
+    id: 'cms.billing.expense.fee.origCurrency',
+    defaultMessage: '外币币制',
+  },
+  exchangeRate: {
+    id: 'cms.billing.expense.fee.exchangeRate',
+    defaultMessage: '汇率',
+  },
   invoiceEn: {
     id: 'cms.modals.expense.invoiceEn',
     defaultMessage: '是否计税',
@@ -256,6 +276,10 @@ const messages = defineMessages({
     id: 'cms.modals.expense.detail',
     defaultMessage: '费用明细',
   },
+  newQuote: {
+    id: 'cms.billing.quote.new',
+    defaultMessage: '新建报价',
+  },
   quote: {
     id: 'cms.billing.quote',
     defaultMessage: '报价费率',
@@ -283,6 +307,14 @@ const messages = defineMessages({
   billingWay: {
     id: 'cms.billing.quote.billing.way',
     defaultMessage: '计费方式',
+  },
+  billingStaff: {
+    id: 'cms.billing.quote.billing.staff',
+    defaultMessage: '计费人员',
+  },
+  confirmStaff: {
+    id: 'cms.billing.quote.confirm.staff',
+    defaultMessage: '审核人员',
   },
   formulaFactor: {
     id: 'cms.billing.quote.formula.factor',

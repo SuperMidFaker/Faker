@@ -61,6 +61,14 @@ export default class ExpenseDetail extends Component {
     const {
       params, aspect, expDetails, expensesLoading,
     } = this.props;
+    let defaultActiveKey;
+    if (aspect !== 0) {
+      defaultActiveKey = 'receivable';
+    } else if (expDetails.pays.length === 0) {
+      defaultActiveKey = '';
+    } else {
+      defaultActiveKey = `payable-${expDetails.pays[0].seller_partner_id}`;
+    }
     return (
       <div>
         <PageHeader>
@@ -77,7 +85,7 @@ export default class ExpenseDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey={aspect !== 0 ? 'receivable' : `payable-${expDetails.pays[0].seller_partner_id}`}>
+            <Tabs defaultActiveKey={defaultActiveKey}>
               {aspect !== 0 &&
               <TabPane tab="应收明细" key="receivable" >
                 <ExpenseDetailTabPane

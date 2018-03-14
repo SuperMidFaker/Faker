@@ -138,8 +138,8 @@ export default class QuotingEdit extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="copy">{this.msg('clone')}</Button>
-            <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
+            {/* <Button icon="copy">{this.msg('clone')}</Button> */}
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>{this.gmsg('save')}</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
