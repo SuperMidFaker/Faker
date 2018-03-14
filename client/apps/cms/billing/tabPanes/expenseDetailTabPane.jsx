@@ -34,6 +34,10 @@ export default class ExpenseDetailTabPane extends Component {
     dataSource: [],
     editItem: {},
   }
+  /*
+     dataSource异步获取 首个tabPane加载时dataSource为空 走componentWillReceiveProps
+     切换到其他tabpane时 数据已经获取 走componentWillMount
+   * */
   componentWillMount() {
     this.setState({
       dataSource: this.props.dataSource,
@@ -72,7 +76,20 @@ export default class ExpenseDetailTabPane extends Component {
     dataIndex: 'base_amount',
     width: 150,
     align: 'right',
-    render: (o, record) => record.orig_amount * record.exchange_rate,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        const exchangeRate = this.state.editItem.exchange_rate;
+        const origAmount = this.state.editItem.orig_amount;
+        if (exchangeRate) {
+          return origAmount * exchangeRate;
+        }
+        return origAmount;
+      }
+      if (record.exchange_rate) {
+        return record.orig_amount * record.exchange_rate;
+      }
+      return record.orig_amount;
+    },
   }, {
     title: '外币金额',
     dataIndex: 'orig_amount',
@@ -81,8 +98,8 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
-          value={o}
-          onChange={e => this.handleColumnChange(e.target.value, 'orig_amount', record.id)}
+          value={this.state.editItem.orig_amount}
+          onChange={e => this.handleColumnChange(e.target.value, 'orig_amount')}
         />);
       }
       return o;
@@ -97,9 +114,9 @@ export default class ExpenseDetailTabPane extends Component {
           <Select
             showSearch
             optionFilterProp="children"
-            value={o}
+            value={this.state.editItem.currency}
             style={{ width: 150 }}
-            onSelect={value => this.handleColumnChange(value, 'currency', record.id)}
+            onSelect={value => this.handleColumnChange(value, 'currency')}
           >
             {this.props.currencies.map(currency =>
                   (<Option key={currency.curr_code} value={currency.curr_code}>
@@ -119,8 +136,8 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
-          value={o}
-          onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate', record.id)}
+          value={this.state.editItem.exchange_rate}
+          onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate')}
         />);
       }
       return o;
@@ -133,8 +150,8 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
-          value={o}
-          onChange={e => this.handleColumnChange(e.target.value, 'tax_rate', record.id)}
+          value={this.state.editItem.tax_rate}
+          onChange={e => this.handleColumnChange(e.target.value, 'tax_rate')}
         />);
       }
       return o;
@@ -147,8 +164,8 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
-          value={o}
-          onChange={e => this.handleColumnChange(e.target.value, 'tax', record.id)}
+          value={this.state.editItem.tax}
+          onChange={e => this.handleColumnChange(e.target.value, 'tax')}
         />);
       }
       return o;
@@ -159,8 +176,8 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
-          value={o}
-          onChange={e => this.handleColumnChange(e.target.value, 'remark', record.id)}
+          value={this.state.editItem.remark}
+          onChange={e => this.handleColumnChange(e.target.value, 'remark')}
         />);
       }
       return o;
@@ -175,7 +192,7 @@ export default class ExpenseDetailTabPane extends Component {
         if (this.state.editItem.id === record.id) {
           return (<span><RowAction onClick={this.handleOk} label="确认" row={record} />
             <span className="ant-divider" />
-            <RowAction onClick={this.handleDelete} label="排除" row={record} />
+            <RowAction onClick={this.handleCancel} label="取消" row={record} />
           </span>);
         }
         return (<span><RowAction onClick={this.handleEdit} label="调整" row={record} />
@@ -191,24 +208,25 @@ export default class ExpenseDetailTabPane extends Component {
       editItem: { ...row },
     });
   }
-  handleColumnChange = (value, filed, id) => {
-    const dataSource = [...this.state.dataSource];
-    const editOne = dataSource.find(data => data.id === id);
+  handleColumnChange = (value, filed) => {
+    const editOne = { ...this.state.editItem };
     editOne[filed] = value;
     this.setState({
-      dataSource,
+      editItem: editOne,
     });
   }
-  handleSelect = (value, id) => {
+  handleOk = () => {
+    const item = this.state.editItem;
+    this.props.updateFee(item);
     const dataSource = [...this.state.dataSource];
-    const editOne = dataSource.find(data => data.id === id);
-    editOne.currency = value;
+    const index = dataSource.findIndex(data => data.id === item.id);
+    dataSource[index] = item;
     this.setState({
+      editItem: {},
       dataSource,
     });
   }
-  handleOk = (row) => {
-    this.props.updateFee(row);
+  handleCancel = () => {
     this.setState({
       editItem: {},
     });

@@ -107,7 +107,6 @@ const initialState = {
     receives: [],
     pays: [],
   },
-  expDetailsReload: false,
   bills: {
     totalCount: 0,
     current: 1,
@@ -206,7 +205,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
       */
     case actionTypes.LOAD_EXPS_DETAILS:
-      return { ...state, expensesLoading: true, expDetailsReload: false };
+      return { ...state, expensesLoading: true };
     case actionTypes.LOAD_EXPS_DETAILS_SUCCEED:
       return {
         ...state, expDetails: action.result.data, expensesLoading: false,

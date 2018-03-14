@@ -28,14 +28,14 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    aspect: state.account.tenantId,
+    aspect: state.account.aspect,
     loginId: state.account.loginId,
     username: state.account.username,
     expDetails: state.cmsExpense.expDetails,
     expensesLoading: state.cmsExpense.expensesLoading,
     expDetailsReload: state.cmsExpense.expDetailsReload,
   }),
-  { loadExpsDetails }
+  {}
 )
 @connectNav({
   depth: 3,
@@ -51,11 +51,6 @@ export default class ExpenseDetail extends Component {
   }
   state = {
     fullscreen: true,
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.expDetailsReload) {
-      this.props.loadExpsDetails({ delgNo: this.props.params.delgNo });
-    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -82,7 +77,7 @@ export default class ExpenseDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey={aspect !== 0 ? 'receivable' : `payable-${expDetails.pays[0][0].seller_partner_id}`}>
+            <Tabs defaultActiveKey={aspect !== 0 ? 'receivable' : `payable-${expDetails.pays[0].seller_partner_id}`}>
               {aspect !== 0 &&
               <TabPane tab="应收明细" key="receivable" >
                 <ExpenseDetailTabPane
