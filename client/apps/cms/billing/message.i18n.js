@@ -107,6 +107,10 @@ const messages = defineMessages({
     id: 'cms.billing.advance.summary',
     defaultMessage: '代垫费小计',
   },
+  spcSummary: {
+    id: 'cms.billing.spc.summary',
+    defaultMessage: '特殊费用合计',
+  },
   receivableTotal: {
     id: 'cms.billing.receivable.total',
     defaultMessage: '应收合计',
@@ -271,6 +275,10 @@ const messages = defineMessages({
   expenseDetail: {
     id: 'cms.modals.expense.detail',
     defaultMessage: '费用明细',
+  },
+  newQuote: {
+    id: 'cms.billing.quote.new',
+    defaultMessage: '新建报价',
   },
   quote: {
     id: 'cms.billing.quote',

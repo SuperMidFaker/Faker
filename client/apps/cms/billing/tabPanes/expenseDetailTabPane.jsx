@@ -207,7 +207,7 @@ export default class ExpenseDetailTabPane extends Component {
         editOne.base_amount = editOne.exchange_rate * value;
       }
     } else if (field === 'exchange_rate') {
-      if (editOne.exchange_rate) {
+      if (editOne.orig_amount) {
         editOne.base_amount = editOne.orig_amount * value;
       }
     }
