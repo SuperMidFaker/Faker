@@ -53,18 +53,18 @@ export default class ExpenseDetailTabPane extends Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
-    title: '序号',
+    title: this.gmsg('seqNo'),
     dataIndex: 'seq_no',
     width: 45,
     align: 'center',
     className: 'table-col-seq',
     render: (col, row, index) => index + 1,
   }, {
-    title: '费用名称',
+    title: this.msg('feeName'),
     dataIndex: 'fee_name',
     width: 200,
   }, {
-    title: '费用类型',
+    title: this.msg('feeType'),
     dataIndex: 'fee_type',
     width: 100,
     render: (o) => {
@@ -72,7 +72,7 @@ export default class ExpenseDetailTabPane extends Component {
       return type ? <span>{type.text}</span> : <span />;
     },
   }, {
-    title: '计费金额(人民币)',
+    title: this.msg('baseAmount'),
     dataIndex: 'base_amount',
     width: 150,
     align: 'right',
@@ -83,7 +83,7 @@ export default class ExpenseDetailTabPane extends Component {
       return o;
     },
   }, {
-    title: '外币金额',
+    title: this.msg('origAmount'),
     dataIndex: 'orig_amount',
     width: 150,
     align: 'right',
@@ -97,7 +97,7 @@ export default class ExpenseDetailTabPane extends Component {
       return o;
     },
   }, {
-    title: '外币币制',
+    title: this.msg('origCurrency'),
     dataIndex: 'currency',
     width: 180,
     render: (o, record) => {
@@ -121,7 +121,7 @@ export default class ExpenseDetailTabPane extends Component {
         this.props.currencies.find(curr => curr.currency === o).name;
     },
   }, {
-    title: '汇率',
+    title: this.msg('exchangeRate'),
     dataIndex: 'exchange_rate',
     width: 100,
     align: 'right',
@@ -135,7 +135,7 @@ export default class ExpenseDetailTabPane extends Component {
       return o;
     },
   }, {
-    title: '开票税率',
+    title: this.msg('taxRate'),
     dataIndex: 'tax_rate',
     width: 100,
     align: 'right',
@@ -149,7 +149,7 @@ export default class ExpenseDetailTabPane extends Component {
       return o;
     },
   }, {
-    title: '税金',
+    title: this.msg('taxValue'),
     dataIndex: 'tax',
     width: 150,
     align: 'right',
@@ -163,7 +163,7 @@ export default class ExpenseDetailTabPane extends Component {
       return o;
     },
   }, {
-    title: '备注',
+    title: this.gmsg('remark'),
     dataIndex: 'remark',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
@@ -175,21 +175,21 @@ export default class ExpenseDetailTabPane extends Component {
       return o;
     },
   }, {
-    title: '操作',
+    title: this.gmsg('op'),
     dataIndex: 'OPS_COL',
     width: 90,
     fixed: 'right',
     render: (o, record) => {
       if (record.fee_status < 2) {
         if (this.state.editItem.id === record.id) {
-          return (<span><RowAction onClick={this.handleOk} label="确认" row={record} />
+          return (<span><RowAction onClick={this.handleOk} label={this.gmsg('confirm')} row={record} />
             <span className="ant-divider" />
-            <RowAction onClick={this.handleCancel} label="取消" row={record} />
+            <RowAction onClick={this.handleCancel} label={this.gmsg('cancel')} row={record} />
           </span>);
         }
-        return (<span><RowAction onClick={this.handleEdit} label="调整" row={record} />
+        return (<span><RowAction onClick={this.handleEdit} label={this.gmsg('adjust')} row={record} />
           <span className="ant-divider" />
-          <RowAction onClick={this.handleDelete} label="排除" row={record} />
+          <RowAction onClick={this.handleDelete} label={this.gmsg('delete')} row={record} />
         </span>);
       }
       return '';

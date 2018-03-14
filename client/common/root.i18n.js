@@ -73,6 +73,10 @@ const messages = defineMessages({
     id: 'root.cancel',
     defaultMessage: '取消',
   },
+  adjust: {
+    id: 'root.adjust',
+    defaultMessage: '调整',
+  },
   back: {
     id: 'root.back',
     defaultMessage: '返回',
@@ -184,6 +188,10 @@ const messages = defineMessages({
   seqNo: {
     id: 'root.seq.no',
     defaultMessage: '序号',
+  },
+  remark: {
+    id: 'root.remark',
+    defaultMessage: '备注',
   },
   createdBy: {
     id: 'root.created.by',

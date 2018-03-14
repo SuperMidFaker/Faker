@@ -178,12 +178,12 @@ export default class ExpenseList extends Component {
       width: 120,
       render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
-      title: '计费人员',
+      title: this.msg('billingStaff'),
       dataIndex: 'created_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
     }, {
-      title: '审核人员',
+      title: this.msg('confirmStaff'),
       dataIndex: 'confirmed_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
