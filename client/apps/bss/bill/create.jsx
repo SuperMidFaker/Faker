@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Layout, Card, Tabs } from 'antd';
+import { Layout, Card, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -53,20 +53,8 @@ export default class ReceivableBillDetail extends Component {
 
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('fee')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('feeSummary')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.orderRelNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('bill'), this.msg('createBill')]}>
+          <PageHeader.Actions />
         </PageHeader>
         <Content className="page-content">
           <Card bodyStyle={{ padding: 16 }} >

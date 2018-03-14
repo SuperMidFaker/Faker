@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Menu, Avatar, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import { Menu, Avatar, Button, Card, Icon, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { INTEGRATION_APPS } from 'common/constants';
 import { toggleInstallAppModal } from 'common/reducers/hubIntegration';
 import { connect } from 'react-redux';
+import PageHeader from 'client/components/PageHeader';
 import HubSiderMenu from '../menu';
 import InstallAppModal from './common/installAppModal';
 import { formatMsg } from './message.i18n';
 import './index.less';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { SubMenu } = Menu;
 
 @injectIntl
@@ -76,15 +77,8 @@ export default class IntegrationAppsList extends React.Component {
       <Layout>
         <HubSiderMenu currentKey="apps" />
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="shop" /> 应用市场
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="page-header-tools" />
-          </Header>
-          <Content className="main-content">
+          <PageHeader title="应用市场" />
+          <Content className="page-content">
             <Card bodyStyle={{ padding: 16 }} >
               <Menu
                 onClick={this.handleClick}

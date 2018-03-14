@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Layout, Button } from 'antd';
+import { Layout, Button } from 'antd';
 import EditableCell from 'client/components/EditableCell';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -248,17 +248,7 @@ export default class Instance extends Component {
     </span>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('shipmentsTracking')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {tracking.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('shipmentsTracking'), tracking.name]}>
           <PageHeader.Actions>
             <Button type="primary" ghost icon="export" onClick={this.handleExport} loading={this.state.exportLoading}>导出</Button>
           </PageHeader.Actions>

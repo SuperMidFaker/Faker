@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Breadcrumb, Col, Layout, Card, Row, Tabs } from 'antd';
+import { Button, Col, Layout, Card, Row, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -178,20 +178,7 @@ export default class FeeSummaryDetail extends Component {
     }];
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('fee')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('feeSummary')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.orderRelNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('fee'), this.msg('feeSummary'), this.props.params.orderRelNo]}>
           <PageHeader.Actions>
             <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
               {this.msg('审核')}

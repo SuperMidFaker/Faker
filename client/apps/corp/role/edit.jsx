@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
-import { Button, Breadcrumb, Layout } from 'antd';
+import { Button, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -59,17 +59,7 @@ export default class RoleEdit extends React.Component {
     const { formData } = this.props;
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('corpRole')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {formData.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('corpRole'), formData.name]}>
           <PageHeader.Actions>
             <Button icon="close" onClick={this.handleClose}>
               {this.gmsg('close')}

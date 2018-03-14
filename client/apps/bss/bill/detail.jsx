@@ -52,7 +52,7 @@ export default class ReceivableBillDetail extends Component {
 
     return (
       <div>
-        <PageHeader breadcrumb={[this.msg('receivable'), this.props.params.billNo]}>
+        <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
           <PageHeader.Actions>
             <Button icon="mail" onClick={this.handleCreateASN}>
               {this.msg('发送账单')}

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Card, Icon, Menu, Input, Popover, message, Layout } from 'antd';
+import { Button, Card, Icon, Menu, Input, Popover, message, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
 import { MdIcon } from 'client/components/FontIcon';
@@ -345,15 +345,7 @@ export default class MemberDepartmentView extends React.Component {
       <Layout>
         <CorpSiderMenu currentKey="members" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('members')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-          </PageHeader>
+          <PageHeader title={this.msg('members')} />
           <Content className="page-content" key="main">
             <Card bodyStyle={{ padding: 0 }}>
               <Layout className="main-wrapper">

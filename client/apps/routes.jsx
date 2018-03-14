@@ -165,7 +165,7 @@ export default(store) => {
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">
-            <Route path="apps" component={HubIntegration.AppsList} />
+            <Route path="apps" component={HubIntegration.AppStore} />
             <Route path="installed" component={HubIntegration.InstalledList} />
             <Route path="arctm">
               <Route path="config/:uuid" component={HubArCTM.Config} />

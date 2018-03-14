@@ -9,7 +9,7 @@ const { Header } = Layout;
 export default class PageHeader extends Component {
   static propTypes = {
     children: PropTypes.node,
-    title: PropTypes.string,
+    title: PropTypes.node,
     breadcrumb: PropTypes.arrayOf(PropTypes.node),
     menus: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string, menu: PropTypes.node })),
   }

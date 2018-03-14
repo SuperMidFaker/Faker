@@ -1,2 +1,2 @@
-export AppsList from './apps';
+export AppStore from './appstore';
 export InstalledList from './installed';

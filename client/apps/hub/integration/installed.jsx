@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Badge, Breadcrumb, Card, Icon, Layout, List } from 'antd';
+import { Avatar, Badge, Card, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -127,15 +127,7 @@ export default class InstalledAppsList extends React.Component {
       <Layout>
         <HubSiderMenu currentKey="installed" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Icon type="api" /> {this.msg('installedApps')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-          </PageHeader>
+          <PageHeader title={this.msg('installedApps')} />
           <Content className="page-content layout-fixed-width">
             <Card bodyStyle={{ padding: 0 }} >
               <List
