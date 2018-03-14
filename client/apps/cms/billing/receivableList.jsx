@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
     current: state.cmsExpense.expensesList.current,
   })));
   promises.push(dispatch(loadPartners({
-    role: PARTNER_ROLES.SUP,
+    role: PARTNER_ROLES.CUS,
   })));
   return Promise.all(promises);
 }
@@ -51,7 +51,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     expensesList: state.cmsExpense.expensesList,
     listFilter: state.cmsExpense.listFilter,
     partners: state.partner.partners,
