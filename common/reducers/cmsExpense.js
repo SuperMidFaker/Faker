@@ -206,13 +206,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
       */
     case actionTypes.LOAD_EXPS_DETAILS:
-      return { ...state, expensesLoading: true };
+      return { ...state, expensesLoading: true, expDetailsReload: false };
     case actionTypes.LOAD_EXPS_DETAILS_SUCCEED:
       return {
-        ...state, expDetails: action.result.data, expensesLoading: false, expDetailsReload: false,
+        ...state, expDetails: action.result.data, expensesLoading: false,
       };
     case actionTypes.LOAD_EXPS_DETAILS_FAIL:
-      return { ...state, expensesLoading: false, expDetailsReload: false };
+      return { ...state, expensesLoading: false };
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
     case actionTypes.COMPUTE_DELGADVFEES_SUCCEED:
@@ -231,9 +231,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, advImport: action.result.data };
     case actionTypes.SET_ADV_TEMP_MODAL_VISIBLE:
       return { ...state, advImpTempVisible: action.data };
-    case actionTypes.FEE_UPDATE_SUCCEED:
-    case actionTypes.FEE_DELETE_SUCCEED:
-      return { ...state, expDetailsReload: true };
     default:
       return state;
   }
@@ -351,7 +348,7 @@ export function loadExpsDetails({ delgNo }) {
         actionTypes.LOAD_EXPS_DETAILS_SUCCEED,
         actionTypes.LOAD_EXPS_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cms/expense/expenseDetails/load',
+      endpoint: 'v1/cms/billing/expense/fees',
       method: 'get',
       params: { delgNo },
     },

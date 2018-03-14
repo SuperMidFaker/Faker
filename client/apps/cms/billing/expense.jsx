@@ -93,10 +93,10 @@ export default class ExpenseDetail extends Component {
               </TabPane>
               }
               {expDetails.pays.map(pay =>
-                (<TabPane tab={`应付明细${pay[0].seller_name}`} key={`payable-${pay[0].seller_partner_id}`} >
+                (<TabPane tab={`应付明细${pay.seller_name}`} key={`payable-${pay.seller_partner_id}`} >
                   <ExpenseDetailTabPane
                     fullscreen={this.state.fullscreen}
-                    dataSource={pay}
+                    dataSource={pay.fees}
                     loading={expensesLoading}
                   />
                 </TabPane>))}

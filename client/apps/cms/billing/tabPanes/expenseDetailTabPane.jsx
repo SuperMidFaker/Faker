@@ -32,18 +32,17 @@ export default class ExpenseDetailTabPane extends Component {
   }
   state = {
     dataSource: [],
+    editItem: {},
   }
   componentWillMount() {
-    const newData = this.props.dataSource.map(data => ({ ...data, disabled: true }));
     this.setState({
-      dataSource: newData,
+      dataSource: this.props.dataSource,
     });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.dataSource !== this.props.dataSource) {
-      const newData = nextProps.dataSource.map(data => ({ ...data, disabled: true }));
       this.setState({
-        dataSource: newData,
+        dataSource: nextProps.dataSource,
       });
     }
   }
@@ -73,84 +72,99 @@ export default class ExpenseDetailTabPane extends Component {
     dataIndex: 'base_amount',
     width: 150,
     align: 'right',
-    render: (o, record) => (<Input
-      disabled={record.disabled}
-      value={o}
-      onChange={e => this.handleChange(e, 'base_amount', record.id)}
-    />),
+    render: (o, record) => record.orig_amount * record.exchange_rate,
   }, {
     title: '外币金额',
     dataIndex: 'orig_amount',
     width: 150,
     align: 'right',
     render: (o, record) => {
-      if (record.exchange_rate && record.base_amount) {
-        return (record.base_amount * record.exchange_rate).toFixed(2);
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          value={o}
+          onChange={e => this.handleColumnChange(e.target.value, 'orig_amount', record.id)}
+        />);
       }
-      return '';
+      return o;
     },
   }, {
     title: '外币币制',
     dataIndex: 'currency',
     width: 180,
     render: (o, record) => {
-      if (record.disabled) {
-        return this.props.currencies.find(curr => curr.curr_code === o) &&
-        this.props.currencies.find(curr => curr.curr_code === o).curr_name;
+      if (this.state.editItem.id === record.id) {
+        return (
+          <Select
+            showSearch
+            optionFilterProp="children"
+            value={o}
+            style={{ width: 150 }}
+            onSelect={value => this.handleColumnChange(value, 'currency', record.id)}
+          >
+            {this.props.currencies.map(currency =>
+                  (<Option key={currency.curr_code} value={currency.curr_code}>
+                    {currency.curr_name}
+                  </Option>))}
+          </Select>
+        );
       }
-      return (
-        <Select
-          showSearch
-          optionFilterProp="children"
-          value={o}
-          style={{ width: 150 }}
-          onSelect={value => this.handleSelect(value, record.id)}
-        >
-          {this.props.currencies.map(currency =>
-                (<Option key={currency.curr_code} value={currency.curr_code}>
-                  {currency.curr_name}
-                </Option>))}
-        </Select>
-      );
+      return this.props.currencies.find(curr => curr.curr_code === o) &&
+        this.props.currencies.find(curr => curr.curr_code === o).curr_name;
     },
   }, {
     title: '汇率',
     dataIndex: 'exchange_rate',
     width: 100,
     align: 'right',
-    render: (o, record) => (<Input
-      disabled={record.disabled}
-      value={o}
-      onChange={e => this.handleChange(e, 'exchange_rate', record.id)}
-    />),
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          value={o}
+          onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate', record.id)}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '开票税率',
     dataIndex: 'tax_rate',
     width: 100,
     align: 'right',
-    render: (o, record) => (<Input
-      disabled={record.disabled}
-      value={o}
-      onChange={e => this.handleChange(e, 'tax_rate', record.id)}
-    />),
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          value={o}
+          onChange={e => this.handleColumnChange(e.target.value, 'tax_rate', record.id)}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '税金',
     dataIndex: 'tax',
     width: 150,
     align: 'right',
-    render: (o, record) => (<Input
-      disabled={record.disabled}
-      value={o}
-      onChange={e => this.handleChange(e, 'tax', record.id)}
-    />),
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          value={o}
+          onChange={e => this.handleColumnChange(e.target.value, 'tax', record.id)}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '备注',
     dataIndex: 'remark',
-    render: (o, record) => (<Input
-      disabled={record.disabled}
-      value={o}
-      onChange={e => this.handleChange(e, 'remark', record.id)}
-    />),
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          value={o}
+          onChange={e => this.handleColumnChange(e.target.value, 'remark', record.id)}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -158,7 +172,7 @@ export default class ExpenseDetailTabPane extends Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.fee_status < 2) {
-        if (!record.disabled) {
+        if (this.state.editItem.id === record.id) {
           return (<span><RowAction onClick={this.handleOk} label="确认" row={record} />
             <span className="ant-divider" />
             <RowAction onClick={this.handleDelete} label="排除" row={record} />
@@ -173,17 +187,14 @@ export default class ExpenseDetailTabPane extends Component {
     },
   }]
   handleEdit = (row) => {
-    const dataSource = [...this.state.dataSource];
-    const editOne = dataSource.find(data => data.id === row.id);
-    editOne.disabled = false;
     this.setState({
-      dataSource,
+      editItem: { ...row },
     });
   }
-  handleChange = (e, filed, id) => {
+  handleColumnChange = (value, filed, id) => {
     const dataSource = [...this.state.dataSource];
     const editOne = dataSource.find(data => data.id === id);
-    editOne[filed] = e.target.value;
+    editOne[filed] = value;
     this.setState({
       dataSource,
     });
@@ -198,6 +209,9 @@ export default class ExpenseDetailTabPane extends Component {
   }
   handleOk = (row) => {
     this.props.updateFee(row);
+    this.setState({
+      editItem: {},
+    });
   }
   handleDelete = (row) => {
     this.props.deleteFee(row.id);
