@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, message, Button } from 'antd';
+import { Form, Layout, Tabs, message, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -126,17 +126,7 @@ export default class QuotingEdit extends Component {
     }
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('quote')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.quoteNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('quote'), this.props.params.quoteNo]}>
           <PageHeader.Actions>
             <Button icon="copy">{this.msg('clone')}</Button>
             <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
+import { Badge, Form, Layout, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -281,23 +281,13 @@ export default class SHFTZTransferInDetail extends Component {
     });
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-              上海自贸区监管
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.preFtzEntNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>,
+            this.props.params.preFtzEntNo,
+          ]}
+        >
           <PageHeader.Nav>
             {transfInReg.inbound_no && <Tooltip title="入库操作" placement="bottom">
               <Button icon="link" onClick={this.handleInboundPage}>

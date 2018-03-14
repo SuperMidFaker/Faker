@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Layout, Tabs, Button, Card, Col, Row, Icon } from 'antd';
+import { Layout, Tabs, Button, Card, Col, Row, Icon } from 'antd';
+import { loadReceiveModal } from 'common/reducers/cwmReceive';
+import { releaseWave, loadWaveHead } from 'common/reducers/cwmShippingOrder';
+import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -10,14 +13,12 @@ import MagicCard from 'client/components/MagicCard';
 import InfoItem from 'client/components/InfoItem';
 import OrderListPane from './tabpane/orderListPane';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
-import { loadReceiveModal } from 'common/reducers/cwmReceive';
-import { releaseWave, loadWaveHead } from 'common/reducers/cwmShippingOrder';
 import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -62,21 +63,14 @@ export default class WaveDetail extends Component {
   render() {
     const { defaultWhse, waveHead } = this.props;
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {defaultWhse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingWave')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.waveNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            defaultWhse.name,
+            this.msg('shippingWave'),
+            this.props.params.waveNo,
+          ]}
+        >
           <PageHeader.Actions>
             <Button onClick={this.handleRelease}>释放</Button>
           </PageHeader.Actions>
@@ -112,15 +106,21 @@ export default class WaveDetail extends Component {
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="orderDetails">
               <TabPane tab="发货明细" key="orderDetails">
-                <OrderDetailsPane waveNo={this.props.params.waveNo} fullscreen={this.state.fullscreen} />
+                <OrderDetailsPane
+                  waveNo={this.props.params.waveNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
               <TabPane tab="订单列表" key="orderList">
-                <OrderListPane waveNo={this.props.params.waveNo} fullscreen={this.state.fullscreen} />
+                <OrderListPane
+                  waveNo={this.props.params.waveNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
             </Tabs>
           </MagicCard>
         </Content>
-      </div>
+      </Layout>
     );
   }
 }

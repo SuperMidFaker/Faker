@@ -6,6 +6,18 @@ const messages = defineMessages({
     id: 'cwm.stock',
     defaultMessage: '库存',
   },
+  stockInventory: {
+    id: 'cwm.stock.inventory',
+    defaultMessage: '库存余量',
+  },
+  stockTransition: {
+    id: 'cwm.stock.transition',
+    defaultMessage: '库存调整',
+  },
+  stockTransaction: {
+    id: 'cwm.stock.transaction',
+    defaultMessage: '库存流水',
+  },
   query: {
     id: 'cwm.stock.query',
     defaultMessage: '库存查询',

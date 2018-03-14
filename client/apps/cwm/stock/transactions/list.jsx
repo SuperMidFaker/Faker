@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Select, Layout, message } from 'antd';
+import { Button, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTransactions } from 'common/reducers/cwmTransaction';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -11,13 +11,13 @@ import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import Drawer from 'client/components/Drawer';
+import WhseSelect from '../../common/whseSelect';
 import QueryForm from './queryForm';
 import TraceIdPopover from '../../common/popover/traceIdPopover';
 import { transactionColumns, commonTraceColumns } from '../commonColumns';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
-const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -84,8 +84,6 @@ export default class StockTransactionsList extends React.Component {
     render: o => o && <TraceIdPopover traceId={o} />,
   }].concat(transactionColumns(this.props.intl)).concat(commonTraceColumns(this.props.intl))
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     const filter = { ...this.props.listFilter, whse_code: value };
     this.handleStockQuery(1, filter);
   }
@@ -118,7 +116,7 @@ export default class StockTransactionsList extends React.Component {
   }
   render() {
     const {
-      defaultWhse, whses, loading, listFilter,
+      loading, listFilter,
     } = this.props;
     const { columns } = this;
     const rowSelection = {
@@ -167,20 +165,12 @@ export default class StockTransactionsList extends React.Component {
 
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {whses.map(warehouse =>
-                  (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                库存流水
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('stockTransaction'),
+          ]}
+        >
           <PageHeader.Actions>
             <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}

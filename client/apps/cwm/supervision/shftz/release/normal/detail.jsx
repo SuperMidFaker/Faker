@@ -5,7 +5,7 @@ import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tabs, Breadcrumb, Form, Layout, Steps, Button, Card, Radio, Tag, notification, message } from 'antd';
+import { Alert, Badge, Tabs, Form, Layout, Steps, Button, Card, Radio, Tag, notification, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -513,9 +513,9 @@ export default class SHFTZNormalRelRegDetail extends Component {
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status =>
       status.value === relSo.outbound_status)[0];
-    const tabList = [];
-    relRegs.forEach((r, index) => tabList.push({
-      tab: r.ftz_rel_no || r.pre_entry_seq_no,
+    const menus = [];
+    relRegs.forEach((r, index) => menus.push({
+      menu: r.ftz_rel_no || r.pre_entry_seq_no,
       key: index,
     }));
     const stat = filingDetails.reduce((acc, regd) => ({
@@ -541,20 +541,15 @@ export default class SHFTZNormalRelRegDetail extends Component {
     }
     return (
       <div>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.soNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
+            this.props.params.soNo,
+          ]}
+          menus={menus}
+          onTabChange={this.handleTabChange}
+        >
           <PageHeader.Nav>
             {relSo.outbound_no &&
             <Button icon="link" onClick={this.handleOutboundPage}>

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Alert, Badge, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Tabs, Tooltip, Tag } from 'antd';
+import { Alert, Badge, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Tabs, Tooltip, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
+import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -16,15 +17,15 @@ import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import ReceiveDetailsPane from './tabpane/receiveDetailsPane';
 import Print from './printInboundList';
 import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Step = Steps.Step;
-const TabPane = Tabs.TabPane;
+const { Step } = Steps;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -90,7 +91,10 @@ export default class ReceiveInbound extends Component {
     this.props.updateInboundMode(this.props.params.inboundNo, { rec_mode: ev.target.value });
   }
   handleTotalRecVolChange = (value) => {
-    this.props.updateInboundMode(this.props.params.inboundNo, { total_received_vol: Number(value) });
+    this.props.updateInboundMode(
+      this.props.params.inboundNo,
+      { total_received_vol: Number(value) }
+    );
   }
   handleTabChange = (activeTab) => {
     this.setState({ activeTab });
@@ -114,24 +118,29 @@ export default class ReceiveInbound extends Component {
         <Menu.Item key="exportAllTag">导出全部标签</Menu.Item>
       </Menu>
     );
-    const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(cis => CWM_INBOUND_STATUS[cis].value === inboundHead.status)[0];
+    const inbStatus = Object.keys(CWM_INBOUND_STATUS).filter(cis =>
+      CWM_INBOUND_STATUS[cis].value === inboundHead.status)[0];
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
-    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
+    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype =>
+      regtype.value === inboundHead.bonded_intype)[0];
     const scanLabel = inboundHead.rec_mode === 'scan' ? ' 扫码模式' : '';
     const manualLabel = inboundHead.rec_mode === 'manual' ? ' 手动模式' : '';
     let regLink = null;
     const primReg = entryRegs[0];
     if (entryRegs.length === 1) {
       const regStatus = inboundHead.bonded_intype === 'transfer' ?
-        CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0] :
+        CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR.filter(status =>
+          status.value === primReg.status)[0] :
         CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0];
       regLink = (<Button icon="link" onClick={() => this.handleRegPage(primReg.pre_entry_seq_no)}>
-        {primReg.cus_decl_no || primReg.pre_entry_seq_no}<Badge status={regStatus.badge} text={regStatus.text} />
+        {primReg.cus_decl_no ||
+          primReg.pre_entry_seq_no}<Badge status={regStatus.badge} text={regStatus.text} />
       </Button>);
     } else if (entryRegs.length > 1) {
       const regMenu = (<Menu onClick={ev => this.handleRegPage(ev.key)}>
         {entryRegs.map((er) => {
-          const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === er.status)[0];
+          const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status =>
+            status.value === er.status)[0];
           return (<Menu.Item key={er.pre_entry_seq_no}>{er.cus_decl_no || er.pre_entry_seq_no}
             <Badge status={regStatus.badge} text={regStatus.text} />
           </Menu.Item>);
@@ -144,21 +153,15 @@ export default class ReceiveInbound extends Component {
     }
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {defaultWhse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('receivingInound')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.inboundNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            {!!inboundHead.bonded && entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            defaultWhse.name,
+            this.msg('receivingInound'),
+            this.props.params.inboundNo,
+            !!inboundHead.bonded && entType &&
+            <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>,
+          ]}
+        >
           <PageHeader.Nav>
             {regLink}
           </PageHeader.Nav>
@@ -221,10 +224,16 @@ export default class ReceiveInbound extends Component {
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
-                <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} fullscreen={this.state.fullscreen} />
+                <ReceiveDetailsPane
+                  inboundNo={this.props.params.inboundNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
               <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
-                <PutawayDetailsPane inboundNo={this.props.params.inboundNo} fullscreen={this.state.fullscreen} />
+                <PutawayDetailsPane
+                  inboundNo={this.props.params.inboundNo}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
             </Tabs>
           </MagicCard>

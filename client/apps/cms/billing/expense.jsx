@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Layout, Tabs } from 'antd';
+import { Layout, Tabs } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
@@ -139,18 +139,7 @@ export default class ExpenseDetail extends Component {
     const { params } = this.props;
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('expenseDetail')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {params.delgNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
+        <PageHeader breadcrumb={[this.msg('expenseDetail'), params.delgNo]} />
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs

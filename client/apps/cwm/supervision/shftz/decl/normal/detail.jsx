@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag } from 'antd';
+import { Badge, Form, Layout, Tabs, Steps, Button, Card, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -276,20 +276,13 @@ export default class NormalDeclDetail extends Component {
     );
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzNormalDecl')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.clearanceNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            this.msg('ftzNormalDecl'),
+            this.props.params.clearanceNo,
+          ]}
+        >
           <PageHeader.Nav>
             <Button icon="link" onClick={this.handleDelgManifest}>关联报关清单 <Badge status="default" text={declStatusText} /></Button>
           </PageHeader.Nav>

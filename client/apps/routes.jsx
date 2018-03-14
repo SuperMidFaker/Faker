@@ -99,7 +99,7 @@ import * as SCOFSettings from './scof/settings';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
 import * as BSSAudit from './bss/audit';
-import * as BSSBills from './bss/bills';
+import * as BSSBill from './bss/bill';
 import * as BSSSettings from './bss/settings';
 
 export default(store) => {
@@ -504,10 +504,9 @@ export default(store) => {
               <IndexRoute component={BSSAudit.List} />
               <Route path=":orderRelNo" component={BSSAudit.Detail} />
             </Route>
-            <Route path="bills">
-              <Route path="customer" component={BSSBills.CustomerList} />
-              <Route path="vendor" component={BSSBills.VendorList} />
-              <Route path=":billNo" component={BSSBills.Detail} />
+            <Route path="bill">
+              <IndexRoute component={BSSBill.List} />
+              <Route path=":billNo" component={BSSBill.Detail} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/bss/settings/preferences" />

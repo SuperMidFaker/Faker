@@ -165,14 +165,7 @@ export default class HSCodeList extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('hscodeQuery')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('hscodeQuery')}>
             <PageHeader.Actions>
               <Dropdown overlay={menu} type="primary">
                 <Button >

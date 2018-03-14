@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Popover, Layout, Radio, Select, message, Table } from 'antd';
+import { Breadcrumb, Button, Form, Icon, Popover, Layout, Radio, message, Table } from 'antd';
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS,
   fileCargos, confirmCargos, editGname } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
@@ -17,11 +17,11 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
+import WhseSelect from '../../../common/whseSelect';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
-const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const FormItem = Form.Item;
@@ -74,18 +74,17 @@ function fetchData({ dispatch }) {
 export default class SHFTZCargoList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    collapsed: false,
     rightSiderCollapsed: true,
     selectedRowKeys: [],
     currentPage: 1,
     owners: this.props.owners.filter(owner => owner.portion_enabled),
-    owner: this.props.owners.filter(owner => owner.portion_enabled).length === 0 ? {} : this.props.owners.filter(owner => owner.portion_enabled)[0],
+    owner: this.props.owners.filter(owner => owner.portion_enabled).length === 0 ?
+      {} : this.props.owners.filter(owner => owner.portion_enabled)[0],
     rule: null,
   }
   componentWillReceiveProps(nextProps) {
@@ -117,7 +116,7 @@ export default class SHFTZCargoList extends React.Component {
         case 2:
           return <span className="text-success">{o}<Icon type="check-circle-o" /></span>;
         default:
-          break;
+          return null;
       }
     },
   }, {
@@ -128,7 +127,10 @@ export default class SHFTZCargoList extends React.Component {
     title: this.msg('gname'),
     width: 180,
     dataIndex: 'name',
-    render: (o, record) => <EditableCell value={o} onSave={value => this.handleGnameChange(value, record.id)} />,
+    render: (o, record) => (<EditableCell
+      value={o}
+      onSave={value => this.handleGnameChange(value, record.id)}
+    />),
   }, {
     title: this.msg('currency'),
     width: 140,
@@ -246,8 +248,12 @@ export default class SHFTZCargoList extends React.Component {
     });
   }
   handleCargoSend = () => {
-    const whse = this.props.whse;
-    this.props.fileCargos(this.state.owner.customs_code, whse.code, whse.ftz_whse_code).then((result) => {
+    const { whse } = this.props;
+    this.props.fileCargos(
+      this.state.owner.customs_code,
+      whse.code,
+      whse.ftz_whse_code
+    ).then((result) => {
       if (!result.error) {
         const filter = { ...this.props.listFilter, status: 'sent' };
         this.handleCargoLoad(1, filter);
@@ -268,9 +274,9 @@ export default class SHFTZCargoList extends React.Component {
   }
   render() {
     const {
-      cargolist, listFilter, loading, whses, whse, loginId, submitting,
+      cargolist, listFilter, loading, whse, loginId, submitting,
     } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded === 1);
+    // const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
     const filterOwners = owners.filter(item => item.portion_enabled);
     const rowSelection = {
@@ -322,7 +328,11 @@ export default class SHFTZCargoList extends React.Component {
                 columns={ownerColumns}
                 dataSource={filterOwners}
                 showHeader={false}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
+                pagination={{
+                  current: this.state.currentPage,
+                  defaultPageSize: 50,
+                  onChange: this.handlePageChange,
+                }}
                 rowClassName={record => (record.id === owner.id ? 'table-row-selected' : '')}
                 rowKey="id"
                 onRow={record => ({
@@ -333,19 +343,12 @@ export default class SHFTZCargoList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange} disabled>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {owner.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader
+            breadcrumb={[
+              <WhseSelect onChange={this.handleWhseChange} />,
+              owner.name,
+            ]}
+          >
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="pending">待备案</RadioButton>

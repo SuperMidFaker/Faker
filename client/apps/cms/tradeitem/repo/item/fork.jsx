@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
+import { Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 
 import MagicCard from 'client/components/MagicCard';
@@ -124,20 +124,13 @@ export default class TradeItemFork extends Component {
     </TabPane>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {repo.owner_name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('tradeItemMaster')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('forkItem')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            repo.owner_name,
+            this.msg('tradeItemMaster'),
+            this.msg('forkItem'),
+          ]}
+        >
           <PageHeader.Actions>
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}

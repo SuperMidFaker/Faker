@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Input, Breadcrumb, Button, Select, Layout, InputNumber, Radio, message } from 'antd';
+import { Input, Button, Layout, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openTransitionModal, loadTransitions, loadTransitionStat, splitTransit, unfreezeTransit, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -14,6 +14,7 @@ import TrimSpan from 'client/components/trimSpan';
 import Summary from 'client/components/Summary';
 import PageHeader from 'client/components/PageHeader';
 import { createFilename } from 'client/util/dataTransform';
+import WhseSelect from '../../common/whseSelect';
 import QueryForm from './queryForm';
 import { commonTraceColumns } from '../commonColumns';
 import BatchTransitModal from './modal/batchTransitModal';
@@ -30,7 +31,6 @@ import { formatMsg } from '../message.i18n';
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Content } = Layout;
-const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -244,8 +244,6 @@ export default class StockTransitionList extends React.Component {
     },
   })
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     const filter = { ...this.props.listFilter, whse_code: value };
     this.handleStockQuery(1, filter);
   }
@@ -362,7 +360,7 @@ export default class StockTransitionList extends React.Component {
   }
   render() {
     const {
-      defaultWhse, whses, loading, listFilter, transitionStat,
+      loading, listFilter, transitionStat,
     } = this.props;
     const { selTotalStockQty } = this.state;
     const rowSelection = {
@@ -462,25 +460,12 @@ export default class StockTransitionList extends React.Component {
     );
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select
-                  value={defaultWhse.code}
-                  placeholder="选择仓库"
-                  style={{ width: 160 }}
-                  onSelect={this.handleWhseChange}
-                >
-                  {whses.map(warehouse =>
-                  (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                库存调整
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('stockTransition'),
+          ]}
+        >
           <PageHeader.Nav>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>

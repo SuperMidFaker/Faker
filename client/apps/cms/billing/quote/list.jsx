@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, message } from 'antd';
+import { Button, Layout, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
@@ -186,14 +186,14 @@ export default class RatesList extends Component {
       },
     ];
     this.dataSource.remotes = quotesList;
-    const tabList = [
+    const menus = [
       {
         key: 'clientQuote',
-        tab: this.msg('clientQuote'),
+        menu: this.msg('clientQuote'),
       },
       {
         key: 'providerQuote',
-        tab: this.msg('providerQuote'),
+        menu: this.msg('providerQuote'),
       },
     ];
     const toolbarActions = <SearchBox placeholder={this.msg('itemsSearchTip')} onSearch={this.handleSearchItems} />;
@@ -208,14 +208,7 @@ export default class RatesList extends Component {
     </span>);
     return (
       <Layout>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('quote')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('quote')} menus={menus} onTabChange={this.handleTabChange}>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
               新建报价

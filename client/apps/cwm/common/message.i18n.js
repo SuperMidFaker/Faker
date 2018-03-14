@@ -3,36 +3,32 @@ import { formati18n } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
-  bills: {
-    id: 'bss.bills',
-    defaultMessage: '账单管理',
+  selectWhse: {
+    id: 'cwm.common.select.whse',
+    defaultMessage: '选择仓库',
   },
-  customerBills: {
-    id: 'bss.bills.customer.bills',
-    defaultMessage: '客户账单',
-  },
-  vendorBills: {
-    id: 'bss.bills.vendor.bills',
-    defaultMessage: '服务商账单',
+  whseChanged: {
+    id: 'cwm.common.whse.changed',
+    defaultMessage: '当前仓库已切换',
   },
   billsStatus: {
-    id: 'bss.bills.status',
+    id: 'cwm.common.status',
     defaultMessage: '账单状态',
   },
   statusDraft: {
-    id: 'bss.bills.status.draft',
+    id: 'cwm.common.status.draft',
     defaultMessage: '草稿',
   },
   statusPending: {
-    id: 'bss.bills.status.pending',
+    id: 'cwm.common.status.pending',
     defaultMessage: '待对账',
   },
   statusAccepted: {
-    id: 'bss.bills.status.accepted',
+    id: 'cwm.common.status.accepted',
     defaultMessage: '已接受',
   },
   statusOffline: {
-    id: 'bss.bills.status.offline',
+    id: 'cwm.common.status.offline',
     defaultMessage: '线下账单',
   },
 });

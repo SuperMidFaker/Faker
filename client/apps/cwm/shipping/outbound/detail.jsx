@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
+import { Badge, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
   Tag, Dropdown, Menu, notification, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
@@ -262,21 +262,14 @@ export default class OutboundDetail extends Component {
     );
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {defaultWhse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingOutbound')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.outboundNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            {regTag && <Tag color={regTag.tagcolor}>{regTag.ftztext}</Tag>}
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            defaultWhse.name,
+            this.msg('shippingOutbound'),
+            this.props.params.outboundNo,
+            regTag && <Tag color={regTag.tagcolor}>{regTag.ftztext}</Tag>,
+          ]}
+        >
           <PageHeader.Nav>
             {regTypes.map((reg) => {
               const regStatus = reg.type === 'transfer' ?

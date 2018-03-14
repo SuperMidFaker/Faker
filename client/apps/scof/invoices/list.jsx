@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Layout, Select, Tag, DatePicker } from 'antd';
+import { Button, Dropdown, Menu, Layout, Select, Tag, DatePicker } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -336,14 +336,7 @@ export default class InvoiceList extends React.Component {
     </span>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('invoices')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('invoices')}>
           <PageHeader.Actions>
             <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
               {this.gmsg('batchImport')}

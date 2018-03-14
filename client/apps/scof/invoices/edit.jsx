@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, Button } from 'antd';
+import { Form, Layout, Tabs, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -94,17 +94,7 @@ export default class EditInvoice extends Component {
     const { form } = this.props;
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('invoices')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.invoiceNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('invoices'), this.props.params.invoiceNo]}>
           <PageHeader.Actions>
             {<Button type="ghost" onClick={this.handleCancel}>
               {this.gmsg('cancel')}

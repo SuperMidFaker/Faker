@@ -6,7 +6,7 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Steps, Button, Tabs, Card, Tag, message, notification } from 'antd';
+import { Form, Layout, Steps, Button, Tabs, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -352,23 +352,13 @@ export default class SHFTZTransferSelfDetail extends Component {
     );
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                上海自贸区监管
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzTransferSelf')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.asnNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            this.msg('ftzTransferSelf'),
+            this.props.params.asnNo,
+          ]}
+        >
           <PageHeader.Actions>
             {transfSelfReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}

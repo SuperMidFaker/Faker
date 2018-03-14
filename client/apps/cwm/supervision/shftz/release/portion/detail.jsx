@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 // import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Radio, Tag, message, notification } from 'antd';
+import { Alert, Badge, Tooltip, Form, Layout, Tabs, Steps, Button, Card, Radio, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -472,9 +472,9 @@ export default class SHFTZRelDetail extends Component {
     } else if (outboundStatus === CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
       whyunsent = '出库单部分配货';
     }
-    const tabList = [];
+    const menus = [];
     relRegs.forEach((r, index) =>
-      tabList.push({ tab: r.ftz_rel_no || r.pre_entry_seq_no, key: index }));
+      menus.push({ menu: r.ftz_rel_no || r.pre_entry_seq_no, key: index }));
     const stat = reg.details && reg.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,
@@ -490,20 +490,15 @@ export default class SHFTZRelDetail extends Component {
       status.value === relSo.outbound_status)[0];
     return (
       <div>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.soNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
+            this.props.params.soNo,
+          ]}
+          menus={menus}
+          onTabChange={this.handleTabChange}
+        >
           <PageHeader.Nav>
             {relSo.outbound_no &&
             <Button icon="link" onClick={this.handleOutboundPage}>

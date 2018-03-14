@@ -6,7 +6,7 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, Steps, Button, Card, Tag, message, notification } from 'antd';
+import { Alert, Badge, Form, Layout, InputNumber, Popover, Radio, Steps, Button, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -569,10 +569,10 @@ export default class SHFTZEntryDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const tabList = [];
-    entryRegs.forEach((r, index) => tabList.push({
-      tab: r.ftz_ent_no || r.pre_ftz_ent_no,
-      key: index,
+    const menus = [];
+    entryRegs.forEach((r, index) => menus.push({
+      menu: r.ftz_ent_no || r.pre_ftz_ent_no,
+      key: String(index),
     }));
     const stat = filingDetails && filingDetails.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
@@ -585,20 +585,15 @@ export default class SHFTZEntryDetail extends Component {
     });
     return (
       <div>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {primaryEntryReg.cus_decl_no || this.props.params.preEntrySeqNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>,
+            primaryEntryReg.cus_decl_no || this.props.params.preEntrySeqNo,
+          ]}
+          menus={menus}
+          onTabChange={this.handleTabChange}
+        >
           <PageHeader.Nav>
             {primaryEntryReg.inbound_no &&
               <Button icon="link" onClick={this.handleInboundPage}>

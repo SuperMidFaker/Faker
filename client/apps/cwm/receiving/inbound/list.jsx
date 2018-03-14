@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message, DatePicker } from 'antd';
+import { Badge, Icon, Layout, Radio, Select, Tooltip, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
@@ -16,6 +16,7 @@ import { CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { showDock, loadInbounds } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Strip from 'client/components/Strip';
+import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -211,10 +212,6 @@ export default class ReceivingInboundList extends React.Component {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
   }
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-  }
   handleOwnerChange = (value) => {
     const filters = { ...this.props.filters, ownerCode: value };
     const whseCode = this.props.defaultWhse.code;
@@ -239,7 +236,7 @@ export default class ReceivingInboundList extends React.Component {
   }
   render() {
     const {
-      whses, defaultWhse, owners, filters, loading,
+      owners, filters, loading,
     } = this.props;
     let dateVal = [];
     if (filters.endDate) {
@@ -298,24 +295,12 @@ export default class ReceivingInboundList extends React.Component {
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                    whses.map(warehouse =>
-                      (<Option value={warehouse.code} key={warehouse.code}>
-                        {warehouse.name}
-                      </Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('receivingInound')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect />,
+            this.msg('receivingInound'),
+          ]}
+        >
           <PageHeader.Nav>
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>

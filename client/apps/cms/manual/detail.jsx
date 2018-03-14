@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Form, Tabs, Row, Col, Layout } from 'antd';
+import { Card, Form, Tabs, Row, Col, Layout } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
@@ -57,18 +57,7 @@ export default class ManualDetail extends Component {
     const { customs } = this.props;
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('manual')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('manual')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
+        <PageHeader breadcrumb={[this.msg('manual'), manualHead.manual_no]} />
         <Content className="page-content">
           <Card bodyStyle={{ padding: 16 }} >
             <Row gutter={16} className="info-group-underline">

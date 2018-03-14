@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tag, Badge, Breadcrumb, Form, Input, Layout, Tabs, Steps, Button, Card, notification } from 'antd';
+import { Tag, Badge, Form, Input, Layout, Tabs, Steps, Button, Card, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -395,20 +395,13 @@ export default class BatchDeclDetail extends Component {
     );
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzBatchDecl')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.batchNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            this.msg('ftzBatchDecl'),
+            this.props.params.batchNo,
+          ]}
+        >
           <PageHeader.Nav>
             <Button icon="link" onClick={this.handleDelgManifest}>关联报关清单 <Badge status="default" text="制单中" /></Button>
           </PageHeader.Nav>

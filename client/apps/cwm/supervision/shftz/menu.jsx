@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Menu, Select, message } from 'antd';
+import { Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import WhseSelect from '../../common/whseSelect';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -30,21 +30,15 @@ export default class ModuleMenu extends React.Component {
     router: PropTypes.object.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
+  handleWhseChange = () => {
     this.context.router.push('/cwm/supervision/shftz/entry');
   }
   render() {
-    const { whses, whse } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
     const { currentKey } = this.props;
     return (
       <div>
         <div className="toolbar">
-          <Select value={whse.code} placeholder="选择仓库" style={{ width: '100%' }} onChange={this.handleWhseChange}>
-            {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-          </Select>
+          <WhseSelect bonded onChange={this.handleWhseChange} />
         </div>
         <Menu
           defaultSelectedKeys={[currentKey]}

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { notification, Card, Breadcrumb, Button, Layout, Tabs } from 'antd';
+import { notification, Card, Button, Layout, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadWorkspaceTask, loadTaskEmergeItems, loadTaskConflictItems, submitAudit } from 'common/reducers/cmsTradeitem';
 import PageHeader from 'client/components/PageHeader';
@@ -126,17 +126,12 @@ export default class TaskDetail extends React.Component {
     return (
       <Layout>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {task.repo_owner_name}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {task.title}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader
+            breadcrumb={[
+              task.repo_owner_name,
+              task.title,
+            ]}
+          >
             <PageHeader.Actions>
               <WsItemExportButton taskId={this.props.params.id} onUploaded={this.handleReload} />
               {task.master_repo_id && <Button type="primary" icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}

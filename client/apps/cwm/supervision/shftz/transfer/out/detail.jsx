@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag, message, notification } from 'antd';
+import { Alert, Badge, Tooltip, Form, Layout, Tabs, Steps, Button, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -318,23 +318,13 @@ export default class SHFTZTransferOutDetail extends Component {
       && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-              上海自贸区监管
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.soNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
+            this.props.params.soNo,
+          ]}
+        >
           <PageHeader.Nav>
             {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
               <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>

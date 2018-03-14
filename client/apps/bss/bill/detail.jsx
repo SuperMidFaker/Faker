@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Breadcrumb, Col, Row, Layout, Card, Tabs } from 'antd';
+import { Button, Col, Row, Layout, Card, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -52,20 +52,7 @@ export default class ReceivableBillDetail extends Component {
 
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('receivable')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('receivableBill')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.billNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('receivable'), this.props.params.billNo]}>
           <PageHeader.Actions>
             <Button icon="mail" onClick={this.handleCreateASN}>
               {this.msg('发送账单')}

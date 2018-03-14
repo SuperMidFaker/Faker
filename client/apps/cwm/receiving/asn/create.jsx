@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, Button, Select, message } from 'antd';
+import { Form, Layout, Tabs, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import { format } from 'client/common/i18n/helpers';
+import { addASN, clearTemporary } from 'common/reducers/cwmReceive';
 import HeadCard from './card/headCard';
+import WhseSelect from '../../common/whseSelect';
 import DetailsPane from './tabpane/detailsPane';
 import LottingPane from './tabpane/lottingPane';
 import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
-import { addASN, clearTemporary } from 'common/reducers/cwmReceive';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Option = Select.Option;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -40,7 +41,7 @@ const TabPane = Tabs.TabPane;
 export default class CreateReceivingASN extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     tenantName: PropTypes.string.isRequired,
     submitting: PropTypes.bool.isRequired,
   }
@@ -103,32 +104,18 @@ export default class CreateReceivingASN extends Component {
   }
   render() {
     const {
-      form, submitting, defaultWhse, temporaryDetails,
+      form, submitting, temporaryDetails,
     } = this.props;
     const disable = !(this.state.detailEnable && temporaryDetails.length !== 0);
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select
-
-                  value={defaultWhse.code}
-                  style={{ width: 160 }}
-                  disabled
-                >
-                  <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('receivingASN')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('createASN')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect disabled />,
+            this.msg('receivingASN'),
+            this.msg('createASN'),
+          ]}
+        >
           <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
@@ -144,7 +131,13 @@ export default class CreateReceivingASN extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} >
               <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
                 <TabPane tab="ASN明细" key="asnDetails">
-                  <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} fullscreen={this.state.fullscreen} />
+                  <DetailsPane
+                    editable={this.state.editable}
+                    form={form}
+                    detailEnable={this.state.detailEnable}
+                    selectedOwner={this.state.selectedOwner}
+                    fullscreen={this.state.fullscreen}
+                  />
                 </TabPane>
                 <TabPane tab="批次属性" key="lottingProps">
                   <LottingPane editable={this.state.editable} form={form} />

@@ -4,7 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Breadcrumb, Layout, Select, Icon, Tooltip, message } from 'antd';
+import { Button, Layout, Select, Icon, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { CWM_MOVEMENT_TYPE } from 'common/constants';
 import DataTable from 'client/components/DataTable';
@@ -17,6 +17,7 @@ import { openMovementModal, loadMovements, cancelMovement } from 'common/reducer
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
+import WhseSelect from '../../common/whseSelect';
 import MovementModal from './modal/movementModal';
 import messages from '../message.i18n';
 
@@ -152,10 +153,7 @@ export default class MovementList extends React.Component {
     const link = `/cwm/stock/movement/${row.movement_no}`;
     this.context.router.push(link);
   }
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-  }
+
   handleSearch = () => {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadMovements({
@@ -191,7 +189,7 @@ export default class MovementList extends React.Component {
   }
   render() {
     const {
-      defaultWhse, whses, owners, loading,
+      owners, loading,
     } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadMovements(params),
@@ -243,24 +241,12 @@ export default class MovementList extends React.Component {
 
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                    whses.map(warehouse => (<Option
-                      value={warehouse.code}
-                      key={warehouse.code}
-                    >{warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('movement')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('movement'),
+          ]}
+        >
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateMovement}>
               {this.msg('createMovement')}

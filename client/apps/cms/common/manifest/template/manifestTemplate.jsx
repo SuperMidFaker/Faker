@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Button, message, Mention, Collapse, Tabs } from 'antd';
+import { Form, Layout, Button, message, Mention, Collapse, Tabs } from 'antd';
 import { saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -235,17 +235,12 @@ export default class ManifestTemplate extends Component {
     } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('billTemplates')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {`${templateName}`}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            this.msg('billTemplates'),
+            templateName,
+          ]}
+        >
           <PageHeader.Actions>
             {operation === 'edit' &&
               <Button type="ghost" onClick={this.handleCancel}>

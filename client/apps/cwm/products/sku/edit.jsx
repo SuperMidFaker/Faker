@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
+import { Form, Layout, Row, Col, Button } from 'antd';
 import { loadSkuParams, loadSku, saveSku } from 'common/reducers/cwmSku';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
@@ -30,7 +30,7 @@ const { Content } = Layout;
 export default class EditProductSku extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -70,20 +70,13 @@ export default class EditProductSku extends Component {
     const { form, submitting } = this.props;
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('products')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('productsSku')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.sku}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            this.msg('products'),
+            this.msg('productsSku'),
+            this.props.params.sku,
+          ]}
+        >
           <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}

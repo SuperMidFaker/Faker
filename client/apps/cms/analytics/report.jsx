@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Card, Layout, Table } from 'antd';
+import { Card, Layout, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -109,18 +109,7 @@ export default class AnalyticsChart extends Component {
     };
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('analytics')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {item.title}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
+        <PageHeader breadcrumb={[this.msg('analytics'), item.title]} />
         <Content className="page-content layout-fixed-width">
           <Card>
             <Chart item={item} />

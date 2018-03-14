@@ -6,7 +6,7 @@ import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/so
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, notification } from 'antd';
+import { Button, Layout, notification } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
 import OrderForm from './order';
@@ -144,17 +144,7 @@ export default class CreateOrder extends Component {
     const invalidOrder = !formData.cust_shipmt_transfer || !formData.flow_id;
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('shipmentOrders')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('createOrder')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('shipmentOrders'), this.msg('createOrder')]}>
           <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}

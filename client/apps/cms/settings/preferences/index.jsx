@@ -97,15 +97,7 @@ export default class Preferences extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('preferences')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-          </PageHeader>
+          <PageHeader title={this.msg('preferences')} />
           <Content className="page-content layout-fixed-width">
             <Collapse bordered={false} defaultActiveKey={['pluginsPref', 'cusDeclPref']}>
               <Panel header={this.msg('pluginsPref')} key="pluginsPref" style={customPanelStyle}>

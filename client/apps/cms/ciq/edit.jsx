@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Breadcrumb, Button, Layout, Tabs, message } from 'antd';
+import { Form, Button, Layout, Tabs, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateCiqHead, loadCiqDeclHead, ciqHeadChange } from 'common/reducers/cmsCiqDeclare';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -86,17 +86,7 @@ export default class CiqDeclEdit extends React.Component {
     </TabPane>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('ciqDecl')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.router.params.declNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('ciqDecl'), this.props.router.params.declNo]}>
           <PageHeader.Actions>
             {/* <Dropdown overlay={declEntryMenu}>
               <Button ><Icon type="link" />转至 <Icon type="down" /></Button>

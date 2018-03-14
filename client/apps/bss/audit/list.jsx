@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, DatePicker, Icon, Layout, Menu, Select } from 'antd';
+import { Button, DatePicker, Icon, Layout, Menu, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import Drawer from 'client/components/Drawer';
@@ -103,10 +103,11 @@ export default class AuditList extends React.Component {
     dataIndex: 'created_by',
     width: 80,
   }, {
-    title: '操作',
+    title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
-    width: 150,
+    align: 'right',
     fixed: 'right',
+    width: 120,
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
@@ -184,8 +185,10 @@ export default class AuditList extends React.Component {
       remotes: this.props.asnlist,
     });
     */
+    const primaryAction = <Button type="primary" icon="file-excel">导出</Button>;
+    const secondaryAction = <Button>Secondary</Button>;
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
         placeholder="结算对象"
@@ -208,22 +211,16 @@ export default class AuditList extends React.Component {
       header: 'This is Header',
       imageUrl: 'https://atlaskit.atlassian.com/b9c4dc7ef2c2a1036fe13a5b229d39df.svg',
       description: 'lots of descritions',
-      primaryAction: <Button type="primary">Primary</Button>,
-      secondaryAction: <Button>Secondary</Button>,
+      primaryAction,
+      secondaryAction,
     };
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('audit')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('audit')}>
           <PageHeader.Actions>
-            <Button type="primary" icon="file-excel">导出</Button>
-            <ButtonToggle iconOff="bars" iconOn="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
+            {primaryAction}
+            {secondaryAction}
+            <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Col, Layout, Row } from 'antd';
+import { Col, Layout, Row } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
@@ -27,15 +27,7 @@ export default class CMSDashboard extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('dashboard')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
+        <PageHeader title={this.msg('dashboard')} />
         <Content className="page-content" key="main">
           <Row gutter={16}>
             <Col sm={24} lg={24}>
