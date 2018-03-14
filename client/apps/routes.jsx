@@ -329,7 +329,7 @@ export default(store) => {
               <Route path="payable">
                 <IndexRoute component={CMSBilling.PayableList} />
               </Route>
-              <Route path="expense/:delgNo/:prType/:dispId" component={CMSBilling.Expense} />
+              <Route path="expense/:delgNo/fees" component={CMSBilling.Expense} />
               <Route path="quote">
                 <IndexRoute component={CMSQuote.List} />
                 <Route path=":quoteNo" component={CMSQuote.Edit} />

@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
     current: state.cmsExpense.expensesList.current,
   })));
   promises.push(dispatch(loadPartners({
-    role: PARTNER_ROLES.SUP,
+    role: PARTNER_ROLES.CUS,
   })));
   return Promise.all(promises);
 }
@@ -51,7 +51,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     expensesList: state.cmsExpense.expensesList,
     listFilter: state.cmsExpense.listFilter,
     partners: state.partner.partners,
@@ -173,12 +172,12 @@ export default class ExpenseList extends Component {
       width: 120,
       render: o => o && moment(o).format('MM.DD HH:mm'),
     }, {
-      title: '计费人员',
+      title: this.msg('billingStaff'),
       dataIndex: 'created_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
     }, {
-      title: '审核人员',
+      title: this.msg('confirmStaff'),
       dataIndex: 'confirmed_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
@@ -256,7 +255,7 @@ export default class ExpenseList extends Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
-        window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/export/${createFilename('delegation_expense')}.xlsx?params=${
+        window.open(`${API_ROOTS.default}v1/cms/billing/expenses/export/${createFilename('delegation_expenses')}.xlsx?params=${
           JSON.stringify(params)}`);
       }
     });
@@ -272,6 +271,12 @@ export default class ExpenseList extends Component {
     if (ev.key === 'logs') {
       this.props.togglePanelVisible(true);
     }
+  }
+  handleSelectedExport = () => {
+    const expenseNos = this.state.selectedRowKeys;
+    const params = { expenseNos, mode: 'receivable' };
+    window.open(`${API_ROOTS.default}v1/cms/billing/expenses/export/${createFilename('delegation_expenses')}.xlsx?params=${
+      JSON.stringify(params)}`);
   }
   render() {
     const {
@@ -312,7 +317,7 @@ export default class ExpenseList extends Component {
     const bulkActions = (<span>
       {(status === 'billing' || status === 'pending') &&
       <ToolbarAction icon="arrow-up" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchSubmit} label={this.gmsg('submit')} />}
-      <ToolbarAction icon="download" onClick={this.handleExpExport} label={this.gmsg('export')} />
+      <ToolbarAction icon="download" onClick={this.handleSelectedExport} label={this.gmsg('export')} />
     </span>);
     this.dataSource.remotes = expensesList;
     return (
@@ -368,7 +373,7 @@ export default class ExpenseList extends Component {
               onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
-              rowKey="delg_no"
+              rowKey="expense_no"
               loading={expensesLoading}
               bordered
             />
@@ -377,7 +382,7 @@ export default class ExpenseList extends Component {
             title={this.msg('importFees')}
             visible={this.state.importPanelVisible}
             endpoint={`${API_ROOTS.default}v1/cms/billing/expense/import`}
-            formData={{}}
+            formData={{ mode: 'receivable' }}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
             onGenTemplate={this.handleGenTemplate}
