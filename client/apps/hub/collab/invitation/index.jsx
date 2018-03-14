@@ -3,7 +3,7 @@ import { loadPartners } from 'common/reducers/partner';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Card, Icon, Radio, Layout } from 'antd';
+import { Card, Radio, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { changeInvitationType } from 'common/reducers/invitation';
 import PageHeader from 'client/components/PageHeader';
@@ -52,14 +52,7 @@ export default class MainContainer extends Component {
       <Layout>
         <HubSiderMenu currentKey="invitation" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Icon type="team" /> {this.msg('collab')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('collab')}>
             <PageHeader.Nav>
               <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
                 <RadioButton value="0">待邀请</RadioButton>

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Card, Collapse, Breadcrumb, Form, Icon, Layout, Tag } from 'antd';
+import { Button, Card, Collapse, Form, Layout, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadSFExpressApp, updateSFExpressApp } from 'common/reducers/hubIntegration';
@@ -46,20 +46,13 @@ export default class ConfigSFExpress extends React.Component {
     const { sfexpress, app } = this.props;
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="appstore-o" /> {this.msg('installedApps')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('appSFExpress')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {sfexpress.name} {this.renderStatusTag(app.enabled)}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            this.msg('installedApps'),
+            this.msg('appSFExpress'),
+            <span>{sfexpress.name} {this.renderStatusTag(app.enabled)}</span>,
+          ]}
+        >
           <PageHeader.Actions>
             <Button icon="close" onClick={this.handleClose}>
               {this.msg('close')}

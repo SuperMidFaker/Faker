@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Collapse, Button, Card, Breadcrumb, Icon, Layout } from 'antd';
+import { Collapse, Button, Card, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import { getApp } from 'common/reducers/hubDevApp';
@@ -39,17 +39,7 @@ export default class ConfigDevApp extends React.Component {
     const { app } = this.props;
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="code-o" /> {this.msg('dev')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {app.app_name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('dev'), app.app_name]}>
           <PageHeader.Actions>
             <Button icon="close" onClick={this.handleClose}>
               {this.msg('close')}

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Card, Collapse, Breadcrumb, Icon, Layout, Tag } from 'antd';
+import { Button, Card, Collapse, Layout, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadSingleWindowApp, updateSingleWindowApp } from 'common/reducers/hubIntegration';
@@ -44,20 +44,13 @@ export default class ConfigQuickPass extends React.Component {
     const { singlewindow, app } = this.props;
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="appstore-o" /> {this.msg('installedApps')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('appSingleWindow')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {singlewindow.name} {this.renderStatusTag(app.enabled)}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            this.msg('installedApps'),
+            this.msg('appSingleWindow'),
+            <span>{singlewindow.name} {this.renderStatusTag(app.enabled)}</span>,
+          ]}
+        >
           <PageHeader.Actions>
             <Button icon="close" onClick={this.handleClose}>
               {this.msg('close')}

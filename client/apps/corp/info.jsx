@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Breadcrumb, Card, Button, Form, Input, Row, Col, Layout, message } from 'antd';
+import { Avatar, Card, Button, Form, Input, Row, Col, Layout, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -196,15 +196,7 @@ export default class CorpInfo extends React.Component {
       <Layout>
         <CorpSiderMenu currentKey="info" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <i className="icon-fontello-building" /> {msg('corpInfo')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-          </PageHeader>
+          <PageHeader title={msg('corpInfo')} />
           <Content className="page-content layout-fixed-width layout-fixed-width-lg" key="main">
             <Row gutter={16}>
               <Col sm={24} md={16}>
