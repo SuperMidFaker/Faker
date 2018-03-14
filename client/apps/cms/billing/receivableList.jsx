@@ -256,7 +256,7 @@ export default class ExpenseList extends Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const params = { ...this.props.form.getFieldsValue(), mode: 'receivable' };
-        window.open(`${API_ROOTS.default}v1/cms/billing/expense/model/export/${createFilename('delegation_expense')}.xlsx?params=${
+        window.open(`${API_ROOTS.default}v1/cms/billing/expenses/export/${createFilename('delegation_expenses')}.xlsx?params=${
           JSON.stringify(params)}`);
       }
     });
@@ -272,6 +272,12 @@ export default class ExpenseList extends Component {
     if (ev.key === 'logs') {
       this.props.togglePanelVisible(true);
     }
+  }
+  handleSelectedExport = () => {
+    const expenseNos = this.state.selectedRowKeys;
+    const params = { expenseNos, mode: 'receivable' };
+    window.open(`${API_ROOTS.default}v1/cms/billing/expenses/export/${createFilename('delegation_expenses')}.xlsx?params=${
+      JSON.stringify(params)}`);
   }
   render() {
     const {
@@ -312,7 +318,7 @@ export default class ExpenseList extends Component {
     const bulkActions = (<span>
       {(status === 'billing' || status === 'pending') &&
       <ToolbarAction icon="arrow-up" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchSubmit} label={this.gmsg('submit')} />}
-      <ToolbarAction icon="download" onClick={this.handleExpExport} label={this.gmsg('export')} />
+      <ToolbarAction icon="download" onClick={this.handleSelectedExport} label={this.gmsg('export')} />
     </span>);
     this.dataSource.remotes = expensesList;
     return (
@@ -375,7 +381,7 @@ export default class ExpenseList extends Component {
               onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
-              rowKey="delg_no"
+              rowKey="expense_no"
               loading={expensesLoading}
               bordered
             />
