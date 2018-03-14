@@ -7,21 +7,20 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
-import DataPane from 'client/components/DataPane';
-import RowAction from 'client/components/RowAction';
-import { loadExpsDetails } from 'common/reducers/cmsExpense';
-import { FEE_TYPE } from 'common/constants';
+import { loadExpsDetails, loadCurrencies } from 'common/reducers/cmsExpense';
+import ExpenseDetailTabPane from './tabPanes/expenseDetailTabPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
-function fetchData({ dispatch, params, state }) {
-  return dispatch(loadExpsDetails({
+function fetchData({ dispatch, params }) {
+  const promises = [];
+  promises.push(dispatch(loadExpsDetails({
     delgNo: params.delgNo,
-    tenantId: state.account.tenantId,
-    prType: params.prType,
-  }));
+  })));
+  promises.push(dispatch(loadCurrencies()));
+  return Promise.all(promises);
 }
 
 @connectFetch()(fetchData)
@@ -29,9 +28,12 @@ function fetchData({ dispatch, params, state }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    aspect: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     expDetails: state.cmsExpense.expDetails,
+    expensesLoading: state.cmsExpense.expensesLoading,
+    expDetailsReload: state.cmsExpense.expDetailsReload,
   }),
   { loadExpsDetails }
 )
@@ -49,94 +51,21 @@ export default class ExpenseDetail extends Component {
   }
   state = {
     fullscreen: true,
-    datas: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.expDetails !== nextProps.expDetails) {
-      if (nextProps.expDetails && nextProps.expDetails.charges.length > 0) {
-        this.setState({ datas: nextProps.expDetails.charges });
-      } else {
-        this.setState({ datas: [] });
-      }
+    if (nextProps.expDetailsReload) {
+      this.props.loadExpsDetails({ delgNo: this.props.params.delgNo });
     }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-
-  handleTabChange = (key) => {
-    this.props.loadExpsDetails({
-      delgNo: this.props.params.delgNo,
-      tenantId: this.props.tenantId,
-      prType: key,
-    });
-  }
-
-  columns = [{
-    title: '序号',
-    dataIndex: 'seq_no',
-    width: 45,
-    align: 'center',
-    className: 'table-col-seq',
-    render: (col, row) => row.index + 1,
-  }, {
-    title: '费用名称',
-    dataIndex: 'fee_name',
-    width: 200,
-  }, {
-    title: '费用类型',
-    dataIndex: 'fee_type',
-    width: 100,
-    render: (o) => {
-      const type = FEE_TYPE.filter(fe => fe.key === o)[0];
-      return type ? <span>{type.text}</span> : <span />;
-    },
-  }, {
-    title: '计费金额(人民币)',
-    dataIndex: 'sum_amount',
-    width: 150,
-    align: 'right',
-  }, {
-    title: '外币金额',
-    dataIndex: 'orig_amount',
-    width: 150,
-    align: 'right',
-  }, {
-    title: '外币币制',
-    dataIndex: 'currency',
-    width: 100,
-  }, {
-    title: '汇率',
-    dataIndex: 'exchange_rate',
-    width: 100,
-    align: 'right',
-  }, {
-    title: '开票税率',
-    dataIndex: 'tax_rate',
-    width: 100,
-    align: 'right',
-  }, {
-    title: '税金',
-    dataIndex: 'tax',
-    width: 150,
-    align: 'right',
-  }, {
-    title: '备注',
-    dataIndex: 'remark',
-  }, {
-    title: '操作',
-    dataIndex: 'OPS_COL',
-    width: 90,
-    fixed: 'right',
-    render: (o, record) => (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
-      <span className="ant-divider" />
-      <RowAction onClick={this.handleDetail} label="排除" row={record} />
-    </span>),
-  }]
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   render() {
-    const { params } = this.props;
+    const {
+      params, aspect, expDetails, expensesLoading,
+    } = this.props;
     return (
       <div>
         <PageHeader>
@@ -153,32 +82,24 @@ export default class ExpenseDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs
-              defaultActiveKey={`${params.prType}-${params.dispId}`}
-              onChange={this.handleTabChange}
-            >
-              <TabPane tab="应收明细" key={`receivable-${params.dispId}`} >
-                <DataPane
+            <Tabs defaultActiveKey={aspect !== 0 ? 'receivable' : `payable-${expDetails.pays[0][0].seller_partner_id}`}>
+              {aspect !== 0 &&
+              <TabPane tab="应收明细" key="receivable" >
+                <ExpenseDetailTabPane
                   fullscreen={this.state.fullscreen}
-                  columns={this.columns}
-                  dataSource={this.state.datas}
-                  rowKey="id"
-                  loading={this.state.loading}
-                >
-                  <DataPane.Toolbar />
-                </DataPane>
+                  dataSource={expDetails.receives}
+                  loading={expensesLoading}
+                />
               </TabPane>
-              <TabPane tab="应付明细" key={`payable-${params.dispId}`} >
-                <DataPane
-                  fullscreen={this.state.fullscreen}
-                  columns={this.columns}
-                  dataSource={this.state.datas}
-                  rowKey="id"
-                  loading={this.state.loading}
-                >
-                  <DataPane.Toolbar />
-                </DataPane>
-              </TabPane>
+              }
+              {expDetails.pays.map(pay =>
+                (<TabPane tab={`应付明细${pay[0].seller_name}`} key={`payable-${pay[0].seller_partner_id}`} >
+                  <ExpenseDetailTabPane
+                    fullscreen={this.state.fullscreen}
+                    dataSource={pay}
+                    loading={expensesLoading}
+                  />
+                </TabPane>))}
             </Tabs>
           </MagicCard>
         </Content>
