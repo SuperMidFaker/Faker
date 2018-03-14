@@ -6,8 +6,9 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Form, Layout, Steps, Button, Tabs, Card, Tag, message, notification } from 'antd';
+import { Layout, Steps, Button, Tabs, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -351,7 +352,7 @@ export default class SHFTZTransferSelfDetail extends Component {
       </Summary>
     );
     return (
-      <div>
+      <Layout>
         <PageHeader
           breadcrumb={[
             whse.name,
@@ -369,49 +370,46 @@ export default class SHFTZTransferSelfDetail extends Component {
                   <Button icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-              <DescriptionList col={4}>
-                <Description term="收货单位海关编码">
-                  <EditableCell
-                    value={transfSelfReg.owner_cus_code}
-                    onSave={value => this.handleInfoSave('owner_cus_code', value)}
-                  />
-                </Description>
-                <Description term="收货单位">
-                  <EditableCell
-                    value={transfSelfReg.owner_name}
-                    onSave={value => this.handleInfoSave('owner_name', value)}
-                  />
-                </Description>
-                <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
-                <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
-                <Description term="入库单号">
-                  <EditableCell
-                    value={transfSelfReg.ftz_ent_no}
-                    onSave={value => this.handleInfoSave('ftz_ent_no', value)}
-                  />
-                </Description>
-                <Description term="转入时间">
-                  <EditableCell
-                    type="date"
-                    value={transfSelfReg.ftz_ent_date && moment(transfSelfReg.ftz_ent_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
-                  />
-                </Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={transfSelfReg.reg_status}>
-                  <Step title="待转出" />
-                  <Step title="终端处理" />
-                  <Step title="已转入" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={4}>
+              <Description term="收货单位海关编码">
+                <EditableCell
+                  value={transfSelfReg.owner_cus_code}
+                  onSave={value => this.handleInfoSave('owner_cus_code', value)}
+                />
+              </Description>
+              <Description term="收货单位">
+                <EditableCell
+                  value={transfSelfReg.owner_name}
+                  onSave={value => this.handleInfoSave('owner_name', value)}
+                />
+              </Description>
+              <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
+              <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <Description term="入库单号">
+                <EditableCell
+                  value={transfSelfReg.ftz_ent_no}
+                  onSave={value => this.handleInfoSave('ftz_ent_no', value)}
+                />
+              </Description>
+              <Description term="转入时间">
+                <EditableCell
+                  type="date"
+                  value={transfSelfReg.ftz_ent_date && moment(transfSelfReg.ftz_ent_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
+                />
+              </Description>
+            </DescriptionList>
+            <Steps progressDot current={transfSelfReg.reg_status} className="progress-tracker">
+              <Step title="待转出" />
+              <Step title="终端处理" />
+              <Step title="已转入" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
             <MagicCard
               bodyStyle={{ padding: 0 }}
-
               onSizeChange={this.toggleFullscreen}
             >
               <Tabs defaultActiveKey="transitDetails">
@@ -435,9 +433,9 @@ export default class SHFTZTransferSelfDetail extends Component {
                 </TabPane>
               </Tabs>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

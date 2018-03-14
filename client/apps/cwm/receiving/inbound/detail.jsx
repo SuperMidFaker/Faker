@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Alert, Badge, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Tabs, Tooltip, Tag } from 'antd';
+import { Alert, Badge, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Tabs, Tooltip, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
+import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -152,7 +153,7 @@ export default class ReceiveInbound extends Component {
       );
     }
     return (
-      <div>
+      <Layout>
         <PageHeader
           breadcrumb={[
             defaultWhse.name,
@@ -186,17 +187,8 @@ export default class ReceiveInbound extends Component {
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          {currentStatus >= CWM_INBOUND_STATUS.ALL_RECEIVED.value &&
-            currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
-            inboundHead.total_received_qty < inboundHead.total_expect_qty &&
-            <Alert message="实收数量少于预期数量，全部上架确认后必须手动关闭" type="info" showIcon closable />
-          }
-          {inboundHead.total_received_qty > inboundHead.total_expect_qty &&
-            currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
-            <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
-          }
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
             <DescriptionList col={4}>
               <Description term="货主">{inboundHead.owner_name}</Description>
               <Description term="ASN编号">{inboundHead.asn_no}</Description>
@@ -212,33 +204,42 @@ export default class ReceiveInbound extends Component {
               <Description term="创建时间">{inboundHead.created_date && moment(inboundHead.created_date).format('YYYY.MM.DD HH:mm')}</Description>
               <Description term="入库时间">{inboundHead.completed_date && moment(inboundHead.completed_date).format('YYYY.MM.DD HH:mm')}</Description>
             </DescriptionList>
-            <div className="card-footer">
-              <Steps progressDot current={currentStatus}>
-                <Step title="待入库" />
-                <Step title="收货" />
-                <Step title="上架" />
-                <Step title="已入库" />
-              </Steps>
-            </div>
-          </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
-              <TabPane tab="收货明细" key="receiveDetails">
-                <ReceiveDetailsPane
-                  inboundNo={this.props.params.inboundNo}
-                  fullscreen={this.state.fullscreen}
-                />
-              </TabPane>
-              <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
-                <PutawayDetailsPane
-                  inboundNo={this.props.params.inboundNo}
-                  fullscreen={this.state.fullscreen}
-                />
-              </TabPane>
-            </Tabs>
-          </MagicCard>
-        </Content>
-      </div>
+            <Steps progressDot current={currentStatus} className="progress-tracker">
+              <Step title="待入库" />
+              <Step title="收货" />
+              <Step title="上架" />
+              <Step title="已入库" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
+            {currentStatus >= CWM_INBOUND_STATUS.ALL_RECEIVED.value &&
+            currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
+            inboundHead.total_received_qty < inboundHead.total_expect_qty &&
+            <Alert message="实收数量少于预期数量，全部上架确认后必须手动关闭" type="info" showIcon closable />
+          }
+            {inboundHead.total_received_qty > inboundHead.total_expect_qty &&
+            currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
+            <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
+          }
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+              <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
+                <TabPane tab="收货明细" key="receiveDetails">
+                  <ReceiveDetailsPane
+                    inboundNo={this.props.params.inboundNo}
+                    fullscreen={this.state.fullscreen}
+                  />
+                </TabPane>
+                <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
+                  <PutawayDetailsPane
+                    inboundNo={this.props.params.inboundNo}
+                    fullscreen={this.state.fullscreen}
+                  />
+                </TabPane>
+              </Tabs>
+            </MagicCard>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

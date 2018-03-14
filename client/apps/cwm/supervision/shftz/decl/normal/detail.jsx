@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Form, Layout, Tabs, Steps, Button, Card, Tag } from 'antd';
+import { Badge, Layout, Tabs, Steps, Button, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -275,7 +276,7 @@ export default class NormalDeclDetail extends Component {
       </Summary>
     );
     return (
-      <div>
+      <Layout>
         <PageHeader
           breadcrumb={[
             whse.name,
@@ -288,23 +289,22 @@ export default class NormalDeclDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions />
         </PageHeader>
-        <Content className="page-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} >
-              <DescriptionList col={6}>
-                <Description term="提货单位">{normalDecl.owner_name}</Description>
-                <Description term="报关代理">{normalDecl.customs_name}</Description>
-                <Description term="成交方式">{mode && `${mode.value}| ${mode.text}`}</Description>
-                <Description term="备案时间">{normalDecl.reg_date && moment(normalDecl.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={declStep}>
-                  <Step title="委托制单" />
-                  <Step title="已申报" />
-                  <Step title="报关放行" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={6}>
+              <Description term="提货单位">{normalDecl.owner_name}</Description>
+              <Description term="报关代理">{normalDecl.customs_name}</Description>
+              <Description term="成交方式">{mode && `${mode.value}| ${mode.text}`}</Description>
+              <Description term="备案时间">{normalDecl.reg_date && moment(normalDecl.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+            </DescriptionList>
+            <Steps progressDot current={declStep} className="progress-tracker">
+              <Step title="委托制单" />
+              <Step title="已申报" />
+              <Step title="报关放行" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
+
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
@@ -340,9 +340,9 @@ export default class NormalDeclDetail extends Component {
                 </TabPane>
               </Tabs>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

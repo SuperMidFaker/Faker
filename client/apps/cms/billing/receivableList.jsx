@@ -317,7 +317,7 @@ export default class ExpenseList extends Component {
     this.dataSource.remotes = expensesList;
     return (
       <Layout>
-        <PageHeader title={this.msg('receivaleExpense')}>
+        <PageHeader title={this.msg('receivableExpense')}>
           <PageHeader.Actions>
             <ToolbarAction
               icon="arrow-up"

@@ -6,8 +6,9 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Form, Layout, InputNumber, Popover, Radio, Steps, Button, Card, Tag, message, notification } from 'antd';
+import { Alert, Badge, Layout, InputNumber, Popover, Radio, Steps, Button, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -584,11 +585,11 @@ export default class SHFTZEntryDetail extends Component {
       total_net_wt: 0,
     });
     return (
-      <div>
+      <Layout>
         <PageHeader
           breadcrumb={[
             whse.name,
-            entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>,
+            entType && entType.ftztext,
             primaryEntryReg.cus_decl_no || this.props.params.preEntrySeqNo,
           ]}
           menus={menus}
@@ -635,38 +636,36 @@ export default class SHFTZEntryDetail extends Component {
               <Button type="primary" icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
-          <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-              <DescriptionList col={3}>
-                <Description term="进区凭单号">
-                  <EditableCell
-                    value={reg.ftz_ent_no}
-                    editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'ftz_ent_no', value)}
-                  />
-                </Description>
-                <Description term="报关单号">
-                  <EditableCell
-                    value={primaryEntryReg.cus_decl_no}
-                    editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'cus_decl_no', value)}
-                  />
-                </Description>
-                <Description term="经营单位">{primaryEntryReg.owner_name}</Description>
-                <Description term="进出口日期">{primaryEntryReg.ie_date && moment(primaryEntryReg.ie_date).format('YYYY.MM.DD')}</Description>
-                <Description term="备案更新时间">{primaryEntryReg.last_update_date && moment(primaryEntryReg.last_update_date).format('YYYY.MM.DD HH:mm')}</Description>
-                <Description term="进区更新时间">{primaryEntryReg.ftz_ent_date && moment(primaryEntryReg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={reg.status}>
-                  <Step title="待进区" />
-                  <Step title="已备案" />
-                  <Step title="已进区" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={3}>
+              <Description term="进区凭单号">
+                <EditableCell
+                  value={reg.ftz_ent_no}
+                  editable={entryEditable}
+                  onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'ftz_ent_no', value)}
+                />
+              </Description>
+              <Description term="报关单号">
+                <EditableCell
+                  value={primaryEntryReg.cus_decl_no}
+                  editable={entryEditable}
+                  onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'cus_decl_no', value)}
+                />
+              </Description>
+              <Description term="经营单位">{primaryEntryReg.owner_name}</Description>
+              <Description term="进出口日期">{primaryEntryReg.ie_date && moment(primaryEntryReg.ie_date).format('YYYY.MM.DD')}</Description>
+              <Description term="备案更新时间">{primaryEntryReg.last_update_date && moment(primaryEntryReg.last_update_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <Description term="进区更新时间">{primaryEntryReg.ftz_ent_date && moment(primaryEntryReg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
+            </DescriptionList>
+            <Steps progressDot current={reg.status} className="progress-tracker">
+              <Step title="待进区" />
+              <Step title="已备案" />
+              <Step title="已进区" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
+            {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <DataPane
                 header="备案明细"
@@ -694,9 +693,9 @@ export default class SHFTZEntryDetail extends Component {
                 </DataPane.Toolbar>
               </DataPane>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

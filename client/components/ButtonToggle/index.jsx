@@ -42,7 +42,7 @@ export default class ButtonToggle extends React.Component {
     } = this.props;
     const toggleState = state;
     const toggleCls = toggleState ? 'btn-toggle-on' : 'btn-toggle-off';
-    const toggleIcon = icon || (toggleState ? iconOn : iconOff);
+    const toggleIcon = toggleState ? (iconOn || icon) : (iconOff || icon);
     const toggleTip = toggleState ? `收起${tooltip}` : `打开${tooltip}`;
     return (
       tooltip ? <Tooltip title={toggleTip} placement="bottom" mouseEnterDelay={1}>

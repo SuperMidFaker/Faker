@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tag, Badge, Form, Input, Layout, Tabs, Steps, Button, Card, notification } from 'antd';
+import { Tag, Badge, Input, Layout, Tabs, Steps, Button, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -394,7 +395,7 @@ export default class BatchDeclDetail extends Component {
       </Summary>
     );
     return (
-      <div>
+      <Layout>
         <PageHeader
           breadcrumb={[
             whse.name,
@@ -411,24 +412,22 @@ export default class BatchDeclDetail extends Component {
             <Button type="primary" ghost={sent} icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} >
-              <DescriptionList col={4}>
-                <Description term="货主">{batchDecl.owner_name}</Description>
-                <Description term="收货单位">{batchDecl.receiver_name}</Description>
-                <Description term="报关代理">{batchDecl.broker_name}</Description>
-                <Description term="备案时间">{batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={applyStep}>
-                  <Step title="委托制单" />
-                  <Step title="待报关申请" />
-                  <Step title="已发送申请" />
-                  <Step title="已清关" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={4}>
+              <Description term="货主">{batchDecl.owner_name}</Description>
+              <Description term="收货单位">{batchDecl.receiver_name}</Description>
+              <Description term="报关代理">{batchDecl.broker_name}</Description>
+              <Description term="备案时间">{batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+            </DescriptionList>
+            <Steps progressDot current={applyStep} className="progress-tracker">
+              <Step title="委托制单" />
+              <Step title="待报关申请" />
+              <Step title="已发送申请" />
+              <Step title="已清关" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
@@ -493,9 +492,9 @@ export default class BatchDeclDetail extends Component {
                   </TabPane>))}
               </Tabs>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }
