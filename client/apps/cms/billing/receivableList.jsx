@@ -384,7 +384,7 @@ export default class ExpenseList extends Component {
             title={this.msg('importFees')}
             visible={this.state.importPanelVisible}
             endpoint={`${API_ROOTS.default}v1/cms/billing/expense/import`}
-            formData={{}}
+            formData={{ mode: 'receivable' }}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
             onGenTemplate={this.handleGenTemplate}
