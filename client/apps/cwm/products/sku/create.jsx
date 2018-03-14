@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Form, Layout, Row, Col, Button, message } from 'antd';
+import { Form, Layout, Row, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import { loadSkuParams, cleanSkuForm, createSku } from 'common/reducers/cwmSku';
@@ -30,7 +30,7 @@ const { Content } = Layout;
 export default class CreateProductSku extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -51,7 +51,7 @@ export default class CreateProductSku extends Component {
   handleSave = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        const owner = this.props.owner;
+        const { owner } = this.props;
         const formData = {
           ...values,
           ...this.props.skuForm,
@@ -78,20 +78,13 @@ export default class CreateProductSku extends Component {
     const { form, submitting } = this.props;
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('products')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('productsSku')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('createSKU')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            this.msg('products'),
+            this.msg('productsSku'),
+            this.msg('createSKU'),
+          ]}
+        >
           <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}

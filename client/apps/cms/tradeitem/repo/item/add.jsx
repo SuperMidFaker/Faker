@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Form, Layout, Button, Tabs, message, notification } from 'antd';
+import { Form, Layout, Button, Tabs, message, notification } from 'antd';
 
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
@@ -74,20 +74,13 @@ export default class TradeItemAdd extends Component {
     </TabPane>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {repo.owner_name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('tradeItemMaster')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('addItem')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            repo.owner_name,
+            this.msg('tradeItemMaster'),
+            this.msg('addItem'),
+          ]}
+        >
           <PageHeader.Actions>
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}

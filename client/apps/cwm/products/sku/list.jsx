@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Collapse, Layout, Select, message, Table } from 'antd';
+import { Breadcrumb, Button, Collapse, Layout, message, Table } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -13,12 +13,12 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, delSku, openApplyPackingRuleModal } from 'common/reducers/cwmSku';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import WhseSelect from '../../common/whseSelect';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
-const { Option } = Select;
 const { Panel } = Collapse;
 
 @injectIntl
@@ -51,7 +51,6 @@ const { Panel } = Collapse;
 export default class CWMSkuList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
     owners: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
       partner_code: PropTypes.string,
@@ -249,10 +248,6 @@ export default class CWMSkuList extends React.Component {
   handleCreateBtnClick = () => {
     this.context.router.push('/cwm/products/sku/create');
   }
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-  }
   handleOwnerSelect = (row) => {
     this.props.setCurrentOwner(row);
   }
@@ -273,7 +268,7 @@ export default class CWMSkuList extends React.Component {
   }
   render() {
     const {
-      skulist, owner, whse, whses, loading, syncing,
+      skulist, owner, loading, syncing,
     } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -294,9 +289,7 @@ export default class CWMSkuList extends React.Component {
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                  {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                </Select>
+                <WhseSelect />
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('productsSku')}
@@ -323,18 +316,11 @@ export default class CWMSkuList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            {owner.id &&
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  货主
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {owner.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>}
+          <PageHeader
+            breadcrumb={[
+              owner.name,
+            ]}
+          >
             {owner.id &&
             <PageHeader.Actions>
               <Button icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>

@@ -80,14 +80,14 @@ export default class OrderParams extends Component {
   }
   render() {
     const { visible, modalOrderType, orderTypeList } = this.props;
-    const tabList = [
+    const menus = [
       {
         key: 'orderTypes',
-        tab: this.msg('orderTypes'),
+        menu: this.msg('orderTypes'),
       },
       {
         key: 'exceptionCode',
-        tab: this.msg('exceptionCode'),
+        menu: this.msg('exceptionCode'),
       },
     ];
     return (
@@ -105,7 +105,7 @@ export default class OrderParams extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader tabList={tabList} onTabChange={this.handleTabChange} />
+          <PageHeader menus={menus} onTabChange={this.handleTabChange} />
           <Content className="page-content layout-fixed-width">
             <Card extra={<Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>{this.gmsg('add')}</Button>} bodyStyle={{ padding: 0 }} >
               <List

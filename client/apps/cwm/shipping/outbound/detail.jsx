@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
+import { Badge, Icon, Layout, Tabs, Steps, Button, Tooltip, Radio,
   Tag, Dropdown, Menu, notification, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import InfoItem from 'client/components/InfoItem';
+import DescriptionList from 'client/components/DescriptionList';
 import { string2Bytes } from 'client/util/dataTransform';
+import Drawer from 'client/components/Drawer';
 import { Logixon } from 'client/components/FontIcon';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -28,6 +29,7 @@ import SFExpressModal from './modal/SFExpressModal';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const { Step } = Steps;
@@ -261,22 +263,15 @@ export default class OutboundDetail extends Component {
       </Menu>
     );
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {defaultWhse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingOutbound')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.outboundNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            {regTag && <Tag color={regTag.tagcolor}>{regTag.ftztext}</Tag>}
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            defaultWhse.name,
+            this.msg('shippingOutbound'),
+            this.props.params.outboundNo,
+            regTag && <Tag color={regTag.tagcolor}>{regTag.ftztext}</Tag>,
+          ]}
+        >
           <PageHeader.Nav>
             {regTypes.map((reg) => {
               const regStatus = reg.type === 'transfer' ?
@@ -323,93 +318,64 @@ export default class OutboundDetail extends Component {
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-            <Row gutter={16} className="info-group-underline">
-              <Col sm={24} lg={4}>
-                <InfoItem label="货主" field={outboundHead.owner_name} />
-              </Col>
-              { outboundHead.wave_no &&
-              <Col sm={24} lg={4}>
-                <InfoItem label="波次编号" field={outboundHead.wave_no} />
-              </Col>
-                }
-              <Col sm={24} lg={4}>
-                <InfoItem label="客户单号" field={outboundHead.cust_order_no} />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem label="订单总数" field={outboundHead.total_qty} />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem label="分配总数" field={outboundHead.total_alloc_qty} upperLimit={outboundHead.total_qty} />
-              </Col>
-              <Col sm={12} lg={2}>
-                <InfoItem label="拣货总数" field={outboundHead.total_picked_qty} upperLimit={outboundHead.total_alloc_qty} />
-              </Col>
-              <Col sm={12} lg={2}>
-                <InfoItem label="发货总数" field={outboundHead.total_shipped_qty} upperLimit={outboundHead.total_picked_qty} />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem
-                  label="创建时间"
-                  addonBefore={<Icon type="clock-circle-o" />}
-                  field={outboundHead.created_date && moment(outboundHead.created_date).format('YYYY.MM.DD')}
-                />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem
-                  label="出库时间"
-                  addonBefore={<Icon type="clock-circle-o" />}
-                  field={outboundHead.completed_date && moment(outboundHead.completed_date).format('MM.DD HH:mm')}
-                />
-              </Col>
-            </Row>
-            <div className="card-footer">
-              <Steps progressDot current={outboundStep}>
-                <Step title="待出库" />
-                <Step title="分配" />
-                <Step title="拣货" />
-                <Step title="复核装箱" />
-                <Step title="发货" />
-                <Step title="已出库" />
-              </Steps>
-            </div>
-          </Card>
-          <MagicCard
-            bodyStyle={{ padding: 0 }}
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={4}>
+              <Description term="货主">{outboundHead.owner_name}</Description>
+              <Description term="客户单号">{outboundHead.cust_order_no}</Description>
+              <Description term="订单总数">{outboundHead.total_qty}</Description>
+              <Description term="分配总数">{outboundHead.total_alloc_qty}</Description>
+              <Description term="拣货总数">{outboundHead.total_picked_qty}</Description>
+              <Description term="发货总数">{outboundHead.total_shipped_qty}</Description>
+              <Description term="创建日期">{outboundHead.created_date && moment(outboundHead.created_date).format('YYYY.MM.DD')}</Description>
+              <Description term="出库时间">{outboundHead.completed_date && moment(outboundHead.completed_date).format('MM.DD HH:mm')}</Description>
+            </DescriptionList>
+            <Steps progressDot current={outboundStep} className="progress-tracker">
+              <Step title="待出库" />
+              <Step title="分配" />
+              <Step title="拣货" />
+              <Step title="复核装箱" />
+              <Step title="发货" />
+              <Step title="已出库" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
+            <MagicCard
+              bodyStyle={{ padding: 0 }}
 
-            onSizeChange={this.toggleFullscreen}
-          >
-            <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-              <TabPane tab="订单明细" key="orderDetails">
-                <OrderDetailsPane
-                  outboundNo={this.props.params.outboundNo}
-                  fullscreen={this.state.fullscreen}
-                />
-              </TabPane>
-              <TabPane tab="拣货明细" key="pickingDetails">
-                <PickingDetailsPane
-                  outboundNo={this.props.params.outboundNo}
-                  fullscreen={this.state.fullscreen}
-                />
-              </TabPane>
-              <TabPane tab="装箱明细" key="packingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
-                <PackingDetailsPane
-                  outboundNo={this.props.params.outboundNo}
-                  fullscreen={this.state.fullscreen}
-                />
-              </TabPane>
-              <TabPane tab="发货明细" key="shippingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
-                <ShippingDetailsPane
-                  outboundNo={this.props.params.outboundNo}
-                  fullscreen={this.state.fullscreen}
-                />
-              </TabPane>
-            </Tabs>
-          </MagicCard>
-          <SFExpressModal />
-        </Content>
-      </div>
+              onSizeChange={this.toggleFullscreen}
+            >
+              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+                <TabPane tab="订单明细" key="orderDetails">
+                  <OrderDetailsPane
+                    outboundNo={this.props.params.outboundNo}
+                    fullscreen={this.state.fullscreen}
+                  />
+                </TabPane>
+                <TabPane tab="拣货明细" key="pickingDetails">
+                  <PickingDetailsPane
+                    outboundNo={this.props.params.outboundNo}
+                    fullscreen={this.state.fullscreen}
+                  />
+                </TabPane>
+                <TabPane tab="装箱明细" key="packingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
+                  <PackingDetailsPane
+                    outboundNo={this.props.params.outboundNo}
+                    fullscreen={this.state.fullscreen}
+                  />
+                </TabPane>
+                <TabPane tab="发货明细" key="shippingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
+                  <ShippingDetailsPane
+                    outboundNo={this.props.params.outboundNo}
+                    fullscreen={this.state.fullscreen}
+                  />
+                </TabPane>
+              </Tabs>
+            </MagicCard>
+            <SFExpressModal />
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

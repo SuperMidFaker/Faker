@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu, Upload } from 'antd';
+import { Badge, Form, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { setNavTitle } from 'common/reducers/navbar';
@@ -361,20 +361,13 @@ export default class CustomsDeclEditor extends React.Component {
     }
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <NavLink to="/clearance/cusdecl/">{this.msg('customsDecl')}</NavLink>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {head.entry_id || head.pre_entry_seq_no}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <NavLink to="/clearance/cusdecl/">{this.msg('customsDecl')}</NavLink>,
+            <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>,
+            head.entry_id || head.pre_entry_seq_no,
+          ]}
+        >
           <PageHeader.Nav>
             {declkey &&
             <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}

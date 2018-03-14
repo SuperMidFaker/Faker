@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Avatar, Breadcrumb, DatePicker, Icon, Layout, Menu, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Avatar, DatePicker, Icon, Layout, Menu, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
@@ -637,22 +637,7 @@ export default class CustomsList extends Component {
     return (
       <Layout>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('customsDecl')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-            {/*
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter}>
-                <RadioButton value="all">{this.msg('all')}</RadioButton>
-                <RadioButton value="import">{this.msg('import')}</RadioButton>
-                <RadioButton value="export">{this.msg('export')}</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav> */}
+          <PageHeader title={this.msg('customsDecl')}>
             <PageHeader.Actions>
               <Button icon="mail" onClick={this.showDeclMsgDock}>报文</Button>
             </PageHeader.Actions>

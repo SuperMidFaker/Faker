@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Layout, Tabs, Row, Col, Card } from 'antd';
+import { Badge, Layout, Tabs, Row, Col, Card } from 'antd';
+import { loadStockCompareTask, loadParams } from 'common/reducers/cwmShFtz';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -11,11 +12,11 @@ import InfoItem from 'client/components/InfoItem';
 import FTZStockPane from './tabpane/ftzStockPane';
 import ComaprisonPane from './tabpane/comparisonPane';
 import DiscrepancyPane from './tabpane/discrepancyPane';
-import { loadStockCompareTask, loadParams } from 'common/reducers/cwmShFtz';
+
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -56,24 +57,13 @@ export default class SHFTZStockTask extends Component {
     const { whse, task } = this.props;
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-              上海自贸区监管
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                对比任务
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.taskId}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            this.msg('对比任务'),
+            this.props.params.taskId,
+          ]}
+        />
         <Content className="page-content" key="main">
           <Card bodyStyle={{ paddingBottom: 8 }}>
             <Row gutter={16} className="info-group-underline">
@@ -94,7 +84,10 @@ export default class SHFTZStockTask extends Component {
                 <DiscrepancyPane fullscreen={this.state.fullscreen} />
               </TabPane>
               <TabPane tab="海关库存数据" key="ftz">
-                <FTZStockPane taskId={this.props.params.taskId} fullscreen={this.state.fullscreen} />
+                <FTZStockPane
+                  taskId={this.props.params.taskId}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
             </Tabs>
           </MagicCard>

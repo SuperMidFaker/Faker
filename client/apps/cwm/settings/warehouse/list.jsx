@@ -193,16 +193,12 @@ export default class WarehouseList extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {warehouse.name} ({warehouse.code}) {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <a onClick={this.handleEditWarehouse}><Icon type="edit" /></a>
-            </PageHeader.Title>
-          </PageHeader>
+          <PageHeader
+            breadcrumb={[
+              <span>{warehouse.name} ({warehouse.code}) {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}</span>,
+              <a onClick={this.handleEditWarehouse}><Icon type="edit" /></a>,
+            ]}
+          />
           <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="owners">

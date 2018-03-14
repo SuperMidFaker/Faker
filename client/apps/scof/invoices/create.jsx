@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, Button } from 'antd';
+import { Form, Layout, Tabs, Button } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -73,17 +73,7 @@ export default class CreateInvoice extends Component {
     const disable = !(temporaryDetails.length !== 0);
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('invoices')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('createInvoice')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('invoices'), this.msg('createInvoice')]}>
           <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancel}>
               {this.gmsg('cancel')}

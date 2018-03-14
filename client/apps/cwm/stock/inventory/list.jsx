@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Select, Layout, message } from 'antd';
+import { Button, Layout } from 'antd';
 import Summary from 'client/components/Summary';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks } from 'common/reducers/cwmInventoryStock';
@@ -14,12 +14,12 @@ import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import PageHeader from 'client/components/PageHeader';
+import WhseSelect from '../../common/whseSelect';
 import QueryForm from './queryForm';
 import SKUPopover from '../../common/popover/skuPopover';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
-const { Option } = Select;
 
 function getNormalCol(text, row) {
   const colObj = { children: text, props: {} };
@@ -180,8 +180,6 @@ export default class StockInventoryList extends React.Component {
     render: (text, row) => getNormalCol(text, row),
   }]
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     const filter = { ...this.props.listFilter, whse_code: value };
     this.handleStockQuery(1, filter);
   }
@@ -233,7 +231,7 @@ export default class StockInventoryList extends React.Component {
 
   render() {
     const {
-      defaultWhse, whses, loading, listFilter,
+      loading, listFilter,
     } = this.props;
     const {
       stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
@@ -295,25 +293,13 @@ export default class StockInventoryList extends React.Component {
     );
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                  whses.map(warehouse =>
-                  (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                库存余量
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('stockInventory'),
+            this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text),
+          ]}
+        >
           <PageHeader.Actions>
             <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}

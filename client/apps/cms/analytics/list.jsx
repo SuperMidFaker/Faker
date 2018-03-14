@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Button, Card, Collapse, Layout, List } from 'antd';
+import { Button, Card, Collapse, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleReportSettingDock } from 'common/reducers/cmsAnalytics';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -234,14 +234,7 @@ export default class AnalyticsList extends Component {
     };
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('analytics')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('analytics')}>
           <PageHeader.Actions>
             <Button icon="setting" onClick={this.showReportSettingDock}>{this.msg('reportSetting')}</Button>
           </PageHeader.Actions>

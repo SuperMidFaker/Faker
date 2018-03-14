@@ -206,7 +206,7 @@ export default class CustomerBillsList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
         placeholder="结算对象"

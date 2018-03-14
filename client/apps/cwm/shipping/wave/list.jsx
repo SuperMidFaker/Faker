@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
+import { Layout, Radio, Select, Badge } from 'antd';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
@@ -14,6 +14,7 @@ import { format } from 'client/common/i18n/helpers';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadWaves, releaseWave, cancelWave } from 'common/reducers/cwmShippingOrder';
 import PageHeader from 'client/components/PageHeader';
+import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -171,8 +172,6 @@ export default class WaveList extends React.Component {
     this.handleReload(null, 1, filters);
   }
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     this.handleReload(value, 1);
   }
   handleDeselectRows = () => {
@@ -180,7 +179,7 @@ export default class WaveList extends React.Component {
   }
   render() {
     const {
-      whses, defaultWhse, filters, loading, owners,
+      filters, loading, owners,
     } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadWaves(params),
@@ -230,22 +229,12 @@ export default class WaveList extends React.Component {
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                    whses.map(warehouse =>
-                    (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingWave')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('shippingWave'),
+          ]}
+        >
           <PageHeader.Nav>
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>

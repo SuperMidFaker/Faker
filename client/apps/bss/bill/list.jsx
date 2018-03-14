@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, DatePicker, Icon, Layout, Menu, Select } from 'antd';
+import { Button, DatePicker, Icon, Layout, Menu, Select } from 'antd';
+import ButtonToggle from 'client/components/ButtonToggle';
 import DataTable from 'client/components/DataTable';
+import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -33,7 +35,7 @@ const { RangePicker } = DatePicker;
   depth: 2,
   moduleName: 'bss',
 })
-export default class VendorBillsList extends React.Component {
+export default class CustomerBillsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -43,6 +45,7 @@ export default class VendorBillsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    extraVisible: false,
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -112,10 +115,11 @@ export default class VendorBillsList extends React.Component {
     dataIndex: 'written_by',
     width: 80,
   }, {
-    title: '操作',
+    title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
-    width: 150,
+    align: 'right',
     fixed: 'right',
+    width: 120,
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
@@ -149,11 +153,14 @@ export default class VendorBillsList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/receivable/bill/${row.order_rel_no}`;
+    const link = `/bss/bill/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
+  }
+  toggleExtra = () => {
+    this.setState({ extraVisible: !this.state.extraVisible });
   }
   render() {
     const { loading } = this.props;
@@ -168,6 +175,17 @@ export default class VendorBillsList extends React.Component {
       age: 42,
       address: '西湖区湖底公园1号',
     }];
+    const menus = [
+      {
+        key: 'buyerBill',
+        menu: this.msg('buyerBill'),
+        default: true,
+      },
+      {
+        key: 'sellerBill',
+        menu: this.msg('sellerBill'),
+      },
+    ];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -200,7 +218,7 @@ export default class VendorBillsList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
         placeholder="结算对象"
@@ -222,24 +240,32 @@ export default class VendorBillsList extends React.Component {
     );
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('vendorBills')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('bill')} menus={menus} onTabChange={this.handleTabChange}>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreate}>
+              {this.msg('新建账单')}
+            </Button>
+            <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
+          </PageHeader.Actions>
         </PageHeader>
         <Layout>
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.msg('未入账单的费用')}
+              </Menu.Item>
               <Menu.ItemGroup key="billsStatus" title={this.msg('billsStatus')}>
+                <Menu.Item key="draft">
+                  <Icon type="inbox" /> {this.msg('statusDraft')}
+                </Menu.Item>
                 <Menu.Item key="pending">
-                  <Icon type="loading" /> {this.msg('statusPending')}
+                  <Icon type="swap" /> {this.msg('statusPending')}
                 </Menu.Item>
                 <Menu.Item key="accepted">
                   <Icon type="check-square-o" /> {this.msg('statusAccepted')}
+                </Menu.Item>
+                <Menu.Item key="offline">
+                  <Icon type="disconnect" /> {this.msg('statusOffline')}
                 </Menu.Item>
               </Menu.ItemGroup>
             </Menu>
@@ -257,6 +283,29 @@ export default class VendorBillsList extends React.Component {
               total={totCol}
             />
           </Content>
+          <DockPanel
+            title={this.gmsg('extraMenu')}
+            mode="inner"
+            size="small"
+            visible={this.state.extraVisible}
+            onClose={this.toggleExtra}
+          >
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleExtraMenuClick}>
+              <Menu.ItemGroup key="views" title={this.gmsg('views')}>
+                <Menu.Item key="table">
+                  <Icon type="table" /> {this.gmsg('tableView')}
+                </Menu.Item>
+                <Menu.Item key="board" disabled>
+                  <Icon type="layout" /> {this.gmsg('boardView')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
+                <Menu.Item key="rules">
+                  <Icon type="tool" /> {this.msg('billTemplates')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
+          </DockPanel>
         </Layout>
       </Layout>
     );

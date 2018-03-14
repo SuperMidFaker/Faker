@@ -97,14 +97,15 @@ export default class Fees extends Component {
   render() {
     const { currentTab } = this.state;
     const { feeGroups } = this.props;
-    const tabList = [
+    const menus = [
       {
         key: 'feeItems',
-        tab: this.msg('feeItems'),
+        menu: this.msg('feeItems'),
+        default: true,
       },
       {
         key: 'feeGroups',
-        tab: this.msg('feeGroups'),
+        menu: this.msg('feeGroups'),
       },
     ];
     const moreMenu = (
@@ -128,7 +129,7 @@ export default class Fees extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
+          <PageHeader menus={menus} onTabChange={this.handleTabChange}>
             <PageHeader.Actions>
               {currentTab === 'feeItems' && <Button type="primary" icon="plus" onClick={this.handleCreateFeeItem}>
                 {this.msg('newFeeElement')}

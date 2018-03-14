@@ -137,15 +137,7 @@ export default class ClientsList extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {customer.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-          </PageHeader>
+          <PageHeader title={customer.name} />
           <Content className="page-content">
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.props.tabkey} onChange={this.handleTabChange}>

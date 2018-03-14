@@ -196,14 +196,7 @@ export default class BrokerList extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('brokers')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('brokers')}>
             <PageHeader.Actions>
               <PrivilegeCover module="clearance" feature="resources" action="create">
                 <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">{this.msg('addBroker')}</Button>

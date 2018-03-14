@@ -5,8 +5,9 @@ import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tabs, Breadcrumb, Form, Layout, Steps, Button, Card, Radio, Tag, notification, message } from 'antd';
+import { Alert, Badge, Tabs, Layout, Steps, Button, Radio, Tag, notification, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -513,10 +514,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status =>
       status.value === relSo.outbound_status)[0];
-    const tabList = [];
-    relRegs.forEach((r, index) => tabList.push({
-      tab: r.ftz_rel_no || r.pre_entry_seq_no,
-      key: index,
+    const menus = [];
+    relRegs.forEach((r, index) => menus.push({
+      menu: r.ftz_rel_no || r.pre_entry_seq_no,
+      key: String(index),
     }));
     const stat = filingDetails.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
@@ -540,21 +541,16 @@ export default class SHFTZNormalRelRegDetail extends Component {
       }
     }
     return (
-      <div>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.soNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            relType && relType.ftztext,
+            this.props.params.soNo,
+          ]}
+          menus={menus}
+          onTabChange={this.handleTabChange}
+        >
           <PageHeader.Nav>
             {relSo.outbound_no &&
             <Button icon="link" onClick={this.handleOutboundPage}>
@@ -577,84 +573,82 @@ export default class SHFTZNormalRelRegDetail extends Component {
             <Button type="primary" ghost={sent} icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-          <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-              <DescriptionList col={4}>
-                <Description term="出区提货单号">{reg.ftz_rel_no}</Description>
-                <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
-                <Description term="提货单位">
-                  <EditableCell
-                    value={reg.receiver_name}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'receiver_name', value)}
-                  />
-                </Description>
-                <Description term="运输单位">
-                  <EditableCell
-                    value={reg.carrier_name}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'carrier_name', value)}
-                  />
-                </Description>
-                <Description term="报关单号">
-                  <EditableCell
-                    value={reg.cus_decl_no}
-                    onSave={value => this.handleNormalCustomDecl(reg.pre_entry_seq_no, value)}
-                    editable={regStatus === CWM_SHFTZ_APIREG_STATUS.completed}
-                  />
-                </Description>
-                <Description term="发票号">
-                  <EditableCell
-                    value={reg.invoice_no}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
-                  />
-                </Description>
-                <Description term="封志">
-                  <EditableCell
-                    value={reg.seal_no}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
-                  />
-                </Description>
-                <Description term="唛头">
-                  <EditableCell
-                    value={reg.marks}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
-                  />
-                </Description>
-                <Description term="出口日期">
-                  <EditableCell
-                    type="date"
-                    value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="报关日期">
-                  <EditableCell
-                    type="date"
-                    value={reg.cus_decl_date && moment(reg.cus_decl_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="预计出区日期">
-                  <EditableCell
-                    type="date"
-                    value={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="备案日期">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY-MM-DD')}</Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={this.getStep(regStatus)}>
-                  <Step title="待备案" />
-                  <Step title="已发送" />
-                  <Step title="已备案" />
-                  <Step title="已委托" />
-                  <Step title="已清关" />
-                  <Step title="已出区" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={4}>
+              <Description term="出区提货单号">{reg.ftz_rel_no}</Description>
+              <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
+              <Description term="提货单位">
+                <EditableCell
+                  value={reg.receiver_name}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'receiver_name', value)}
+                />
+              </Description>
+              <Description term="运输单位">
+                <EditableCell
+                  value={reg.carrier_name}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'carrier_name', value)}
+                />
+              </Description>
+              <Description term="报关单号">
+                <EditableCell
+                  value={reg.cus_decl_no}
+                  onSave={value => this.handleNormalCustomDecl(reg.pre_entry_seq_no, value)}
+                  editable={regStatus === CWM_SHFTZ_APIREG_STATUS.completed}
+                />
+              </Description>
+              <Description term="发票号">
+                <EditableCell
+                  value={reg.invoice_no}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
+                />
+              </Description>
+              <Description term="封志">
+                <EditableCell
+                  value={reg.seal_no}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
+                />
+              </Description>
+              <Description term="唛头">
+                <EditableCell
+                  value={reg.marks}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
+                />
+              </Description>
+              <Description term="出口日期">
+                <EditableCell
+                  type="date"
+                  value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
+                />
+              </Description>
+              <Description term="报关日期">
+                <EditableCell
+                  type="date"
+                  value={reg.cus_decl_date && moment(reg.cus_decl_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_date', new Date(value))}
+                />
+              </Description>
+              <Description term="预计出区日期">
+                <EditableCell
+                  type="date"
+                  value={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
+                />
+              </Description>
+              <Description term="备案日期">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY-MM-DD')}</Description>
+            </DescriptionList>
+            <Steps progressDot current={this.getStep(regStatus)} className="progress-tracker">
+              <Step title="待备案" />
+              <Step title="已发送" />
+              <Step title="已备案" />
+              <Step title="已委托" />
+              <Step title="已清关" />
+              <Step title="已出区" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
+            {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="regd">
                 <TabPane tab="备案明细" key="regd">
@@ -706,9 +700,9 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 </TabPane>
               </Tabs>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

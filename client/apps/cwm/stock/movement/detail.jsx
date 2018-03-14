@@ -2,23 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Icon, Form, Layout, Tabs, Steps, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmMovement';
+import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import MovementDetailsPane from './tabpane/movementDetailsPane';
-import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmMovement';
 import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Step = Steps.Step;
-const TabPane = Tabs.TabPane;
+const { Step } = Steps;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -40,8 +40,6 @@ const TabPane = Tabs.TabPane;
 export default class MovementDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
     updateMovingMode: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -81,23 +79,20 @@ export default class MovementDetail extends Component {
     const scanLabel = this.state.mode === 'scan' ? ' 扫码模式' : '';
     const manualLabel = this.state.mode === 'manual' ? ' 手动模式' : '';
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {defaultWhse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('movement')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.movementNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            defaultWhse.name,
+            this.msg('movement'),
+            this.props.params.movementNo,
+          ]}
+        >
           <PageHeader.Actions>
-            <RadioGroup value={this.state.mode} onChange={this.handleMovingModeChange} disabled={movingStep === 1}>
+            <RadioGroup
+              value={this.state.mode}
+              onChange={this.handleMovingModeChange}
+              disabled={movingStep === 1}
+            >
               <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
               <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>
@@ -132,12 +127,17 @@ export default class MovementDetail extends Component {
           <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
-                <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} movementHead={movementHead} fullscreen={this.state.fullscreen} />
+                <MovementDetailsPane
+                  movementNo={this.props.params.movementNo}
+                  mode={this.state.mode}
+                  movementHead={movementHead}
+                  fullscreen={this.state.fullscreen}
+                />
               </TabPane>
             </Tabs>
           </MagicCard>
         </Content>
-      </div>
+      </Layout>
     );
   }
 }

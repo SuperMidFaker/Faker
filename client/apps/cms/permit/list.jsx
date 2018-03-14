@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Icon, Layout, Radio, Tag } from 'antd';
+import { Button, Icon, Layout, Radio, Tag } from 'antd';
 
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
@@ -204,14 +204,7 @@ export default class PermitList extends Component {
     });
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('permit')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('permit')}>
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusFilter}>
               <RadioButton value="valid">{this.msg('filterValid')}</RadioButton>
