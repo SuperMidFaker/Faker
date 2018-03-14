@@ -333,7 +333,7 @@ export function loadCurrencies() {
         actionTypes.CURRENCY_LOAD_SUCCEED,
         actionTypes.CURRENCY_LOAD_FAIL,
       ],
-      endpoint: 'v1/cms/expense/currencies',
+      endpoint: 'v1/bss/exchange/currencies',
       method: 'get',
     },
   };

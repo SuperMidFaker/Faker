@@ -78,17 +78,9 @@ export default class ExpenseDetailTabPane extends Component {
     align: 'right',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
-        const exchangeRate = this.state.editItem.exchange_rate;
-        const origAmount = this.state.editItem.orig_amount;
-        if (exchangeRate) {
-          return origAmount * exchangeRate;
-        }
-        return origAmount;
+        return this.state.editItem.base_amount;
       }
-      if (record.exchange_rate) {
-        return record.orig_amount * record.exchange_rate;
-      }
-      return record.orig_amount;
+      return o;
     },
   }, {
     title: '外币金额',
@@ -119,14 +111,14 @@ export default class ExpenseDetailTabPane extends Component {
             onSelect={value => this.handleColumnChange(value, 'currency')}
           >
             {this.props.currencies.map(currency =>
-                  (<Option key={currency.curr_code} value={currency.curr_code}>
-                    {currency.curr_name}
+                  (<Option key={currency.currency} value={currency.currency}>
+                    {currency.name}
                   </Option>))}
           </Select>
         );
       }
-      return this.props.currencies.find(curr => curr.curr_code === o) &&
-        this.props.currencies.find(curr => curr.curr_code === o).curr_name;
+      return this.props.currencies.find(curr => curr.currency === o) &&
+        this.props.currencies.find(curr => curr.currency === o).name;
     },
   }, {
     title: '汇率',
@@ -208,9 +200,24 @@ export default class ExpenseDetailTabPane extends Component {
       editItem: { ...row },
     });
   }
-  handleColumnChange = (value, filed) => {
+  handleColumnChange = (value, field) => {
     const editOne = { ...this.state.editItem };
-    editOne[filed] = value;
+    if (field === 'orig_amount') {
+      if (editOne.exchange_rate) {
+        editOne.base_amount = editOne.exchange_rate * value;
+      }
+    } else if (field === 'exchange_rate') {
+      if (editOne.exchange_rate) {
+        editOne.base_amount = editOne.orig_amount * value;
+      }
+    }
+    if (field === 'currency') {
+      const { currencies } = this.props;
+      const currency = currencies.find(curr => curr.currency === value);
+      editOne.exchange_rate = currency.exchange_rate;
+      editOne.base_amount = editOne.orig_amount * currency.exchange_rate;
+    }
+    editOne[field] = value;
     this.setState({
       editItem: editOne,
     });
