@@ -28,6 +28,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SET_ADV_MODAL_VISIBLE', 'SET_ADV_TEMP_MODAL_VISIBLE',
   'ADV_EXP_IMPORT', 'ADV_EXP_IMPORT_SUCCEED', 'ADV_EXP_IMPORT_FAIL',
   'SAVE_IMPT_ADVFEES', 'SAVE_IMPT_ADVFEES_SUCCEED', 'SAVE_IMPT_ADVFEES_FAIL',
+  'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
+  'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
 ]);
 
 const initialState = {
@@ -101,7 +103,10 @@ const initialState = {
     calculateAll: false,
   },
   advImpTempVisible: false,
-  expDetails: [],
+  expDetails: {
+    receives: [],
+    pays: [],
+  },
   bills: {
     totalCount: 0,
     current: 1,
@@ -199,8 +204,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
       */
+    case actionTypes.LOAD_EXPS_DETAILS:
+      return { ...state, expensesLoading: true };
     case actionTypes.LOAD_EXPS_DETAILS_SUCCEED:
-      return { ...state, expDetails: action.result.data };
+      return {
+        ...state, expDetails: action.result.data, expensesLoading: false,
+      };
+    case actionTypes.LOAD_EXPS_DETAILS_FAIL:
+      return { ...state, expensesLoading: false };
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
     case actionTypes.COMPUTE_DELGADVFEES_SUCCEED:
@@ -328,7 +339,7 @@ export function loadCurrencies() {
   };
 }
 
-export function loadExpsDetails(params) {
+export function loadExpsDetails({ delgNo }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -336,10 +347,9 @@ export function loadExpsDetails(params) {
         actionTypes.LOAD_EXPS_DETAILS_SUCCEED,
         actionTypes.LOAD_EXPS_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cms/expense/expenseDetails/load',
+      endpoint: 'v1/cms/billing/expense/fees',
       method: 'get',
-      params,
-      origin: 'mongo',
+      params: { delgNo },
     },
   };
 }
@@ -593,3 +603,33 @@ export function computeDeclAdvanceFee(formData) {
     },
   };
 } */
+
+export function updateFee(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FEE_UPDATE,
+        actionTypes.FEE_UPDATE_SUCCEED,
+        actionTypes.FEE_UPDATE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/fee/update',
+      method: 'post',
+      data: { data },
+    },
+  };
+}
+
+export function deleteFee(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FEE_DELETE,
+        actionTypes.FEE_DELETE_SUCCEED,
+        actionTypes.FEE_DELETE_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/fee/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
