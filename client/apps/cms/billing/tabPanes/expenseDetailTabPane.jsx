@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Input, Select } from 'antd';
+import { Input, Select, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { updateFee, deleteFee } from 'common/reducers/cmsExpense';
+import { updateFee, deleteFee, toggleAddSpeModal, getExpenseDetails } from 'common/reducers/cmsExpense';
 import { FEE_TYPE } from 'common/constants';
+import AddSpeModal from '../modals/addSpeModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Option } = Select;
@@ -16,17 +17,17 @@ const { Option } = Select;
   state => ({
     currencies: state.cmsExpense.currencies,
   }),
-  { updateFee, deleteFee }
+  {
+    updateFee, deleteFee, toggleAddSpeModal, getExpenseDetails,
+  }
 )
 export default class ExpenseDetailTabPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    dataSource: PropTypes.arrayOf(PropTypes.shape({
-      fee_name: PropTypes.string,
-    })),
     fullscreen: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    delgNo: PropTypes.string.isRequired,
+    expenseNo: PropTypes.string.isRequired,
+    allowSpecial: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -36,20 +37,25 @@ export default class ExpenseDetailTabPane extends Component {
     editItem: {},
   }
   /*
-     dataSource异步获取 首个tabPane加载时dataSource为空 走componentWillReceiveProps
+     expenseNo异步获取 首个tabPane加载时expenseNo为空 走componentWillReceiveProps
      切换到其他tabpane时 数据已经获取 走componentWillMount
    * */
   componentWillMount() {
-    this.setState({
-      dataSource: this.props.dataSource,
-    });
+    this.handleReload(this.props.expenseNo);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.dataSource !== this.props.dataSource) {
-      this.setState({
-        dataSource: nextProps.dataSource,
-      });
+    if (nextProps.expenseNo !== this.props.expenseNo) {
+      this.handleReload(nextProps.expenseNo);
     }
+  }
+  handleReload = (expenseNo) => {
+    this.props.getExpenseDetails(expenseNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          dataSource: result.data,
+        });
+      }
+    });
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -243,8 +249,13 @@ export default class ExpenseDetailTabPane extends Component {
   handleDelete = (row) => {
     this.props.deleteFee(row.id);
   }
+  handleAddSpe = () => {
+    this.props.toggleAddSpeModal(true);
+  }
   render() {
-    const { fullscreen, loading } = this.props;
+    const {
+      fullscreen, loading, allowSpecial, expenseNo,
+    } = this.props;
     const { dataSource } = this.state;
     return (
       <DataPane
@@ -254,7 +265,10 @@ export default class ExpenseDetailTabPane extends Component {
         rowKey="id"
         loading={loading}
       >
-        <DataPane.Toolbar />
+        <DataPane.Toolbar>
+          {allowSpecial !== 0 && <Button onClick={this.handleAddSpe}>添加特殊费用</Button>}
+        </DataPane.Toolbar>
+        <AddSpeModal expenseNo={expenseNo} reload={this.handleReload} />
       </DataPane>
     );
   }

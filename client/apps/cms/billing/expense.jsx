@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
-import { loadExpsDetails, loadCurrencies } from 'common/reducers/cmsExpense';
+import { loadExpsTabs, loadCurrencies } from 'common/reducers/cmsExpense';
 import ExpenseDetailTabPane from './tabPanes/expenseDetailTabPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -16,7 +16,7 @@ const { TabPane } = Tabs;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
-  promises.push(dispatch(loadExpsDetails({
+  promises.push(dispatch(loadExpsTabs({
     delgNo: params.delgNo,
   })));
   promises.push(dispatch(loadCurrencies()));
@@ -31,7 +31,7 @@ function fetchData({ dispatch, params }) {
     aspect: state.account.aspect,
     loginId: state.account.loginId,
     username: state.account.username,
-    expDetails: state.cmsExpense.expDetails,
+    expTabs: state.cmsExpense.expTabs,
     expensesLoading: state.cmsExpense.expensesLoading,
     expDetailsReload: state.cmsExpense.expDetailsReload,
   }),
@@ -59,15 +59,15 @@ export default class ExpenseDetail extends Component {
   }
   render() {
     const {
-      params, aspect, expDetails, expensesLoading,
+      params, aspect, expTabs, expensesLoading,
     } = this.props;
     let defaultActiveKey;
     if (aspect !== 0) {
       defaultActiveKey = 'receivable';
-    } else if (expDetails.pays.length === 0) {
+    } else if (expTabs.pays.length === 0) {
       defaultActiveKey = '';
     } else {
-      defaultActiveKey = `payable-${expDetails.pays[0].seller_partner_id}`;
+      defaultActiveKey = `payable-${expTabs.pays[0].seller_partner_id}`;
     }
     return (
       <div>
@@ -79,19 +79,19 @@ export default class ExpenseDetail extends Component {
               <TabPane tab="应收明细" key="receivable" >
                 <ExpenseDetailTabPane
                   fullscreen={this.state.fullscreen}
-                  dataSource={expDetails.receives}
                   loading={expensesLoading}
-                  delgNo={params.delgNo}
+                  expenseNo={expTabs.receive.expense_no}
+                  allowSpecial={expTabs.receive.quote_allow_special}
                 />
               </TabPane>
               }
-              {expDetails.pays.map(pay =>
+              {expTabs.pays.map(pay =>
                 (<TabPane tab={`应付明细${pay.seller_name}`} key={`payable-${pay.seller_partner_id}`} >
                   <ExpenseDetailTabPane
                     fullscreen={this.state.fullscreen}
-                    dataSource={pay.fees}
                     loading={expensesLoading}
-                    delgNo={params.delgNo}
+                    expenseNo={pay.expense_no}
+                    allowSpecial={pay.quote_allow_special}
                   />
                 </TabPane>))}
             </Tabs>

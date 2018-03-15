@@ -320,6 +320,14 @@ const messages = defineMessages({
     id: 'cms.billing.quote.formula.factor',
     defaultMessage: '单价/公式',
   },
+  newSpe: {
+    id: 'cms.billing.spe.new',
+    defaultMessage: '新建特殊费用',
+  },
+  speName: {
+    id: 'cms.billing.spe.name',
+    defaultMessage: '特殊费用名称',
+  },
 });
 
 export default messages;
