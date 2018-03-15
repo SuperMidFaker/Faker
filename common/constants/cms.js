@@ -89,6 +89,7 @@ export const FORMULA_PARAMS = [
 ];
 
 export const BILLING_METHODS = [
+  { key: '$formula', label: '自动计费' },
   { key: 'shipmt_qty', label: '按货运数量' },
   { key: 'decl_qty', label: '按报关单数量' },
   { key: 'decl_sheet_qty', label: '按联单数量' },
