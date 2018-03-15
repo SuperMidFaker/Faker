@@ -81,6 +81,7 @@ export default class ExpenseDetail extends Component {
                   fullscreen={this.state.fullscreen}
                   dataSource={expDetails.receives}
                   loading={expensesLoading}
+                  delgNo={params.delgNo}
                 />
               </TabPane>
               }
@@ -90,6 +91,7 @@ export default class ExpenseDetail extends Component {
                     fullscreen={this.state.fullscreen}
                     dataSource={pay.fees}
                     loading={expensesLoading}
+                    delgNo={params.delgNo}
                   />
                 </TabPane>))}
             </Tabs>

@@ -26,6 +26,7 @@ export default class ExpenseDetailTabPane extends Component {
     })),
     fullscreen: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
+    delgNo: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -224,10 +225,11 @@ export default class ExpenseDetailTabPane extends Component {
   }
   handleOk = () => {
     const item = this.state.editItem;
-    this.props.updateFee(item);
     const dataSource = [...this.state.dataSource];
     const index = dataSource.findIndex(data => data.id === item.id);
+    const delta = dataSource[index].base_amount - item.base_amount;
     dataSource[index] = item;
+    this.props.updateFee(item, delta, item.fee_type, this.props.delgNo);
     this.setState({
       editItem: {},
       dataSource,
