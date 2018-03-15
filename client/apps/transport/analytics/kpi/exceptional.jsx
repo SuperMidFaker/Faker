@@ -18,9 +18,10 @@ export default class Exceptional extends React.Component {
   }
   componentDidMount() {
     this.initializeCharts(this.props);
-    window.$(window).resize(() => {
-      this.initializeCharts(this.props);
-    });
+    window.addEventListener('resize', this.initializeCharts(this.props));
+    // window.$(window).resize(() => {
+    //  this.initializeCharts(this.props);
+    // });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.loaded) {
@@ -28,8 +29,10 @@ export default class Exceptional extends React.Component {
     }
   }
   componentWillUnmount() {
-    window.$(window).unbind('resize');
+    // window.$(window).unbind('resize');
+    window.removeEventListener('resize', this.handleResize());
   }
+  handleResize = () => {}
   initializeCharts = (props) => {
     const { exceptionTypes, range, exceptionalShipmentCounts } = props.kpi;
     const barOption = {

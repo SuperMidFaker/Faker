@@ -39,7 +39,11 @@ export default class DockPanel extends PureComponent {
     overlayVisible: false,
   }
   componentWillUnmount() {
-    window.$(document).unbind('click');
+    // window.$(document).unbind('click');
+    window.document.removeEventListener('click', this.handleClick, false);
+  }
+  handleClick = () => {
+
   }
   handleClose = (e) => {
     (this.props.onClose || noop)(e);

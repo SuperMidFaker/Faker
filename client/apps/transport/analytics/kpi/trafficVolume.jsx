@@ -18,9 +18,7 @@ export default class TrafficVolume extends React.Component {
   }
   componentDidMount() {
     this.initializeCharts(this.props);
-    window.$(window).resize(() => {
-      this.initializeCharts(this.props);
-    });
+    window.addEventListener('resize', this.initializeCharts(this.props));
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.loaded) {
@@ -28,8 +26,9 @@ export default class TrafficVolume extends React.Component {
     }
   }
   componentWillUnmount() {
-    window.$(window).unbind('resize');
+    window.removeEventListener('resize', this.handleResize());
   }
+  handleResize = () => {}
   initializeCharts = (props) => {
     const { transitModes, range, shipmentCounts } = props.kpi;
     const barOption = {

@@ -46,7 +46,6 @@ export default class Navigation extends PureComponent {
       app_name: PropTypes.string,
       url: PropTypes.string,
     })),
-    showLogo: PropTypes.bool,
   }
   state = {
     selectedKeys: [],
@@ -116,28 +115,18 @@ export default class Navigation extends PureComponent {
     const win = window.open(url, '_blank');
     win.focus();
   }
-  render() {
+  renderNavMenu() {
+    const { appMenus } = this.props;
     const links = this.props.links.filter(l => !l.invisible);
-    const { childContent, showLogo, appMenus } = this.props;
-    return (
-      <Layout className="ant-layout-wrapper">
-        <Sider
-          collapsible
-          collapsed={this.state.collapsed}
-          onCollapse={this.onCollapse}
-          width={176}
-          className="left-sider"
-        >
-          {showLogo ? <div className="layout-logo" /> : ''}
-          <Menu
-            mode="inline"
-            theme="dark"
-            onSelect={this.handleMenuSelect}
-            selectedKeys={this.state.selectedKeys}
-            onClick={this.handleClick}
-          >
-            {
-              links.map((link) => {
+    return (<Menu
+      mode="inline"
+      theme="dark"
+      onSelect={this.handleMenuSelect}
+      selectedKeys={this.state.selectedKeys}
+      onClick={this.handleClick}
+    >
+      {
+        links.map((link) => {
                 const bottomMenuItem = link.bottom ? 'bottom-menu-item' : '';
                 if (link.single) {
                   return (
@@ -204,7 +193,7 @@ export default class Navigation extends PureComponent {
                   );
               })
             }
-            {
+      {
               appMenus.map((app) => {
                 if (app.single) {
                   return (
@@ -234,9 +223,21 @@ export default class Navigation extends PureComponent {
                   </SubMenu>
                 );
               })
-
             }
-          </Menu>
+    </Menu>);
+  }
+  render() {
+    const { childContent } = this.props;
+    return (
+      <Layout className="ant-layout-wrapper">
+        <Sider
+          collapsible
+          collapsed={this.state.collapsed}
+          onCollapse={this.onCollapse}
+          width={176}
+          className="left-sider"
+        >
+          {this.renderNavMenu()}
         </Sider>
         <Layout>
           {childContent}

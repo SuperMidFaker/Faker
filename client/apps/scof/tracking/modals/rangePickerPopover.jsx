@@ -20,14 +20,17 @@ export default class RangePickerPopover extends Component {
   }
 
   componentDidMount() {
-    window.$(document).click((event) => {
-      const pickupDeliverClicked = window.$(event.target).closest('.picker').length > 0;
-      const antPopoverClicked = window.$(event.target).closest('.ant-popover').length > 0;
-      const calenderClicked = window.$(event.target).closest('.ant-calendar-picker-container').length > 0;
-      if (!pickupDeliverClicked && !calenderClicked && !antPopoverClicked && this.state.visible) {
-        this.handleClose();
-      }
-    });
+    window.document.addEventListener('click', this.handleClick);
+  }
+  handleClick = () => {
+    /*
+    const pickupDeliverClicked = window.$(event.target).closest('.picker').length > 0;
+    const antPopoverClicked = window.$(event.target).closest('.ant-popover').length > 0;
+    const calenderClicked = window.$(event.target).closest('.ant-calendar-picker-container').length > 0;
+    if (!pickupDeliverClicked && !calenderClicked && !antPopoverClicked && this.state.visible) {
+      this.handleClose();
+    }
+    */
   }
 
   handleClose = () => {

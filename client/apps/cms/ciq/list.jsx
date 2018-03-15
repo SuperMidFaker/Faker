@@ -322,7 +322,7 @@ export default class CiqDeclList extends Component {
         defaultValue={[listFilter.startTime, listFilter.endTime]}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-        style={{ width: 256 }}
+        style={{ width: 216 }}
       />
     </span>);
     return (

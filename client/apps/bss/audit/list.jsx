@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, DatePicker, Divider, Icon, Layout, Menu, Select } from 'antd';
+import { Button, DatePicker, Divider, Icon, Input, Layout, Menu, Select, Switch } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import Drawer from 'client/components/Drawer';
@@ -228,16 +228,28 @@ export default class AuditList extends React.Component {
           key: 'board',
           icon: 'layout',
           title: this.gmsg('boardView'),
+          disabled: true,
         },
         {
           key: 'rules',
           icon: 'tool',
-          title: this.gmsg('auditRuls'),
+          title: this.msg('审核规则'),
           children: [
             {
-              key: 'nested',
-              icon: 'bars',
-              title: this.gmsg('bars'),
+              key: 'autoAudit',
+              icon: 'rocket',
+              title: this.msg('启用自动审核'),
+              extra: <Switch />,
+            },
+            {
+              key: 'profitLimit',
+              title: this.msg('最低利润金额'),
+              extra: <Input />,
+            },
+            {
+              key: 'profitRateLimit',
+              title: this.msg('最低毛利率'),
+              extra: <Input />,
             },
           ],
         },
@@ -261,9 +273,6 @@ export default class AuditList extends React.Component {
               <Menu.ItemGroup key="status" title={this.gmsg('status')}>
                 <Menu.Item key="submitted">
                   <Icon type="upload" /> {this.msg('statusSubmitted')}
-                </Menu.Item>
-                <Menu.Item key="warning">
-                  <Icon type="warning" /> {this.msg('statusWarning')}
                 </Menu.Item>
                 <Menu.Item key="confirmed">
                   <Icon type="check-square-o" /> {this.msg('statusConfirmed')}

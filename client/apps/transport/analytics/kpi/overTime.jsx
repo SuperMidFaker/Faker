@@ -18,9 +18,7 @@ export default class OverTime extends React.Component {
   }
   componentDidMount() {
     this.initializeCharts(this.props);
-    window.$(window).resize(() => {
-      this.initializeCharts(this.props);
-    });
+    window.addEventListener('resize', this.initializeCharts(this.props));
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.loaded) {
@@ -28,8 +26,9 @@ export default class OverTime extends React.Component {
     }
   }
   componentWillUnmount() {
-    window.$(window).unbind('resize');
+    window.removeEventListener('resize', this.handleResize());
   }
+  handleResize = () => {}
   initializeCharts = (props) => {
     const {
       transitModes, range, shipmentCounts, punctualShipmentCounts,
@@ -86,7 +85,7 @@ export default class OverTime extends React.Component {
             formatter: '{c} %',
           },
         },
-        data: shipmentCounts[index].map((item1, j) => item1 === 0 ? 0 : Number(((item1 - punctualShipmentCounts[index][j]) / item1 * 100).toFixed(2))),
+        data: shipmentCounts[index].map((item1, j) => (item1 === 0 ? 0 : Number(((item1 - punctualShipmentCounts[index][j]) / item1 * 100).toFixed(2)))),
       })),
     };
     const transitModesShipmentCount = shipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));

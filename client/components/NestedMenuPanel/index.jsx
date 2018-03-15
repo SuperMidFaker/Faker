@@ -48,12 +48,13 @@ export default class NestedNavPanel extends PureComponent {
   };
 
   renderItem = (item) => {
-    // const onClick = item.children && (() => this.stackPush(item.children));
-    const currentStack = this.state.stack[this.state.stack.length - 1];
+    const { stack } = this.state;
+    const currentStack = stack[stack.length - 1];
     const visibleNode = currentStack.find(fl => fl.key === item.key);
     return visibleNode ?
-      (<Menu.Item key={item.key}>
+      (<Menu.Item key={item.key} disabled={item.disabled}>
         <a onClick={() => this.stackPush(item.children)}><Icon type={item.icon} /> {item.title}</a>
+        {item.extra && <span>{item.extra}</span>}
       </Menu.Item>) : null;
   };
 
@@ -61,18 +62,21 @@ export default class NestedNavPanel extends PureComponent {
     this.state.stack.map(page => page.map(item => this.renderItem(item)));
 
   render() {
+    const {
+      visible, children, onClose, onMenuClick,
+    } = this.props;
     return (
       <DockPanel
         title={this.renderHeader()}
         mode="inner"
         size="small"
-        visible={this.props.visible}
-        onClose={this.props.onClose}
+        visible={visible}
+        onClose={onClose}
       >
-        <Menu selectable={false} onClick={this.props.onMenuClick}>
+        <Menu selectable={false} onClick={onMenuClick}>
           {this.renderStack()}
         </Menu>
-        {this.props.children}
+        {children}
       </DockPanel>
     );
   }
