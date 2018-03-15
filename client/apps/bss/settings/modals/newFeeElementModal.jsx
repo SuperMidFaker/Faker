@@ -78,7 +78,7 @@ export default class NewFeeElementModal extends React.Component {
             {getFieldDecorator('fee_type', {
               rules: [{ required: true }],
             })(<Select>
-              {FEE_TYPE.map(type =>
+              {FEE_TYPE.filter(ft => ft.key !== 'SP').map(type =>
                 <Option key={type.key} value={type.key}>{`${type.key}|${type.text}`}</Option>)}
             </Select>)}
           </FormItem>

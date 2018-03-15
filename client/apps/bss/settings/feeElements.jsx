@@ -9,6 +9,7 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
 import { loadFeeElements, alterFeeElement, deleteFeeElement, toggleNewFeeElementModal } from 'common/reducers/bssFeeSettings';
+import { FEE_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Option } = Select;
@@ -56,6 +57,10 @@ export default class FeeElements extends Component {
     title: '类型',
     dataIndex: 'fee_type',
     width: 150,
+    render: (ft) => {
+      const type = FEE_TYPE.filter(ftype => ftype.key === ft)[0];
+      return type && type.text;
+    },
   }, {
     title: '所属分组',
     dataIndex: 'fee_group',

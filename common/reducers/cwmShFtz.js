@@ -408,7 +408,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHECK_ENRSTU_SUCCEED:
       return {
         ...state,
-        entry_asn: { ...state.entry_asn, reg_status: action.result.data.status },
+        entry_asn: { ...state.entry_asn, ...action.result.data },
         submitting: false,
       };
     case actionTypes.CANCEL_RER_SUCCEED:
@@ -827,7 +827,7 @@ export function queryEntryRegInfos(asnNo, preEntrySeqNo, whseCode, ftzWhseCode) 
   };
 }
 
-export function checkEntryRegStatus(preEntrySeqNo, status) {
+export function putCustomsRegFields(preEntrySeqNo, fields) {
   return {
     [CLIENT_API]: {
       types: [
@@ -835,9 +835,9 @@ export function checkEntryRegStatus(preEntrySeqNo, status) {
         actionTypes.CHECK_ENRSTU_SUCCEED,
         actionTypes.CHECK_ENRSTU_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/entry/reg/put/status',
+      endpoint: 'v1/cwm/shftz/entry/reg/put/fields',
       method: 'post',
-      data: { preEntrySeqNo, status },
+      data: { preEntrySeqNo, fields },
     },
   };
 }

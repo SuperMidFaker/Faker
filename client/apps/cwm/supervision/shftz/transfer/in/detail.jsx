@@ -15,7 +15,7 @@ import DescriptionList from 'client/components/DescriptionList';
 import EditableCell from 'client/components/EditableCell';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, putCustomsRegFields } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -57,7 +57,7 @@ function fetchData({ dispatch, params }) {
     submitting: state.cwmShFtz.submitting,
   }),
   {
-    loadEntryDetails, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus,
+    loadEntryDetails, updateEntryReg, pairEntryRegProducts, putCustomsRegFields,
   }
 )
 @connectNav({
@@ -99,6 +99,7 @@ export default class SHFTZTransferInDetail extends Component {
     ).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
+          // todo 对比视图 数据保存
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
             `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
           if (remainFtzMsg) {
@@ -231,7 +232,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   handlePairingConfirmed = () => {
     const { preFtzEntNo } = this.props.params;
-    this.props.checkEntryRegStatus(preFtzEntNo, CWM_SHFTZ_APIREG_STATUS.completed)
+    this.props.putCustomsRegFields(preFtzEntNo, { status: CWM_SHFTZ_APIREG_STATUS.completed })
       .then((result) => {
         if (result.error) {
           notification.error({

@@ -68,6 +68,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, elLoading: false, feeElementlist: action.result.data };
     case actionTypes.LOAD_ALL_FEE_GROUPS_SUCCEED:
       return { ...state, allFeeGroups: action.result.data };
+    case actionTypes.ALTER_FEE_GROUP_NAME_SUCCEED:
+      return {
+        ...state,
+        feeGroupslist: {
+          ...state.feeGroupslist,
+          data: state.feeGroupslist.data.map((fg) => {
+            if (fg.id === action.data.id) {
+              return { ...fg, fee_group_name: action.data.groupName };
+            }
+            return fg;
+          }),
+        },
+      };
     case actionTypes.LOAD_PARENT_FEE_ELEMENTS_SUCCEED:
       return { ...state, parentFeeElements: action.result.data };
     case actionTypes.VISIBLE_NEW_ELEMENT_MODAL:
