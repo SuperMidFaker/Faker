@@ -85,7 +85,7 @@ export default class ExpenseDetail extends Component {
               </TabPane>
               }
               {delgExpenses.pays.map(pay =>
-                (<TabPane tab={`应付明细${pay.seller_name}`} key={`payable-${pay.seller_partner_id}`} >
+                (<TabPane tab={`应付明细-${pay.seller_name}`} key={`payable-${pay.seller_partner_id}`} >
                   <ExpenseDetailTabPane
                     fullscreen={this.state.fullscreen}
                     loading={expensesLoading}

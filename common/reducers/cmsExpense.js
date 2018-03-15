@@ -627,7 +627,7 @@ export function computeDeclAdvanceFee(formData) {
   };
 } */
 
-export function updateFee(data, delta, feeType, delgNo) {
+export function updateFee(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -638,7 +638,7 @@ export function updateFee(data, delta, feeType, delgNo) {
       endpoint: 'v1/cms/expense/fee/update',
       method: 'post',
       data: {
-        data, delta, feeType, delgNo,
+        data,
       },
     },
   };
@@ -666,7 +666,7 @@ export function toggleAddSpeModal(visible) {
   };
 }
 
-export function addSpe(data, expenseNo) {
+export function Special(data, expenseNo) {
   return {
     [CLIENT_API]: {
       types: [

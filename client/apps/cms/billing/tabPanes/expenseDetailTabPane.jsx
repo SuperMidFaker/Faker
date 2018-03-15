@@ -237,7 +237,8 @@ export default class ExpenseDetailTabPane extends Component {
     const index = dataSource.findIndex(data => data.id === item.id);
     const delta = dataSource[index].base_amount - item.base_amount;
     dataSource[index] = item;
-    this.props.updateFee(item, delta, item.fee_type, this.props.delgNo);
+    item.delta = delta;
+    this.props.updateFee(item);
     this.setState({
       editItem: {},
       dataSource,
@@ -250,6 +251,10 @@ export default class ExpenseDetailTabPane extends Component {
   }
   handleDelete = (row) => {
     this.props.deleteFee(row.id);
+    const dataSource = [...this.state.dataSource];
+    const index = dataSource.findIndex(data => data.id === row.id);
+    dataSource.splice(index, 1);
+    this.setState({ dataSource });
   }
   handleAddSpe = () => {
     this.props.toggleAddSpeModal(true);
