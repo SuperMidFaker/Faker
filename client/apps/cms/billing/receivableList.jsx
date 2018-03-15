@@ -302,6 +302,12 @@ export default class ExpenseList extends Component {
       }
     });
   }
+  expensesUploaded = () => {
+    this.handleExpensesLoad(1);
+    this.setState({
+      importPanelVisible: false,
+    });
+  }
   render() {
     const {
       expensesList, partners, form: { getFieldDecorator }, expensesLoading,
@@ -408,7 +414,7 @@ export default class ExpenseList extends Component {
             endpoint={`${API_ROOTS.default}v1/cms/billing/expense/import`}
             formData={{ mode: 'receivable' }}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
-            onUploaded={this.invoicesUploaded}
+            onUploaded={this.expensesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
             <FormItem>
