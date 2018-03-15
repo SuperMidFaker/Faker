@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -66,6 +66,8 @@ function fetchData({ state, dispatch }) {
     togglePanelVisible,
     setUploadRecordsReload,
     loadExpenses,
+    confirmExpenses,
+    rejectExpenses,
   }
 )
 @connectNav({
@@ -227,6 +229,7 @@ export default class ExpenseList extends Component {
   })
 
   handleFilterMenuClick = (ev) => {
+    this.handleDeselectRows();
     const filter = { ...this.props.listFilter, status: ev.key };
     this.handleExpensesLoad('', filter);
   }
@@ -282,10 +285,47 @@ export default class ExpenseList extends Component {
     window.open(`${API_ROOTS.default}v1/cms/billing/expenses/export/${createFilename('delegation_expenses')}.xlsx?params=${
       JSON.stringify(params)}`);
   }
+  handleBatchConfirm = () => {
+    const expenseNos = this.state.selectedRowKeys;
+    this.props.confirmExpenses({
+      expNos: expenseNos,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleDeselectRows();
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
+  handleAllConfirm = () => {
+    this.props.confirmExpenses({
+      expNos: null,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
+  handleBatchReject = () => {
+    const expenseNos = this.state.selectedRowKeys;
+    this.props.rejectExpenses({
+      expenseNos,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleDeselectRows();
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
   showImportLogs = (ev) => {
     if (ev.key === 'logs') {
       this.props.togglePanelVisible(true);
     }
+  }
+  expensesUploaded = () => {
+    this.handleExpensesLoad(1);
+    this.setState({
+      importPanelVisible: false,
+    });
   }
   render() {
     const {
@@ -342,7 +382,7 @@ export default class ExpenseList extends Component {
               confirm={this.gmsg('confirmOp')}
               onConfirm={this.handleAllConfirm}
               label={this.msg('confirmAll')}
-              disabled={status !== 'confirmed'}
+              disabled={status !== 'submitted'}
             />
           </PageHeader.Actions>
         </PageHeader>
@@ -382,7 +422,7 @@ export default class ExpenseList extends Component {
             endpoint={`${API_ROOTS.default}v1/cms/billing/expense/import`}
             formData={{ mode: 'payable' }}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
-            onUploaded={this.invoicesUploaded}
+            onUploaded={this.expensesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
             <FormItem>

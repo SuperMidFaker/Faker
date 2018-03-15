@@ -89,6 +89,7 @@ export const FORMULA_PARAMS = [
 ];
 
 export const BILLING_METHODS = [
+  { key: '$formula', label: '自动计费' },
   { key: 'shipmt_qty', label: '按货运数量' },
   { key: 'decl_qty', label: '按报关单数量' },
   { key: 'decl_sheet_qty', label: '按联单数量' },
@@ -114,6 +115,13 @@ export const BILLING_METHOD = [
   { key: '$manual', value: '$manual', label: '手动计费' },
   { key: '$nonsettle', value: '$nonsettle', label: '计费不结算' },
 ];
+
+export const CMS_EXPENSE_STATUS = { // '1计费中 2 已计费未提交 3 已提交 4 已确认'
+  billing: 1,
+  pending: 2,
+  submitted: 3,
+  confirmed: 4,
+};
 
 export const CERTS = [
   { value: 'jdz', text: '机电证' },

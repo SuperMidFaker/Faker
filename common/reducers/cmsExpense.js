@@ -5,6 +5,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_PANE_LOAD', 'EXP_PANE_LOAD_SUCCEED', 'EXP_PANE_LOAD_FAIL',
   'DECL_EXPS_LOAD', 'DECL_EXPS_LOAD_SUCCEED', 'DECL_EXPS_LOAD_FAIL',
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
+  'SUBMIT_EXPENSES', 'SUBMIT_EXPENSES_SUCCEED', 'SUBMIT_EXPENSES_FAIL',
+  'CONFIRM_EXPENSES', 'CONFIRM_EXPENSES_SUCCEED', 'CONFIRM_EXPENSES_FAIL',
+  'REJECT_EXPENSES', 'REJECT_EXPENSES_SUCCEED', 'REJECT_EXPENSES_FAIL',
   'CLOSE_ADVFEE_MODAL',
   // 'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
@@ -321,6 +324,51 @@ export function loadExpenses(params) {
       endpoint: 'v1/cms/billing/expenses',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function submitExpenses(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SUBMIT_EXPENSES,
+        actionTypes.SUBMIT_EXPENSES_SUCCEED,
+        actionTypes.SUBMIT_EXPENSES_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/expenses/submit',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function confirmExpenses(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CONFIRM_EXPENSES,
+        actionTypes.CONFIRM_EXPENSES_SUCCEED,
+        actionTypes.CONFIRM_EXPENSES_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/expenses/confirm',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function rejectExpenses(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REJECT_EXPENSES,
+        actionTypes.REJECT_EXPENSES_SUCCEED,
+        actionTypes.REJECT_EXPENSES_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/expenses/reject',
+      method: 'post',
+      data,
     },
   };
 }

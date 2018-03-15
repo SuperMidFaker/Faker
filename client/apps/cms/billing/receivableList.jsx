@@ -6,7 +6,7 @@ import moment from 'moment';
 import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, submitExpenses } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -65,6 +65,7 @@ function fetchData({ state, dispatch }) {
     togglePanelVisible,
     setUploadRecordsReload,
     loadExpenses,
+    submitExpenses,
   }
 )
 @connectNav({
@@ -221,6 +222,7 @@ export default class ExpenseList extends Component {
   })
 
   handleFilterMenuClick = (ev) => {
+    this.handleDeselectRows();
     const filter = { ...this.props.listFilter, status: ev.key };
     this.handleExpensesLoad('', filter);
   }
@@ -278,6 +280,32 @@ export default class ExpenseList extends Component {
     window.open(`${API_ROOTS.default}v1/cms/billing/expenses/export/${createFilename('delegation_expenses')}.xlsx?params=${
       JSON.stringify(params)}`);
   }
+  handleBatchSubmit = () => {
+    const expenseNos = this.state.selectedRowKeys;
+    this.props.submitExpenses({
+      expNos: expenseNos,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleDeselectRows();
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
+  handleAllSubmit = () => {
+    this.props.submitExpenses({
+      expNos: null,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
+  expensesUploaded = () => {
+    this.handleExpensesLoad(1);
+    this.setState({
+      importPanelVisible: false,
+    });
+  }
   render() {
     const {
       expensesList, partners, form: { getFieldDecorator }, expensesLoading,
@@ -315,7 +343,7 @@ export default class ExpenseList extends Component {
       />
     </span>);
     const bulkActions = (<span>
-      {(status === 'billing' || status === 'pending') &&
+      {(status === 'pending') &&
       <ToolbarAction icon="arrow-up" confirm={this.gmsg('confirmOp')} onConfirm={this.handleBatchSubmit} label={this.gmsg('submit')} />}
       <ToolbarAction icon="download" onClick={this.handleSelectedExport} label={this.gmsg('export')} />
     </span>);
@@ -384,7 +412,7 @@ export default class ExpenseList extends Component {
             endpoint={`${API_ROOTS.default}v1/cms/billing/expense/import`}
             formData={{ mode: 'receivable' }}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
-            onUploaded={this.invoicesUploaded}
+            onUploaded={this.expensesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
             <FormItem>
