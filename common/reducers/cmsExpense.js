@@ -30,8 +30,8 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SAVE_IMPT_ADVFEES', 'SAVE_IMPT_ADVFEES_SUCCEED', 'SAVE_IMPT_ADVFEES_FAIL',
   'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
   'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
-  'TOGGLE_ADD_SPE_MODAL',
-  'ADD_SPE', 'ADD_SPE_SUCCESS', 'ADD_SPE_FAIL',
+  'TOGGLE_ADD_SPECIAL_MODAL',
+  'ADD_SPECIAL', 'ADD_SPECIAL_SUCCESS', 'ADD_SPECIAL_FAIL',
   'LOAD_EXP_DETAILS', 'LOAD_EXP_DETAILS_SUCCEED', 'LOAD_EXP_DETAILS_FAIL',
 ]);
 
@@ -236,7 +236,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, advImport: action.result.data };
     case actionTypes.SET_ADV_TEMP_MODAL_VISIBLE:
       return { ...state, advImpTempVisible: action.data };
-    case actionTypes.TOGGLE_ADD_SPE_MODAL:
+    case actionTypes.TOGGLE_ADD_SPECIAL_MODAL:
       return { ...state, addSpeModal: { ...state.addSpeModal, visible: action.visible } };
     default:
       return state;
@@ -627,7 +627,7 @@ export function computeDeclAdvanceFee(formData) {
   };
 } */
 
-export function updateFee(data) {
+export function updateFee(data, expenseNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -638,7 +638,7 @@ export function updateFee(data) {
       endpoint: 'v1/cms/expense/fee/update',
       method: 'post',
       data: {
-        data,
+        data, expenseNo,
       },
     },
   };
@@ -659,22 +659,22 @@ export function deleteFee(id) {
   };
 }
 
-export function toggleAddSpeModal(visible) {
+export function toggleAddSpecialModal(visible) {
   return {
-    type: actionTypes.TOGGLE_ADD_SPE_MODAL,
+    type: actionTypes.TOGGLE_ADD_SPECIAL_MODAL,
     visible,
   };
 }
 
-export function Special(data, expenseNo) {
+export function addSpecial(data, expenseNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.ADD_SPE,
-        actionTypes.ADD_SPE_SUCCESS,
-        actionTypes.ADD_SPE_FAIL,
+        actionTypes.ADD_SPECIAL,
+        actionTypes.ADD_SPECIAL_SUCCESS,
+        actionTypes.ADD_SPECIAL_FAIL,
       ],
-      endpoint: 'v1/cms/expense/spe/add',
+      endpoint: 'v1/cms/expense/special/add',
       method: 'post',
       data: { data, expenseNo },
     },

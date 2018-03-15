@@ -5,7 +5,7 @@ import { Input, Select, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { updateFee, deleteFee, toggleAddSpeModal, getExpenseDetails } from 'common/reducers/cmsExpense';
+import { updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails } from 'common/reducers/cmsExpense';
 import { FEE_TYPE } from 'common/constants';
 import AddSpeModal from '../modals/addSpeModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -18,7 +18,7 @@ const { Option } = Select;
     currencies: state.cmsExpense.currencies,
   }),
   {
-    updateFee, deleteFee, toggleAddSpeModal, getExpenseDetails,
+    updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails,
   }
 )
 export default class ExpenseDetailTabPane extends Component {
@@ -235,10 +235,10 @@ export default class ExpenseDetailTabPane extends Component {
     const item = this.state.editItem;
     const dataSource = [...this.state.dataSource];
     const index = dataSource.findIndex(data => data.id === item.id);
-    const delta = dataSource[index].base_amount - item.base_amount;
+    const delta = item.base_amount - dataSource[index].base_amount;
     dataSource[index] = item;
     item.delta = delta;
-    this.props.updateFee(item);
+    this.props.updateFee(item, this.props.expense.expense_no);
     this.setState({
       editItem: {},
       dataSource,
@@ -257,7 +257,7 @@ export default class ExpenseDetailTabPane extends Component {
     this.setState({ dataSource });
   }
   handleAddSpe = () => {
-    this.props.toggleAddSpeModal(true);
+    this.props.toggleAddSpecialModal(true);
   }
   render() {
     const {
