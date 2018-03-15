@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import uid from 'uid';
 import { Button, Icon, Menu } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 
@@ -18,35 +17,30 @@ export default class NestedNavPanel extends PureComponent {
     stack: [[]],
   }
   componentWillReceiveProps(nextProps) {
-    const traversalDirection = (() => {
-      if (nextProps.stack.length !== this.props.stack.length) {
-        return nextProps.stack.length < this.props.stack.length ? 'up' : 'down';
-      }
-      return this.state.traversalDirection;
-    })();
-    this.setState({ traversalDirection }, () => {
-      this.setState({ stack: nextProps.stack });
-    });
+    this.setState({ stack: nextProps.stack });
   }
   stackPush = (item) => {
-    const stack = [...this.state.stack, item];
-    this.setState({ stack });
+    if (item) {
+      const stack = [...this.state.stack, item];
+      this.setState({ stack });
+    }
   };
-
   stackPop = () => {
     if (this.state.stack.length > 1) {
       const stack = this.state.stack.slice(0, this.state.stack.length - 1);
       this.setState({ stack });
     }
   };
-  renderBackButton() {
-    return <Button key={uid} icon="arrow-left" shape="circle" onClick={this.stackPop} />;
+  handle
+  renderBackButton(key) {
+    return <Button key={key} icon="arrow-left" shape="circle" onClick={this.stackPop} />;
   }
 
   renderHeader = () => {
+    const { stack } = this.state;
     const items = [];
-    if (this.state.stack.length > 1) {
-      items.push(this.renderBackButton());
+    if (stack.length > 1) {
+      items.push(this.renderBackButton(String(stack.length)));
     } else {
       items.push(this.props.title);
     }
@@ -54,12 +48,12 @@ export default class NestedNavPanel extends PureComponent {
   };
 
   renderItem = (item) => {
-    const onClick = item.children && (() => this.stackPush(item.children));
+    // const onClick = item.children && (() => this.stackPush(item.children));
     const currentStack = this.state.stack[this.state.stack.length - 1];
     const visibleNode = currentStack.find(fl => fl.key === item.key);
     return visibleNode ?
       (<Menu.Item key={item.key}>
-        <a onClick={onClick}><Icon type={item.icon} /> {item.title}</a>
+        <a onClick={() => this.stackPush(item.children)}><Icon type={item.icon} /> {item.title}</a>
       </Menu.Item>) : null;
   };
 
