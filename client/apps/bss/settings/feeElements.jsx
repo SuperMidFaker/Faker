@@ -64,7 +64,6 @@ export default class FeeElements extends Component {
   }, {
     title: '所属分组',
     dataIndex: 'fee_group',
-    width: 200,
     render: (o, record) =>
       (<Select showSearch defaultValue={o} onChange={value => this.handleAlter(record.id, 'fee_group', value)} style={{ width: '100%' }}>
         {this.props.feeGroups.map(data =>
@@ -73,6 +72,8 @@ export default class FeeElements extends Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    align: 'right',
+    fixed: 'right',
     width: 90,
     render: (o, record) => (<span>
       <RowAction onClick={this.handleAdd} icon="plus-circle-o" tooltip="添加子费用元素" row={record} />

@@ -72,11 +72,12 @@ export default class ExchangeRates extends Component {
   }, {
     title: '更新日期',
     dataIndex: 'last_updated_date',
-    width: 200,
     render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    align: 'right',
+    fixed: 'right',
     width: 90,
     render: (o, record) => (
       <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
