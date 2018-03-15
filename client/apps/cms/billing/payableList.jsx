@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, CMS_EXPENSE_STATUS } from 'common/constants';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, changeExpenseStatus } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -66,7 +66,8 @@ function fetchData({ state, dispatch }) {
     togglePanelVisible,
     setUploadRecordsReload,
     loadExpenses,
-    changeExpenseStatus,
+    confirmExpenses,
+    rejectExpenses,
   }
 )
 @connectNav({
@@ -286,9 +287,8 @@ export default class ExpenseList extends Component {
   }
   handleBatchConfirm = () => {
     const expenseNos = this.state.selectedRowKeys;
-    this.props.changeExpenseStatus({
+    this.props.confirmExpenses({
       expNos: expenseNos,
-      status: CMS_EXPENSE_STATUS.confirmed,
     }).then((result) => {
       if (!result.error) {
         this.handleDeselectRows();
@@ -297,9 +297,8 @@ export default class ExpenseList extends Component {
     });
   }
   handleAllConfirm = () => {
-    this.props.changeExpenseStatus({
-      expNos: ['all'],
-      status: CMS_EXPENSE_STATUS.confirmed,
+    this.props.confirmExpenses({
+      expNos: null,
     }).then((result) => {
       if (!result.error) {
         this.handleExpensesLoad(1);
@@ -308,9 +307,8 @@ export default class ExpenseList extends Component {
   }
   handleBatchReject = () => {
     const expenseNos = this.state.selectedRowKeys;
-    this.props.changeExpenseStatus({
-      expNos: expenseNos,
-      status: CMS_EXPENSE_STATUS.pending,
+    this.props.rejectExpenses({
+      expenseNos,
     }).then((result) => {
       if (!result.error) {
         this.handleDeselectRows();
