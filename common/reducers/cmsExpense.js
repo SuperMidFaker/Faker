@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'EXP_PANE_LOAD', 'EXP_PANE_LOAD_SUCCEED', 'EXP_PANE_LOAD_FAIL',
   'DECL_EXPS_LOAD', 'DECL_EXPS_LOAD_SUCCEED', 'DECL_EXPS_LOAD_FAIL',
   'EXP_LOAD', 'EXP_LOAD_SUCCEED', 'EXP_LOAD_FAIL',
+  'EXP_STATUS_CHANGE', 'EXP_STATUS_CHANGE_SUCCEED', 'EXP_STATUS_CHANGE_FAIL',
   'CLOSE_ADVFEE_MODAL',
   // 'CLOSE_IN_MODAL', 'OPEN_IN_MODAL',
   'CURRENCY_LOAD', 'CURRENCY_LOAD_SUCCEED', 'CURRENCY_LOAD_FAIL',
@@ -321,6 +322,21 @@ export function loadExpenses(params) {
       endpoint: 'v1/cms/billing/expenses',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function changeExpenseStatus(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXP_STATUS_CHANGE,
+        actionTypes.EXP_STATUS_CHANGE_SUCCEED,
+        actionTypes.EXP_STATUS_CHANGE_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/expenses/status/change',
+      method: 'post',
+      data,
     },
   };
 }

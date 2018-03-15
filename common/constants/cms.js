@@ -115,6 +115,13 @@ export const BILLING_METHOD = [
   { key: '$nonsettle', value: '$nonsettle', label: '计费不结算' },
 ];
 
+export const CMS_EXPENSE_STATUS = { // '1计费中 2 已计费未提交 3 已提交 4 已确认'
+  billing: 1,
+  pending: 2,
+  submitted: 3,
+  confirmed: 4,
+};
+
 export const CERTS = [
   { value: 'jdz', text: '机电证' },
   { value: 'zgz', text: '重工证' },

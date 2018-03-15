@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, CMS_EXPENSE_STATUS } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, changeExpenseStatus } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -66,6 +66,7 @@ function fetchData({ state, dispatch }) {
     togglePanelVisible,
     setUploadRecordsReload,
     loadExpenses,
+    changeExpenseStatus,
   }
 )
 @connectNav({
@@ -227,6 +228,7 @@ export default class ExpenseList extends Component {
   })
 
   handleFilterMenuClick = (ev) => {
+    this.handleDeselectRows();
     const filter = { ...this.props.listFilter, status: ev.key };
     this.handleExpensesLoad('', filter);
   }
@@ -281,6 +283,40 @@ export default class ExpenseList extends Component {
     const params = { expenseNos, mode: 'payable' };
     window.open(`${API_ROOTS.default}v1/cms/billing/expenses/export/${createFilename('delegation_expenses')}.xlsx?params=${
       JSON.stringify(params)}`);
+  }
+  handleBatchConfirm = () => {
+    const expenseNos = this.state.selectedRowKeys;
+    this.props.changeExpenseStatus({
+      expNos: expenseNos,
+      status: CMS_EXPENSE_STATUS.confirmed,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleDeselectRows();
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
+  handleAllConfirm = () => {
+    this.props.changeExpenseStatus({
+      expNos: ['all'],
+      status: CMS_EXPENSE_STATUS.confirmed,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
+  handleBatchReject = () => {
+    const expenseNos = this.state.selectedRowKeys;
+    this.props.changeExpenseStatus({
+      expNos: expenseNos,
+      status: CMS_EXPENSE_STATUS.pending,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleDeselectRows();
+        this.handleExpensesLoad(1);
+      }
+    });
   }
   showImportLogs = (ev) => {
     if (ev.key === 'logs') {
@@ -342,7 +378,7 @@ export default class ExpenseList extends Component {
               confirm={this.gmsg('confirmOp')}
               onConfirm={this.handleAllConfirm}
               label={this.msg('confirmAll')}
-              disabled={status !== 'confirmed'}
+              disabled={status !== 'submitted'}
             />
           </PageHeader.Actions>
         </PageHeader>
