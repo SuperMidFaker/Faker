@@ -26,8 +26,10 @@ export default class ExpenseDetailTabPane extends Component {
     intl: intlShape.isRequired,
     fullscreen: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    expenseNo: PropTypes.string.isRequired,
-    allowSpecial: PropTypes.number.isRequired,
+    expense: PropTypes.shape({
+      expense_no: PropTypes.string,
+      quote_allow_special: PropTypes.bool,
+    }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -41,11 +43,11 @@ export default class ExpenseDetailTabPane extends Component {
      切换到其他tabpane时 数据已经获取 走componentWillMount
    * */
   componentWillMount() {
-    this.handleReload(this.props.expenseNo);
+    this.handleReload(this.props.expense.expense_no);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.expenseNo !== this.props.expenseNo) {
-      this.handleReload(nextProps.expenseNo);
+    if (nextProps.expense !== this.props.expense) {
+      this.handleReload(nextProps.expense.expense_no);
     }
   }
   handleReload = (expenseNo) => {
@@ -254,7 +256,7 @@ export default class ExpenseDetailTabPane extends Component {
   }
   render() {
     const {
-      fullscreen, loading, allowSpecial, expenseNo,
+      fullscreen, loading, expense,
     } = this.props;
     const { dataSource } = this.state;
     return (
@@ -266,9 +268,10 @@ export default class ExpenseDetailTabPane extends Component {
         loading={loading}
       >
         <DataPane.Toolbar>
-          {allowSpecial !== 0 && <Button onClick={this.handleAddSpe}>添加特殊费用</Button>}
+          {!!expense.quote_allow_special === true &&
+          <Button onClick={this.handleAddSpe}>添加特殊费用</Button>}
         </DataPane.Toolbar>
-        <AddSpeModal expenseNo={expenseNo} reload={this.handleReload} />
+        <AddSpeModal expenseNo={expense.expense_no} reload={this.handleReload} />
       </DataPane>
     );
   }

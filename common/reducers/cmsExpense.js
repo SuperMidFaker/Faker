@@ -16,7 +16,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
   // 'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
   'LOAD_ADVPARTIES', 'LOAD_ADVPARTIES_SUCCEED', 'LOAD_ADVPARTIES_FAIL',
-  'LOAD_EXPS_TABS', 'LOAD_EXPS_TABS_SUCCEED', 'LOAD_EXPS_TABS_FAIL',
+  'LOAD_BUYER_SELLER_EXPENSES', 'LOAD_BUYER_SELLER_EXPENSES_SUCCEED', 'LOAD_BUYER_SELLER_EXPENSES_FAIL',
   /*
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
   'HIDE_PREVIEWER', */
@@ -106,8 +106,8 @@ const initialState = {
     calculateAll: false,
   },
   advImpTempVisible: false,
-  expTabs: {
-    receive: [],
+  delgExpenses: {
+    receive: {},
     pays: [],
   },
   bills: {
@@ -210,11 +210,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
       */
-    case actionTypes.LOAD_EXPS_TABS:
+    case actionTypes.LOAD_BUYER_SELLER_EXPENSES:
       return { ...state, expensesLoading: true };
-    case actionTypes.LOAD_EXPS_TABS_SUCCEED:
+    case actionTypes.LOAD_BUYER_SELLER_EXPENSES_SUCCEED:
       return {
-        ...state, expTabs: action.result.data, expensesLoading: false,
+        ...state, delgExpenses: action.result.data, expensesLoading: false,
       };
     case actionTypes.LOAD_EXPS_TABS_FAIL:
       return { ...state, expensesLoading: false };
@@ -347,15 +347,15 @@ export function loadCurrencies() {
   };
 }
 
-export function loadExpsTabs({ delgNo }) {
+export function loadBuyerSellerExpenses({ delgNo }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_EXPS_TABS,
-        actionTypes.LOAD_EXPS_TABS_SUCCEED,
-        actionTypes.LOAD_EXPS_TABS_FAIL,
+        actionTypes.LOAD_BUYER_SELLER_EXPENSES,
+        actionTypes.LOAD_BUYER_SELLER_EXPENSES_SUCCEED,
+        actionTypes.LOAD_BUYER_SELLER_EXPENSES_FAIL,
       ],
-      endpoint: 'v1/cms/billing/expense/tabs',
+      endpoint: 'v1/cms/billing/delg/buyer/seller/expenses',
       method: 'get',
       params: { delgNo },
     },
