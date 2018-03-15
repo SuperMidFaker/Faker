@@ -441,7 +441,7 @@ export default class BatchDeclDetail extends Component {
                     loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleListSearch} />
+                      <SearchBox placeholder="出库单号" onSearch={this.handleListSearch} />
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>

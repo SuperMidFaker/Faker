@@ -136,7 +136,7 @@ const initialState = {
     filterNo: '',
     ownerView: 'all',
   },
-  entry_asn: {},
+  entry_asn: { },
   entry_regs: [],
   rel_so: { outbound_no: '', outbound_status: -1 },
   rel_regs: [],

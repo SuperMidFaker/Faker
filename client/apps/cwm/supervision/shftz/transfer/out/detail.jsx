@@ -82,19 +82,12 @@ export default class SHFTZTransferOutDetail extends Component {
   state = {
     tabKey: '',
     fullscreen: true,
-    relRegs: [],
-  }
-  componentWillMount() {
-    this.setState({
-      relRegs: this.props.relRegs,
-    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       if (this.state.tabKey === '') {
         this.setState({
           tabKey: nextProps.relRegs[0].pre_entry_seq_no,
-          relRegs: nextProps.relRegs,
         });
       }
     }
@@ -269,24 +262,13 @@ export default class SHFTZTransferOutDetail extends Component {
     }
   }
   handleSearch = (searchText, preEntrySeqNo) => {
-    const relRegs = JSON.parse(JSON.stringify(this.props.relRegs));
-    if (searchText) {
-      const searchOne = relRegs.find(reg => reg.pre_entry_seq_no === preEntrySeqNo);
-      const details = searchOne.details.filter((item) => {
-        const reg = new RegExp(searchText);
-        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
-        || reg.test(item.hscode) || reg.test(item.g_name);
-      });
-      searchOne.details = details;
-    }
-    this.setState({ relRegs });
+    this.setState({ searchVal: searchText, searchPreEntrySeqNo: preEntrySeqNo });
   }
   render() {
     const {
-      relSo, whse, submitting, receivers,
+      relSo, relRegs, whse, submitting, receivers,
     } = this.props;
-    const { relRegs } = this.state;
-    if (relRegs.length !== 1) {
+    if (relRegs.length !== 1 || !relSo) {
       return null;
     }
     const rowSelection = {
@@ -295,6 +277,7 @@ export default class SHFTZTransferOutDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const { searchVal, searchPreEntrySeqNo } = this.state;
     const relReg = relRegs[0];
     const relType = CWM_SO_BONDED_REGTYPES[2];
     const regStatus = relReg.status;
@@ -394,7 +377,15 @@ export default class SHFTZTransferOutDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
-                  const stat = reg.details.reduce((acc, regd) => ({
+                  let { details } = reg;
+                  if (searchVal && reg.pre_entry_seq_no === searchPreEntrySeqNo) {
+                    details = details.filter((item) => {
+                      const svRe = new RegExp(searchVal);
+                      return svRe.test(item.ftz_cargo_no) || svRe.test(item.product_no)
+                        || svRe.test(item.hscode) || svRe.test(item.g_name);
+                    });
+                  }
+                  const stat = details.reduce((acc, regd) => ({
                     total_qty: acc.total_qty + regd.qty,
                     total_amount: acc.total_amount + regd.amount,
                     total_net_wt: acc.total_net_wt + regd.net_wt,
@@ -417,7 +408,7 @@ export default class SHFTZTransferOutDetail extends Component {
                         columns={this.columns}
                         rowSelection={rowSelection}
                         indentSize={8}
-                        dataSource={reg.details}
+                        dataSource={details}
                         rowKey="id"
                         loading={this.state.loading}
                       >
