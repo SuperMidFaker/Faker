@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, DatePicker, Icon, Layout, Menu, Select } from 'antd';
+import { Button, DatePicker, Divider, Icon, Layout, Menu, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import Drawer from 'client/components/Drawer';
-import DockPanel from 'client/components/DockPanel';
+import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import EmptyState from 'client/components/EmptyState';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -150,6 +150,9 @@ export default class AuditList extends React.Component {
   toggleExtra = () => {
     this.setState({ extraVisible: !this.state.extraVisible });
   }
+  // handleExtraMenuClick = (ev) => {
+  // console.log(ev.key);
+  // }
   render() {
     const { loading } = this.props;
     const mockData = [];
@@ -214,6 +217,32 @@ export default class AuditList extends React.Component {
       primaryAction,
       secondaryAction,
     };
+    const menuStack = [
+      [
+        {
+          key: 'table',
+          icon: 'table',
+          title: this.gmsg('tableView'),
+        },
+        {
+          key: 'board',
+          icon: 'layout',
+          title: this.gmsg('boardView'),
+        },
+        {
+          key: 'rules',
+          icon: 'tool',
+          title: this.gmsg('auditRuls'),
+          children: [
+            {
+              key: 'nested',
+              icon: 'bars',
+              title: this.gmsg('bars'),
+            },
+          ],
+        },
+      ],
+    ];
     return (
       <Layout>
         <PageHeader title={this.msg('audit')}>
@@ -255,29 +284,15 @@ export default class AuditList extends React.Component {
               loading={loading}
               locale={{ emptyText: <EmptyState {...emptyProps} /> }}
             />
-            <DockPanel
+            <NestedMenuPanel
               title={this.gmsg('extraMenu')}
-              mode="inner"
-              size="small"
               visible={this.state.extraVisible}
               onClose={this.toggleExtra}
+              stack={menuStack}
+              onMenuClick={this.handleExtraMenuClick}
             >
-              <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleExtraMenuClick}>
-                <Menu.ItemGroup key="views" title={this.gmsg('views')}>
-                  <Menu.Item key="table">
-                    <Icon type="table" /> {this.gmsg('tableView')}
-                  </Menu.Item>
-                  <Menu.Item key="board" disabled>
-                    <Icon type="layout" /> {this.gmsg('boardView')}
-                  </Menu.Item>
-                </Menu.ItemGroup>
-                <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
-                  <Menu.Item key="rules">
-                    <Icon type="tool" /> {this.msg('auditRules')}
-                  </Menu.Item>
-                </Menu.ItemGroup>
-              </Menu>
-            </DockPanel>
+              <Divider />
+            </NestedMenuPanel>
           </Content>
         </Layout>
       </Layout>
