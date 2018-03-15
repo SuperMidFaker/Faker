@@ -45,14 +45,15 @@ export default class FeeGroups extends Component {
   }, {
     title: '费用分组名称',
     dataIndex: 'fee_group_name',
-    width: 300,
     render: (o, record) =>
       <EditableCell value={o} onSave={value => this.handleAlterGName(record.id, value)} style={{ width: '100%' }} />,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    align: 'right',
+    fixed: 'right',
     width: 90,
-    render: (o, record) => <RowAction confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDeleteFeeGroup} icon="delete" row={record} />,
+    render: (o, record) => <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDeleteFeeGroup} icon="delete" row={record} />,
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadFeeGroups(params),
