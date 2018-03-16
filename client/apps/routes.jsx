@@ -247,21 +247,6 @@ export default(store) => {
               <Route path="paramVehicles" component={TMSSettings.ParamVehicles} />
             </Route>
             <Route path="billing">
-              <IndexRedirect to="/transport/billing/receivable" />
-              <Route path="receivable">
-                <IndexRoute component={TMSBilling.ReceivableList} />
-                <Route path="create" component={TMSBilling.CreateReceivableBilling} />
-                <Route path="check/:billingId" component={TMSBilling.CheckReceivableBilling} />
-                <Route path="edit/:billingId" component={TMSBilling.EditReceivableBilling} />
-                <Route path="view/:billingId" component={TMSBilling.ViewReceivableBilling} />
-              </Route>
-              <Route path="payable">
-                <IndexRoute component={TMSBilling.PayableList} />
-                <Route path="create" component={TMSBilling.CreatePayableBilling} />
-                <Route path="check/:billingId" component={TMSBilling.CheckPayableBilling} />
-                <Route path="edit/:billingId" component={TMSBilling.EditPayableBilling} />
-                <Route path="view/:billingId" component={TMSBilling.ViewPayableBilling} />
-              </Route>
               <Route path="fee" component={TMSBilling.FeeList} />
               <Route path="tariff">
                 <IndexRoute component={TMSTariff.List} />
