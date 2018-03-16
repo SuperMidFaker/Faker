@@ -98,7 +98,7 @@ export default class HeaderNavBar extends React.Component {
       intl, avatar, name, compact, navTitle,
     } = this.props;
     const helpPopoverContent = (
-      <Menu>
+      <Menu selectable={false}>
         <MenuItem>
           <a role="presentation" onClick={this.handleOnlineService}>
             <Icon type="customerservice" />
@@ -114,7 +114,7 @@ export default class HeaderNavBar extends React.Component {
       </Menu>
     );
     const userPopoverContent = (
-      <Menu>
+      <Menu selectable={false}>
         {!compact &&
         <MenuItem>
           <a role="presentation" onClick={this.handleGoAccount}>

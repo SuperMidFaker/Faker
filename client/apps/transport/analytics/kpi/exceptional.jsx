@@ -17,10 +17,7 @@ export default class Exceptional extends React.Component {
     modes: PropTypes.array.isRequired,
   }
   componentDidMount() {
-    this.initializeCharts(this.props);
-    window.$(window).resize(() => {
-      this.initializeCharts(this.props);
-    });
+    window.addEventListener('resize', this.handleResize);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.loaded) {
@@ -28,7 +25,10 @@ export default class Exceptional extends React.Component {
     }
   }
   componentWillUnmount() {
-    window.$(window).unbind('resize');
+    window.removeEventListener('resize', this.handleResize);
+  }
+  handleResize = () => {
+    this.initializeCharts(this.props);
   }
   initializeCharts = (props) => {
     const { exceptionTypes, range, exceptionalShipmentCounts } = props.kpi;

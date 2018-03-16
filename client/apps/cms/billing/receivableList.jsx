@@ -339,7 +339,7 @@ export default class ExpenseList extends Component {
       <RangePicker
         ranges={{ 当天: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
         onChange={this.handleDateChange}
-        style={{ width: 256 }}
+        style={{ width: 216 }}
       />
     </span>);
     const bulkActions = (<span>

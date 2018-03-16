@@ -90,9 +90,9 @@ export default class TrackingDetail extends React.Component {
     }
     this.loadExceptions();
     this.resize();
-    $(window).resize(() => {
-      this.resize();
-    });
+    // $(window).resize(() => {
+    //  this.resize();
+    // });
   }
   drawBaiduMap = (scriptLoadedNum = 4) => {
     if (scriptLoadedNum < 4 && this.state.scriptLoadedNum < 4) return;
@@ -210,12 +210,12 @@ export default class TrackingDetail extends React.Component {
     });
   }
   resize() {
-    if ($(window).width() <= 950) {
-      this.setState({ stepsDirection: 'vertical' });
-    } else {
-      this.setState({ stepsDirection: 'horizontal' });
-    }
-    $('#map').height($(window).height() - 50);
+    // if ($(window).width() <= 950) {
+    // this.setState({ stepsDirection: 'vertical' });
+    // } else {
+    this.setState({ stepsDirection: 'horizontal' });
+    // }
+    // $('#map').height($(window).height() - 50);
   }
   loadExceptions = () => {
     const { params } = this.props;

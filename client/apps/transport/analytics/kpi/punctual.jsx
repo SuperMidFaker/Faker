@@ -17,10 +17,7 @@ export default class Punctual extends React.Component {
     modes: PropTypes.array.isRequired,
   }
   componentDidMount() {
-    this.initializeCharts(this.props);
-    window.$(window).resize(() => {
-      this.initializeCharts(this.props);
-    });
+    window.addEventListener('resize', this.handleResize);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.loaded) {
@@ -28,7 +25,10 @@ export default class Punctual extends React.Component {
     }
   }
   componentWillUnmount() {
-    window.$(window).unbind('resize');
+    window.removeEventListener('resize', this.handleResize);
+  }
+  handleResize = () => {
+    this.initializeCharts(this.props);
   }
   initializeCharts = (props) => {
     const {
@@ -86,7 +86,7 @@ export default class Punctual extends React.Component {
             formatter: '{c} %',
           },
         },
-        data: shipmentCounts[index].map((item1, j) => item1 === 0 ? 0 : Number((punctualShipmentCounts[index][j] / item1 * 100).toFixed(2))),
+        data: shipmentCounts[index].map((item1, j) => (item1 === 0 ? 0 : Number((punctualShipmentCounts[index][j] / item1 * 100).toFixed(2)))),
       })),
     };
     const transitModesShipmentCount = shipmentCounts.map(arr => arr.reduce((a, b) => a + b, 0));

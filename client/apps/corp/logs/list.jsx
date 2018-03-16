@@ -177,7 +177,7 @@ export default class LogsList extends React.Component {
       <RangePicker
         ranges={searchFilter.daterange}
         onChange={range => this.handleFilterChange('daterange', range)}
-        style={{ width: 256 }}
+        style={{ width: 216 }}
       />
       <Button type="primary" onClick={this.handleSearch}>查询</Button>
       <Button onClick={this.handleReset}>重置</Button>
