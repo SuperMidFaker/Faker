@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Row, Col, Table, Tooltip, Layout } from 'antd';
+import { Button, Form, Row, Col, Table, Tooltip, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import ButtonToggle from 'client/components/ButtonToggle';
-import SearchBox from 'client/components/SearchBox';
+import ListContentLayout from 'client/components/ListContentLayout';
+import PageHeader from 'client/components/PageHeader';
 import { format } from 'client/common/i18n/helpers';
 import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/sofCustomers';
 import { PARTNER_ROLES } from 'common/constants';
@@ -19,7 +19,7 @@ import CustomerModal from './modals/customerModal';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content } = Layout;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadCustomers(state.account.tenantId));
@@ -109,7 +109,7 @@ export default class CustomerList extends React.Component {
   }
   handleSave = () => {
   }
-  render() {
+  renderListColumn() {
     const { customer } = this.state;
     const columns = [{
       dataIndex: 'name',
@@ -117,94 +117,55 @@ export default class CustomerList extends React.Component {
       render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
     }];
     return (
-      <Layout>
-        <Sider
-          width={320}
-          className="menu-sider"
-          key="sider"
-          trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          collapsedWidth={0}
-        >
-
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('customer')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="pull-right">
-              <Tooltip placement="bottom" title="新增客户">
-                <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
-              </Tooltip>
-            </div>
-          </div>
-          <div className="left-sider-panel">
-            <div className="toolbar">
-              <SearchBox
-                placeholder={this.msg('searchPlaceholder')}
-                onSearch={this.handleSearch}
-                width="100%"
-              />
-            </div>
-            <div className="list-body">
-              <Table
-                size="middle"
-                dataSource={this.state.customers}
-                columns={columns}
-                showHeader={false}
-                pagination={{
-                  current: this.state.currentPage,
-                  defaultPageSize: 50,
-                  onChange: this.handlePageChange,
-                }}
-                rowClassName={record => (record.id === customer.id ? 'table-row-selected' : '')}
-                rowKey="id"
-                loading={this.props.loading}
-                onRow={record => ({
-                  onClick: () => { this.handleRowClick(record); },
-                })}
-              />
-            </div>
-            <CustomerModal onOk={this.handleTableLoad} />
-          </div>
-        </Sider>
-        <Layout>
-          <Header className="page-header">
-            { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('customer')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {customer.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>}
-            <ButtonToggle
-              iconOn="menu-fold"
-              iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <div className="page-header-tools">
-              <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSave}>
-                {this.msg('save')}
-              </Button>
-            </div>
-          </Header>
-          <Content className="main-content layout-fixed-width layout-fixed-width-lg">
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <OverviewCard customer={customer} />
-                <ResourcesCard customer={customer} />
-              </Col>
-              <Col sm={24} md={8}>
-                <ProfileCard customer={customer} />
-              </Col>
-            </Row>
-          </Content>
-        </Layout>
-      </Layout>
+      <Table
+        size="middle"
+        dataSource={this.state.customers}
+        columns={columns}
+        showHeader={false}
+        pagination={{
+          current: this.state.currentPage,
+          defaultPageSize: 50,
+          onChange: this.handlePageChange,
+        }}
+        rowClassName={record => (record.id === customer.id ? 'table-row-selected' : '')}
+        rowKey="id"
+        loading={this.props.loading}
+        onRow={record => ({
+          onClick: () => { this.handleRowClick(record); },
+        })}
+      />);
+  }
+  render() {
+    const { customer } = this.state;
+    return (
+      <ListContentLayout
+        title={this.msg('customer')}
+        action={<Tooltip placement="bottom" title="新增客户">
+          <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
+        </Tooltip>}
+        list={this.renderListColumn()}
+        onSearch={this.handleSearch}
+      >
+        <PageHeader title={customer.name}>
+          <PageHeader.Actions>
+            <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSave}>
+              {this.msg('save')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content">
+          <Row gutter={16}>
+            <Col sm={24} md={16}>
+              <OverviewCard customer={customer} />
+              <ResourcesCard customer={customer} />
+            </Col>
+            <Col sm={24} md={8}>
+              <ProfileCard customer={customer} />
+            </Col>
+          </Row>
+        </Content>
+        <CustomerModal onOk={this.handleTableLoad} />
+      </ListContentLayout>
     );
   }
 }
