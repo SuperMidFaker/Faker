@@ -132,7 +132,7 @@ export default class FeeElements extends Component {
     });
   }
   handleAdd = (row) => {
-    this.props.toggleNewFeeElementModal(true, row.fee_code);
+    this.props.toggleNewFeeElementModal(true, row.fee_code, row.fee_type, row.fee_group);
   }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, code: value };

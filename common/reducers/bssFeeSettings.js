@@ -158,10 +158,12 @@ export function alterFeeGroupName(data) {
   };
 }
 
-export function toggleNewFeeElementModal(visible, parentFeeCode) {
+export function toggleNewFeeElementModal(visible, parentFeeCode, parentFeeType, parentFeeGroup) {
   return {
     type: actionTypes.VISIBLE_NEW_ELEMENT_MODAL,
-    data: { visible, parentFeeCode },
+    data: {
+      visible, parentFeeCode, parentFeeType, parentFeeGroup,
+    },
   };
 }
 
