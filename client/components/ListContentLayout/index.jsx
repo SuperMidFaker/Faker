@@ -23,7 +23,7 @@ export default class ListContentLayout extends PureComponent {
           width={320}
           className="list-column"
           key="sider"
-          breakpoint="lg"
+          breakpoint="xl"
           collapsedWidth="0"
         >
           <div className="list-column-header">
