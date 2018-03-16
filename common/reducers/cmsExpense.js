@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CERT_FEES_SAVE', 'CERT_FEES_SAVE_SUCCEED', 'CERT_FEES_SAVE_FAIL',
   // 'OPEN_DECL_INPUT_MODAL', 'CLOSE_DECL_INPUT_MODAL',
   'LOAD_ADVPARTIES', 'LOAD_ADVPARTIES_SUCCEED', 'LOAD_ADVPARTIES_FAIL',
-  'LOAD_EXPS_DETAILS', 'LOAD_EXPS_DETAILS_SUCCEED', 'LOAD_EXPS_DETAILS_FAIL',
+  'LOAD_BUYER_SELLER_EXPENSES', 'LOAD_BUYER_SELLER_EXPENSES_SUCCEED', 'LOAD_BUYER_SELLER_EXPENSES_FAIL',
   /*
   'SHOW_PREVIEWER', 'SHOW_PREVIEWER_SUCCEED', 'SHOW_PREVIEWER_FAILED',
   'HIDE_PREVIEWER', */
@@ -33,6 +33,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SAVE_IMPT_ADVFEES', 'SAVE_IMPT_ADVFEES_SUCCEED', 'SAVE_IMPT_ADVFEES_FAIL',
   'FEE_UPDATE', 'FEE_UPDATE_SUCCEED', 'FEE_UPDATE_FAIL',
   'FEE_DELETE', 'FEE_DELETE_SUCCEED', 'FEE_DELETE_FAIL',
+  'TOGGLE_ADD_SPECIAL_MODAL',
+  'ADD_SPECIAL', 'ADD_SPECIAL_SUCCESS', 'ADD_SPECIAL_FAIL',
+  'LOAD_EXP_DETAILS', 'LOAD_EXP_DETAILS_SUCCEED', 'LOAD_EXP_DETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -106,8 +109,8 @@ const initialState = {
     calculateAll: false,
   },
   advImpTempVisible: false,
-  expDetails: {
-    receives: [],
+  delgExpenses: {
+    receive: {},
     pays: [],
   },
   bills: {
@@ -115,6 +118,9 @@ const initialState = {
     current: 1,
     pageSize: 20,
     data: [],
+  },
+  addSpeModal: {
+    visible: false,
   },
 };
 
@@ -207,13 +213,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: action.visible } };
       */
-    case actionTypes.LOAD_EXPS_DETAILS:
+    case actionTypes.LOAD_BUYER_SELLER_EXPENSES:
       return { ...state, expensesLoading: true };
-    case actionTypes.LOAD_EXPS_DETAILS_SUCCEED:
+    case actionTypes.LOAD_BUYER_SELLER_EXPENSES_SUCCEED:
       return {
-        ...state, expDetails: action.result.data, expensesLoading: false,
+        ...state, delgExpenses: action.result.data, expensesLoading: false,
       };
-    case actionTypes.LOAD_EXPS_DETAILS_FAIL:
+    case actionTypes.LOAD_EXPS_TABS_FAIL:
       return { ...state, expensesLoading: false };
     case actionTypes.LOAD_DELGADVFEES_SUCCEED:
       return { ...state, advanceFeeModal: { ...state.advanceFeeModal, fees: action.result.data } };
@@ -233,6 +239,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, advImport: action.result.data };
     case actionTypes.SET_ADV_TEMP_MODAL_VISIBLE:
       return { ...state, advImpTempVisible: action.data };
+    case actionTypes.TOGGLE_ADD_SPECIAL_MODAL:
+      return { ...state, addSpeModal: { ...state.addSpeModal, visible: action.visible } };
     default:
       return state;
   }
@@ -387,17 +395,32 @@ export function loadCurrencies() {
   };
 }
 
-export function loadExpsDetails({ delgNo }) {
+export function loadBuyerSellerExpenses({ delgNo }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_EXPS_DETAILS,
-        actionTypes.LOAD_EXPS_DETAILS_SUCCEED,
-        actionTypes.LOAD_EXPS_DETAILS_FAIL,
+        actionTypes.LOAD_BUYER_SELLER_EXPENSES,
+        actionTypes.LOAD_BUYER_SELLER_EXPENSES_SUCCEED,
+        actionTypes.LOAD_BUYER_SELLER_EXPENSES_FAIL,
       ],
-      endpoint: 'v1/cms/billing/expense/fees',
+      endpoint: 'v1/cms/billing/delg/buyer/seller/expenses',
       method: 'get',
       params: { delgNo },
+    },
+  };
+}
+
+export function getExpenseDetails(expenseNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EXP_DETAILS,
+        actionTypes.LOAD_EXP_DETAILS_SUCCEED,
+        actionTypes.LOAD_EXP_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cms/billing/expense/details',
+      method: 'get',
+      params: { expenseNo },
     },
   };
 }
@@ -652,7 +675,7 @@ export function computeDeclAdvanceFee(formData) {
   };
 } */
 
-export function updateFee(data) {
+export function updateFee(data, expenseNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -662,7 +685,9 @@ export function updateFee(data) {
       ],
       endpoint: 'v1/cms/expense/fee/update',
       method: 'post',
-      data: { data },
+      data: {
+        data, expenseNo,
+      },
     },
   };
 }
@@ -678,6 +703,28 @@ export function deleteFee(id) {
       endpoint: 'v1/cms/expense/fee/delete',
       method: 'post',
       data: { id },
+    },
+  };
+}
+
+export function toggleAddSpecialModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_ADD_SPECIAL_MODAL,
+    visible,
+  };
+}
+
+export function addSpecial(data, expenseNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_SPECIAL,
+        actionTypes.ADD_SPECIAL_SUCCESS,
+        actionTypes.ADD_SPECIAL_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/special/add',
+      method: 'post',
+      data: { data, expenseNo },
     },
   };
 }
