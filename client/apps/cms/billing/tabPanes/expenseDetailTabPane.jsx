@@ -256,7 +256,7 @@ export default class ExpenseDetailTabPane extends Component {
     dataSource.splice(index, 1);
     this.setState({ dataSource });
   }
-  handleAddSpe = () => {
+  handleAddSpecial = () => {
     this.props.toggleAddSpecialModal(true);
   }
   render() {
@@ -273,8 +273,8 @@ export default class ExpenseDetailTabPane extends Component {
         loading={loading}
       >
         <DataPane.Toolbar>
-          {!!expense.quote_allow_special === true &&
-          <Button onClick={this.handleAddSpe}>添加特殊费用</Button>}
+          {!!expense.quote_allow_special &&
+          <Button onClick={this.handleAddSpecial}>添加特殊费用</Button>}
         </DataPane.Toolbar>
         <AddSpeModal expenseNo={expense.expense_no} reload={this.handleReload} />
       </DataPane>

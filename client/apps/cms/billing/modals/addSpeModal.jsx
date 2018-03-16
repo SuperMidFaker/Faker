@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Input, Modal, Form, Select } from 'antd';
-import { toggleAddSpecialModal, addSpecial } from 'common/reducers/cmsExpense';
+import { toggleAddSpecialModal, addSpecialFee } from 'common/reducers/cmsExpense';
 import { loadAllFeeGroups } from 'common/reducers/bssFeeSettings';
 import { formatMsg } from '../message.i18n';
 
@@ -20,7 +20,7 @@ const formItemLayout = {
     visible: state.cmsExpense.addSpeModal.visible,
     allFeeGroups: state.bssFeeSettings.allFeeGroups,
   }),
-  { toggleAddSpecialModal, addSpecial, loadAllFeeGroups }
+  { toggleAddSpecialModal, addSpecialFee, loadAllFeeGroups }
 )
 @Form.create()
 export default class AddSpeModal extends React.Component {
@@ -43,7 +43,7 @@ export default class AddSpeModal extends React.Component {
     const { expenseNo } = this.props;
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        this.props.addSpecial(values, expenseNo).then((result) => {
+        this.props.addSpecialFee(values, expenseNo).then((result) => {
           if (!result.error) {
             this.props.reload(expenseNo);
             this.handleCancel();

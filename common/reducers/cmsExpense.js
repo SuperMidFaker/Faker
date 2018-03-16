@@ -714,7 +714,7 @@ export function toggleAddSpecialModal(visible) {
   };
 }
 
-export function addSpecial(data, expenseNo) {
+export function addSpecialFee(data, expenseNo) {
   return {
     [CLIENT_API]: {
       types: [
