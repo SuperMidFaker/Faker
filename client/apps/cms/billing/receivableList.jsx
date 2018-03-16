@@ -222,7 +222,6 @@ export default class ExpenseList extends Component {
   })
 
   handleFilterMenuClick = (ev) => {
-    this.handleDeselectRows();
     const filter = { ...this.props.listFilter, status: ev.key };
     this.handleExpensesLoad('', filter);
   }
@@ -238,6 +237,8 @@ export default class ExpenseList extends Component {
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
+      } else {
+        this.handleDeselectRows();
       }
     });
   }
@@ -286,7 +287,6 @@ export default class ExpenseList extends Component {
       expNos: expenseNos,
     }).then((result) => {
       if (!result.error) {
-        this.handleDeselectRows();
         this.handleExpensesLoad(1);
       }
     });
