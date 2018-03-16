@@ -54,6 +54,7 @@ export default class NewFeeElementModal extends React.Component {
   render() {
     const { elementModal, feeGroups, form: { getFieldDecorator } } = this.props;
     const title = elementModal.parentFeeCode ? this.msg('newChildFeeElement') : this.msg('newFeeElement');
+    const editable = !elementModal.parentFeeCode;
     return (
       <Modal
         maskClosable={false}
@@ -76,16 +77,18 @@ export default class NewFeeElementModal extends React.Component {
           </FormItem>
           <FormItem label="费用类型" {...formItemLayout} >
             {getFieldDecorator('fee_type', {
+              initialValue: elementModal.parentFeeType,
               rules: [{ required: true }],
-            })(<Select>
+            })(<Select disabled={!editable} >
               {FEE_TYPE.filter(ft => ft.key !== 'SP').map(type =>
                 <Option key={type.key} value={type.key}>{`${type.key}|${type.text}`}</Option>)}
             </Select>)}
           </FormItem>
           <FormItem label="所属分组" {...formItemLayout} >
             {getFieldDecorator('fee_group', {
+              initialValue: elementModal.parentFeeGroup,
               rules: [{ required: true }],
-            })(<Select showSearch optionFilterProp="children">
+            })(<Select showSearch disabled={!editable} optionFilterProp="children">
               {feeGroups.map(data =>
                 <Option key={data.key} value={data.key}>{`${data.key}|${data.text}`}</Option>)}
             </Select>)}

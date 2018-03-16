@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/bss/fee/settings/', [
   'ALTER_FEE_ELEMENT', 'ALTER_FEE_ELEMENT_SUCCEED', 'ALTER_FEE_ELEMENT_FAIL',
   'DELETE_FEE_ELEMENT', 'DELETE_FEE_ELEMENT_SUCCEED', 'DELETE_FEE_ELEMENT_FAIL',
   'VISIBLE_NEW_Rate_MODAL',
+  'CHANGE_FEE_ELEMENT_GROUP', 'CHANGE_FEE_ELEMENT_GROUP_SUCCEED', 'CHANGE_FEE_ELEMENT_GROUP_FAIL',
 ]);
 
 const initialState = {
@@ -157,10 +158,12 @@ export function alterFeeGroupName(data) {
   };
 }
 
-export function toggleNewFeeElementModal(visible, parentFeeCode) {
+export function toggleNewFeeElementModal(visible, parentFeeCode, parentFeeType, parentFeeGroup) {
   return {
     type: actionTypes.VISIBLE_NEW_ELEMENT_MODAL,
-    data: { visible, parentFeeCode },
+    data: {
+      visible, parentFeeCode, parentFeeType, parentFeeGroup,
+    },
   };
 }
 
@@ -248,6 +251,21 @@ export function deleteFeeElement(code) {
       endpoint: 'v1/bss/fee/element/delete',
       method: 'post',
       data: { code },
+    },
+  };
+}
+
+export function changeFeeElementGroup(feeCode, feeGroup) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHANGE_FEE_ELEMENT_GROUP,
+        actionTypes.CHANGE_FEE_ELEMENT_GROUP_SUCCEED,
+        actionTypes.CHANGE_FEE_ELEMENT_GROUP_FAIL,
+      ],
+      endpoint: 'v1/bss/fee/element/group/change',
+      method: 'post',
+      data: { feeCode, feeGroup },
     },
   };
 }

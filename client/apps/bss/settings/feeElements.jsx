@@ -8,7 +8,8 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
-import { loadFeeElements, alterFeeElement, deleteFeeElement, toggleNewFeeElementModal } from 'common/reducers/bssFeeSettings';
+import { loadFeeElements, alterFeeElement, deleteFeeElement,
+  toggleNewFeeElementModal, changeFeeElementGroup } from 'common/reducers/bssFeeSettings';
 import { FEE_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -22,7 +23,11 @@ const { Option } = Select;
     loading: state.bssFeeSettings.elLoading,
   }),
   {
-    loadFeeElements, alterFeeElement, deleteFeeElement, toggleNewFeeElementModal,
+    loadFeeElements,
+    alterFeeElement,
+    deleteFeeElement,
+    toggleNewFeeElementModal,
+    changeFeeElementGroup,
   }
 )
 @connectNav({
@@ -64,8 +69,14 @@ export default class FeeElements extends Component {
   }, {
     title: '所属分组',
     dataIndex: 'fee_group',
-    render: (o, record) =>
-      (<Select showSearch defaultValue={o} onChange={value => this.handleAlter(record.id, 'fee_group', value)} style={{ width: '100%' }}>
+    render: (o, record) => (
+      <Select
+        showSearch
+        defaultValue={o}
+        disabled={!!record.parent_fee_code}
+        onChange={value => this.handleChangeFeeGroup(record.fee_code, value)}
+        style={{ width: '100%' }}
+      >
         {this.props.feeGroups.map(data =>
           <Option key={data.key} value={data.key}>{`${data.key}|${data.text}`}</Option>)}
       </Select>),
@@ -113,8 +124,15 @@ export default class FeeElements extends Component {
       }
     });
   }
+  handleChangeFeeGroup = (feeCode, value) => {
+    this.props.changeFeeElementGroup(feeCode, value).then((result) => {
+      if (!result.error) {
+        this.props.reload();
+      }
+    });
+  }
   handleAdd = (row) => {
-    this.props.toggleNewFeeElementModal(true, row.fee_code);
+    this.props.toggleNewFeeElementModal(true, row.fee_code, row.fee_type, row.fee_group);
   }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, code: value };
