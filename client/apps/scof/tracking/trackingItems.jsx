@@ -62,9 +62,9 @@ export default class TrackingItems extends React.Component {
   }
   componentDidMount() {
     // $(document).unbind('dragend');
-    window.document.removeEventListener('dragend', this.unhandleDragend);
+    window.document.removeEventListener('dragend', this.handleDragend());
     // $(document).on('dragend', this.handleDragend);
-    window.document.addEventListener('dragend', this.handleDragend);
+    window.document.addEventListener('dragend', this.handleDragend());
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tracking.id !== this.props.tracking.id) {
@@ -105,7 +105,6 @@ export default class TrackingItems extends React.Component {
       this.props.loadTrackingItems(this.props.tracking.id);
     });
   }
-  unhandleDragend = () => {}
   handleDragend = () => {
     const positions = this.state.trackingItems.map((item, index) => ({ id: item.id, position: index + 1 }));
     this.props.updateTrackingItemPosition(positions).then(() => {

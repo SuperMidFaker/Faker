@@ -17,8 +17,7 @@ export default class Fees extends React.Component {
     modes: PropTypes.array.isRequired,
   }
   componentDidMount() {
-    this.initializeCharts(this.props);
-    window.addEventListener('resize', this.initializeCharts(this.props));
+    window.addEventListener('resize', this.handleResize());
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.loaded) {
@@ -28,7 +27,9 @@ export default class Fees extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize());
   }
-  handleResize = () => {}
+  handleResize = () => {
+    this.initializeCharts(this.props);
+  }
   initializeCharts = (props) => {
     const { transitModes, range, shipmentFees } = props.kpi;
     const barOption = {
