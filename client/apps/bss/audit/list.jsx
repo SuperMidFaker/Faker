@@ -217,36 +217,50 @@ export default class AuditList extends React.Component {
     const menuStack = [
       [
         {
-          key: 'table',
-          icon: 'table',
-          title: this.gmsg('tableView'),
-        },
-        {
-          key: 'board',
-          icon: 'layout',
-          title: this.gmsg('boardView'),
-          disabled: true,
-        },
-        {
-          key: 'rules',
-          icon: 'tool',
-          title: this.msg('审核规则'),
+          key: 'g_view',
+          title: this.gmsg('views'),
+          type: 'group',
           children: [
             {
-              key: 'autoAudit',
-              icon: 'rocket',
-              title: this.msg('启用自动审核'),
-              extra: <Switch />,
+              key: 'table',
+              icon: 'table',
+              title: this.gmsg('tableView'),
             },
             {
-              key: 'profitLimit',
-              title: this.msg('最低利润金额'),
-              extra: <Input />,
+              key: 'board',
+              icon: 'layout',
+              title: this.gmsg('boardView'),
+              disabled: true,
             },
+          ],
+        },
+        {
+          key: 'g_setting',
+          title: this.gmsg('setting'),
+          type: 'group',
+          children: [
             {
-              key: 'profitRateLimit',
-              title: this.msg('最低毛利率'),
-              extra: <Input />,
+              key: 'rules',
+              icon: 'tool',
+              title: this.msg('审核规则'),
+              children: [
+                {
+                  key: 'autoAudit',
+                  icon: 'rocket',
+                  title: this.msg('启用自动审核'),
+                  extra: <Switch />,
+                },
+                {
+                  key: 'profitLimit',
+                  title: this.msg('最低利润金额'),
+                  extra: <Input />,
+                },
+                {
+                  key: 'profitRateLimit',
+                  title: this.msg('最低毛利率'),
+                  extra: <Input />,
+                },
+              ],
             },
           ],
         },

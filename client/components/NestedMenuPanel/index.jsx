@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Menu } from 'antd';
+import { Button, Icon, Menu, Table } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 
 export default class NestedNavPanel extends PureComponent {
@@ -42,29 +42,55 @@ export default class NestedNavPanel extends PureComponent {
   renderBackButton(key) {
     return <Button key={key} icon="arrow-left" shape="circle" onClick={this.stackPop} />;
   }
-
   renderTitle = () => {
     const { stack } = this.state;
     const items = [];
-    if (stack.length > 1) {
+    if (stack && stack.length > 1) {
       items.push(this.renderBackButton(String(stack.length)));
     } else {
       items.push(this.props.title);
     }
     return items;
   };
+  renderGroupItem = item => (<Menu.Item key={item.key} disabled={item.disabled}>
+    <a onClick={() => this.stackPush(item.children)}>
+      {item.icon && <Icon type={item.icon} />} {item.title}
+    </a>
+    {item.extra && <span>{item.extra}</span>}
+  </Menu.Item>);
+
+  renderTable = item => (<Table
+    size="middle"
+    columns={item.columns}
+    dataSource={item.dataSource}
+    showHeader={false}
+    // rowClassName={record => (record.id === owner.id ? 'table-row-selected' : '')}
+    pagination={{ hideOnSinglePage: true }}
+    rowKey="id"
+    onRow={row => ({
+      onClick: () => { item.onRowClick(row); },
+    })}
+  />)
 
   renderItem = (item) => {
     const { stack } = this.state;
     const currentStack = stack[stack.length - 1];
     const visibleNode = currentStack.find(fl => fl.key === item.key);
-    return visibleNode ?
-      (<Menu.Item key={item.key} disabled={item.disabled}>
+    if (visibleNode) {
+      if (item.type === 'group') {
+        return (<Menu.ItemGroup key={item.key} title={item.title}>
+          {item.children.map(groupItem => this.renderGroupItem(groupItem))}
+        </Menu.ItemGroup>);
+      } else if (item.type === 'table') {
+        return this.renderTable(item);
+      }
+      return (<Menu.Item key={item.key} disabled={item.disabled}>
         <a onClick={() => this.stackPush(item.children)}><Icon type={item.icon} /> {item.title}</a>
         {item.extra && <span>{item.extra}</span>}
-      </Menu.Item>) : null;
+      </Menu.Item>);
+    }
+    return null;
   };
-
   renderStack = () =>
     this.state.stack.map(page => page.map(item => this.renderItem(item)));
 
