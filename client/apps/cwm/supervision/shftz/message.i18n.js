@@ -2,6 +2,10 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  shftzSup: {
+    id: 'cwm.supervision.shftz',
+    defaultMessage: '上海自贸区监管',
+  },
   ftzBondedEntryReg: {
     id: 'cwm.supervision.shftz.bonded.entry.reg',
     defaultMessage: '进境入库备案',

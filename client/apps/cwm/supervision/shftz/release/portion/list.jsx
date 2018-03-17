@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message, DatePicker } from 'antd';
+import { Badge, Button, Layout, Radio, Select, Tag, message, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -19,12 +19,11 @@ import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
-import ModuleMenu from '../../menu';
 import messages from '../../message.i18n';
 
 
 const formatMsg = format(messages);
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -297,51 +296,36 @@ export default class SHFTZReleaseList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="relPortion" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader title={this.msg('ftzRelPortionReg')}>
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部</RadioButton>
-                <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">已备案</RadioButton>
-                <RadioButton value="applied">已集中申请</RadioButton>
-                <RadioButton value="cleared">已清关</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
-          </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              toolbarActions={toolbarActions}
-              bulkActions={bulkActions}
-              rowSelection={rowSelection}
-              selectedRowKeys={this.state.selectedRowKeys}
-              onDeselectRows={this.handleDeselectRows}
-              columns={this.columns}
-              dataSource={this.dataSource}
-              rowKey="id"
-              loading={this.props.loading}
-              indentSize={0}
-            />
-            <ShippingDockPanel />
-            <OrderDockPanel />
-            <DelegationDockPanel />
-            <ShipmentDockPanel />
-          </Content>
-        </Layout>
+        <PageHeader title={this.msg('ftzRelPortionReg')}>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="pending">待备案</RadioButton>
+              <RadioButton value="processing">终端处理</RadioButton>
+              <RadioButton value="completed">已备案</RadioButton>
+              <RadioButton value="applied">已集中申请</RadioButton>
+              <RadioButton value="cleared">已清关</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable
+            toolbarActions={toolbarActions}
+            bulkActions={bulkActions}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            onDeselectRows={this.handleDeselectRows}
+            columns={this.columns}
+            dataSource={this.dataSource}
+            rowKey="id"
+            loading={this.props.loading}
+            indentSize={0}
+          />
+          <ShippingDockPanel />
+          <OrderDockPanel />
+          <DelegationDockPanel />
+          <ShipmentDockPanel />
+        </Content>
       </Layout>
     );
   }

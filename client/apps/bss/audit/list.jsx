@@ -10,7 +10,6 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import Drawer from 'client/components/Drawer';
 import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import EmptyState from 'client/components/EmptyState';
-import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -191,12 +190,10 @@ export default class AuditList extends React.Component {
     const primaryAction = <Button type="primary" icon="file-excel">导出</Button>;
     const secondaryAction = <Button>Secondary</Button>;
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
         placeholder="结算对象"
         optionFilterProp="children"
-        style={{ width: 160 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       />
@@ -284,6 +281,8 @@ export default class AuditList extends React.Component {
             <DataTable
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
+              onSearch={this.handleSearch}
+              searchTips={this.msg('searchTips')}
               selectedRowKeys={this.state.selectedRowKeys}
               onDeselectRows={this.handleDeselectRows}
               columns={this.columns}

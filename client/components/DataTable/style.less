@@ -14,14 +14,28 @@
     padding: 8px 16px;
     height: 48px;
     border-bottom: 1px solid #e9e9e9;
+    .ant-input-search {
+      width: 200px;
+      margin-right: 8px;
+      @media (max-width:992px) {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 16px;
+      }
+    }
+    .ant-select {
+      width: 160px;
+    }
+    .ant-calendar-picker {
+      width: 216px;
+    }
     > span > button, 
     > span > .ant-input-affix-wrapper,
     > span > .ant-select,
-    > span > .search-bar,
     > span > .ant-calendar-picker,
     > span > .ant-input,
     > span > .ant-input-group {
-    margin-right: 8px;
+      margin-right: 8px;
     }
     .ant-select {
       width: 160px;

@@ -235,7 +235,7 @@ export default class HSCodeSpecial extends React.Component {
     return (
       <Layout className="ant-layout-wrapper">
         <Sider
-          width={280}
+          width={200}
           className="menu-sider"
           key="sider"
           trigger={null}
@@ -247,7 +247,7 @@ export default class HSCodeSpecial extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <NavLink to="/clearance/tradeitem">
-                  <Icon type="left" /> {this.msg('tradeitem')}
+                  <Icon type="left-circle-o" />
                 </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>

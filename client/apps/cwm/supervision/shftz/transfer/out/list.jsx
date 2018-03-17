@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Button, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -20,11 +20,10 @@ import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import messages from '../../message.i18n';
-import ModuleMenu from '../../menu';
 import NewTransfOutModal from './newTransfOutModal';
 
 const formatMsg = format(messages);
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -252,54 +251,39 @@ export default class SHFTZTransferOutList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="transferout" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader title={this.msg('ftzTransferOut')}>
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">待转出</RadioButton>
-                <RadioButton value="sent">已发送</RadioButton>
-                <RadioButton value="completed">已转出</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
-            <PageHeader.Actions>
-              <Button type="primary" icon="plus" onClick={this.handleCreateTransfOut}>
-                {this.msg('create')}
-              </Button>
-            </PageHeader.Actions>
-          </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              columns={this.columns}
-              rowSelection={rowSelection}
-              dataSource={this.dataSource}
-              toolbarActions={toolbarActions}
-              indentSize={8}
-              rowKey="id"
-              selectedRowKeys={this.state.selectedRowKeys}
-              onDeselectRows={this.handleDeselectRows}
-              loading={this.props.loading}
-            />
-            <ShippingDockPanel />
-            <OrderDockPanel />
-            <DelegationDockPanel />
-            <ShipmentDockPanel />
-            <NewTransfOutModal reload={this.handleReleaseListLoad} />
-          </Content>
-        </Layout>
+        <PageHeader title={this.msg('ftzTransferOut')}>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+              <RadioButton value="all">全部状态</RadioButton>
+              <RadioButton value="pending">待转出</RadioButton>
+              <RadioButton value="sent">已发送</RadioButton>
+              <RadioButton value="completed">已转出</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateTransfOut}>
+              {this.msg('create')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable
+            columns={this.columns}
+            rowSelection={rowSelection}
+            dataSource={this.dataSource}
+            toolbarActions={toolbarActions}
+            indentSize={8}
+            rowKey="id"
+            selectedRowKeys={this.state.selectedRowKeys}
+            onDeselectRows={this.handleDeselectRows}
+            loading={this.props.loading}
+          />
+          <ShippingDockPanel />
+          <OrderDockPanel />
+          <DelegationDockPanel />
+          <ShipmentDockPanel />
+          <NewTransfOutModal reload={this.handleReleaseListLoad} />
+        </Content>
       </Layout>
     );
   }

@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
+import { Button, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
-import QueueAnim from 'rc-queue-anim';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
 import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo, batchStart, batchDelete } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
@@ -15,6 +14,7 @@ import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -36,8 +36,6 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { RangePicker } = DatePicker;
 
 // 暂时由 CreatorSelect 触发获取list
@@ -111,6 +109,7 @@ export default class OrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    status: 'all',
     importPanel: {
       visible: false,
       customer_partner_id: undefined,
@@ -253,15 +252,17 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
-  handleProgressChange = (ev) => {
-    const filters = { ...this.props.filters, progress: ev.target.value };
+  handleFilterMenuClick = (ev) => {
+    const filters = ev.key === 'expedited' ?
+      { ...this.props.filters, expedited: ev.key, progress: 'active' } :
+      { ...this.props.filters, progress: ev.key, expedited: 'all' };
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
       current: this.props.orders.current,
       filters,
     });
-    this.setState({ selectedRowKeys: [] });
+    this.setState({ selectedRowKeys: [], status: ev.key });
   }
   handleExpeditedChange = (e) => {
     const filters = { ...this.props.filters, expedited: e.target.value };
@@ -335,7 +336,7 @@ export default class OrderList extends React.Component {
   }
   render() {
     const {
-      loading, filters, flows, partners, orderTypes,
+      loading, filters, flows, partners,
     } = this.props;
     let dateVal = [];
     if (filters.endDate) {
@@ -450,16 +451,6 @@ export default class OrderList extends React.Component {
         <Option value="all">全部客户</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
-      <Select
-        showSearch
-        style={{ width: 160 }}
-        onChange={this.handleOrderTypeChange}
-        value={filters.orderType ? String(filters.orderType) : 'all'}
-      >
-        <Option value="all">全部类型</Option>
-        {orderTypes.map(data => (<Option key={data.id} value={String(data.id)}>
-          {data.name}</Option>))}
-      </Select>
       <span />
       <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
       <RangePicker
@@ -476,24 +467,8 @@ export default class OrderList extends React.Component {
       <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />}
     </span>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <PageHeader title={this.msg('shipmentOrders')}>
-          <PageHeader.Nav>
-            <RadioGroup
-              onChange={this.handleProgressChange}
-              value={filters.progress}
-              style={{ marginRight: 8 }}
-            >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待处理</RadioButton>
-              <RadioButton value="active">进行中</RadioButton>
-              <RadioButton value="completed">已完成</RadioButton>
-            </RadioGroup>
-            <RadioGroup onChange={this.handleExpeditedChange} value={filters.expedited}>
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="expedited">加急订单</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
               {this.msg('orderImport')}
@@ -503,21 +478,44 @@ export default class OrderList extends React.Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            noSetting
-            fixedBody={false}
-            toolbarActions={toolbarActions}
-            bulkActions={bulkActions}
-            rowSelection={rowSelection}
-            selectedRowKeys={this.state.selectedRowKeys}
-            onDeselectRows={this.handleDeselectRows}
-            dataSource={dataSource}
-            columns={columns}
-            rowKey="shipmt_order_no"
-            loading={loading}
-          />
-        </Content>
+        <Layout>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.gmsg('all')}
+              </Menu.Item>
+              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
+                <Menu.Item key="pending">
+                  <Icon type="inbox" /> {this.msg('statusPending')}
+                </Menu.Item>
+                <Menu.Item key="active">
+                  <Icon type="laptop" /> {this.msg('statusActive')}
+                </Menu.Item>
+                <Menu.Item key="expedited">
+                  <Icon type="exclamation-circle" /> {this.msg('statusExpedited')}
+                </Menu.Item>
+                <Menu.Item key="completed">
+                  <Icon type="check-square-o" /> {this.msg('statusCompleted')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              noSetting
+              fixedBody={false}
+              toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+              dataSource={dataSource}
+              columns={columns}
+              rowKey="shipmt_order_no"
+              loading={loading}
+            />
+          </Content>
+        </Layout>
         <OrderDockPanel reload={this.handleTableLoad} />
         <DelegationDockPanel />
         <ShipmentDockPanel />
@@ -566,7 +564,7 @@ export default class OrderList extends React.Component {
           onUploadBatchDelete={this.removeOrdersByBatchUpload}
           type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
         />
-      </QueueAnim>
+      </Layout>
     );
   }
 }

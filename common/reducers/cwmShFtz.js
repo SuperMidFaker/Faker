@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'NEW_TRSO', 'NEW_TRSO_SUCCEED', 'NEW_TRSO_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
+  'SELECT_CARGO_OWNER',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
   'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
   'REFRSH_RFTZC', 'REFRSH_RFTZC_SUCCEED', 'REFRSH_RFTZC_FAIL',
@@ -129,6 +130,7 @@ const initialState = {
     data: [],
   },
   cargoRule: {},
+  cargoOwner: {},
   loading: false,
   listFilter: {
     status: 'all',
@@ -206,6 +208,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: true } };
     case actionTypes.CLOSE_NTFO_MODAL:
       return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: false } };
+    case actionTypes.SELECT_CARGO_OWNER:
+      return { ...state, cargoOwner: action.owner };
     case actionTypes.ENTRY_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
@@ -611,6 +615,13 @@ export function openNewTransfOutModal() {
 export function closeNewTransfOutModal() {
   return {
     type: actionTypes.CLOSE_NTFO_MODAL,
+  };
+}
+
+export function selectCargoOwner(owner) {
+  return {
+    type: actionTypes.SELECT_CARGO_OWNER,
+    owner,
   };
 }
 

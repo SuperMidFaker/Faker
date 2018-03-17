@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, message, Button } from 'antd';
+import { Badge, Layout, Radio, Select, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -15,11 +15,10 @@ import PageHeader from 'client/components/PageHeader';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import TransferSelfModal from './modal/transferSelfModal';
-import ModuleMenu from '../../menu';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -256,48 +255,34 @@ export default class SHFTZTransferSelfList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="transferself" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader title={this.msg('ftzTransferSelf')}>
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">待转出</RadioButton>
-                <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">已转入</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
-            <PageHeader.Actions>
-              <Button type="primary" icon="plus" onClick={this.handleCreateTransSelf}>新建</Button>
-            </PageHeader.Actions>
-          </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              columns={this.columns}
-              rowSelection={rowSelection}
-              dataSource={this.dataSource}
-              indentSize={8}
-              rowKey="id"
-              defaultExpandedRowKeys={['1']}
-              toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys}
-              onDeselectRows={this.handleDeselectRows}
-              loading={this.props.loading}
-            />
-            <TransferSelfModal reload={this.handleEntryListLoad} />
-          </Content>
-        </Layout>
+        <PageHeader title={this.msg('ftzTransferSelf')}>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+              <RadioButton value="all">全部状态</RadioButton>
+              <RadioButton value="pending">待转出</RadioButton>
+              <RadioButton value="processing">终端处理</RadioButton>
+              <RadioButton value="completed">已转入</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateTransSelf}>新建</Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable
+            columns={this.columns}
+            rowSelection={rowSelection}
+            dataSource={this.dataSource}
+            indentSize={8}
+            rowKey="id"
+            defaultExpandedRowKeys={['1']}
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            onDeselectRows={this.handleDeselectRows}
+            loading={this.props.loading}
+          />
+          <TransferSelfModal reload={this.handleEntryListLoad} />
+        </Content>
       </Layout>
     );
   }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Layout, Tag, notification } from 'antd';
+import { Badge, Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -14,7 +14,6 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ButtonToggle from 'client/components/ButtonToggle';
-import ModuleMenu from '../menu';
 import QueryForm from './queryForm';
 import TasksPane from './tabpane/tasksPane';
 import { formatMsg } from './message.i18n';
@@ -279,18 +278,6 @@ export default class SHFTZStockList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="stock" />
-          </div>
-        </Sider>
         <Layout>
           <PageHeader title={this.msg('保税库存查询')}>
             <PageHeader.Actions>

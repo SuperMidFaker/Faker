@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import SearchBox from 'client/components/SearchBox';
 import SelectItem from './selectItem';
 import './style.less';
 
@@ -40,6 +41,7 @@ class DataTable extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-table',
     fixedBody: true,
+    showToolbar: true,
     scrollOffset: 280,
     paginationSize: 'small',
   }
@@ -56,11 +58,14 @@ class DataTable extends React.Component {
     selectedRowKeys: PropTypes.arrayOf(PropTypes.string),
     onDeselectRows: PropTypes.func,
     onFilterSelected: PropTypes.func,
+    onSearch: PropTypes.func,
+    searchTips: PropTypes.string,
     noBorder: PropTypes.bool,
     fixedBody: PropTypes.bool,
     noSetting: PropTypes.bool,
     total: PropTypes.node,
     paginationSize: PropTypes.string,
+    showToolbar: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -262,6 +267,7 @@ class DataTable extends React.Component {
     const {
       baseCls, noBorder, fixedBody, noSetting, paginationSize,
       selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
+      showToolbar, toolbarActions, onSearch, searchTips,
     } = this.props;
     let { dataSource } = this.props;
     let { pagination } = this.props;
@@ -308,8 +314,10 @@ class DataTable extends React.Component {
     });
     return (
       <div className={classes}>
-        {this.props.toolbarActions && <div className={`${baseCls}-toolbar`}>
-          {this.props.toolbarActions}
+        {showToolbar &&
+        <div className={`${baseCls}-toolbar`}>
+          {onSearch && <SearchBox placeholder={searchTips} onSearch={onSearch} />}
+          {toolbarActions}
           <div className={`${baseCls}-toolbar-right`}>
             {this.props.total}
             {!noSetting && <Popover

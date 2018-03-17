@@ -45,7 +45,6 @@ export default class WhseSelect extends React.Component {
       <Select
         value={defaultWhse.code}
         placeholder={this.msg('selectWhse')}
-        style={{ width: 160 }}
         onSelect={this.handleWhseChange}
         disabled={disabled}
       >

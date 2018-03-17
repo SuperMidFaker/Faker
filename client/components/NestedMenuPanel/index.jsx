@@ -12,12 +12,20 @@ export default class NestedNavPanel extends PureComponent {
       key: PropTypes.string, title: PropTypes.node, icon: PropTypes.string,
     }))),
   }
-
+  constructor(props) {
+    super(props);
+    const { stack } = this.props;
+    this.state = {
+      stack,
+    };
+  }
   state = {
     stack: [[]],
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ stack: nextProps.stack });
+    if (nextProps.stack && nextProps.stack.length !== this.props.stack.length) {
+      this.setState({ stack: nextProps.stack });
+    }
   }
   stackPush = (item) => {
     if (item) {
@@ -31,12 +39,11 @@ export default class NestedNavPanel extends PureComponent {
       this.setState({ stack });
     }
   };
-  handle
   renderBackButton(key) {
     return <Button key={key} icon="arrow-left" shape="circle" onClick={this.stackPop} />;
   }
 
-  renderHeader = () => {
+  renderTitle = () => {
     const { stack } = this.state;
     const items = [];
     if (stack.length > 1) {
@@ -67,7 +74,7 @@ export default class NestedNavPanel extends PureComponent {
     } = this.props;
     return (
       <DockPanel
-        title={this.renderHeader()}
+        title={this.renderTitle()}
         mode="inner"
         size="small"
         visible={visible}
