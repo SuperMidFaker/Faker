@@ -214,9 +214,8 @@ export default class TariffPane extends Component {
         dataIndex: 'formula_factor',
         width: 250,
         render: (o, record) => {
-          const formulaChildren = BILLING_METHOD.find(bl => bl.key === '$formula').children;
           if (onEdit && editItem.id === record.id) {
-            if (formulaChildren.find(fl => fl.key === editItem.billing_way)) {
+            if (editItem.billing_way === '$formula') {
               return (<Mention
                 suggestions={this.state.suggestions}
                 prefix="$"
@@ -229,7 +228,7 @@ export default class TariffPane extends Component {
               />);
             }
             return (
-              <Input defaultValue={o} onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
+              <Input defaultValue={o} placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
             );
           }
           return o;

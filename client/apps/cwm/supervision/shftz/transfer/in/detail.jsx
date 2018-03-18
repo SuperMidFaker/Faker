@@ -15,7 +15,7 @@ import DescriptionList from 'client/components/DescriptionList';
 import EditableCell from 'client/components/EditableCell';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, putCustomsRegFields } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -57,7 +57,7 @@ function fetchData({ dispatch, params }) {
     submitting: state.cwmShFtz.submitting,
   }),
   {
-    loadEntryDetails, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus,
+    loadEntryDetails, updateEntryReg, pairEntryRegProducts, putCustomsRegFields,
   }
 )
 @connectNav({
@@ -75,17 +75,13 @@ export default class SHFTZTransferInDetail extends Component {
   state = {
     comparable: false,
     fullscreen: true,
-  }
-  componentWillMount() {
-    this.setState({
-      entryRegs: this.props.entryRegs,
-    });
+    searchVal: null,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
       const comparable = nextProps.transfInReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      this.setState({ comparable, entryRegs: nextProps.entryRegs });
+      this.setState({ comparable });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -99,6 +95,7 @@ export default class SHFTZTransferInDetail extends Component {
     ).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
+          // todo 对比视图 数据保存
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
             `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
           if (remainFtzMsg) {
@@ -231,7 +228,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   handlePairingConfirmed = () => {
     const { preFtzEntNo } = this.props.params;
-    this.props.checkEntryRegStatus(preFtzEntNo, CWM_SHFTZ_APIREG_STATUS.completed)
+    this.props.putCustomsRegFields(preFtzEntNo, { status: CWM_SHFTZ_APIREG_STATUS.completed })
       .then((result) => {
         if (result.error) {
           notification.error({
@@ -243,21 +240,13 @@ export default class SHFTZTransferInDetail extends Component {
       });
   }
   handleSearch = (searchText) => {
-    const entryRegs = JSON.parse(JSON.stringify(this.props.entryRegs));
-    if (searchText) {
-      entryRegs[0].details = entryRegs[0].details.filter((item) => {
-        const reg = new RegExp(searchText);
-        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
-        || reg.test(item.hscode) || reg.test(item.g_name);
-      });
-    }
-    this.setState({ entryRegs });
+    this.setState({ searchVal: searchText });
   }
   render() {
     const {
-      transfInReg, whse, submitting,
+      transfInReg, entryRegs, whse, submitting,
     } = this.props;
-    const { entryRegs } = this.state;
+    const { searchVal } = this.state;
     if (entryRegs.length !== 1) {
       return null;
     }
@@ -271,7 +260,15 @@ export default class SHFTZTransferInDetail extends Component {
       },
     };
     const reg = entryRegs[0];
-    const stat = reg.details.reduce((acc, regd) => ({
+    let { details } = reg;
+    if (searchVal) {
+      details = details.filter((item) => {
+        const sv = new RegExp(searchVal);
+        return sv.test(item.ftz_cargo_no) || sv.test(item.product_no)
+        || sv.test(item.hscode) || sv.test(item.g_name);
+      });
+    }
+    const stat = details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
       total_net_wt: acc.total_net_wt + regd.stock_netwt,
@@ -366,7 +363,7 @@ export default class SHFTZTransferInDetail extends Component {
                 columns={this.columns}
                 rowSelection={rowSelection}
                 indentSize={0}
-                dataSource={reg.details}
+                dataSource={details}
                 rowKey="id"
                 loading={this.state.loading}
               >

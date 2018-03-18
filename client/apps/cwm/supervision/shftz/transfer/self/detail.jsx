@@ -79,12 +79,7 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   state = {
     fullscreen: true,
-    transfSelfReg: {},
-  }
-  componentWillMount() {
-    this.setState({
-      transfSelfReg: this.props.transfSelfReg,
-    });
+    searchVal: null,
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleFullscreen = (fullscreen) => {
@@ -312,20 +307,23 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   handleSearch = (searchText) => {
-    const transfSelfReg = JSON.parse(JSON.stringify(this.props.transfSelfReg));
-    if (searchText) {
-      transfSelfReg.details = transfSelfReg.details.filter((item) => {
-        const reg = new RegExp(searchText);
+    this.setState({ searchVal: searchText });
+  }
+  render() {
+    const { transfSelfReg, whse, submitting } = this.props;
+    if (!transfSelfReg.details) {
+      return null;
+    }
+    const { searchVal } = this.state;
+    let { details } = transfSelfReg;
+    if (searchVal) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchVal);
         return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
         || reg.test(item.hscode) || reg.test(item.g_name);
       });
     }
-    this.setState({ transfSelfReg });
-  }
-  render() {
-    const { whse, submitting } = this.props;
-    const { transfSelfReg } = this.state;
-    const stat = transfSelfReg.details ? transfSelfReg.details.reduce((acc, regd) => ({
+    const stat = details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
       total_net_wt: acc.total_net_wt + regd.stock_netwt,
@@ -333,11 +331,7 @@ export default class SHFTZTransferSelfDetail extends Component {
       total_qty: 0,
       total_amount: 0,
       total_net_wt: 0,
-    }) : {
-      total_qty: 0,
-      total_amount: 0,
-      total_net_wt: 0,
-    };
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -419,7 +413,7 @@ export default class SHFTZTransferSelfDetail extends Component {
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}
-                    dataSource={transfSelfReg.details}
+                    dataSource={details}
                     rowKey="id"
                     loading={this.state.loading}
                   >

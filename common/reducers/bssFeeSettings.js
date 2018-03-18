@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/bss/fee/settings/', [
   'ALTER_FEE_ELEMENT', 'ALTER_FEE_ELEMENT_SUCCEED', 'ALTER_FEE_ELEMENT_FAIL',
   'DELETE_FEE_ELEMENT', 'DELETE_FEE_ELEMENT_SUCCEED', 'DELETE_FEE_ELEMENT_FAIL',
   'VISIBLE_NEW_Rate_MODAL',
+  'CHANGE_FEE_ELEMENT_GROUP', 'CHANGE_FEE_ELEMENT_GROUP_SUCCEED', 'CHANGE_FEE_ELEMENT_GROUP_FAIL',
 ]);
 
 const initialState = {
@@ -68,6 +69,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, elLoading: false, feeElementlist: action.result.data };
     case actionTypes.LOAD_ALL_FEE_GROUPS_SUCCEED:
       return { ...state, allFeeGroups: action.result.data };
+    case actionTypes.ALTER_FEE_GROUP_NAME_SUCCEED:
+      return {
+        ...state,
+        feeGroupslist: {
+          ...state.feeGroupslist,
+          data: state.feeGroupslist.data.map((fg) => {
+            if (fg.id === action.data.id) {
+              return { ...fg, fee_group_name: action.data.groupName };
+            }
+            return fg;
+          }),
+        },
+      };
     case actionTypes.LOAD_PARENT_FEE_ELEMENTS_SUCCEED:
       return { ...state, parentFeeElements: action.result.data };
     case actionTypes.VISIBLE_NEW_ELEMENT_MODAL:
@@ -144,10 +158,12 @@ export function alterFeeGroupName(data) {
   };
 }
 
-export function toggleNewFeeElementModal(visible, parentFeeCode) {
+export function toggleNewFeeElementModal(visible, parentFeeCode, parentFeeType, parentFeeGroup) {
   return {
     type: actionTypes.VISIBLE_NEW_ELEMENT_MODAL,
-    data: { visible, parentFeeCode },
+    data: {
+      visible, parentFeeCode, parentFeeType, parentFeeGroup,
+    },
   };
 }
 
@@ -235,6 +251,21 @@ export function deleteFeeElement(code) {
       endpoint: 'v1/bss/fee/element/delete',
       method: 'post',
       data: { code },
+    },
+  };
+}
+
+export function changeFeeElementGroup(feeCode, feeGroup) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHANGE_FEE_ELEMENT_GROUP,
+        actionTypes.CHANGE_FEE_ELEMENT_GROUP_SUCCEED,
+        actionTypes.CHANGE_FEE_ELEMENT_GROUP_FAIL,
+      ],
+      endpoint: 'v1/bss/fee/element/group/change',
+      method: 'post',
+      data: { feeCode, feeGroup },
     },
   };
 }

@@ -62,9 +62,9 @@ export default class TrackingItems extends React.Component {
   }
   componentDidMount() {
     // $(document).unbind('dragend');
-    window.document.removeEventListener('dragend', this.handleDragend());
+    window.document.removeEventListener('dragend', this.handleDragend);
     // $(document).on('dragend', this.handleDragend);
-    window.document.addEventListener('dragend', this.handleDragend());
+    window.document.addEventListener('dragend', this.handleDragend);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.tracking.id !== this.props.tracking.id) {

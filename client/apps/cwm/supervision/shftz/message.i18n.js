@@ -142,6 +142,10 @@ const messages = defineMessages({
     id: 'cwm.reg.modal.split.appl.cert',
     defaultMessage: '报检出证独立报关',
   },
+  searchPlaceholder: {
+    id: 'cwm.reg.detail.search.placeholder',
+    defaultMessage: '明细货号/HSCode/品名',
+  },
   hscode: {
     id: 'cwm.supervision.shftz.cargo.hscode',
     defaultMessage: '商品编码',

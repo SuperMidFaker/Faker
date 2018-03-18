@@ -17,7 +17,7 @@ export default class Exceptional extends React.Component {
     modes: PropTypes.array.isRequired,
   }
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize());
+    window.addEventListener('resize', this.handleResize);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.loaded) {
@@ -25,7 +25,7 @@ export default class Exceptional extends React.Component {
     }
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize());
+    window.removeEventListener('resize', this.handleResize);
   }
   handleResize = () => {
     this.initializeCharts(this.props);
