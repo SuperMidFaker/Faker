@@ -57,7 +57,6 @@ export default class RatesList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    currentTab: 'clientQuote',
     selectedRowKeys: [],
   }
   msg = formatMsg(this.props.intl)
@@ -100,7 +99,6 @@ export default class RatesList extends Component {
     });
   }
   handleTabChange = (key) => {
-    this.setState({ currentTab: key });
     if (key === this.props.listFilter.viewStatus) {
       return;
     }
@@ -139,7 +137,7 @@ export default class RatesList extends Component {
         dataIndex: 'quote_name',
         width: 200,
       }, {
-        title: this.state.currentTab === 'clientQuote' ? this.msg('clientName') : this.msg('providerName'),
+        title: this.props.listFilter.viewStatus === 'clientQuote' ? this.msg('clientName') : this.msg('providerName'),
         width: 200,
         render: (text, record) => {
           let partnerName = '';
@@ -208,7 +206,7 @@ export default class RatesList extends Component {
     </span>);
     return (
       <Layout>
-        <PageHeader title={this.msg('quote')} menus={menus} onTabChange={this.handleTabChange}>
+        <PageHeader title={this.msg('quote')} menus={menus} currentKey={this.props.listFilter.viewStatus} onTabChange={this.handleTabChange}>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
               新建报价

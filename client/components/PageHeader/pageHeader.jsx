@@ -12,6 +12,7 @@ export default class PageHeader extends Component {
     title: PropTypes.node,
     breadcrumb: PropTypes.arrayOf(PropTypes.node),
     menus: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string, menu: PropTypes.node })),
+    currentKey: PropTypes.string,
   }
   onChange = (ev) => {
     if (this.props.onTabChange) {
@@ -20,7 +21,7 @@ export default class PageHeader extends Component {
   };
   render() {
     const {
-      children, title, breadcrumb, menus,
+      children, title, breadcrumb, menus, currentKey,
     } = this.props;
     const defaultTab = menus && (menus.filter(item => item.default)[0] || menus[0]);
     const tb = title ? [title] : (breadcrumb || []);
@@ -33,7 +34,7 @@ export default class PageHeader extends Component {
           {menus && menus.length &&
             <Menu
               onClick={this.onChange}
-              defaultSelectedKeys={(defaultTab && [defaultTab.key])}
+              defaultSelectedKeys={currentKey || (defaultTab && [defaultTab.key])}
               mode="horizontal"
             >
               {menus.map(item => <Menu.Item key={item.key} >{item.menu}</Menu.Item>)}
