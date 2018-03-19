@@ -47,6 +47,7 @@ export default class CustomerBillsList extends React.Component {
   state = {
     selectedRowKeys: [],
     extraVisible: false,
+    mode: 'pendingExpense',
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -73,7 +74,7 @@ export default class CustomerBillsList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '账单类型',
-    dataIndex: 'bill_type',
+    dataIndex: 'type',
     width: 150,
   }, {
     title: '状态',
@@ -123,24 +124,24 @@ export default class CustomerBillsList extends React.Component {
     width: 120,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span>
+          <RowAction icon="share-alt" onClick={this.handleSend} label="发送" row={record} />
+          <RowAction icon="edit" onClick={this.handleDetail} tooltip="修改账单" row={record} />
+        </span>);
+      } else if (record.status === 1) {
+        return (<span>
+          <RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />
+        </span>);
+      } else if (record.status === 2) {
+        return (<span>
+          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip="查看" row={record} />
+        </span>);
       }
-      return (<span><RowAction onClick={this.handleDetail} label="账单详情" row={record} /> </span>);
+      return null;
     },
   }]
-  handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
-      filters,
-    });
-    this.setState({
-      selectedRowKeys: [],
-    });
+  handleFilterMenuClick = (ev) => {
+    this.setState({ mode: ev.key });
   }
   handleSearch = (value) => {
     const filters = { ...this.props.filters, name: value };
@@ -157,6 +158,10 @@ export default class CustomerBillsList extends React.Component {
     const link = `/bss/bill/${row.order_rel_no}`;
     this.context.router.push(link);
   }
+  handleCheck = (row) => {
+    const link = `/bss/bill/check/${row.order_rel_no}`;
+    this.context.router.push(link);
+  }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
@@ -166,15 +171,45 @@ export default class CustomerBillsList extends React.Component {
   render() {
     const { loading } = this.props;
     const mockData = [{
+      id: 1,
       order_rel_no: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
+      type: 'FPB',
+      status: 0,
     }, {
+      id: 2,
       order_rel_no: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
+      type: 'FPB',
+      status: 1,
+    }, {
+      id: 3,
+      order_rel_no: '3',
+      type: 'FPB',
+      status: 2,
+    }, {
+      id: 4,
+      order_rel_no: '4',
+      type: 'BPB',
+      status: 0,
+    }, {
+      id: 5,
+      order_rel_no: '5',
+      type: 'BPB',
+      status: 1,
+    }, {
+      id: 6,
+      order_rel_no: '6',
+      type: 'BPB',
+      status: 2,
+    }, {
+      id: 7,
+      order_rel_no: '7',
+      type: 'OFB',
+      status: 1,
+    }, {
+      id: 8,
+      order_rel_no: '8',
+      type: 'OFB',
+      status: 2,
     }];
     const menus = [
       {
@@ -251,20 +286,23 @@ export default class CustomerBillsList extends React.Component {
     );
     return (
       <Layout>
-        <PageHeader title={this.msg('bill')} menus={menus} onTabChange={this.handleTabChange}>
+        <PageHeader
+          title={this.msg('bill')}
+          menus={menus}
+          onTabChange={this.handleTabChange}
+        >
           <PageHeader.Actions>
             {primaryAction}
             {secondaryAction}
-
             <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
           <Drawer width={160}>
-            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
+            <Menu mode="inline" selectedKeys={[this.state.mode]} onClick={this.handleFilterMenuClick}>
               <Menu.ItemGroup key="expense" title={this.msg('expense')}>
-                <Menu.Item key="confirmedExpense">
-                  {this.msg('confirmedExpense')}
+                <Menu.Item key="pendingExpense">
+                  {this.msg('pendingExpense')}
                 </Menu.Item>
               </Menu.ItemGroup>
               <Menu.ItemGroup key="billsStatus" title={this.msg('billsStatus')}>

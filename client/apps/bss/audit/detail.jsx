@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Col, Layout, Card, Row, Tabs } from 'antd';
+import { Button, Col, Layout, Row, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
+import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -177,7 +178,7 @@ export default class FeeSummaryDetail extends Component {
       address: '西湖区湖底公园1号',
     }];
     return (
-      <div>
+      <Layout>
         <PageHeader breadcrumb={[this.msg('fee'), this.msg('feeSummary'), this.props.params.orderRelNo]}>
           <PageHeader.Actions>
             <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
@@ -185,8 +186,8 @@ export default class FeeSummaryDetail extends Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} >
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
             <Row type="flex">
               <Col span={14}>
                 <DescriptionList col={2}>
@@ -215,43 +216,33 @@ export default class FeeSummaryDetail extends Component {
                 </div>
               </Col>
             </Row>
-          </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey="receiveDetails">
-              <TabPane tab="应收明细" key="receiveDetails" >
-                <DataPane
-                  fullscreen={this.state.fullscreen}
-                  columns={this.recColumns}
-                  dataSource={mockData}
-                  rowKey="id"
-                  loading={this.state.loading}
-                >
-                  <DataPane.Toolbar>
-                    <Button icon="plus-square-o" onClick={this.handleCreateASN}>
-                      {this.msg('加入客户账单')}
-                    </Button>
-                  </DataPane.Toolbar>
-                </DataPane>
-              </TabPane>
-              <TabPane tab="应付明细" key="putawayDetails" >
-                <DataPane
-                  fullscreen={this.state.fullscreen}
-                  columns={this.payColumns}
-                  dataSource={mockData}
-                  rowKey="id"
-                  loading={this.state.loading}
-                >
-                  <DataPane.Toolbar>
-                    <Button icon="plus-square-o" onClick={this.handleCreateASN}>
-                      {this.msg('加入供应商账单')}
-                    </Button>
-                  </DataPane.Toolbar>
-                </DataPane>
-              </TabPane>
-            </Tabs>
-          </MagicCard>
-        </Content>
-      </div>
+          </Drawer>
+          <Content className="page-content">
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+              <Tabs defaultActiveKey="receiveDetails">
+                <TabPane tab="应收明细" key="receiveDetails" >
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.recColumns}
+                    dataSource={mockData}
+                    rowKey="id"
+                    loading={this.state.loading}
+                  />
+                </TabPane>
+                <TabPane tab="应付明细" key="putawayDetails" >
+                  <DataPane
+                    fullscreen={this.state.fullscreen}
+                    columns={this.payColumns}
+                    dataSource={mockData}
+                    rowKey="id"
+                    loading={this.state.loading}
+                  />
+                </TabPane>
+              </Tabs>
+            </MagicCard>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

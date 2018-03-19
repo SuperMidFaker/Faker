@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Col, Row, Layout, Tabs } from 'antd';
+import { Button, Col, Row, Layout, Steps, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
@@ -14,7 +14,7 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Description } = DescriptionList;
-
+const { Step } = Steps;
 const { TabPane } = Tabs;
 
 @injectIntl
@@ -85,12 +85,20 @@ export default class ReceivableBillDetail extends Component {
                 </div>
               </Col>
             </Row>
+            <Steps progressDot current={1} className="progress-tracker">
+              <Step title="草稿" />
+              <Step title="对账中" />
+              <Step title="已接受" />
+            </Steps>
           </Drawer>
           <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-              <Tabs defaultActiveKey="statements" onChange={this.handleTabChange}>
-                <TabPane tab="账单明细" key="statements" >
-                  <StatementsPane />
+              <Tabs defaultActiveKey="unaccepted" onChange={this.handleTabChange}>
+                <TabPane tab="未认可" key="unaccepted" >
+                  <StatementsPane status="unaccepted" />
+                </TabPane>
+                <TabPane tab="已认可" key="accepted" >
+                  <StatementsPane status="accepted" />
                 </TabPane>
               </Tabs>
             </MagicCard>

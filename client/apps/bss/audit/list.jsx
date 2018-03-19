@@ -113,11 +113,13 @@ export default class AuditList extends React.Component {
           <RowAction icon="check-circle-o" onClick={this.handleConfirm} label={this.gmsg('confirm')} row={record} />
           <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
         </span>);
+      } else if (record.status === 1) {
+        return (<span>
+          <RowAction icon="close-circle-o" onClick={this.handleReturn} label={this.gmsg('return')} row={record} />
+          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+        </span>);
       }
-      return (<span>
-        <RowAction icon="close-circle-o" onClick={this.handleReturn} label={this.gmsg('return')} row={record} />
-        <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
-      </span>);
+      return null;
     },
   }]
   handleStatusChange = (ev) => {
@@ -163,12 +165,12 @@ export default class AuditList extends React.Component {
     const mockData = [{
       order_rel_no: '1',
       name: '胡彦斌',
-      age: 32,
+      status: 0,
       address: '西湖区湖底公园1号',
     }, {
       order_rel_no: '2',
       name: '胡彦祖',
-      age: 42,
+      status: 1,
       address: '西湖区湖底公园1号',
     }];
 
