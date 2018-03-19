@@ -14,6 +14,7 @@ import partner from './partner';
 import role from './role';
 import invitation from './invitation';
 import operationLog from './operationLog';
+import bssAudit from './bssAudit';
 import bssFeeSettings from './bssFeeSettings';
 import bssExRateSettings from './bssExRateSettings';
 import cmsDashboard from './cmsDashboard';
@@ -103,6 +104,7 @@ export default combineReducers({
   transportTariff,
   transportBilling,
   transportKpi,
+  bssAudit,
   bssFeeSettings,
   bssExRateSettings,
   cmsDashboard,

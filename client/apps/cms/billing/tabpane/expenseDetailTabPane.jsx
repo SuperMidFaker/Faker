@@ -71,7 +71,6 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.msg('feeName'),
     dataIndex: 'fee_name',
-    width: 200,
   }, {
     title: this.msg('feeType'),
     dataIndex: 'fee_type',
@@ -81,17 +80,6 @@ export default class ExpenseDetailTabPane extends Component {
       return type ? <span>{type.text}</span> : <span />;
     },
   }, {
-    title: this.msg('baseAmount'),
-    dataIndex: 'base_amount',
-    width: 150,
-    align: 'right',
-    render: (o, record) => {
-      if (this.state.editItem.id === record.id) {
-        return this.state.editItem.base_amount;
-      }
-      return o;
-    },
-  }, {
     title: this.msg('origAmount'),
     dataIndex: 'orig_amount',
     width: 150,
@@ -99,6 +87,7 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          type="number"
           value={this.state.editItem.orig_amount}
           onChange={e => this.handleColumnChange(e.target.value, 'orig_amount')}
         />);
@@ -130,6 +119,17 @@ export default class ExpenseDetailTabPane extends Component {
         this.props.currencies.find(curr => curr.currency === o).name;
     },
   }, {
+    title: this.msg('baseAmount'),
+    dataIndex: 'base_amount',
+    width: 150,
+    align: 'right',
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return this.state.editItem.base_amount;
+      }
+      return o;
+    },
+  }, {
     title: this.msg('exchangeRate'),
     dataIndex: 'exchange_rate',
     width: 100,
@@ -137,6 +137,7 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          type="number"
           value={this.state.editItem.exchange_rate}
           onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate')}
         />);
@@ -151,6 +152,7 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          type="number"
           value={this.state.editItem.tax_rate}
           onChange={e => this.handleColumnChange(e.target.value, 'tax_rate')}
         />);
@@ -165,6 +167,7 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          type="number"
           value={this.state.editItem.tax}
           onChange={e => this.handleColumnChange(e.target.value, 'tax')}
         />);
@@ -174,6 +177,7 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.gmsg('remark'),
     dataIndex: 'remark',
+    width: 300,
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
@@ -214,6 +218,8 @@ export default class ExpenseDetailTabPane extends Component {
     if (field === 'orig_amount') {
       if (editOne.exchange_rate) {
         editOne.base_amount = editOne.exchange_rate * value;
+      } else {
+        editOne.base_amount = Number(value);
       }
     } else if (field === 'exchange_rate') {
       if (editOne.orig_amount) {
@@ -226,7 +232,7 @@ export default class ExpenseDetailTabPane extends Component {
       editOne.exchange_rate = currency.exchange_rate;
       editOne.base_amount = editOne.orig_amount * currency.exchange_rate;
     }
-    editOne[field] = value;
+    editOne[field] = Number(value) ? Number(value) : value;
     this.setState({
       editItem: editOne,
     });

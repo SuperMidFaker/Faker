@@ -19,6 +19,14 @@ const messages = defineMessages({
     id: 'bss.audit.status.confirmed',
     defaultMessage: '已确认',
   },
+  confirmAll: {
+    id: 'cms.billing.confirm.all',
+    defaultMessage: '全部确认',
+  },
+  searchTips: {
+    id: 'bss.audit.search.tips',
+    defaultMessage: '业务编号/客户编号',
+  },
 });
 
 export default messages;
