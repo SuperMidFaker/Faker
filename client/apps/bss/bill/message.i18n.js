@@ -15,6 +15,14 @@ const messages = defineMessages({
     id: 'bss.bill.seller.bill',
     defaultMessage: '服务商账单',
   },
+  expense: {
+    id: 'bss.bill.expense',
+    defaultMessage: '费用',
+  },
+  confirmedExpense: {
+    id: 'bss.bill.expense.confirmed',
+    defaultMessage: '未入账单的费用',
+  },
   billsStatus: {
     id: 'bss.bill.status',
     defaultMessage: '账单状态',
@@ -23,8 +31,8 @@ const messages = defineMessages({
     id: 'bss.bill.status.draft',
     defaultMessage: '草稿',
   },
-  statusPending: {
-    id: 'bss.bill.status.pending',
+  statusChecking: {
+    id: 'bss.bill.status.checking',
     defaultMessage: '待对账',
   },
   statusAccepted: {

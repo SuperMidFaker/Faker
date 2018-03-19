@@ -7,10 +7,9 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, DatePicker, Divider, Icon, Input, Layout, Menu, Select, Switch } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
+import ToolbarAction from 'client/components/ToolbarAction';
 import Drawer from 'client/components/Drawer';
 import NestedMenuPanel from 'client/components/NestedMenuPanel';
-import EmptyState from 'client/components/EmptyState';
-import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -69,19 +68,19 @@ export default class AuditList extends React.Component {
     dataIndex: 'status',
   }, {
     title: '应收金额',
-    dataIndex: 'rec_amount',
+    dataIndex: 'receivable_amount',
     width: 150,
   }, {
     title: '应付金额',
-    dataIndex: 'pay_amount',
+    dataIndex: 'payable_amount',
     width: 150,
   }, {
-    title: '盈亏金额',
-    dataIndex: 'profit',
+    title: '差异金额',
+    dataIndex: 'profit_amount',
     width: 150,
   }, {
     title: '毛利率',
-    dataIndex: 'profit_rate',
+    dataIndex: 'gross_profit_ratio',
     width: 100,
   }, {
     title: '订单日期',
@@ -110,9 +109,15 @@ export default class AuditList extends React.Component {
     width: 120,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span>
+          <RowAction icon="check-circle-o" onClick={this.handleConfirm} label={this.gmsg('confirm')} row={record} />
+          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+        </span>);
       }
-      return (<span><RowAction onClick={this.handleDetail} label="费用明细" row={record} /> </span>);
+      return (<span>
+        <RowAction icon="close-circle-o" onClick={this.handleReturn} label={this.gmsg('return')} row={record} />
+        <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+      </span>);
     },
   }]
   handleStatusChange = (ev) => {
@@ -141,7 +146,7 @@ export default class AuditList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/fee/summary/${row.order_rel_no}`;
+    const link = `/bss/audit/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -155,7 +160,17 @@ export default class AuditList extends React.Component {
   // }
   render() {
     const { loading } = this.props;
-    const mockData = [];
+    const mockData = [{
+      order_rel_no: '1',
+      name: '胡彦斌',
+      age: 32,
+      address: '西湖区湖底公园1号',
+    }, {
+      order_rel_no: '2',
+      name: '胡彦祖',
+      age: 42,
+      address: '西湖区湖底公园1号',
+    }];
 
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -188,15 +203,11 @@ export default class AuditList extends React.Component {
       remotes: this.props.asnlist,
     });
     */
-    const primaryAction = <Button type="primary" icon="file-excel">导出</Button>;
-    const secondaryAction = <Button>Secondary</Button>;
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
-        placeholder="结算对象"
+        placeholder="客户"
         optionFilterProp="children"
-        style={{ width: 160 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       />
@@ -206,50 +217,56 @@ export default class AuditList extends React.Component {
       />
     </span>);
     const bulkActions = (<span>
-      <Button icon="check-circle-o" onClick={this.handleBatchRelease}>批量审核</Button>
-      <Button icon="plus-square-o" onClick={this.handleBatchRelease}>加入账单</Button>
-      <Button icon="plus" onClick={this.handleBatchRelease}>新建账单</Button>
+      <Button icon="check-circle-o" onClick={this.handleBatchRelease}>批量确认</Button>
+      <Button icon="close-circle-o" onClick={this.handleBatchRelease}>取消确认</Button>
     </span>);
-    const emptyProps = {
-      header: 'This is Header',
-      imageUrl: 'https://atlaskit.atlassian.com/b9c4dc7ef2c2a1036fe13a5b229d39df.svg',
-      description: 'lots of descritions',
-      primaryAction,
-      secondaryAction,
-    };
     const menuStack = [
       [
         {
-          key: 'table',
-          icon: 'table',
-          title: this.gmsg('tableView'),
-        },
-        {
-          key: 'board',
-          icon: 'layout',
-          title: this.gmsg('boardView'),
-          disabled: true,
-        },
-        {
-          key: 'rules',
-          icon: 'tool',
-          title: this.msg('审核规则'),
+          key: 'g_view',
+          title: this.gmsg('views'),
+          type: 'group',
           children: [
             {
-              key: 'autoAudit',
-              icon: 'rocket',
-              title: this.msg('启用自动审核'),
-              extra: <Switch />,
+              key: 'table',
+              icon: 'table',
+              title: this.gmsg('tableView'),
             },
             {
-              key: 'profitLimit',
-              title: this.msg('最低利润金额'),
-              extra: <Input />,
+              key: 'board',
+              icon: 'layout',
+              title: this.gmsg('boardView'),
+              disabled: true,
             },
+          ],
+        },
+        {
+          key: 'g_setting',
+          title: this.gmsg('setting'),
+          type: 'group',
+          children: [
             {
-              key: 'profitRateLimit',
-              title: this.msg('最低毛利率'),
-              extra: <Input />,
+              key: 'rules',
+              icon: 'tool',
+              title: this.msg('审核规则'),
+              children: [
+                {
+                  key: 'autoAudit',
+                  icon: 'rocket',
+                  title: this.msg('启用自动审核'),
+                  extra: <Switch />,
+                },
+                {
+                  key: 'profitLimit',
+                  title: this.msg('最低利润金额'),
+                  extra: <Input />,
+                },
+                {
+                  key: 'profitRateLimit',
+                  title: this.msg('最低毛利率'),
+                  extra: <Input />,
+                },
+              ],
             },
           ],
         },
@@ -259,8 +276,13 @@ export default class AuditList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('audit')}>
           <PageHeader.Actions>
-            {primaryAction}
-            {secondaryAction}
+            <ToolbarAction
+              icon="check"
+              confirm={this.gmsg('confirmOp')}
+              onConfirm={this.handleAllConfirm}
+              label={this.msg('confirmAll')}
+              // disabled={status === 'confirmed'}
+            />
             <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
@@ -284,6 +306,8 @@ export default class AuditList extends React.Component {
             <DataTable
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
+              onSearch={this.handleSearch}
+              searchTips={this.msg('searchTips')}
               selectedRowKeys={this.state.selectedRowKeys}
               onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
@@ -291,7 +315,6 @@ export default class AuditList extends React.Component {
               rowSelection={rowSelection}
               rowKey="id"
               loading={loading}
-              locale={{ emptyText: <EmptyState {...emptyProps} /> }}
             />
             <NestedMenuPanel
               title={this.gmsg('extraMenu')}

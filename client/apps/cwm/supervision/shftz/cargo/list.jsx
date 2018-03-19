@@ -2,22 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Popover, Layout, Radio, message, Table } from 'antd';
+import { Button, Form, Icon, Popover, Layout, Radio, message } from 'antd';
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS,
   fileCargos, confirmCargos, editGname } from 'common/reducers/cwmShFtz';
-import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ButtonToggle from 'client/components/ButtonToggle';
-import TrimSpan from 'client/components/trimSpan';
-import NavLink from 'client/components/NavLink';
 import ExcelUploader from 'client/components/ExcelUploader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
-import WhseSelect from '../../../common/whseSelect';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -38,6 +34,7 @@ function fetchData({ dispatch }) {
     loading: state.cwmShFtz.loading,
     cargolist: state.cwmShFtz.cargolist,
     cargoRule: state.cwmShFtz.cargoRule,
+    cargoOwner: state.cwmShFtz.cargoOwner,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
@@ -58,12 +55,10 @@ function fetchData({ dispatch }) {
   }),
   {
     loadProductCargo,
-    switchDefaultWhse,
     updateCargoRule,
     syncProdSKUS,
     fileCargos,
     confirmCargos,
-    loadWhse,
     editGname,
   }
 )
@@ -81,17 +76,13 @@ export default class SHFTZCargoList extends React.Component {
   state = {
     rightSiderCollapsed: true,
     selectedRowKeys: [],
-    currentPage: 1,
-    owners: this.props.owners.filter(owner => owner.portion_enabled),
-    owner: this.props.owners.filter(owner => owner.portion_enabled).length === 0 ?
-      {} : this.props.owners.filter(owner => owner.portion_enabled)[0],
+    owner: this.props.cargoOwner,
     rule: null,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.owners !== this.props.owners) {
-      const owners = nextProps.owners.filter(owner => owner.portion_enabled);
-      const owner = owners.length === 0 ? {} : owners[0];
-      this.setState({ owners, owner });
+    if (nextProps.cargoOwner !== this.props.cargoOwner) {
+      const owner = nextProps.cargoOwner;
+      this.setState({ owner });
       this.handleCargoLoad(1, this.props.listFilter, owner);
     }
     if (this.state.rule === null || nextProps.cargoRule !== this.props.cargoRule) {
@@ -211,14 +202,6 @@ export default class SHFTZCargoList extends React.Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleCargoLoad(1, filter);
   }
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-  }
-  handleRowClick = (record) => {
-    this.setState({ owner: record });
-    this.handleCargoLoad(1, this.props.listFilter, record);
-  }
   handleSyncProductSKUs = () => {
     const { whse } = this.props;
     this.props.syncProdSKUS({ owner: this.state.owner, whseCode: whse.code }).then((result) => {
@@ -228,16 +211,6 @@ export default class SHFTZCargoList extends React.Component {
         this.handleCargoLoad();
       }
     });
-  }
-  handleOwnerSearch = (value) => {
-    let owners = this.props.owners.filter(owner => owner.portion_enabled);
-    if (value) {
-      owners = this.props.owners.filter((item) => {
-        const reg = new RegExp(value);
-        return reg.test(item.name + item.customs_code);
-      });
-    }
-    this.setState({ owners, currentPage: 1 });
   }
   handleRuleChange = (e) => {
     this.setState({ rule: e.target.value });
@@ -277,8 +250,8 @@ export default class SHFTZCargoList extends React.Component {
       cargolist, listFilter, loading, whse, loginId, submitting,
     } = this.props;
     // const bondedWhses = whses.filter(wh => wh.bonded === 1);
-    const { owners, owner, rule } = this.state;
-    const filterOwners = owners.filter(item => item.portion_enabled);
+    const { owner, rule } = this.state;
+    // const filterOwners = owners.filter(item => item.portion_enabled);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -286,11 +259,6 @@ export default class SHFTZCargoList extends React.Component {
       },
     };
     this.dataSource.remotes = cargolist;
-    const ownerColumns = [{
-      dataIndex: 'name',
-      key: 'code',
-      render: (o, record) => <span className="menu-sider-item"><TrimSpan text={record.customs_code ? `${record.customs_code} | ${record.name}` : record.name} maxLen={30} /></span>,
-    }];
     const radioStyle = {
       display: 'block',
       height: '30px',
@@ -305,47 +273,9 @@ export default class SHFTZCargoList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" >
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <NavLink to="/cwm/supervision/shftz">
-                  <Icon type="left" /> 上海自贸区监管
-                </NavLink>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzCargoReg')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <div className="toolbar">
-              <SearchBox placeholder={this.msg('ownerSearchPlaceholder')} onSearch={this.handleOwnerSearch} />
-            </div>
-            <div className="list-body">
-              <Table
-                size="middle"
-                columns={ownerColumns}
-                dataSource={filterOwners}
-                showHeader={false}
-                pagination={{
-                  current: this.state.currentPage,
-                  defaultPageSize: 50,
-                  onChange: this.handlePageChange,
-                }}
-                rowClassName={record => (record.id === owner.id ? 'table-row-selected' : '')}
-                rowKey="id"
-                onRow={record => ({
-                  onClick: () => { this.handleRowClick(record); },
-                })}
-              />
-            </div>
-          </div>
-        </Sider>
         <Layout>
           <PageHeader
             breadcrumb={[
-              <WhseSelect onChange={this.handleWhseChange} />,
               owner.name,
             ]}
           >

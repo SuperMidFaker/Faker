@@ -76,6 +76,7 @@ import * as CWMStockTransition from './cwm/stock/transition';
 import * as CWMStockMovement from './cwm/stock/movement';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMSettings from './cwm/settings';
+import CWMSupSHFTZ from './cwm/supervision/shftz';
 import * as CWMSupSHFTZEntry from './cwm/supervision/shftz/entry';
 import * as CWMSupSHFTZTransferIn from './cwm/supervision/shftz/transfer/in';
 import * as CWMSupSHFTZTransferOut from './cwm/supervision/shftz/transfer/out';
@@ -399,7 +400,7 @@ export default(store) => {
               </Route>
             </Route>
             <Route path="supervision">
-              <Route path="shftz">
+              <Route path="shftz" component={CWMSupSHFTZ}>
                 <IndexRedirect to="/cwm/supervision/shftz/entry" />
                 <Route path="entry" >
                   <IndexRoute component={CWMSupSHFTZEntry.List} />

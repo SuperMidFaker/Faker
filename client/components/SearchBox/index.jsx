@@ -5,12 +5,8 @@ import { Input } from 'antd';
 const { Search } = Input;
 
 export default class SearchBox extends React.Component {
-  static defaultProps = {
-    width: 200,
-  }
   static propTypes = {
     placeholder: PropTypes.string,
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onSearch: PropTypes.func.isRequired,
     enterButton: PropTypes.bool,
   }
@@ -31,7 +27,7 @@ export default class SearchBox extends React.Component {
         onChange={this.handleChange}
         onSearch={onSearch}
         onFocus={this.handleFocus}
-        style={{ width: this.props.width }}
+        // style={{ width: this.props.width }}
         enterButton={enterButton}
       />
     );

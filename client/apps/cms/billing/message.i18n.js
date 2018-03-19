@@ -109,7 +109,7 @@ const messages = defineMessages({
   },
   spcSummary: {
     id: 'cms.billing.spc.summary',
-    defaultMessage: '特殊费用合计',
+    defaultMessage: '特殊费用',
   },
   receivableTotal: {
     id: 'cms.billing.receivable.total',

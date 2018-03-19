@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Tag, notification } from 'antd';
+import { Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadNonbondedStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -11,11 +11,10 @@ import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
-import ModuleMenu from '../../menu';
 import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -237,43 +236,29 @@ export default class SHFTZNonBondedStockList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="nonbonded" />
-          </div>
-        </Sider>
+        <PageHeader title={this.msg('非保税库存查询')}>
+          <PageHeader.Actions>
+            <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
+              {this.msg('export')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
         <Layout>
-          <PageHeader title={this.msg('非保税库存查询')}>
-            <PageHeader.Actions>
-              <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
-                {this.msg('export')}
-              </Button>
-            </PageHeader.Actions>
-          </PageHeader>
-          <Layout>
-            <Drawer top onCollapseChange={this.handleCollapseChange}>
-              <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
-            </Drawer>
-            <Content className="page-content" key="main">
-              <DataTable
-                toolbarActions={toolbarActions}
-                selectedRowKeys={this.state.selectedRowKeys}
-                scrollOffset={this.state.scrollOffset}
-                loading={this.props.loading}
-                columns={columns}
-                dataSource={this.props.stockDatas}
-                rowSelection={rowSelection}
-                rowKey="id"
-              />
-            </Content>
-          </Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              scrollOffset={this.state.scrollOffset}
+              loading={this.props.loading}
+              columns={columns}
+              dataSource={this.props.stockDatas}
+              rowSelection={rowSelection}
+              rowKey="id"
+            />
+          </Content>
         </Layout>
       </Layout>
     );

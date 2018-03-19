@@ -9,6 +9,7 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import DataTable from 'client/components/DataTable';
 import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
+import EmptyState from 'client/components/EmptyState';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
@@ -217,6 +218,10 @@ export default class CustomerBillsList extends React.Component {
       remotes: this.props.asnlist,
     });
     */
+    const primaryAction = (<Button type="primary" icon="plus" onClick={this.handleCreate}>
+      {this.msg('新建账单')}
+    </Button>);
+    const secondaryAction = <Button>导出</Button>;
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
@@ -232,6 +237,12 @@ export default class CustomerBillsList extends React.Component {
         onChange={this.handleDateRangeChange}
       />
     </span>);
+    const emptyProps = {
+      header: 'This is Header',
+      imageUrl: 'https://atlaskit.atlassian.com/b9c4dc7ef2c2a1036fe13a5b229d39df.svg',
+      description: 'lots of descritions',
+      primaryAction,
+    };
     const totCol = (
       <Summary>
         <Summary.Item label="账单金额合计">{10000}</Summary.Item>
@@ -242,24 +253,26 @@ export default class CustomerBillsList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('bill')} menus={menus} onTabChange={this.handleTabChange}>
           <PageHeader.Actions>
-            <Button type="primary" icon="plus" onClick={this.handleCreate}>
-              {this.msg('新建账单')}
-            </Button>
+            {primaryAction}
+            {secondaryAction}
+
             <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
-              <Menu.Item key="all">
-                {this.msg('未入账单的费用')}
-              </Menu.Item>
+              <Menu.ItemGroup key="expense" title={this.msg('expense')}>
+                <Menu.Item key="confirmedExpense">
+                  {this.msg('confirmedExpense')}
+                </Menu.Item>
+              </Menu.ItemGroup>
               <Menu.ItemGroup key="billsStatus" title={this.msg('billsStatus')}>
                 <Menu.Item key="draft">
                   <Icon type="inbox" /> {this.msg('statusDraft')}
                 </Menu.Item>
-                <Menu.Item key="pending">
-                  <Icon type="swap" /> {this.msg('statusPending')}
+                <Menu.Item key="checking">
+                  <Icon type="swap" /> {this.msg('statusChecking')}
                 </Menu.Item>
                 <Menu.Item key="accepted">
                   <Icon type="check-square-o" /> {this.msg('statusAccepted')}
@@ -281,6 +294,7 @@ export default class CustomerBillsList extends React.Component {
               rowKey="id"
               loading={loading}
               total={totCol}
+              locale={{ emptyText: <EmptyState {...emptyProps} /> }}
             />
           </Content>
           <DockPanel
