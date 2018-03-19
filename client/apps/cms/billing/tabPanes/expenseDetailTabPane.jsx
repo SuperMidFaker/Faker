@@ -71,7 +71,6 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.msg('feeName'),
     dataIndex: 'fee_name',
-    width: 200,
   }, {
     title: this.msg('feeType'),
     dataIndex: 'fee_type',
@@ -79,17 +78,6 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o) => {
       const type = FEE_TYPE.filter(fe => fe.key === o)[0];
       return type ? <span>{type.text}</span> : <span />;
-    },
-  }, {
-    title: this.msg('baseAmount'),
-    dataIndex: 'base_amount',
-    width: 150,
-    align: 'right',
-    render: (o, record) => {
-      if (this.state.editItem.id === record.id) {
-        return this.state.editItem.base_amount;
-      }
-      return o;
     },
   }, {
     title: this.msg('origAmount'),
@@ -128,6 +116,17 @@ export default class ExpenseDetailTabPane extends Component {
       }
       return this.props.currencies.find(curr => curr.currency === o) &&
         this.props.currencies.find(curr => curr.currency === o).name;
+    },
+  }, {
+    title: this.msg('baseAmount'),
+    dataIndex: 'base_amount',
+    width: 150,
+    align: 'right',
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return this.state.editItem.base_amount;
+      }
+      return o;
     },
   }, {
     title: this.msg('exchangeRate'),
@@ -174,6 +173,7 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.gmsg('remark'),
     dataIndex: 'remark',
+    width: 300,
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
