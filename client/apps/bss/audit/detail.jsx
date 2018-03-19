@@ -181,7 +181,7 @@ export default class FeeSummaryDetail extends Component {
         <PageHeader breadcrumb={[this.msg('fee'), this.msg('feeSummary'), this.props.params.orderRelNo]}>
           <PageHeader.Actions>
             <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
-              {this.msg('审核')}
+              {this.msg('confirm')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
