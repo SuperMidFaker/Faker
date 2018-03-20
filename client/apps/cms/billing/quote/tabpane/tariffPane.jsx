@@ -97,9 +97,15 @@ export default class TariffPane extends Component {
     this.setState({ suggestions });
   }
   handleEditChange = (field, value) => {
-    this.setState({
-      editItem: { ...this.state.editItem, [field]: value },
-    });
+    if (field === 'billing_way' && value === '$manual') {
+      this.setState({
+        editItem: { ...this.state.editItem, [field]: value, formula_factor: '' },
+      });
+    } else {
+      this.setState({
+        editItem: { ...this.state.editItem, [field]: value },
+      });
+    }
   }
   handleFormulaChange = (editorState) => {
     const formula = Mention.toString(editorState);
@@ -227,7 +233,7 @@ export default class TariffPane extends Component {
               />);
             }
             return (
-              <Input defaultValue={o} placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
+              <Input value={editItem.formula_factor} placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
             );
           }
           return o;
