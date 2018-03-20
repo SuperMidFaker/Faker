@@ -119,17 +119,6 @@ export default class ExpenseDetailTabPane extends Component {
         this.props.currencies.find(curr => curr.currency === o).name;
     },
   }, {
-    title: this.msg('baseAmount'),
-    dataIndex: 'base_amount',
-    width: 150,
-    align: 'right',
-    render: (o, record) => {
-      if (this.state.editItem.id === record.id) {
-        return this.state.editItem.base_amount;
-      }
-      return o;
-    },
-  }, {
     title: this.msg('exchangeRate'),
     dataIndex: 'exchange_rate',
     width: 100,
@@ -141,6 +130,17 @@ export default class ExpenseDetailTabPane extends Component {
           value={this.state.editItem.exchange_rate}
           onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate')}
         />);
+      }
+      return o;
+    },
+  }, {
+    title: this.msg('baseAmount'),
+    dataIndex: 'base_amount',
+    width: 150,
+    align: 'right',
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return this.state.editItem.base_amount;
       }
       return o;
     },
@@ -190,19 +190,19 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.gmsg('op'),
     dataIndex: 'OPS_COL',
-    width: 90,
+    width: 130,
     fixed: 'right',
     render: (o, record) => {
       if (record.fee_status < 2) {
         if (this.state.editItem.id === record.id) {
-          return (<span><RowAction onClick={this.handleOk} label={this.gmsg('confirm')} row={record} />
-            <span className="ant-divider" />
-            <RowAction onClick={this.handleCancel} label={this.gmsg('cancel')} row={record} />
+          return (<span>
+            <RowAction icon="save" onClick={this.handleOk} label={this.gmsg('confirm')} row={record} />
+            <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
           </span>);
         }
-        return (<span><RowAction onClick={this.handleEdit} label={this.gmsg('adjust')} row={record} />
-          <span className="ant-divider" />
-          <RowAction onClick={this.handleDelete} label={this.gmsg('delete')} row={record} />
+        return (<span>
+          <RowAction icon="edit" onClick={this.handleEdit} label={this.gmsg('adjust')} row={record} />
+          <RowAction danger icon="delete" confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip={this.gmsg('delete')} row={record} />
         </span>);
       }
       return '';

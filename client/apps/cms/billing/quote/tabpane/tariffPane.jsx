@@ -194,7 +194,7 @@ export default class TariffPane extends Component {
       }, {
         title: this.msg('billingWay'),
         dataIndex: 'billing_way',
-        width: 200,
+        width: 180,
         render: (o, record) => {
           if (onEdit && editItem.id === record.id) {
             return (<TreeSelect
@@ -212,7 +212,6 @@ export default class TariffPane extends Component {
       }, {
         title: this.msg('formulaFactor'),
         dataIndex: 'formula_factor',
-        width: 250,
         render: (o, record) => {
           if (onEdit && editItem.id === record.id) {
             if (editItem.billing_way === '$formula') {
@@ -237,12 +236,12 @@ export default class TariffPane extends Component {
     ];
     if (!readOnly) {
       columns.push({
-        width: 80,
+        width: 90,
         render: (o, record) => {
           if (onEdit && editItem.id === record.id) {
             return (<span>
               <RowAction onClick={this.handleFeeSave} icon="save" row={record} />
-              <RowAction shape="circle" onClick={this.handleFeeEditCancel} icon="close" tooltip="取消" />
+              <RowAction onClick={this.handleFeeEditCancel} icon="close" tooltip="取消" />
             </span>
             );
           }

@@ -137,7 +137,7 @@ export default class RatesList extends Component {
         dataIndex: 'quote_name',
         width: 200,
       }, {
-        title: this.props.listFilter.viewStatus === 'clientQuote' ? this.msg('clientName') : this.msg('providerName'),
+        title: this.props.listFilter.viewStatus === 'clientQuote' ? this.msg('buyerName') : this.msg('sellerName'),
         width: 200,
         render: (text, record) => {
           let partnerName = '';

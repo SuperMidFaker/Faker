@@ -34,7 +34,7 @@ export default class PageHeader extends Component {
           {menus && menus.length &&
             <Menu
               onClick={this.onChange}
-              defaultSelectedKeys={currentKey || (defaultTab && [defaultTab.key])}
+              defaultSelectedKeys={(currentKey && [currentKey]) || (defaultTab && [defaultTab.key])}
               mode="horizontal"
             >
               {menus.map(item => <Menu.Item key={item.key} >{item.menu}</Menu.Item>)}
