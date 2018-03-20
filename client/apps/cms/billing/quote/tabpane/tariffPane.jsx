@@ -232,8 +232,13 @@ export default class TariffPane extends Component {
                 style={{ width: '100%', height: '100%' }}
               />);
             }
+            if (editItem.billing_way === '$manual') {
+              return (
+                <Input value={editItem.formula_factor} disabled placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
+              );
+            }
             return (
-              <Input value={editItem.formula_factor} placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
+              <Input defaultValue={o} placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
             );
           }
           return o;
