@@ -27,7 +27,6 @@ export default class SearchBox extends React.Component {
         onChange={this.handleChange}
         onSearch={onSearch}
         onFocus={this.handleFocus}
-        // style={{ width: this.props.width }}
         enterButton={enterButton}
       />
     );

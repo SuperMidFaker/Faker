@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col, Icon, Popover } from 'antd';
 import { loadOrderDetail } from 'common/reducers/sofOrders';
-import TrimSpan from 'client/components/trimSpan';
 
 @connect(
   state => ({
@@ -41,7 +40,7 @@ export default class OrderNoColumn extends React.Component {
             >
               {order.shipmt_order_no}
             </a>
-            <div><TrimSpan text={order.customer_name} maxLen={10} /></div>
+            <div>{order.customer_name}</div>
             <div className="mdc-text-grey">{order.cust_order_no} {order.cust_invoice_no && <Popover placement="right" content={content}><Icon type="caret-right" /></Popover>}</div>
           </Col>
         </Row>

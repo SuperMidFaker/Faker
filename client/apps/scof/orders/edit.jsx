@@ -56,9 +56,6 @@ export default class EditOrder extends Component {
     formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     editOrder: PropTypes.func.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
     const { formData } = this.props;
@@ -81,8 +78,8 @@ export default class EditOrder extends Component {
           duration: 15,
         });
       } else if (result.data.level === 'warn') {
-        notification.warn({
-          message: '警告信息',
+        notification.info({
+          message: '提示信息',
           description: VALIDATE_MSG[result.data.msgkey],
           btn: (<div>
             <a role="presentation" onClick={() => this.handleEdit(true)}>继续保存</a>
@@ -122,11 +119,11 @@ export default class EditOrder extends Component {
       <Layout>
         <PageHeader breadcrumb={[this.msg('shipmentOrders'), this.msg('editOrder')]}>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancel}>
-              {this.msg('cancel')}
-            </Button>
-            <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>
+            <Button icon="save" type="primary" onClick={this.handleSave} loading={this.props.saving}>
               {this.msg('save')}
+            </Button>
+            <Button onClick={this.handleCancel}>
+              {this.msg('cancel')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Input, Select, Button } from 'antd';
+import { Input, Select, Button, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
@@ -71,22 +71,25 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.msg('feeName'),
     dataIndex: 'fee_name',
+    width: 150,
   }, {
     title: this.msg('feeType'),
     dataIndex: 'fee_type',
     width: 100,
+    align: 'center',
     render: (o) => {
       const type = FEE_TYPE.filter(fe => fe.key === o)[0];
-      return type ? <span>{type.text}</span> : <span />;
+      return type ? <Tag color={type.tag}>{type.text}</Tag> : <span />;
     },
   }, {
     title: this.msg('origAmount'),
     dataIndex: 'orig_amount',
-    width: 150,
+    width: 120,
     align: 'right',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          size="small"
           type="number"
           value={this.state.editItem.orig_amount}
           onChange={e => this.handleColumnChange(e.target.value, 'orig_amount')}
@@ -97,15 +100,17 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.msg('origCurrency'),
     dataIndex: 'currency',
-    width: 180,
+    width: 100,
+    align: 'center',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (
           <Select
+            size="small"
             showSearch
             optionFilterProp="children"
             value={this.state.editItem.currency}
-            style={{ width: 150 }}
+            style={{ width: '100%' }}
             allowClear
             onChange={value => this.handleColumnChange(value, 'currency')}
           >
@@ -122,11 +127,12 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.msg('exchangeRate'),
     dataIndex: 'exchange_rate',
-    width: 100,
+    width: 80,
     align: 'right',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          size="small"
           type="number"
           value={this.state.editItem.exchange_rate}
           onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate')}
@@ -137,23 +143,29 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.msg('baseAmount'),
     dataIndex: 'base_amount',
-    width: 150,
+    width: 120,
     align: 'right',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
-        return this.state.editItem.base_amount;
+        return (<Input
+          size="small"
+          disabled
+          value={this.state.editItem.base_amount}
+        />);
       }
       return o;
     },
   }, {
     title: this.msg('taxRate'),
     dataIndex: 'tax_rate',
-    width: 100,
+    width: 120,
     align: 'right',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          size="small"
           type="number"
+          addonAfter="%"
           value={this.state.editItem.tax_rate}
           onChange={e => this.handleColumnChange(e.target.value, 'tax_rate')}
         />);
@@ -163,11 +175,12 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.msg('taxValue'),
     dataIndex: 'tax',
-    width: 150,
+    width: 120,
     align: 'right',
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          size="small"
           type="number"
           value={this.state.editItem.tax}
           onChange={e => this.handleColumnChange(e.target.value, 'tax')}
@@ -178,10 +191,10 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.gmsg('remark'),
     dataIndex: 'remark',
-    width: 300,
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
+          size="small"
           value={this.state.editItem.remark}
           onChange={e => this.handleColumnChange(e.target.value, 'remark')}
         />);
@@ -191,18 +204,18 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.gmsg('op'),
     dataIndex: 'OPS_COL',
-    width: 130,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (record.fee_status < 2) {
         if (this.state.editItem.id === record.id) {
           return (<span>
-            <RowAction icon="save" onClick={this.handleOk} label={this.gmsg('confirm')} row={record} />
+            <RowAction icon="save" onClick={this.handleOk} tooltip={this.gmsg('confirm')} row={record} />
             <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
           </span>);
         }
         return (<span>
-          <RowAction icon="edit" onClick={this.handleEdit} label={this.gmsg('adjust')} row={record} />
+          <RowAction icon="edit" onClick={this.handleEdit} tooltip={this.gmsg('adjust')} row={record} />
           <RowAction danger icon="delete" confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} tooltip={this.gmsg('delete')} row={record} />
         </span>);
       }
@@ -287,10 +300,14 @@ export default class ExpenseDetailTabPane extends Component {
         dataSource={dataSource}
         rowKey="id"
         loading={loading}
+        bordered
       >
         <DataPane.Toolbar>
-          {!!expense.quote_allow_special &&
-          <Button onClick={this.handleAddSpecial}>添加特殊费用</Button>}
+          <Button
+            icon="plus-circle-o"
+            onClick={this.handleAddSpecial}
+            disabled={!expense.quote_allow_special}
+          >添加特殊费用</Button>
         </DataPane.Toolbar>
         <AddSpeModal expenseNo={expense.expense_no} reload={this.handleReload} />
       </DataPane>

@@ -76,15 +76,16 @@ function fetchData({ state, dispatch }) {
 })
 @Form.create()
 @withPrivilege({ module: 'clearance', feature: 'expense' })
-export default class ExpenseList extends Component {
+export default class PayableExpenseList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     intl: intlShape.isRequired,
     listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
-    partners: PropTypes.shape({
-      customer: PropTypes.array,
-      supplier: PropTypes.array,
-    }),
+    partners: PropTypes.arrayOf(PropTypes.shape({
+      code: PropTypes.string,
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -197,7 +198,7 @@ export default class ExpenseList extends Component {
       width: 120,
       render: (o, record) => {
         if (record.exp_status < 3) {
-          return <RowAction icon="form" onClick={this.handleDetail} label="应收明细" row={record} />;
+          return <RowAction icon="form" onClick={this.handleDetail} label="应付明细" row={record} />;
         }
         return <RowAction icon="eye-o" onClick={this.handleDetail} label="应付明细" row={record} />;
       },
@@ -315,6 +316,10 @@ export default class ExpenseList extends Component {
       }
     });
   }
+  handleSearch = (value) => {
+    const filter = { ...this.props.listFilter, searchText: value };
+    this.handleExpensesLoad(1, filter);
+  }
   showImportLogs = (ev) => {
     if (ev.key === 'logs') {
       this.props.togglePanelVisible(true);
@@ -373,16 +378,16 @@ export default class ExpenseList extends Component {
       <Layout>
         <PageHeader title={this.msg('payableExpense')}>
           <PageHeader.Actions>
-            <Dropdown.Button icon="upload" onClick={this.handleImportExpense} overlay={menu}>
-              {this.msg('importFees')}
-            </Dropdown.Button>
             <ToolbarAction
               icon="check"
               confirm={this.gmsg('confirmOp')}
               onConfirm={this.handleAllConfirm}
               label={this.msg('confirmAll')}
-              disabled={status === 'confirmed'}
+              disabled={status !== 'submitted'}
             />
+            <Dropdown.Button icon="upload" onClick={this.handleImportExpense} overlay={menu}>
+              {this.msg('importFees')}
+            </Dropdown.Button>
           </PageHeader.Actions>
         </PageHeader>
         <Layout>

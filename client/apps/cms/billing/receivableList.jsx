@@ -74,10 +74,15 @@ function fetchData({ state, dispatch }) {
 })
 @Form.create()
 @withPrivilege({ module: 'clearance', feature: 'expense' })
-export default class ExpenseList extends Component {
+export default class ReceivableExpenseList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
+    partners: PropTypes.arrayOf(PropTypes.shape({
+      code: PropTypes.string,
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -300,6 +305,10 @@ export default class ExpenseList extends Component {
       }
     });
   }
+  handleSearch = (value) => {
+    const filter = { ...this.props.listFilter, searchText: value };
+    this.handleExpensesLoad(1, filter);
+  }
   expensesUploaded = () => {
     this.handleExpensesLoad(1);
     this.setState({
@@ -374,7 +383,7 @@ export default class ExpenseList extends Component {
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
               <Menu.Item key="all">
-                {this.gmsg('allReceivable')}
+                {this.msg('allReceivable')}
               </Menu.Item>
               <Menu.ItemGroup key="status" title={this.gmsg('status')}>
                 <Menu.Item key="billing">

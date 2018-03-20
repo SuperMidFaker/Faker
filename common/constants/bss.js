@@ -5,7 +5,7 @@ export const BSS_PLUGINS = [
 ];
 
 export const FEE_TYPE = [
-  { key: 'SC', text: '服务费' },
-  { key: 'AP', text: '代垫费' },
-  { key: 'SP', text: '特殊费用' },
+  { key: 'SC', text: '服务费', tag: 'green' },
+  { key: 'AP', text: '代垫费', tag: 'blue' },
+  { key: 'SP', text: '特殊费用', tag: 'red' },
 ];

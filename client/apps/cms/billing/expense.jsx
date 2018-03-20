@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import { loadBuyerSellerExpenses, loadCurrencies } from 'common/reducers/cmsExpense';
-import ExpenseDetailTabPane from './tabpane/expenseDetailTabPane';
+import FeesPane from './tabpane/feesPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -74,7 +74,7 @@ export default class ExpenseDetail extends Component {
             <Tabs defaultActiveKey={defaultActiveKey}>
               {aspect !== 0 &&
               <TabPane tab="应收明细" key="receivable" >
-                <ExpenseDetailTabPane
+                <FeesPane
                   fullscreen={this.state.fullscreen}
                   loading={expensesLoading}
                   expense={delgExpenses.receive}
@@ -86,7 +86,7 @@ export default class ExpenseDetail extends Component {
                   tab={delgExpenses.pays.length === 1 ? '应付明细' : `应付明细-${pay.seller_name}`}
                   key={`payable-${pay.seller_partner_id}`}
                 >
-                  <ExpenseDetailTabPane
+                  <FeesPane
                     fullscreen={this.state.fullscreen}
                     loading={expensesLoading}
                     expense={pay}

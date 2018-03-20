@@ -146,11 +146,11 @@ export default class CreateOrder extends Component {
       <Layout>
         <PageHeader breadcrumb={[this.msg('shipmentOrders'), this.msg('createOrder')]}>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancel}>
-              {this.msg('cancel')}
-            </Button>
-            <Button type="primary" onClick={this.handleSave} loading={this.props.saving} disabled={invalidOrder}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={this.props.saving} disabled={invalidOrder}>
               {this.msg('save')}
+            </Button>
+            <Button onClick={this.handleCancel}>
+              {this.msg('cancel')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
