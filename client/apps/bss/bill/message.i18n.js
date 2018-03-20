@@ -19,13 +19,17 @@ const messages = defineMessages({
     id: 'bss.bill.expense',
     defaultMessage: '费用',
   },
-  confirmedExpense: {
-    id: 'bss.bill.expense.confirmed',
+  pendingExpense: {
+    id: 'bss.bill.pending.expense',
     defaultMessage: '未入账单的费用',
   },
-  billsStatus: {
-    id: 'bss.bill.status',
-    defaultMessage: '账单状态',
+  offlineBill: {
+    id: 'bss.bill.offline',
+    defaultMessage: '线下账单',
+  },
+  onlineBill: {
+    id: 'bss.bill.online',
+    defaultMessage: '线上对账',
   },
   statusDraft: {
     id: 'bss.bill.status.draft',
@@ -33,15 +37,11 @@ const messages = defineMessages({
   },
   statusChecking: {
     id: 'bss.bill.status.checking',
-    defaultMessage: '待对账',
+    defaultMessage: '对账中',
   },
   statusAccepted: {
     id: 'bss.bill.status.accepted',
     defaultMessage: '已接受',
-  },
-  statusOffline: {
-    id: 'bss.bill.status.offline',
-    defaultMessage: '线下账单',
   },
 });
 

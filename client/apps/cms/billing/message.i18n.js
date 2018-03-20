@@ -15,6 +15,14 @@ const messages = defineMessages({
     id: 'cms.billing.receivable',
     defaultMessage: '应收费用',
   },
+  allReceivable: {
+    id: 'cms.billing.all.receivable',
+    defaultMessage: '全部应收',
+  },
+  allPayable: {
+    id: 'cms.billing.all.payable',
+    defaultMessage: '全部应付',
+  },
   statusBilling: {
     id: 'cms.billing.status.billing',
     defaultMessage: '计费中',
@@ -83,12 +91,12 @@ const messages = defineMessages({
     id: 'cms.billing.provider',
     defaultMessage: '服务商',
   },
-  clientName: {
-    id: 'cms.billing.client.name',
+  buyerName: {
+    id: 'cms.billing.buyer.name',
     defaultMessage: '委托方名称',
   },
-  providerName: {
-    id: 'cms.billing.provider.name',
+  sellerName: {
+    id: 'cms.billing.seller.name',
     defaultMessage: '服务商名称',
   },
   custOrderNo: {
@@ -234,15 +242,15 @@ const messages = defineMessages({
   },
   baseAmount: {
     id: 'cms.billing.expense.fee.baseAmount',
-    defaultMessage: '计费金额(人民币)',
+    defaultMessage: '人民币金额',
   },
   origAmount: {
     id: 'cms.billing.expense.fee.origAmount',
-    defaultMessage: '外币金额',
+    defaultMessage: '金额',
   },
   origCurrency: {
     id: 'cms.billing.expense.fee.origCurrency',
-    defaultMessage: '外币币制',
+    defaultMessage: '币制',
   },
   exchangeRate: {
     id: 'cms.billing.expense.fee.exchangeRate',

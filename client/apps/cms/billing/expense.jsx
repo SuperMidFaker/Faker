@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import { loadBuyerSellerExpenses, loadCurrencies } from 'common/reducers/cmsExpense';
-import ExpenseDetailTabPane from './tabPanes/expenseDetailTabPane';
+import ExpenseDetailTabPane from './tabpane/expenseDetailTabPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;

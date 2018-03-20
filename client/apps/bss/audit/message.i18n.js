@@ -20,7 +20,7 @@ const messages = defineMessages({
     defaultMessage: '已确认',
   },
   confirmAll: {
-    id: 'cms.billing.confirm.all',
+    id: 'bss.audit.confirm.all',
     defaultMessage: '全部确认',
   },
   searchTips: {

@@ -99,7 +99,7 @@ export default class ExpenseList extends Component {
           {o}
         </a>),
     }, {
-      title: this.msg('clientName'),
+      title: this.msg('buyerName'),
       dataIndex: 'buyer_name',
       width: 200,
     }, {
@@ -374,7 +374,7 @@ export default class ExpenseList extends Component {
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
               <Menu.Item key="all">
-                {this.gmsg('all')}
+                {this.gmsg('allReceivable')}
               </Menu.Item>
               <Menu.ItemGroup key="status" title={this.gmsg('status')}>
                 <Menu.Item key="billing">
