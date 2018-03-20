@@ -27,10 +27,7 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     aspect: state.account.aspect,
-    loginId: state.account.loginId,
-    username: state.account.username,
     delgExpenses: state.cmsExpense.delgExpenses,
     expensesLoading: state.cmsExpense.expensesLoading,
     expDetailsReload: state.cmsExpense.expDetailsReload,
@@ -62,11 +59,11 @@ export default class ExpenseDetail extends Component {
       params, aspect, delgExpenses, expensesLoading,
     } = this.props;
     let defaultActiveKey;
-    if (aspect !== 0) {
+    if (window.location.search.indexOf('receivable') !== -1) {
       defaultActiveKey = 'receivable';
     } else if (delgExpenses.pays.length === 0) {
       defaultActiveKey = '';
-    } else {
+    } else if (window.location.search.indexOf('payable') !== -1) {
       defaultActiveKey = `payable-${delgExpenses.pays[0].seller_partner_id}`;
     }
     return (

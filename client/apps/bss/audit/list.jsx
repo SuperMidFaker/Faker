@@ -59,7 +59,7 @@ export default class AuditList extends React.Component {
   gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
     title: '业务编号',
-    dataIndex: 'order_rel_no',
+    dataIndex: 'sof_order_no',
     width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
@@ -72,10 +72,6 @@ export default class AuditList extends React.Component {
     title: '客户单号',
     width: 180,
     dataIndex: 'cust_order_no',
-  }, {
-    title: '状态',
-    width: 100,
-    dataIndex: 'status',
   }, {
     title: '应收金额',
     dataIndex: 'receivable_amount',
@@ -104,12 +100,12 @@ export default class AuditList extends React.Component {
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
   }, {
     title: '审核时间',
-    dataIndex: 'created_date',
+    dataIndex: 'confirmed_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
     title: '审核人员',
-    dataIndex: 'created_by',
+    dataIndex: 'confirmed_by',
     width: 80,
   }, {
     title: this.gmsg('actions'),
