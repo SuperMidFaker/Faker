@@ -261,7 +261,7 @@ export default class AuditList extends React.Component {
         }
       </Select>
       <RangePicker
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        ranges={{ 当天: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       />
     </span>);

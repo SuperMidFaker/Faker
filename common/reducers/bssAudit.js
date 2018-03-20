@@ -16,7 +16,7 @@ const initialState = {
   },
   listFilter: {
     status: 'submitted',
-    clientPid: null,
+    clientPid: 'all',
   },
   loading: false,
 };
@@ -31,6 +31,8 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.LOAD_AUDITS_SUCCEED:
       return { ...state, loading: false, auditslist: action.result.data };
+    case actionTypes.LOAD_AUDITS_FAIL:
+      return { ...state, loading: false };
     default:
       return state;
   }
