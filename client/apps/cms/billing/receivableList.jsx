@@ -374,7 +374,7 @@ export default class ExpenseList extends Component {
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
               <Menu.Item key="all">
-                {this.gmsg('allReceivable')}
+                {this.msg('allReceivable')}
               </Menu.Item>
               <Menu.ItemGroup key="status" title={this.gmsg('status')}>
                 <Menu.Item key="billing">

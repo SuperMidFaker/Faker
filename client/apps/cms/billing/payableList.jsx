@@ -197,9 +197,9 @@ export default class ExpenseList extends Component {
       width: 120,
       render: (o, record) => {
         if (record.exp_status < 3) {
-          return <RowAction icon="form" onClick={this.handleDetail} label="应收明细" row={record} />;
+          return <RowAction icon="form" onClick={this.handleDetail} label="应付明细" row={record} />;
         }
-        return <RowAction icon="eye-o" onClick={this.handleDetail} label="应收明细" row={record} />;
+        return <RowAction icon="eye-o" onClick={this.handleDetail} label="应付明细" row={record} />;
       },
     },
   ];
