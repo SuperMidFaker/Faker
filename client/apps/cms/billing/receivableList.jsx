@@ -267,7 +267,7 @@ export default class ExpenseList extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleDetail = (row) => {
-    const link = `/clearance/billing/expense/${row.delg_no}/fees`;
+    const link = `/clearance/billing/expense/${row.delg_no}/fees?from=receivable`;
     this.context.router.push(link);
   }
   showImportLogs = (ev) => {

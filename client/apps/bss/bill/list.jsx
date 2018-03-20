@@ -51,6 +51,9 @@ export default class BillList extends React.Component {
   handleFilterMenuClick = (ev) => {
     this.setState({ mode: ev.key });
   }
+  handleTabChange = (key) => {
+    this.setState({ currentTab: key });
+  }
   handleSearch = (value) => {
     const filters = { ...this.props.filters, name: value };
     const whseCode = this.props.defaultWhse.code;

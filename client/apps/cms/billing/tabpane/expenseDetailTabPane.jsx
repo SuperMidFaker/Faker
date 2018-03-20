@@ -110,9 +110,9 @@ export default class ExpenseDetailTabPane extends Component {
             onChange={value => this.handleColumnChange(value, 'currency')}
           >
             {this.props.currencies.map(currency =>
-                  (<Option key={currency.currency} value={currency.currency}>
-                    {currency.name}
-                  </Option>))}
+              (<Option key={currency.currency} value={currency.currency}>
+                {currency.name}
+              </Option>))}
           </Select>
         );
       }

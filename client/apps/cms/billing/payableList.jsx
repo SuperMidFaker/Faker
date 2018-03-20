@@ -199,7 +199,7 @@ export default class ExpenseList extends Component {
         if (record.exp_status < 3) {
           return <RowAction icon="form" onClick={this.handleDetail} label="应收明细" row={record} />;
         }
-        return <RowAction icon="eye-o" onClick={this.handleDetail} label="应收明细" row={record} />;
+        return <RowAction icon="eye-o" onClick={this.handleDetail} label="应付明细" row={record} />;
       },
     },
   ];
@@ -268,7 +268,7 @@ export default class ExpenseList extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleDetail = (row) => {
-    const link = `/clearance/billing/expense/${row.delg_no}/fees`;
+    const link = `/clearance/billing/expense/${row.delg_no}/fees?from=payable`;
     this.context.router.push(link);
   }
   handleGenTemplate = () => {
