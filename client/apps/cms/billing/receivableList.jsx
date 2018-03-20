@@ -74,10 +74,15 @@ function fetchData({ state, dispatch }) {
 })
 @Form.create()
 @withPrivilege({ module: 'clearance', feature: 'expense' })
-export default class ExpenseList extends Component {
+export default class ReceivableExpenseList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
+    partners: PropTypes.arrayOf(PropTypes.shape({
+      code: PropTypes.string,
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+    })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -299,6 +304,10 @@ export default class ExpenseList extends Component {
         this.handleExpensesLoad(1);
       }
     });
+  }
+  handleSearch = (value) => {
+    const filter = { ...this.props.listFilter, searchText: value };
+    this.handleExpensesLoad(1, filter);
   }
   expensesUploaded = () => {
     this.handleExpensesLoad(1);

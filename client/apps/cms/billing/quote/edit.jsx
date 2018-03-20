@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Form, Layout, Tabs, message, Button } from 'antd';
@@ -43,6 +44,9 @@ function fetchData({ params, dispatch }) {
 export default class QuotingEdit extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   state = {
     tabKey: 'tariff',
@@ -116,6 +120,9 @@ export default class QuotingEdit extends Component {
       }
     });
   }
+  handleCancel = () => {
+    this.context.router.push('/clearance/billing/quote');
+  }
   render() {
     const {
       form, saving, quoteData, tenantId,
@@ -130,6 +137,7 @@ export default class QuotingEdit extends Component {
           <PageHeader.Actions>
             {/* <Button icon="copy">{this.msg('clone')}</Button> */}
             <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>{this.gmsg('save')}</Button>
+            <Button onClick={this.handleCancel}>{this.gmsg('cancel')}</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

@@ -66,6 +66,7 @@ export default class AddSpeModal extends React.Component {
         <div>
           <FormItem label={this.msg('speName')} {...formItemLayout}>
             {getFieldDecorator('fee_name', {
+              initialValue: '特殊费用',
               rules: [{ required: true, message: '费用名称必填' }],
             })(<Input />)}
           </FormItem>
@@ -76,7 +77,6 @@ export default class AddSpeModal extends React.Component {
           </FormItem>
           <FormItem label={this.msg('feeGroup')} {...formItemLayout}>
             {getFieldDecorator('fee_group', {
-              rules: [{ required: true, message: '费用分组必填' }],
             })(<Select showSearch optionFilterProp="children" style={{ width: '100%' }}>
               {allFeeGroups.map(data =>
               (<Option key={data.fee_group_code} value={data.fee_group_code}>
@@ -85,7 +85,9 @@ export default class AddSpeModal extends React.Component {
             </Select>)}
           </FormItem>
           <FormItem label={this.msg('remark')} {...formItemLayout}>
-            {getFieldDecorator('remark')(<Input />)}
+            {getFieldDecorator('remark', {
+              rules: [{ required: true, message: '必须备注原因' }],
+            })(<Input />)}
           </FormItem>
         </div>
       </Modal>

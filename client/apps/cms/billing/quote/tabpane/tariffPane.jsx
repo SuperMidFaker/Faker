@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Input, message, Mention, Modal, Transfer, TreeSelect } from 'antd';
+import { Button, Input, message, Mention, Modal, Tag, Transfer, TreeSelect } from 'antd';
 import { updateFee, addFees, deleteFees, saveQuoteBatchEdit, loadQuoteFees } from 'common/reducers/cmsQuote';
 import { loadAllFeeGroups, loadParentFeeElements } from 'common/reducers/bssFeeSettings';
 import RowAction from 'client/components/RowAction';
@@ -194,9 +194,10 @@ export default class TariffPane extends Component {
           { text: '代垫', value: 'AP' },
         ],
         width: 150,
-        render: o =>
-          FEE_TYPE.find(ft => ft.key === o) &&
-          FEE_TYPE.find(ft => ft.key === o).text,
+        render: (o) => {
+          const type = FEE_TYPE.filter(fe => fe.key === o)[0];
+          return type ? <Tag color={type.tag}>{type.text}</Tag> : <span />;
+        },
       }, {
         title: this.msg('billingWay'),
         dataIndex: 'billing_way',
@@ -204,6 +205,7 @@ export default class TariffPane extends Component {
         render: (o, record) => {
           if (onEdit && editItem.id === record.id) {
             return (<TreeSelect
+              size="small"
               style={{ width: '100%' }}
               defaultValue={o}
               dropdownStyle={{ overflow: 'auto' }}
@@ -222,6 +224,7 @@ export default class TariffPane extends Component {
           if (onEdit && editItem.id === record.id) {
             if (editItem.billing_way === '$formula') {
               return (<Mention
+                size="small"
                 suggestions={this.state.suggestions}
                 prefix="$"
                 onSearchChange={this.handleFormulaSearch}
@@ -234,11 +237,24 @@ export default class TariffPane extends Component {
             }
             if (editItem.billing_way === '$manual') {
               return (
-                <Input value={editItem.formula_factor} disabled placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
+                <Input
+                  size="small"
+                  value={editItem.formula_factor}
+                  disabled
+                  placeholder="单价/金额"
+                  onChange={e => this.handleEditChange('formula_factor', e.target.value)}
+                  style={{ width: '100%' }}
+                />
               );
             }
             return (
-              <Input defaultValue={o} placeholder="单价/金额" onChange={e => this.handleEditChange('formula_factor', e.target.value)} style={{ width: '100%' }} />
+              <Input
+                size="small"
+                defaultValue={o}
+                placeholder="单价/金额"
+                onChange={e => this.handleEditChange('formula_factor', e.target.value)}
+                style={{ width: '100%' }}
+              />
             );
           }
           return o;

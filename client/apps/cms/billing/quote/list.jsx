@@ -125,7 +125,7 @@ export default class RatesList extends Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleSearchItems = (value) => {
+  handleSearch = (value) => {
     const filter = { ...this.props.listFilter, searchText: value };
     this.handleQuoteTableLoad(1, filter);
   }
@@ -198,7 +198,7 @@ export default class RatesList extends Component {
         menu: this.msg('providerQuote'),
       },
     ];
-    const toolbarActions = <SearchBox placeholder={this.msg('itemsSearchTip')} onSearch={this.handleSearchItems} />;
+    const toolbarActions = <SearchBox placeholder={this.gmsg('searchTip')} onSearch={this.handleSearch} />;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {

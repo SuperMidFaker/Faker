@@ -142,7 +142,7 @@ export default class UploadLogsPanel extends React.Component {
           size="middle"
           columns={this.columns}
           dataSource={dataSource}
-          scrollOffset="240"
+          scrollOffset={240}
           rowkey="upload_no"
           toolbarActions={<SearchBox onSearch={this.handleSearch} />}
         />
