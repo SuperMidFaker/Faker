@@ -21,9 +21,9 @@ const { Content } = Layout;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadQuoteTable({
-    filter: JSON.stringify(state.cmsQuote.listFilter),
+    filter: JSON.stringify({ ...state.cmsQuote.listFilter, searchText: '' }),
     pageSize: state.cmsQuote.quotesList.pageSize,
-    current: state.cmsQuote.quotesList.current,
+    current: 1,
   }));
 }
 
@@ -124,6 +124,10 @@ export default class RatesList extends Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
+  }
+  handleSearchItems = (value) => {
+    const filter = { ...this.props.listFilter, searchText: value };
+    this.handleQuoteTableLoad(1, filter);
   }
   render() {
     const { quotesList, tenantId } = this.props;

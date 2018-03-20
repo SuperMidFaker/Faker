@@ -106,7 +106,8 @@ export default class ExpenseDetailTabPane extends Component {
             optionFilterProp="children"
             value={this.state.editItem.currency}
             style={{ width: 150 }}
-            onSelect={value => this.handleColumnChange(value, 'currency')}
+            allowClear
+            onChange={value => this.handleColumnChange(value, 'currency')}
           >
             {this.props.currencies.map(currency =>
                   (<Option key={currency.currency} value={currency.currency}>
@@ -228,11 +229,20 @@ export default class ExpenseDetailTabPane extends Component {
     }
     if (field === 'currency') {
       const { currencies } = this.props;
-      const currency = currencies.find(curr => curr.currency === value);
-      editOne.exchange_rate = currency.exchange_rate;
-      editOne.base_amount = editOne.orig_amount * currency.exchange_rate;
+      if (value) {
+        const currency = currencies.find(curr => curr.currency === value);
+        editOne.exchange_rate = currency.exchange_rate;
+        editOne.base_amount = editOne.orig_amount * currency.exchange_rate;
+      } else {
+        editOne.exchange_rate = '';
+        editOne.base_amount = editOne.orig_amount;
+      }
     }
-    editOne[field] = Number(value) ? Number(value) : value;
+    if (field === 'currency') {
+      editOne[field] = value;
+    } else {
+      editOne[field] = Number(value) ? Number(value) : value;
+    }
     this.setState({
       editItem: editOne,
     });
