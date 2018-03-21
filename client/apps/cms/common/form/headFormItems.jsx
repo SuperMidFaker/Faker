@@ -48,8 +48,8 @@ IEPort.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ i_e_port: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 进出口日期
@@ -78,8 +78,8 @@ IEDate.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ i_e_date: PropTypes.date }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 申报日期
@@ -105,8 +105,8 @@ DeclDate.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ d_date: PropTypes.date }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 关联单位
@@ -116,11 +116,11 @@ export class RelationAutoCompSelect extends React.Component {
     codeField: PropTypes.string.isRequired,
     custCodeField: PropTypes.string.isRequired,
     nameField: PropTypes.string.isRequired,
-    formData: PropTypes.object,
+    formData: PropTypes.shape({ id: PropTypes.number }),
     disabled: PropTypes.bool,
     getFieldDecorator: PropTypes.func.isRequired,
-    codeRules: PropTypes.array,
-    nameRules: PropTypes.array,
+    codeRules: PropTypes.arrayOf(PropTypes.shape({ required: PropTypes.bool })),
+    nameRules: PropTypes.arrayOf(PropTypes.shape({ required: PropTypes.bool })),
     onSelect: PropTypes.func,
     onChange: PropTypes.func,
   }
@@ -147,13 +147,19 @@ export class RelationAutoCompSelect extends React.Component {
       label, codeField, custCodeField, nameField, formData, disabled, options,
       getFieldDecorator, codeRules, nameRules, labelCol,
     } = this.props;
-    const initialCodeValue = formData && formData[codeField] || '';
-    const initialCustCodeValue = formData && formData[custCodeField] || '';
+    const initialCodeValue = (formData && formData[codeField]) || '';
+    const initialCustCodeValue = (formData && formData[custCodeField]) || '';
     const initialNameValue = formData && formData[nameField];
     const custOpt = options.filter(op => op.custcode !== null && op.custcode.length > 0);
     const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
-      <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 19 }} colon={false} label={label} required>
+      <FormItem
+        labelCol={{ span: labelCol || 5 }}
+        wrapperCol={{ span: 19 }}
+        colon={false}
+        label={label}
+        required
+      >
         <Row gutter={4}>
           <Col span="7">
             {disabled ?
@@ -171,9 +177,8 @@ export class RelationAutoCompSelect extends React.Component {
                     dropdownMatchSelectWidth={false}
                     dropdownStyle={{ width: 360 }}
                   >
-                    {
-                    custOpt.map(opt => <Option key={opt.custcode} search={opt.custcode}>{opt.custcode} | {opt.name}</Option>)
-                  }
+                    {custOpt.map(opt => (<Option key={opt.custcode} search={opt.custcode}>
+                      {opt.custcode} | {opt.name}</Option>))}
                   </Select>)}
           </Col>
           <Col span="7">
@@ -191,9 +196,8 @@ export class RelationAutoCompSelect extends React.Component {
                     dropdownMatchSelectWidth={false}
                     dropdownStyle={{ width: 360 }}
                   >
-                    {
-                    compOpt.map(opt => <Option key={opt.code} search={opt.code}>{opt.code} | {opt.name}</Option>)
-                  }
+                    {compOpt.map(opt => (<Option key={opt.code} search={opt.code}>
+                      {opt.code} | {opt.name}</Option>))}
                   </Select>)}
           </Col>
           <Col span="10">
@@ -242,8 +246,8 @@ DeclCustoms.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ decl_port: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 许可证号
@@ -268,7 +272,7 @@ LicenseNo.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ license_no: PropTypes.string }).isRequired,
 };
 
 // 合同协议号
@@ -293,32 +297,7 @@ ContractNo.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-};
-
-// 备案号（未使用）
-export function ManualNo(props) {
-  const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData } = props;
-  const emsNoProps = {
-    outercol: 24,
-    col: 8,
-    field: 'manual_no',
-    label: msg('emsNo'),
-    disabled,
-    formData,
-    getFieldDecorator,
-  };
-  return (
-    <FormInput {...emsNoProps} />
-  );
-}
-ManualNo.propTypes = {
-  intl: intlShape,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ contr_no: PropTypes.string }).isRequired,
 };
 
 // 运输方式、运输工具名称、提运单号
@@ -395,8 +374,8 @@ Transport.propTypes = {
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ traf_mode: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 航次号（未使用）
@@ -429,7 +408,7 @@ DelVoyageNo.propTypes = {
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ voyage_no: PropTypes.string }).isRequired,
 };
 
 // 监管方式、征免性质、备案号
@@ -500,8 +479,8 @@ TradeRemission.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ cut_mode: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 贸易国、起运国、装卸货港、境内目的地
@@ -599,8 +578,8 @@ CountryAttr.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ district_code: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 成交方式
@@ -635,8 +614,8 @@ TradeMode.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ trxn_mode: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 费用
@@ -711,8 +690,8 @@ FeeFormItem.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({}).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 export function Fee(props) {
@@ -765,8 +744,8 @@ Fee.propTypes = {
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ fee_mark: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
   ietype: PropTypes.oneOf(['import', 'export']),
 };
 
@@ -793,7 +772,7 @@ ContainerNo.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ container_no: PropTypes.string }).isRequired,
 };
 
 // 件数
@@ -821,26 +800,30 @@ Pieces.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ pack_count: PropTypes.number }).isRequired,
 };
 
 // 包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
   const {
-    disabled, formData, getFieldDecorator, formRequire, required,
+    disabled, formData, getFieldDecorator, formRequire, required, packFormEditCell,
   } = props;
-  const packProps = {
-    outercol: 24,
-    col: 8,
-    label: msg('packType'),
-    field: 'wrap_type',
-    options: formRequire.packs,
-    disabled,
-    formData,
-    rules: [{ required }],
-    getFieldDecorator,
-  };
+  let packFormItem = packFormEditCell;
+  if (!packFormItem) {
+    const packProps = {
+      outercol: 24,
+      col: 8,
+      label: msg('packType'),
+      field: 'wrap_type',
+      options: formRequire.packs,
+      disabled,
+      formData,
+      rules: [{ required }],
+      getFieldDecorator,
+    };
+    packFormItem = <FormLocalSearchSelect {...packProps} />;
+  }
   const grosswtProps = {
     outercol: 24,
     col: 8,
@@ -865,7 +848,7 @@ export function PackWeight(props) {
   return (
     <Col span={16}>
       <Col span={8}>
-        <FormLocalSearchSelect {...packProps} />
+        {packFormItem}
       </Col>
       <Col span={8}>
         <FormInput {...grosswtProps} />
@@ -882,8 +865,8 @@ PackWeight.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ gross_wt: PropTypes.number }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 // 特殊关系确认、价格影响确认、支付特许权使用费确认
@@ -939,7 +922,7 @@ TermConfirm.propTypes = {
   intl: intlShape,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ price_effect: PropTypes.number }).isRequired,
 };
 
 // 关联报关单号 关联备案号
@@ -981,7 +964,7 @@ RaDeclManulNo.propTypes = {
   intl: intlShape,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ ra_decl_no: PropTypes.string }).isRequired,
 };
 
 // 保税/监管场所 货场代码
@@ -1022,8 +1005,8 @@ StoreYard.propTypes = {
   intl: intlShape,
   disabled: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.object.isRequired,
-  formRequire: PropTypes.object.isRequired,
+  formData: PropTypes.shape({ store_no: PropTypes.string }).isRequired,
+  formRequire: PropTypes.shape({}).isRequired,
 };
 
 
@@ -1033,11 +1016,11 @@ export class CiqCodeAutoCompSelect extends React.Component {
     label: PropTypes.string.isRequired,
     codeField: PropTypes.string.isRequired,
     cnameField: PropTypes.string,
-    formData: PropTypes.object,
+    formData: PropTypes.shape({}),
     disabled: PropTypes.bool,
     getFieldDecorator: PropTypes.func.isRequired,
-    codeRules: PropTypes.array,
-    nameRules: PropTypes.array,
+    codeRules: PropTypes.arrayOf(PropTypes.shape({ required: PropTypes.bool })),
+    nameRules: PropTypes.arrayOf(PropTypes.shape({ required: PropTypes.bool })),
     onSelect: PropTypes.func,
   }
 
@@ -1055,12 +1038,18 @@ export class CiqCodeAutoCompSelect extends React.Component {
       label, codeField, cnameField, enameField, formData, disabled, options,
       getFieldDecorator, codeRules, nameRules, labelCol,
     } = this.props;
-    const initialCodeValue = formData && formData[codeField] || '';
-    const initialCnameValue = formData && formData[cnameField] || '';
-    const initialEnameValue = formData && formData[enameField] || '';
+    const initialCodeValue = (formData && formData[codeField]) || '';
+    const initialCnameValue = (formData && formData[cnameField]) || '';
+    const initialEnameValue = (formData && formData[enameField]) || '';
     const custOpt = options.filter(op => op.ciqcode !== null && op.ciqcode.length > 0);
     return (
-      <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 21 }} colon={false} label={label} required>
+      <FormItem
+        labelCol={{ span: labelCol || 5 }}
+        wrapperCol={{ span: 21 }}
+        colon={false}
+        label={label}
+        required
+      >
         <InputGroup compact>
           {disabled ?
             <Input disabled value={initialCodeValue} style={{ width: '20%' }} />
@@ -1078,9 +1067,8 @@ export class CiqCodeAutoCompSelect extends React.Component {
                     dropdownStyle={{ width: 360 }}
                     style={{ width: '20%' }}
                   >
-                    {
-                    custOpt.map(opt => <Option key={opt.ciqcode} search={opt.ciqcode}>{opt.ciqcode} | {opt.name}</Option>)
-                  }
+                    {custOpt.map(opt => (<Option key={opt.ciqcode} search={opt.ciqcode}>
+                      {opt.ciqcode} | {opt.name}</Option>))}
                   </Select>)}
           {disabled ?
             <Input disabled value={initialCnameValue} style={{ width: '40%' }} />

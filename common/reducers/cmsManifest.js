@@ -264,6 +264,8 @@ export default function reducer(state = initialState, action) {
         billHead: action.data.head,
         billHeadFieldsChangeTimes: 0,
       }; // float become string
+    case actionTypes.SAVE_ENTRY_HEAD_SUCCEED:
+      return { ...state, billHeadFieldsChangeTimes: 0 };
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
@@ -777,7 +779,7 @@ export function closeRuleModel() {
 }
 
 export function submitBillMegeSplit({
-  billSeqNo, mergeOpt, splitOpt, sortOpt, invGen
+  billSeqNo, mergeOpt, splitOpt, sortOpt, invGen,
 }) {
   return {
     [CLIENT_API]: {
@@ -789,7 +791,7 @@ export function submitBillMegeSplit({
       endpoint: 'v1/cms/declare/bill/mergesplit',
       method: 'post',
       data: {
-        billSeqNo, mergeOpt, splitOpt, sortOpt, invGen
+        billSeqNo, mergeOpt, splitOpt, sortOpt, invGen,
       },
     },
   };
@@ -840,7 +842,7 @@ export function resetBillHead(headId) {
   };
 }
 
-export function saveEntryHead(datas) {
+export function saveEntryHead(head, headId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -850,7 +852,7 @@ export function saveEntryHead(datas) {
       ],
       endpoint: 'v1/cms/manifest/entry/head/save',
       method: 'post',
-      data: datas,
+      data: { head, headId },
     },
   };
 }

@@ -6,7 +6,7 @@ import { Badge, Form, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown,
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { setNavTitle } from 'common/reducers/navbar';
-import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsManifest';
+import { loadEntry, loadCmsParams, billHeadChange, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, showDeclLog, uploadDecl } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -62,6 +62,7 @@ function fetchData({ dispatch, params, state }) {
     tenantId: state.account.tenantId,
     formRequire: state.cmsManifest.params,
     declSpinning: state.cmsManifest.customsDeclLoading,
+    billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   {
     saveEntryHead,
@@ -76,15 +77,15 @@ function fetchData({ dispatch, params, state }) {
     toggleDeclMsgModal,
     showDeclLog,
     uploadDecl,
+    billHeadChange,
   }
 )
 @connectFetch()(fetchData)
 @connectNav(navObj)
-@Form.create()
+@Form.create({ onValuesChange: (props, values) => props.billHeadChange(values) })
 export default class CustomsDeclEditor extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    // ietype: PropTypes.oneOf(['import', 'export']),
     billMeta: PropTypes.shape({
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
@@ -144,7 +145,7 @@ export default class CustomsDeclEditor extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.context.router.push(`/clearance/${this.props.params.ietype}/customs`);
+        this.context.router.push(`/clearance/${this.props.params.ietype}/manifest/${head.bill_seq_no}`);
       }
     });
   }
@@ -258,17 +259,23 @@ export default class CustomsDeclEditor extends React.Component {
       }
     });
   }
+  handleHeadSave = () => {
+    const head = this.props.form.getFieldsValue();
+    this.props.saveEntryHead(head, this.props.head.id)
+      .then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.info('保存成功');
+          this.reloadEntry();
+        }
+      });
+  }
   render() {
     const {
-      params, form, head, bodies, billMeta,
+      params, form, head, bodies, billMeta, billHeadFieldsChangeTimes,
     } = this.props;
     const me = this;
-    let filterProducts = [];
-    if (params.ietype === 'import') {
-      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
-    } else {
-      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
-    }
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey =>
       CMS_DECL_STATUS[stkey].value === head.status)[0];
     const printMenu = (
@@ -300,9 +307,9 @@ export default class CustomsDeclEditor extends React.Component {
     const moreMenu = (
       <Menu onClick={this.handleMoreMenuClick}>
         { head.status === CMS_DECL_STATUS.proposed.value &&
-        <Menu.Item key="delete"><Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}><Icon type="delete" /> 删除</Popconfirm></Menu.Item>}
+        <Menu.Item key="delete"><Popconfirm title={this.msg('deleteConfirm')} onConfirm={this.handleDelete}><Icon type="delete" /> 删除</Popconfirm></Menu.Item>}
         { head.status === CMS_DECL_STATUS.reviewed.value &&
-        <Menu.Item key="recall"><Popconfirm title={this.msg('recallConfirm')} onConfirm={() => this.handleRecall()}><Icon type="close-circle-o" /> 取消复核</Popconfirm></Menu.Item>}
+        <Menu.Item key="recall"><Popconfirm title={this.msg('recallConfirm')} onConfirm={this.handleRecall}><Icon type="close-circle-o" /> 取消复核</Popconfirm></Menu.Item>}
         { head.status === CMS_DECL_STATUS.sent.value &&
         <Menu.Item key="resend"><Icon type="mail" /> 重新发送</Menu.Item>}
         { (head.status === CMS_DECL_STATUS.reviewed.value ||
@@ -323,9 +330,10 @@ export default class CustomsDeclEditor extends React.Component {
         <Menu.Item key="log"><Icon type="solution" /> 操作记录</Menu.Item>
       </Menu>
     );
+    const headSavable = head.status < CMS_DECL_STATUS.sent.value && billMeta.permitHeadEdit;
     const tabs = [];
     tabs.push(<TabPane tab="报关单表头" key="header">
-      <CusDeclHeadPane ietype={params.ietype} form={form} formData={head} />
+      <CusDeclHeadPane ietype={params.ietype} form={form} formData={head} headSave={headSavable} />
     </TabPane>);
     tabs.push(<TabPane tab="报关单表体" key="body">
       <CusDeclBodyPane
@@ -351,14 +359,18 @@ export default class CustomsDeclEditor extends React.Component {
     tabs.push(<TabPane tab="报关清单明细" key="manifestDetails" head={head}>
       <ManifestDetailsPane fullscreen={this.state.fullscreen} />
     </TabPane>);
-    */
+    let filterProducts = [];
+    if (params.ietype === 'import') {
+      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
+    } else {
+      filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
+    }
     if (filterProducts.length > 0) {
-      /*
       tabs.push(<TabPane tab="法检商品" key="ciqDetails">
         <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
       </TabPane>);
-      */
     }
+    */
     return (
       <Layout>
         <PageHeader
@@ -373,18 +385,20 @@ export default class CustomsDeclEditor extends React.Component {
             <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {<DeclTreePopover
+            <DeclTreePopover
               entries={billMeta.entries}
               ciqs={billMeta.ciqs}
               ietype={params.ietype}
               billSeqNo={billMeta.bill_seq_no}
               currentKey={`cus-decl-${head.pre_entry_seq_no}`}
-            />}
+            />
             <Dropdown overlay={printMenu}>
               <Button >
                 <Icon type="printer" /> 打印
               </Button>
             </Dropdown>
+            {headSavable &&
+              <Button type="primary" icon="save" onClick={this.handleHeadSave} disabled={billHeadFieldsChangeTimes === 0}>保存</Button>}
             { head.status === CMS_DECL_STATUS.proposed.value &&
             <Button type="primary" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
               }
@@ -402,7 +416,6 @@ export default class CustomsDeclEditor extends React.Component {
         <Content className="page-content layout-min-width layout-min-width-large readonly">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-
             loading={this.props.declSpinning}
             onSizeChange={this.toggleFullscreen}
           >
