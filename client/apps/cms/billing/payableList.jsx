@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses, batchDeleteByUploadNo } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses, unbillingByBatchupload } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -69,7 +69,7 @@ function fetchData({ state, dispatch }) {
     loadExpenses,
     confirmExpenses,
     rejectExpenses,
-    batchDeleteByUploadNo,
+    unbillingByBatchupload,
   }
 )
 @connectNav({
@@ -338,7 +338,7 @@ export default class PayableExpenseList extends Component {
     });
   }
   removeExpenseByBatchUpload = (uploadNo, uploadLogReload) => {
-    this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
+    this.props.unbillingByBatchupload(uploadNo).then((result) => {
       if (!result.error) {
         uploadLogReload();
         this.handleExpensesLoad(1);

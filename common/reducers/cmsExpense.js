@@ -36,7 +36,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'TOGGLE_ADD_SPECIAL_MODAL',
   'ADD_SPECIAL', 'ADD_SPECIAL_SUCCESS', 'ADD_SPECIAL_FAIL',
   'LOAD_EXP_DETAILS', 'LOAD_EXP_DETAILS_SUCCEED', 'LOAD_EXP_DETAILS_FAIL',
-  'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
+  'UNBIILING_BY_BATCHUPLOAD', 'UNBIILING_BY_BATCHUPLOAD_SUCCEED', 'UNBIILING_BY_BATCHUPLOAD_FAIL',
 ]);
 
 const initialState = {
@@ -730,13 +730,13 @@ export function addSpecialFee(data, expenseNo) {
   };
 }
 
-export function batchDeleteByUploadNo(uploadNo) {
+export function unbillingByBatchupload(uploadNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.BATCH_DELETE_BY_UPLOADNO,
-        actionTypes.BATCH_DELETE_BY_UPLOADNO_SUCCEED,
-        actionTypes.BATCH_DELETE_BY_UPLOADNO_FAIL,
+        actionTypes.UNBIILING_BY_BATCHUPLOAD,
+        actionTypes.UNBIILING_BY_BATCHUPLOAD_SUCCEED,
+        actionTypes.UNBIILING_BY_BATCHUPLOAD_FAIL,
       ],
       endpoint: 'v1/cms/expense/unbilling/by/batchupload',
       method: 'post',
