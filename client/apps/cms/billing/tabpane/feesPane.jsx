@@ -240,6 +240,9 @@ export default class ExpenseDetailTabPane extends Component {
           editOne.base_amount = amount;
         }
         editOne[field] = amount;
+      } else {
+        editOne.orig_amount = null;
+        editOne.base_amount = null;
       }
     } else if (field === 'exchange_rate') {
       const rate = parseFloat(value);
@@ -248,11 +251,15 @@ export default class ExpenseDetailTabPane extends Component {
           editOne.base_amount = editOne.orig_amount * rate;
         }
         editOne.exchange_rate = rate;
+      } else {
+        editOne[field] = null;
       }
     } else if (field === 'tax_rate' || field === 'tax') {
       const float = parseFloat(value);
       if (!Number.isNaN(float)) {
         editOne[field] = float;
+      } else {
+        editOne[field] = null;
       }
     } else if (field === 'currency') {
       const { currencies } = this.props;
