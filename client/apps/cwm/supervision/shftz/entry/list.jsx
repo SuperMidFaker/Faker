@@ -140,7 +140,7 @@ export default class SHFTZEntryList extends React.Component {
   }, {
     title: '客户单号',
     dataIndex: 'po_no',
-    width: 160,
+    width: 200,
   }, {
     title: '仓储企业',
     width: 180,
