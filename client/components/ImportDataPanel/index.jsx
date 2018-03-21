@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Form, Icon, Radio, Select, Upload } from 'antd';
+import { Button, Form, Icon, Radio, Select, Steps, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import UploadMask from '../UploadMask';
 import { formatMsg } from './message.i18n';
+import './style.less';
 
 const { Option } = Select;
 const { Dragger } = Upload;
+const { Step } = Steps;
 
 @injectIntl
 export default class ImportDataPanel extends React.Component {
@@ -54,6 +56,7 @@ export default class ImportDataPanel extends React.Component {
     const { onGenTemplate, template } = this.props;
     if (onGenTemplate) {
       onGenTemplate();
+      return;
     }
     window.open(template);
   }
@@ -73,70 +76,86 @@ export default class ImportDataPanel extends React.Component {
       this.props.onClose();
     }
   }
+  renderOptions() {
+    const {
+      children, adaptors,
+    } = this.props;
+    const { adaptor, skipMode } = this.state;
+    return (<Form layout="vertical">
+      {children}
+      {adaptors &&
+        <Form.Item label="数据适配器">
+          <Select
+            allowClear
+            showSearch
+            placeholder="选择数据适配器"
+            onChange={this.handleAdaptorChange}
+            value={adaptor}
+            notFoundContent={this.msg('adaptorNotFound')}
+          >
+            {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
+          </Select>
+        </Form.Item>
+        }
+      <Form.Item label="重复数据处理">
+        <Radio.Group onChange={this.onChange} value={skipMode}>
+          <Radio value={1}>覆盖原数据</Radio>
+          <Radio value={2}>忽略重复数据</Radio>
+        </Radio.Group>
+      </Form.Item>
+    </Form>);
+  }
+  renderUpload() {
+    const {
+      endpoint, formData = {},
+    } = this.props;
+    return (<div style={{ height: 200, marginBottom: 16 }}>
+      <Dragger
+        accept=".xls,.xlsx,.csv"
+        action={endpoint}
+        showUploadList={false}
+        data={{ data: JSON.stringify(formData) }}
+        onChange={this.handleUploadFile}
+        withCredentials
+        beforeUpload={this.handleBeforeUpload}
+      >
+        <p className="ant-upload-drag-icon">
+          <Icon type="inbox" />
+        </p>
+        <p className="ant-upload-text">点击或拖拽文件至此区域上传</p>
+      </Dragger>
+    </div>);
+  }
   render() {
     const {
-      endpoint, formData = {}, children, visible, title, onUploaded,
-      adaptors, template, onGenTemplate,
+      formData = {}, visible, title, onUploaded,
+      template, onGenTemplate,
     } = this.props;
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
-    };
+
     const { importInfo, adaptor, skipMode } = this.state;
     if (adaptor) {
       formData.adaptor = adaptor;
     }
     formData.skipMode = skipMode;
     return (
-      <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose}>
-        <div style={{ marginBottom: 16 }}>
-          {children}
-        </div>
-        {adaptors &&
-        <Select
-          allowClear
-          showSearch
-          placeholder="选择数据适配器"
-          onChange={this.handleAdaptorChange}
-          value={adaptor}
-          notFoundContent={this.msg('adaptorNotFound')}
-          style={{ width: '100%', marginBottom: 16 }}
-        >
-          {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
-        </Select>
-        }
-        {(template || onGenTemplate) && <Button
-          icon="download"
-          style={{ width: '100%', marginBottom: 16 }}
-          onClick={this.handleDownloadTemplate}
-        >
-          下载模板
-        </Button>}
-        <div style={{ height: 200, marginBottom: 16 }}>
-          <Dragger
-            accept=".xls,.xlsx,.csv"
-            action={endpoint}
-            showUploadList={false}
-            data={{ data: JSON.stringify(formData) }}
-            onChange={this.handleUploadFile}
-            withCredentials
-            beforeUpload={this.handleBeforeUpload}
-          >
-            <p className="ant-upload-drag-icon">
-              <Icon type="inbox" />
-            </p>
-            <p className="ant-upload-text">点击或拖拽文件至此区域上传</p>
-          </Dragger>
-        </div>
-        <Form.Item
-          {...formItemLayout}
-          label="数据选项"
-        >
-          <Radio.Group onChange={this.onChange} value={skipMode}>
-            <Radio value={1}>覆盖原数据</Radio>
-            <Radio value={2}>忽略重复数据</Radio>
-          </Radio.Group>
-        </Form.Item>
+      <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose} className="welo-import-data-panel">
+        <Steps direction="vertical" size="small">
+          <Step title="设置选项" status="wait" description={this.renderOptions()} />
+          {adaptor === '' &&
+          <Step
+            title="下载模板"
+            status="wait"
+            description={(template || onGenTemplate) &&
+              <Button
+                icon="download"
+                style={{ width: '100%', marginBottom: 16 }}
+                onClick={this.handleDownloadTemplate}
+              >
+                下载模板
+              </Button>}
+          />}
+          <Step title="上传文件" status="wait" description={this.renderUpload()} />
+        </Steps>
         <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />
       </DockPanel>
     );

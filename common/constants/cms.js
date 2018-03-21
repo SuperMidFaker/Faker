@@ -399,6 +399,32 @@ export const CMS_DECL_STATUS = {
   */
 };
 
+export const CMS_DECL_TODO = {
+  proposed: {
+    value: 0, text: '待复核', icon: 'file-text', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date',
+  },
+  reviewed: {
+    value: 1, text: '待发送', icon: 'check-square-o', badge: 'processing', step: 1, stepDesc: '复核', date: 'reviewed_date',
+  },
+};
+
+export const CMS_DECL_TRACK = {
+  sent: {
+    value: 2, text: '未回执', icon: 'export', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date',
+  },
+  entered: {
+    value: 3, text: '已回执', icon: 'mail', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
+  },
+  released: {
+    value: 4, text: '已放行', icon: 'flag', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',
+  },
+  /*
+  closed: {
+    value: 5, text: '结关', icon: '', badge: 'success', step: 5, stepDesc: '结关', date: 'close_date',
+  },
+  */
+};
+
 export const CMS_DECL_CHANNEL = {
   QP: { value: 'qp', text: 'QP预录入', disabled: false },
   EP: { value: 'ep', text: '亿通EDI', disabled: false },

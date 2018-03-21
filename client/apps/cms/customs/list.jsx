@@ -19,7 +19,7 @@ import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import { CMS_DECL_STATUS, CMS_DECL_TYPE, DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { Logixon } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
@@ -648,10 +648,16 @@ export default class CustomsList extends Component {
                 <Menu.Item key="all">
                   <Icon type="inbox" /> {this.msg('all')}
                 </Menu.Item>
-                <Menu.ItemGroup key="gStatus" title="状态">
-                  {Object.keys(CMS_DECL_STATUS).map(declkey =>
+                <Menu.ItemGroup key="gTodo" title="制单申报">
+                  {Object.keys(CMS_DECL_TODO).map(declkey =>
                   (<Menu.Item key={declkey}>
-                    <Icon type={CMS_DECL_STATUS[declkey].icon} /> {CMS_DECL_STATUS[declkey].text}
+                    <Icon type={CMS_DECL_TODO[declkey].icon} /> {CMS_DECL_TODO[declkey].text}
+                  </Menu.Item>))}
+                </Menu.ItemGroup>
+                <Menu.ItemGroup key="gTrack" title="通关追踪">
+                  {Object.keys(CMS_DECL_TRACK).map(declkey =>
+                  (<Menu.Item key={declkey}>
+                    <Icon type={CMS_DECL_TRACK[declkey].icon} /> {CMS_DECL_TRACK[declkey].text}
                   </Menu.Item>))}
                   <Menu.Item key="inspect">
                     <Icon type="warning" />{this.msg('customsCheck')}

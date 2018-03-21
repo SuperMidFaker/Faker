@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
+import { Button, Form, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
@@ -536,29 +536,31 @@ export default class OrderList extends React.Component {
 }}
           template={`${XLSX_CDN}/订单导入模板.xlsx`}
         >
-          <Select
-            placeholder="请选择客户"
-            showSearch
-            allowClear
-            optionFilterProp="children"
-            value={importPanel.partner_id}
-            onChange={this.handleImportClientChange}
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ width: 360 }}
-            style={{ width: '100%', marginBottom: 16 }}
-          >
-            {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-          </Select>
-          <Select
-            placeholder="流程规则必填"
-            showSearch
-            allowClear
-            value={importPanel.flow_id}
-            onChange={this.handleImportFlowChange}
-            style={{ width: '100%' }}
-          >
-            {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
-          </Select>
+          <Form.Item label="客户">
+            <Select
+              placeholder="请选择客户"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              value={importPanel.partner_id}
+              onChange={this.handleImportClientChange}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ width: 360 }}
+            >
+              {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="流程">
+            <Select
+              placeholder="流程规则必填"
+              showSearch
+              allowClear
+              value={importPanel.flow_id}
+              onChange={this.handleImportFlowChange}
+            >
+              {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
+            </Select>
+          </Form.Item>
         </ImportDataPanel>
         <UploadLogsPanel
           onUploadBatchDelete={this.removeOrdersByBatchUpload}

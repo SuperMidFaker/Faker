@@ -204,8 +204,9 @@ export default class ExpenseDetailTabPane extends Component {
   }, {
     title: this.gmsg('op'),
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 88,
     fixed: 'right',
+    className: 'table-col-ops',
     render: (o, record) => {
       if (record.fee_status < 2) {
         if (this.state.editItem.id === record.id) {

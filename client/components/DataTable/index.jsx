@@ -204,10 +204,23 @@ class DataTable extends React.Component {
   handleVisibleChange = (visible) => {
     this.setState({ visible });
   }
-  hidePopover = () => {
+  handleReset = () => {
+    const { pathname } = this.state;
+    if (window.localStorage) {
+      window.localStorage.removeItem(pathname);
+    }
+    let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+    popoverColumns = popoverColumns.map((column, index) => ({
+      ...column,
+      checked: true,
+      index,
+    }));
     this.setState({
+      tableColumns: this.props.columns,
+      popoverColumns,
       visible: false,
     });
+    message.info('列表视图已重置');
   }
   handleSave = () => {
     const tableColumns = [...this.state.tableColumns];
@@ -227,8 +240,7 @@ class DataTable extends React.Component {
       const tableStorage = newColumns.map(column =>
         ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
       const obj = { popoverStorage, tableStorage };
-      const storage = window.localStorage;
-      storage.setItem(pathname, JSON.stringify(obj));
+      window.localStorage.setItem(pathname, JSON.stringify(obj));
     }
     message.info('列表视图已更新');
   }
@@ -304,7 +316,7 @@ class DataTable extends React.Component {
       />));
     content.push(<div className="col-selection-actions" key="col-sel-buttons">
       <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>确定</Button>
-      <Button onClick={this.hidePopover}>取消</Button>
+      <Button onClick={this.handleReset}>重置</Button>
     </div>);
     const classes = classNames(baseCls, {
       [`${baseCls}-no-border`]: noBorder,
