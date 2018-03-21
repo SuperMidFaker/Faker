@@ -145,6 +145,14 @@ const messages = defineMessages({
     id: 'root.actions.confirm',
     defaultMessage: '确认',
   },
+  download: {
+    id: 'root.actions.download',
+    defaultMessage: '下载',
+  },
+  empty: {
+    id: 'root.actions.empty',
+    defaultMessage: '清空',
+  },
   accept: {
     id: 'root.actions.accept',
     defaultMessage: '接受',
@@ -184,6 +192,14 @@ const messages = defineMessages({
   savedSuccess: {
     id: 'root.saved.success',
     defaultMessage: '保存成功',
+  },
+  completed: {
+    id: 'root.completed',
+    defaultMessage: '完成',
+  },
+  error: {
+    id: 'root.error',
+    defaultMessage: '错误',
   },
   seqNo: {
     id: 'root.seq.no',

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import DataTable from 'client/components/DataTable';
@@ -60,46 +61,52 @@ export default class UploadLogsPanel extends React.Component {
     {
       title: this.msg('id'),
       dataIndex: 'upload_no',
-      width: 100,
     }, {
       title: this.msg('status'),
       dataIndex: 'status',
       width: 60,
-    }, {
-      title: this.msg('successQty'),
-      dataIndex: 'success_qty',
-      width: 80,
-    }, {
-      title: this.msg('ignoredQty'),
-      dataIndex: 'ignore_qty',
-      width: 80,
+      render: (o) => {
+        if (o && o === 1) {
+          return <Tag color="#87d068">{this.gmsg('completed')}</Tag>;
+        }
+        return <Tag color="#f50">{this.gmsg('error')}</Tag>;
+      },
     }, {
       title: this.msg('totalQty'),
       dataIndex: 'total_qty',
-      width: 80,
+      width: 250,
+      render: (o, record) => {
+        if (o && o > 0) {
+          return (<span>
+            <span className={record.success_qty > 0 && 'text-success'}>{record.success_qty}</span> / <span className={record.ignore_qty > 0 && 'text-warning'}>{record.ignore_qty}</span> / <span className="text-emphasis">{o}</span>
+          </span>);
+        }
+        return o;
+      },
     }, {
       title: this.msg('fileSize'),
       dataIndex: 'file_size',
+      align: 'right',
       width: 80,
     }, {
       title: this.msg('fileType'),
       dataIndex: 'file_type',
-      width: 90,
+      width: 80,
     }, {
       title: this.msg('uploadedDate'),
       dataIndex: 'upload_date',
-      width: 100,
-      render: o => o && moment(o).format('MM.DD HH:mm'),
+      width: 130,
+      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
     }, {
       title: this.gmsg('actions'),
       dataIndex: 'OPS_COL',
-      align: 'right',
       fixed: 'right',
-      width: 90,
+      className: 'table-col-ops',
+      width: 88,
       render: (o, record) => (<span>
+        <RowAction icon="download" onClick={this.handleDownload} tooltip={this.gmsg('download')} row={record} />
         {this.props.onUploadBatchDelete &&
-        <RowAction confirm={this.gmsg('confirmOp')} onConfirm={this.onUploadBatchDelete} label="清空" row={record} />}
-        <RowAction onClick={this.handleDownload} label="下载" row={record} />
+        <RowAction danger icon="delete" confirm={this.gmsg('confirmOp')} onConfirm={this.onUploadBatchDelete} tooltip={this.gmsg('empty')} row={record} />}
       </span>),
     },
   ];
@@ -145,6 +152,8 @@ export default class UploadLogsPanel extends React.Component {
           scrollOffset={240}
           rowkey="upload_no"
           toolbarActions={<SearchBox onSearch={this.handleSearch} />}
+          noSetting
+          bordered
         />
       </DockPanel>
     );
