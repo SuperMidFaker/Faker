@@ -6,7 +6,7 @@ import moment from 'moment';
 import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, submitExpenses } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, submitExpenses, unbillingByBatchupload } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -37,6 +37,7 @@ function fetchData({ state, dispatch }) {
     filter: JSON.stringify({
       status: 'billing',
       mode: 'receivable',
+      partnerId: 'all',
     }),
     pageSize: state.cmsExpense.expensesList.pageSize,
     current: state.cmsExpense.expensesList.current,
@@ -66,6 +67,7 @@ function fetchData({ state, dispatch }) {
     setUploadRecordsReload,
     loadExpenses,
     submitExpenses,
+    unbillingByBatchupload,
   }
 )
 @connectNav({
@@ -256,7 +258,7 @@ export default class ReceivableExpenseList extends Component {
     this.setState({ importFeesModalVisible: !this.state.importFeesModalVisible });
   }
   handleDateChange = (data, dataString) => {
-    const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
+    const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
     this.handleExpensesLoad(1, filter);
   }
   handleGenTemplate = () => {
@@ -315,6 +317,18 @@ export default class ReceivableExpenseList extends Component {
       importPanelVisible: false,
     });
   }
+  removeExpenseByBatchUpload = (uploadNo, uploadLogReload) => {
+    this.props.unbillingByBatchupload(uploadNo).then((result) => {
+      if (!result.error) {
+        uploadLogReload();
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
+  handleClientSelectChange = (value) => {
+    const filter = { ...this.props.listFilter, partnerId: value };
+    this.handleExpensesLoad(1, filter);
+  }
   render() {
     const {
       expensesList, partners, form: { getFieldDecorator }, expensesLoading,
@@ -338,6 +352,7 @@ export default class ReceivableExpenseList extends Component {
         allowClear
         optionFilterProp="children"
         style={{ width: 160 }}
+        value={this.props.listFilter.partnerId}
         onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
@@ -449,6 +464,7 @@ export default class ReceivableExpenseList extends Component {
             </FormItem>
           </ImportDataPanel>
           <UploadLogsPanel
+            onUploadBatchDelete={this.removeExpenseByBatchUpload}
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
           />
         </Layout>

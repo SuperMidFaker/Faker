@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses, unbillingByBatchupload } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -37,6 +37,7 @@ function fetchData({ state, dispatch }) {
     filter: JSON.stringify({
       status: 'submitted',
       mode: 'payable',
+      partnerId: 'all',
     }),
     pageSize: state.cmsExpense.expensesList.pageSize,
     current: state.cmsExpense.expensesList.current,
@@ -68,6 +69,7 @@ function fetchData({ state, dispatch }) {
     loadExpenses,
     confirmExpenses,
     rejectExpenses,
+    unbillingByBatchupload,
   }
 )
 @connectNav({
@@ -259,7 +261,7 @@ export default class PayableExpenseList extends Component {
     this.setState({ importFeesModalVisible: !this.state.importFeesModalVisible });
   }
   handleDateChange = (data, dataString) => {
-    const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
+    const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
     this.handleExpensesLoad(1, filter);
   }
   handleGenTemplate = () => {
@@ -320,6 +322,10 @@ export default class PayableExpenseList extends Component {
     const filter = { ...this.props.listFilter, searchText: value };
     this.handleExpensesLoad(1, filter);
   }
+  handleClientSelectChange = (value) => {
+    const filter = { ...this.props.listFilter, partnerId: value };
+    this.handleExpensesLoad(1, filter);
+  }
   showImportLogs = (ev) => {
     if (ev.key === 'logs') {
       this.props.togglePanelVisible(true);
@@ -329,6 +335,14 @@ export default class PayableExpenseList extends Component {
     this.handleExpensesLoad(1);
     this.setState({
       importPanelVisible: false,
+    });
+  }
+  removeExpenseByBatchUpload = (uploadNo, uploadLogReload) => {
+    this.props.unbillingByBatchupload(uploadNo).then((result) => {
+      if (!result.error) {
+        uploadLogReload();
+        this.handleExpensesLoad(1);
+      }
     });
   }
   render() {
@@ -354,6 +368,7 @@ export default class PayableExpenseList extends Component {
         optionFilterProp="children"
         style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
+        value={this.props.listFilter.partnerId}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >
@@ -454,6 +469,7 @@ export default class PayableExpenseList extends Component {
             </FormItem>
           </ImportDataPanel>
           <UploadLogsPanel
+            onUploadBatchDelete={this.removeExpenseByBatchUpload}
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
           />
         </Layout>
