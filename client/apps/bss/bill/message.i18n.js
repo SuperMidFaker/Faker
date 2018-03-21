@@ -23,13 +23,13 @@ const messages = defineMessages({
     id: 'bss.bill.pending.expense',
     defaultMessage: '未入账单的费用',
   },
-  offlineBill: {
-    id: 'bss.bill.offline',
-    defaultMessage: '线下账单',
+  processingBills: {
+    id: 'bss.bill.processing',
+    defaultMessage: '结算中的账单',
   },
-  onlineBill: {
-    id: 'bss.bill.online',
-    defaultMessage: '线上对账',
+  billStatus: {
+    id: 'bss.bill.status',
+    defaultMessage: '账单状态',
   },
   statusDraft: {
     id: 'bss.bill.status.draft',
@@ -37,11 +37,15 @@ const messages = defineMessages({
   },
   statusChecking: {
     id: 'bss.bill.status.checking',
-    defaultMessage: '对账中',
+    defaultMessage: '对账',
   },
   statusAccepted: {
     id: 'bss.bill.status.accepted',
     defaultMessage: '已接受',
+  },
+  settledBills: {
+    id: 'bss.bill.settled',
+    defaultMessage: '结算完成的账单',
   },
   searchTips: {
     id: 'bss.bill.search.tips',
