@@ -47,6 +47,14 @@ const messages = defineMessages({
     id: 'bss.bill.search.tips',
     defaultMessage: '业务编号/客户编号',
   },
+  billTemplate: {
+    id: 'bss.bill.template',
+    defaultMessage: '新建账单模板',
+  },
+  newBillTemplate: {
+    id: 'bss.bill.template.create',
+    defaultMessage: '新建账单模板',
+  },
 });
 
 export default messages;

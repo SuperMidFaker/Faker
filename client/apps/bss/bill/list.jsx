@@ -77,6 +77,12 @@ export default class BillList extends React.Component {
   toggleExtra = () => {
     this.setState({ extraVisible: !this.state.extraVisible });
   }
+  handleExtraMenuClick = (ev) => {
+    if (ev.key === 'templates') {
+      const link = '/bss/bill/templates';
+      this.context.router.push(link);
+    }
+  }
   renderDataTable() {
     const { currentTab, mode } = this.state;
     if (mode === 'pendingExpense') {
@@ -164,7 +170,7 @@ export default class BillList extends React.Component {
                 </Menu.Item>
               </Menu.ItemGroup>
               <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
-                <Menu.Item key="rules">
+                <Menu.Item key="templates">
                   <Icon type="tool" /> {this.msg('billTemplates')}
                 </Menu.Item>
               </Menu.ItemGroup>
