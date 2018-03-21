@@ -12,7 +12,8 @@ import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import BuyerBillTable from './buyerBillTable';
 import SellerBillTable from './sellerBillTable';
-import PendingTable from './pendingTable';
+import BuyerPendingTable from './buyerPendingTable';
+import SellerPendingTable from './sellerPendingTable';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -79,7 +80,11 @@ export default class BillList extends React.Component {
   renderDataTable() {
     const { currentTab, mode } = this.state;
     if (mode === 'pendingExpense') {
-      return <PendingTable />;
+      if (currentTab === 'sellerBill') {
+        return <SellerPendingTable />;
+      } else if (currentTab === 'buyerBill') {
+        return <BuyerPendingTable />;
+      }
     }
     if (currentTab === 'buyerBill') {
       return <BuyerBillTable />;

@@ -43,6 +43,10 @@ const messages = defineMessages({
     id: 'bss.bill.status.accepted',
     defaultMessage: '已接受',
   },
+  searchTips: {
+    id: 'bss.bill.search.tips',
+    defaultMessage: '业务编号/客户编号',
+  },
 });
 
 export default messages;
