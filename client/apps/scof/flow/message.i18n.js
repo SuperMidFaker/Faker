@@ -46,6 +46,10 @@ const messages = defineMessages({
     id: 'scof.flow.graph.edge',
     defaultMessage: '节点边界',
   },
+  providerQuoteNo: {
+    id: 'scof.flow.biz.cms.provider.quote.no',
+    defaultMessage: '服务报价',
+  },
   sourceNode: {
     id: 'scof.flow.edge.source',
     defaultMessage: '源节点',
@@ -146,9 +150,9 @@ const messages = defineMessages({
     id: 'scof.flow.biz.cms.ciq.broker',
     defaultMessage: '报检供应商',
   },
-  quoteNo: {
-    id: 'scof.flow.biz.cms.quote.no',
-    defaultMessage: '报价编号',
+  customsQuoteNo: {
+    id: 'scof.flow.biz.cms.customs.quote.no',
+    defaultMessage: '供应商报价',
   },
   manifestTemplate: {
     id: 'scof.flow.biz.cms.manifest.template',

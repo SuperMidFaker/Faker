@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export default class Actions extends Component {
-  static defaultProps = {
-    baseCls: 'welo-data-pane',
-  }
-  render() {
-    const { baseCls, children } = this.props;
-    return (
-      <div className={`${baseCls}-toolbar-right`}>{children}</div>
-    );
-  }
+export default function Actions(props) {
+  const { baseCls = 'welo-data-pane', children } = props;
+  return (
+    <div className={`${baseCls}-toolbar-right`}>{children}</div>
+  );
 }
+
+Actions.props = {
+  baseCls: PropTypes.string,
+  children: PropTypes.node,
+};

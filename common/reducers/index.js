@@ -14,6 +14,9 @@ import partner from './partner';
 import role from './role';
 import invitation from './invitation';
 import operationLog from './operationLog';
+import bssAudit from './bssAudit';
+import bssFeeSettings from './bssFeeSettings';
+import bssExRateSettings from './bssExRateSettings';
 import cmsDashboard from './cmsDashboard';
 import cmsDelegation from './cmsDelegation';
 import cmsDelegationDock from './cmsDelegationDock';
@@ -32,6 +35,7 @@ import cmsPreferences from './cmsPreferences';
 import cmsExpense from './cmsExpense';
 import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
+import cmsParams from './cmsParams';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
 import crmBilling from './crmBilling';
@@ -42,6 +46,7 @@ import cwmMovement from './cwmMovement';
 import cwmWarehouse from './cwmWarehouse';
 import cwmWhseLocation from './cwmWhseLocation';
 import cwmShFtz from './cwmShFtz';
+import cwmShFtzDecl from './cwmShFtzDecl';
 import cwmShippingOrder from './cwmShippingOrder';
 import cwmDashboard from './cwmDashboard';
 import cwmContext from './cwmContext';
@@ -69,6 +74,7 @@ import transportKpi from './transportKpi';
 import template from './template';
 import sofDashboard from './sofDashboard';
 import sofInvoice from './sofInvoice';
+import uploadRecords from './uploadRecords';
 
 export default combineReducers({
   activities,
@@ -98,6 +104,9 @@ export default combineReducers({
   transportTariff,
   transportBilling,
   transportKpi,
+  bssAudit,
+  bssFeeSettings,
+  bssExRateSettings,
   cmsDashboard,
   cmsDelegation,
   cmsDelegationDock,
@@ -114,6 +123,7 @@ export default combineReducers({
   cmsBrokers,
   cmsTradeManual,
   cmsAnalytics,
+  cmsParams,
   scofFlow,
   sofOrderPref,
   sofVendors,
@@ -129,6 +139,7 @@ export default combineReducers({
   cwmTransaction,
   cwmSku,
   cwmShFtz,
+  cwmShFtzDecl,
   cwmShippingOrder,
   cwmDashboard,
   cwmInventoryStock,
@@ -141,4 +152,5 @@ export default combineReducers({
   template,
   sofDashboard,
   sofInvoice,
+  uploadRecords,
 });

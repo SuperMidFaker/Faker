@@ -7,7 +7,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTrackings, addTracking, removeTracking, updateTracking,
   loadTrackingFields, toggleTrackingModal, loadTrackingItems } from 'common/reducers/sofTracking';
-import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import { formatMsg } from './message.i18n';
@@ -48,7 +47,7 @@ export default class CustomizeTracking extends React.Component {
     loaded: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    trackings: PropTypes.array.isRequired,
+    trackings: PropTypes.array.isRequired,  // eslint-disable-line
     toggleTrackingModal: PropTypes.func.isRequired,
     loadTrackings: PropTypes.func.isRequired,
     removeTracking: PropTypes.func.isRequired,
@@ -179,7 +178,6 @@ export default class CustomizeTracking extends React.Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -222,23 +220,7 @@ export default class CustomizeTracking extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <ButtonToggle
-                iconOn="menu-fold"
-                iconOff="menu-unfold"
-                onClick={this.toggle}
-                toggle
-              />
-              { this.state.collapsed && <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('shipmentsTrackingCustomize')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {tracking.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>}
-            </PageHeader.Title>
+          <PageHeader breadcrumb={[this.msg('shipmentsTrackingCustomize'), tracking.name]}>
             <PageHeader.Actions>
               <Button type="primary" ghost disabled={this.state.trackings.length === 0} onClick={this.handleEdit}>跟踪表设置</Button>
             </PageHeader.Actions>

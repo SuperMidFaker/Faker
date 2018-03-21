@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'CLOSE_BATCH_MOVE_MODAL', 'OPEN_BATCH_MOVE_MODAL',
   'CLOSE_BATCH_FREEZE_MODAL', 'OPEN_BATCH_FREEZE_MODAL',
   'LOAD_TRANSITIONS', 'LOAD_TRANSITIONS_SUCCEED', 'LOAD_TRANSITIONS_FAIL',
+  'LOAD_TRANSTAT', 'LOAD_TRANSTAT_SUCCEED', 'LOAD_TRANSTAT_FAIL',
   'SPLIT_TRANSIT', 'SPLIT_TRANSIT_SUCCEED', 'SPLIT_TRANSIT_FAIL',
   'MOVE_TRANSIT', 'MOVE_TRANSIT_SUCCEED', 'MOVE_TRANSIT_FAIL',
   'ADJUST_TRANSIT', 'ADJUST_TRANSIT_SUCCEED', 'ADJUST_TRANSIT_FAIL',
@@ -44,6 +45,14 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  stat: {
+    stock_qty: null,
+    avail_qty: null,
+    alloc_qty: null,
+    frozen_qty: null,
+    bonded_qty: null,
+    nonbonded_qty: null,
+  },
   sortFilter: {
     field: '',
     order: '',
@@ -57,7 +66,14 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.CLOSE_TRANSITION_MODAL:
-      return { ...state, transitionModal: { ...state.transitionModal, visible: false, detail: {} } };
+      return {
+        ...state,
+        transitionModal: {
+          ...state.transitionModal,
+          visible: false,
+          detail: {},
+        },
+      };
     case actionTypes.OPEN_TRANSITION_MODAL:
       return {
         ...state,
@@ -70,19 +86,51 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ADJUST_TRANSIT_SUCCEED:
     case actionTypes.FREEZE_TRANSIT_SUCCEED:
     case actionTypes.UNFREEZE_TRANSIT_SUCCEED:
-      return { ...state, transitionModal: { ...state.transitionModal, needReload: true }, reloadTransitions: true };
+      return {
+        ...state,
+        transitionModal: {
+          ...state.transitionModal,
+          needReload: true,
+        },
+        reloadTransitions: true,
+      };
     case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false }, reloadTransitions: action.data.needReload };
+      return {
+        ...state,
+        batchTransitModal: {
+          ...state.batchTransitModal,
+          visible: false,
+        },
+        reloadTransitions: action.data.needReload,
+      };
     case actionTypes.OPEN_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: true, ...action.data } };
+      return {
+        ...state,
+        batchTransitModal: {
+          ...state.batchTransitModal,
+          visible: true,
+          ...action.data,
+        },
+      };
     case actionTypes.CLOSE_BATCH_MOVE_MODAL:
       return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: false } };
     case actionTypes.OPEN_BATCH_MOVE_MODAL:
       return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: true } };
     case actionTypes.CLOSE_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: initialState.batchFreezeModal, reloadTransitions: action.data.needReload };
+      return {
+        ...state,
+        batchFreezeModal: initialState.batchFreezeModal,
+        reloadTransitions: action.data.needReload,
+      };
     case actionTypes.OPEN_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true, ...action.data } };
+      return {
+        ...state,
+        batchFreezeModal: {
+          ...state.batchFreezeModal,
+          visible: true,
+          ...action.data,
+        },
+      };
     case actionTypes.LOAD_TRANSITIONS:
       return {
         ...state,
@@ -95,12 +143,28 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_TRANSITIONS_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_TRANSTAT_SUCCEED:
+      return { ...state, stat: action.result.data };
     case actionTypes.LOAD_TTDETAIL:
-      return { ...state, transitionModal: { ...state.transitionModal, loading: true, needReload: false } };
+      return {
+        ...state,
+        transitionModal: {
+          ...state.transitionModal,
+          loading: true,
+          needReload: false,
+        },
+      };
     case actionTypes.LOAD_TTDETAIL_FAIL:
       return { ...state, transitionModal: { ...state.transitionModal, loading: false } };
     case actionTypes.LOAD_TTDETAIL_SUCCEED:
-      return { ...state, transitionModal: { ...state.transitionModal, detail: action.result.data, loading: false } };
+      return {
+        ...state,
+        transitionModal: {
+          ...state.transitionModal,
+          detail: action.result.data,
+          loading: false,
+        },
+      };
     default:
       return state;
   }
@@ -170,6 +234,21 @@ export function loadTransitions(params) {
       endpoint: 'v1/cwm/stock/inbound/transitions',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadTransitionStat(filter) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRANSTAT,
+        actionTypes.LOAD_TRANSTAT_SUCCEED,
+        actionTypes.LOAD_TRANSTAT_FAIL,
+      ],
+      endpoint: 'v1/cwm/stock/transition/stat',
+      method: 'get',
+      params: { filter },
     },
   };
 }

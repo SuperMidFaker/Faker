@@ -4,23 +4,24 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
+import { Layout, Radio, Select, Badge } from 'antd';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadWaves, releaseWave, cancelWave } from 'common/reducers/cwmShippingOrder';
 import PageHeader from 'client/components/PageHeader';
+import WhseSelect from '../../common/whseSelect';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
+const { Option } = Select;
 
 function fetchData({ state, dispatch }) {
   dispatch(loadWaves({
@@ -59,7 +60,6 @@ export default class WaveList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -78,6 +78,7 @@ export default class WaveList extends React.Component {
       } else if (o === 3) {
         return (<Badge status="success" text="完成" />);
       }
+      return null;
     },
   }, {
     title: '描述',
@@ -124,6 +125,7 @@ export default class WaveList extends React.Component {
         }
         return (<RowAction onClick={this.handleAllocate} icon="form" label="出库操作" row={record} />);
       }
+      return null;
     },
   }]
   handleReleaseWave = (record) => {
@@ -170,8 +172,6 @@ export default class WaveList extends React.Component {
     this.handleReload(null, 1, filters);
   }
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     this.handleReload(value, 1);
   }
   handleDeselectRows = () => {
@@ -179,7 +179,7 @@ export default class WaveList extends React.Component {
   }
   render() {
     const {
-      whses, defaultWhse, filters, loading, owners,
+      filters, loading, owners,
     } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadWaves(params),
@@ -229,21 +229,12 @@ export default class WaveList extends React.Component {
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingWave')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('shippingWave'),
+          ]}
+        >
           <PageHeader.Nav>
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
@@ -263,7 +254,7 @@ export default class WaveList extends React.Component {
             loading={loading}
             toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           />
         </Content>
       </QueueAnim>

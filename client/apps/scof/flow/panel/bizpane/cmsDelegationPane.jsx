@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Collapse, Form, Col, Row, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
-import { loadEpList } from 'common/reducers/scofFlow';
+import { loadEpList, loadCmsCustomsQuotes } from 'common/reducers/scofFlow';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
@@ -18,9 +18,9 @@ const { Option } = Select;
   state => ({
     tenantId: state.account.tenantId,
     bizDelegation: state.scofFlow.cmsParams.bizDelegation,
-    cmsQuotes: state.scofFlow.cmsQuotes,
+    customsQuotes: state.scofFlow.cmsParams.customsQuotes,
   }),
-  { loadEpList }
+  { loadEpList, loadCmsCustomsQuotes }
 )
 export default class CMSDelegationPane extends Component {
   static propTypes = {
@@ -33,6 +33,7 @@ export default class CMSDelegationPane extends Component {
       this.props.model.customs_partner_id,
       this.props.bizDelegation.customsBrokers
     );
+    this.loadCustomsQuotes(this.props.model.customs_partner_id);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.bizDelegation !== this.props.bizDelegation) {
@@ -41,11 +42,21 @@ export default class CMSDelegationPane extends Component {
         nextProps.model.customs_partner_id,
         nextProps.bizDelegation.customsBrokers
       );
+      this.loadCustomsQuotes(nextProps.model.customs_partner_id);
     }
   }
   msg = formatMsg(this.props.intl)
   handleCustomsChange = (customsPid) => {
     this.queryEpList(this.props.tenantId, customsPid, this.props.bizDelegation.customsBrokers);
+    this.loadCustomsQuotes(customsPid);
+  }
+  loadCustomsQuotes = (customsPid) => {
+    if (customsPid) {
+      this.props.loadCmsCustomsQuotes(
+        { tenant_id: this.props.tenantId },
+        { partner_id: customsPid }
+      );
+    }
   }
   queryEpList = (tenantId, customsPid, customsBrokers) => {
     const customs = customsBrokers.filter(cb => cb.partner_id === customsPid)[0];
@@ -54,7 +65,7 @@ export default class CMSDelegationPane extends Component {
   render() {
     const {
       form: { getFieldDecorator }, model, tenantId,
-      bizDelegation: { declPorts, customsBrokers, ciqBrokers }, cmsQuotes,
+      bizDelegation: { declPorts, customsBrokers, ciqBrokers }, customsQuotes,
     } = this.props;
     const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     const provider = model.provider_tenant_id === tenantId;
@@ -129,12 +140,12 @@ export default class CMSDelegationPane extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('quoteNo')}>
-                {getFieldDecorator('quote_no', {
-                  initialValue: provider ? model.quote_no : null,
+              <FormItem label={this.msg('customsQuoteNo')}>
+                {getFieldDecorator('customs_quote_no', {
+                  initialValue: provider ? model.customs_quote_no : null,
                 })(<Select allowClear disabled={!provider}>
-                  {cmsQuotes.map(cq =>
-                    <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)}
+                  {customsQuotes.map(cq =>
+                    <Option value={cq.quote_no} key={cq.quote_no}>{cq.quote_name}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>

@@ -49,7 +49,7 @@ exports.CWM_ASN_BONDED_REGTYPES = [{
 exports.CWM_ASN_STATUS = {
   PENDING: {
     value: 0,
-    text: '通知接收',
+    text: '未处理',
     badge: 'default',
   },
   INBOUND: {
@@ -64,7 +64,7 @@ exports.CWM_ASN_STATUS = {
   },
   COMPLETED: {
     value: 3,
-    text: '收货完成',
+    text: '已完成',
     badge: 'success',
   },
 };
@@ -101,7 +101,7 @@ exports.CWM_SHFTZ_APIREG_STATUS = {
 exports.CWM_SO_STATUS = {
   PENDING: {
     value: 0,
-    text: '订单接收',
+    text: '未处理',
     badge: 'default',
   },
   OUTBOUND: {
@@ -116,7 +116,7 @@ exports.CWM_SO_STATUS = {
   },
   COMPLETED: {
     value: 3,
-    text: '发货完成',
+    text: '已完成',
     badge: 'success',
   },
 };

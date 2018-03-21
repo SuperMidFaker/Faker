@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Collapse, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
+import { Button, Card, Collapse, Layout, Select, Table, Spin, Radio, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { toggleFlowList, loadVendorTenants, openSubFlowAuthModal, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { loadFormRequires } from 'common/reducers/sofOrders';
@@ -608,14 +608,7 @@ export default class FlowDesigner extends React.Component {
     const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {currentFlow.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={currentFlow.name}>
           <PageHeader.Actions>
             <Button icon="setting" onClick={this.handleSubFlowAuth}>{this.msg('flowSetting')}</Button>
             <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>

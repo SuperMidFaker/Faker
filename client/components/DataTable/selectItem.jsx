@@ -80,7 +80,7 @@ export default class SelectItem extends Component {
     checked: PropTypes.bool.isRequired,
     title: PropTypes.string,
     index: PropTypes.number.isRequired,
-    moveSelect: PropTypes.func.isRequired,
+    // moveSelect: PropTypes.func.isRequired,
     onFixed: PropTypes.func.isRequired,
     fixed: PropTypes.string,
   };
@@ -90,7 +90,7 @@ export default class SelectItem extends Component {
     } = this.props;
     const opacity = isDragging ? 0 : 1;
     return connectDragSource(connectDropTarget(<div className="col-selection-item" style={{ opacity }} key={id}>
-      <Checkbox id={id} checked={checked} onChange={() => this.props.onChange(index)}>
+      <Checkbox id={String(id)} checked={checked} onChange={() => this.props.onChange(index)}>
         {title}
       </Checkbox>
       <Button size="small" shape="circle" icon="pushpin-o" onClick={() => onFixed(index)} />

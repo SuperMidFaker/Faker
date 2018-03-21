@@ -1,7 +1,7 @@
 import React from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Row, Col, Layout } from 'antd';
+import { DatePicker, Row, Col, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -51,14 +51,7 @@ export default class SOFDashboard extends React.Component {
     const { startDate, endDate } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('dashboard')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('dashboard')}>
           <PageHeader.Actions>
             <RangePicker
               onChange={this.onDateChange}

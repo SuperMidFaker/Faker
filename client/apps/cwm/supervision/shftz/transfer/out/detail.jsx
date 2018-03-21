@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag, message, notification } from 'antd';
+import { Alert, Badge, Tooltip, Layout, Tabs, Steps, Button, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -81,19 +82,12 @@ export default class SHFTZTransferOutDetail extends Component {
   state = {
     tabKey: '',
     fullscreen: true,
-    relRegs: [],
-  }
-  componentWillMount() {
-    this.setState({
-      relRegs: this.props.relRegs,
-    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       if (this.state.tabKey === '') {
         this.setState({
           tabKey: nextProps.relRegs[0].pre_entry_seq_no,
-          relRegs: nextProps.relRegs,
         });
       }
     }
@@ -268,24 +262,13 @@ export default class SHFTZTransferOutDetail extends Component {
     }
   }
   handleSearch = (searchText, preEntrySeqNo) => {
-    const relRegs = JSON.parse(JSON.stringify(this.props.relRegs));
-    if (searchText) {
-      const searchOne = relRegs.find(reg => reg.pre_entry_seq_no === preEntrySeqNo);
-      const details = searchOne.details.filter((item) => {
-        const reg = new RegExp(searchText);
-        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
-        || reg.test(item.hscode) || reg.test(item.g_name);
-      });
-      searchOne.details = details;
-    }
-    this.setState({ relRegs });
+    this.setState({ searchVal: searchText, searchPreEntrySeqNo: preEntrySeqNo });
   }
   render() {
     const {
-      relSo, whse, submitting, receivers,
+      relSo, relRegs, whse, submitting, receivers,
     } = this.props;
-    const { relRegs } = this.state;
-    if (relRegs.length !== 1) {
+    if (relRegs.length !== 1 || !relSo) {
       return null;
     }
     const rowSelection = {
@@ -294,6 +277,7 @@ export default class SHFTZTransferOutDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const { searchVal, searchPreEntrySeqNo } = this.state;
     const relReg = relRegs[0];
     const relType = CWM_SO_BONDED_REGTYPES[2];
     const regStatus = relReg.status;
@@ -317,24 +301,14 @@ export default class SHFTZTransferOutDetail extends Component {
     const outStatus = relSo.outbound_no
       && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-              上海自贸区监管
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.soNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
+            this.props.params.soNo,
+          ]}
+        >
           <PageHeader.Nav>
             {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
               <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
@@ -346,66 +320,72 @@ export default class SHFTZTransferOutDetail extends Component {
             <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-          <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-              <DescriptionList col={4}>
-                <Description term="海关出库单号">
-                  <EditableCell
-                    value={relReg.ftz_rel_no}
-                    editable={relEditable}
-                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                  />
-                </Description>
-                <Description term="发货单位海关编码">{relReg && relReg.owner_cus_code}</Description>
-                <Description term="发货单位">{relReg.owner_name}</Description>
-                <Description term="发货仓库号">{relReg && relReg.sender_ftz_whse_code}</Description>
-                <Description term="海关入库单号">
-                  <EditableCell
-                    value={relReg.ftz_ent_no}
-                    editable={relEditable}
-                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_ent_no', value)}
-                  />
-                </Description>
-                <Description term="收货单位海关编码">{relReg && relReg.receiver_cus_code}</Description>
-                <Description term="收货单位">
-                  <EditableCell
-                    type="select"
-                    value={receiver && receiver.code}
-                    options={recvOpts}
-                    editable={relEditable}
-                    onSave={value => this.handleReceiverChange(relReg.pre_entry_seq_no, value)}
-                  />
-                </Description>
-                <Description term="收货仓库号">{relReg && relReg.receiver_ftz_whse_code}</Description>
-                <Description term="出库日期">
-                  <EditableCell
-                    type="date"
-                    value={relReg && relReg.ftz_rel_date && moment(relReg.ftz_rel_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="转出完成时间">
-                  <EditableCell
-                    type="date"
-                    value={relReg && relReg.ftz_reg_date && moment(relReg.ftz_reg_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_reg_date', new Date(value))}
-                  />
-                </Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={regStatus}>
-                  <Step title="待转出" />
-                  <Step title="已发送" />
-                  <Step title="已转出" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={4}>
+              <Description term="海关出库单号">
+                <EditableCell
+                  value={relReg.ftz_rel_no}
+                  editable={relEditable}
+                  onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_no', value)}
+                />
+              </Description>
+              <Description term="发货单位海关编码">{relReg && relReg.owner_cus_code}</Description>
+              <Description term="发货单位">{relReg.owner_name}</Description>
+              <Description term="发货仓库号">{relReg && relReg.sender_ftz_whse_code}</Description>
+              <Description term="海关入库单号">
+                <EditableCell
+                  value={relReg.ftz_ent_no}
+                  editable={relEditable}
+                  onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                />
+              </Description>
+              <Description term="收货单位海关编码">{relReg && relReg.receiver_cus_code}</Description>
+              <Description term="收货单位">
+                <EditableCell
+                  type="select"
+                  value={receiver && receiver.code}
+                  options={recvOpts}
+                  editable={relEditable}
+                  onSave={value => this.handleReceiverChange(relReg.pre_entry_seq_no, value)}
+                />
+              </Description>
+              <Description term="收货仓库号">{relReg && relReg.receiver_ftz_whse_code}</Description>
+              <Description term="出库日期">
+                <EditableCell
+                  type="date"
+                  value={relReg && relReg.ftz_rel_date && moment(relReg.ftz_rel_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
+                />
+              </Description>
+              <Description term="转出完成时间">
+                <EditableCell
+                  type="date"
+                  value={relReg && relReg.ftz_reg_date && moment(relReg.ftz_reg_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_reg_date', new Date(value))}
+                />
+              </Description>
+            </DescriptionList>
+            <Steps progressDot current={regStatus} className="progress-tracker">
+              <Step title="待转出" />
+              <Step title="已发送" />
+              <Step title="已转出" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
+            {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
-                  const stat = reg.details.reduce((acc, regd) => ({
+                  let { details } = reg;
+                  if (searchVal && reg.pre_entry_seq_no === searchPreEntrySeqNo) {
+                    details = details.filter((item) => {
+                      const svRe = new RegExp(searchVal);
+                      return svRe.test(item.ftz_cargo_no) || svRe.test(item.product_no)
+                        || svRe.test(item.hscode) || svRe.test(item.g_name);
+                    });
+                  }
+                  const stat = details.reduce((acc, regd) => ({
                     total_qty: acc.total_qty + regd.qty,
                     total_amount: acc.total_amount + regd.amount,
                     total_net_wt: acc.total_net_wt + regd.net_wt,
@@ -428,7 +408,7 @@ export default class SHFTZTransferOutDetail extends Component {
                         columns={this.columns}
                         rowSelection={rowSelection}
                         indentSize={8}
-                        dataSource={reg.details}
+                        dataSource={details}
                         rowKey="id"
                         loading={this.state.loading}
                       >
@@ -447,9 +427,9 @@ export default class SHFTZTransferOutDetail extends Component {
                 })}
               </Tabs>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

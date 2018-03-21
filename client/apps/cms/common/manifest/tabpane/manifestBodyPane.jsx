@@ -1076,7 +1076,7 @@ export default class ManifestBodyPane extends React.Component {
           {this.renderToolbar()}
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           >
             <Popconfirm title="是否删除所有选择项？" onConfirm={() => this.handleDeleteSelected()}>
               <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>

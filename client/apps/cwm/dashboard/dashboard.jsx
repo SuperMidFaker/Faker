@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Row, Select, Col, Layout, message } from 'antd';
+import { DatePicker, Row, Col, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadStatsCard } from 'common/reducers/cwmDashboard';
+import WhseSelect from '../common/whseSelect';
 import InboundStatsCard from './card/inboundStatsCard';
 import OutboundStatsCard from './card/outboundStatsCard';
 import BondedStatsCard from './card/bondedStatsCard';
@@ -16,7 +16,6 @@ import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 @injectIntl
@@ -25,7 +24,7 @@ const { RangePicker } = DatePicker;
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { switchDefaultWhse, loadStatsCard }
+  { loadStatsCard }
 )
 @connectNav({
   depth: 2,
@@ -59,32 +58,17 @@ export default class CWMDashboard extends React.Component {
     });
     this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code);
   }
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { whses, defaultWhse } = this.props;
     const { startDate, endDate } = this.state;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                  whses.map(warehouse =>
-                    (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('dashboard')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect />,
+            this.msg('dashboard'),
+          ]}
+        >
           <PageHeader.Actions>
             <RangePicker
               onChange={this.onDateChange}

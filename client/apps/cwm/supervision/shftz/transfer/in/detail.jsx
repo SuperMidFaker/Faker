@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
+import { Badge, Layout, Steps, Button, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -14,7 +15,7 @@ import DescriptionList from 'client/components/DescriptionList';
 import EditableCell from 'client/components/EditableCell';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, putCustomsRegFields } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -56,7 +57,7 @@ function fetchData({ dispatch, params }) {
     submitting: state.cwmShFtz.submitting,
   }),
   {
-    loadEntryDetails, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus,
+    loadEntryDetails, updateEntryReg, pairEntryRegProducts, putCustomsRegFields,
   }
 )
 @connectNav({
@@ -74,17 +75,13 @@ export default class SHFTZTransferInDetail extends Component {
   state = {
     comparable: false,
     fullscreen: true,
-  }
-  componentWillMount() {
-    this.setState({
-      entryRegs: this.props.entryRegs,
-    });
+    searchVal: null,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
       const comparable = nextProps.transfInReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      this.setState({ comparable, entryRegs: nextProps.entryRegs });
+      this.setState({ comparable });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -98,6 +95,7 @@ export default class SHFTZTransferInDetail extends Component {
     ).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
+          // todo 对比视图 数据保存
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
             `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
           if (remainFtzMsg) {
@@ -230,7 +228,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   handlePairingConfirmed = () => {
     const { preFtzEntNo } = this.props.params;
-    this.props.checkEntryRegStatus(preFtzEntNo, CWM_SHFTZ_APIREG_STATUS.completed)
+    this.props.putCustomsRegFields(preFtzEntNo, { status: CWM_SHFTZ_APIREG_STATUS.completed })
       .then((result) => {
         if (result.error) {
           notification.error({
@@ -242,21 +240,13 @@ export default class SHFTZTransferInDetail extends Component {
       });
   }
   handleSearch = (searchText) => {
-    const entryRegs = JSON.parse(JSON.stringify(this.props.entryRegs));
-    if (searchText) {
-      entryRegs[0].details = entryRegs[0].details.filter((item) => {
-        const reg = new RegExp(searchText);
-        return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
-        || reg.test(item.hscode) || reg.test(item.g_name);
-      });
-    }
-    this.setState({ entryRegs });
+    this.setState({ searchVal: searchText });
   }
   render() {
     const {
-      transfInReg, whse, submitting,
+      transfInReg, entryRegs, whse, submitting,
     } = this.props;
-    const { entryRegs } = this.state;
+    const { searchVal } = this.state;
     if (entryRegs.length !== 1) {
       return null;
     }
@@ -270,7 +260,15 @@ export default class SHFTZTransferInDetail extends Component {
       },
     };
     const reg = entryRegs[0];
-    const stat = reg.details.reduce((acc, regd) => ({
+    let { details } = reg;
+    if (searchVal) {
+      details = details.filter((item) => {
+        const sv = new RegExp(searchVal);
+        return sv.test(item.ftz_cargo_no) || sv.test(item.product_no)
+        || sv.test(item.hscode) || sv.test(item.g_name);
+      });
+    }
+    const stat = details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
       total_net_wt: acc.total_net_wt + regd.stock_netwt,
@@ -280,24 +278,14 @@ export default class SHFTZTransferInDetail extends Component {
       total_net_wt: 0,
     });
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-              上海自贸区监管
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.preFtzEntNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>,
+            this.props.params.preFtzEntNo,
+          ]}
+        >
           <PageHeader.Nav>
             {transfInReg.inbound_no && <Tooltip title="入库操作" placement="bottom">
               <Button icon="link" onClick={this.handleInboundPage}>
@@ -312,61 +300,59 @@ export default class SHFTZTransferInDetail extends Component {
               <Button type="primary" loading={submitting} onClick={this.handlePairingConfirmed}>核对通过</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-              <DescriptionList col={4}>
-                <Description term="海关入库单号">
-                  <EditableCell
-                    value={transfInReg.ftz_ent_no}
-                    onSave={value => this.handleInfoSave('ftz_ent_no', value)}
-                  />
-                </Description>
-                <Description term="收货单位海关编码">
-                  <EditableCell
-                    value={transfInReg.owner_cus_code}
-                    onSave={value => this.handleInfoSave('owner_cus_code', value)}
-                  />
-                </Description>
-                <Description term="收货单位">
-                  <EditableCell
-                    value={transfInReg.owner_name}
-                    onSave={value => this.handleInfoSave('owner_name', value)}
-                  />
-                </Description>
-                <Description term="收货仓库号">{transfInReg.receiver_ftz_whse_code}</Description>
-                <Description term="海关出库单号">
-                  <EditableCell
-                    value={transfInReg.ftz_rel_no}
-                    onSave={value => this.handleInfoSave('ftz_rel_no', value)}
-                  />
-                </Description>
-                <Description term="发货单位海关编码">{transfInReg.sender_cus_code}</Description>
-                <Description term="发货单位">{transfInReg.sender_name}</Description>
-                <Description term="发货仓库号">{transfInReg.sender_ftz_whse_code}</Description>
-                <Description term="进库日期">
-                  <EditableCell
-                    type="date"
-                    value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="转入完成时间">
-                  <EditableCell
-                    type="date"
-                    value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
-                  />
-                </Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={transfInReg.reg_status}>
-                  <Step title="待转入" />
-                  <Step title="已接收" />
-                  <Step title="已核对" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={4}>
+              <Description term="海关入库单号">
+                <EditableCell
+                  value={transfInReg.ftz_ent_no}
+                  onSave={value => this.handleInfoSave('ftz_ent_no', value)}
+                />
+              </Description>
+              <Description term="收货单位海关编码">
+                <EditableCell
+                  value={transfInReg.owner_cus_code}
+                  onSave={value => this.handleInfoSave('owner_cus_code', value)}
+                />
+              </Description>
+              <Description term="收货单位">
+                <EditableCell
+                  value={transfInReg.owner_name}
+                  onSave={value => this.handleInfoSave('owner_name', value)}
+                />
+              </Description>
+              <Description term="收货仓库号">{transfInReg.receiver_ftz_whse_code}</Description>
+              <Description term="海关出库单号">
+                <EditableCell
+                  value={transfInReg.ftz_rel_no}
+                  onSave={value => this.handleInfoSave('ftz_rel_no', value)}
+                />
+              </Description>
+              <Description term="发货单位海关编码">{transfInReg.sender_cus_code}</Description>
+              <Description term="发货单位">{transfInReg.sender_name}</Description>
+              <Description term="发货仓库号">{transfInReg.sender_ftz_whse_code}</Description>
+              <Description term="进库日期">
+                <EditableCell
+                  type="date"
+                  value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
+                />
+              </Description>
+              <Description term="转入完成时间">
+                <EditableCell
+                  type="date"
+                  value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
+                />
+              </Description>
+            </DescriptionList>
+            <Steps progressDot current={transfInReg.reg_status} className="progress-tracker">
+              <Step title="待转入" />
+              <Step title="已接收" />
+              <Step title="已核对" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
             <MagicCard
               bodyStyle={{ padding: 0 }}
 
@@ -377,7 +363,7 @@ export default class SHFTZTransferInDetail extends Component {
                 columns={this.columns}
                 rowSelection={rowSelection}
                 indentSize={0}
-                dataSource={reg.details}
+                dataSource={details}
                 rowKey="id"
                 loading={this.state.loading}
               >
@@ -393,9 +379,9 @@ export default class SHFTZTransferInDetail extends Component {
                 </DataPane.Toolbar>
               </DataPane>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

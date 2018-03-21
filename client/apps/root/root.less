@@ -189,6 +189,10 @@ img {
 .ant-menu-item a {
   display: block;
 }
+.ant-menu-item:hover,
+.ant-menu-submenu-title:hover {
+  background: #f1f1f1;
+}
 .ant-modal-title {
   .toolbar-right {
     margin-top: -3px;
@@ -433,6 +437,12 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 }
 .table-col-seq {
   color: #ccc;
+}
+.table-col-ops {
+  >button:first-child,
+  >span >button:first-child {
+    margin-left: 0;
+  }
 }
 .table-row-selected {
   color: #108ee9;
@@ -1355,3 +1365,13 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 }
 
 .noremove-upload-picture .ant-upload-list-item-actions > .anticon-delete { display: none; }
+
+.progress-tracker {
+  padding: 8px;
+  background: #f4f4f4;
+  border-top: 1px solid #e9e9e9;
+  border-bottom: 1px solid #e9e9e9;
+  .ant-steps-item-title {
+    font-size: 14px;
+  }
+}

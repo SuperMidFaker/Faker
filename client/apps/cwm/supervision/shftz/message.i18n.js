@@ -1,6 +1,11 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
+  shftzSup: {
+    id: 'cwm.supervision.shftz',
+    defaultMessage: '上海自贸区监管',
+  },
   ftzBondedEntryReg: {
     id: 'cwm.supervision.shftz.bonded.entry.reg',
     defaultMessage: '进境入库备案',
@@ -81,6 +86,66 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.cargo.orig.no',
     defaultMessage: '备案料号',
   },
+  mergePrinciple: {
+    id: 'cwm.reg.modal.merge.principle',
+    defaultMessage: '归并原则',
+  },
+  splitPrinciple: {
+    id: 'cwm.reg.modal.split.principle',
+    defaultMessage: '拆分原则',
+  },
+  conditionalMerge: {
+    id: 'cwm.reg.modal.conditional.merge',
+    defaultMessage: '条件归并:',
+  },
+  productCode: {
+    id: 'cwm.reg.modal.product.code',
+    defaultMessage: '商品货号',
+  },
+  nonMerge: {
+    id: 'cwm.reg.modal.non.merge',
+    defaultMessage: '不归并',
+  },
+  mergeSpecialHscode: {
+    id: 'cwm.reg.modal.merge.special.hscode',
+    defaultMessage: '特殊商品编码合并',
+  },
+  mergeSpecialNo: {
+    id: 'cwm.reg.modal.merge.special.productno',
+    defaultMessage: '特殊商品货号合并',
+  },
+  specialHsCategory: {
+    id: 'cwm.reg.modal.split.special.hscode.category',
+    defaultMessage: '特殊商品编码分类:',
+  },
+  specialHscodeSplit: {
+    id: 'cwm.reg.modal.split.special.hscode',
+    defaultMessage: '特殊商品编码独立报关',
+  },
+  currencySplit: {
+    id: 'cwm.reg.modal.split.currency',
+    defaultMessage: '不同币制独立报关',
+  },
+  supplierSplit: {
+    id: 'cwm.reg.modal.split.supplier',
+    defaultMessage: '不同供货商独立报关',
+  },
+  txnModeSplit: {
+    id: 'cwm.reg.modal.split.txnmode',
+    defaultMessage: '不同成交方式独立报关',
+  },
+  byCiqDeclSplit: {
+    id: 'cwm.reg.modal.split.ciq.decl',
+    defaultMessage: '报检独立报关',
+  },
+  byApplCertSplit: {
+    id: 'cwm.reg.modal.split.appl.cert',
+    defaultMessage: '报检出证独立报关',
+  },
+  searchPlaceholder: {
+    id: 'cwm.reg.detail.search.placeholder',
+    defaultMessage: '明细货号/HSCode/品名',
+  },
   hscode: {
     id: 'cwm.supervision.shftz.cargo.hscode',
     defaultMessage: '商品编码',
@@ -95,7 +160,7 @@ const messages = defineMessages({
   },
   country: {
     id: 'cwm.supervision.shftz.cargo.country',
-    defaultMessage: '国别',
+    defaultMessage: '原产国',
   },
   currency: {
     id: 'cwm.supervision.shftz.cargo.currency',
@@ -116,3 +181,4 @@ const messages = defineMessages({
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);

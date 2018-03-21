@@ -7,10 +7,11 @@ const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'TOGGLE_DETAIL_MODAL', 'ADD_TEMPORARY', 'SET_TEMPORARY',
   'GET_INVOICE', 'GET_INVOICE_SUCCEED', 'GET_INVOICE_FAIL',
   'UPDATE_SOF_INVOICE', 'UPDATE_SOF_INVOICE_SUCCEED', 'UPDATE_SOF_INVOICE_FAIL',
-  'CLEAR_INVOICE',
+  'CLEAR_INVOICE', 'SET_RECORDS_RELOAD',
   'DELETE_SOF_INVOICE', 'DELETE_SOF_INVOICE_SUCCEED', 'DELETE_SOF_INVOICE_FAIL',
   'SPLIT_SOF_INVOICE', 'SPLIT_SOF_INVOICE_SUCCEED', 'SPLIT_SOF_INVOICE_FAIL',
   'BATCH_DELETE_INVOICES', 'BATCH_DELETE_INVOICES_SUCCEED', 'BATCH_DELETE_INVOICES_FAIL',
+  'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
 ]);
 
 const initialState = {
@@ -192,6 +193,21 @@ export function batchDeleteInvoices(invoiceNos) {
       endpoint: 'v1/sof/invoices/batch/delete',
       method: 'post',
       data: { invoiceNos },
+    },
+  };
+}
+
+export function batchDeleteByUploadNo(uploadNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_DELETE_BY_UPLOADNO,
+        actionTypes.BATCH_DELETE_BY_UPLOADNO_SUCCEED,
+        actionTypes.BATCH_DELETE_BY_UPLOADNO_FAIL,
+      ],
+      endpoint: 'v1/sof/invoices/batch/delete/by/uploadno',
+      method: 'post',
+      data: { uploadNo },
     },
   };
 }

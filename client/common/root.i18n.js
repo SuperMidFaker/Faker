@@ -25,9 +25,37 @@ const messages = defineMessages({
     id: 'root.all',
     defaultMessage: '全部',
   },
+  status: {
+    id: 'root.status',
+    defaultMessage: '状态',
+  },
+  todo: {
+    id: 'root.todo',
+    defaultMessage: '待办',
+  },
   op: {
     id: 'root.op',
     defaultMessage: '操作',
+  },
+  extraMenu: {
+    id: 'root.extra.menu',
+    defaultMessage: '更多菜单',
+  },
+  views: {
+    id: 'root.views',
+    defaultMessage: '视图',
+  },
+  tableView: {
+    id: 'root.views.table.view',
+    defaultMessage: '表格视图',
+  },
+  boardView: {
+    id: 'root.views.board.view',
+    defaultMessage: '看板视图',
+  },
+  settings: {
+    id: 'root.settings',
+    defaultMessage: '设置',
   },
   yes: {
     id: 'root.yes',
@@ -45,81 +73,101 @@ const messages = defineMessages({
     id: 'root.cancel',
     defaultMessage: '取消',
   },
+  adjust: {
+    id: 'root.adjust',
+    defaultMessage: '调整',
+  },
   back: {
     id: 'root.back',
     defaultMessage: '返回',
   },
+  actions: {
+    id: 'root.actions',
+    defaultMessage: '操作',
+  },
   edit: {
-    id: 'root.edit',
+    id: 'root.actions.edit',
     defaultMessage: '编辑',
   },
   modify: {
-    id: 'root.modify',
+    id: 'root.actions.modify',
     defaultMessage: '修改',
   },
   config: {
-    id: 'root.config',
+    id: 'root.actions.config',
     defaultMessage: '配置',
   },
   assign: {
-    id: 'root.assign',
+    id: 'root.actions.assign',
     defaultMessage: '分配',
   },
   delete: {
-    id: 'root.delete',
+    id: 'root.actions.delete',
     defaultMessage: '删除',
   },
   add: {
-    id: 'root.add',
+    id: 'root.actions.add',
     defaultMessage: '添加',
   },
   create: {
-    id: 'root.create',
+    id: 'root.actions.create',
     defaultMessage: '新建',
   },
   import: {
-    id: 'root.import',
+    id: 'root.actions.import',
     defaultMessage: '导入',
   },
   export: {
-    id: 'root.export',
+    id: 'root.actions.export',
     defaultMessage: '导出',
   },
   save: {
-    id: 'root.save',
+    id: 'root.actions.save',
     defaultMessage: '保存',
   },
   close: {
-    id: 'root.close',
+    id: 'root.actions.close',
     defaultMessage: '关闭',
   },
   search: {
-    id: 'root.search',
+    id: 'root.actions.search',
     defaultMessage: '搜索',
   },
   setting: {
-    id: 'root.setting',
+    id: 'root.actions.setting',
     defaultMessage: '设置',
   },
+  submit: {
+    id: 'root.actions.submit',
+    defaultMessage: '提交',
+  },
+  confirm: {
+    id: 'root.actions.confirm',
+    defaultMessage: '确认',
+  },
   accept: {
-    id: 'root.accept',
+    id: 'root.actions.accept',
     defaultMessage: '接受',
   },
   reject: {
-    id: 'root.reject',
+    id: 'root.actions.reject',
     defaultMessage: '拒绝',
   },
   approve: {
-    id: 'root.approve',
+    id: 'root.actions.approve',
     defaultMessage: '通过',
   },
   revoke: {
-    id: 'root.revoke',
+    id: 'root.actions.revoke',
     defaultMessage: '撤销',
   },
   batchImport: {
     id: 'root.batch.import',
     defaultMessage: '批量导入',
+  },
+  importLogs: {
+    id: 'root.batch.import.logs',
+    defaultMessage: '导入历史记录',
   },
   batchDelete: {
     id: 'root.batch.delete',
@@ -129,6 +177,10 @@ const messages = defineMessages({
     id: 'root.delete.confirm',
     defaultMessage: '确定删除?',
   },
+  confirmOp: {
+    id: 'root.confirm.op',
+    defaultMessage: '确定操作?',
+  },
   savedSuccess: {
     id: 'root.saved.success',
     defaultMessage: '保存成功',
@@ -136,6 +188,10 @@ const messages = defineMessages({
   seqNo: {
     id: 'root.seq.no',
     defaultMessage: '序号',
+  },
+  remark: {
+    id: 'root.remark',
+    defaultMessage: '备注',
   },
   createdBy: {
     id: 'root.created.by',

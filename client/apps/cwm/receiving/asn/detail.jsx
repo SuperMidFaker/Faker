@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, Button, Select, message } from 'antd';
+import { Form, Layout, Tabs, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import { format } from 'client/common/i18n/helpers';
+import { loadAsn, updateASN, clearTemporary } from 'common/reducers/cwmReceive';
 import HeadCard from './card/headCard';
 import DetailsPane from './tabpane/detailsPane';
 import LottingPane from './tabpane/lottingPane';
 import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
-import { loadAsn, updateASN, clearTemporary } from 'common/reducers/cwmReceive';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Option = Select.Option;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -40,7 +40,7 @@ const TabPane = Tabs.TabPane;
 export default class ReceivingASNDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     tenantName: PropTypes.string.isRequired,
     submitting: PropTypes.bool.isRequired,
   }
@@ -107,27 +107,13 @@ export default class ReceivingASNDetail extends Component {
     const { asnHead, asnBody } = this.state;
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select
-
-                  value={defaultWhse.code}
-                  style={{ width: 160 }}
-                  disabled
-                >
-                  <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('receivingASN')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.asnNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            defaultWhse.name,
+            this.msg('receivingASN'),
+            this.props.params.asnNo,
+          ]}
+        >
           <PageHeader.Actions>
             {this.state.editable && <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
@@ -143,10 +129,21 @@ export default class ReceivingASNDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} >
               <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
                 <TabPane tab="ASN明细" key="asnDetails">
-                  <DetailsPane asnBody={asnBody} detailEnable selectedOwner={asnHead.owner_partner_id} form={form} editable={this.state.editable} fullscreen={this.state.fullscreen} />
+                  <DetailsPane
+                    asnBody={asnBody}
+                    detailEnable
+                    selectedOwner={asnHead.owner_partner_id}
+                    form={form}
+                    editable={this.state.editable}
+                    fullscreen={this.state.fullscreen}
+                  />
                 </TabPane>
                 <TabPane tab="批次属性" key="lottingProps">
-                  <LottingPane editable={this.state.editable} form={form} asnNo={this.props.params.asnNo} />
+                  <LottingPane
+                    editable={this.state.editable}
+                    form={form}
+                    asnNo={this.props.params.asnNo}
+                  />
                 </TabPane>
               </Tabs>
             </MagicCard>

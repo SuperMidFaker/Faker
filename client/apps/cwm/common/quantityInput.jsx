@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import { Input, Tooltip } from 'antd';
 
 export default class QuantityInput extends React.Component {
-  static defaultProps = {
-    toggle: false,
-  };
-
   static propTypes = {
-    type: PropTypes.string,
     onChange: PropTypes.func,
     packQty: PropTypes.number,
     pcsQty: PropTypes.number,

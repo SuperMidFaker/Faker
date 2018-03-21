@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification, DatePicker } from 'antd';
+import { Layout, Radio, Select, Button, Badge, Tag, notification, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -18,6 +18,7 @@ import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
 import { exportNormalExitBySo } from 'common/reducers/cwmOutbound';
 import { format } from 'client/common/i18n/helpers';
+import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
@@ -142,13 +143,13 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="订单接收" />);
+        return (<Badge status="default" text="未处理" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已释放" />);
       } else if (o === 2) {
         return (<Badge status="warning" text="部分发货" />);
       } else if (o === 3) {
-        return (<Badge status="success" text="发货完成" />);
+        return (<Badge status="success" text="已完成" />);
       }
       return null;
     },
@@ -351,13 +352,11 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
   }
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     const { filters } = this.props;
     this.props.loadSos({
       whseCode: value,
@@ -404,7 +403,7 @@ export default class ShippingOrderList extends React.Component {
   }
   render() {
     const {
-      whses, defaultWhse, owners, receivers, carriers, filters, loading,
+      defaultWhse, owners, filters, loading,
     } = this.props;
     let dateVal = [];
     if (filters.endDate) {
@@ -482,6 +481,7 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
+      {/*
       <Select
         showSearch
         optionFilterProp="children"
@@ -492,7 +492,8 @@ export default class ShippingOrderList extends React.Component {
       >
         <Option value="all" key="all">全部收货人</Option>
         {
-            receivers.filter(receiver => (filters.ownerCode !== 'all' ? filters.ownerCode === receiver.owner_partner_id : true))
+            receivers.filter(receiver => (filters.ownerCode !== 'all' ?
+            filters.ownerCode === receiver.owner_partner_id : true))
             .map(receiver => (
               <Option key={receiver.code} value={receiver.code}>{receiver.name}</Option>))
           }
@@ -508,11 +509,13 @@ export default class ShippingOrderList extends React.Component {
       >
         <Option value="all" key="all">全部承运人</Option>
         {
-            carriers.filter(carrier => (filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true))
+            carriers.filter(carrier =>
+              (filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true))
             .map(carrier => (
               <Option key={carrier.code} value={carrier.code}>{carrier.name}</Option>))
           }
-      </Select>
+        </Select>
+      */}
       <RangePicker
         onChange={this.onDateChange}
         value={dateVal}
@@ -528,30 +531,19 @@ export default class ShippingOrderList extends React.Component {
     );
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                    whses.map(warehouse => (
-                      <Option value={warehouse.code} key={warehouse.code}>
-                        {warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingOrder')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('shippingOrder'),
+          ]}
+        >
           <PageHeader.Nav>
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">订单接收</RadioButton>
+              <RadioButton value="pending">未处理</RadioButton>
               <RadioButton value="outbound">已释放</RadioButton>
               <RadioButton value="partial">部分发货</RadioButton>
-              <RadioButton value="completed">发货完成</RadioButton>
+              <RadioButton value="completed">已完成</RadioButton>
             </RadioGroup>
             <span />
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
@@ -576,7 +568,7 @@ export default class ShippingOrderList extends React.Component {
             loading={loading}
             bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           />
         </Content>
         <ShippingDockPanel />

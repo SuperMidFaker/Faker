@@ -51,9 +51,8 @@ import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSExportManifest from './cms/export/manifest';
-import * as CMSQuote from './cms/quote';
 import * as CMSBilling from './cms/billing';
-import * as CMSRates from './cms/billing/rates';
+import * as CMSQuote from './cms/billing/quote';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
@@ -71,13 +70,13 @@ import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingWave from './cwm/shipping/wave';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
-import * as CWMShippingLoad from './cwm/shipping/load';
 import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMStockTransactions from './cwm/stock/transactions';
 import * as CWMStockTransition from './cwm/stock/transition';
 import * as CWMStockMovement from './cwm/stock/movement';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMSettings from './cwm/settings';
+import CWMSupSHFTZ from './cwm/supervision/shftz';
 import * as CWMSupSHFTZEntry from './cwm/supervision/shftz/entry';
 import * as CWMSupSHFTZTransferIn from './cwm/supervision/shftz/transfer/in';
 import * as CWMSupSHFTZTransferOut from './cwm/supervision/shftz/transfer/out';
@@ -101,7 +100,7 @@ import * as SCOFSettings from './scof/settings';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
 import * as BSSAudit from './bss/audit';
-import * as BSSBills from './bss/bills';
+import * as BSSBill from './bss/bill';
 import * as BSSSettings from './bss/settings';
 
 export default(store) => {
@@ -167,7 +166,7 @@ export default(store) => {
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">
-            <Route path="apps" component={HubIntegration.AppsList} />
+            <Route path="apps" component={HubIntegration.AppStore} />
             <Route path="installed" component={HubIntegration.InstalledList} />
             <Route path="arctm">
               <Route path="config/:uuid" component={HubArCTM.Config} />
@@ -249,21 +248,6 @@ export default(store) => {
               <Route path="paramVehicles" component={TMSSettings.ParamVehicles} />
             </Route>
             <Route path="billing">
-              <IndexRedirect to="/transport/billing/receivable" />
-              <Route path="receivable">
-                <IndexRoute component={TMSBilling.ReceivableList} />
-                <Route path="create" component={TMSBilling.CreateReceivableBilling} />
-                <Route path="check/:billingId" component={TMSBilling.CheckReceivableBilling} />
-                <Route path="edit/:billingId" component={TMSBilling.EditReceivableBilling} />
-                <Route path="view/:billingId" component={TMSBilling.ViewReceivableBilling} />
-              </Route>
-              <Route path="payable">
-                <IndexRoute component={TMSBilling.PayableList} />
-                <Route path="create" component={TMSBilling.CreatePayableBilling} />
-                <Route path="check/:billingId" component={TMSBilling.CheckPayableBilling} />
-                <Route path="edit/:billingId" component={TMSBilling.EditPayableBilling} />
-                <Route path="view/:billingId" component={TMSBilling.ViewPayableBilling} />
-              </Route>
               <Route path="fee" component={TMSBilling.FeeList} />
               <Route path="tariff">
                 <IndexRoute component={TMSTariff.List} />
@@ -300,7 +284,6 @@ export default(store) => {
             <Route path="import">
               <IndexRedirect to="/clearance/import/manifest" />
               <Route path="manifest">
-                <IndexRoute component={CMSImportManifest.List} />
                 <Route path=":billno" component={CMSImportManifest.Make} />
                 <Route path="view/:billno" component={CMSImportManifest.View} />
                 <Route path="rules/edit/:id" component={CMSImportManifest.RuleEdit} />
@@ -310,7 +293,6 @@ export default(store) => {
             <Route path="export">
               <IndexRedirect to="/clearance/export/manifest" />
               <Route path="manifest">
-                <IndexRoute component={CMSExportManifest.List} />
                 <Route path=":billno" component={CMSExportManifest.Make} />
                 <Route path="view/:billno" component={CMSExportManifest.View} />
                 <Route path="rules/edit/:id" component={CMSExportManifest.RuleEdit} />
@@ -329,22 +311,15 @@ export default(store) => {
             <Route path="billing">
               <Route path="receivable">
                 <IndexRoute component={CMSBilling.ReceivableList} />
-                <Route path=":delgNo" component={CMSBilling.Detail} />
               </Route>
               <Route path="payable">
                 <IndexRoute component={CMSBilling.PayableList} />
-                <Route path=":delgNo" component={CMSBilling.Detail} />
               </Route>
-              <Route path="rates">
-                <IndexRoute component={CMSRates.List} />
-                <Route path=":id" component={CMSRates.Edit} />
+              <Route path="expense/:delgNo/fees" component={CMSBilling.Expense} />
+              <Route path="quote">
+                <IndexRoute component={CMSQuote.List} />
+                <Route path=":quoteNo" component={CMSQuote.Edit} />
               </Route>
-            </Route>
-            <Route path="quote">
-              <IndexRoute component={CMSQuote.List} />
-              <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
-              <Route path="view/:quoteno/:version" component={CMSQuote.View} />
-              <Route path="template" component={CMSQuote.Template} />
             </Route>
             <Route path="analytics">
               <IndexRoute component={CMSAnalytics.List} />
@@ -414,7 +389,6 @@ export default(store) => {
                 <IndexRoute component={CWMShippingOutbound.List} />
                 <Route path=":outboundNo" component={CWMShippingOutbound.Detail} />
               </Route>
-              <Route path="load" component={CWMShippingLoad.List} />
             </Route>
             <Route path="stock">
               <Route path="inventory" component={CWMStockInventory.List} />
@@ -426,7 +400,7 @@ export default(store) => {
               </Route>
             </Route>
             <Route path="supervision">
-              <Route path="shftz">
+              <Route path="shftz" component={CWMSupSHFTZ}>
                 <IndexRedirect to="/cwm/supervision/shftz/entry" />
                 <Route path="entry" >
                   <IndexRoute component={CWMSupSHFTZEntry.List} />
@@ -516,10 +490,10 @@ export default(store) => {
               <IndexRoute component={BSSAudit.List} />
               <Route path=":orderRelNo" component={BSSAudit.Detail} />
             </Route>
-            <Route path="bills">
-              <Route path="customer" component={BSSBills.CustomerList} />
-              <Route path="vendor" component={BSSBills.VendorList} />
-              <Route path=":billNo" component={BSSBills.Detail} />
+            <Route path="bill">
+              <IndexRoute component={BSSBill.List} />
+              <Route path="check/:billNo" component={BSSBill.Check} />
+              <Route path=":billNo" component={BSSBill.Detail} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/bss/settings/preferences" />

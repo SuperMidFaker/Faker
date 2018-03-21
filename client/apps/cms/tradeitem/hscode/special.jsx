@@ -49,8 +49,8 @@ export default class HSCodeSpecial extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    hscodeCategories: PropTypes.array.isRequired,
-    categoryHscodes: PropTypes.object.isRequired,
+    hscodeCategories: PropTypes.array.isRequired, // eslint-disable-line
+    categoryHscodes: PropTypes.object.isRequired, // eslint-disable-line
     addHsCodeCategory: PropTypes.func.isRequired,
     removeHsCodeCategory: PropTypes.func.isRequired,
     updateHsCodeCategory: PropTypes.func.isRequired,
@@ -235,7 +235,7 @@ export default class HSCodeSpecial extends React.Component {
     return (
       <Layout className="ant-layout-wrapper">
         <Sider
-          width={280}
+          width={200}
           className="menu-sider"
           key="sider"
           trigger={null}
@@ -247,7 +247,7 @@ export default class HSCodeSpecial extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <NavLink to="/clearance/tradeitem">
-                  <Icon type="left" /> {this.msg('tradeitem')}
+                  <Icon type="left-circle-o" />
                 </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
@@ -267,14 +267,7 @@ export default class HSCodeSpecial extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {hscodeCategory.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={hscodeCategory.name}>
             <PageHeader.Actions>
               <Button icon="file-excel" onClick={this.handleExportExcel}>
                 {this.msg('导出')}

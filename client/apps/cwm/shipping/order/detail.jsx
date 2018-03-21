@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, Button, Select, message } from 'antd';
+import { Form, Layout, Tabs, Button, message } from 'antd';
+import { format } from 'client/common/i18n/helpers';
+import { clearTemporary } from 'common/reducers/cwmReceive';
+import { getSo, updateSo } from 'common/reducers/cwmShippingOrder';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import WhseSelect from '../../common/whseSelect';
 import HeadCard from './card/headCard';
 import DetailsPane from './tabpane/detailsPane';
 import ReceiverPane from './tabpane/receiverPane';
 import CarrierPane from './tabpane/carrierPane';
 import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
-import { clearTemporary } from 'common/reducers/cwmReceive';
-import { getSo, updateSo } from 'common/reducers/cwmShippingOrder';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
-const Option = Select.Option;
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
@@ -41,7 +42,7 @@ const TabPane = Tabs.TabPane;
 export default class CreateShippingOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     tenantName: PropTypes.string.isRequired,
     submitting: PropTypes.bool.isRequired,
   }
@@ -120,11 +121,6 @@ export default class CreateShippingOrder extends Component {
   handleCancel = () => {
     this.context.router.goBack();
   }
-  handleUploadFiles = (fileList) => {
-    this.setState({
-      attachments: fileList,
-    });
-  }
   handleRegionChange = (region) => {
     this.setState({ region });
   }
@@ -137,26 +133,17 @@ export default class CreateShippingOrder extends Component {
     });
   }
   render() {
-    const { form, submitting, defaultWhse } = this.props;
+    const { form, submitting } = this.props;
     const { soHead, soBody, region } = this.state;
     return (
       <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} style={{ width: 160 }} disabled>
-                  <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingOrder')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.soNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect disabled />,
+            this.msg('shippingOrder'),
+            this.props.params.soNo,
+          ]}
+        >
           <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
@@ -168,17 +155,40 @@ export default class CreateShippingOrder extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <HeadCard soHead={soHead} form={form} editable={this.state.editable} handleOwnerChange={this.handleOwnerChange} />
+            <HeadCard
+              soHead={soHead}
+              form={form}
+              editable={this.state.editable}
+              handleOwnerChange={this.handleOwnerChange}
+            />
             <MagicCard bodyStyle={{ padding: 0 }} >
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
-                  <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} fullscreen={this.state.fullscreen} />
+                  <DetailsPane
+                    soBody={soBody}
+                    detailEnable
+                    selectedOwner={soHead.owner_partner_id}
+                    form={form}
+                    editable={this.state.editable}
+                    fullscreen={this.state.fullscreen}
+                  />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">
-                  <ReceiverPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} region={region} onRegionChange={this.handleRegionChange} />
+                  <ReceiverPane
+                    form={form}
+                    selectedOwner={soHead.owner_partner_id}
+                    soHead={soHead}
+                    region={region}
+                    onRegionChange={this.handleRegionChange}
+                  />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
-                  <CarrierPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} onCarrierChange={this.handleCarrierChange} />
+                  <CarrierPane
+                    form={form}
+                    selectedOwner={soHead.owner_partner_id}
+                    soHead={soHead}
+                    onCarrierChange={this.handleCarrierChange}
+                  />
                 </TabPane>
               </Tabs>
             </MagicCard>

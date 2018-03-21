@@ -4,30 +4,37 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
+import { Button, DatePicker, Divider, Icon, Input, Layout, Menu, Select, Switch, message } from 'antd';
 import DataTable from 'client/components/DataTable';
-import SideDrawer from 'client/components/SideDrawer';
-import SearchBox from 'client/components/SearchBox';
+import ButtonToggle from 'client/components/ButtonToggle';
+import ToolbarAction from 'client/components/ToolbarAction';
+import Drawer from 'client/components/Drawer';
+import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
+import { PARTNER_ROLES } from 'common/constants';
+import { loadPartners } from 'common/reducers/partner';
+import { loadAudits, confirmAudits, redoAudits } from 'common/reducers/bssAudit';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
-
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
-
+const { Option } = Select;
 
 @connectFetch()()
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
+    partners: state.partner.partners,
+    auditslist: state.bssAudit.auditslist,
+    listFilter: state.bssAudit.listFilter,
+    loading: state.bssAudit.loading,
   }),
-  { }
+  {
+    loadPartners, loadAudits, confirmAudits, redoAudits,
+  }
 )
 @connectNav({
   depth: 2,
@@ -36,19 +43,23 @@ const RadioButton = Radio.Button;
 export default class AuditList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
+    extraVisible: false,
+  }
+  componentDidMount() {
+    this.props.loadPartners({ role: PARTNER_ROLES.CUS });
+    this.handleAuditsLoad(1);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
     title: '业务编号',
-    dataIndex: 'order_rel_no',
+    dataIndex: 'sof_order_no',
     width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
@@ -62,24 +73,20 @@ export default class AuditList extends React.Component {
     width: 180,
     dataIndex: 'cust_order_no',
   }, {
-    title: '状态',
-    width: 100,
-    dataIndex: 'status',
-  }, {
-    title: '应收营收',
-    dataIndex: 'rec_amount',
+    title: '应收金额',
+    dataIndex: 'receivable_amount',
     width: 150,
   }, {
-    title: '应付成本',
-    dataIndex: 'pay_amount',
+    title: '应付金额',
+    dataIndex: 'payable_amount',
     width: 150,
   }, {
-    title: '利润',
-    dataIndex: 'profit',
+    title: '差异金额',
+    dataIndex: 'profit_amount',
     width: 150,
   }, {
     title: '毛利率',
-    dataIndex: 'profit_rate',
+    dataIndex: 'gross_profit_ratio',
     width: 100,
   }, {
     title: '订单日期',
@@ -88,154 +95,281 @@ export default class AuditList extends React.Component {
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
     title: '结单日期',
-    dataIndex: 'received_date',
+    dataIndex: 'settled_date',
     width: 120,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
   }, {
     title: '审核时间',
-    dataIndex: 'created_date',
+    dataIndex: 'confirmed_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
     title: '审核人员',
-    dataIndex: 'created_by',
+    dataIndex: 'confirmed_by',
     width: 80,
   }, {
-    title: '操作',
+    title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
-    width: 150,
+    align: 'right',
     fixed: 'right',
+    width: 120,
     render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+      if (record.status === 1) {
+        return (<span>
+          <RowAction icon="check-circle-o" onClick={this.handleConfirm} label={this.gmsg('confirm')} row={record} />
+          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+        </span>);
+      } else if (record.status === 2) {
+        return (<span>
+          <RowAction icon="close-circle-o" onClick={this.handleReturn} label={this.gmsg('return')} row={record} />
+          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+        </span>);
       }
-      return (<span><RowAction onClick={this.handleDetail} label="费用明细" row={record} /> </span>);
+      return (<RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />);
     },
   }]
-  handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
-      filters,
-    });
-    this.setState({
-      selectedRowKeys: [],
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadAudits(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      const filter = {
+        ...this.props.listFilter,
+      };
+      params.filter = JSON.stringify(filter);
+      return params;
+    },
+    remotes: this.props.auditslist,
+  })
+
+  handleAuditsLoad = (currentPage, filter) => {
+    const { listFilter, auditslist: { pageSize, current } } = this.props;
+    this.props.loadAudits({
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      current: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleDeselectRows();
+      }
     });
   }
+  handleFilterMenuClick = (ev) => {
+    const filter = { ...this.props.listFilter, status: ev.key };
+    this.handleAuditsLoad(1, filter);
+  }
   handleSearch = (value) => {
-    const filters = { ...this.props.filters, name: value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
-      current: 1,
-      filters,
+    const filter = { ...this.props.listFilter, searchText: value };
+    this.handleAuditsLoad(1, filter);
+  }
+  handleDateRangeChange = (data, dataString) => {
+    const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
+    this.handleAuditsLoad(1, filter);
+  }
+  handleClientSelectChange = (value) => {
+    const filters = { ...this.props.listFilter, clientPid: value };
+    this.handleAuditsLoad(1, filters);
+  }
+  handleConfirmAudits = (sofOrderNos) => {
+    this.props.confirmAudits(sofOrderNos).then((result) => {
+      if (!result.error) {
+        this.handleAuditsLoad(1);
+      }
+    });
+  }
+  handleConfirm = (row) => {
+    const sofOrderNos = [row.sof_order_no];
+    this.handleConfirmAudits(sofOrderNos);
+  }
+  handleBatchConfirm = () => {
+    const sofOrderNos = this.state.selectedRowKeys;
+    this.handleConfirmAudits(sofOrderNos);
+  }
+  handleAllConfirm = () => {
+    const sofOrderNos = null;
+    this.handleConfirmAudits(sofOrderNos);
+  }
+  handleReturn = (row) => {
+    this.props.redoAudits([row.sof_order_no]).then((result) => {
+      if (!result.error) {
+        this.handleAuditsLoad(1);
+      }
+    });
+  }
+  handleBatchReturn = () => {
+    const sofOrderNos = this.state.selectedRowKeys;
+    this.props.redoAudits(sofOrderNos).then((result) => {
+      if (!result.error) {
+        this.handleAuditsLoad(1);
+      }
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/fee/summary/${row.order_rel_no}`;
+    const link = `/bss/audit/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  toggleExtra = () => {
+    this.setState({ extraVisible: !this.state.extraVisible });
+  }
+  // handleExtraMenuClick = (ev) => {
+  // console.log(ev.key);
+  // }
   render() {
-    const { loading } = this.props;
-    const mockData = [];
-
+    const { auditslist, loading, partners } = this.props;
+    const { status } = this.props.listFilter;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-    /*
-    const dataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadAsnLists(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: resolve(result.totalCount, result.current, result.pageSize),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: result.pageSize,
-        showTotal: total => `共 ${total} 条`,
-      }),
-      getParams: (pagination, tblfilters) => {
-        const newfilters = { ...this.props.filters, ...tblfilters[0] };
-        const params = {
-          tenantId: this.props.tenantId,
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          filters: newfilters,
-        };
-        return params;
-      },
-      remotes: this.props.asnlist,
-    });
-    */
+    this.dataSource.remotes = auditslist;
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('asnPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
-        placeholder="结算对象"
+        allowClear
         optionFilterProp="children"
         style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
-      />
+      >
+        <Option value="all" key="all">全部</Option>
+        {partners.map(data => (
+          <Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+          </Option>))
+        }
+      </Select>
       <RangePicker
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        ranges={{ 当天: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       />
     </span>);
     const bulkActions = (<span>
-      <Button icon="check-circle-o" onClick={this.handleBatchRelease}>批量审核</Button>
-      <Button icon="plus-square-o" onClick={this.handleBatchRelease}>加入账单</Button>
-      <Button icon="plus" onClick={this.handleBatchRelease}>新建账单</Button>
+      {(status === 'submitted') && <Button icon="check-circle-o" onClick={this.handleBatchConfirm}>批量确认</Button>}
+      {(status === 'confirmed') && <Button icon="close-circle-o" onClick={this.handleBatchReturn}>取消确认</Button>}
     </span>);
+    const menuStack = [
+      [
+        {
+          key: 'g_view',
+          title: this.gmsg('views'),
+          type: 'group',
+          children: [
+            {
+              key: 'table',
+              icon: 'table',
+              title: this.gmsg('tableView'),
+            },
+            {
+              key: 'board',
+              icon: 'layout',
+              title: this.gmsg('boardView'),
+              disabled: true,
+            },
+          ],
+        },
+        {
+          key: 'g_setting',
+          title: this.gmsg('setting'),
+          type: 'group',
+          children: [
+            {
+              key: 'rules',
+              icon: 'tool',
+              title: this.msg('审核规则'),
+              children: [
+                {
+                  key: 'autoAudit',
+                  icon: 'rocket',
+                  title: this.msg('启用自动审核'),
+                  extra: <Switch />,
+                },
+                {
+                  key: 'profitLimit',
+                  title: this.msg('最低利润金额'),
+                  extra: <Input />,
+                },
+                {
+                  key: 'profitRateLimit',
+                  title: this.msg('最低毛利率'),
+                  extra: <Input />,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    ];
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('audit')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} >
-              <RadioButton value="pending">待审核</RadioButton>
-              <RadioButton value="confirmed">已确认</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
+        <PageHeader title={this.msg('audit')}>
           <PageHeader.Actions>
-            <Button icon="file-excel">导出</Button>
+            <ToolbarAction
+              icon="check"
+              confirm={this.gmsg('confirmOp')}
+              onConfirm={this.handleAllConfirm}
+              label={this.msg('confirmAll')}
+              disabled={status === 'confirmed'}
+            />
+            <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
-          <SideDrawer>
-            list
-          </SideDrawer>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.gmsg('all')}
+              </Menu.Item>
+              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
+                <Menu.Item key="submitted">
+                  <Icon type="upload" /> {this.msg('statusSubmitted')}
+                </Menu.Item>
+                <Menu.Item key="confirmed">
+                  <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
+          </Drawer>
           <Content className="page-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
+              onSearch={this.handleSearch}
+              searchTips={this.msg('searchTips')}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
-              dataSource={mockData}
+              dataSource={this.dataSource}
               rowSelection={rowSelection}
-              rowKey="id"
+              rowKey="sof_order_no"
               loading={loading}
-              locale={{ emptyText: <span><Button icon="plus" /></span> }}
             />
+            <NestedMenuPanel
+              title={this.gmsg('extraMenu')}
+              visible={this.state.extraVisible}
+              onClose={this.toggleExtra}
+              stack={menuStack}
+              onMenuClick={this.handleExtraMenuClick}
+            >
+              <Divider />
+            </NestedMenuPanel>
           </Content>
         </Layout>
       </Layout>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Layout, Dropdown, Menu } from 'antd';
+import { Button, Layout, Dropdown, Menu } from 'antd';
 
 import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
@@ -219,14 +219,7 @@ export default class ManualList extends Component {
     );
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('manual')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('manual')}>
           <PageHeader.Actions>
             <Dropdown overlay={menu}>
               <Button type="primary" onClick={this.handleCreateBtnClick} icon="upload">
@@ -240,7 +233,7 @@ export default class ManualList extends Component {
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={dataSource}
             rowKey="manual_no"

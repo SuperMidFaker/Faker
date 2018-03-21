@@ -138,6 +138,10 @@ const messages = defineMessages({
     id: 'cms.customs.decl.delete.confirm',
     defaultMessage: '确定删除该报关单?',
   },
+  recallConfirm: {
+    id: 'cms.customs.decl.recall.confirm',
+    defaultMessage: '确定取消报关单复核?',
+  },
   delete: {
     id: 'cms.customs.decl.delete',
     defaultMessage: '删除',
@@ -281,6 +285,10 @@ const messages = defineMessages({
   packCount: {
     id: 'cms.customs.decl.pack.count',
     defaultMessage: '件数',
+  },
+  packType: {
+    id: 'cms.customs.decl.pack.type',
+    defaultMessage: '包装种类',
   },
   grossWt: {
     id: 'cms.customs.decl.gross.wt',

@@ -3,18 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, message, DatePicker } from 'antd';
+import { Badge, Button, Layout, Radio, Select, Tag, notification, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
 import connectNav from 'client/common/decorators/connect-nav';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import WhseSelect from '../../common/whseSelect';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { formatMsg } from '../message.i18n';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -44,7 +43,7 @@ const { RangePicker } = DatePicker;
     userMembers: state.account.userMembers,
   }),
   {
-    showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease,
+    showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease,
   }
 )
 @connectNav({
@@ -299,8 +298,6 @@ export default class ReceivingASNList extends React.Component {
     // TODO
   }
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     const { filters } = this.props;
     this.props.loadAsnLists({
       whseCode: value,
@@ -357,7 +354,7 @@ export default class ReceivingASNList extends React.Component {
   }
   render() {
     const {
-      whses, defaultWhse, owners, suppliers, filters, loading,
+      defaultWhse, owners, suppliers, filters, loading,
     } = this.props;
     let dateVal = [];
     if (filters.endDate) {
@@ -438,22 +435,12 @@ export default class ReceivingASNList extends React.Component {
       */
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                    whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>
-                      {warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('receivingASN')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('receivingASN'),
+          ]}
+        >
           <PageHeader.Nav>
             <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
@@ -464,7 +451,6 @@ export default class ReceivingASNList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <PageHint />
             <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>
@@ -475,7 +461,7 @@ export default class ReceivingASNList extends React.Component {
             toolbarActions={toolbarActions}
             bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={dataSource}
             rowSelection={rowSelection}

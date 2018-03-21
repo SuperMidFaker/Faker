@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Button, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -13,12 +13,11 @@ import { openBatchDeclModal, loadBatchApplyList, batchDelgCancel } from 'common/
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PageHeader from 'client/components/PageHeader';
 import { format } from 'client/common/i18n/helpers';
-import ModuleMenu from '../../menu';
 import BatchDeclModal from './modal/batchDeclModal';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -299,54 +298,33 @@ export default class BatchDeclList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="batchDecl" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('ftzBatchDecl')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部</RadioButton>
-                <RadioButton value="manifesting">委托制单</RadioButton>
-                <RadioButton value="applying">报关申请</RadioButton>
-                <RadioButton value="cleared">已清关</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
-            <PageHeader.Actions>
-              <Button type="primary" icon="plus" onClick={this.handleCreateBatchDecl}>
-                {this.msg('create')}
-              </Button>
-            </PageHeader.Actions>
-          </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              columns={this.columns}
-              rowSelection={rowSelection}
-              dataSource={this.dataSource}
-              rowKey="id"
-              toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
-              loading={this.props.loading}
-            />
-          </Content>
-        </Layout>
+        <PageHeader title={this.msg('ftzBatchDecl')}>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="manifesting">委托制单</RadioButton>
+              <RadioButton value="applying">报关申请</RadioButton>
+              <RadioButton value="cleared">已清关</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateBatchDecl}>
+              {this.msg('create')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable
+            columns={this.columns}
+            rowSelection={rowSelection}
+            dataSource={this.dataSource}
+            rowKey="id"
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            onDeselectRows={this.handleDeselectRows}
+            loading={this.props.loading}
+          />
+        </Content>
         <BatchDeclModal reload={this.handleBatchDeclLoad} />
       </Layout>
     );

@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export default class Actions extends Component {
-  render() {
-    return (
-      <div className="welo-page-header-actions">{this.props.children}</div>
-    );
-  }
+export default function Actions(props) {
+  return (
+    <div className="welo-page-header-actions">{props.children}</div>
+  );
 }
+Actions.props = {
+  children: PropTypes.node,
+};

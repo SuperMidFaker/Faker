@@ -98,14 +98,15 @@ export default class Fees extends Component {
   }
   render() {
     const { currentTab } = this.state;
-    const tabList = [
+    const menus = [
       {
         key: 'plugins',
-        tab: this.msg('prefPlugins'),
+        menu: this.msg('prefPlugins'),
+        default: true,
       },
       {
         key: 'auditRule',
-        tab: this.msg('prefAuditRule'),
+        menu: this.msg('prefAuditRule'),
       },
     ];
     return (
@@ -123,7 +124,7 @@ export default class Fees extends Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader tabList={tabList} onTabChange={this.handleTabChange} />
+          <PageHeader menus={menus} onTabChange={this.handleTabChange} />
           <Content className="page-content layout-fixed-width">
             {currentTab === 'plugins' && <PluginsCard />}
             {currentTab === 'auditRule' && <AuditRuleCard />}

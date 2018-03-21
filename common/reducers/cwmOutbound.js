@@ -29,7 +29,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'SFEXPRESS_MODAL',
   'LOAD_SFEXPRESS', 'LOAD_SFEXPRESS_SUCCEED', 'LOAD_SFEXPRESS_FAIL',
   'LOAD_SFEXPRESS_CONFIG', 'LOAD_SFEXPRESS_CONFIG_SUCCEED', 'LOAD_SFEXPRESS_CONFIG_FAIL',
-  'LOAD_TRACEID_OUTBOUND', 'LOAD_TRACEID_OUTBOUND_SUCCEED', 'LOAD_TRACEID_OUTBOUND_FAIL',
+  'LOAD_TRACEIDALLOCD', 'LOAD_TRACEIDALLOCD_SUCCEED', 'LOAD_TRACEIDALLOCD_FAIL',
   'EXPORT_NEBSO', 'EXPORT_NEBSO_SUCCEED', 'EXPORT_NEBSO_FAIL',
 ]);
 
@@ -606,15 +606,15 @@ export function loadSFExpressConfig() {
   };
 }
 
-export function loadOutboundsByTraceId(traceId) {
+export function loadTraceIdAllocDetails(traceId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_TRACEID_OUTBOUND,
-        actionTypes.LOAD_TRACEID_OUTBOUND_SUCCEED,
-        actionTypes.LOAD_TRACEID_OUTBOUND_FAIL,
+        actionTypes.LOAD_TRACEIDALLOCD,
+        actionTypes.LOAD_TRACEIDALLOCD_SUCCEED,
+        actionTypes.LOAD_TRACEIDALLOCD_FAIL,
       ],
-      endpoint: 'v1/cwm/traceid/outbounds',
+      endpoint: 'v1/cwm/outbound/traceid/allocdetails',
       method: 'get',
       params: { traceId },
     },

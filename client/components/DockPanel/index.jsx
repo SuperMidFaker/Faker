@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Alert, Badge, Breadcrumb, Button, Popover, Spin } from 'antd';
 import classNames from 'classnames';
-import './index.less';
+import './style.less';
 
 function noop() {}
 
@@ -18,6 +18,7 @@ export default class DockPanel extends PureComponent {
     visible: PropTypes.bool.isRequired,
     size: PropTypes.string,
     title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+    mode: PropTypes.string,
     uppperLevel: PropTypes.node,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,
@@ -38,7 +39,8 @@ export default class DockPanel extends PureComponent {
     overlayVisible: false,
   }
   componentWillUnmount() {
-    window.$(document).unbind('click');
+    // window.$(document).unbind('click');
+    window.document.removeEventListener('click', null, false);
   }
   handleClose = (e) => {
     (this.props.onClose || noop)(e);
@@ -65,7 +67,8 @@ export default class DockPanel extends PureComponent {
   }
   render() {
     const {
-      prefixCls, size = '', className, visible, title, uppperLevel, status, statusText, overlay, extra, loading, alert, alertType, children,
+      prefixCls, size = '', className, visible, title, mode, uppperLevel, status, statusText,
+      overlay, extra, loading, alert, alertType, children,
     } = this.props;
     const sizeCls = ({
       large: 'lg',
@@ -75,8 +78,12 @@ export default class DockPanel extends PureComponent {
     const classes = classNames(prefixCls, {
       [`${prefixCls}-${sizeCls}`]: sizeCls,
       [`${prefixCls}-visible`]: visible,
+      [`${prefixCls}-inner`]: mode === 'inner',
     }, className);
-    const maskClasses = classNames(`${prefixCls}-mask`, { [`${prefixCls}-mask-hidden`]: !visible });
+    const maskClasses = classNames(
+      `${prefixCls}-mask`,
+      { [`${prefixCls}-mask-hidden`]: (!visible || mode === 'inner') },
+    );
     const bodyCls = extra ? `${prefixCls}-body with-header-extra` : `${prefixCls}-body`;
     return (
       <div>

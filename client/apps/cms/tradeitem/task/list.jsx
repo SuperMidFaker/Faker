@@ -184,14 +184,7 @@ export default class TradeItemTaskList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('taskList')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('taskList')}>
             <PageHeader.Actions>
               <Button type="primary" icon="upload" onClick={this.handleCompareImportInit}>{this.msg('newComparisonImport')}</Button>
             </PageHeader.Actions>
@@ -200,7 +193,7 @@ export default class TradeItemTaskList extends React.Component {
             <DataTable
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               loading={loading}
               columns={this.columns}
               dataSource={workspaceTaskList}

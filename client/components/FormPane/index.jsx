@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Spin } from 'antd';
-import './index.less';
+import './style.less';
 import toolbar from './toolbar';
 import extra from './extra';
 

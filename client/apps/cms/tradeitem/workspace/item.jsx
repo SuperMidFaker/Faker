@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
+import { Form, Layout, Button, Tabs, message } from 'antd';
 import { loadWorkspaceItem, saveWorkspaceItem, notifyFormChanged } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
@@ -70,20 +70,7 @@ export default class WorkItemPage extends Component {
     } = this.props;
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('workspace')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {itemData.repo_owner_name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('editItem')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('workspace'), itemData.repo_owner_name, this.msg('editItem')]}>
           <PageHeader.Actions>
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}

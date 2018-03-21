@@ -1,20 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class Item extends Component {
-  static defaultProps = {
-    prefixCls: 'welo-summary-item',
-  };
-  static propTypes = {
-    label: PropTypes.string,
-  }
-  render() {
-    const { prefixCls, label } = this.props;
-    return (
-      <span className={`${prefixCls}`}>
-        <span className={`${prefixCls}-label`} >{label}</span>
-        {this.props.children}
-      </span>
-    );
-  }
+export default function Item(props) {
+  const { prefixCls = 'welo-summary-item', label, children } = props;
+  return (
+    <span className={`${prefixCls}`}>
+      <span className={`${prefixCls}-label`} >{label}</span>
+      {children}
+    </span>
+  );
 }
+Item.props = {
+  prefixCls: PropTypes.string,
+  label: PropTypes.string,
+  children: PropTypes.node,
+};

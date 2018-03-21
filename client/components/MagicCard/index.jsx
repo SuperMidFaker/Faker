@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Card } from 'antd';
 import ButtonToggle from '../ButtonToggle';
-import './index.less';
+import './style.less';
 
 export default class MagicCard extends React.Component {
   static defaultProps = {
@@ -34,7 +34,13 @@ export default class MagicCard extends React.Component {
     return (
       <Card {...this.props} className={classes} >
         <div className="welo-magic-card-toggle">
-          <ButtonToggle size="default" iconOff="arrows-alt" iconOn="shrink" onClick={this.toggleFullscreen} />
+          <ButtonToggle
+            size="default"
+            iconOff="arrows-alt"
+            iconOn="shrink"
+            state={this.state.fullscreen}
+            onClick={this.toggleFullscreen}
+          />
         </div>
         {children}
       </Card>

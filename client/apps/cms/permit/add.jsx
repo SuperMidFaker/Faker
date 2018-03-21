@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Form, Layout, Button, Tabs } from 'antd';
+import { Form, Layout, Button, Tabs } from 'antd';
 
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
@@ -68,17 +68,7 @@ export default class PermitAdd extends Component {
     </TabPane>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('permit')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('addPermit')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('permit'), this.msg('addPermit')]}>
           <PageHeader.Actions>
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}

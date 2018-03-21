@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, Tooltip, message } from 'antd';
+import { Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, Tooltip, message } from 'antd';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
@@ -14,6 +14,7 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
 import ItemDiffModal from '../workspace/modal/itemDiffModal';
@@ -520,8 +521,11 @@ export default class RepoContent extends Component {
       }
     });
   }
-  toggleExportModal = () => {
+  handleTradeItemExport = () => {
     this.props.toggleExportModal(true);
+  }
+  handleItemImportUpdated = () => {
+    this.handleItemListLoad();
   }
   render() {
     const {
@@ -538,7 +542,10 @@ export default class RepoContent extends Component {
     let bulkActions = null;
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
       bulkActions = [
-        <Popconfirm title="是否删除所有选择项？" onConfirm={() => this.handleDeleteSelected()}>
+        <Button icon="export" onClick={this.handleExportSelected} key="selexport">
+        批量导出
+        </Button>,
+        <Popconfirm title="是否删除所有选择项？" onConfirm={() => this.handleDeleteSelected()} key="seldel">
           <Button type="danger" icon="delete">
               批量删除
           </Button>
@@ -563,14 +570,7 @@ export default class RepoContent extends Component {
     }
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {repoName}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={repoName}>
           <PageHeader.Nav>
             <RadioGroup
               value={listFilter.status}
@@ -588,9 +588,19 @@ export default class RepoContent extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button icon="export" onClick={this.toggleExportModal}>
-              {this.msg('export')}
+            <Button icon="export" onClick={this.handleTradeItemExport}>
+              {this.msg('exportAllClassify')}
             </Button>
+            {!repo.master_repo_id &&
+            <ExcelUploader
+              endpoint={`${API_ROOTS.default}v1/cms/tradeitem/master/importitem`}
+              formData={{ data: JSON.stringify({ }) }}
+              onUploaded={this.handleItemImportUpdated}
+            >
+              <Tooltip title="根据导出文件批量修改除商品编码/中文品名/规格型号外其他栏位属性">
+                <Button icon="upload">导入更新</Button>
+              </Tooltip>
+            </ExcelUploader>}
             { repo.mode === 'master' &&
             <Popover
               placement="left"
@@ -633,7 +643,7 @@ export default class RepoContent extends Component {
             bulkActions={bulkActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             loading={this.props.tradeItemsLoading}
             rowKey="id"
             columns={columns}

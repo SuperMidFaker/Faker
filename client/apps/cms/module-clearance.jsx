@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
 import { switchNavOption } from 'common/reducers/cmsPreferences';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
-import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
+import Navigation from 'client/components/Navigation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -112,8 +112,8 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'payableExpense'),
         }, {
           key: 'cms-billing-3',
-          path: '/clearance/billing/rates',
-          text: formatMsg(intl, 'rates'),
+          path: '/clearance/billing/quote',
+          text: formatMsg(intl, 'quote'),
         }],
       });
     }
@@ -201,7 +201,7 @@ export default class Clearance extends React.Component {
   }
   render() {
     return (
-      <CollapsibleSiderLayout
+      <Navigation
         links={this.state.linkMenus}
         appMenus={this.state.appMenus}
         childContent={this.props.children}

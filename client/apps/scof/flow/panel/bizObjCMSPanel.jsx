@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Form, Row, Col, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadCmsBizParams, loadCustomerCmsQuotes } from 'common/reducers/scofFlow';
+import { loadCmsBizParams, loadCmsProviderQuotes } from 'common/reducers/scofFlow';
 import FlowNodePanel from './compose/flowNodePanel';
 import DelegationPane from './bizpane/cmsDelegationPane';
 import DeclManifestPane from './bizpane/cmsDeclManifestPane';
@@ -15,10 +15,9 @@ const { TabPane } = Tabs;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    partnerId: state.scofFlow.currentFlow.partner_id,
+    providerQuotes: state.scofFlow.cmsParams.providerQuotes,
   }),
-  { loadCmsBizParams, loadCustomerCmsQuotes }
+  { loadCmsBizParams, loadCmsProviderQuotes }
 )
 @Form.create()
 export default class FlowCmsNodePanel extends Component {
@@ -29,7 +28,7 @@ export default class FlowCmsNodePanel extends Component {
   }
   componentWillMount() {
     const model = this.props.node.get('model');
-    this.handleParamsLoad(model, this.props);
+    this.handleParamsLoad(model);
   }
   componentDidMount() {
     this.props.onFormInit(this.props.form);
@@ -37,16 +36,30 @@ export default class FlowCmsNodePanel extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.node !== this.props.node) {
       const model = nextProps.node.get('model');
-      this.handleParamsLoad(model, nextProps);
+      this.handleParamsLoad(model);
     }
   }
-  handleParamsLoad = (model, nextProps) => {
-    this.props.loadCmsBizParams(nextProps.tenantId, nextProps.partnerId, model.kind);
-    this.props.loadCustomerCmsQuotes(nextProps.tenantId, nextProps.partnerId);
+  handleParamsLoad = (model) => {
+    this.props.loadCmsBizParams(model.demander_partner_id, model.kind);
+    if (model.provider_tenant_id !== model.demander_tenant_id) {
+      this.props.loadCmsProviderQuotes({
+        partner_id: model.demander_partner_id,
+        tenant_id: model.demander_tenant_id,
+      }, { tenant_id: model.provider_tenant_id });
+    }
+  }
+  handleProviderChange = (providerTenantId) => {
+    const model = this.props.node.get('model');
+    this.props.loadCmsProviderQuotes({
+      partner_id: model.demander_partner_id,
+      tenant_id: model.demander_tenant_id,
+    }, { tenant_id: providerTenantId });
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form, node, graph } = this.props;
+    const {
+      form, node, graph, providerQuotes,
+    } = this.props;
     const model = node.get('model');
     const title = model.kind === 'export' ? this.msg('flowNodeExport') : this.msg('flowNodeImport');
     return (
@@ -54,7 +67,13 @@ export default class FlowCmsNodePanel extends Component {
         <Row gutter={8}>
           <Col sm={24} md={8}>
             <Card title={title} bodyStyle={{ padding: 0 }}>
-              <FlowNodePanel form={form} node={node} graph={graph} />
+              <FlowNodePanel
+                form={form}
+                node={node}
+                graph={graph}
+                quotes={providerQuotes}
+                onProviderChange={this.handleProviderChange}
+              />
             </Card>
           </Col>
           <Col sm={24} md={16}>

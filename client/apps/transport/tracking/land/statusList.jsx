@@ -13,20 +13,21 @@ import {
   showLocModal, loadShipmtLastPoint, deliverConfirm,
   changeStatusFilter,
 } from 'common/reducers/trackingLandStatus';
+import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { sendMessage } from 'common/reducers/notification';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
+import { format } from 'client/common/i18n/helpers';
 import VehicleModal from './modals/vehicle-updater';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
-import SearchBox from 'client/components/SearchBox';
 import makeColumns from './columnDef';
-import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import RevokeModal from '../../common/modal/revokeModal';
-import { sendMessage } from 'common/reducers/notification';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
-import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
+
 
 const formatMsg = format(messages);
 
@@ -84,15 +85,12 @@ export default class TrackingStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    filters: PropTypes.array.isRequired,
-    /*
-    sortField: PropTypes.string.isRequired,
-    sortOrder: PropTypes.string.isRequired,
-   */
+    filters: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string, value: PropTypes.string,
+    })).isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
-    shipmentlist: PropTypes.object.isRequired,
-    reportedShipmts: PropTypes.array.isRequired,
+    shipmentlist: PropTypes.shape({ current: PropTypes.number }).isRequired,
     showVehicleModal: PropTypes.func.isRequired,
     showDateModal: PropTypes.func.isRequired,
     showLocModal: PropTypes.func.isRequired,
@@ -102,21 +100,12 @@ export default class TrackingStatusList extends React.Component {
     sendMessage: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
     changeStatusFilter: PropTypes.func.isRequired,
-    carriers: PropTypes.array.isRequired,
+    carriers: PropTypes.arrayOf(PropTypes.shape({ partner_code: PropTypes.string })).isRequired,
   }
   state = {
     lastLocReportTime: null,
     selectedRowKeys: [],
-    searchInput: '',
     advancedSearchVisible: false,
-  }
-  componentWillMount() {
-    let searchInput;
-    const nos = this.props.filters.filter(flt => flt.name === 'shipmt_no');
-    if (nos.length === 1) {
-      searchInput = nos[0].value;
-    }
-    this.setState({ searchInput });
   }
   componentWillReceiveProps(nextProps) {
     let newfilters;
@@ -140,10 +129,6 @@ export default class TrackingStatusList extends React.Component {
         filters: JSON.stringify(newfilters || this.props.filters),
         pageSize: nextProps.shipmentlist.pageSize,
         currentPage: 1,
-        /*
-           sortField: state.transportTracking.transit.sortField,
-           sortOrder: state.transportTracking.transit.sortOrder,
-           */
       });
     }
   }
@@ -255,7 +240,8 @@ export default class TrackingStatusList extends React.Component {
             estDate: listData[i].pickup_est_date,
             location,
           };
-          if (listData[i].sp_tenant_id > 0 || listData[i].sp_tenant_id === 0 && listData[i].vehicle_connect_type !== SHIPMENT_VEHICLE_CONNECT.disconnected) {
+          if ((listData[i].sp_tenant_id > 0 || listData[i].sp_tenant_id === 0)
+          && (listData[i].vehicle_connect_type !== SHIPMENT_VEHICLE_CONNECT.disconnected)) {
             diffShipments.push(item);
           }
           break;
@@ -289,7 +275,8 @@ export default class TrackingStatusList extends React.Component {
             estDate: listData[i].deliver_est_date,
             location,
           };
-          if (listData[i].sp_tenant_id > 0 || listData[i].sp_tenant_id === 0 && listData[i].vehicle_connect_type !== SHIPMENT_VEHICLE_CONNECT.disconnected) {
+          if ((listData[i].sp_tenant_id > 0 || listData[i].sp_tenant_id === 0)
+            && (listData[i].vehicle_connect_type !== SHIPMENT_VEHICLE_CONNECT.disconnected)) {
             diffShipments.push(item);
           }
           break;
@@ -334,23 +321,12 @@ export default class TrackingStatusList extends React.Component {
       }
     });
   }
-  mergeFilters(curFilters, name, value) {
-    const merged = curFilters.filter(flt => flt.name !== name);
-    if (value !== null && value !== undefined && value !== '') {
-      merged.push({
-        name,
-        value,
-      });
-    }
-    return merged;
-  }
 
   handleShipmentViewSelect = (searchVals) => {
     this.props.changeStatusFilter('viewStatus', searchVals.viewStatus);
   }
 
   handleSearchInput = (value) => {
-    this.setState({ searchInput: value });
     this.props.changeStatusFilter('shipmt_no', value);
   }
 
@@ -475,7 +451,7 @@ export default class TrackingStatusList extends React.Component {
           loading={loading}
           dataSource={this.dataSource}
           selectedRowKeys={this.state.selectedRowKeys}
-          handleDeselectRows={this.handleSelectionClear}
+          onDeselectRows={this.handleSelectionClear}
         />
         <VehicleModal onOK={this.handleTableLoad} />
         <PickupDeliverModal onOK={this.handleTableLoad} />

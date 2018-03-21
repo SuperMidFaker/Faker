@@ -267,7 +267,7 @@ export default class ConflictItemTable extends React.Component {
       <div>
         <DataTable
           selectedRowKeys={conflictSelRowKeys}
-          handleDeselectRows={this.handleRowDeselect}
+          onDeselectRows={this.handleRowDeselect}
           loading={loading}
           columns={this.conflictColumns}
           dataSource={this.conflictDataSource}

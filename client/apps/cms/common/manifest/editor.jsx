@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
+import { Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
   notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -480,17 +480,7 @@ export default class ManifestEditor extends React.Component {
     return (
       <Layout>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('declManifest')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader breadcrumb={[this.msg('declManifest'), <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>]}>
             <PageHeader.Actions>
               {locked &&
               <Tooltip title={`清单已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">

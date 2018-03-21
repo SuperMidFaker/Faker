@@ -3,23 +3,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
+import { Button, Form, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
-import QueueAnim from 'rc-queue-anim';
-import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/sofOrders';
+import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo, batchStart, batchDelete } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
+import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
+import ToolbarAction from 'client/components/ToolbarAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import OrderDockPanel from './docks/orderDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
@@ -29,12 +32,10 @@ import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 import CreatorSelect from './creatorSelect';
-import { formatMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { RangePicker } = DatePicker;
 
 // 暂时由 CreatorSelect 触发获取list
@@ -66,6 +67,7 @@ function fetchData({ state, dispatch }) {
   adaptors: state.hubDataAdapter.modelAdaptors,
   flows: state.scofFlow.partnerFlows,
   orderTypes: state.sofOrderPref.requireOrderTypes,
+  uploadRecords: state.uploadRecords.uploadRecords,
 }), {
   loadOrders,
   removeOrder,
@@ -77,6 +79,11 @@ function fetchData({ state, dispatch }) {
   hideDock,
   loadRequireOrderTypes,
   loadOrderDetail,
+  batchDeleteByUploadNo,
+  setUploadRecordsReload,
+  batchStart,
+  batchDelete,
+  togglePanelVisible,
 })
 @connectNav({
   depth: 2,
@@ -102,6 +109,7 @@ export default class OrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    status: 'all',
     importPanel: {
       visible: false,
       customer_partner_id: undefined,
@@ -163,6 +171,7 @@ export default class OrderList extends React.Component {
     });
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleImport = () => {
     this.setState({ importPanel: { visible: true } });
   }
@@ -184,6 +193,21 @@ export default class OrderList extends React.Component {
       }
     });
   }
+  handleBatchDelete = () => {
+    const { selectedRowKeys } = this.state;
+    const { username } = this.props;
+    this.props.batchDelete(selectedRowKeys, username).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('删除成功');
+        this.setState({
+          selectedRowKeys: [],
+        });
+        this.handleTableLoad(1);
+      }
+    });
+  }
   handleStart = (row) => {
     const { loginId, username } = this.props;
     const shipmtOrderNo = row.shipmt_order_no;
@@ -196,11 +220,26 @@ export default class OrderList extends React.Component {
       }
     });
   }
-  handleTableLoad = () => {
+  handleBatchStart = () => {
+    const { selectedRowKeys } = this.state;
+    const { username } = this.props;
+    this.props.batchStart(selectedRowKeys, username).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('订单流程已启动');
+        this.setState({
+          selectedRowKeys: [],
+        });
+        this.handleTableLoad();
+      }
+    });
+  }
+  handleTableLoad = (currentPage) => {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: currentPage || this.props.orders.current,
       filters: this.props.filters,
     });
   }
@@ -213,14 +252,17 @@ export default class OrderList extends React.Component {
       filters,
     });
   }
-  handleProgressChange = (ev) => {
-    const filters = { ...this.props.filters, progress: ev.target.value };
+  handleFilterMenuClick = (ev) => {
+    const filters = ev.key === 'expedited' ?
+      { ...this.props.filters, expedited: ev.key, progress: 'active' } :
+      { ...this.props.filters, progress: ev.key, expedited: 'all' };
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
       current: this.props.orders.current,
       filters,
     });
+    this.setState({ selectedRowKeys: [], status: ev.key });
   }
   handleExpeditedChange = (e) => {
     const filters = { ...this.props.filters, expedited: e.target.value };
@@ -230,15 +272,7 @@ export default class OrderList extends React.Component {
       current: this.props.orders.current,
       filters,
     });
-  }
-  handleTransferChange = (ev) => {
-    const filters = { ...this.props.filters, transfer: ev.target.value };
-    this.props.loadOrders({
-      tenantId: this.props.tenantId,
-      pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
-      filters,
-    });
+    this.setState({ selectedRowKeys: [] });
   }
   handleClientSelectChange = (value) => {
     const filters = { ...this.props.filters, partnerId: value };
@@ -287,9 +321,22 @@ export default class OrderList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleImportMenuClick = (ev) => {
+    if (ev.key === 'logs') {
+      this.props.togglePanelVisible(true);
+    }
+  }
+  removeOrdersByBatchUpload = (uploadNo, uploadLogReload) => {
+    this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
+      if (!result.error) {
+        uploadLogReload();
+        this.handleTableLoad(1);
+      }
+    });
+  }
   render() {
     const {
-      loading, filters, flows, partners, orderTypes,
+      loading, filters, flows, partners,
     } = this.props;
     let dateVal = [];
     if (filters.endDate) {
@@ -302,7 +349,11 @@ export default class OrderList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-
+    const menu = (
+      <Menu onClick={this.handleImportMenuClick}>
+        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
+      </Menu>
+    );
     const columns = [{
       title: '订单',
       width: 180,
@@ -333,7 +384,8 @@ export default class OrderList extends React.Component {
       render: lid => <UserAvatar size="small" loginId={lid} />,
     }, {
       title: '操作',
-      width: 90,
+      width: 100,
+      align: 'right',
       fixed: 'right',
       render: (o, record) => {
         if (record.order_status === CRM_ORDER_STATUS.created) {
@@ -399,16 +451,6 @@ export default class OrderList extends React.Component {
         <Option value="all">全部客户</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
-      <Select
-        showSearch
-        style={{ width: 160 }}
-        onChange={this.handleOrderTypeChange}
-        value={filters.orderType ? String(filters.orderType) : 'all'}
-      >
-        <Option value="all">全部类型</Option>
-        {orderTypes.map(data => (<Option key={data.id} value={String(data.id)}>
-          {data.name}</Option>))}
-      </Select>
       <span />
       <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
       <RangePicker
@@ -418,55 +460,62 @@ export default class OrderList extends React.Component {
       />
     </span>
     );
+    const bulkActions = (<span>
+      {filters.progress === 'pending' &&
+      <ToolbarAction icon="caret-right" onClick={this.handleBatchStart} label={this.msg('startOrder')} />}
+      {filters.progress === 'pending' &&
+      <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />}
+    </span>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('shipmentOrders')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Nav>
-            <RadioGroup
-              onChange={this.handleProgressChange}
-              value={filters.progress}
-              style={{ marginRight: 8 }}
-            >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待处理</RadioButton>
-              <RadioButton value="active">进行中</RadioButton>
-              <RadioButton value="completed">已完成</RadioButton>
-            </RadioGroup>
-            <RadioGroup onChange={this.handleExpeditedChange} value={filters.expedited}>
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="expedited">加急订单</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
+      <Layout>
+        <PageHeader title={this.msg('shipmentOrders')}>
           <PageHeader.Actions>
-            <Button icon="upload" onClick={this.handleImport}>
+            <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
               {this.msg('orderImport')}
-            </Button>
+            </Dropdown.Button>
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            noSetting
-            fixedBody={false}
-            toolbarActions={toolbarActions}
-            rowSelection={rowSelection}
-            selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
-            dataSource={dataSource}
-            columns={columns}
-            rowKey="id"
-            loading={loading}
-          />
-        </Content>
+        <Layout>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.gmsg('all')}
+              </Menu.Item>
+              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
+                <Menu.Item key="pending">
+                  <Icon type="inbox" /> {this.msg('statusPending')}
+                </Menu.Item>
+                <Menu.Item key="active">
+                  <Icon type="laptop" /> {this.msg('statusActive')}
+                </Menu.Item>
+                <Menu.Item key="expedited">
+                  <Icon type="exclamation-circle" /> {this.msg('statusExpedited')}
+                </Menu.Item>
+                <Menu.Item key="completed">
+                  <Icon type="check-square-o" /> {this.msg('statusCompleted')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </Menu>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              noSetting
+              fixedBody={false}
+              toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+              dataSource={dataSource}
+              columns={columns}
+              rowKey="shipmt_order_no"
+              loading={loading}
+            />
+          </Content>
+        </Layout>
         <OrderDockPanel reload={this.handleTableLoad} />
         <DelegationDockPanel />
         <ShipmentDockPanel />
@@ -483,34 +532,41 @@ export default class OrderList extends React.Component {
           onUploaded={() => {
             this.setState({ importPanel: { visible: false } });
             this.handleTableLoad();
+            this.props.setUploadRecordsReload(true);
 }}
           template={`${XLSX_CDN}/订单导入模板.xlsx`}
         >
-          <Select
-            placeholder="请选择客户"
-            showSearch
-            allowClear
-            optionFilterProp="children"
-            value={importPanel.partner_id}
-            onChange={this.handleImportClientChange}
-            dropdownMatchSelectWidth={false}
-            dropdownStyle={{ width: 360 }}
-            style={{ width: '100%', marginBottom: 16 }}
-          >
-            {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-          </Select>
-          <Select
-            placeholder="流程规则必填"
-            showSearch
-            allowClear
-            value={importPanel.flow_id}
-            onChange={this.handleImportFlowChange}
-            style={{ width: '100%' }}
-          >
-            {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
-          </Select>
+          <Form.Item label="客户">
+            <Select
+              placeholder="请选择客户"
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              value={importPanel.partner_id}
+              onChange={this.handleImportClientChange}
+              dropdownMatchSelectWidth={false}
+              dropdownStyle={{ width: 360 }}
+            >
+              {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="流程">
+            <Select
+              placeholder="流程规则必填"
+              showSearch
+              allowClear
+              value={importPanel.flow_id}
+              onChange={this.handleImportFlowChange}
+            >
+              {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
+            </Select>
+          </Form.Item>
         </ImportDataPanel>
-      </QueueAnim>
+        <UploadLogsPanel
+          onUploadBatchDelete={this.removeOrdersByBatchUpload}
+          type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
+        />
+      </Layout>
     );
   }
 }

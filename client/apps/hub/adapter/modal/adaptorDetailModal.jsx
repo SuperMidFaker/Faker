@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { message, Icon, Breadcrumb, Button, Card, Collapse, Input, Modal, Form, Layout, Select, Table, Tooltip } from 'antd';
+import { message, Icon, Button, Card, Collapse, Input, Modal, Form, Layout, Select, Table, Tooltip } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
 import EditableCell from 'client/components/EditableCell';
@@ -358,14 +358,7 @@ export default class AdaptorDetailModal extends Component {
         destroyOnClose
       >
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {adaptor.name}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={adaptor.name}>
             <PageHeader.Actions>
               <Button type="primary" icon="save" onClick={this.handleAdaptorUpdate}>{this.msg('save')}</Button>
               <ButtonToggle

@@ -5,14 +5,13 @@ import { Input } from 'antd';
 const { Search } = Input;
 
 export default class SearchBox extends React.Component {
-  static defaultProps = {
-    width: 200,
-  }
   static propTypes = {
     placeholder: PropTypes.string,
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     onSearch: PropTypes.func.isRequired,
     enterButton: PropTypes.bool,
+  }
+  handleFocus = (ev) => {
+    ev.target.select();
   }
   handleChange = (ev) => {
     const { onSearch } = this.props;
@@ -27,7 +26,7 @@ export default class SearchBox extends React.Component {
         placeholder={placeholder}
         onChange={this.handleChange}
         onSearch={onSearch}
-        style={{ width: this.props.width }}
+        onFocus={this.handleFocus}
         enterButton={enterButton}
       />
     );

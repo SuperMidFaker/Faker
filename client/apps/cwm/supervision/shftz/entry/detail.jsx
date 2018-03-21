@@ -6,8 +6,9 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, Steps, Button, Card, Tag, message, notification } from 'antd';
+import { Alert, Badge, Layout, InputNumber, Popover, Radio, Steps, Button, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -16,7 +17,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, refreshEntryRegFtzCargos, splitCustomEntryDetails, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, refreshEntryRegFtzCargos, splitCustomEntryDetails, fileEntryRegs, queryEntryRegInfos, putCustomsRegFields } from 'common/reducers/cwmShFtz';
 import { string2Bytes } from 'client/util/dataTransform';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -56,6 +57,11 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
+    whseOwners: state.cwmContext.whseAttrs.owners.map(whown => ({
+      key: whown.customs_code,
+      text: `${whown.customs_code}|${whown.name}`,
+      name: whown.name,
+    })),
     submitting: state.cwmShFtz.submitting,
   }),
   {
@@ -65,7 +71,7 @@ function fetchData({ dispatch, params }) {
     splitCustomEntryDetails,
     fileEntryRegs,
     queryEntryRegInfos,
-    checkEntryRegStatus,
+    putCustomsRegFields,
   }
 )
 @connectNav({
@@ -312,9 +318,9 @@ export default class SHFTZEntryDetail extends Component {
   }
   handleCancelReg = () => {
     const { preEntrySeqNo } = this.props.params;
-    this.props.checkEntryRegStatus(
+    this.props.putCustomsRegFields(
       preEntrySeqNo,
-      CWM_SHFTZ_APIREG_STATUS.pending
+      { status: CWM_SHFTZ_APIREG_STATUS.pending }
     ).then((result) => {
       if (result.error) {
         notification.error({
@@ -350,6 +356,24 @@ export default class SHFTZEntryDetail extends Component {
         message.success('修改成功');
       }
     });
+  }
+  handleEntryOwnerChange = (ownerCusCode) => {
+    const owner = this.props.whseOwners.filter(whow => whow.key === ownerCusCode)[0];
+    if (owner) {
+      const { preEntrySeqNo } = this.props.params;
+      this.props.putCustomsRegFields(
+        preEntrySeqNo,
+        { owner_cus_code: owner.key, owner_name: owner.name }
+      ).then((result) => {
+        if (result.error) {
+          notification.error({
+            message: '操作失败',
+            description: result.error.message,
+            duration: 15,
+          });
+        }
+      });
+    }
   }
   handleInboundPage = () => {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.primaryEntryReg.inbound_no}`);
@@ -551,7 +575,7 @@ export default class SHFTZEntryDetail extends Component {
   }
   render() {
     const {
-      primaryEntryReg, entryRegs, whse, submitting,
+      primaryEntryReg, entryRegs, whse, submitting, whseOwners,
     } = this.props;
     const {
       reg, alertInfo, splitNum, filingDetails,
@@ -569,10 +593,10 @@ export default class SHFTZEntryDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const tabList = [];
-    entryRegs.forEach((r, index) => tabList.push({
-      tab: r.ftz_ent_no || r.pre_ftz_ent_no,
-      key: index,
+    const menus = [];
+    entryRegs.forEach((r, index) => menus.push({
+      menu: r.ftz_ent_no || r.pre_ftz_ent_no,
+      key: String(index),
     }));
     const stat = filingDetails && filingDetails.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
@@ -584,21 +608,16 @@ export default class SHFTZEntryDetail extends Component {
       total_net_wt: 0,
     });
     return (
-      <div>
-        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {primaryEntryReg.cus_decl_no || this.props.params.preEntrySeqNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            entType && entType.ftztext,
+            primaryEntryReg.cus_decl_no || this.props.params.preEntrySeqNo,
+          ]}
+          menus={menus}
+          onTabChange={this.handleTabChange}
+        >
           <PageHeader.Nav>
             {primaryEntryReg.inbound_no &&
               <Button icon="link" onClick={this.handleInboundPage}>
@@ -640,38 +659,44 @@ export default class SHFTZEntryDetail extends Component {
               <Button type="primary" icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
-          <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-              <DescriptionList col={3}>
-                <Description term="进区凭单号">
-                  <EditableCell
-                    value={reg.ftz_ent_no}
-                    editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'ftz_ent_no', value)}
-                  />
-                </Description>
-                <Description term="报关单号">
-                  <EditableCell
-                    value={primaryEntryReg.cus_decl_no}
-                    editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'cus_decl_no', value)}
-                  />
-                </Description>
-                <Description term="经营单位">{primaryEntryReg.owner_name}</Description>
-                <Description term="进出口日期">{primaryEntryReg.ie_date && moment(primaryEntryReg.ie_date).format('YYYY.MM.DD')}</Description>
-                <Description term="备案更新时间">{primaryEntryReg.last_update_date && moment(primaryEntryReg.last_update_date).format('YYYY.MM.DD HH:mm')}</Description>
-                <Description term="进区更新时间">{primaryEntryReg.ftz_ent_date && moment(primaryEntryReg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={reg.status}>
-                  <Step title="待进区" />
-                  <Step title="已备案" />
-                  <Step title="已进区" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={3}>
+              <Description term="进区凭单号">
+                <EditableCell
+                  value={reg.ftz_ent_no}
+                  editable={entryEditable}
+                  onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'ftz_ent_no', value)}
+                />
+              </Description>
+              <Description term="报关单号">
+                <EditableCell
+                  value={primaryEntryReg.cus_decl_no}
+                  editable={entryEditable}
+                  onSave={value => this.handleInfoSave(reg.pre_ftz_ent_no, 'cus_decl_no', value)}
+                />
+              </Description>
+              <Description term="经营单位">
+                <EditableCell
+                  type="select"
+                  options={whseOwners}
+                  value={primaryEntryReg.owner_cus_code}
+                  editable={entryEditable}
+                  onSave={this.handleEntryOwnerChange}
+                />
+              </Description>
+              <Description term="进出口日期">{primaryEntryReg.ie_date && moment(primaryEntryReg.ie_date).format('YYYY.MM.DD')}</Description>
+              <Description term="备案更新时间">{primaryEntryReg.last_update_date && moment(primaryEntryReg.last_update_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <Description term="进区更新时间">{primaryEntryReg.ftz_ent_date && moment(primaryEntryReg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
+            </DescriptionList>
+            <Steps progressDot current={reg.status} className="progress-tracker">
+              <Step title="待进区" />
+              <Step title="已备案" />
+              <Step title="已进区" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
+            {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
             <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
               <DataPane
                 header="备案明细"
@@ -699,9 +724,9 @@ export default class SHFTZEntryDetail extends Component {
                 </DataPane.Toolbar>
               </DataPane>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

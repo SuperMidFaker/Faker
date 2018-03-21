@@ -2,19 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
+import { Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadNonbondedStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
-import ModuleMenu from '../../menu';
 import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -45,11 +45,12 @@ const { Sider, Content } = Layout;
 export default class SHFTZNonBondedStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    stockDatas: PropTypes.array.isRequired,
+    stockDatas: PropTypes.arrayOf(PropTypes.shape({ owner_name: PropTypes.string })).isRequired,
   }
   state = {
     filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
+    scrollOffset: 368,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -218,8 +219,12 @@ export default class SHFTZNonBondedStockList extends React.Component {
     const filter = { ...this.state.filter, ...searchForm };
     this.handleStockQuery(filter);
   }
+  handleCollapseChange = (collapsed) => {
+    const scrollOffset = collapsed ? 368 : 280;
+    this.setState({ scrollOffset });
+  }
   render() {
-    const columns = this.columns;
+    const { columns } = this;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -231,41 +236,22 @@ export default class SHFTZNonBondedStockList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="nonbonded" />
-          </div>
-        </Sider>
+        <PageHeader title={this.msg('非保税库存查询')}>
+          <PageHeader.Actions>
+            <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
+              {this.msg('export')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  非保监管库存
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-            <PageHeader.Actions>
-              <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
-                {this.msg('export')}
-              </Button>
-            </PageHeader.Actions>
-          </PageHeader>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
+          </Drawer>
           <Content className="page-content" key="main">
-            <Card bodyStyle={{ paddingBottom: 8 }}>
-              <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
-            </Card>
             <DataTable
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              scrollOffset={390}
+              scrollOffset={this.state.scrollOffset}
               loading={this.props.loading}
               columns={columns}
               dataSource={this.props.stockDatas}

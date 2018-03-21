@@ -3,22 +3,31 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
+import { Button, Layout } from 'antd';
 import Summary from 'client/components/Summary';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
+import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
+import PageHeader from 'client/components/PageHeader';
+import WhseSelect from '../../common/whseSelect';
 import QueryForm from './queryForm';
 import SKUPopover from '../../common/popover/skuPopover';
 import { formatMsg } from '../message.i18n';
-import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
-import PageHeader from 'client/components/PageHeader';
 
 const { Content } = Layout;
-const Option = Select.Option;
+
+function getNormalCol(text, row) {
+  const colObj = { children: text, props: {} };
+  if (row.key === 'wh_no') {
+    colObj.props.colSpan = 0;
+  }
+  return colObj;
+}
 
 @injectIntl
 @connect(
@@ -41,9 +50,8 @@ export default class StockInventoryList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loading: PropTypes.bool.isRequired,
-    stocklist: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    sortFilter: PropTypes.object.isRequired,
+    stocklist: PropTypes.shape({ current: PropTypes.number }).isRequired,
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -83,7 +91,7 @@ export default class StockInventoryList extends React.Component {
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text, row) => getNormalCol(text, row),
   }, {
     title: this.msg('SKU'),
     dataIndex: 'product_sku',
@@ -100,7 +108,7 @@ export default class StockInventoryList extends React.Component {
     width: 120,
     dataIndex: 'location',
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text, row) => getNormalCol(text, row),
   }, {
     title: this.msg('inboundDate'),
     width: 120,
@@ -112,7 +120,7 @@ export default class StockInventoryList extends React.Component {
     width: 100,
     dataIndex: 'stock_qty',
     className: 'cell-align-right text-emphasis',
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text, row) => getNormalCol(text, row),
   }, {
     title: this.msg('availQty'),
     width: 100,
@@ -151,29 +159,27 @@ export default class StockInventoryList extends React.Component {
     width: 100,
     dataIndex: 'bonded_qty',
     align: 'right',
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text, row) => getNormalCol(text, row),
   }, {
     title: this.msg('nonbondedQty'),
     width: 100,
     dataIndex: 'nonbonded_qty',
     align: 'right',
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text, row) => getNormalCol(text, row),
   }, {
     title: this.msg('grossWeight'),
     dataIndex: 'gross_weight',
     align: 'right',
     width: 120,
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text, row) => getNormalCol(text, row),
   }, {
     title: this.msg('cbm'),
     dataIndex: 'cbm',
     align: 'right',
     width: 120,
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text, row) => getNormalCol(text, row),
   }]
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
     const filter = { ...this.props.listFilter, whse_code: value };
     this.handleStockQuery(1, filter);
   }
@@ -201,7 +207,9 @@ export default class StockInventoryList extends React.Component {
     });
   }
   handleSearch = (searchForm) => {
-    const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
+    const filter = {
+      ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code,
+    };
     this.handleStockQuery(1, filter);
   }
   handleExportExcel = () => {
@@ -220,16 +228,10 @@ export default class StockInventoryList extends React.Component {
       nonbondedQty: 0,
     });
   }
-  renderNormalCol(text, row) {
-    const colObj = { children: text, props: {} };
-    if (row.key === 'wh_no') {
-      colObj.props.colSpan = 0;
-    }
-    return colObj;
-  }
+
   render() {
     const {
-      defaultWhse, whses, loading, listFilter,
+      loading, listFilter,
     } = this.props;
     const {
       stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
@@ -291,46 +293,36 @@ export default class StockInventoryList extends React.Component {
     );
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                      whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                    }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                库存余量
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect onChange={this.handleWhseChange} />,
+            this.msg('stockInventory'),
+            this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text),
+          ]}
+        >
           <PageHeader.Actions>
             <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <Card bodyStyle={{ paddingBottom: 16 }}>
+        <Layout>
+          <Drawer width={220}>
             <QueryForm onSearch={this.handleSearch} />
-          </Card>
-          <DataTable
-            selectedRowKeys={this.state.selectedRowKeys}
-            scrollOffset={390}
-            handleDeselectRows={this.handleDeselectRows}
-            total={totCol}
-            columns={this.columns}
-            dataSource={dataSource}
-            rowSelection={rowSelection}
-            rowKey="id"
-            loading={loading}
-          />
-        </Content>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+              total={totCol}
+              columns={this.columns}
+              dataSource={dataSource}
+              rowSelection={rowSelection}
+              rowKey="id"
+              loading={loading}
+            />
+          </Content>
+        </Layout>
       </Layout>
     );
   }

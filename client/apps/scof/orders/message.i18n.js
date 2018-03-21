@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   shipmentOrders: {
@@ -17,6 +18,22 @@ const messages = defineMessages({
   editOrder: {
     id: 'scof.orders.edit.order',
     defaultMessage: '编辑订单',
+  },
+  statusPending: {
+    id: 'scof.orders.status.pending',
+    defaultMessage: '待处理',
+  },
+  statusActive: {
+    id: 'scof.orders.status.active',
+    defaultMessage: '执行中',
+  },
+  statusExpedited: {
+    id: 'scof.orders.status.expedited',
+    defaultMessage: '加急订单',
+  },
+  statusCompleted: {
+    id: 'scof.orders.status.completed',
+    defaultMessage: '已完成',
   },
   startOrder: {
     id: 'scof.orders.start',
@@ -702,3 +719,4 @@ const messages = defineMessages({
 
 export default messages;
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);

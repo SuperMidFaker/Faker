@@ -172,7 +172,7 @@ export default class EmergeItemTable extends React.Component {
     return (
       <DataTable
         selectedRowKeys={emergeSelRowKeys}
-        handleDeselectRows={this.handleRowDeselect}
+        onDeselectRows={this.handleRowDeselect}
         loading={loading}
         columns={this.emergeColumns}
         dataSource={this.emergeDataSource}

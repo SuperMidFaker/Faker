@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Badge, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import { Avatar, Badge, Button, Card, Icon, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
@@ -103,14 +103,7 @@ export default class DevAppList extends React.Component {
       <Layout>
         <HubSiderMenu currentKey="dev" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Icon type="code-o" /> {this.msg('dev')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('dev')}>
             <PageHeader.Actions>
               <Button icon="book" onClick={this.handleOpenApiDocs}>{this.msg('apiDocs')}</Button>
               <Button type="primary" icon="plus" onClick={this.handleCreateApp}>

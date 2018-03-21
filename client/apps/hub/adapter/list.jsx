@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Avatar, Breadcrumb, Button, Icon, Layout, notification, List, Card } from 'antd';
+import { Avatar, Button, Layout, notification, List, Card } from 'antd';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/hubDataAdapter';
@@ -98,14 +98,7 @@ export default class LineFileAdapterList extends React.Component {
       <Layout>
         <HubSiderMenu currentKey="adapter" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Icon type="usb" /> {this.msg('adapter')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('adapter')}>
             <PageHeader.Actions>
               <Button type="primary" icon="plus" onClick={this.handleCreateAdapter}>
                 {this.msg('create')}

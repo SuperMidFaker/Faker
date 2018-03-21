@@ -4,7 +4,7 @@ import { Button, Input, Icon, Select, DatePicker } from 'antd';
 import RegionCascader from 'client/components/RegionCascader';
 import moment from 'moment';
 import * as Location from 'client/util/location';
-import './index.less';
+import './style.less';
 
 const { Option } = Select;
 
@@ -16,7 +16,7 @@ export default class EditableCell extends React.Component {
     addonBefore: PropTypes.node,
     addonAfter: PropTypes.node,
     type: PropTypes.string,
-    value: PropTypes.any,
+    value: PropTypes.any, // eslint-disable-line
     field: PropTypes.string,
     placeholder: PropTypes.string,
     cellTrigger: PropTypes.bool,
@@ -70,15 +70,9 @@ export default class EditableCell extends React.Component {
   }
   handleSelectChange = (value) => {
     this.setState({ value });
-    if (this.props.onSave) {
-      this.props.onSave(value, this.state.field);
-    }
   }
   handleDateChange = (date) => {
     this.setState({ value: date && date.valueOf() });
-    if (this.props.onSave) {
-      this.props.onSave(date && date.valueOf(), this.state.field);
-    }
   }
   handleRegionValueChange = (region) => {
     const [code, province, city, district, street] = region; // eslint-disable-line no-unused-vars

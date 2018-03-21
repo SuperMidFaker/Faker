@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Badge, Modal, Layout, Radio, Select, Tooltip, Tag } from 'antd';
+import { Button, Badge, Modal, Layout, Radio, Select, Tooltip, Tag } from 'antd';
 import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList,
   editFlow, toggleFlowDesigner, toggleFlowStatus } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -246,14 +246,7 @@ export default class FlowList extends React.Component {
     </span>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('flow')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('flow')}>
           <PageHeader.Nav>
             <RadioGroup value={listFilter.status ? 'enabled' : 'disabled'} onChange={this.handleStatusChange}>
               <RadioButton value="enabled">已启用</RadioButton>

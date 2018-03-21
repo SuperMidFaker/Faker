@@ -1,0 +1,162 @@
+@import "../../variable.less";
+@dock-panel-width: 680px;
+.welo-dock-panel {
+  position: fixed;
+  width: @dock-panel-width;
+  top: @layout-header-height;
+  right: -20px;
+  bottom: 0;
+  background-color: #fff;
+  transition: transform 358ms ease;
+  transform: translate(100%);
+  box-shadow: 0 7px 21px rgba(0,0,0,.3);
+  z-index: 900;
+  .ant-spin-nested-loading,
+  .ant-spin-container {
+    height: 100%;
+  }
+  &-mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #373737;
+    background-color: rgba(55, 55, 55, 0.2);
+    height: 100%;
+    z-index: 800;
+    filter: alpha(opacity=50);
+    &-hidden {
+      display: none;
+    }
+  }
+  &-visible {
+    right: 0;
+    transform: translate(0);
+  }
+  &-inner {
+    top: 96px;
+    z-index: 20;
+    background-color: #f7f7f7;
+    box-shadow: -3px 0 3px rgba(0,0,0,.1);
+    .welo-dock-panel-head {
+      background: transparent;
+      box-shadow: none;
+      border-bottom: 1px solid #e9e9e9;
+    }
+    .welo-dock-panel-head-close {
+      .ant-btn {
+        border: none;
+        background-color: transparent;
+      }
+    }
+    .welo-dock-panel-body {
+      padding: 0;
+    }
+    .ant-menu {
+      margin-top: 16px;
+      background: transparent;
+    }
+  }
+  &-head {
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    padding: 0 16px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    &-title {
+      display: flex;
+      padding: 8px 0;
+      line-height: 30px;
+      font-size: 18px;
+      font-weight: 500;
+      .ant-breadcrumb {
+        margin-right: 16px;
+        font-size: 16px;
+        line-height: 32px;
+        .anticon {
+          font-size: 16px;
+        }
+      }
+      button, >span, {
+        margin-right: 8px;
+      }
+    }
+    &-close {
+      position: absolute;
+      top: 8px;
+      right: 16px;
+    }
+    &-overlay {
+      position: absolute;
+      top: 8px;
+      right: 56px;
+    }
+    &-extra {
+      height: 64px;
+    }
+  }
+  &-body {
+    position: absolute;
+    top: 48px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1;
+    background: #f7f7f7;
+    padding: 16px;
+    &.with-header-extra {
+      top: 112px;
+    }
+    .ant-tabs-vertical.ant-tabs-left > .ant-tabs-content {
+      padding-left: 16px;
+    }
+    .ant-timeline {
+      margin-left: 16px;
+      .ant-timeline-item-head {
+        background: #f7f7f7;
+      }
+    }
+    .ant-card-body,
+    .ant-collapse-content {
+      .ant-timeline-item-head {
+        background: #fff;
+      }
+    }
+    .ant-menu-vertical .ant-menu-item {
+      display: flex;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    .ant-menu-item a {
+      flex: 1;
+    }
+  }
+  &-lg {
+    width: 80%;
+    max-width: 1024px;
+  }
+  &-md {
+    width: 460px;
+  }
+  &-sm {
+    width: 350px;
+  }
+  &-popover {
+    .ant-menu-vertical > .ant-menu-item {
+      font-size: 14px;
+      padding: 0px 8px;
+    }
+    .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+      background-color: transparent;
+    }
+    .ant-menu-item-selected > a {
+      color: #666;
+    }
+  }
+}

@@ -247,14 +247,7 @@ export default class RepoList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('repoList')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('repoList')}>
             <PageHeader.Actions>
               <Button type="primary" icon="plus" onClick={this.handleAddRepo} >
                 {this.msg('addRepo')}

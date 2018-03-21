@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Button, DatePicker, Input, Layout, Select, Tag } from 'antd';
+import { Button, DatePicker, Input, Layout, Select, Tag } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import UserAvatar from 'client/components/UserAvatar';
@@ -177,7 +177,7 @@ export default class LogsList extends React.Component {
       <RangePicker
         ranges={searchFilter.daterange}
         onChange={range => this.handleFilterChange('daterange', range)}
-        style={{ width: 256 }}
+        style={{ width: 216 }}
       />
       <Button type="primary" onClick={this.handleSearch}>查询</Button>
       <Button onClick={this.handleReset}>重置</Button>
@@ -186,14 +186,7 @@ export default class LogsList extends React.Component {
       <Layout>
         <CorpSiderMenu currentKey="logs" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('corpLogs')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('corpLogs')}>
             <PageHeader.Actions>
               <Button icon="file-excel">导出</Button>
             </PageHeader.Actions>

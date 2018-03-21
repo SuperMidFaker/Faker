@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import { Button, Card, Layout, List } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
@@ -87,14 +87,7 @@ export default class NoticeTemplateList extends React.Component {
       <Layout>
         <HubSiderMenu currentKey="template" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Icon type="notification" /> {this.msg('templates')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('templates')}>
             <PageHeader.Actions>
               <Button type="primary" icon="plus" onClick={this.toggleTemplateModal}>
                 {this.msg('create')}

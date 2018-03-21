@@ -370,6 +370,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.op.delete.confirm',
     defaultMessage: '确定删除？',
   },
+  exportAllClassify: {
+    id: 'cms.tradeitem.op.export.allclassify',
+    defaultMessage: '导出归类数据',
+  },
 });
 
 export default messages;

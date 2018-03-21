@@ -1,0 +1,89 @@
+
+.welo-page-header {
+  display: flex;
+  z-index: 30;
+  background: rgba(252,252,252,0.95);
+  padding: 0 16px;
+  vertical-align: middle;
+  line-height: 48px;
+  height: auto;
+  min-height: 48px;
+  box-shadow: 0 0 1px 0 rgba(0,0,0,0.14);
+  .ant-breadcrumb {
+    float: left;
+    margin-right: 16px;
+    font-size: 18px;
+    line-height: 48px;
+    .ant-select-selection-selected-value {
+      font-size: 18px;
+    }
+  }
+  .ant-breadcrumb>span:last-child {
+    font-weight: 600;
+  }
+  .ant-menu {
+    font-size: 16px;
+    background: transparent;
+  }
+  &-wrapper {
+    flex: 1;
+    display: inline-flex;
+  }
+  
+    > span > span {
+      font-size: 14px;
+      line-height: 28px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    &-title {
+      font-size: 18px;
+      font-weight: 600;
+      min-width: 160px;
+      .ant-tag-text {
+        font-size: 14px;
+      }
+    }
+    &-nav {
+      margin-left: 8px;
+      label {
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .ant-badge {
+        margin-left: 8px;
+      }
+      .ant-badge-status-text {
+        font-size: 12px;
+      }
+    }
+    &-actions {
+      float: right;
+      display: -webkit-inline-box;
+      >.ant-btn-group + .ant-btn {
+        margin-left: 8px;
+      }
+      .ant-upload.ant-upload-select,
+      >span {
+        display: inline-flex;
+      }
+      >.ant-radio-group,
+      >.ant-btn-group {
+        display: inline-flex;
+        margin-left: 8px;
+      }
+      .ant-radio-group-large .ant-radio-button-wrapper {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .ant-select,
+      >button,
+      >span {
+        margin-left: 8px;
+      }
+      >a {
+        line-height: 32px;
+      }
+    }
+ } 
+    

@@ -5,8 +5,9 @@ import classNames from 'classnames';
 import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import SearchBox from 'client/components/SearchBox';
 import SelectItem from './selectItem';
-import './index.less';
+import './style.less';
 
 function noop() {
 }
@@ -40,6 +41,7 @@ class DataTable extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-table',
     fixedBody: true,
+    showToolbar: true,
     scrollOffset: 280,
     paginationSize: 'small',
   }
@@ -54,12 +56,16 @@ class DataTable extends React.Component {
     toolbarActions: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
     bulkActions: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
     selectedRowKeys: PropTypes.arrayOf(PropTypes.string),
-    handleDeselectRows: PropTypes.func,
+    onDeselectRows: PropTypes.func,
+    onFilterSelected: PropTypes.func,
+    onSearch: PropTypes.func,
+    searchTips: PropTypes.string,
     noBorder: PropTypes.bool,
     fixedBody: PropTypes.bool,
     noSetting: PropTypes.bool,
     total: PropTypes.node,
     paginationSize: PropTypes.string,
+    showToolbar: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -147,6 +153,9 @@ class DataTable extends React.Component {
         tableColumns,
       });
     }
+    if (nextProps.scrollOffset !== this.props.scrollOffset) {
+      this.setState({ scrollY: window.innerHeight - nextProps.scrollOffset });
+    }
   }
   isSameColumns = (nextColumns, currColumns) => {
     if (nextColumns === currColumns) {
@@ -195,10 +204,23 @@ class DataTable extends React.Component {
   handleVisibleChange = (visible) => {
     this.setState({ visible });
   }
-  hidePopover = () => {
+  handleReset = () => {
+    const { pathname } = this.state;
+    if (window.localStorage) {
+      window.localStorage.removeItem(pathname);
+    }
+    let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+    popoverColumns = popoverColumns.map((column, index) => ({
+      ...column,
+      checked: true,
+      index,
+    }));
     this.setState({
+      tableColumns: this.props.columns,
+      popoverColumns,
       visible: false,
     });
+    message.info('列表视图已重置');
   }
   handleSave = () => {
     const tableColumns = [...this.state.tableColumns];
@@ -218,8 +240,7 @@ class DataTable extends React.Component {
       const tableStorage = newColumns.map(column =>
         ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
       const obj = { popoverStorage, tableStorage };
-      const storage = window.localStorage;
-      storage.setItem(pathname, JSON.stringify(obj));
+      window.localStorage.setItem(pathname, JSON.stringify(obj));
     }
     message.info('列表视图已更新');
   }
@@ -257,6 +278,8 @@ class DataTable extends React.Component {
   render() {
     const {
       baseCls, noBorder, fixedBody, noSetting, paginationSize,
+      selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
+      showToolbar, toolbarActions, onSearch, searchTips,
     } = this.props;
     let { dataSource } = this.props;
     let { pagination } = this.props;
@@ -293,7 +316,7 @@ class DataTable extends React.Component {
       />));
     content.push(<div className="col-selection-actions" key="col-sel-buttons">
       <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>确定</Button>
-      <Button onClick={this.hidePopover}>取消</Button>
+      <Button onClick={this.handleReset}>重置</Button>
     </div>);
     const classes = classNames(baseCls, {
       [`${baseCls}-no-border`]: noBorder,
@@ -303,8 +326,10 @@ class DataTable extends React.Component {
     });
     return (
       <div className={classes}>
-        {this.props.toolbarActions && <div className={`${baseCls}-toolbar`}>
-          {this.props.toolbarActions}
+        {showToolbar &&
+        <div className={`${baseCls}-toolbar`}>
+          {onSearch && <SearchBox placeholder={searchTips} onSearch={onSearch} />}
+          {toolbarActions}
           <div className={`${baseCls}-toolbar-right`}>
             {this.props.total}
             {!noSetting && <Popover
@@ -316,7 +341,7 @@ class DataTable extends React.Component {
               onVisibleChange={this.handleVisibleChange}
             >
               <Tooltip title="表头设置">
-                <Button shape="circle" icon="table" />
+                <Button shape="circle" icon="setting" />
               </Tooltip>
             </Popover>}
           </div>
@@ -330,14 +355,15 @@ class DataTable extends React.Component {
             scroll={scrollProp}
             columns={this.state.tableColumns}
           />
-          {this.props.selectedRowKeys &&
-            <div className={`${baseCls}-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+          {selectedRowKeys &&
+            <div className={`${baseCls}-toolbar-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <Tooltip title="取消选择" placement="top">
-                <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
+                <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={onDeselectRows} />
               </Tooltip>
-              <h4>已选中{this.props.selectedRowKeys.length}项</h4>
-              {this.props.bulkActions}
-              {this.props.total}
+              <span className={`${baseCls}-toolbar-row-selection-text`}>
+                已选中<a onClick={onFilterSelected}>{selectedRowKeys.length}</a>项
+              </span>
+              {bulkActions}
             </div>}
         </div>
       </div>

@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Row, Col, Icon, DatePicker } from 'antd';
-import { formatMsg } from '../message.i18n';
+import FormPane from 'client/components/FormPane';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 @injectIntl
@@ -22,7 +23,7 @@ const { RangePicker } = DatePicker;
 export default class QueryForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     onSearch: PropTypes.func.isRequired,
   }
   state = {
@@ -53,14 +54,15 @@ export default class QueryForm extends React.Component {
       wrapperCol: { span: 18 },
     };
     return (
-      <Form className="form-layout-compact">
+      <FormPane>
         <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="货主">
               {getFieldDecorator('owner', {
                 initialValue: filter.owner,
               })(<Select showSearch optionFilterProp="children" allowClear>
-                {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
+                {owners.map(owner =>
+                  (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
               </Select>)}
             </FormItem>
           </Col>
@@ -231,7 +233,7 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
         </Row>}
-      </Form>
+      </FormPane>
     );
   }
 }

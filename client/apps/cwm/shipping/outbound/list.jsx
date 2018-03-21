@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message, DatePicker } from 'antd';
+import { Icon, Layout, Radio, Select, Tooltip, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
@@ -16,6 +16,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -105,14 +106,9 @@ export default class OutboundList extends React.Component {
     title: '出库单号',
     dataIndex: 'outbound_no',
     width: 180,
-  }, {
-    title: 'SO/波次编号',
-    dataIndex: 'so_no',
-    width: 180,
-    render: (soNo, record) => (soNo ? <a onClick={() =>
-       this.handlePreview(soNo, record.outbound_no)}
-    >{soNo}</a> :
-    <span>{record.wave_no}</span>),
+    render: (o, record) => (record.so_no ?
+      <a onClick={() => this.handlePreview(record.so_no, record.outbound_no)}>{o}</a>
+      : <span>{o}</span>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
@@ -227,17 +223,13 @@ export default class OutboundList extends React.Component {
     const link = `/cwm/shipping/outbound/${row.outbound_no}`;
     this.context.router.push(link);
   }
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-  }
   handleSearch = (value) => {
     const filters = { ...this.props.filters, name: value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadOutbounds({
       whseCode,
       pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
+      current: 1,
       filters,
     });
   }
@@ -256,7 +248,7 @@ export default class OutboundList extends React.Component {
   }
   render() {
     const {
-      defaultWhse, whses, owners, loading, filters,
+      owners, loading, filters,
     } = this.props;
     let dateVal = [];
     if (filters.endDate) {
@@ -315,25 +307,12 @@ export default class OutboundList extends React.Component {
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
-                    whses.map(warehouse =>
-                       (<Option
-                         value={warehouse.code}
-                         key={warehouse.code}
-                       >{warehouse.name}</Option>))
-                  }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('shippingOutbound')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            <WhseSelect />,
+            this.msg('shippingOutbound'),
+          ]}
+        >
           <PageHeader.Nav>
             <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
@@ -355,7 +334,7 @@ export default class OutboundList extends React.Component {
             loading={loading}
             toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
           />
         </Content>
         <ShippingDockPanel />

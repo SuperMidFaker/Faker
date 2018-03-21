@@ -213,14 +213,7 @@ export default class PendingItemsList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('taskReview')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('taskReview')}>
             <PageHeader.Actions>
               <Button icon="close-circle-o" onClick={this.handleBatchRefuse}>全部拒绝</Button>
               <Button icon="check-circle-o" onClick={this.handleBatchPass}>全部通过</Button>
@@ -230,7 +223,7 @@ export default class PendingItemsList extends React.Component {
             <DataTable
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={dataSource}
               rowSelection={rowSelection}

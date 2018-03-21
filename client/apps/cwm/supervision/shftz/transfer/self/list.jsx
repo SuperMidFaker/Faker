@@ -3,27 +3,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, message, Button } from 'antd';
+import { Badge, Layout, Radio, Select, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
-import ModuleMenu from '../../menu';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import TransferSelfModal from './modal/transferSelfModal';
 import PageHeader from 'client/components/PageHeader';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import TransferSelfModal from './modal/transferSelfModal';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Content } = Layout;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
+const { OptGroup } = Select;
 
 @injectIntl
 @connect(
@@ -47,24 +46,22 @@ const OptGroup = Select.OptGroup;
 export default class SHFTZTransferSelfList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    entryList: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
+    entryList: PropTypes.shape({ current: PropTypes.number }).isRequired,
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
+    const { listFilter } = this.props;
+    let { status } = listFilter;
     if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
-    let ownerView = listFilter.ownerView;
+    let { ownerView } = listFilter;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
@@ -101,6 +98,7 @@ export default class SHFTZTransferSelfList extends React.Component {
       } else if (o === 2) {
         return (<Badge status="success" text="已转入" />);
       }
+      return null;
     },
   }, {
     title: '货主',
@@ -121,25 +119,18 @@ export default class SHFTZTransferSelfList extends React.Component {
     title: '转入时间',
     width: 150,
     dataIndex: 'ftz_ent_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && moment(o).format('MM.DD HH:mm'),
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o)
+    && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -264,55 +255,34 @@ export default class SHFTZTransferSelfList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="transferself" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('ftzTransferSelf')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">待转出</RadioButton>
-                <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">已转入</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
-            <PageHeader.Actions>
-              <Button type="primary" icon="plus" onClick={this.handleCreateTransSelf}>新建</Button>
-            </PageHeader.Actions>
-          </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              columns={this.columns}
-              rowSelection={rowSelection}
-              dataSource={this.dataSource}
-              indentSize={8}
-              rowKey="id"
-              defaultExpandedRowKeys={['1']}
-              toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
-              loading={this.props.loading}
-            />
-            <TransferSelfModal reload={this.handleEntryListLoad} />
-          </Content>
-        </Layout>
+        <PageHeader title={this.msg('ftzTransferSelf')}>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+              <RadioButton value="all">全部状态</RadioButton>
+              <RadioButton value="pending">待转出</RadioButton>
+              <RadioButton value="processing">终端处理</RadioButton>
+              <RadioButton value="completed">已转入</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateTransSelf}>新建</Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable
+            columns={this.columns}
+            rowSelection={rowSelection}
+            dataSource={this.dataSource}
+            indentSize={8}
+            rowKey="id"
+            defaultExpandedRowKeys={['1']}
+            toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys}
+            onDeselectRows={this.handleDeselectRows}
+            loading={this.props.loading}
+          />
+          <TransferSelfModal reload={this.handleEntryListLoad} />
+        </Content>
       </Layout>
     );
   }

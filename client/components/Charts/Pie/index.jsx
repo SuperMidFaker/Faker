@@ -1,41 +1,77 @@
 import React, { Component } from 'react';
+import { Chart, Tooltip, Geom, Coord } from 'bizcharts';
+import { DataView } from '@antv/data-set';
 import { Divider } from 'antd';
 import classNames from 'classnames';
-// import ReactFitText from 'react-fittext';
+import ReactFitText from 'react-fittext';
 import Debounce from 'lodash-decorators/debounce';
-import equal from '../equal';
-import styles from './index.less';
+import Bind from 'lodash-decorators/bind';
+import autoHeight from '../autoHeight';
+
+import './style.less';
 
 /* eslint react/no-danger:0 */
-class Pie extends Component {
+/* eslint react/no-restrict-global:0 */
+@autoHeight()
+export default class Pie extends Component {
   state = {
     legendData: [],
-    legendBlock: true,
+    legendBlock: false,
   };
 
   componentDidMount() {
-    this.renderChart();
+    this.getLengendData();
     this.resize();
     window.addEventListener('resize', this.resize);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      if (!equal(this.props, nextProps)) {
-        this.renderChart(nextProps.data);
-      }
+    if (this.props.data !== nextProps.data) {
+      // because of charts data create when rendered
+      // so there is a trick for get rendered time
+      this.setState(
+        {
+          legendData: [...this.state.legendData],
+        },
+        () => {
+          this.getLengendData();
+        }
+      );
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
-    if (this.chart) {
-      this.chart.destroy();
-    }
+    this.resize.cancel();
   }
 
-  @Debounce(200)
-  resize = () => {
+  getG2Instance = (chart) => {
+    this.chart = chart;
+  };
+
+  // for custom lengend view
+  getLengendData = () => {
+    if (!this.chart) return;
+    const geom = this.chart.getAllGeoms()[0]; // 获取所有的图形
+    const items = geom.get('dataArray') || []; // 获取图形对应的
+
+    const legendData = items.map((item) => {
+      /* eslint no-underscore-dangle:0 */
+      const origin = item[0]._origin;
+      origin.color = item[0].color;
+      origin.checked = true;
+      return origin;
+    });
+
+    this.setState({
+      legendData,
+    });
+  };
+
+  // for window resize auto responsive legend
+  @Bind()
+  @Debounce(300)
+  resize() {
     const { hasLegend } = this.props;
     if (!hasLegend || !this.root) {
       window.removeEventListener('resize', this.resize);
@@ -45,26 +81,18 @@ class Pie extends Component {
       if (!this.state.legendBlock) {
         this.setState({
           legendBlock: true,
-        }, () => {
-          this.renderChart();
         });
       }
     } else if (this.state.legendBlock) {
       this.setState({
         legendBlock: false,
-      }, () => {
-        this.renderChart();
       });
     }
   }
 
-  handleRef = (n) => {
-    this.node = n;
-  }
-
   handleRoot = (n) => {
     this.root = n;
-  }
+  };
 
   handleLegendClick = (item, i) => {
     const newItem = item;
@@ -73,37 +101,57 @@ class Pie extends Component {
     const { legendData } = this.state;
     legendData[i] = newItem;
 
+    const filteredLegendData = legendData.filter(l => l.checked).map(l => l.x);
+
     if (this.chart) {
-      const filterItem = legendData.filter(l => l.checked).map(l => l.x);
-      this.chart.filter('x', filterItem);
-      this.chart.repaint();
+      this.chart.filter('x', val => filteredLegendData.indexOf(val) > -1);
     }
 
     this.setState({
       legendData,
     });
-  }
+  };
 
-  renderChart(d) {
-    let data = d || this.props.data;
-
+  render() {
     const {
-      height = 0,
-      hasLegend,
-      fit = true,
-      margin = [12, 0, 12, 0], percent, color,
+      valueFormat,
+      subTitle,
+      total,
+      hasLegend = false,
+      className,
+      style,
+      height,
+      forceFit = true,
+      percent = 0,
+      color,
       inner = 0.75,
       animate = true,
       colors,
-      lineWidth = 0,
+      lineWidth = 1,
     } = this.props;
 
+    const { legendData, legendBlock } = this.state;
+    const pieClassName = classNames('pie', className, {
+      hasLegend: !!hasLegend,
+      legendBlock,
+    });
+
     const defaultColors = colors;
-
+    let data = this.props.data || [];
     let selected = this.props.selected || true;
-    let tooltip = this.props.tooltips || true;
-
+    let tooltip = this.props.tooltip || true;
     let formatColor;
+
+    const scale = {
+      x: {
+        type: 'cat',
+        range: [0, 1],
+      },
+      y: {
+        min: 0,
+      },
+    };
+
     if (percent) {
       selected = false;
       tooltip = false;
@@ -114,7 +162,6 @@ class Pie extends Component {
         return '#F0F2F5';
       };
 
-      /* eslint no-param-reassign: */
       data = [
         {
           x: '占比',
@@ -127,134 +174,85 @@ class Pie extends Component {
       ];
     }
 
-    if (!data || (data && data.length < 1)) {
-      return;
-    }
+    const tooltipFormat = [
+      'x*percent',
+      (x, p) => ({
+        name: x,
+        value: `${(p * 100).toFixed(2)}%`,
+      }),
+    ];
 
-    // clean
-    this.node.innerHTML = '';
+    const padding = [12, 0, 12, 0];
 
-    const { Stat } = window.G2;
-
-    const chart = new window.G2.Chart({
-      container: this.node,
-      forceFit: fit,
-      height,
-      plotCfg: {
-        margin,
-      },
-      animate,
-    });
-
-    if (!tooltip) {
-      chart.tooltip(false);
-    } else {
-      chart.tooltip({
-        title: null,
-      });
-    }
-
-    chart.axis(false);
-    chart.legend(false);
-
-    chart.source(data, {
-      x: {
-        type: 'cat',
-        range: [0, 1],
-      },
-      y: {
-        min: 0,
-      },
-    });
-
-    chart.coord('theta', {
-      inner,
-    });
-
-    chart
-      .intervalStack()
-      .position(Stat.summary.percent('y'))
-      .style({ lineWidth, stroke: '#fff' })
-      .color('x', percent ? formatColor : defaultColors)
-      .selected(selected);
-
-    chart.render();
-
-    this.chart = chart;
-
-    let legendData = [];
-    if (hasLegend) {
-      const geom = chart.getGeoms()[0]; // 获取所有的图形
-      const items = geom.getData(); // 获取图形对应的数据
-      legendData = items.map((item) => {
-        /* eslint no-underscore-dangle:0 */
-        const origin = item._origin;
-        origin.color = item.color;
-        origin.checked = true;
-        return origin;
-      });
-    }
-
-    this.setState({
-      legendData,
-    });
-  }
-
-  render() {
-    const {
-      valueFormat, subTitle, total, hasLegend, className, style,
-    } = this.props;
-    const { legendData, legendBlock } = this.state;
-    const pieClassName = classNames(styles.pie, className, {
-      [styles.hasLegend]: !!hasLegend,
-      [styles.legendBlock]: legendBlock,
+    const dv = new DataView();
+    dv.source(data).transform({
+      type: 'percent',
+      field: 'y',
+      dimension: 'x',
+      as: 'percent',
     });
 
     return (
       <div ref={this.handleRoot} className={pieClassName} style={style}>
-        {/* <ReactFitText maxFontSize={25}> */}
-        <div className={styles.chart}>
-          <div ref={this.handleRef} style={{ fontSize: 0 }} />
-          {
-              (subTitle || total) && (
-                <div className={styles.total}>
-                  {subTitle && <h4 className="pie-sub-title">{subTitle}</h4>}
-                  {
-                    // eslint-disable-next-line
-                    total && <p className="pie-stat" dangerouslySetInnerHTML={{ __html: total }} />
-                  }
-                </div>
-              )
-            }
-        </div>
-        {/* </ReactFitText> */}
+        <ReactFitText maxFontSize={25}>
+          <div className="chart">
+            <Chart
+              scale={scale}
+              height={height}
+              forceFit={forceFit}
+              data={dv}
+              padding={padding}
+              animate={animate}
+              onGetG2Instance={this.getG2Instance}
+            >
+              {!!tooltip && <Tooltip showTitle={false} />}
+              <Coord type="theta" innerRadius={inner} />
+              <Geom
+                style={{ lineWidth, stroke: '#fff' }}
+                tooltip={tooltip && tooltipFormat}
+                type="intervalStack"
+                position="percent"
+                color={['x', percent ? formatColor : defaultColors]}
+                selected={selected}
+              />
+            </Chart>
 
-        {
-          hasLegend && (
-            <ul className={styles.legend}>
-              {
-                legendData.map(item => (
-                /* legendData.map((item, i) => ( */
-                  <li key={item.x} /* onClick={() => this.handleLegendClick(item, i)} */>
-                    <span className={styles.dot} style={{ backgroundColor: !item.checked ? '#aaa' : item.color }} />
-                    <span className={styles.legendTitle}>{item.x}</span>
-                    <Divider type="vertical" />
-                    <span className={styles.percent}>{`${(item['..percent'] * 100).toFixed(2)}%`}</span>
-                    <span
-                      className={styles.value}
-                      dangerouslySetInnerHTML={{
-                        __html: valueFormat ? valueFormat(item.y) : item.y,
-                      }}
-                    />
-                  </li>
-                ))
-              }
-            </ul>
-          )
-        }
+            {(subTitle || total) && (
+              <div className="total">
+                {subTitle && <h4 className="pie-sub-title">{subTitle}</h4>}
+                {/* eslint-disable-next-line */}
+                {total && <div className="pie-stat" dangerouslySetInnerHTML={{ __html: total }} />}
+              </div>
+            )}
+          </div>
+        </ReactFitText>
+
+        {hasLegend && (
+          <ul className="legend">
+            {legendData.map((item, i) => (
+              /* eslint jsx-a11y/no-noninteractive-element-interactions:0 */
+              <li key={item.x} onClick={() => this.handleLegendClick(item, i)}>
+                <span
+                  className="dot"
+                  style={{ backgroundColor: !item.checked ? '#aaa' : item.color }}
+                />
+                <span className="legendTitle">{item.x}</span>
+                <Divider type="vertical" />
+                <span className="percent">
+                  {/* eslint no-restricted-globals:0 */}
+                  {`${(isNaN(item.percent) ? 0 : item.percent * 100).toFixed(2)}%`}
+                </span>
+                <span
+                  className="value"
+                  dangerouslySetInnerHTML={{
+                    __html: valueFormat ? valueFormat(item.y) : item.y,
+                  }}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }
 }
-
-export default Pie;

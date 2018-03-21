@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Row, Tooltip, Icon, Col, Layout } from 'antd';
+import { Row, Tooltip, Icon, Col, Layout } from 'antd';
 import { MiniArea, MiniBar, MiniProgress, yuan, Field } from 'client/components/Charts';
 import moment from 'moment';
 import numeral from 'numeral';
@@ -52,15 +52,7 @@ export default class BSSDashboard extends React.Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('dashboard')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-        </PageHeader>
+        <PageHeader title={this.msg('dashboard')} />
         <Content className="page-content" key="main">
           <Row gutter={24}>
             <Col {...topColResponsiveProps}>

@@ -114,14 +114,6 @@ const cwmShippingBizObjects = [{
     text: 'onSoDecl',
     actionText: 'soDecl',
   }],
-}, {
-  key: 'cwmSoNormal',
-  text: 'cwmShippingOrderNormalReg',
-  triggers: [{
-    key: 'regFinished',
-    text: 'onRegFinished',
-    actionText: 'regFinish',
-  }],
 }];
 
 exports.NODE_BIZ_OBJECTS = {

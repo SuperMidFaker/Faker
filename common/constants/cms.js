@@ -73,16 +73,32 @@ export const CIQ_SUP_STATUS = [
   { value: 4, text: '已完成' },
 ];
 
-export const FEE_TYPE = [
-  { value: 'service', text: '服务费' },
-  { value: 'advance', text: '代垫费' },
-];
 export const FEE_CATEGORY = [
   { value: 'transport_expenses', text: '运输' },
   { value: 'customs_expenses', text: '报关' },
   { value: 'ciq_expenses', text: '报检' },
   { value: 'certs_expenses', text: '鉴定办证' },
 ];
+export const FORMULA_PARAMS = [
+  { value: 'shipmt_qty', text: '货运数量' },
+  { value: 'decl_qty', text: '报关单数量' },
+  { value: 'decl_sheet_qty', text: '联单数量' },
+  { value: 'decl_item_qty', text: '品项数量' },
+  { value: 'trade_item_qty', text: '料件数量' },
+  { value: 'trade_amount', text: '进出口金额' },
+];
+
+export const BILLING_METHODS = [
+  { key: '$formula', label: '自动计费' },
+  { key: 'shipmt_qty', label: '按货运数量' },
+  { key: 'decl_qty', label: '按报关单数量' },
+  { key: 'decl_sheet_qty', label: '按联单数量' },
+  { key: 'decl_item_qty', label: '按品名数量' },
+  { key: 'trade_item_qty', label: '按料件数量' },
+  { key: '$manual', label: '手动计费' },
+  { key: '$nonsettle', label: '计费不结算' },
+];
+
 export const BILLING_METHOD = [
   {
     label: '自动计费',
@@ -97,8 +113,15 @@ export const BILLING_METHOD = [
     ],
   },
   { key: '$manual', value: '$manual', label: '手动计费' },
-  { key: '$included', value: '$included', label: '包干不计费' },
+  { key: '$nonsettle', value: '$nonsettle', label: '计费不结算' },
 ];
+
+export const CMS_EXPENSE_STATUS = { // '1计费中 2 已计费未提交 3 已提交 4 已确认'
+  billing: 1,
+  pending: 2,
+  submitted: 3,
+  confirmed: 4,
+};
 
 export const CERTS = [
   { value: 'jdz', text: '机电证' },
@@ -161,9 +184,10 @@ export const TRANS_MODE = [
     value: 'H', text: '边境特殊', icon: 'border-outer', desc: '境内运入深港西部通道港方口岸区的货物',
   },
 ];
+
 export const INVOICE_TYPE = [
-  { value: 0, text: '增值税专用发票' },
-  { value: 1, text: '增值税普通发票' },
+  { value: 'VatSpecial', text: '增值税专用发票' },
+  { value: 'VatGeneral', text: '增值税普通发票' },
 ];
 
 export const CMS_DELEGATION_STATUS = {
@@ -354,23 +378,51 @@ export const DELG_STATUS = {
 
 export const CMS_DECL_STATUS = {
   proposed: {
-    value: 0, text: '建议书', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date',
+    value: 0, text: '建议书', icon: 'file-text', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date',
   },
   reviewed: {
-    value: 1, text: '已复核', badge: 'processing', step: 1, stepDesc: '复核', date: 'reviewed_date',
+    value: 1, text: '已复核', icon: 'check-square-o', badge: 'processing', step: 1, stepDesc: '复核', date: 'reviewed_date',
   },
   sent: {
-    value: 2, text: '已发送', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date',
+    value: 2, text: '已发送', icon: 'export', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date',
   },
   entered: {
-    value: 3, text: '回执', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
+    value: 3, text: '回执', icon: 'mail', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
   },
   released: {
-    value: 4, text: '放行', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',
+    value: 4, text: '放行', icon: 'flag', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',
   },
+  /*
   closed: {
-    value: 5, text: '结关', badge: 'success', step: 5, stepDesc: '结关', date: 'close_date',
+    value: 5, text: '结关', icon: '', badge: 'success', step: 5, stepDesc: '结关', date: 'close_date',
   },
+  */
+};
+
+export const CMS_DECL_TODO = {
+  proposed: {
+    value: 0, text: '待复核', icon: 'file-text', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date',
+  },
+  reviewed: {
+    value: 1, text: '待发送', icon: 'check-square-o', badge: 'processing', step: 1, stepDesc: '复核', date: 'reviewed_date',
+  },
+};
+
+export const CMS_DECL_TRACK = {
+  sent: {
+    value: 2, text: '未回执', icon: 'export', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date',
+  },
+  entered: {
+    value: 3, text: '已回执', icon: 'mail', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
+  },
+  released: {
+    value: 4, text: '已放行', icon: 'flag', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',
+  },
+  /*
+  closed: {
+    value: 5, text: '结关', icon: '', badge: 'success', step: 5, stepDesc: '结关', date: 'close_date',
+  },
+  */
 };
 
 export const CMS_DECL_CHANNEL = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Card, Collapse, Icon, Layout, Tag } from 'antd';
+import { Button, Card, Collapse, Layout, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadArCtmApp, updateArCtmApp } from 'common/reducers/hubIntegration';
@@ -42,30 +42,15 @@ export default class ConfigAmberRoadCTM extends React.Component {
   }
   render() {
     const { arctm, app } = this.props;
-    const formData = {
-      flow_id: arctm.flow_id,
-      customer_partner_id: arctm.customer_partner_id,
-      user: arctm.user,
-      password: arctm.password,
-      uuid: arctm.uuid,
-      webservice_url: arctm.webservice_url,
-    };
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="appstore-o" /> {this.msg('installedApps')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('appAmberRoadCTM')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {app.name} {this.renderStatusTag(app.enabled)}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader
+          breadcrumb={[
+            this.msg('installedApps'),
+            this.msg('appAmberRoadCTM'),
+            <span>{app.name} {this.renderStatusTag(app.enabled)}</span>,
+          ]}
+        >
           <PageHeader.Actions>
             <Button icon="close" onClick={this.handleClose}>
               {this.msg('close')}
@@ -79,7 +64,7 @@ export default class ConfigAmberRoadCTM extends React.Component {
                 <ProfileForm app={arctm} />
               </Panel>
               <Panel header="参数配置" key="params">
-                <ParamsForm formData={formData} />
+                <ParamsForm formData={arctm} />
               </Panel>
             </Collapse>
           </Card>

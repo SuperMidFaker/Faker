@@ -18,7 +18,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SEND_MUTI_DECL', 'SEND_MUTI_DECL_SUCCEED', 'SEND_MUTI_DECL_FAIL',
   'SHOW_BATCH_SEND_MODAL', 'SHOW_BATCH_SEND_MODAL_SUCCEED', 'SHOW_BATCH_SEND_MODAL_FAIL',
   'CLOSE_BATCH_SEND_MODAL', 'SHOW_DECL_LOG', 'HIDE_DECL_LOG',
-  'UPDATE_MARK', 'UPDATE_MARK_SUCCEED', 'UPDATE_MARK_FAIL',
+  'UPDATE_CUEHEAD', 'UPDATE_CUEHEAD_SUCCEED', 'UPDATE_CUEHEAD_FAIL',
   'LOAD_PESEND_RECORDS', 'LOAD_PESEND_RECORDS_SUCCEED', 'LOAD_PESEND_RECORDS_FAIL',
   'LOAD_SEND_RECORDS', 'LOAD_SEND_RECORDS_SUCCEED', 'LOAD_SEND_RECORDS_FAIL',
   'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
@@ -391,17 +391,17 @@ export function closeBatchSendModal() {
   };
 }
 
-export function updateMark(changeVal, entryHeadId) {
+export function updateCustomEntryHead(headFields, entryHeadId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_MARK,
-        actionTypes.UPDATE_MARK_SUCCEED,
-        actionTypes.UPDATE_MARK_FAIL,
+        actionTypes.UPDATE_CUEHEAD,
+        actionTypes.UPDATE_CUEHEAD_SUCCEED,
+        actionTypes.UPDATE_CUEHEAD_FAIL,
       ],
-      endpoint: 'v1/cms/update/mark',
+      endpoint: 'v1/cms/manifest/entry/head/save',
       method: 'post',
-      data: { changeVal, entryHeadId },
+      data: { head: headFields, headId: entryHeadId },
     },
   };
 }

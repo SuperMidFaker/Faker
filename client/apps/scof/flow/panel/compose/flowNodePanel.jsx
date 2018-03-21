@@ -45,10 +45,14 @@ export default class FlowNodePanel extends Component {
   }
   handleProviderChange = (provider) => {
     this.props.graph.update(this.props.node, { provider_tenant_id: provider });
+    if (this.props.onProviderChange) {
+      this.props.onProviderChange(provider);
+    }
   }
   render() {
     const {
       form: { getFieldDecorator }, customerPartners,
+      quotes,
       node, serviceTeam, tenantId, tenantName,
       vendorTenants, providerFlows, mainFlow,
     } = this.props;
@@ -120,6 +124,15 @@ export default class FlowNodePanel extends Component {
               valuePropName: 'checked',
             })(<Switch />)}
           </FormItem>
+          {quotes &&
+          <FormItem label={this.msg('providerQuoteNo')} {...formItemLayout}>
+            {getFieldDecorator('quote_no', {
+                  initialValue: model.quote_no,
+                })(<Select allowClear>
+                  {quotes.map(cq =>
+                    <Option value={cq.quote_no} key={cq.quote_no}>{cq.quote_name}</Option>)}
+                </Select>)}
+          </FormItem>}
         </Panel>
         <Panel header={this.msg('nodeEvents')} key="events">
           <FlowTriggerTable kind={model.kind} />

@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
+import { Badge, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -323,19 +322,12 @@ export default class CiqDeclList extends Component {
         defaultValue={[listFilter.startTime, listFilter.endTime]}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-        style={{ width: 256 }}
+        style={{ width: 216 }}
       />
     </span>);
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('ciqDecl')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader title={this.msg('ciqDecl')}>
           <PageHeader.Nav>
             <RadioGroup value={listFilter.ieType} onChange={this.handleIEFilter} >
               <RadioButton value="all">{this.msg('all')}</RadioButton>
@@ -343,16 +335,13 @@ export default class CiqDeclList extends Component {
               <RadioButton value="export">{this.msg('export')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
-          <PageHeader.Actions>
-            <PageHint />
-          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable
             toolbarActions={toolbarActions}
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
-            handleDeselectRows={this.handleDeselectRows}
+            onDeselectRows={this.handleDeselectRows}
             columns={this.columns}
             dataSource={this.dataSource}
             rowKey="id"

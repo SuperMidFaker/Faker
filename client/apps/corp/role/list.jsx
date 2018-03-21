@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Layout, List } from 'antd';
+import { Button, Card, Layout, List } from 'antd';
 import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -92,14 +92,7 @@ export default class RoleList extends React.Component {
       <Layout>
         <CorpSiderMenu currentKey="role" />
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('corpRole')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('corpRole')}>
             <PageHeader.Actions>
               <PrivilegeCover module="corp" feature="role" action="create">
                 <Button type="primary" onClick={this.handleCreate} icon="plus-circle-o">

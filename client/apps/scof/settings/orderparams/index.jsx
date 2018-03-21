@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Card, Collapse, List, Layout, Modal } from 'antd';
+import { Button, Card, Collapse, List, Layout, Modal } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/reducers/sofOrderPref';
 import connectNav from 'client/common/decorators/connect-nav';
+import ListContentLayout from 'client/components/ListContentLayout';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SettingMenu from '../menu';
@@ -13,7 +14,7 @@ import FieldsForm from './forms/fieldsForm';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Panel } = Collapse;
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -80,37 +81,28 @@ export default class OrderParams extends Component {
   }
   render() {
     const { visible, modalOrderType, orderTypeList } = this.props;
-    const tabList = [
+    const menus = [
       {
         key: 'orderTypes',
-        tab: this.msg('orderTypes'),
+        menu: this.msg('orderTypes'),
       },
       {
         key: 'exceptionCode',
-        tab: this.msg('exceptionCode'),
+        menu: this.msg('exceptionCode'),
       },
     ];
     return (
-      <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('settings')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <SettingMenu currentKey="orderparams" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader tabList={tabList} onTabChange={this.handleTabChange} />
-          <Content className="page-content layout-fixed-width">
-            <Card extra={<Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>{this.gmsg('add')}</Button>} bodyStyle={{ padding: 0 }} >
-              <List
-                loading={orderTypeList.loading}
-                pagination={{
+      <ListContentLayout
+        title={this.msg('settings')}
+        list={<SettingMenu currentKey="orderparams" />}
+        listWidth={200}
+      >
+        <PageHeader menus={menus} onTabChange={this.handleTabChange} />
+        <Content className="page-content layout-fixed-width">
+          <Card extra={<Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>{this.gmsg('add')}</Button>} bodyStyle={{ padding: 0 }} >
+            <List
+              loading={orderTypeList.loading}
+              pagination={{
                   pageSize: orderTypeList.pageSize,
                   current: orderTypeList.current,
                   total: orderTypeList.totalCount,
@@ -118,21 +110,20 @@ export default class OrderParams extends Component {
                   size: 'small',
                   hideOnSinglePage: true,
                 }}
-                dataSource={orderTypeList.data}
-                renderItem={type => (
-                  <List.Item
-                    key={type.id}
-                    actions={[<RowAction row={type} key="config" onClick={this.handleConfig} icon="setting" tooltip={this.gmsg('config')} />,
-                      <RowAction danger row={type} confirm={this.gmsg('deleteConfirm')} key="del" onConfirm={this.handleTypeDel} icon="delete" />,
+              dataSource={orderTypeList.data}
+              renderItem={type => (
+                <List.Item
+                  key={type.id}
+                  actions={[<RowAction row={type} key="config" onClick={this.handleConfig} icon="setting" tooltip={this.gmsg('config')} />,
+                    <RowAction danger row={type} confirm={this.gmsg('deleteConfirm')} key="del" onConfirm={this.handleTypeDel} icon="delete" />,
                     ]}
-                  >
-                    <List.Item.Meta title={type.name} />
-                  </List.Item>
+                >
+                  <List.Item.Meta title={type.name} />
+                </List.Item>
                   )}
-              />
-            </Card>
-          </Content>
-        </Layout>
+            />
+          </Card>
+        </Content>
         <Modal
           maskClosable={false}
           title={this.msg('orderConfig')}
@@ -156,7 +147,7 @@ export default class OrderParams extends Component {
             </Card>
           </Content>
         </Modal>
-      </Layout>
+      </ListContentLayout>
     );
   }
 }

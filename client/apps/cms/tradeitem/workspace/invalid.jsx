@@ -308,14 +308,7 @@ export default class InvalidItemsList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('taskInvalid')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
+          <PageHeader title={this.msg('taskInvalid')}>
             <PageHeader.Actions>
               <WsItemExportButton {...listFilter} onUploaded={this.handleReload} />
               {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
@@ -326,7 +319,7 @@ export default class InvalidItemsList extends React.Component {
             <DataTable
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
+              onDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={dataSource}
               rowSelection={rowSelection}

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Modal, Transfer } from 'antd';
-import { setClientForm, removeOrderInvoice, loadUnshippedInvoices, getOrderDetails } from 'common/reducers/sofOrders';
+import { removeOrderInvoice, loadUnshippedInvoices, loadOrderInvoices, addOrderInvoices, loadOrderDetails } from 'common/reducers/sofOrders';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
@@ -19,9 +19,14 @@ const formatMsg = format(messages);
     recParams: state.scofFlow.cwmParams,
     currencies: state.cmsManifest.params.currencies,
     formData: state.sofOrders.formData,
+    invoices: state.sofOrders.invoices,
   }),
   {
-    setClientForm, removeOrderInvoice, loadUnshippedInvoices, getOrderDetails,
+    removeOrderInvoice,
+    loadUnshippedInvoices,
+    loadOrderInvoices,
+    addOrderInvoices,
+    loadOrderDetails,
   }
 )
 export default class InvoicePane extends Component {
@@ -30,81 +35,42 @@ export default class InvoicePane extends Component {
   }
   state = {
     dataSource: [],
-    origDataSource: [],
-    origInvoices: [],
     targetKeys: [],
     selectedKeys: [],
     visible: false,
   }
   componentWillMount() {
-    this.props.loadUnshippedInvoices(this.props.formData.customer_partner_id).then((result) => {
-      if (!result.error) {
-        this.setState({
-          origInvoices: result.data,
-          dataSource: this.props.formData.invoices,
-          origDataSource: this.props.formData.invoices,
-        });
-      }
-    });
+    this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
+    this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.formData.invoices !== this.props.formData.invoices) {
-      this.setState({
-        dataSource: nextProps.formData.invoices,
-      });
-    }
     if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {
-      this.props.loadUnshippedInvoices(nextProps.formData.customer_partner_id).then((result) => {
-        if (!result.error) {
-          this.setState({
-            origInvoices: result.data,
-            dataSource: this.props.formData.invoices,
-            origDataSource: this.props.formData.invoices,
-          });
-        }
-      });
+      this.handleLoadUnshippedInvoices(nextProps.formData.customer_partner_id);
     }
-  }
-  handleInvoiceAdd = (data) => {
-    this.setState({
-      dataSource: data,
-    });
   }
   handleToggleInvoiceModal = () => {
     this.setState({
       visible: true,
     });
   }
+  handleLoadUnshippedInvoices = (partnerId) => {
+    this.props.loadUnshippedInvoices(partnerId).then((result) => {
+      if (!result.error) {
+        this.setState({
+          dataSource: result.data,
+          targetKeys: [],
+          selectedKeys: [],
+        });
+      }
+    });
+  }
   handleRemove = (row) => {
-    const { invoices, orderDetails } = this.props.formData;
-    const { origDataSource } = this.state;
-    if (row.shipmt_order_no) {
-      this.props.removeOrderInvoice(row.id, row.invoice_no, row.shipmt_order_no).then((result) => {
-        if (!result.error) {
-          const newInvoices = invoices.filter(inv => inv.invoice_no !== row.invoice_no);
-          const newOrderDetails = orderDetails.filter(od => od.invoice_no !== row.invoice_no);
-          const newOrigDataSource = origDataSource.filter(od => od.invoice_no !== row.invoice_no);
-          this.props.setClientForm(-1, { invoices: newInvoices, orderDetails: newOrderDetails });
-          this.props.loadUnshippedInvoices(this.props.formData.customer_partner_id).then((re) => {
-            if (!re.error) {
-              this.setState({
-                origInvoices: re.data,
-                origDataSource: newOrigDataSource,
-              });
-            }
-          });
-        }
-      });
-    } else {
-      const { targetKeys } = this.state;
-      const newTargetKeys = targetKeys.filter(key => key !== row.invoice_no);
-      const newInvoices = invoices.filter(inv => inv.invoice_no !== row.invoice_no);
-      const newOrderDetails = orderDetails.filter(od => od.invoice_no !== row.invoice_no);
-      this.props.setClientForm(-1, { invoices: newInvoices, orderDetails: newOrderDetails });
-      this.setState({
-        targetKeys: newTargetKeys,
-      });
-    }
+    this.props.removeOrderInvoice(row.id, row.invoice_no, row.shipmt_order_no).then((result) => {
+      if (!result.error) {
+        this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
+        this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
+      }
+    });
   }
   handleCancel = () => {
     this.setState({
@@ -112,15 +78,13 @@ export default class InvoicePane extends Component {
     });
   }
   handleOk = () => {
-    const { targetKeys, origInvoices, origDataSource } = this.state;
-    const data = origDataSource.concat(origInvoices.filter(inv =>
-      targetKeys.find(key => key === inv.invoice_no)));
-
-    this.setState({
-      dataSource: data,
+    const { targetKeys } = this.state;
+    this.props.addOrderInvoices(targetKeys, this.props.formData.shipmt_order_no).then((result) => {
+      if (!result.error) {
+        this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
+        this.handleLoadUnshippedInvoices(this.props.formData.customer_partner_id);
+      }
     });
-    this.props.getOrderDetails(targetKeys.join(','));
-    this.props.setClientForm(-1, { invoices: data });
     this.handleCancel();
   }
   handleChange = (nextTargetKeys) => {
@@ -165,9 +129,9 @@ export default class InvoicePane extends Component {
   }];
   render() {
     const {
-      origInvoices, targetKeys, selectedKeys, visible, dataSource,
+      targetKeys, selectedKeys, visible,
     } = this.state;
-    const statWt = dataSource.reduce((acc, det) => ({
+    const statWt = this.props.invoices.reduce((acc, det) => ({
       total_amount: acc.total_amount + det.total_amount,
       total_net_wt: acc.total_net_wt + det.total_net_wt,
     }), { total_amount: 0, total_net_wt: 0 });
@@ -180,7 +144,7 @@ export default class InvoicePane extends Component {
     return (
       <DataPane
         columns={this.invoiceColumns}
-        dataSource={this.state.dataSource}
+        dataSource={this.props.invoices}
         rowKey="id"
       >
         <DataPane.Toolbar>
@@ -189,10 +153,9 @@ export default class InvoicePane extends Component {
             {totCol}
           </DataPane.Extra>
         </DataPane.Toolbar>
-        {/* <InvoiceModal handleOk={this.handleInvoiceAdd} /> */}
         <Modal title="选择商业发票" width={695} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
           <Transfer
-            dataSource={origInvoices}
+            dataSource={this.state.dataSource}
             showSearch
             titles={['可选', '已选']}
             targetKeys={targetKeys}

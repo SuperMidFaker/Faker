@@ -1,17 +1,16 @@
 import React from 'react';
 import moment from 'moment';
-import { Input, Tabs } from 'antd';
-import TrimSpan from 'client/components/trimSpan';
-import DataTable from 'client/components/DataTable';
+import { Tabs } from 'antd';
 import { injectIntl, intlShape } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
+import DataTable from 'client/components/DataTable';
+import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
+import TrimSpan from 'client/components/trimSpan';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
-import SearchBox from 'client/components/SearchBox';
 import { formatMsg } from '../message.i18n';
-
 
 const { TabPane } = Tabs;
 

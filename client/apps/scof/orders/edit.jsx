@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, message, notification } from 'antd';
+import { Button, Layout, message, notification } from 'antd';
 import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
@@ -56,13 +56,15 @@ export default class EditOrder extends Component {
     formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     editOrder: PropTypes.func.isRequired,
   }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
     const { formData } = this.props;
-    this.props.validateOrder(formData).then((result) => {
+    const valitFormData = {};
+    ['customer_name', 'cust_shipmt_goods_type', 'cust_shipmt_transfer', 'flow_id',
+      'ext_attr_1', 'ext_attr_2', 'ext_attr_3', 'ext_attr_4', 'cust_order_no'].forEach((vaKey) => {
+      valitFormData[vaKey] = formData[vaKey];
+    });
+    this.props.validateOrder(valitFormData).then((result) => {
       if (result.error) {
         notification.error({
           message: '错误信息',
@@ -76,8 +78,8 @@ export default class EditOrder extends Component {
           duration: 15,
         });
       } else if (result.data.level === 'warn') {
-        notification.warn({
-          message: '警告信息',
+        notification.info({
+          message: '提示信息',
           description: VALIDATE_MSG[result.data.msgkey],
           btn: (<div>
             <a role="presentation" onClick={() => this.handleEdit(true)}>继续保存</a>
@@ -105,33 +107,23 @@ export default class EditOrder extends Component {
         });
       } else {
         message.success('保存成功');
-        this.context.router.push('/scof/orders');
+        this.handleCancel();
       }
     });
   }
   handleCancel = () => {
-    this.context.router.goBack();
+    this.context.router.push('/scof/orders');
   }
   render() {
     return (
       <Layout>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('shipmentOrders')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('editOrder')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+        <PageHeader breadcrumb={[this.msg('shipmentOrders'), this.msg('editOrder')]}>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancel}>
-              {this.msg('cancel')}
-            </Button>
-            <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>
+            <Button icon="save" type="primary" onClick={this.handleSave} loading={this.props.saving}>
               {this.msg('save')}
+            </Button>
+            <Button onClick={this.handleCancel}>
+              {this.msg('cancel')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

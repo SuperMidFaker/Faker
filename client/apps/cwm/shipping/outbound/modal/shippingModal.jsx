@@ -11,7 +11,7 @@ import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -34,7 +34,7 @@ export default class ShippingModal extends Component {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
     shipMode: PropTypes.string.isRequired,
-    selectedRows: PropTypes.array,
+    selectedRows: PropTypes.arrayOf(PropTypes.shape({ picked_qty: PropTypes.number })),
     resetState: PropTypes.func,
   }
   state = {
@@ -53,8 +53,8 @@ export default class ShippingModal extends Component {
   handleCancel = () => {
     this.props.closeShippingModal();
   }
-  handleChange = (e) => {
-    this.setState({ shippingMode: e.target.value });
+  handleChange = (ev) => {
+    this.setState({ shippingMode: ev.target.value });
   }
   handleSubmit = () => {
     const {
@@ -68,27 +68,28 @@ export default class ShippingModal extends Component {
           pieces: values.pieces,
           volumes: values.volumes,
           pack_type: values.pack,
+          waybill: values.waybill,
+          drop_id: '',
+          shipped_type: this.state.shippingMode,
         };
         if (shipMode === 'single') {
           list.push({
             id,
             shipped_qty: pickedQty,
             shipped_pack_qty: pickedQty / skuPackQty,
-            drop_id: '',
-            waybill: values.waybill,
-            shipped_type: this.state.shippingMode,
           });
         } else {
-          list = list.concat(selectedRows.map(sr => ({
-            id: sr.id,
-            shipped_qty: sr.picked_qty,
-            shipped_pack_qty: sr.picked_qty / sr.sku_pack_qty,
-            drop_id: '',
-            waybill: values.waybill,
-            shipped_type: this.state.shippingMode,
-          })));
+          list = selectedRows.filter(sr => sr.picked_qty > 0 && sr.picked_qty > sr.shipped_qty)
+            .map(sr => ({
+              id: sr.id,
+              shipped_qty: sr.picked_qty - sr.shipped_qty,
+              shipped_pack_qty: (sr.picked_qty - sr.shipped_qty) / sr.sku_pack_qty,
+            }));
         }
-        this.props.shipConfirm(outbounddata, list, username, values.shippedBy, values.shippedDate).then((result) => {
+        this.props.shipConfirm(
+          outbounddata, list, username,
+          values.shippedBy, values.shippedDate
+        ).then((result) => {
           if (!result.error) {
             this.props.closeShippingModal();
             this.props.loadPickDetails(this.props.outboundNo);
@@ -122,10 +123,10 @@ export default class ShippingModal extends Component {
               <Radio.Button value={1}>装车单发货</Radio.Button>
             </Radio.Group>
           </FormItem>
-          <FormItem {...formItemLayout} label="配送面单号" >
+          <FormItem {...formItemLayout} label="配送面单号">
             {
               getFieldDecorator('waybill', {
-                rules: [{ required: true, messages: 'please input whseName' }],
+                rules: [{ required: true, messages: '面单号必填' }],
               })(<Input />)
             }
           </FormItem>

@@ -6,8 +6,9 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Steps, Button, Tabs, Card, Tag, message, notification } from 'antd';
+import { Layout, Steps, Button, Tabs, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -78,12 +79,7 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   state = {
     fullscreen: true,
-    transfSelfReg: {},
-  }
-  componentWillMount() {
-    this.setState({
-      transfSelfReg: this.props.transfSelfReg,
-    });
+    searchVal: null,
   }
   msg = key => formatMsg(this.props.intl, key)
   toggleFullscreen = (fullscreen) => {
@@ -311,20 +307,23 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   handleSearch = (searchText) => {
-    const transfSelfReg = JSON.parse(JSON.stringify(this.props.transfSelfReg));
-    if (searchText) {
-      transfSelfReg.details = transfSelfReg.details.filter((item) => {
-        const reg = new RegExp(searchText);
+    this.setState({ searchVal: searchText });
+  }
+  render() {
+    const { transfSelfReg, whse, submitting } = this.props;
+    if (!transfSelfReg.details) {
+      return null;
+    }
+    const { searchVal } = this.state;
+    let { details } = transfSelfReg;
+    if (searchVal) {
+      details = details.filter((item) => {
+        const reg = new RegExp(searchVal);
         return reg.test(item.ftz_cargo_no) || reg.test(item.product_no)
         || reg.test(item.hscode) || reg.test(item.g_name);
       });
     }
-    this.setState({ transfSelfReg });
-  }
-  render() {
-    const { whse, submitting } = this.props;
-    const { transfSelfReg } = this.state;
-    const stat = transfSelfReg.details ? transfSelfReg.details.reduce((acc, regd) => ({
+    const stat = details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
       total_net_wt: acc.total_net_wt + regd.stock_netwt,
@@ -332,11 +331,7 @@ export default class SHFTZTransferSelfDetail extends Component {
       total_qty: 0,
       total_amount: 0,
       total_net_wt: 0,
-    }) : {
-      total_qty: 0,
-      total_amount: 0,
-      total_net_wt: 0,
-    };
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -351,24 +346,14 @@ export default class SHFTZTransferSelfDetail extends Component {
       </Summary>
     );
     return (
-      <div>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                上海自贸区监管
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {whse.name}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzTransferSelf')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.props.params.asnNo}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
+      <Layout>
+        <PageHeader
+          breadcrumb={[
+            whse.name,
+            this.msg('ftzTransferSelf'),
+            this.props.params.asnNo,
+          ]}
+        >
           <PageHeader.Actions>
             {transfSelfReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
@@ -379,49 +364,46 @@ export default class SHFTZTransferSelfDetail extends Component {
                   <Button icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} >
-              <DescriptionList col={4}>
-                <Description term="收货单位海关编码">
-                  <EditableCell
-                    value={transfSelfReg.owner_cus_code}
-                    onSave={value => this.handleInfoSave('owner_cus_code', value)}
-                  />
-                </Description>
-                <Description term="收货单位">
-                  <EditableCell
-                    value={transfSelfReg.owner_name}
-                    onSave={value => this.handleInfoSave('owner_name', value)}
-                  />
-                </Description>
-                <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
-                <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
-                <Description term="入库单号">
-                  <EditableCell
-                    value={transfSelfReg.ftz_ent_no}
-                    onSave={value => this.handleInfoSave('ftz_ent_no', value)}
-                  />
-                </Description>
-                <Description term="转入时间">
-                  <EditableCell
-                    type="date"
-                    value={transfSelfReg.ftz_ent_date && moment(transfSelfReg.ftz_ent_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
-                  />
-                </Description>
-              </DescriptionList>
-              <div className="card-footer">
-                <Steps progressDot current={transfSelfReg.reg_status}>
-                  <Step title="待转出" />
-                  <Step title="终端处理" />
-                  <Step title="已转入" />
-                </Steps>
-              </div>
-            </Card>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={4}>
+              <Description term="收货单位海关编码">
+                <EditableCell
+                  value={transfSelfReg.owner_cus_code}
+                  onSave={value => this.handleInfoSave('owner_cus_code', value)}
+                />
+              </Description>
+              <Description term="收货单位">
+                <EditableCell
+                  value={transfSelfReg.owner_name}
+                  onSave={value => this.handleInfoSave('owner_name', value)}
+                />
+              </Description>
+              <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
+              <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <Description term="入库单号">
+                <EditableCell
+                  value={transfSelfReg.ftz_ent_no}
+                  onSave={value => this.handleInfoSave('ftz_ent_no', value)}
+                />
+              </Description>
+              <Description term="转入时间">
+                <EditableCell
+                  type="date"
+                  value={transfSelfReg.ftz_ent_date && moment(transfSelfReg.ftz_ent_date).format('YYYY-MM-DD')}
+                  onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
+                />
+              </Description>
+            </DescriptionList>
+            <Steps progressDot current={transfSelfReg.reg_status} className="progress-tracker">
+              <Step title="待转出" />
+              <Step title="终端处理" />
+              <Step title="已转入" />
+            </Steps>
+          </Drawer>
+          <Content className="page-content">
             <MagicCard
               bodyStyle={{ padding: 0 }}
-
               onSizeChange={this.toggleFullscreen}
             >
               <Tabs defaultActiveKey="transitDetails">
@@ -431,7 +413,7 @@ export default class SHFTZTransferSelfDetail extends Component {
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}
-                    dataSource={transfSelfReg.details}
+                    dataSource={details}
                     rowKey="id"
                     loading={this.state.loading}
                   >
@@ -445,9 +427,9 @@ export default class SHFTZTransferSelfDetail extends Component {
                 </TabPane>
               </Tabs>
             </MagicCard>
-          </Form>
-        </Content>
-      </div>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

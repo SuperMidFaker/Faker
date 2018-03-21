@@ -1,38 +1,47 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Layout, Tabs } from 'antd';
-import './index.less';
+import { Layout, Menu } from 'antd';
+import Title from './title';
+import './style.less';
 
 const { Header } = Layout;
-const { TabPane } = Tabs;
 
 export default class PageHeader extends Component {
   static propTypes = {
     children: PropTypes.node,
+    title: PropTypes.node,
+    breadcrumb: PropTypes.arrayOf(PropTypes.node),
+    menus: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string, menu: PropTypes.node })),
+    currentKey: PropTypes.string,
   }
-  onChange = (key) => {
+  onChange = (ev) => {
     if (this.props.onTabChange) {
-      this.props.onTabChange(key);
+      this.props.onTabChange(ev.key);
     }
   };
   render() {
-    const { children, tabList } = this.props;
-    const tabDefaultValue = tabList && tabList.filter(item => item.default)[0];
+    const {
+      children, title, breadcrumb, menus, currentKey,
+    } = this.props;
+    const defaultTab = menus && (menus.filter(item => item.default)[0] || menus[0]);
+    const tb = title ? [title] : (breadcrumb || []);
     return (
       <Header className="welo-page-header">
+        <div className="welo-page-header-wrapper">
+          {(title || breadcrumb) &&
+            <Title breadcrumb={tb} />
+          }
+          {menus && menus.length &&
+            <Menu
+              onClick={this.onChange}
+              defaultSelectedKeys={(currentKey && [currentKey]) || (defaultTab && [defaultTab.key])}
+              mode="horizontal"
+            >
+              {menus.map(item => <Menu.Item key={item.key} >{item.menu}</Menu.Item>)}
+            </Menu>
+          }
+        </div>
         {children}
-        {
-          tabList &&
-          tabList.length &&
-          <Tabs
-            defaultActiveKey={(tabDefaultValue && tabDefaultValue.key)}
-            onChange={this.onChange}
-          >
-            {
-              tabList.map(item => <TabPane tab={item.tab} key={item.key} />)
-            }
-          </Tabs>
-        }
       </Header>
     );
   }

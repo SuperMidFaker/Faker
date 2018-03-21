@@ -3,29 +3,28 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Button, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
-import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
-import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import PageHeader from 'client/components/PageHeader';
-import ModuleMenu from '../../menu';
-import NewTransfOutModal from './newTransfOutModal';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { openNewTransfOutModal, loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
+import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import messages from '../../message.i18n';
+import NewTransfOutModal from './newTransfOutModal';
 
 const formatMsg = format(messages);
-const { Content, Sider } = Layout;
-const Option = Select.Option;
+const { Content } = Layout;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -51,24 +50,22 @@ const RadioButton = Radio.Button;
 export default class SHFTZTransferOutList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    releaseList: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
-    whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
+    releaseList: PropTypes.shape({ current: PropTypes.number }).isRequired,
+    listFilter: PropTypes.shape({ status: PropTypes.string }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
-    const listFilter = this.props.listFilter;
-    let status = listFilter.status;
+    const { listFilter } = this.props;
+    let { status } = listFilter;
     if (['all', 'pending', 'sent', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
-    let ownerView = listFilter.ownerView;
+    let { ownerView } = listFilter;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
@@ -93,6 +90,7 @@ export default class SHFTZTransferOutList extends React.Component {
       if (regtype) {
         return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
       }
+      return null;
     },
   }, {
     title: '状态',
@@ -106,6 +104,7 @@ export default class SHFTZTransferOutList extends React.Component {
       } else if (o === 2) {
         return (<Badge status="success" text="已转出" />);
       }
+      return null;
     },
   }, {
     title: 'SO编号',
@@ -143,16 +142,13 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: o => o && moment(o).format('MM.DD HH:mm'),
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o)
+    && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -255,61 +251,39 @@ export default class SHFTZTransferOutList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="transferout" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('ftzTransferOut')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">待转出</RadioButton>
-                <RadioButton value="sent">已发送</RadioButton>
-                <RadioButton value="completed">已转出</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
-            <PageHeader.Actions>
-              <Button type="primary" icon="plus" onClick={this.handleCreateTransfOut}>
-                {this.msg('create')}
-              </Button>
-            </PageHeader.Actions>
-          </PageHeader>
-          <Content className="page-content" key="main">
-            <DataTable
-              columns={this.columns}
-              rowSelection={rowSelection}
-              dataSource={this.dataSource}
-              toolbarActions={toolbarActions}
-              indentSize={8}
-              rowKey="id"
-              selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleDeselectRows}
-              loading={this.props.loading}
-            />
-            <ShippingDockPanel />
-            <OrderDockPanel />
-            <DelegationDockPanel />
-            <ShipmentDockPanel />
-            <NewTransfOutModal reload={this.handleReleaseListLoad} />
-          </Content>
-        </Layout>
+        <PageHeader title={this.msg('ftzTransferOut')}>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+              <RadioButton value="all">全部状态</RadioButton>
+              <RadioButton value="pending">待转出</RadioButton>
+              <RadioButton value="sent">已发送</RadioButton>
+              <RadioButton value="completed">已转出</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateTransfOut}>
+              {this.msg('create')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable
+            columns={this.columns}
+            rowSelection={rowSelection}
+            dataSource={this.dataSource}
+            toolbarActions={toolbarActions}
+            indentSize={8}
+            rowKey="id"
+            selectedRowKeys={this.state.selectedRowKeys}
+            onDeselectRows={this.handleDeselectRows}
+            loading={this.props.loading}
+          />
+          <ShippingDockPanel />
+          <OrderDockPanel />
+          <DelegationDockPanel />
+          <ShipmentDockPanel />
+          <NewTransfOutModal reload={this.handleReleaseListLoad} />
+        </Content>
       </Layout>
     );
   }

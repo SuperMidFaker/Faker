@@ -10,17 +10,9 @@ const messages = defineMessages({
     id: 'bss.module.audit',
     defaultMessage: '费用审核',
   },
-  bills: {
-    id: 'bss.module.bills',
+  bill: {
+    id: 'bss.module.bill',
     defaultMessage: '账单管理',
-  },
-  customerBills: {
-    id: 'bss.module.bills.customer',
-    defaultMessage: '客户账单',
-  },
-  vendorBills: {
-    id: 'bss.module.bills.vendor',
-    defaultMessage: '服务商账单',
   },
   settings: {
     id: 'bss.module.settings',

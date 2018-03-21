@@ -5,7 +5,7 @@ import { Collapse, Form, Row, Col, Card, Input, Select, Steps, Tag, Tabs } from 
 import { intlShape, injectIntl } from 'react-intl';
 import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODES } from 'common/constants';
 import { setClientForm } from 'common/reducers/sofOrders';
-import { loadPartnerFlowList, loadFlowGraph, loadCustomerCmsQuotes, loadCwmBizParams } from 'common/reducers/scofFlow';
+import { loadPartnerFlowList, loadFlowGraph, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/sofCustomers';
 import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
@@ -48,7 +48,6 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
     setClientForm,
     loadPartnerFlowList,
     loadFlowGraph,
-    loadCustomerCmsQuotes,
     loadOperators,
     loadCwmBizParams,
   }
@@ -80,7 +79,6 @@ export default class OrderForm extends Component {
         tenantId: this.props.tenantId,
       });
       this.props.loadCwmBizParams(this.props.tenantId, formData.customer_partner_id);
-      this.props.loadCustomerCmsQuotes(this.props.tenantId, formData.customer_partner_id);
       this.props.loadOperators(formData.customer_partner_id, this.props.tenantId);
     }
   }
@@ -245,7 +243,7 @@ export default class OrderForm extends Component {
   }
   render() {
     const {
-      formRequires, formData, flows, serviceTeam, orderTypes, operation,
+      formRequires, formData, flows, serviceTeam, orderTypes,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -362,7 +360,7 @@ export default class OrderForm extends Component {
                           dropdownMatchSelectWidth={false}
                           dropdownStyle={{ width: 360 }}
                           style={{ width: '100%' }}
-                          disabled={!!(operation === 'edit' || operation === 'view')}
+                          disabled={!!(formData.shipmt_order_no)}
                         >
                           {formRequires.clients.map(data => (
                             <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
@@ -689,14 +687,20 @@ export default class OrderForm extends Component {
                 </Card>
               </FormPane>
             </TabPane>
-            <TabPane tab="商业发票" key="invoice">
+            <TabPane tab="商业发票" key="invoice" disabled={!formData.shipmt_order_no}>
               <InvoicePane />
             </TabPane>
-            <TabPane tab="集装箱" key="container" disabled={formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'} >
+            <TabPane
+              tab="集装箱"
+              key="container"
+              disabled={
+              !formData.shipmt_order_no || formData.cust_shipmt_transfer === 'DOM' || formData.cust_shipmt_trans_mode === '5'
+            }
+            >
               <ContainerPane />
             </TabPane>
-            <TabPane tab="货物明细" key="details">
-              <OrderDetailsPane />
+            <TabPane tab="货物明细" key="details" disabled={!formData.shipmt_order_no}>
+              <OrderDetailsPane orderNo={formData.shipmt_order_no} />
             </TabPane>
           </Tabs>
         </Card>

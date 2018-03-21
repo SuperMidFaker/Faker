@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'NEW_TRSO', 'NEW_TRSO_SUCCEED', 'NEW_TRSO_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
+  'SELECT_CARGO_OWNER',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
   'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
   'REFRSH_RFTZC', 'REFRSH_RFTZC_SUCCEED', 'REFRSH_RFTZC_FAIL',
@@ -129,6 +130,7 @@ const initialState = {
     data: [],
   },
   cargoRule: {},
+  cargoOwner: {},
   loading: false,
   listFilter: {
     status: 'all',
@@ -136,7 +138,7 @@ const initialState = {
     filterNo: '',
     ownerView: 'all',
   },
-  entry_asn: {},
+  entry_asn: { },
   entry_regs: [],
   rel_so: { outbound_no: '', outbound_status: -1 },
   rel_regs: [],
@@ -206,6 +208,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: true } };
     case actionTypes.CLOSE_NTFO_MODAL:
       return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: false } };
+    case actionTypes.SELECT_CARGO_OWNER:
+      return { ...state, cargoOwner: action.owner };
     case actionTypes.ENTRY_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
@@ -408,7 +412,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHECK_ENRSTU_SUCCEED:
       return {
         ...state,
-        entry_asn: { ...state.entry_asn, reg_status: action.result.data.status },
+        entry_asn: { ...state.entry_asn, ...action.result.data },
         submitting: false,
       };
     case actionTypes.CANCEL_RER_SUCCEED:
@@ -611,6 +615,13 @@ export function openNewTransfOutModal() {
 export function closeNewTransfOutModal() {
   return {
     type: actionTypes.CLOSE_NTFO_MODAL,
+  };
+}
+
+export function selectCargoOwner(owner) {
+  return {
+    type: actionTypes.SELECT_CARGO_OWNER,
+    owner,
   };
 }
 
@@ -827,7 +838,7 @@ export function queryEntryRegInfos(asnNo, preEntrySeqNo, whseCode, ftzWhseCode) 
   };
 }
 
-export function checkEntryRegStatus(preEntrySeqNo, status) {
+export function putCustomsRegFields(preEntrySeqNo, fields) {
   return {
     [CLIENT_API]: {
       types: [
@@ -835,9 +846,9 @@ export function checkEntryRegStatus(preEntrySeqNo, status) {
         actionTypes.CHECK_ENRSTU_SUCCEED,
         actionTypes.CHECK_ENRSTU_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/entry/reg/put/status',
+      endpoint: 'v1/cwm/shftz/entry/reg/put/fields',
       method: 'post',
-      data: { preEntrySeqNo, status },
+      data: { preEntrySeqNo, fields },
     },
   };
 }
