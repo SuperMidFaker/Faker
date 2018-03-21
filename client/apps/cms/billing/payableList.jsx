@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses } from 'common/reducers/cmsExpense';
+import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses, batchDeleteByUploadNo } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
@@ -68,6 +68,7 @@ function fetchData({ state, dispatch }) {
     loadExpenses,
     confirmExpenses,
     rejectExpenses,
+    batchDeleteByUploadNo,
   }
 )
 @connectNav({
@@ -331,6 +332,14 @@ export default class PayableExpenseList extends Component {
       importPanelVisible: false,
     });
   }
+  removeExpenseByBatchUpload = (uploadNo, uploadLogReload) => {
+    this.props.batchDeleteByUploadNo(uploadNo).then((result) => {
+      if (!result.error) {
+        uploadLogReload();
+        this.handleExpensesLoad(1);
+      }
+    });
+  }
   render() {
     const {
       expensesList, partners, form: { getFieldDecorator }, expensesLoading,
@@ -454,6 +463,7 @@ export default class PayableExpenseList extends Component {
             </FormItem>
           </ImportDataPanel>
           <UploadLogsPanel
+            onUploadBatchDelete={this.removeExpenseByBatchUpload}
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
           />
         </Layout>

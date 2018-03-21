@@ -36,6 +36,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'TOGGLE_ADD_SPECIAL_MODAL',
   'ADD_SPECIAL', 'ADD_SPECIAL_SUCCESS', 'ADD_SPECIAL_FAIL',
   'LOAD_EXP_DETAILS', 'LOAD_EXP_DETAILS_SUCCEED', 'LOAD_EXP_DETAILS_FAIL',
+  'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
 ]);
 
 const initialState = {
@@ -725,6 +726,21 @@ export function addSpecialFee(data, expenseNo) {
       endpoint: 'v1/cms/expense/special/add',
       method: 'post',
       data: { data, expenseNo },
+    },
+  };
+}
+
+export function batchDeleteByUploadNo(uploadNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_DELETE_BY_UPLOADNO,
+        actionTypes.BATCH_DELETE_BY_UPLOADNO_SUCCEED,
+        actionTypes.BATCH_DELETE_BY_UPLOADNO_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/batch/delete/by/uploadno',
+      method: 'post',
+      data: { uploadNo },
     },
   };
 }
