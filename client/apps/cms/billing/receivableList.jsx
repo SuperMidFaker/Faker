@@ -119,7 +119,7 @@ export default class ReceivableExpenseList extends Component {
     }, {
       title: this.msg('cusDeclNo'),
       dataIndex: 'customs_entry_nos',
-      width: 120,
+      width: 150,
     }, {
       title: this.msg('serviceSummary'),
       dataIndex: 'sum_svc_charge',
@@ -173,7 +173,7 @@ export default class ReceivableExpenseList extends Component {
     }, {
       title: this.msg('quoteNo'),
       dataIndex: 'quote_no',
-      width: 100,
+      width: 140,
     }, {
       title: this.msg('lastActT'),
       dataIndex: 'last_updated_date',

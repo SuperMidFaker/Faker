@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   totalQty: {
     id: 'component.upload.logs.panel.total.qty',
-    defaultMessage: '总数',
+    defaultMessage: '成功/忽略/总数',
   },
   fileSize: {
     id: 'component.upload.logs.panel.file.size',
