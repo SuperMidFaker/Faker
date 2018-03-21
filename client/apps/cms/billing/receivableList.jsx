@@ -37,6 +37,7 @@ function fetchData({ state, dispatch }) {
     filter: JSON.stringify({
       status: 'billing',
       mode: 'receivable',
+      partnerId: 'all',
     }),
     pageSize: state.cmsExpense.expensesList.pageSize,
     current: state.cmsExpense.expensesList.current,
@@ -257,7 +258,7 @@ export default class ReceivableExpenseList extends Component {
     this.setState({ importFeesModalVisible: !this.state.importFeesModalVisible });
   }
   handleDateChange = (data, dataString) => {
-    const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
+    const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
     this.handleExpensesLoad(1, filter);
   }
   handleGenTemplate = () => {
@@ -324,6 +325,10 @@ export default class ReceivableExpenseList extends Component {
       }
     });
   }
+  handleClientSelectChange = (value) => {
+    const filter = { ...this.props.listFilter, partnerId: value };
+    this.handleExpensesLoad(1, filter);
+  }
   render() {
     const {
       expensesList, partners, form: { getFieldDecorator }, expensesLoading,
@@ -347,6 +352,7 @@ export default class ReceivableExpenseList extends Component {
         allowClear
         optionFilterProp="children"
         style={{ width: 160 }}
+        value={this.props.listFilter.partnerId}
         onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}

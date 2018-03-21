@@ -5,7 +5,7 @@ import globalMessages from 'client/common/root.i18n';
 const messages = defineMessages({
   searchPlaceholder: {
     id: 'cms.billing.search',
-    defaultMessage: '委托编号/提运单号',
+    defaultMessage: '委托编号/提运单号/客户单号/报关单号',
   },
   payableExpense: {
     id: 'cms.billing.payable',

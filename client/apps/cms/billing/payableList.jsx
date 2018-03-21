@@ -37,6 +37,7 @@ function fetchData({ state, dispatch }) {
     filter: JSON.stringify({
       status: 'submitted',
       mode: 'payable',
+      partnerId: 'all',
     }),
     pageSize: state.cmsExpense.expensesList.pageSize,
     current: state.cmsExpense.expensesList.current,
@@ -260,7 +261,7 @@ export default class PayableExpenseList extends Component {
     this.setState({ importFeesModalVisible: !this.state.importFeesModalVisible });
   }
   handleDateChange = (data, dataString) => {
-    const filter = { ...this.props.filter, startDate: dataString[0], endDate: dataString[1] };
+    const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
     this.handleExpensesLoad(1, filter);
   }
   handleGenTemplate = () => {
@@ -321,6 +322,10 @@ export default class PayableExpenseList extends Component {
     const filter = { ...this.props.listFilter, searchText: value };
     this.handleExpensesLoad(1, filter);
   }
+  handleClientSelectChange = (value) => {
+    const filter = { ...this.props.listFilter, partnerId: value };
+    this.handleExpensesLoad(1, filter);
+  }
   showImportLogs = (ev) => {
     if (ev.key === 'logs') {
       this.props.togglePanelVisible(true);
@@ -363,6 +368,7 @@ export default class PayableExpenseList extends Component {
         optionFilterProp="children"
         style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
+        value={this.props.listFilter.partnerId}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >

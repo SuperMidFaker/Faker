@@ -100,7 +100,10 @@ export default class SettingPane extends Component {
               <FormItem label="允许特殊费用" {...formItemLayout}>
                 {getFieldDecorator('special_fee_allowed', {
                   initialValue: formData.special_fee_allowed || false,
-                })(<Checkbox disabled={readOnly} />)}
+                })(<Checkbox
+                  disabled={readOnly}
+                  defaultChecked={!!formData.special_fee_allowed}
+                />)}
               </FormItem>
             </Col>
           </Row>
