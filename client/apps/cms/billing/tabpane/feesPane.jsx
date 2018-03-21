@@ -90,7 +90,6 @@ export default class ExpenseDetailTabPane extends Component {
       if (this.state.editItem.id === record.id) {
         return (<Input
           size="small"
-          type="number"
           value={this.state.editItem.orig_amount}
           onChange={e => this.handleColumnChange(e.target.value, 'orig_amount')}
         />);
@@ -133,7 +132,6 @@ export default class ExpenseDetailTabPane extends Component {
       if (this.state.editItem.id === record.id) {
         return (<Input
           size="small"
-          type="number"
           value={this.state.editItem.exchange_rate}
           onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate')}
         />);
@@ -164,7 +162,6 @@ export default class ExpenseDetailTabPane extends Component {
       if (this.state.editItem.id === record.id) {
         return (<Input
           size="small"
-          type="number"
           addonAfter="%"
           value={this.state.editItem.tax_rate}
           onChange={e => this.handleColumnChange(e.target.value, 'tax_rate')}
@@ -181,7 +178,6 @@ export default class ExpenseDetailTabPane extends Component {
       if (this.state.editItem.id === record.id) {
         return (<Input
           size="small"
-          type="number"
           value={this.state.editItem.tax}
           onChange={e => this.handleColumnChange(e.target.value, 'tax')}
         />);
@@ -252,10 +248,13 @@ export default class ExpenseDetailTabPane extends Component {
         editOne.base_amount = editOne.orig_amount;
       }
     }
-    if (field === 'currency') {
-      editOne[field] = value;
+    if (field === 'orig_amount' || field === 'exchange_rate' || field === 'tax_rate' || field === 'tax') {
+      const data = parseFloat(value);
+      if (!Number.isNaN(data)) {
+        editOne[field] = data;
+      }
     } else {
-      editOne[field] = Number(value) ? Number(value) : value;
+      editOne[field] = value;
     }
     this.setState({
       editItem: editOne,

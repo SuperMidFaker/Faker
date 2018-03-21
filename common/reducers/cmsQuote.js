@@ -37,7 +37,6 @@ const initialState = {
   listFilter: {
     sortField: '',
     sortOrder: '',
-    status: 'all',
     viewStatus: 'clientQuote',
   },
   quotesLoading: false,
