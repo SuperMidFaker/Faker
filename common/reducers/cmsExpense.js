@@ -738,7 +738,7 @@ export function batchDeleteByUploadNo(uploadNo) {
         actionTypes.BATCH_DELETE_BY_UPLOADNO_SUCCEED,
         actionTypes.BATCH_DELETE_BY_UPLOADNO_FAIL,
       ],
-      endpoint: 'v1/cms/expense/batch/delete/by/uploadno',
+      endpoint: 'v1/cms/expense/unbilling/by/batchupload',
       method: 'post',
       data: { uploadNo },
     },
