@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Dropdown, Menu, Layout, Select, Tag, DatePicker } from 'antd';
+import { Button, Dropdown, Form, Menu, Layout, Select, Tag, DatePicker } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -366,18 +366,19 @@ export default class InvoiceList extends React.Component {
             onUploaded={this.invoicesUploaded}
             template={`${XLSX_CDN}/发票导入模板.xlsx`}
           >
-            <Select
-              placeholder="请选择客户"
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              onChange={this.handlePartnerChange}
-              dropdownMatchSelectWidth={false}
-              dropdownStyle={{ width: 360 }}
-              style={{ width: '100%' }}
-            >
-              {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-            </Select>
+            <Form.Item label="客户">
+              <Select
+                placeholder="请选择客户"
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                onChange={this.handlePartnerChange}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 360 }}
+              >
+                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+              </Select>
+            </Form.Item>
           </ImportDataPanel>
           <UploadLogsPanel
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}

@@ -109,7 +109,6 @@ export default class PayableExpenseList extends Component {
     }, {
       title: this.msg('sellerName'),
       dataIndex: 'seller_name',
-      width: 200,
     }, {
       title: this.msg('custOrderNo'),
       dataIndex: 'cust_order_no',
@@ -144,6 +143,7 @@ export default class PayableExpenseList extends Component {
       title: this.msg('receivableTotal'),
       dataIndex: 'total_charge',
       align: 'right',
+      width: 100,
       render: (o, record) => ((record.sum_svc_charge || 0) + (record.sum_adv_charge || 0) +
        (record.sum_spc_charge || 0)).toFixed(2),
     }, {
@@ -429,28 +429,28 @@ export default class PayableExpenseList extends Component {
             onUploaded={this.expensesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
-            <FormItem>
+            <FormItem label={this.msg('sellerName')}>
               {getFieldDecorator('partnerId', {
-                rules: [{ required: true, message: '服务商必选' }],
-              })(<Select
-                placeholder="请选择服务商"
-                showSearch
-                allowClear
-                optionFilterProp="children"
-                dropdownMatchSelectWidth={false}
-                dropdownStyle={{ width: 360 }}
-                style={{ width: '100%', marginBottom: 16 }}
-              >
-                {partners.map(pt => (
-                  <Option value={String(pt.id)} key={String(pt.id)}>
-                    {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                  </Option>))
-                }
-              </Select>)}
+                  rules: [{ required: true, message: '服务商必选' }],
+                })(<Select
+                  placeholder="请选择服务商"
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 360 }}
+                  style={{ width: '100%' }}
+                >
+                  {partners.map(pt => (
+                    <Option value={String(pt.id)} key={String(pt.id)}>
+                      {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+                    </Option>))
+                  }
+                </Select>)}
             </FormItem>
             <FormItem>
               {getFieldDecorator('withExpenseFees', {
-              })(<Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>)}
+                })(<Checkbox style={{ width: '100%' }}>模板包含待计费数据</Checkbox>)}
             </FormItem>
           </ImportDataPanel>
           <UploadLogsPanel

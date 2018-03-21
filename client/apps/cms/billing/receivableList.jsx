@@ -106,7 +106,6 @@ export default class ReceivableExpenseList extends Component {
     }, {
       title: this.msg('buyerName'),
       dataIndex: 'buyer_name',
-      width: 200,
     }, {
       title: this.msg('custOrderNo'),
       dataIndex: 'cust_order_no',
@@ -141,6 +140,7 @@ export default class ReceivableExpenseList extends Component {
       title: this.msg('receivableTotal'),
       dataIndex: 'total_charge',
       align: 'right',
+      width: 100,
       render: (o, record) => ((record.sum_svc_charge || 0) + (record.sum_adv_charge || 0) +
        (record.sum_spc_charge || 0)).toFixed(2),
     }, {
@@ -190,9 +190,9 @@ export default class ReceivableExpenseList extends Component {
     }, {
       title: this.gmsg('actions'),
       dataIndex: 'OPS_COL',
-      align: 'right',
       fixed: 'right',
       width: 120,
+      className: 'table-col-ops',
       render: (o, record) => {
         if (record.exp_status < 3) {
           return <RowAction icon="form" onClick={this.handleDetail} label="应收明细" row={record} />;
@@ -424,29 +424,31 @@ export default class ReceivableExpenseList extends Component {
             onUploaded={this.expensesUploaded}
             onGenTemplate={this.handleGenTemplate}
           >
-            <FormItem>
-              {getFieldDecorator('partnerId', {
-                rules: [{ required: true, message: '委托方必选' }],
-              })(<Select
-                placeholder="请选择委托方"
-                showSearch
-                allowClear
-                optionFilterProp="children"
-                dropdownMatchSelectWidth={false}
-                dropdownStyle={{ width: 360 }}
-                style={{ width: '100%', marginBottom: 16 }}
-              >
-                {partners.map(pt => (
-                  <Option value={String(pt.id)} key={String(pt.id)}>
-                    {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                  </Option>))
-                }
-              </Select>)}
-            </FormItem>
-            <FormItem>
-              {getFieldDecorator('withExpenseFees', {
-              })(<Checkbox style={{ width: '100%', marginBottom: 16 }}>包含待计费数据</Checkbox>)}
-            </FormItem>
+            <Form>
+              <FormItem label={this.msg('buyerName')}>
+                {getFieldDecorator('partnerId', {
+                  rules: [{ required: true, message: '委托方必选' }],
+                })(<Select
+                  placeholder="请选择委托方"
+                  showSearch
+                  allowClear
+                  optionFilterProp="children"
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 360 }}
+                  style={{ width: '100%' }}
+                >
+                  {partners.map(pt => (
+                    <Option value={String(pt.id)} key={String(pt.id)}>
+                      {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+                    </Option>))
+                  }
+                </Select>)}
+              </FormItem>
+              <FormItem>
+                {getFieldDecorator('withExpenseFees', {
+                })(<Checkbox>模板包含待计费数据</Checkbox>)}
+              </FormItem>
+            </Form>
           </ImportDataPanel>
           <UploadLogsPanel
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
