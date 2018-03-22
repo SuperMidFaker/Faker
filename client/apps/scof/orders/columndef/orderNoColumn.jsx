@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Col, Icon, Popover } from 'antd';
 import { loadOrderDetail } from 'common/reducers/sofOrders';
+import Ellipsis from 'client/components/Ellipsis';
 
 @connect(
   state => ({
@@ -40,7 +41,7 @@ export default class OrderNoColumn extends React.Component {
             >
               {order.shipmt_order_no}
             </a>
-            <div>{order.customer_name}</div>
+            <div><Ellipsis length={16}>{order.customer_name}</Ellipsis></div>
             <div className="mdc-text-grey">{order.cust_order_no} {order.cust_invoice_no && <Popover placement="right" content={content}><Icon type="caret-right" /></Popover>}</div>
           </Col>
         </Row>
