@@ -208,7 +208,7 @@ export default class ItemMasterPane extends React.Component {
     };
 
     return (
-      <FormPane fullscreen={this.props.fullscreen}>
+      <FormPane >
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col span={6}>

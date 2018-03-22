@@ -2,14 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { intlShape, injectIntl } from 'react-intl';
+// import { intlShape, injectIntl } from 'react-intl';
 import { Tag, Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { loadPackDetails } from 'common/reducers/cwmOutbound';
 
 
-@injectIntl
+// @injectIntl
 @connect(
   state => ({
     reload: state.cwmOutbound.outboundReload,
@@ -19,7 +19,7 @@ import { loadPackDetails } from 'common/reducers/cwmOutbound';
 )
 export default class PackingDetailsPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
   }
   state = {
@@ -67,29 +67,17 @@ export default class PackingDetailsPane extends React.Component {
     title: '库别',
     dataIndex: 'virtual_whse',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
+    render: o => o && <Tag>{o}</Tag>,
   }, {
     title: '复核装箱人员',
     width: 100,
     dataIndex: 'chkpacked_by',
-    render: (o) => {
-      if (o) {
-        return (<div><Icon type="user" />{o}</div>);
-      }
-    },
+    render: o => o && <div><Icon type="user" />{o}</div>,
   }, {
     title: '复核装箱时间',
     width: 100,
     dataIndex: 'created_date',
-    render: (o) => {
-      if (o) {
-        return (<div>{moment(o).format('MM.DD HH:mm')}</div>);
-      }
-    },
+    render: o => o && <div>{moment(o).format('MM.DD HH:mm')}</div>,
   }]
   render() {
     const { packDetails } = this.props;
@@ -108,7 +96,7 @@ export default class PackingDetailsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}

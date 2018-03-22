@@ -87,7 +87,11 @@ ColumnSelect.propTypes = {
   record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
-  options: PropTypes.arrayOf(PropTypes.shape({ search: PropTypes.string })).isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string,
+    value: PropTypes.string,
+    key: PropTypes.string,
+  })).isRequired,
 };
 
 function ColumnSearchSelect(props) {
@@ -1060,7 +1064,7 @@ export default class ManifestBodyPane extends React.Component {
 
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         rowSelection={rowSelection}
         bordered

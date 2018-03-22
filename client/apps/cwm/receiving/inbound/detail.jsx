@@ -54,7 +54,6 @@ export default class ReceiveInbound extends Component {
   }
   state = {
     activeTab: '',
-
     entryRegs: [],
   }
   componentDidMount() {
@@ -221,16 +220,10 @@ export default class ReceiveInbound extends Component {
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
                 <TabPane tab="收货明细" key="receiveDetails">
-                  <ReceiveDetailsPane
-                    inboundNo={this.props.params.inboundNo}
-
-                  />
+                  <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
                 </TabPane>
                 <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
-                  <PutawayDetailsPane
-                    inboundNo={this.props.params.inboundNo}
-
-                  />
+                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
                 </TabPane>
               </Tabs>
             </MagicCard>

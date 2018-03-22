@@ -11,7 +11,7 @@ import BulkActions from './bulkActions';
 export default class DataPane extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-pane',
-    scrollOffset: 470,
+    scrollOffset: 480,
   }
   static propTypes = {
     baseCls: PropTypes.string,
@@ -43,7 +43,7 @@ export default class DataPane extends React.Component {
         });
       } else {
         this.setState({
-          scrollY: window.innerHeight - 200,
+          scrollY: window.innerHeight - 198,
         });
       }
     }

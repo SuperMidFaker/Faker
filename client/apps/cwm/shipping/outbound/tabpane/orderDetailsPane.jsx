@@ -361,7 +361,7 @@ export default class OrderDetailsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}

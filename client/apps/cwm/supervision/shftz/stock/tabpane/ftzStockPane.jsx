@@ -178,9 +178,12 @@ export default class FTZStockPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys}
-        dataSource={this.props.cusStockSnapshot} rowKey="id"
+      <DataPane
+        columns={this.columns}
+        rowSelection={rowSelection}
+        selectedRowKeys={this.state.selectedRowKeys}
+        dataSource={this.props.cusStockSnapshot}
+        rowKey="id"
       />
     );
   }

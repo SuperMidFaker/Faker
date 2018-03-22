@@ -191,7 +191,7 @@ export default class DutyTaxPane extends React.Component {
     }];
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         scrollOffset={312}
         dataSource={this.state.dataSource}

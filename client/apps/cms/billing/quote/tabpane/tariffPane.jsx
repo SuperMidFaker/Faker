@@ -284,7 +284,7 @@ export default class TariffPane extends Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         rowSelection={rowSelection}
         dataSource={fees}

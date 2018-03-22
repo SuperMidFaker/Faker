@@ -544,9 +544,7 @@ export default class ManifestEditor extends React.Component {
           <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
             <MagicCard
               bodyStyle={{ padding: 0 }}
-
               loading={this.props.manifestSpinning}
-
             >
               <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
                 {tabs}

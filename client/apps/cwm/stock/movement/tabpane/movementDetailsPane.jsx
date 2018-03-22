@@ -5,15 +5,16 @@ import { Modal, Button, Input } from 'antd';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import connectNav from 'client/common/decorators/connect-nav';
-import { intlShape, injectIntl } from 'react-intl';
-import SKUPopover from '../../../common/popover/skuPopover';
-import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
-import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail } from 'common/reducers/cwmMovement';
+// import { intlShape, injectIntl } from 'react-intl';
+import { loadMovementDetails, executeMovement, loadMovementHead,
+  removeMoveDetail, cancelMovement, updateMovementDetail } from 'common/reducers/cwmMovement';
+import SKUPopover from '../../../common/popover/skuPopover';
+import TraceIdPopover from '../../../common/popover/traceIdPopover';
 
 
-@injectIntl
+// @injectIntl
 @connect(
   state => ({
     loginId: state.account.loginId,
@@ -24,7 +25,12 @@ import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetai
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   {
-    loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail,
+    loadMovementDetails,
+    executeMovement,
+    loadMovementHead,
+    removeMoveDetail,
+    cancelMovement,
+    updateMovementDetail,
   }
 )
 @connectNav({
@@ -33,9 +39,8 @@ import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetai
 })
 export default class MovementDetailsPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
     movementNo: PropTypes.string.isRequired,
-    movementHead: PropTypes.object.isRequired,
     updateMovementDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -43,8 +48,6 @@ export default class MovementDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    selectedRows: [],
-    confirmDisabled: true,
   }
   componentWillMount() {
     this.handleReload();
@@ -70,7 +73,11 @@ export default class MovementDetailsPane extends React.Component {
         }
       });
     } else {
-      this.props.removeMoveDetail(movementNo, this.state.selectedRowKeys, username).then((result) => {
+      this.props.removeMoveDetail(
+        movementNo,
+        this.state.selectedRowKeys,
+        username
+      ).then((result) => {
         if (!result.err) {
           this.props.loadMovementDetails(this.props.movementNo);
         }
@@ -99,17 +106,19 @@ export default class MovementDetailsPane extends React.Component {
     });
   }
   handleExecuteMovement = () => {
-    const props = this.props;
-    const toTraceIds = props.movementDetails.map(md => md.to_trace_id);
+    const {
+      movementDetails, movementNo, username, defaultWhse,
+    } = this.props;
+    const toTraceIds = movementDetails.map(md => md.to_trace_id);
     Modal.confirm({
       title: '是否确认库存移动已完成?',
       onOk() {
-        props.executeMovement(
-          props.movementNo, toTraceIds,
-          props.username, props.defaultWhse.code
+        this.props.executeMovement(
+          movementNo, toTraceIds,
+          username, defaultWhse.code
         ).then((result) => {
           if (!result.err) {
-            props.loadMovementHead(props.movementNo);
+            this.props.loadMovementHead(movementNo);
           }
         });
       },
@@ -157,7 +166,10 @@ export default class MovementDetailsPane extends React.Component {
       if (this.props.movementHead.isdone) {
         return o;
       }
-      return <Input defaultValue={o} onBlur={e => this.handleUpdateToLocation(row.id, e.target.value)} />;
+      return (<Input
+        defaultValue={o}
+        onBlur={e => this.handleUpdateToLocation(row.id, e.target.value)}
+      />);
     },
   }, {
     title: '操作',
@@ -174,7 +186,7 @@ export default class MovementDetailsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -184,10 +196,14 @@ export default class MovementDetailsPane extends React.Component {
       >
         <DataPane.Toolbar>
           <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
-            {this.state.selectedRowKeys.length > 0 && (<Button onClick={this.handleBatchDetailRemove}>
-              <MdIcon type="check-all" />批量移除明细
-            </Button>)}
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
+            {this.state.selectedRowKeys.length > 0 &&
+              (<Button onClick={this.handleBatchDetailRemove}>
+                <MdIcon type="check-all" />批量移除明细
+              </Button>)}
           </DataPane.BulkActions>
           <DataPane.Actions>
             {mode === 'manual' && movementHead.isdone === 0 &&

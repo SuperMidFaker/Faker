@@ -697,7 +697,6 @@ export default class SHFTZEntryDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }}>
               <DataPane
                 header="备案明细"
-
                 columns={this.columns}
                 rowSelection={rowSelection}
                 indentSize={0}

@@ -34,8 +34,8 @@ const formItemLayout = {
 export default class ImportRulesPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object,
-    formData: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    formData: PropTypes.shape({ rule_g_name: PropTypes.string }).isRequired,
   }
   state = {
     specialCode: this.props.formData.set_special_code === 1,
@@ -66,7 +66,7 @@ export default class ImportRulesPane extends Component {
     } = this.props;
     const { specialCode } = this.state;
     return (
-      <FormPane fullscreen={this.props.fullscreen}>
+      <FormPane >
         <FormItem>{getFieldDecorator('set_special_code')(<Switch checked={specialCode} onChange={this.handleOnChange} checkedChildren="启用" unCheckedChildren="关闭" />)}
         </FormItem>
         <Card >

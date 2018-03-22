@@ -1,22 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Card } from 'antd';
+import { Card, Tabs } from 'antd';
 import ButtonToggle from '../ButtonToggle';
 import './style.less';
+
+const { TabPane } = Tabs;
 
 export default class MagicCard extends React.Component {
   static defaultProps = {
     // baseCls: 'welo-magic-card',
+  }
+  static propTypes = {
+    tabs: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string,
+      title: PropTypes.string,
+      content: PropTypes.node,
+    })),
+    activeTab: PropTypes.string,
   }
   static childContextTypes = {
     fullscreen: PropTypes.bool,
   }
   state = {
     fullscreen: false,
+    activeTab: this.props.activeTab,
   }
   getChildContext() {
     return { fullscreen: !this.state.fullscreen };
+  }
+  handleTabChange = (key) => {
+    this.setState({ activeTab: key });
   }
   toggleFullscreen = () => {
     this.setState({
@@ -24,7 +38,7 @@ export default class MagicCard extends React.Component {
     });
   }
   render() {
-    const { children } = this.props;
+    const { tabs, children } = this.props;
     const { fullscreen } = this.state;
     const classes = classNames('welo-magic-card', {
       'welo-magic-card-fullscreen': fullscreen,
@@ -40,6 +54,11 @@ export default class MagicCard extends React.Component {
             onClick={this.toggleFullscreen}
           />
         </div>
+        {tabs &&
+          <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
+            {tabs.map(tab => <TabPane tab={tab.title} key={tab.key} >{tab.content}</TabPane>)}
+          </Tabs>
+        }
         {children}
       </Card>
     );
