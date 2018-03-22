@@ -26,7 +26,7 @@ const { Content } = Layout;
   }
 )
 
-export default class LineFileAdapterList extends React.Component {
+export default class BillTemplates extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
