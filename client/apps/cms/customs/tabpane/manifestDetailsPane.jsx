@@ -53,7 +53,7 @@ function calculateTotal(bodies, currencies) {
 export default class ManifestDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    billDetails: PropTypes.array.isRequired,
+    billDetails: PropTypes.arrayOf(PropTypes.shape({ cop_g_no: PropTypes.string })).isRequired,
   }
   constructor(props) {
     super(props);
@@ -192,7 +192,7 @@ export default class ManifestDetailsPane extends React.Component {
     }];
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         bordered
         scrollOffset={312}

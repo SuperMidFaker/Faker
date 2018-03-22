@@ -36,9 +36,6 @@ export default class EditInvoice extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    fullscreen: true,
-  }
   componentWillMount() {
     this.props.getInvoice(this.props.params.invoiceNo).then((result) => {
       if (!result.error) {
@@ -53,9 +50,6 @@ export default class EditInvoice extends Component {
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleSave = () => {
     const { temporaryDetails, partners, invoiceHead } = this.props;
     const { packageType } = this.state;
@@ -118,7 +112,7 @@ export default class EditInvoice extends Component {
                   <DetailsPane
                     form={form}
                     invoiceNo={this.props.params.invoiceNo}
-                    fullscreen={this.state.fullscreen}
+
                   />
                 </TabPane>
               </Tabs>

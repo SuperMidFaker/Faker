@@ -21,7 +21,7 @@ function ColumnInput(props) {
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
 };
@@ -40,8 +40,7 @@ ColumnInput.propTypes = {
 export default class ContainersPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    containers: PropTypes.array,
-    billHead: PropTypes.object,
+    containers: PropTypes.arrayOf(PropTypes.shape({ container_id: PropTypes.string })),
   }
   state = {
     datas: [],
@@ -132,7 +131,7 @@ export default class ContainersPane extends React.Component {
     }];
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         bordered
         scrollOffset={312}

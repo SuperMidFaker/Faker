@@ -81,7 +81,6 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   state = {
     tabKey: '',
-    fullscreen: true,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
@@ -138,9 +137,6 @@ export default class SHFTZTransferOutDetail extends Component {
         });
       }
     });
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   columns = [{
     title: '行号',
@@ -374,7 +370,7 @@ export default class SHFTZTransferOutDetail extends Component {
           </Drawer>
           <Content className="page-content">
             {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   let { details } = reg;
@@ -404,7 +400,7 @@ export default class SHFTZTransferOutDetail extends Component {
                   return (
                     <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
                       <DataPane
-                        fullscreen={this.state.fullscreen}
+
                         columns={this.columns}
                         rowSelection={rowSelection}
                         indentSize={8}

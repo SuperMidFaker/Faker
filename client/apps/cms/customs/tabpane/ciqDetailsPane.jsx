@@ -29,7 +29,7 @@ import { formatMsg } from '../message.i18n';
 export default class CiqDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    filterProducts: PropTypes.array.isRequired,
+    filterProducts: PropTypes.arrayOf(PropTypes.shape({ g_no: PropTypes.string })).isRequired,
   }
   msg = formatMsg(this.props.intl)
   render() {
@@ -168,7 +168,7 @@ export default class CiqDetailsPane extends React.Component {
     }];
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         bordered
         scrollOffset={312}

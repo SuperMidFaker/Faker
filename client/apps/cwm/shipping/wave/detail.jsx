@@ -42,9 +42,6 @@ export default class WaveDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    fullscreen: true,
-  }
   componentWillMount() {
     this.props.loadWaveHead(this.props.params.waveNo);
   }
@@ -54,9 +51,6 @@ export default class WaveDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleRelease = () => {
     this.props.releaseWave(this.props.params.waveNo);
   }
@@ -103,18 +97,18 @@ export default class WaveDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="orderDetails">
               <TabPane tab="发货明细" key="orderDetails">
                 <OrderDetailsPane
                   waveNo={this.props.params.waveNo}
-                  fullscreen={this.state.fullscreen}
+
                 />
               </TabPane>
               <TabPane tab="订单列表" key="orderList">
                 <OrderListPane
                   waveNo={this.props.params.waveNo}
-                  fullscreen={this.state.fullscreen}
+
                 />
               </TabPane>
             </Tabs>

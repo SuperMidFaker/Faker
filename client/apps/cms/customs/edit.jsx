@@ -96,7 +96,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   state = {
     collapsed: true,
-    fullscreen: true,
+
   }
   componentDidMount() {
     let script;
@@ -130,9 +130,6 @@ export default class CustomsDeclEditor extends React.Component {
     this.setState({
       collapsed: !this.state.collapsed,
     });
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   handleManifestVisit = () => {
     const { params, billMeta } = this.props;
@@ -340,24 +337,24 @@ export default class CustomsDeclEditor extends React.Component {
         ietype={params.ietype}
         data={bodies}
         headNo={head.id}
-        fullscreen={this.state.fullscreen}
+
       />
     </TabPane>);
     tabs.push(<TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
-      <ContainersPane fullscreen={this.state.fullscreen} />
+      <ContainersPane />
     </TabPane>);
     tabs.push(<TabPane tab="随附单证" key="attachedCerts" head={head}>
-      <AttachedCertsPane fullscreen={this.state.fullscreen} />
+      <AttachedCertsPane />
     </TabPane>);
     tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
-      <AttachedDocsPane fullscreen={this.state.fullscreen} />
+      <AttachedDocsPane />
     </TabPane>);
     tabs.push(<TabPane tab="预估税金" key="dutyTax">
-      <DutyTaxPane fullscreen={this.state.fullscreen} head={head} />
+      <DutyTaxPane head={head} />
     </TabPane>);
     /*
     tabs.push(<TabPane tab="报关清单明细" key="manifestDetails" head={head}>
-      <ManifestDetailsPane fullscreen={this.state.fullscreen} />
+      <ManifestDetailsPane  />
     </TabPane>);
     let filterProducts = [];
     if (params.ietype === 'import') {
@@ -367,7 +364,7 @@ export default class CustomsDeclEditor extends React.Component {
     }
     if (filterProducts.length > 0) {
       tabs.push(<TabPane tab="法检商品" key="ciqDetails">
-        <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
+        <CiqDetailsPane filterProducts={filterProducts}  />
       </TabPane>);
     }
     */
@@ -417,7 +414,7 @@ export default class CustomsDeclEditor extends React.Component {
           <MagicCard
             bodyStyle={{ padding: 0 }}
             loading={this.props.declSpinning}
-            onSizeChange={this.toggleFullscreen}
+
           >
             <Tabs defaultActiveKey="header">
               {tabs}

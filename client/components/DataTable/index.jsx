@@ -136,6 +136,11 @@ class DataTable extends React.Component {
       });
     }
   }
+  componentDidMount() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.onResize, false);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (!this.isSameColumns(nextProps.columns, this.props.columns)) {
       const tableColumns = nextProps.columns.map((column, index) => ({
@@ -156,6 +161,16 @@ class DataTable extends React.Component {
     }
     if (nextProps.scrollOffset !== this.props.scrollOffset) {
       this.setState({ scrollY: window.innerHeight - nextProps.scrollOffset });
+    }
+  }
+  componentWillUnmount() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.onResize);
+    }
+  }
+  onResize = () => {
+    if (typeof window !== 'undefined') {
+      this.setState({ scrollY: window.innerHeight - this.props.scrollOffset });
     }
   }
   isSameColumns = (nextColumns, currColumns) => {

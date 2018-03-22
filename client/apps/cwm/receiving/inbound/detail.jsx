@@ -54,7 +54,6 @@ export default class ReceiveInbound extends Component {
   }
   state = {
     activeTab: '',
-    fullscreen: true,
     entryRegs: [],
   }
   componentDidMount() {
@@ -85,9 +84,6 @@ export default class ReceiveInbound extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleReceivingModeChange = (ev) => {
     this.props.updateInboundMode(this.props.params.inboundNo, { rec_mode: ev.target.value });
   }
@@ -221,19 +217,13 @@ export default class ReceiveInbound extends Component {
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
                 <TabPane tab="收货明细" key="receiveDetails">
-                  <ReceiveDetailsPane
-                    inboundNo={this.props.params.inboundNo}
-                    fullscreen={this.state.fullscreen}
-                  />
+                  <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
                 </TabPane>
                 <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
-                  <PutawayDetailsPane
-                    inboundNo={this.props.params.inboundNo}
-                    fullscreen={this.state.fullscreen}
-                  />
+                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
                 </TabPane>
               </Tabs>
             </MagicCard>

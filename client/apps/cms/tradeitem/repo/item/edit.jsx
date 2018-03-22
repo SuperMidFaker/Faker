@@ -56,13 +56,7 @@ export default class TradeItemEdit extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    fullscreen: true,
-  }
   msg = formatMsg(this.props.intl)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleConfirm = () => {
     const { itemData, form } = this.props;
     const values = form.getFieldsValue();
@@ -128,11 +122,11 @@ export default class TradeItemEdit extends Component {
       <ItemMasterPane action="edit" form={form} itemData={itemData} />
     </TabPane>);
     tabs.push(<TabPane tab={this.msg('tabPermit')} key="permit">
-      <ItemPermitPane fullscreen={this.state.fullscreen} itemId={params.id} />
+      <ItemPermitPane itemId={params.id} />
     </TabPane>);
     tabs.push(<TabPane tab={this.msg('tabHistory')} key="history">
       <ItemHistoryPane
-        fullscreen={this.state.fullscreen}
+
         repoId={params.repoId}
         copProdNo={itemData.cop_product_no}
       />
@@ -158,7 +152,7 @@ export default class TradeItemEdit extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            onSizeChange={this.toggleFullscreen}
+
           >
             <Tabs defaultActiveKey="master">
               {tabs}

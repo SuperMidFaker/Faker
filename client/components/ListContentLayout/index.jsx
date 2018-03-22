@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Icon, Menu, Layout, Table } from 'antd';
+import classNames from 'classnames';
 import SearchBox from 'client/components/SearchBox';
 import './style.less';
 
@@ -108,6 +109,10 @@ export default class ListContentLayout extends PureComponent {
     const {
       children, list, listWidth, action, extra, onSearch, stack, onMenuClick, defaultSelectedKey,
     } = this.props;
+    const cls = classNames('list-column-body', {
+      'list-column-body-has-search': onSearch,
+      'list-column-body-has-extra': extra,
+    });
     return (
       <Layout>
         <Sider
@@ -130,7 +135,7 @@ export default class ListContentLayout extends PureComponent {
               width="100%"
             />
           </div>}
-          <div className={`list-column-body ${onSearch && 'list-column-body-has-search'} ${extra && 'list-column-body-has-extra'}`}>
+          <div className={cls}>
             {list}
             {stack &&
             <Menu defaultSelectedKeys={[defaultSelectedKey]} onClick={onMenuClick}>

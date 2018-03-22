@@ -141,7 +141,7 @@ export default class TradeItemFork extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="master">
               {tabs}
             </Tabs>

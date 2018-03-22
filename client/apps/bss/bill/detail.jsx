@@ -87,7 +87,7 @@ export default class ReceivableBillDetail extends Component {
             </Row>
           </Drawer>
           <Content className="page-content">
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="statements" onChange={this.handleTabChange}>
                 <TabPane tab="账单明细" key="statements" >
                   <StatementsPane />

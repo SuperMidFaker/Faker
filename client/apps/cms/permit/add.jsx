@@ -82,7 +82,7 @@ export default class PermitAdd extends Component {
           <MagicCard
             bodyStyle={{ padding: 0 }}
 
-            onSizeChange={this.toggleFullscreen}
+
           >
             <Tabs defaultActiveKey="head">
               {tabs}

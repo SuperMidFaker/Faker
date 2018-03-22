@@ -78,13 +78,9 @@ export default class SHFTZTransferSelfDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    fullscreen: true,
     searchVal: null,
   }
   msg = key => formatMsg(this.props.intl, key)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -404,12 +400,12 @@ export default class SHFTZTransferSelfDetail extends Component {
           <Content className="page-content">
             <MagicCard
               bodyStyle={{ padding: 0 }}
-              onSizeChange={this.toggleFullscreen}
+
             >
               <Tabs defaultActiveKey="transitDetails">
                 <TabPane tab="转移明细" key="transitDetails">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}

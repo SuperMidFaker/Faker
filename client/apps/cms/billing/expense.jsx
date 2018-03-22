@@ -45,14 +45,8 @@ export default class ExpenseDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    fullscreen: true,
-  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   render() {
     const {
       params, aspect, delgExpenses, expensesLoading,
@@ -80,12 +74,12 @@ export default class ExpenseDetail extends Component {
       <div>
         <PageHeader breadcrumb={[this.msg('expenseDetail'), params.delgNo]} />
         <Content className="page-content">
-          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey={defaultActiveKey}>
               {aspect !== 0 &&
               <TabPane tab="应收明细" key="receivable" >
                 <FeesPane
-                  fullscreen={this.state.fullscreen}
+
                   loading={expensesLoading}
                   expense={delgExpenses.receive}
                 />
@@ -97,7 +91,7 @@ export default class ExpenseDetail extends Component {
                   key={`payable-${pay.seller_partner_id}`}
                 >
                   <FeesPane
-                    fullscreen={this.state.fullscreen}
+
                     loading={expensesLoading}
                     expense={pay}
                   />

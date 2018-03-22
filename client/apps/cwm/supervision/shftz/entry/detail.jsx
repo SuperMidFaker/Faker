@@ -93,7 +93,7 @@ export default class SHFTZEntryDetail extends Component {
     selectedRowKeys: [],
     sendable: false,
     queryable: false,
-    fullscreen: true,
+
     alertInfo: '',
     tabKey: '',
     nonCargono: false,
@@ -380,9 +380,6 @@ export default class SHFTZEntryDetail extends Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   handleViewChange = (ev) => {
     const { reg } = this.state;
@@ -697,10 +694,9 @@ export default class SHFTZEntryDetail extends Component {
           </Drawer>
           <Content className="page-content">
             {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <DataPane
                 header="备案明细"
-                fullscreen={this.state.fullscreen}
                 columns={this.columns}
                 rowSelection={rowSelection}
                 indentSize={0}

@@ -41,13 +41,7 @@ export default class CiqDeclEdit extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    fullscreen: true,
-  }
   msg = formatMsg(this.props.intl)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleCusDeclVisit = () => {
     const { ciqDeclHead } = this.props;
     const ie = this.context.router.params.ioType === 'in' ? 'import' : 'export';
@@ -82,7 +76,7 @@ export default class CiqDeclEdit extends React.Component {
       <CiqDeclHeadPane ioType={this.props.params.ioType} form={form} />
     </TabPane>);
     tabs.push(<TabPane tab={this.msg('goodsInfo')} key="body">
-      <CiqDeclGoodsPane ioType={this.props.params.ioType} fullscreen={this.state.fullscreen} />
+      <CiqDeclGoodsPane ioType={this.props.params.ioType} />
     </TabPane>);
     return (
       <Layout>
@@ -107,7 +101,7 @@ export default class CiqDeclEdit extends React.Component {
             bodyStyle={{ padding: 0 }}
 
             loading={this.props.declSpinning}
-            onSizeChange={this.toggleFullscreen}
+
           >
             <Tabs defaultActiveKey="header">
               {tabs}

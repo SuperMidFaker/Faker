@@ -92,7 +92,7 @@ export default class CusDeclHeadPane extends React.Component {
       </Col>
     </Row>);
     return (
-      <FormPane header={header} fullscreen={this.props.fullscreen} hideRequiredMark>
+      <FormPane header={header} hideRequiredMark>
         <Card >
           <Row>
             <Col span="8">

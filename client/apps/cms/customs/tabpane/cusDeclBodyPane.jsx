@@ -19,7 +19,7 @@ function ColumnInput(props) {
   return <span>{record[field] || ''}</span>;
 }
 ColumnInput.propTypes = {
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
   decimal: PropTypes.number,
 };
@@ -31,9 +31,13 @@ function ColumnSelect(props) {
   return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
 }
 ColumnSelect.propTypes = {
-  record: PropTypes.object.isRequired,
+  record: PropTypes.shape({ id: PropTypes.number }).isRequired,
   field: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string,
+    value: PropTypes.string,
+    key: PropTypes.string,
+  })).isRequired,
 };
 
 function calculateTotal(bodies, currencies) {
@@ -92,15 +96,8 @@ function calculateTotal(bodies, currencies) {
 export default class CusDeclBodyPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    data: PropTypes.array.isRequired,
+    data: PropTypes.arrayOf(PropTypes.shape({ g_no: PropTypes.string })).isRequired,
     headNo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    units: PropTypes.array,
-    countries: PropTypes.array,
-    currencies: PropTypes.array,
-    exemptions: PropTypes.array,
-    entryHead: PropTypes.object,
-    bodyItem: PropTypes.object,
-    bodyHscode: PropTypes.object,
   }
   constructor(props) {
     super(props);
@@ -406,7 +403,7 @@ export default class CusDeclBodyPane extends React.Component {
     const { totGrossWt, totWetWt, totTrade } = this.state;
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         bordered
         scrollOffset={312}

@@ -45,14 +45,7 @@ export default class SHFTZStockTask extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    fullscreen: true,
-  }
-
   msg = formatMsg(this.props.intl)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   render() {
     const { whse, task } = this.props;
     return (
@@ -75,18 +68,18 @@ export default class SHFTZStockTask extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="comparison">
               <TabPane tab="对比视图" key="comparison">
-                <ComaprisonPane fullscreen={this.state.fullscreen} />
+                <ComaprisonPane />
               </TabPane>
               <TabPane tab={<Badge count={task.diff_count}>差异视图</Badge>} key="discrepancy">
-                <DiscrepancyPane fullscreen={this.state.fullscreen} />
+                <DiscrepancyPane />
               </TabPane>
               <TabPane tab="海关库存数据" key="ftz">
                 <FTZStockPane
                   taskId={this.props.params.taskId}
-                  fullscreen={this.state.fullscreen}
+
                 />
               </TabPane>
             </Tabs>

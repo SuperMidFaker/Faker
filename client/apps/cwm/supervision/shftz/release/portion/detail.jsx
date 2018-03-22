@@ -87,7 +87,7 @@ export default class SHFTZRelDetail extends Component {
   }
   state = {
     reg: {},
-    fullscreen: true,
+
     origDecl: [],
     decl: [],
     view: 'splitted',
@@ -260,9 +260,6 @@ export default class SHFTZRelDetail extends Component {
   }
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   handleViewChange = (e) => {
     const { merged, reg } = this.state;
@@ -572,11 +569,11 @@ export default class SHFTZRelDetail extends Component {
           </Drawer>
           <Content className="page-content">
             {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="regDetails">
                 <TabPane tab="备案明细" key="regDetails">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}
@@ -603,7 +600,7 @@ export default class SHFTZRelDetail extends Component {
                 {regStatus >= CWM_SHFTZ_APIREG_STATUS.completed &&
                 <TabPane tab="集中报关" key="batchDecl">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.declColumns}
                     dataSource={decl}
                     rowKey="id"

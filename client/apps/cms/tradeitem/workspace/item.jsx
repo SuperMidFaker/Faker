@@ -83,7 +83,7 @@ export default class WorkItemPage extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-            onSizeChange={this.toggleFullscreen}
+
           >
             <Tabs defaultActiveKey="master">
               <TabPane tab="归类信息" key="master">

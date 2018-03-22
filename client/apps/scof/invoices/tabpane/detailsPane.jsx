@@ -268,7 +268,7 @@ export default class DetailsPane extends Component {
     }];
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}

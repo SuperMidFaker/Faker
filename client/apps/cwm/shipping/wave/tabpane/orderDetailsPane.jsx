@@ -1,7 +1,7 @@
 import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
-import { intlShape, injectIntl } from 'react-intl';
+// import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
@@ -9,7 +9,7 @@ import { openAllocatingModal } from 'common/reducers/cwmOutbound';
 import { loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 
 
-@injectIntl
+// @injectIntl
 @connect(
   state => ({
     loginId: state.account.loginId,
@@ -20,7 +20,7 @@ import { loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
     waveNo: PropType.string.isRequired,
   }
   state = {
@@ -46,11 +46,7 @@ export default class OrderDetailsPane extends React.Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
+    render: o => o && <Button>{o}</Button>,
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -89,7 +85,7 @@ export default class OrderDetailsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
