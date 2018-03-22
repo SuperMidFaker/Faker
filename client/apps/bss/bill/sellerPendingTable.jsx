@@ -12,7 +12,7 @@ import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadOrderStatements } from 'common/reducers/bssBill';
+import { loadOrderStatements } from 'common/reducers/bssStatement';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -22,14 +22,14 @@ const { Option } = Select;
 @injectIntl
 @connect(
   state => ({
-    orderStatementlist: state.bssBill.orderStatementlist,
-    listFilter: state.bssBill.listFilter,
-    loading: state.bssBill.loading,
+    orderStatementlist: state.bssStatement.orderStatementlist,
+    listFilter: state.bssStatement.listFilter,
+    loading: state.bssStatement.loading,
     partners: state.partner.partners,
   }),
   { loadOrderStatements, loadPartners }
 )
-export default class BuyerBills extends React.Component {
+export default class SellerPendingTable extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -64,17 +64,44 @@ export default class BuyerBills extends React.Component {
     dataIndex: 'cust_order_no',
   }, {
     title: '应付金额',
-    dataIndex: 'seller_settled_amount',
+    dataIndex: 'buyer_settled_amount',
     width: 150,
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
     width: 130,
   }]
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadOrderStatements(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      const filter = {
+        ...this.props.listFilter,
+        bill_type: 'sellerBill',
+      };
+      params.filter = JSON.stringify(filter);
+      return params;
+    },
+    remotes: this.props.orderStatementlist,
+  })
   handleOrdersLoad = (currentPage, filter) => {
     const { listFilter, orderStatementlist: { pageSize, current } } = this.props;
+    const filters = filter || listFilter;
+    filters.bill_type = 'sellerBill';
     this.props.loadOrderStatements({
-      filter: JSON.stringify(filter || listFilter),
+      filter: JSON.stringify(filters),
       pageSize,
       current: currentPage || current,
     }).then((result) => {
@@ -125,6 +152,7 @@ export default class BuyerBills extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    this.dataSource.remotes = orderStatementlist;
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
@@ -158,7 +186,7 @@ export default class BuyerBills extends React.Component {
         selectedRowKeys={this.state.selectedRowKeys}
         onDeselectRows={this.handleDeselectRows}
         columns={this.columns}
-        dataSource={orderStatementlist.data}
+        dataSource={this.dataSource}
         rowSelection={rowSelection}
         rowKey="sof_order_no"
         loading={loading}

@@ -23,7 +23,7 @@ const formItemLayout = {
   { toggleNewTemplateModal, createTemplate }
 )
 @Form.create()
-export default class NewTemplateModal extends React.Component {
+export default class StatementTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
