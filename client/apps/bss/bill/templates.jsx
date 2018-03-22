@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Layout, List, Card, message } from 'antd';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadBillTemplates, toggleNewTemplateModal } from 'common/reducers/bssBill';
+import { loadBillTemplates, toggleNewTemplateModal, deleteBillTemplates } from 'common/reducers/bssBill';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -22,7 +22,7 @@ const { Content } = Layout;
     reload: state.bssBill.templatesReload,
   }),
   {
-    toggleNewTemplateModal, loadBillTemplates, loadPartners,
+    toggleNewTemplateModal, loadBillTemplates, loadPartners, deleteBillTemplates,
   }
 )
 export default class BillTemplates extends React.Component {
@@ -64,6 +64,17 @@ export default class BillTemplates extends React.Component {
     const filter = { ...this.props.listFilter, searchText: value };
     this.handleTemplatesLoad(1, filter);
   }
+  handleEdit = (row) => {
+    const link = `/bss/bill/template/fees/${row.id}`;
+    this.context.router.push(link);
+  }
+  handleDelete = (row) => {
+    this.props.deleteBillTemplates({ ids: [row.id] }).then((result) => {
+      if (!result.error) {
+        this.handleTemplatesLoad(1);
+      }
+    });
+  }
   render() {
     const { billTemplatelist, listFilter } = this.props;
     const pagination = {
@@ -94,7 +105,7 @@ export default class BillTemplates extends React.Component {
             <Card bodyStyle={{ padding: 0 }} >
               <List
                 dataSource={this.props.billTemplatelist.data}
-                header={<SearchBox placeholder={this.msg('searchTip')} onSearch={this.handleSearch} />}
+                header={<SearchBox placeholder={this.msg('templateSearchTips')} onSearch={this.handleSearch} />}
                 pagination={pagination}
                 renderItem={item => (
                   <List.Item

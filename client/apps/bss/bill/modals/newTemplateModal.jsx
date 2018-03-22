@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message, Select } from 'antd';
-import { toggleNewTemplateModal, createTemplate } from 'common/reducers/bssBill';
+import { toggleNewTemplateModal, createTemplate, reloadTemplateList } from 'common/reducers/bssBill';
 import { formatMsg } from '../message.i18n';
 
 
@@ -20,13 +20,16 @@ const formItemLayout = {
     visible: state.bssBill.visibleNewTemplateModal,
     partners: state.partner.partners,
   }),
-  { toggleNewTemplateModal, createTemplate }
+  { toggleNewTemplateModal, createTemplate, reloadTemplateList }
 )
 @Form.create()
 export default class StatementTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
@@ -52,7 +55,9 @@ export default class StatementTemplate extends React.Component {
         message.error(result.error.message, 5);
       } else {
         this.props.toggleNewTemplateModal(false);
-        // open templateFee modal
+        this.props.reloadTemplateList();
+        const link = `/bss/bill/template/fees/${result.data}`;
+        this.context.router.push(link);
       }
     });
   }

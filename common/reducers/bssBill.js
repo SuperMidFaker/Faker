@@ -6,6 +6,11 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'RELOAD_TEMPLATE_LIST',
   'TOGGLE_NEW_TEMPLATE_MODAL',
   'CREATE_TEMPLATE', 'CREATE_TEMPLATE_SUCCEED', 'CREATE_TEMPLATE_FAIL',
+  'DELETE_TEMPLATES', 'DELETE_TEMPLATES_SUCCEED', 'DELETE_TEMPLATES_FAIL',
+  'LOAD_TEMPLATE_FEES', 'LOAD_TEMPLATE_FEES_SUCCEED', 'LOAD_TEMPLATE_FEES_FAIL',
+  'ADD_TEMPLATE_FEE', 'ADD_TEMPLATE_FEE_SUCCEED', 'ADD_TEMPLATE_FEE_FAIL',
+  'UPDATE_TEMPLATE_FEE', 'UPDATE_TEMPLATE_FEE_SUCCEED', 'UPDATE_TEMPLATE_FEE_FAIL',
+  'DELETE_TEMPLATE_FEES', 'DELETE_TEMPLATE_FEES_SUCCEED', 'DELETE_TEMPLATE_FEES_FAIL',
 ]);
 
 const initialState = {
@@ -19,6 +24,16 @@ const initialState = {
   },
   templatesReload: false,
   visibleNewTemplateModal: false,
+  templateFeelist: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  feeListLoading: false,
+  feeListFilter: {
+  },
+  templateId: null,
 };
 
 export default function reducer(state = initialState, action) {
@@ -26,7 +41,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILL_TEMPLATES:
       return {
         ...state,
-        templateReload: false,
+        templatesReload: false,
         templateListFilter: JSON.parse(action.params.filter),
       };
     case actionTypes.LOAD_BILL_TEMPLATES_SUCCEED:
@@ -35,6 +50,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleNewTemplateModal: action.data };
     case actionTypes.RELOAD_TEMPLATE_LIST:
       return { ...state, templatesReload: true };
+    case actionTypes.LOAD_TEMPLATE_FEES:
+      return {
+        ...state,
+        feeListFilter: JSON.parse(action.params.filter),
+        templateId: action.params.templateId,
+        feeListLoading: true,
+      };
+    case actionTypes.LOAD_TEMPLATE_FEES_SUCCEED:
+      return { ...state, feeListLoading: false, templateFeelist: action.result.data };
+    case actionTypes.LOAD_TEMPLATE_FEES_FAIL:
+      return { ...state, feeListLoading: false };
     default:
       return state;
   }
@@ -77,6 +103,81 @@ export function createTemplate(data) {
         actionTypes.CREATE_TEMPLATE_FAIL,
       ],
       endpoint: 'v1/bss/bill/template/create',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function deleteBillTemplates(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_TEMPLATES,
+        actionTypes.DELETE_TEMPLATES_SUCCEED,
+        actionTypes.DELETE_TEMPLATES_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/templates/delete',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadTemplateFees(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TEMPLATE_FEES,
+        actionTypes.LOAD_TEMPLATE_FEES_SUCCEED,
+        actionTypes.LOAD_TEMPLATE_FEES_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/template/fees/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function addTemplateFee(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_TEMPLATE_FEE,
+        actionTypes.ADD_TEMPLATE_FEE_SUCCEED,
+        actionTypes.ADD_TEMPLATE_FEE_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/template/fee/add',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function deleteTemplateFees(feeUids) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_TEMPLATE_FEES,
+        actionTypes.DELETE_TEMPLATE_FEES_SUCCEED,
+        actionTypes.DELETE_TEMPLATE_FEES_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/template/fees/delete',
+      method: 'post',
+      data: { feeUids },
+    },
+  };
+}
+
+export function updateTemplateFee(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_TEMPLATE_FEE,
+        actionTypes.UPDATE_TEMPLATE_FEE_SUCCEED,
+        actionTypes.UPDATE_TEMPLATE_FEE_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/template/fee/update',
       method: 'post',
       data,
     },
