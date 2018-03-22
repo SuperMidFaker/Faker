@@ -37,7 +37,6 @@ function fetchData({ dispatch, params }) {
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
-  jumpOut: true,
 })
 export default class ExpenseDetail extends Component {
   static propTypes = {
@@ -58,12 +57,23 @@ export default class ExpenseDetail extends Component {
     const {
       params, aspect, delgExpenses, expensesLoading,
     } = this.props;
+    const { location } = this.context.router;
     let defaultActiveKey;
-    if (window.location.search.indexOf('receivable') !== -1) {
+    if (location.query.from === 'receivable') {
+      if (aspect !== 0) {
+        defaultActiveKey = 'receivable';
+      }
+    } else if (location.query.from === 'payable') {
+      if (delgExpenses.pays.length === 0) {
+        if (aspect !== 0) {
+          defaultActiveKey = 'receivable';
+        }
+      } else {
+        defaultActiveKey = `payable-${delgExpenses.pays[0].seller_partner_id}`;
+      }
+    } else if (aspect !== 0) {
       defaultActiveKey = 'receivable';
-    } else if (delgExpenses.pays.length === 0) {
-      defaultActiveKey = '';
-    } else if (window.location.search.indexOf('payable') !== -1) {
+    } else if (delgExpenses.pays.length > 0) {
       defaultActiveKey = `payable-${delgExpenses.pays[0].seller_partner_id}`;
     }
     return (

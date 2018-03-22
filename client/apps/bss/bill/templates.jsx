@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Layout, List, Card, message } from 'antd';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadBillTemplates, toggleNewTemplateModal } from 'common/reducers/bssBill';
 import PageHeader from 'client/components/PageHeader';
@@ -25,7 +25,6 @@ const { Content } = Layout;
     toggleNewTemplateModal, loadBillTemplates, loadPartners,
   }
 )
-
 export default class BillTemplates extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -47,7 +46,6 @@ export default class BillTemplates extends React.Component {
     this.props.toggleNewTemplateModal(true);
     this.props.loadPartners({
       role: [PARTNER_ROLES.SUP, PARTNER_ROLES.CUS],
-      businessType: PARTNER_BUSINESSE_TYPES.clearance,
     });
   }
   handleTemplatesLoad = (currentPage, filter) => {
@@ -74,10 +72,10 @@ export default class BillTemplates extends React.Component {
       current: Number(billTemplatelist.current),
       total: billTemplatelist.total,
       showTotal: total => `共 ${total} 条`,
-      onChange: (page, pageSize) => {
+      onChange: (current, pageSize) => {
         this.props.loadBillTemplates({
           pageSize,
-          current: page,
+          current,
           filter: JSON.stringify(listFilter),
         });
       },
@@ -85,7 +83,7 @@ export default class BillTemplates extends React.Component {
     return (
       <Layout>
         <Layout>
-          <PageHeader title={this.msg('billTemplate')}>
+          <PageHeader title={this.msg('billStatementTemplateList')}>
             <PageHeader.Actions>
               <Button type="primary" icon="plus" onClick={this.handleCreateTemplate}>
                 {this.msg('newBillTemplate')}
@@ -102,15 +100,13 @@ export default class BillTemplates extends React.Component {
                   <List.Item
                     key={item.code}
                     actions={[
-                      <span>
-                        <RowAction onClick={this.handleEdit} icon="edit" row={item} />
-                        <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={item} />
-                      </span>,
+                      <RowAction onClick={this.handleEdit} icon="edit" row={item} key="edit" />,
+                      <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} key="delete" icon="delete" row={item} />,
                       ]}
                   >
                     <List.Item.Meta
                       title={item.name}
-                      description={item.settle_name}
+                      description={item.settle_name || '全局模板'}
                     />
                   </List.Item>)}
               />

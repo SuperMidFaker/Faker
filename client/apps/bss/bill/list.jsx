@@ -22,10 +22,7 @@ const { Content } = Layout;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
+    aspect: state.account.aspect,
   }),
   { }
 )
@@ -36,7 +33,6 @@ const { Content } = Layout;
 export default class BillList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -46,25 +42,19 @@ export default class BillList extends React.Component {
     currentTab: 'buyerBill',
     mode: 'pendingExpense',
   }
+
+  componentDidMount() {
+    if (this.props.aspect === 0) {
+      this.handleTabChange('sellerBill');
+    }
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-
   handleFilterMenuClick = (ev) => {
     this.setState({ mode: ev.key });
   }
   handleTabChange = (key) => {
     this.setState({ currentTab: key });
-  }
-  handleSearch = (value) => {
-    const filters = { ...this.props.filters, name: value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
-      current: 1,
-      filters,
-    });
   }
   handleDetail = (row) => {
     const link = `/bss/bill/${row.order_rel_no}`;
@@ -100,7 +90,7 @@ export default class BillList extends React.Component {
     return null;
   }
   render() {
-    const menus = [
+    let menus = [
       {
         key: 'buyerBill',
         menu: this.msg('buyerBill'),
@@ -111,6 +101,14 @@ export default class BillList extends React.Component {
         menu: this.msg('sellerBill'),
       },
     ];
+    const { aspect } = this.props;
+    if (aspect === 0) {
+      menus = [{
+        key: 'sellerBill',
+        menu: this.msg('sellerBill'),
+        default: true,
+      }];
+    }
     const primaryAction = (<Button type="primary" icon="plus" onClick={this.handleCreate}>
       {this.msg('新建账单')}
     </Button>);
