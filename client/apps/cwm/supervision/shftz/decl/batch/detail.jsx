@@ -428,7 +428,6 @@ export default class BatchDeclDetail extends Component {
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
                   <DataPane
-
                     columns={this.regColumns}
                     rowSelection={rowSelection}
                     indentSize={8}
@@ -443,7 +442,6 @@ export default class BatchDeclDetail extends Component {
                 </TabPane>
                 <TabPane tab="集中报关明细" key="details">
                   <DataPane
-
                     columns={this.relColumns}
                     rowSelection={rowSelection}
                     indentSize={0}
@@ -462,7 +460,6 @@ export default class BatchDeclDetail extends Component {
                 {batchApplies.map(reg => (
                   <TabPane tab={`申请单${reg.ftz_apply_no || reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
                     <DataPane
-
                       columns={this.columns}
                       rowSelection={rowSelection}
                       indentSize={8}

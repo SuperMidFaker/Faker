@@ -300,12 +300,10 @@ export default class NormalDeclDetail extends Component {
             </Steps>
           </Drawer>
           <Content className="page-content">
-
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <DataPane
-
                     columns={this.regColumns}
                     indentSize={8}
                     dataSource={regs}
@@ -318,7 +316,6 @@ export default class NormalDeclDetail extends Component {
                 </TabPane>
                 <TabPane tab="出库报关明细" key="details">
                   <DataPane
-
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={0}
