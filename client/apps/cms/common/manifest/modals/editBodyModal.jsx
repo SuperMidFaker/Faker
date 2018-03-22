@@ -25,7 +25,7 @@ import EditBodyForm from '../form/editBodyForm';
 export default class EditBodyModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    editBody: PropTypes.object,
+    editBody: PropTypes.shape({ id: PropTypes.number.isRequired }),
     editBodyVisible: PropTypes.bool.isRequired,
     billSeqNo: PropTypes.string,
   }
