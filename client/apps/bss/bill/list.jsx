@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Icon, Layout, Menu } from 'antd';
+import { Button, Divider, Icon, Layout, Menu } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
@@ -134,10 +134,11 @@ export default class BillList extends React.Component {
               <Menu.Item key="pendingExpense">
                 {this.msg('pendingExpense')}
               </Menu.Item>
-              <Menu.Item key="offlineBill">
-                {this.msg('offlineBill')}
+              <Divider />
+              <Menu.Item key="processingBills">
+                {this.msg('processingBills')}
               </Menu.Item>
-              <Menu.ItemGroup key="onlineBill" title={this.msg('onlineBill')}>
+              <Menu.ItemGroup key="billStatus" title={this.msg('billStatus')}>
                 <Menu.Item key="draft">
                   <Icon type="inbox" /> {this.msg('statusDraft')}
                 </Menu.Item>
@@ -148,6 +149,10 @@ export default class BillList extends React.Component {
                   <Icon type="check-square-o" /> {this.msg('statusAccepted')}
                 </Menu.Item>
               </Menu.ItemGroup>
+              <Divider />
+              <Menu.Item key="settledBills">
+                {this.msg('settledBills')}
+              </Menu.Item>
             </Menu>
           </Drawer>
           <Content className="page-content" key="main">

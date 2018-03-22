@@ -356,13 +356,13 @@ class DataTable extends React.Component {
             columns={this.state.tableColumns}
           />
           {selectedRowKeys &&
-            <div className={`${baseCls}-toolbar-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <div className={`${baseCls}-body-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <Tooltip title="取消选择" placement="top">
                 <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={onDeselectRows} />
               </Tooltip>
-              <span className={`${baseCls}-toolbar-row-selection-text`}>
+              <h4 className={`${baseCls}-body-row-selection-text`}>
                 已选中<a onClick={onFilterSelected}>{selectedRowKeys.length}</a>项
-              </span>
+              </h4>
               {bulkActions}
             </div>}
         </div>
