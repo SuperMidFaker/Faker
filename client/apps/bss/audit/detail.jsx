@@ -41,7 +41,7 @@ export default class FeeSummaryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    fullscreen: true,
+
     summary: {},
   }
 
@@ -155,10 +155,6 @@ export default class FeeSummaryDetail extends Component {
       </span>);
     },
   }]
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
-
   render() {
     const { summary } = this.state;
     const mockData = [{
@@ -218,11 +214,11 @@ export default class FeeSummaryDetail extends Component {
             </Row>
           </Drawer>
           <Content className="page-content">
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="receiveDetails">
                 <TabPane tab="应收明细" key="receiveDetails" >
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.recColumns}
                     dataSource={mockData}
                     rowKey="id"
@@ -231,7 +227,7 @@ export default class FeeSummaryDetail extends Component {
                 </TabPane>
                 <TabPane tab="应付明细" key="putawayDetails" >
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.payColumns}
                     dataSource={mockData}
                     rowKey="id"

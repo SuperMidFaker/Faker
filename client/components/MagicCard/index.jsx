@@ -9,22 +9,20 @@ export default class MagicCard extends React.Component {
   static defaultProps = {
     // baseCls: 'welo-magic-card',
   }
-  static propTypes = {
-    onSizeChange: PropTypes.func,
-  };
+  static childContextTypes = {
+    fullscreen: PropTypes.bool,
+  }
   state = {
     fullscreen: false,
+  }
+  getChildContext() {
+    return { fullscreen: !this.state.fullscreen };
   }
   toggleFullscreen = () => {
     this.setState({
       fullscreen: !this.state.fullscreen,
     });
-    const { onSizeChange } = this.props;
-    if (onSizeChange) {
-      onSizeChange(this.state.fullscreen);
-    }
   }
-
   render() {
     const { children } = this.props;
     const { fullscreen } = this.state;

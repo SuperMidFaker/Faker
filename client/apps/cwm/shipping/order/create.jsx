@@ -60,15 +60,11 @@ export default class CreateShippingOrder extends Component {
       receiver_region_code: null,
     },
     carrier_name: '',
-    fullscreen: true,
   }
   componentWillUnmount() {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleSave = () => {
     const {
       temporaryDetails, defaultWhse, owners, loginId, tenantName,
@@ -148,7 +144,7 @@ export default class CreateShippingOrder extends Component {
                     form={form}
                     detailEnable={this.state.detailEnable}
                     selectedOwner={this.state.selectedOwner}
-                    fullscreen={this.state.fullscreen}
+
                   />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">

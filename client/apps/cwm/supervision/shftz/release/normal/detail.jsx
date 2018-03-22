@@ -91,7 +91,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   state = {
     reg: {},
     groupVals: ['supplier', 'trxn_mode', 'currency'],
-    fullscreen: true,
+
     view: 'splitted',
     filingDetails: [],
     exitDetails: [],
@@ -268,9 +268,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   handleRelAndDetailsReload = () => {
     this.props.loadRelDetails(this.props.params.soNo, 'normal');
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   handleViewChange = (e) => {
     const { merged, reg } = this.state;
@@ -649,11 +646,11 @@ export default class SHFTZNormalRelRegDetail extends Component {
           </Drawer>
           <Content className="page-content">
             {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="regd">
                 <TabPane tab="备案明细" key="regd">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}
@@ -682,7 +679,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 </TabPane>
                 <TabPane tab="出区明细" key="exitd">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.exitColumns}
                     rowSelection={rowSelection}
                     indentSize={8}

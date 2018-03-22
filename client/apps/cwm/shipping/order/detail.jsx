@@ -61,7 +61,7 @@ export default class CreateShippingOrder extends Component {
       receiver_region_code: null,
     },
     carrier_name: '',
-    fullscreen: true,
+
   }
   componentWillMount() {
     this.props.getSo(this.props.params.soNo).then((result) => {
@@ -85,9 +85,6 @@ export default class CreateShippingOrder extends Component {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleSave = () => {
     const {
       temporaryDetails, defaultWhse, owners, loginId, tenantName,
@@ -170,7 +167,7 @@ export default class CreateShippingOrder extends Component {
                     selectedOwner={soHead.owner_partner_id}
                     form={form}
                     editable={this.state.editable}
-                    fullscreen={this.state.fullscreen}
+
                   />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">

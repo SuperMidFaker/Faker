@@ -81,7 +81,6 @@ export default class BatchDeclDetail extends Component {
   }
   state = {
     tabKey: 'details',
-    fullscreen: true,
   }
   componentWillMount() {
     this.setState({
@@ -101,9 +100,6 @@ export default class BatchDeclDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   regColumns = [{
     title: '分拨出库单号',
     dataIndex: 'ftz_rel_no',
@@ -428,11 +424,11 @@ export default class BatchDeclDetail extends Component {
             </Steps>
           </Drawer>
           <Content className="page-content">
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.regColumns}
                     rowSelection={rowSelection}
                     indentSize={8}
@@ -447,7 +443,7 @@ export default class BatchDeclDetail extends Component {
                 </TabPane>
                 <TabPane tab="集中报关明细" key="details">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.relColumns}
                     rowSelection={rowSelection}
                     indentSize={0}
@@ -466,7 +462,7 @@ export default class BatchDeclDetail extends Component {
                 {batchApplies.map(reg => (
                   <TabPane tab={`申请单${reg.ftz_apply_no || reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
                     <DataPane
-                      fullscreen={this.state.fullscreen}
+
                       columns={this.columns}
                       rowSelection={rowSelection}
                       indentSize={8}

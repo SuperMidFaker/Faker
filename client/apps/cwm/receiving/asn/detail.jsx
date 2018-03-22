@@ -51,7 +51,6 @@ export default class ReceivingASNDetail extends Component {
     editable: true,
     asnHead: {},
     asnBody: [],
-    fullscreen: true,
   }
   componentWillMount() {
     this.props.loadAsn(this.props.params.asnNo).then((result) => {
@@ -67,9 +66,6 @@ export default class ReceivingASNDetail extends Component {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleSave = () => {
     const {
       temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers,
@@ -135,7 +131,7 @@ export default class ReceivingASNDetail extends Component {
                     selectedOwner={asnHead.owner_partner_id}
                     form={form}
                     editable={this.state.editable}
-                    fullscreen={this.state.fullscreen}
+
                   />
                 </TabPane>
                 <TabPane tab="批次属性" key="lottingProps">

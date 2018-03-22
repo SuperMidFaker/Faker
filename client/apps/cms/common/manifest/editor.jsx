@@ -105,7 +105,7 @@ export default class ManifestEditor extends React.Component {
     locked: false,
     lockedByOthers: false,
     headData: {},
-    fullscreen: true,
+
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billHead !== this.props.billHead) {
@@ -121,9 +121,6 @@ export default class ManifestEditor extends React.Component {
     this.setState({
       collapsed: !this.state.collapsed,
     });
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   handleGenerateEntry = () => {
     this.props.form.validateFields((errors) => {
@@ -460,20 +457,20 @@ export default class ManifestEditor extends React.Component {
         headForm={form}
         data={billBodies}
         billSeqNo={billHead.bill_seq_no}
-        fullscreen={this.state.fullscreen}
+
       />
     </TabPane>);
     if (filterProducts.length > 0) {
       tabs.push(<TabPane tab="法检商品" key="legalInspection">
-        <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
+        <CiqDetailsPane filterProducts={filterProducts} />
       </TabPane>);
     }
     tabs.push(<TabPane tab="集装箱" key="containers">
-      <ContainersPane fullscreen={this.state.fullscreen} />
+      <ContainersPane />
     </TabPane>);
     /*
       tabs.push(<TabPane tab="随附单据" key="attachedDocs" >
-      <DocuPane billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
+      <DocuPane billSeqNo={billHead.bill_seq_no}  />
     </TabPane>);
     */
 
@@ -549,7 +546,7 @@ export default class ManifestEditor extends React.Component {
               bodyStyle={{ padding: 0 }}
 
               loading={this.props.manifestSpinning}
-              onSizeChange={this.toggleFullscreen}
+
             >
               <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
                 {tabs}

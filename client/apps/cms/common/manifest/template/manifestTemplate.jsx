@@ -262,7 +262,7 @@ export default class ManifestTemplate extends Component {
             <MagicCard
               bodyStyle={{ padding: 0 }}
               loading={this.props.manifestSpinning}
-              onSizeChange={this.toggleFullscreen}
+
             >
               <Tabs>
                 <TabPane tab="清单表头规则" key="head">

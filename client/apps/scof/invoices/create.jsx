@@ -37,14 +37,10 @@ export default class CreateInvoice extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    fullscreen: true,
     packageType: '',
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handlePackageSelect = (value) => {
     this.setState({
       packageType: value,
@@ -97,7 +93,7 @@ export default class CreateInvoice extends Component {
                   <DetailsPane
                     editable
                     form={form}
-                    fullscreen={this.state.fullscreen}
+
                   />
                 </TabPane>
               </Tabs>

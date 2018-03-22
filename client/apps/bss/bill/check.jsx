@@ -92,7 +92,7 @@ export default class ReceivableBillDetail extends Component {
             </Steps>
           </Drawer>
           <Content className="page-content">
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="unaccepted" onChange={this.handleTabChange}>
                 <TabPane tab="未认可" key="unaccepted" >
                   <StatementsPane status="unaccepted" />

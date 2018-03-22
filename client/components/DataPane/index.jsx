@@ -17,12 +17,15 @@ export default class DataPane extends React.Component {
     baseCls: PropTypes.string,
     children: PropTypes.node,
     header: PropTypes.string,
-    fullscreen: PropTypes.bool,
+    // fullscreen: PropTypes.bool,
     scrollOffset: PropTypes.number,
     bulkActions: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
     selectedRowKeys: PropTypes.arrayOf(PropTypes.string),
     onDeselectRows: PropTypes.func,
     onFilterSelected: PropTypes.func,
+  }
+  static contextTypes = {
+    fullscreen: PropTypes.bool,
   }
   state = { scrollY: 0 }
   componentWillMount() {
@@ -32,9 +35,9 @@ export default class DataPane extends React.Component {
       });
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.fullscreen !== this.props.fullscreen) {
-      if (nextProps.fullscreen) {
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (nextContext.fullscreen !== this.context.fullscreen) {
+      if (nextContext.fullscreen) {
         this.setState({
           scrollY: window.innerHeight - this.props.scrollOffset,
         });

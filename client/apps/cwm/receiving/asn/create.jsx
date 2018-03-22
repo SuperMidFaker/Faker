@@ -52,15 +52,11 @@ export default class CreateReceivingASN extends Component {
     editable: true,
     detailEnable: false,
     selectedOwner: null,
-    fullscreen: true,
   }
   componentWillUnmount() {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleSave = () => {
     const {
       temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers,
@@ -136,7 +132,7 @@ export default class CreateReceivingASN extends Component {
                     form={form}
                     detailEnable={this.state.detailEnable}
                     selectedOwner={this.state.selectedOwner}
-                    fullscreen={this.state.fullscreen}
+
                   />
                 </TabPane>
                 <TabPane tab="批次属性" key="lottingProps">

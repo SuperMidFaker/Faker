@@ -74,7 +74,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   state = {
     comparable: false,
-    fullscreen: true,
+
     searchVal: null,
   }
   componentWillReceiveProps(nextProps) {
@@ -132,9 +132,6 @@ export default class SHFTZTransferInDetail extends Component {
         });
       }
     });
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   columns = [{
     title: '行号',
@@ -356,10 +353,10 @@ export default class SHFTZTransferInDetail extends Component {
             <MagicCard
               bodyStyle={{ padding: 0 }}
 
-              onSizeChange={this.toggleFullscreen}
+
             >
               <DataPane
-                fullscreen={this.state.fullscreen}
+
                 columns={this.columns}
                 rowSelection={rowSelection}
                 indentSize={0}
