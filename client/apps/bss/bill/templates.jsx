@@ -10,7 +10,7 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
-import NewTemplateModal from './modals/newTemplateModal';
+import StatementTemplate from './modals/newTemplateModal';
 
 const { Content } = Layout;
 
@@ -116,7 +116,7 @@ export default class BillTemplates extends React.Component {
               />
             </Card>
           </Content>
-          <NewTemplateModal />
+          <StatementTemplate />
         </Layout>
       </Layout>
     );
