@@ -19,6 +19,10 @@ const messages = defineMessages({
     id: 'scof.orders.edit.order',
     defaultMessage: '编辑订单',
   },
+  allOrders: {
+    id: 'scof.orders.all',
+    defaultMessage: '全部订单',
+  },
   statusPending: {
     id: 'scof.orders.status.pending',
     defaultMessage: '待处理',

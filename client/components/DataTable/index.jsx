@@ -66,6 +66,7 @@ class DataTable extends React.Component {
     total: PropTypes.node,
     paginationSize: PropTypes.string,
     showToolbar: PropTypes.bool,
+    minWidth: PropTypes.number,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -277,7 +278,7 @@ class DataTable extends React.Component {
   }
   render() {
     const {
-      baseCls, noBorder, fixedBody, noSetting, paginationSize,
+      baseCls, noBorder, fixedBody, noSetting, paginationSize, minWidth,
       selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
       showToolbar, toolbarActions, onSearch, searchTips,
     } = this.props;
@@ -298,7 +299,8 @@ class DataTable extends React.Component {
     if (this.state.scrollY) {
       scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } :
         {
-          x: this.state.tableColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0),
+          x: minWidth || this.state.tableColumns.reduce((acc, cur) =>
+            acc + (cur.width ? cur.width : 220), 0),
           y: this.state.scrollY,
         };
     }

@@ -356,15 +356,16 @@ export default class OrderList extends React.Component {
     );
     const columns = [{
       title: '订单',
-      width: 180,
+      width: 200,
+      fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
       dataIndex: 'order_status',
-      width: 60,
+      width: 80,
       render: (o, record) => {
         const percent = record.flow_node_num ?
           Number(((record.finish_num / record.flow_node_num) * 100).toFixed(1)) : 0;
-        return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={40} />
+        return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={36} />
           <div className="mdc-text-grey table-font-small">
             <Tooltip title={`创建于${moment(record.created_date).format('YYYY.MM.DD HH:mm')}`} placement="bottom">
               <Icon type="clock-circle-o" /> {moment(record.created_date).fromNow()}
@@ -376,21 +377,21 @@ export default class OrderList extends React.Component {
       width: 250,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
+      title: '跟单人员',
+      dataindex: 'exec_login_id',
+      width: 80,
+      render: lid => <UserAvatar size="small" loginId={lid} />,
+    }, {
       title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
-      dataindex: 'exec_login_id',
-      width: 40,
-      render: lid => <UserAvatar size="small" loginId={lid} />,
-    }, {
       title: '操作',
-      width: 100,
-      align: 'right',
+      width: 88,
       fixed: 'right',
       render: (o, record) => {
         if (record.order_status === CRM_ORDER_STATUS.created) {
           return (
-            <div>
+            <span>
               {record.flow_node_num > 0 &&
                 <RowAction onClick={this.handleStart} tooltip={this.msg('startOrder')} icon="caret-right" row={record} />
               }
@@ -406,7 +407,7 @@ export default class OrderList extends React.Component {
                   </Menu.Item>
                 </Menu>)}
               />
-            </div>
+            </span>
           );
         }
         return (
@@ -482,7 +483,7 @@ export default class OrderList extends React.Component {
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
               <Menu.Item key="all">
-                {this.gmsg('all')}
+                {this.msg('allOrders')}
               </Menu.Item>
               <Menu.ItemGroup key="status" title={this.gmsg('status')}>
                 <Menu.Item key="pending">
@@ -503,7 +504,6 @@ export default class OrderList extends React.Component {
           <Content className="page-content" key="main">
             <DataTable
               noSetting
-              fixedBody={false}
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
               rowSelection={rowSelection}
@@ -513,6 +513,7 @@ export default class OrderList extends React.Component {
               columns={columns}
               rowKey="shipmt_order_no"
               loading={loading}
+              minWidth={1200}
             />
           </Content>
         </Layout>
