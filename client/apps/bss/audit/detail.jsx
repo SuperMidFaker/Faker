@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Col, Layout, Row, Tabs } from 'antd';
+import { Button, Col, Layout, Row, Tabs, Input, Select } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
@@ -11,12 +11,14 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
+import { getAudit, deleteFee, updateFee, confirmAudit } from 'common/reducers/bssAudit';
+import { loadCurrencies } from 'common/reducers/cmsExpense';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 import './index.less';
 
 const { Content } = Layout;
 const { Description } = DescriptionList;
-
+const { Option } = Select;
 const { TabPane } = Tabs;
 
 @injectIntl
@@ -24,9 +26,12 @@ const { TabPane } = Tabs;
   state => ({
     loginId: state.account.loginId,
     username: state.account.username,
-
+    currencies: state.cmsExpense.currencies,
+    audit: state.bssAudit.audit,
   }),
-  { }
+  {
+    getAudit, loadCurrencies, deleteFee, updateFee, confirmAudit,
+  }
 )
 @connectNav({
   depth: 3,
@@ -41,43 +46,105 @@ export default class FeeSummaryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-
-    summary: {},
+    fullscreen: true,
+    head: {},
+    receives: [],
+    pays: [],
+    editItem: {},
   }
-
+  componentDidMount() {
+    this.props.getAudit(this.props.params.orderRelNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          head: result.data.head,
+          receives: result.data.details.receives,
+          pays: result.data.details.pays,
+        });
+      }
+    });
+    this.props.loadCurrencies();
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   recColumns = [{
     title: '业务流水号',
-    dataIndex: 'biz_seq_no',
+    dataIndex: 'biz_expense_no',
     width: 180,
   }, {
     title: '费用名称',
-    dataIndex: 'fee',
-  }, {
-    title: '费用种类',
-    dataIndex: 'fee_category',
-    width: 100,
+    dataIndex: 'fee_name',
   }, {
     title: '费用类型',
     dataIndex: 'fee_type',
     width: 100,
   }, {
     title: '营收金额(人民币)',
-    dataIndex: 'amount_rmb',
+    dataIndex: 'base_amount',
     width: 150,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          size="small"
+          disabled
+          value={this.state.editItem.base_amount}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '外币金额',
-    dataIndex: 'amount_forc',
+    dataIndex: 'orig_amount',
     width: 150,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          size="small"
+          value={this.state.editItem.orig_amount}
+          onChange={e => this.handleColumnChange(e.target.value, 'orig_amount')}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '外币币制',
     dataIndex: 'currency',
     width: 100,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (
+          <Select
+            size="small"
+            showSearch
+            optionFilterProp="children"
+            value={this.state.editItem.currency}
+            style={{ width: '100%' }}
+            allowClear
+            onChange={value => this.handleColumnChange(value, 'currency')}
+          >
+            {this.props.currencies.map(currency =>
+              (<Option key={currency.currency} value={currency.currency}>
+                {currency.name}
+              </Option>))}
+          </Select>
+        );
+      }
+      return this.props.currencies.find(curr => curr.currency === o) &&
+        this.props.currencies.find(curr => curr.currency === o).name;
+    },
   }, {
     title: '汇率',
-    dataIndex: 'currency_rate',
+    dataIndex: 'exchange_rate',
     width: 100,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          size="small"
+          value={this.state.editItem.exchange_rate}
+          onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate')}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '调整金额',
     dataIndex: 'adj_amount',
@@ -92,46 +159,97 @@ export default class FeeSummaryDetail extends Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+      if (this.state.editItem.id === record.id) {
+        return (<span>
+          <RowAction icon="save" onClick={() => this.handleOk('receives')} tooltip={this.gmsg('confirm')} row={record} />
+          <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
+        </span>);
       }
-      return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
+      return (<span><RowAction onClick={this.handleEdit} label="调整" row={record} />
         <span className="ant-divider" />
-        <RowAction onClick={this.handleDetail} label="排除" row={record} />
+        <RowAction onClick={() => this.handleDelete(record, 'receives')} label="排除" row={record} />
       </span>);
     },
   }]
   payColumns = [{
     title: '结算对象',
-    dataIndex: 'billing_party',
+    dataIndex: 'buyer_name',
     width: 180,
   }, {
     title: '费用名称',
-    dataIndex: 'fee',
-  }, {
-    title: '费用种类',
-    dataIndex: 'fee_category',
-    width: 100,
+    dataIndex: 'fee_name',
   }, {
     title: '费用类型',
     dataIndex: 'fee_type',
     width: 100,
   }, {
     title: '成本金额(人民币)',
-    dataIndex: 'amount_rmb',
+    dataIndex: 'base_amount',
     width: 150,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          size="small"
+          disabled
+          value={this.state.editItem.base_amount}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '外币金额',
-    dataIndex: 'amount_forc',
+    dataIndex: 'orig_amount',
     width: 150,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          size="small"
+          value={this.state.editItem.orig_amount}
+          onChange={e => this.handleColumnChange(e.target.value, 'orig_amount')}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '外币币制',
     dataIndex: 'currency',
     width: 100,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (
+          <Select
+            size="small"
+            showSearch
+            optionFilterProp="children"
+            value={this.state.editItem.currency}
+            style={{ width: '100%' }}
+            allowClear
+            onChange={value => this.handleColumnChange(value, 'currency')}
+          >
+            {this.props.currencies.map(currency =>
+              (<Option key={currency.currency} value={currency.currency}>
+                {currency.name}
+              </Option>))}
+          </Select>
+        );
+      }
+      return this.props.currencies.find(curr => curr.currency === o) &&
+        this.props.currencies.find(curr => curr.currency === o).name;
+    },
   }, {
     title: '汇率',
-    dataIndex: 'currency_rate',
+    dataIndex: 'exchange_rate',
     width: 100,
+    render: (o, record) => {
+      if (this.state.editItem.id === record.id) {
+        return (<Input
+          size="small"
+          value={this.state.editItem.exchange_rate}
+          onChange={e => this.handleColumnChange(e.target.value, 'exchange_rate')}
+        />);
+      }
+      return o;
+    },
   }, {
     title: '调整金额',
     dataIndex: 'adj_amount',
@@ -146,38 +264,142 @@ export default class FeeSummaryDetail extends Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+      if (this.state.editItem.id === record.id) {
+        return (<span>
+          <RowAction icon="save" onClick={() => this.handleOk('pays')} tooltip={this.gmsg('confirm')} row={record} />
+          <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
+        </span>);
       }
-      return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
+      return (<span><RowAction onClick={this.handleEdit} label="调整" row={record} />
         <span className="ant-divider" />
-        <RowAction onClick={this.handleDetail} label="排除" row={record} />
+        <RowAction onClick={() => this.handleDelete(record, 'pays')} label="排除" row={record} />
       </span>);
     },
   }]
+<<<<<<< HEAD
+=======
+  toggleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
+  handleDelete = (row, dataType) => {
+    const head = { ...this.state.head };
+    let dataSource = [];
+    if (dataType === 'receives') {
+      dataSource = [...this.state.receives];
+      head.receivable_amount = (head.receivable_amount - row.sum_amount).toFixed(3);
+      head.profit_amount = (head.profit_amount - row.sum_amount).toFixed(3);
+    } else {
+      dataSource = [...this.state.pays];
+      head.payable_amount = (head.payable_amount - row.sum_amount).toFixed(3);
+      head.profit_amount = (head.profit_amount + row.sum_amount).toFixed(3);
+    }
+    const index = dataSource.findIndex(data => data.id === row.id);
+    dataSource.splice(index, 1);
+    if (dataType === 'receives') {
+      this.setState({ receives: dataSource, head });
+    } else {
+      this.setState({ pays: dataSource, head });
+    }
+    this.props.deleteFee(row.id, row.sum_amount, dataType, this.props.params.orderRelNo);
+  }
+  handleEdit = (row) => {
+    this.setState({
+      editItem: { ...row },
+    });
+  }
+  handleCancel = () => {
+    this.setState({
+      editItem: {},
+    });
+  }
+  handleColumnChange = (value, field) => {
+    const editOne = { ...this.state.editItem };
+    if (field === 'orig_amount') {
+      if (editOne.exchange_rate) {
+        editOne.base_amount = editOne.exchange_rate * value;
+      } else {
+        editOne.base_amount = Number(value);
+      }
+      const data = parseFloat(value);
+      if (!Number.isNaN(data)) {
+        editOne[field] = data;
+      }
+    }
+    if (field === 'exchange_rate') {
+      if (editOne.orig_amount) {
+        editOne.base_amount = editOne.orig_amount * value;
+      }
+      const data = parseFloat(value);
+      if (!Number.isNaN(data)) {
+        editOne[field] = data;
+      }
+    }
+    if (field === 'currency') {
+      const { currencies } = this.props;
+      if (value) {
+        const currency = currencies.find(curr => curr.currency === value);
+        editOne.exchange_rate = currency.exchange_rate;
+        editOne.base_amount = editOne.orig_amount * currency.exchange_rate;
+      } else {
+        editOne.exchange_rate = '';
+        editOne.base_amount = editOne.orig_amount;
+      }
+      editOne[field] = value;
+    }
+    this.setState({
+      editItem: editOne,
+    });
+  }
+  handleOk = (dataType) => {
+    const item = this.state.editItem;
+    const head = { ...this.state.head };
+    let dataSource = [];
+    if (dataType === 'receives') {
+      dataSource = [...this.state.receives];
+    } else {
+      dataSource = [...this.state.pays];
+    }
+    const index = dataSource.findIndex(data => data.id === item.id);
+    const delta = item.base_amount - dataSource[index].base_amount;
+    dataSource[index] = item;
+    item.delta = delta;
+    if (dataType === 'receives') {
+      head.receivable_amount += delta;
+      head.profit_amount += delta;
+    } else {
+      head.payable_amount += delta;
+      head.profit_amount -= delta;
+    }
+    this.props.updateFee(item, dataType, this.props.params.orderRelNo);
+    if (dataType === 'receives') {
+      this.setState({
+        editItem: {},
+        head,
+        receives: dataSource,
+      });
+    } else {
+      this.setState({
+        editItem: {},
+        head,
+        pays: dataSource,
+      });
+    }
+  }
+  handleConfirm = () => {
+    this.props.confirmAudit(this.props.params.orderRelNo).then((result) => {
+      if (!result.error) {
+        this.context.router.push('/bss/audit');
+      }
+    });
+  }
+>>>>>>> auditDetail
   render() {
-    const { summary } = this.state;
-    const mockData = [{
-      order_rel_no: '5',
-      fee: '报关费',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    }, {
-      order_rel_no: '4',
-      fee: '报检费',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    }, {
-      order_rel_no: '2',
-      fee: '入库费',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    }];
+    const { head, receives, pays } = this.state;
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('fee'), this.msg('feeSummary'), this.props.params.orderRelNo]}>
           <PageHeader.Actions>
-            <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
+            <Button disabled={head.status === 2} type="primary" icon="check-circle-o" onClick={this.handleConfirm}>
               {this.msg('confirm')}
             </Button>
           </PageHeader.Actions>
@@ -187,28 +409,28 @@ export default class FeeSummaryDetail extends Component {
             <Row type="flex">
               <Col span={14}>
                 <DescriptionList col={2}>
-                  <Description term="业务编号">{summary.owner_name}</Description>
-                  <Description term="订单日期">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-                  <Description term="客户单号">{summary.asn_no}</Description>
-                  <Description term="客户">{summary.total_expect_qty}</Description>
+                  <Description term="业务编号">{this.props.params.orderRelNo}</Description>
+                  <Description term="订单日期">{head.created_date && moment(head.created_date).format('YYYY.MM.DD HH:mm')}</Description>
+                  <Description term="客户单号">{head.cust_order_no}</Description>
+                  <Description term="客户">{head.owner_name}</Description>
                 </DescriptionList>
               </Col>
               <Col span={10} className="extra">
                 <div>
                   <p>应收金额</p>
-                  <p>5,680</p>
+                  <p>{head.receivable_amount}</p>
                 </div>
                 <div>
                   <p>应付金额</p>
-                  <p>2,890</p>
+                  <p>{head.payable_amount}</p>
                 </div>
                 <div>
                   <p>利润</p>
-                  <p>2,223</p>
+                  <p>{head.profit_amount}</p>
                 </div>
                 <div>
                   <p>毛利率</p>
-                  <p>12%</p>
+                  <p>{head.gross_profit_ratio}</p>
                 </div>
               </Col>
             </Row>
@@ -220,7 +442,7 @@ export default class FeeSummaryDetail extends Component {
                   <DataPane
 
                     columns={this.recColumns}
-                    dataSource={mockData}
+                    dataSource={receives}
                     rowKey="id"
                     loading={this.state.loading}
                   />
@@ -229,7 +451,7 @@ export default class FeeSummaryDetail extends Component {
                   <DataPane
 
                     columns={this.payColumns}
-                    dataSource={mockData}
+                    dataSource={pays}
                     rowKey="id"
                     loading={this.state.loading}
                   />
