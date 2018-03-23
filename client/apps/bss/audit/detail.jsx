@@ -282,24 +282,19 @@ export default class FeeSummaryDetail extends Component {
     },
   }]
   handleDelete = (row, dataType) => {
-    const head = { ...this.state.head };
-    let dataSource = [];
-    if (dataType === 'receives') {
-      dataSource = [...this.state.receives];
-      head.receivable_amount = (head.receivable_amount - row.settled_amount).toFixed(3);
-      head.profit_amount = (head.profit_amount - row.settled_amount).toFixed(3);
-    } else {
-      dataSource = [...this.state.pays];
-      head.payable_amount = (head.payable_amount - row.settled_amount).toFixed(3);
-      head.profit_amount = (head.profit_amount + row.settled_amount).toFixed(3);
-    }
-    const index = dataSource.findIndex(data => data.id === row.id);
-    dataSource.splice(index, 1);
     this.props.deleteFee(row.id, dataType).then((result) => {
       if (!result.error) {
+        const head = { ...this.state.head };
+        let dataSource;
         if (dataType === 'receives') {
+          dataSource = this.state.receives.filter(rec => rec.id !== row.id);
+          head.receivable_amount = (head.receivable_amount - row.settled_amount).toFixed(3);
+          head.profit_amount = (head.profit_amount - row.settled_amount).toFixed(3);
           this.setState({ receives: dataSource, head });
         } else {
+          dataSource = this.state.pays.filter(pay => pay.id !== row.id);
+          head.payable_amount = (head.payable_amount - row.settled_amount).toFixed(3);
+          head.profit_amount = (head.profit_amount + row.settled_amount).toFixed(3);
           this.setState({ pays: dataSource, head });
         }
       }
@@ -323,8 +318,7 @@ export default class FeeSummaryDetail extends Component {
         if (editOne.exchange_rate) {
           editOne.settled_amount = editOne.exchange_rate * amount;
         } else {
-          editOne.settled_amount = editOne.base_amount;
-          editOne.sum_amount = editOne.base_amount;
+          editOne.settled_amount = amount;
         }
         editOne[field] = amount;
       } else {
