@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message, Select } from 'antd';
-import { toggleNewTemplateModal, createTemplate } from 'common/reducers/bssBill';
+import { toggleNewTemplateModal, createTemplate } from 'common/reducers/bssBillTemplate';
 import { formatMsg } from '../message.i18n';
 
 
@@ -17,7 +17,7 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    visible: state.bssBill.visibleNewTemplateModal,
+    visible: state.bssBillTemplate.visibleNewTemplateModal,
     partners: state.partner.partners,
   }),
   { toggleNewTemplateModal, createTemplate }

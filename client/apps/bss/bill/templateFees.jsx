@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Input, message, Modal, Transfer, Form, Layout, Select } from 'antd';
-import { loadTemplateFees, addTemplateFee, deleteTemplateFees, updateTemplateFee } from 'common/reducers/bssBill';
+import { loadTemplateFees, addTemplateFee, deleteTemplateFees, updateTemplateFee } from 'common/reducers/bssBillTemplate';
 import { loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -20,9 +20,9 @@ const { Option } = Select;
 function fetchData({ params, dispatch, state }) {
   return dispatch(loadTemplateFees({
     templateId: params.templateId,
-    pageSize: state.bssBill.templateFeelist.pageSize,
-    current: state.bssBill.templateFeelist.current,
-    filter: JSON.stringify(state.bssBill.templateFeeListFilter),
+    pageSize: state.bssBillTemplate.templateFeelist.pageSize,
+    current: state.bssBillTemplate.templateFeelist.current,
+    filter: JSON.stringify(state.bssBillTemplate.templateFeeListFilter),
   }));
 }
 
@@ -30,10 +30,10 @@ function fetchData({ params, dispatch, state }) {
 @injectIntl
 @connect(
   state => ({
-    templateFeelist: state.bssBill.templateFeelist,
-    loading: state.bssBill.templateFeeListLoading,
-    listFilter: state.bssBill.templateFeeListFilter,
-    billTemplatelist: state.bssBill.billTemplatelist,
+    templateFeelist: state.bssBillTemplate.templateFeelist,
+    loading: state.bssBillTemplate.templateFeeListLoading,
+    listFilter: state.bssBillTemplate.templateFeeListFilter,
+    billTemplatelist: state.bssBillTemplate.billTemplatelist,
     allFeeElements: state.bssFeeSettings.allFeeElements,
   }),
   {

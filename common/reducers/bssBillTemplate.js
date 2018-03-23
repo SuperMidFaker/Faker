@@ -1,9 +1,8 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/bss/bill', [
+const actionTypes = createActionTypes('@@welogix/bss/bill/template', [
   'LOAD_BILL_TEMPLATES', 'LOAD_BILL_TEMPLATES_SUCCEED', 'LOAD_BILL_TEMPLATES_FAIL',
-  'RELOAD_TEMPLATE_LIST',
   'TOGGLE_NEW_TEMPLATE_MODAL',
   'CREATE_TEMPLATE', 'CREATE_TEMPLATE_SUCCEED', 'CREATE_TEMPLATE_FAIL',
   'DELETE_TEMPLATES', 'DELETE_TEMPLATES_SUCCEED', 'DELETE_TEMPLATES_FAIL',
@@ -22,7 +21,6 @@ const initialState = {
   },
   templateListFilter: {
   },
-  templatesReload: false,
   visibleNewTemplateModal: false,
   templateFeelist: {
     totalCount: 0,
@@ -40,15 +38,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILL_TEMPLATES:
       return {
         ...state,
-        templatesReload: false,
         templateListFilter: JSON.parse(action.params.filter),
       };
     case actionTypes.LOAD_BILL_TEMPLATES_SUCCEED:
       return { ...state, billTemplatelist: action.result.data };
     case actionTypes.TOGGLE_NEW_TEMPLATE_MODAL:
       return { ...state, visibleNewTemplateModal: action.data };
-    case actionTypes.RELOAD_TEMPLATE_LIST:
-      return { ...state, templatesReload: true };
     case actionTypes.LOAD_TEMPLATE_FEES:
       return {
         ...state,
@@ -83,12 +78,6 @@ export function loadBillTemplates(params) {
       method: 'get',
       params,
     },
-  };
-}
-
-export function reloadTemplateList() {
-  return {
-    type: actionTypes.RELOAD_TEMPLATE_LIST,
   };
 }
 

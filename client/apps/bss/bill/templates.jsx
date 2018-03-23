@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Layout, List, Card, message } from 'antd';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadBillTemplates, toggleNewTemplateModal, deleteBillTemplates } from 'common/reducers/bssBill';
+import { loadBillTemplates, toggleNewTemplateModal, deleteBillTemplates } from 'common/reducers/bssBillTemplate';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -17,9 +17,9 @@ const { Content } = Layout;
 @injectIntl
 @connect(
   state => ({
-    billTemplatelist: state.bssBill.billTemplatelist,
-    listFilter: state.bssBill.templateListFilter,
-    reload: state.bssBill.templatesReload,
+    billTemplatelist: state.bssBillTemplate.billTemplatelist,
+    listFilter: state.bssBillTemplate.templateListFilter,
+    reload: state.bssBillTemplate.templatesReload,
   }),
   {
     toggleNewTemplateModal, loadBillTemplates, loadPartners, deleteBillTemplates,
