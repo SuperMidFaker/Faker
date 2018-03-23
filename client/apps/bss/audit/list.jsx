@@ -220,7 +220,7 @@ export default class AuditList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/audit/${row.order_rel_no}`;
+    const link = `/bss/audit/${row.sof_order_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
