@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'LOAD_BILLS', 'LOAD_BILLS_SUCCEED', 'LOAD_BILLS_FAIL',
+  'RELOAD_BILL_LIST',
   'TOGGLE_NEW_BILL_MODAL',
   'CREATE_BILL', 'CREATE_BILL_SUCCEED', 'CREATE_BILL_FAIL',
 ]);
@@ -15,8 +16,12 @@ const initialState = {
     data: [],
   },
   billListFilter: {
+    status: 'processingBills',
+    clientPid: 'all',
   },
+  billListLoading: false,
   visibleNewBillModal: false,
+  reload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -24,12 +29,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILLS:
       return {
         ...state,
+        reload: false,
+        billListLoading: true,
         billListFilter: JSON.parse(action.params.filter),
       };
     case actionTypes.LOAD_BILLS_SUCCEED:
-      return { ...state, billlist: action.result.data };
+      return { ...state, billListLoading: false, billlist: action.result.data };
+    case actionTypes.LOAD_BILLS_FAIL:
+      return { ...state, billListLoading: false };
     case actionTypes.TOGGLE_NEW_BILL_MODAL:
       return { ...state, visibleNewBillModal: action.data };
+    case actionTypes.RELOAD_BILL_LIST:
+      return { ...state, reload: true, billListFilter: action.data.filter };
     default:
       return state;
   }
@@ -39,6 +50,13 @@ export function toggleNewBillModal(visible) {
   return {
     type: actionTypes.TOGGLE_NEW_BILL_MODAL,
     data: visible,
+  };
+}
+
+export function reloadBillList(filter) {
+  return {
+    type: actionTypes.RELOAD_BILL_LIST,
+    data: { filter },
   };
 }
 
