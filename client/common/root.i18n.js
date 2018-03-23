@@ -1,3 +1,4 @@
+
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
@@ -240,6 +241,10 @@ const messages = defineMessages({
   CUS: {
     id: 'root.partnership.customer',
     defaultMessage: '客户',
+  },
+  SUP: {
+    id: 'root.partnership.supplier',
+    defaultMessage: '服务商',
   },
   CCB: {
     id: 'root.partnership.clearanceBroker',

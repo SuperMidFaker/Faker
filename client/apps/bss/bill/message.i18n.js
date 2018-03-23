@@ -51,6 +51,10 @@ const messages = defineMessages({
     id: 'bss.bill.search.tips',
     defaultMessage: '业务编号/客户单号',
   },
+  billTemplates: {
+    id: 'bss.bill.templates',
+    defaultMessage: '账单模板',
+  },
   billStatementTemplateList: {
     id: 'bss.bill.staetment.template.list',
     defaultMessage: '账单模板',
@@ -70,6 +74,10 @@ const messages = defineMessages({
   feeCodes: {
     id: 'bss.bill.fee.codes',
     defaultMessage: '费用项',
+  },
+  billType: {
+    id: 'bss.bill.type',
+    defaultMessage: '账单类型',
   },
 });
 

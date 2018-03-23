@@ -7,13 +7,16 @@ import { Button, Divider, Icon, Layout, Menu } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
-
+import { PARTNER_ROLES } from 'common/constants';
+import { loadPartners } from 'common/reducers/partner';
+import { toggleNewBillModal } from 'common/reducers/bssBill';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import BuyerBillTable from './buyerBillTable';
 import SellerBillTable from './sellerBillTable';
 import BuyerPendingTable from './buyerPendingTable';
 import SellerPendingTable from './sellerPendingTable';
+import NewBill from './modals/newBillModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -24,7 +27,7 @@ const { Content } = Layout;
   state => ({
     aspect: state.account.aspect,
   }),
-  { }
+  { toggleNewBillModal, loadPartners }
 )
 @connectNav({
   depth: 2,
@@ -42,10 +45,12 @@ export default class BillList extends React.Component {
     currentTab: 'buyerBill',
     mode: 'pendingExpense',
   }
-
   componentDidMount() {
     if (this.props.aspect === 0) {
       this.handleTabChange('sellerBill');
+      this.props.loadPartners({ role: [PARTNER_ROLES.SUP] });
+    } else {
+      this.props.loadPartners({ role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP] });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -72,6 +77,9 @@ export default class BillList extends React.Component {
       const link = '/bss/bill/templates';
       this.context.router.push(link);
     }
+  }
+  handleCreate = () => {
+    this.props.toggleNewBillModal(true);
   }
   renderDataTable() {
     const { currentTab, mode } = this.state;
@@ -179,6 +187,7 @@ export default class BillList extends React.Component {
               </Menu.ItemGroup>
             </Menu>
           </DockPanel>
+          <NewBill />
         </Layout>
       </Layout>
     );

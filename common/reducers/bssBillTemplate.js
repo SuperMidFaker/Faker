@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/bss/bill/template', [
   'LOAD_BILL_TEMPLATES', 'LOAD_BILL_TEMPLATES_SUCCEED', 'LOAD_BILL_TEMPLATES_FAIL',
+  'LOAD_ALL_BILL_TEMPLATES', 'LOAD_ALL_BILL_TEMPLATES_SUCCEED', 'LOAD_ALL_BILL_TEMPLATES_FAIL',
   'TOGGLE_NEW_TEMPLATE_MODAL',
   'CREATE_TEMPLATE', 'CREATE_TEMPLATE_SUCCEED', 'CREATE_TEMPLATE_FAIL',
   'DELETE_TEMPLATES', 'DELETE_TEMPLATES_SUCCEED', 'DELETE_TEMPLATES_FAIL',
@@ -19,6 +20,7 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  billTemplates: [],
   templateListFilter: {
   },
   visibleNewTemplateModal: false,
@@ -42,6 +44,8 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.LOAD_BILL_TEMPLATES_SUCCEED:
       return { ...state, billTemplatelist: action.result.data };
+    case actionTypes.LOAD_ALL_BILL_TEMPLATES_SUCCEED:
+      return { ...state, billTemplates: action.result.data };
     case actionTypes.TOGGLE_NEW_TEMPLATE_MODAL:
       return { ...state, visibleNewTemplateModal: action.data };
     case actionTypes.LOAD_TEMPLATE_FEES:
@@ -77,6 +81,20 @@ export function loadBillTemplates(params) {
       endpoint: 'v1/bss/bill/templates/load',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadAllBillTemplates() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ALL_BILL_TEMPLATES,
+        actionTypes.LOAD_ALL_BILL_TEMPLATES_SUCCEED,
+        actionTypes.LOAD_ALL_BILL_TEMPLATES_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/templates/all/load',
+      method: 'get',
     },
   };
 }

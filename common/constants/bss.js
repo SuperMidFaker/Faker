@@ -9,3 +9,8 @@ export const FEE_TYPE = [
   { key: 'AP', text: '代垫费', tag: 'blue' },
   { key: 'SP', text: '特殊费用', tag: 'red' },
 ];
+
+export const BILL_TYPE = [
+  { key: 'buyerBill', text: '客户账单' },
+  { key: 'sellerBill', text: '服务商账单' },
+];
