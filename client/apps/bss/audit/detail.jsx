@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Col, Layout, Row, Tabs, Input, Select } from 'antd';
+import { Button, Col, Layout, Row, Tabs, Input, Select, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
@@ -11,8 +11,9 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { getAudit, deleteFee, updateFee, confirmAudit } from 'common/reducers/bssAudit';
+import { getAudit, deleteFee, updateFee, confirmAudits } from 'common/reducers/bssAudit';
 import { loadCurrencies } from 'common/reducers/cmsExpense';
+import { FEE_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 import './index.less';
 
@@ -24,13 +25,10 @@ const { TabPane } = Tabs;
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
-    username: state.account.username,
     currencies: state.cmsExpense.currencies,
-    audit: state.bssAudit.audit,
   }),
   {
-    getAudit, loadCurrencies, deleteFee, updateFee, confirmAudit,
+    getAudit, loadCurrencies, deleteFee, updateFee, confirmAudits,
   }
 )
 @connectNav({
@@ -76,22 +74,26 @@ export default class FeeSummaryDetail extends Component {
     title: '费用类型',
     dataIndex: 'fee_type',
     width: 100,
+    render: (o) => {
+      const type = FEE_TYPE.filter(fe => fe.key === o)[0];
+      return type ? <Tag color={type.tag}>{type.text}</Tag> : <span />;
+    },
   }, {
     title: '营收金额(人民币)',
-    dataIndex: 'base_amount',
+    dataIndex: 'settled_amount',
     width: 150,
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
           size="small"
           disabled
-          value={this.state.editItem.base_amount}
+          value={this.state.editItem.settled_amount}
         />);
       }
       return o;
     },
   }, {
-    title: '外币金额',
+    title: '金额',
     dataIndex: 'orig_amount',
     width: 150,
     render: (o, record) => {
@@ -105,7 +107,7 @@ export default class FeeSummaryDetail extends Component {
       return o;
     },
   }, {
-    title: '外币币制',
+    title: '币制',
     dataIndex: 'currency',
     width: 100,
     render: (o, record) => {
@@ -172,7 +174,7 @@ export default class FeeSummaryDetail extends Component {
   }]
   payColumns = [{
     title: '结算对象',
-    dataIndex: 'buyer_name',
+    dataIndex: 'seller_name',
     width: 180,
   }, {
     title: '费用名称',
@@ -181,22 +183,26 @@ export default class FeeSummaryDetail extends Component {
     title: '费用类型',
     dataIndex: 'fee_type',
     width: 100,
+    render: (o) => {
+      const type = FEE_TYPE.filter(fe => fe.key === o)[0];
+      return type ? <Tag color={type.tag}>{type.text}</Tag> : <span />;
+    },
   }, {
     title: '成本金额(人民币)',
-    dataIndex: 'base_amount',
+    dataIndex: 'settled_amount',
     width: 150,
     render: (o, record) => {
       if (this.state.editItem.id === record.id) {
         return (<Input
           size="small"
           disabled
-          value={this.state.editItem.base_amount}
+          value={this.state.editItem.settled_amount}
         />);
       }
       return o;
     },
   }, {
-    title: '外币金额',
+    title: '金额',
     dataIndex: 'orig_amount',
     width: 150,
     render: (o, record) => {
@@ -210,7 +216,7 @@ export default class FeeSummaryDetail extends Component {
       return o;
     },
   }, {
-    title: '外币币制',
+    title: '币制',
     dataIndex: 'currency',
     width: 100,
     render: (o, record) => {
@@ -280,21 +286,24 @@ export default class FeeSummaryDetail extends Component {
     let dataSource = [];
     if (dataType === 'receives') {
       dataSource = [...this.state.receives];
-      head.receivable_amount = (head.receivable_amount - row.sum_amount).toFixed(3);
-      head.profit_amount = (head.profit_amount - row.sum_amount).toFixed(3);
+      head.receivable_amount = (head.receivable_amount - row.settled_amount).toFixed(3);
+      head.profit_amount = (head.profit_amount - row.settled_amount).toFixed(3);
     } else {
       dataSource = [...this.state.pays];
-      head.payable_amount = (head.payable_amount - row.sum_amount).toFixed(3);
-      head.profit_amount = (head.profit_amount + row.sum_amount).toFixed(3);
+      head.payable_amount = (head.payable_amount - row.settled_amount).toFixed(3);
+      head.profit_amount = (head.profit_amount + row.settled_amount).toFixed(3);
     }
     const index = dataSource.findIndex(data => data.id === row.id);
     dataSource.splice(index, 1);
-    if (dataType === 'receives') {
-      this.setState({ receives: dataSource, head });
-    } else {
-      this.setState({ pays: dataSource, head });
-    }
-    this.props.deleteFee(row.id, row.sum_amount, dataType, this.props.params.orderRelNo);
+    this.props.deleteFee(row.id, dataType).then((result) => {
+      if (!result.error) {
+        if (dataType === 'receives') {
+          this.setState({ receives: dataSource, head });
+        } else {
+          this.setState({ pays: dataSource, head });
+        }
+      }
+    });
   }
   handleEdit = (row) => {
     this.setState({
@@ -309,23 +318,28 @@ export default class FeeSummaryDetail extends Component {
   handleColumnChange = (value, field) => {
     const editOne = { ...this.state.editItem };
     if (field === 'orig_amount') {
-      if (editOne.exchange_rate) {
-        editOne.base_amount = editOne.exchange_rate * value;
+      const amount = parseFloat(value);
+      if (!Number.isNaN(amount)) {
+        if (editOne.exchange_rate) {
+          editOne.settled_amount = editOne.exchange_rate * amount;
+        } else {
+          editOne.settled_amount = amount;
+        }
+        editOne[field] = amount;
       } else {
-        editOne.base_amount = Number(value);
-      }
-      const data = parseFloat(value);
-      if (!Number.isNaN(data)) {
-        editOne[field] = data;
+        editOne.orig_amount = null;
+        editOne.settled_amount = null;
       }
     }
     if (field === 'exchange_rate') {
-      if (editOne.orig_amount) {
-        editOne.base_amount = editOne.orig_amount * value;
-      }
-      const data = parseFloat(value);
-      if (!Number.isNaN(data)) {
-        editOne[field] = data;
+      const rate = parseFloat(value);
+      if (!Number.isNaN(rate)) {
+        if (editOne.orig_amount) {
+          editOne.settled_amount = editOne.orig_amount * rate;
+        }
+        editOne.exchange_rate = rate;
+      } else {
+        editOne[field] = null;
       }
     }
     if (field === 'currency') {
@@ -333,10 +347,10 @@ export default class FeeSummaryDetail extends Component {
       if (value) {
         const currency = currencies.find(curr => curr.currency === value);
         editOne.exchange_rate = currency.exchange_rate;
-        editOne.base_amount = editOne.orig_amount * currency.exchange_rate;
+        editOne.settled_amount = editOne.orig_amount * currency.exchange_rate;
       } else {
-        editOne.exchange_rate = '';
-        editOne.base_amount = editOne.orig_amount;
+        editOne.exchange_rate = null;
+        editOne.settled_amount = editOne.orig_amount;
       }
       editOne[field] = value;
     }
@@ -354,7 +368,7 @@ export default class FeeSummaryDetail extends Component {
       dataSource = [...this.state.pays];
     }
     const index = dataSource.findIndex(data => data.id === item.id);
-    const delta = item.base_amount - dataSource[index].base_amount;
+    const delta = item.settled_amount - dataSource[index].settled_amount;
     dataSource[index] = item;
     item.delta = delta;
     if (dataType === 'receives') {
@@ -380,7 +394,7 @@ export default class FeeSummaryDetail extends Component {
     }
   }
   handleConfirm = () => {
-    this.props.confirmAudit(this.props.params.orderRelNo).then((result) => {
+    this.props.confirmAudits(this.props.params.orderRelNo).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/audit');
       }

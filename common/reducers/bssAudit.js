@@ -8,7 +8,6 @@ const actionTypes = createActionTypes('@@welogix/bss/audit/', [
   'GET_AUDIT', 'GET_AUDIT_SUCCEED', 'GET_AUDIT_FAIL',
   'DELETE_FEE', 'DELETE_FEE_SUCCEED', 'DELETE_FEE_FAIL',
   'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
-  'CONFIRM_AUDIT', 'CONFIRM_AUDIT_SUCCEED', 'CONFIRM_AUDIT_FAIL',
 ]);
 
 const initialState = {
@@ -102,7 +101,7 @@ export function getAudit(sofOrderNo) {
   };
 }
 
-export function deleteFee(id, sumAmount, dataType, sofOrderNo) {
+export function deleteFee(id, dataType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -113,7 +112,7 @@ export function deleteFee(id, sumAmount, dataType, sofOrderNo) {
       endpoint: 'v1/bss/audit/fee/delete',
       method: 'post',
       data: {
-        id, sumAmount, dataType, sofOrderNo,
+        id, dataType,
       },
     },
   };
@@ -130,21 +129,6 @@ export function updateFee(item, dataType, sofOrderNo) {
       endpoint: 'v1/bss/audit/fee/update',
       method: 'post',
       data: { item, dataType, sofOrderNo },
-    },
-  };
-}
-
-export function confirmAudit(sofOrderNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CONFIRM_AUDIT,
-        actionTypes.CONFIRM_AUDIT_SUCCEED,
-        actionTypes.CONFIRM_AUDIT_FAIL,
-      ],
-      endpoint: 'v1/bss/audit/confirm',
-      method: 'post',
-      data: { sofOrderNo },
     },
   };
 }
