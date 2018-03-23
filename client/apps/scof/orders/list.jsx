@@ -13,7 +13,6 @@ import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -38,22 +37,6 @@ const { Content } = Layout;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-// 暂时由 CreatorSelect 触发获取list
-function fetchData({ state, dispatch }) {
-  const promises = [
-    // dispatch(loadOrders({
-    //   tenantId: state.account.tenantId,
-    //   pageSize: state.sofOrders.orders.pageSize,
-    //   current: state.sofOrders.orders.current,
-    //   filters: state.sofOrders.orderFilters,
-    //   partners: state.partner.partners,
-    // })),
-    dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
-  ];
-  return Promise.all(promises);
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -70,6 +53,7 @@ function fetchData({ state, dispatch }) {
   uploadRecords: state.uploadRecords.uploadRecords,
 }), {
   loadOrders,
+  loadPartners,
   removeOrder,
   setClientForm,
   acceptOrder,
@@ -116,7 +100,15 @@ export default class OrderList extends React.Component {
       flow_id: undefined,
     },
   }
-  componentWillMount() {
+  componentDidMount() {
+    const { query } = this.props.location;
+    if (query.shipmt_order_no) {
+      this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
+    }
+    this.props.loadPartners({ role: PARTNER_ROLES.CUS });
+    this.props.loadPartnerFlowList();
+    this.props.loadModelAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
+    this.props.loadRequireOrderTypes();
     const filters = {
       progress: 'all',
       transfer: 'all',
@@ -128,12 +120,18 @@ export default class OrderList extends React.Component {
       startDate: '',
       endDate: '',
     };
-    if (window.location.search.indexOf('dashboard') > 0 && window.localStorage && window.localStorage.scofOrderLists) {
-      const scofOrderLists = JSON.parse(window.localStorage.scofOrderLists);
-      filters.startDate = scofOrderLists.startDate;
-      filters.endDate = scofOrderLists.endDate;
-      filters.progress = scofOrderLists.progress;
-      filters.expedited = scofOrderLists.expedited;
+    if (window.localStorage) {
+      if (query.from === 'dashboard' && window.localStorage.scofOrderLists) {
+        const scofOrderLists = JSON.parse(window.localStorage.scofOrderLists);
+        filters.startDate = scofOrderLists.startDate;
+        filters.endDate = scofOrderLists.endDate;
+        filters.progress = scofOrderLists.progress;
+        filters.expedited = scofOrderLists.expedited;
+      }
+      if (window.localStorage.scofAdvancedSearchFieldsValue) {
+        const creatorObj = JSON.parse(window.localStorage.scofAdvancedSearchFieldsValue);
+        filters.creator = creatorObj.creator;
+      }
     }
     this.props.loadOrders({
       tenantId: this.props.tenantId,
@@ -142,15 +140,6 @@ export default class OrderList extends React.Component {
       filters,
     });
     this.props.hideDock();
-  }
-  componentDidMount() {
-    const { query } = this.props.location;
-    if (query.shipmt_order_no) {
-      this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
-    }
-    this.props.loadPartnerFlowList();
-    this.props.loadModelAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
-    this.props.loadRequireOrderTypes();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
@@ -453,7 +442,7 @@ export default class OrderList extends React.Component {
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
       <span />
-      <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
+      <CreatorSelect onChange={this.handleCreatorChange} />
       <RangePicker
         onChange={this.onDateChange}
         value={dateVal}

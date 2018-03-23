@@ -17,7 +17,7 @@ function fetchData({ dispatch, params }) {
 @connectFetch()(fetchData)
 export default class ImportManifestView extends React.Component {
   static propTypes = {
-    params: PropTypes.object,
+    params: PropTypes.shape({ billno: PropTypes.string.isRequired }),
     manifestSpinning: PropTypes.bool.isRequired,
   }
   render() {

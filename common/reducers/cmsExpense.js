@@ -419,7 +419,7 @@ export function getExpenseDetails(expenseNo) {
         actionTypes.LOAD_EXP_DETAILS_SUCCEED,
         actionTypes.LOAD_EXP_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cms/billing/expense/details',
+      endpoint: 'v1/cms/billing/expense/fees',
       method: 'get',
       params: { expenseNo },
     },

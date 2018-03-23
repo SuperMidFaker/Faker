@@ -59,7 +59,7 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'delegation'),
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
+    if (hasPermission(privileges, { module: 'clearance', feature: 'customs' })) {
       linkMenus.push({
         single: true,
         key: 'cms-customs',
@@ -67,6 +67,8 @@ export default class Clearance extends React.Component {
         icon: 'logixon icon-customs',
         text: formatMsg(intl, 'customsDecl'),
       });
+    }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'ciq' })) {
       linkMenus.push({
         single: true,
         key: 'cms-ciq',
