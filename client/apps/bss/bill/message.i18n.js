@@ -59,6 +59,18 @@ const messages = defineMessages({
     id: 'bss.bill.template.create',
     defaultMessage: '新建账单模板',
   },
+  templateSearchTips: {
+    id: 'bss.bill.search.tips',
+    defaultMessage: '模板名称/结算对象名称',
+  },
+  feeName: {
+    id: 'bss.bill.fee.name',
+    defaultMessage: '费用名称',
+  },
+  feeCodes: {
+    id: 'bss.bill.fee.codes',
+    defaultMessage: '费用项',
+  },
 });
 
 export default messages;
