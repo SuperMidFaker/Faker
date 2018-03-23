@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, DatePicker, Divider, Icon, Input, Layout, Menu, Select, Switch, message } from 'antd';
+import { Button, DatePicker, Divider, Icon, Input, Layout, Menu, Radio, Select, Switch, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ToolbarAction from 'client/components/ToolbarAction';
@@ -22,6 +22,8 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @connectFetch()()
 @injectIntl
@@ -268,20 +270,16 @@ export default class AuditList extends React.Component {
     const menuStack = [
       [
         {
-          key: 'g_view',
+          key: 'g_views',
           title: this.gmsg('views'),
           type: 'group',
           children: [
             {
-              key: 'table',
-              icon: 'table',
-              title: this.gmsg('tableView'),
-            },
-            {
-              key: 'board',
-              icon: 'layout',
-              title: this.gmsg('boardView'),
-              disabled: true,
+              key: 'viewRadioGroup',
+              extra: <RadioGroup defaultValue="table">
+                <RadioButton value="table"><Icon type="table" /> {this.gmsg('tableView')}</RadioButton>
+                <RadioButton value="board"><Icon type="layout" /> {this.gmsg('boardView')}</RadioButton>
+              </RadioGroup>,
             },
           ],
         },

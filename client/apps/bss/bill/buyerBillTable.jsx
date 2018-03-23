@@ -74,7 +74,7 @@ export default class BuyerBills extends React.Component {
     dataIndex: 'order_count',
     width: 100,
   }, {
-    title: '账单总金额',
+    title: '账单金额',
     dataIndex: 'bill_amount',
     width: 150,
   }, {
@@ -110,12 +110,13 @@ export default class BuyerBills extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span>
-          <RowAction icon="share-alt" onClick={this.handleSend} label="发送" row={record} />
+          <RowAction icon="mail" onClick={this.handleSend} label="发送" row={record} />
           <RowAction icon="edit" onClick={this.handleDetail} tooltip="修改账单" row={record} />
         </span>);
       } else if (record.status === 1) {
         return (<span>
           <RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />
+          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip="查看清单" row={record} />
         </span>);
       } else if (record.status === 2) {
         return (<span>
@@ -251,7 +252,7 @@ export default class BuyerBills extends React.Component {
     const totCol = (
       <Summary>
         <Summary.Item label="账单金额合计">{10000}</Summary.Item>
-        <Summary.Item label="确认金额合计">{6666}</Summary.Item>
+        <Summary.Item label="结算金额合计">{6666}</Summary.Item>
       </Summary>
     );
     return (

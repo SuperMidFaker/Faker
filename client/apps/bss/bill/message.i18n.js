@@ -39,13 +39,13 @@ const messages = defineMessages({
     id: 'bss.bill.status.reconciling',
     defaultMessage: '对账',
   },
-  statusAccepted: {
-    id: 'bss.bill.status.accepted',
-    defaultMessage: '已接受',
+  statusWriteOff: {
+    id: 'bss.bill.status.write.off',
+    defaultMessage: '核销',
   },
-  settledBills: {
-    id: 'bss.bill.settled',
-    defaultMessage: '结算完成的账单',
+  writtenOffBills: {
+    id: 'bss.bill.written.off',
+    defaultMessage: '核销完成的账单',
   },
   searchTips: {
     id: 'bss.bill.search.tips',

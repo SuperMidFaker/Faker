@@ -68,7 +68,7 @@ export default class ReceivableBillDetail extends Component {
               <Description term="账期">{bill.order_begin_date && moment(bill.order_begin_date).format('YYYY.MM.DD')} ~ {bill.order_end_date && moment(bill.order_end_date).format('YYYY.MM.DD')}</Description>
               <Description term="类型">{bill.bill_type}</Description>
               <Description term="订单数量">{bill.order_count}</Description>
-              <Description term="账单总金额">{bill.total_amount}</Description>
+              <Description term="账单金额">{bill.total_amount}</Description>
               <Description term="调整金额">{bill.adjusted_amount}</Description>
               <Description term="最终结算金额">{bill.final_amount}</Description>
             </DescriptionList>

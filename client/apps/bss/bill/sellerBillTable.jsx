@@ -74,7 +74,7 @@ export default class BuyerBills extends React.Component {
     dataIndex: 'order_count',
     width: 100,
   }, {
-    title: '账单总金额',
+    title: '账单金额',
     dataIndex: 'bill_amount',
     width: 150,
   }, {
@@ -251,7 +251,7 @@ export default class BuyerBills extends React.Component {
     const totCol = (
       <Summary>
         <Summary.Item label="账单金额合计">{10000}</Summary.Item>
-        <Summary.Item label="确认金额合计">{6666}</Summary.Item>
+        <Summary.Item label="结算金额合计">{6666}</Summary.Item>
       </Summary>
     );
     return (

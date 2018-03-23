@@ -143,13 +143,13 @@ export default class BillList extends React.Component {
                 <Menu.Item key="reconciling">
                   <Icon type="swap" /> {this.msg('statusReconciling')}
                 </Menu.Item>
-                <Menu.Item key="accepted">
-                  <Icon type="check-square-o" /> {this.msg('statusAccepted')}
+                <Menu.Item key="writeOff">
+                  <Icon type="check-square-o" /> {this.msg('statusWriteOff')}
                 </Menu.Item>
               </Menu.ItemGroup>
               <Divider />
-              <Menu.Item key="settledBills">
-                {this.msg('settledBills')}
+              <Menu.Item key="writtenOffBills">
+                {this.msg('writtenOffBills')}
               </Menu.Item>
             </Menu>
           </Drawer>
