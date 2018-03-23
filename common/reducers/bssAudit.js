@@ -5,6 +5,9 @@ const actionTypes = createActionTypes('@@welogix/bss/audit/', [
   'LOAD_AUDITS', 'LOAD_AUDITS_SUCCEED', 'LOAD_AUDITS_FAIL',
   'CONFIRM_AUDITS', 'CONFIRM_AUDITS_SUCCEED', 'CONFIRM_AUDITS_FAIL',
   'REDO_AUDITS', 'REDO_AUDITS_SUCCEED', 'REDO_AUDITS_FAIL',
+  'GET_AUDIT', 'GET_AUDIT_SUCCEED', 'GET_AUDIT_FAIL',
+  'DELETE_FEE', 'DELETE_FEE_SUCCEED', 'DELETE_FEE_FAIL',
+  'UPDATE_FEE', 'UPDATE_FEE_SUCCEED', 'UPDATE_FEE_FAIL',
 ]);
 
 const initialState = {
@@ -79,6 +82,53 @@ export function redoAudits(sofOrderNos) {
       endpoint: 'v1/bss/audits/redo',
       method: 'post',
       data: { sofOrderNos },
+    },
+  };
+}
+
+export function getAudit(sofOrderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_AUDIT,
+        actionTypes.GET_AUDIT_SUCCEED,
+        actionTypes.GET_AUDIT_FAIL,
+      ],
+      endpoint: 'v1/bss/audit/get',
+      method: 'get',
+      params: { sofOrderNo },
+    },
+  };
+}
+
+export function deleteFee(id, dataType) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_FEE,
+        actionTypes.DELETE_FEE_SUCCEED,
+        actionTypes.DELETE_FEE_FAIL,
+      ],
+      endpoint: 'v1/bss/audit/fee/delete',
+      method: 'post',
+      data: {
+        id, dataType,
+      },
+    },
+  };
+}
+
+export function updateFee(item, dataType, sofOrderNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_FEE,
+        actionTypes.UPDATE_FEE_SUCCEED,
+        actionTypes.UPDATE_FEE_FAIL,
+      ],
+      endpoint: 'v1/bss/audit/fee/update',
+      method: 'post',
+      data: { item, dataType, sofOrderNo },
     },
   };
 }
