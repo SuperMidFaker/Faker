@@ -19,10 +19,10 @@ function fetchData({ dispatch, params }) {
   { }
 )
 @connectFetch()(fetchData)
-@withPrivilege({ module: 'clearance', feature: 'import', aciton: 'create' })
+@withPrivilege({ module: 'clearance', feature: 'delegation', aciton: 'edit' })
 export default class ImportManifestMake extends React.Component {
   static propTypes = {
-    params: PropTypes.object,
+    params: PropTypes.shape({ billno: PropTypes.string.isRequired }),
     manifestSpinning: PropTypes.bool.isRequired,
   }
   render() {
