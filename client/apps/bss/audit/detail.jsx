@@ -323,7 +323,8 @@ export default class FeeSummaryDetail extends Component {
         if (editOne.exchange_rate) {
           editOne.settled_amount = editOne.exchange_rate * amount;
         } else {
-          editOne.settled_amount = amount;
+          editOne.settled_amount = editOne.base_amount;
+          editOne.sum_amount = editOne.base_amount;
         }
         editOne[field] = amount;
       } else {
@@ -394,7 +395,7 @@ export default class FeeSummaryDetail extends Component {
     }
   }
   handleConfirm = () => {
-    this.props.confirmAudits(this.props.params.orderRelNo).then((result) => {
+    this.props.confirmAudits([this.props.params.orderRelNo]).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/audit');
       }
