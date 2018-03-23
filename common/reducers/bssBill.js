@@ -33,7 +33,6 @@ const initialState = {
   templateFeeListLoading: false,
   templateFeeListFilter: {
   },
-  templateId: null,
 };
 
 export default function reducer(state = initialState, action) {
@@ -54,7 +53,6 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         templateFeeListFilter: JSON.parse(action.params.filter),
-        templateId: action.params.templateId,
         templateFeeListLoading: true,
       };
     case actionTypes.LOAD_TEMPLATE_FEES_SUCCEED:
