@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message, Select } from 'antd';
-import { toggleNewTemplateModal, createTemplate, reloadTemplateList } from 'common/reducers/bssBill';
+import { toggleNewTemplateModal, createTemplate } from 'common/reducers/bssBill';
 import { formatMsg } from '../message.i18n';
 
 
@@ -20,7 +20,7 @@ const formItemLayout = {
     visible: state.bssBill.visibleNewTemplateModal,
     partners: state.partner.partners,
   }),
-  { toggleNewTemplateModal, createTemplate, reloadTemplateList }
+  { toggleNewTemplateModal, createTemplate }
 )
 @Form.create()
 export default class StatementTemplate extends React.Component {
@@ -37,26 +37,15 @@ export default class StatementTemplate extends React.Component {
   }
   handleOk = () => {
     const data = this.props.form.getFieldsValue();
-    const settle = {
-      settle_tenant_id: null,
-      settle_partner_id: null,
-      settle_name: null,
-    };
-    if (data.partnerId) {
-      const partner = this.props.partners.filter(pt => pt.id === Number(data.partnerId))[0];
-      settle.settle_tenant_id = partner.partner_tenant_id;
-      settle.settle_partner_id = partner.id;
-      settle.settle_name = partner.name;
-    }
     this.props.createTemplate({
-      ...settle, name: data.name,
+      partnerId: data.partnerId,
+      name: data.name,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
         this.props.toggleNewTemplateModal(false);
-        this.props.reloadTemplateList();
-        const link = `/bss/bill/template/fees/${result.data}`;
+        const link = `/bss/bill/template/${result.data}/fees`;
         this.context.router.push(link);
       }
     });

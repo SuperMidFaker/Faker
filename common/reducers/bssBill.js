@@ -30,8 +30,8 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
-  feeListLoading: false,
-  feeListFilter: {
+  templateFeeListLoading: false,
+  templateFeeListFilter: {
   },
   templateId: null,
 };
@@ -53,14 +53,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TEMPLATE_FEES:
       return {
         ...state,
-        feeListFilter: JSON.parse(action.params.filter),
+        templateFeeListFilter: JSON.parse(action.params.filter),
         templateId: action.params.templateId,
-        feeListLoading: true,
+        templateFeeListLoading: true,
       };
     case actionTypes.LOAD_TEMPLATE_FEES_SUCCEED:
-      return { ...state, feeListLoading: false, templateFeelist: action.result.data };
+      return { ...state, templateFeeListLoading: false, templateFeelist: action.result.data };
     case actionTypes.LOAD_TEMPLATE_FEES_FAIL:
-      return { ...state, feeListLoading: false };
+      return { ...state, templateFeeListLoading: false };
     default:
       return state;
   }

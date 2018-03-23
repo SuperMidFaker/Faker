@@ -65,7 +65,7 @@ export default class BillTemplates extends React.Component {
     this.handleTemplatesLoad(1, filter);
   }
   handleEdit = (row) => {
-    const link = `/bss/bill/template/fees/${row.id}`;
+    const link = `/bss/bill/template/${row.id}/fees`;
     this.context.router.push(link);
   }
   handleDelete = (row) => {

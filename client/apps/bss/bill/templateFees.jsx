@@ -22,7 +22,7 @@ function fetchData({ params, dispatch, state }) {
     templateId: params.templateId,
     pageSize: state.bssBill.templateFeelist.pageSize,
     current: state.bssBill.templateFeelist.current,
-    filter: JSON.stringify(state.bssBill.feeListFilter),
+    filter: JSON.stringify(state.bssBill.templateFeeListFilter),
   }));
 }
 
@@ -31,9 +31,8 @@ function fetchData({ params, dispatch, state }) {
 @connect(
   state => ({
     templateFeelist: state.bssBill.templateFeelist,
-    loading: state.bssBill.feeListLoading,
-    listFilter: state.bssBill.feeListFilter,
-    templateId: state.bssBill.templateId,
+    loading: state.bssBill.templateFeeListLoading,
+    listFilter: state.bssBill.templateFeeListFilter,
     billTemplatelist: state.bssBill.billTemplatelist,
     allFeeElements: state.bssFeeSettings.allFeeElements,
   }),
@@ -72,9 +71,9 @@ export default class TemplateFees extends Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleFeesLoad = (currentPage, filter) => {
-    const { listFilter, templateId, templateFeelist: { pageSize, current } } = this.props;
+    const { listFilter, params, templateFeelist: { pageSize, current } } = this.props;
     this.props.loadTemplateFees({
-      templateId,
+      templateId: params.templateId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       current: currentPage || current,
@@ -130,7 +129,7 @@ export default class TemplateFees extends Component {
       this.props.addTemplateFee({
         fee_name: feeName,
         fee_codes: feeCodes,
-        templateId: this.props.templateId,
+        templateId: this.props.params.templateId,
       }).then((result) => {
         if (!result.error) {
           this.handleFeesLoad(1);
@@ -168,7 +167,7 @@ export default class TemplateFees extends Component {
       loading,
       form: { getFieldDecorator },
       allFeeElements,
-      templateId,
+      params: { templateId },
       billTemplatelist,
     } = this.props;
     const {
