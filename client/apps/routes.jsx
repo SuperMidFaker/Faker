@@ -492,7 +492,7 @@ export default(store) => {
             </Route>
             <Route path="bill">
               <IndexRoute component={BSSBill.List} />
-              <Route path="check/:billNo" component={BSSBill.Check} />
+              <Route path="reconcile/:billNo" component={BSSBill.Reconcile} />
               <Route path="templates" component={BSSBill.Templates} />
               <Route path=":billNo" component={BSSBill.Detail} />
             </Route>

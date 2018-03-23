@@ -5,6 +5,7 @@ import { Button, Layout, List, Card, message } from 'antd';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadBillTemplates, toggleNewTemplateModal } from 'common/reducers/bssBill';
+import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -25,6 +26,10 @@ const { Content } = Layout;
     toggleNewTemplateModal, loadBillTemplates, loadPartners,
   }
 )
+@connectNav({
+  depth: 3,
+  moduleName: 'bss',
+})
 export default class BillTemplates extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

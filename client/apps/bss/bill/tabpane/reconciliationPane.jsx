@@ -17,7 +17,7 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
   }),
   { }
 )
-export default class StatementsPane extends Component {
+export default class ReconciliationPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
 
@@ -68,27 +68,29 @@ export default class StatementsPane extends Component {
       title: '客户单号',
       dataIndex: 'cust_order_no',
       width: 150,
-    /* 此处加入各费用项 */
     }, {
-      title: '结算金额',
+      title: '对方金额',
       dataIndex: 'buyer_amount',
+      width: 150,
+      align: 'right',
+    }, {
+      title: '我方金额',
+      dataIndex: 'seller_amount',
+      width: 150,
+      align: 'right',
+    }, {
+      title: '差异金额',
+      dataIndex: 'diff_amount',
+      width: 150,
+      align: 'right',
+    }, {
+      title: '最终认可金额',
+      dataIndex: 'final_amount',
       width: 150,
       align: 'right',
     }, {
       title: '备注',
       dataIndex: 'remark',
-    }, {
-      title: '订单日期',
-      width: 150,
-      dataIndex: 'order_date',
-    }, {
-      title: '审核时间',
-      dataIndex: 'auditted_date',
-      width: 150,
-    }, {
-      title: '审核人员',
-      dataIndex: 'auditted_by',
-      width: 150,
     }, {
       title: '操作',
       width: 90,
@@ -96,11 +98,12 @@ export default class StatementsPane extends Component {
       render: (o, record) => {
         if (record.status === 0) {
           return (<span>
+            <RowAction icon="like-o" onClick={this.handleAccept} tooltip={this.msg('accept')} row={record} />
             <RowAction icon="edit" onClick={this.handleEdit} tooltip={this.gmsg('edit')} row={record} />
           </span>);
         } else if (record.status === 1) {
           return (<span>
-            <RowAction icon="eye-o" onClick={this.handleEdit} tooltip={this.gmsg('view')} row={record} />
+            <RowAction icon="edit" onClick={this.handleEdit} tooltip={this.gmsg('edit')} row={record} />
           </span>);
         }
         return null;

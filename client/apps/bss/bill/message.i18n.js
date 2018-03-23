@@ -35,8 +35,8 @@ const messages = defineMessages({
     id: 'bss.bill.status.draft',
     defaultMessage: '草稿',
   },
-  statusChecking: {
-    id: 'bss.bill.status.checking',
+  statusReconciling: {
+    id: 'bss.bill.status.reconciling',
     defaultMessage: '对账',
   },
   statusAccepted: {
@@ -49,11 +49,11 @@ const messages = defineMessages({
   },
   searchTips: {
     id: 'bss.bill.search.tips',
-    defaultMessage: '业务编号/客户编号',
+    defaultMessage: '业务编号/客户单号',
   },
   billStatementTemplateList: {
     id: 'bss.bill.staetment.template.list',
-    defaultMessage: '账单模板列表',
+    defaultMessage: '账单模板',
   },
   newBillTemplate: {
     id: 'bss.bill.template.create',

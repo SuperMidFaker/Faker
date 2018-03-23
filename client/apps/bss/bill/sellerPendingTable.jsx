@@ -69,6 +69,7 @@ export default class SellerPendingTable extends React.Component {
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 130,
   }]
   dataSource = new DataTable.DataSource({
@@ -135,7 +136,7 @@ export default class SellerPendingTable extends React.Component {
     this.context.router.push(link);
   }
   handleCheck = (row) => {
-    const link = `/bss/bill/check/${row.order_rel_no}`;
+    const link = `/bss/bill/reconcile/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -157,7 +158,7 @@ export default class SellerPendingTable extends React.Component {
       <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
-        placeholder="结算对象"
+        placeholder="服务商"
         optionFilterProp="children"
         style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
@@ -177,7 +178,7 @@ export default class SellerPendingTable extends React.Component {
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="账单金额合计">{this.state.totalAmount}</Summary.Item>
+        <Summary.Item label="未入账单金额合计">{this.state.totalAmount}</Summary.Item>
       </Summary>
     );
     return (

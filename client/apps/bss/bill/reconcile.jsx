@@ -9,7 +9,7 @@ import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
-import StatementsPane from './tabpane/statementsPane';
+import ReconciliationPane from './tabpane/reconciliationPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -94,11 +94,14 @@ export default class ReceivableBillDetail extends Component {
           <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="unaccepted" onChange={this.handleTabChange}>
-                <TabPane tab="未认可" key="unaccepted" >
-                  <StatementsPane status="unaccepted" />
+                <TabPane tab="待我方认可" key="unaccepted" >
+                  <ReconciliationPane status="unaccepted" />
                 </TabPane>
-                <TabPane tab="已认可" key="accepted" >
-                  <StatementsPane status="accepted" />
+                <TabPane tab="需对方认可" key="accepted" >
+                  <ReconciliationPane status="accepted" />
+                </TabPane>
+                <TabPane tab="双方已认可" key="bothAccepted" >
+                  <ReconciliationPane status="bothAccepted" />
                 </TabPane>
               </Tabs>
             </MagicCard>
