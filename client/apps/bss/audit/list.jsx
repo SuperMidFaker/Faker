@@ -110,7 +110,7 @@ export default class AuditList extends React.Component {
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
-    align: 'right',
+    className: 'table-col-ops',
     fixed: 'right',
     width: 120,
     render: (o, record) => {

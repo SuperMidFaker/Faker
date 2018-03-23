@@ -61,7 +61,7 @@ export default class BillList extends React.Component {
     this.context.router.push(link);
   }
   handleCheck = (row) => {
-    const link = `/bss/bill/check/${row.order_rel_no}`;
+    const link = `/bss/bill/reconcile/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   toggleExtra = () => {
@@ -140,8 +140,8 @@ export default class BillList extends React.Component {
                 <Menu.Item key="draft">
                   <Icon type="inbox" /> {this.msg('statusDraft')}
                 </Menu.Item>
-                <Menu.Item key="checking">
-                  <Icon type="swap" /> {this.msg('statusChecking')}
+                <Menu.Item key="reconciling">
+                  <Icon type="swap" /> {this.msg('statusReconciling')}
                 </Menu.Item>
                 <Menu.Item key="accepted">
                   <Icon type="check-square-o" /> {this.msg('statusAccepted')}

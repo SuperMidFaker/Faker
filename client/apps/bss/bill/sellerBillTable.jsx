@@ -41,18 +41,18 @@ export default class BuyerBills extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
-    title: '账单编号',
-    dataIndex: 'bill_no',
+    title: '账单名称',
+    dataIndex: 'bill_title',
     width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '开始日期',
+    title: '起始日期',
     dataIndex: 'start_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
-    title: '结束日期',
+    title: '截止日期',
     dataIndex: 'end_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
@@ -74,41 +74,38 @@ export default class BuyerBills extends React.Component {
     dataIndex: 'order_count',
     width: 100,
   }, {
-    title: '账单金额',
+    title: '账单总金额',
     dataIndex: 'bill_amount',
     width: 150,
   }, {
-    title: '开票金额',
+    title: '调整金额',
     dataIndex: 'invoiced_amount',
     width: 150,
   }, {
-    title: '实收金额',
+    title: '最终结算金额',
     dataIndex: 'payment_rec_amount',
     width: 150,
   }, {
-    title: '对账时间',
-    dataIndex: 'confirmed_date',
+    title: '最后更新时间',
+    dataIndex: 'last_updated_date',
     width: 150,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
   }, {
-    title: '对账人员',
-    dataIndex: 'confirmed_by',
+    title: '更新人员',
+    dataIndex: 'last_updated_by',
     width: 80,
   }, {
-    title: '销账时间',
-    dataIndex: 'written_date',
+    title: '创建日期',
+    dataIndex: 'created_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
-    title: '销账人员',
-    dataIndex: 'written_by',
-    width: 80,
-  }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
     fixed: 'right',
+    className: 'table-col-ops',
     width: 130,
     render: (o, record) => {
       if (record.status === 0) {
@@ -144,7 +141,7 @@ export default class BuyerBills extends React.Component {
     this.context.router.push(link);
   }
   handleCheck = (row) => {
-    const link = `/bss/bill/check/${row.order_rel_no}`;
+    const link = `/bss/bill/reconcile/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -157,22 +154,22 @@ export default class BuyerBills extends React.Component {
     const { loading } = this.props;
     const mockData = [{
       id: 1,
-      order_rel_no: '1',
+      bill_title: '1',
       type: 'FPB',
       status: 0,
     }, {
       id: 2,
-      order_rel_no: '2',
+      bill_title: '2',
       type: 'FPB',
       status: 1,
     }, {
       id: 3,
-      order_rel_no: '3',
+      bill_title: '3',
       type: 'FPB',
       status: 2,
     }, {
       id: 4,
-      order_rel_no: '4',
+      bill_title: '4',
       type: 'BPB',
       status: 0,
     }, {
@@ -234,7 +231,7 @@ export default class BuyerBills extends React.Component {
       <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
-        placeholder="结算对象"
+        placeholder="服务商"
         optionFilterProp="children"
         style={{ width: 160 }}
         dropdownMatchSelectWidth={false}
