@@ -46,7 +46,6 @@ export default class FeeSummaryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    fullscreen: true,
     head: {},
     receives: [],
     pays: [],
@@ -276,11 +275,6 @@ export default class FeeSummaryDetail extends Component {
       </span>);
     },
   }]
-<<<<<<< HEAD
-=======
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleDelete = (row, dataType) => {
     const head = { ...this.state.head };
     let dataSource = [];
@@ -392,7 +386,6 @@ export default class FeeSummaryDetail extends Component {
       }
     });
   }
->>>>>>> auditDetail
   render() {
     const { head, receives, pays } = this.state;
     return (
@@ -449,7 +442,6 @@ export default class FeeSummaryDetail extends Component {
                 </TabPane>
                 <TabPane tab="应付明细" key="putawayDetails" >
                   <DataPane
-
                     columns={this.payColumns}
                     dataSource={pays}
                     rowKey="id"
