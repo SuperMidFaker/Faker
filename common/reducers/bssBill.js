@@ -7,6 +7,10 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'TOGGLE_NEW_BILL_MODAL',
   'CREATE_BILL', 'CREATE_BILL_SUCCEED', 'CREATE_BILL_FAIL',
   'LOAD_BILL_STATISTICS', 'LOAD_BILL_STATISTICS_SUCCEED', 'LOAD_BILL_STATISTICS_FAIL',
+  'SEND_BILL', 'SEND_BILL_SUCCEED', 'SEND_BILL_FAIL',
+  'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
+  'RECALL_BILL', 'RECALL_BILL_SUCCEED', 'RECALL_BILL_FAIL',
+  'ACCEPT_BILL', 'ACCEPT_BILL_SUCCEED', 'ACCEPT_BILL_FAIL',
 ]);
 
 const initialState = {
@@ -23,7 +27,9 @@ const initialState = {
   billListLoading: false,
   visibleNewBillModal: false,
   reload: false,
-  statistics: {},
+  statistics: {
+    total_amount: 0,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -103,6 +109,66 @@ export function createBill(data) {
         actionTypes.CREATE_BILL_FAIL,
       ],
       endpoint: 'v1/bss/bill/new',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function sendBill(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEND_BILL,
+        actionTypes.SEND_BILL_SUCCEED,
+        actionTypes.SEND_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/send',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function deleteBills(billNos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_BILL,
+        actionTypes.DELETE_BILL_SUCCEED,
+        actionTypes.DELETE_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bills/delete',
+      method: 'post',
+      data: { billNos },
+    },
+  };
+}
+
+export function recallBill(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECALL_BILL,
+        actionTypes.RECALL_BILL_SUCCEED,
+        actionTypes.RECALL_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/recall',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function acceptBill(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACCEPT_BILL,
+        actionTypes.ACCEPT_BILL_SUCCEED,
+        actionTypes.ACCEPT_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/accept',
       method: 'post',
       data,
     },
