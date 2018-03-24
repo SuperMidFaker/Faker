@@ -15,7 +15,6 @@ import { loadShipDetails, exportNormalExitBySo } from 'common/reducers/cwmOutbou
     reload: state.cwmOutbound.outboundReload,
     outboundHead: state.cwmOutbound.outboundFormHead,
     shipDetails: state.cwmOutbound.shipDetails,
-    pickDetails: state.cwmOutbound.pickDetails,
   }),
   { loadShipDetails, exportNormalExitBySo }
 )
@@ -114,7 +113,7 @@ export default class ShippingDetailsPane extends React.Component {
     render: o => o && moment(o).format('MM.DD HH:mm'),
   }]
   render() {
-    const { shipDetails, pickDetails } = this.props;
+    const { shipDetails } = this.props;
     const dataSource = shipDetails.filter((item) => {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
@@ -130,7 +129,6 @@ export default class ShippingDetailsPane extends React.Component {
     };
     return (
       <DataPane
-
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -142,7 +140,7 @@ export default class ShippingDetailsPane extends React.Component {
           <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
           <DataPane.Actions>
             {shipDetails.length > 0 &&
-            pickDetails.filter(pd => !pd.bonded && pd.ftz_ent_filed_id).length > 0 &&
+            shipDetails.filter(pd => !pd.bonded && pd.ftz_ent_filed_id).length > 0 &&
             <Button type="primary" onClick={this.handleExportExitVoucher}>导出出区凭单</Button>}
           </DataPane.Actions>
         </DataPane.Toolbar>

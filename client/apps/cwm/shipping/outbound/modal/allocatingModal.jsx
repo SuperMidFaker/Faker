@@ -5,20 +5,20 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox, Popover } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { format } from 'client/common/i18n/helpers';
 import TrimSpan from 'client/components/trimSpan';
+import LocationSelect from 'client/apps/cwm/common/locationSelect';
+import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
+import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import messages from '../../message.i18n';
-import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
-import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
-import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import AllocatedPopover from '../../../common/popover/allocatedPopover';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -81,13 +81,18 @@ export default class AllocatingModal extends Component {
         nextProps.outboundProduct.product_no, nextProps.defaultWhse.code,
         nextProps.outboundHead.owner_partner_id
       );
-      this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
+      this.props.loadAllocatedDetails(
+        nextProps.outboundProduct.outbound_no,
+        nextProps.outboundProduct.seq_no
+      );
       this.setState({
         outboundProduct: nextProps.outboundProduct,
       });
       if (nextProps.outboundHead.bonded === 0) {
-        const filterInventoryColumns = this.inventoryColumns.filter(col => !this.bondedColumns[col.dataIndex]);
-        const filterAllocatedColumns = this.allocatedColumns.filter(col => !this.bondedColumns[col.dataIndex]);
+        const filterInventoryColumns = this.inventoryColumns.filter(col =>
+          !this.bondedColumns[col.dataIndex]);
+        const filterAllocatedColumns = this.allocatedColumns.filter(col =>
+          !this.bondedColumns[col.dataIndex]);
         this.setState({ filterInventoryColumns, filterAllocatedColumns });
       }
     }
@@ -128,7 +133,7 @@ export default class AllocatingModal extends Component {
       let disabled = !this.props.editable || !record.inbound_timestamp; // 不可编辑 或 未入库时disable
       let reason = '';
       if (!disabled) {
-        const outboundHead = this.props.outboundHead;
+        const { outboundHead } = this.props;
         if (outboundHead.bonded === 0) {
           disabled = record.bonded;
           reason = disabled ? '保税库存' : '';
@@ -164,20 +169,12 @@ export default class AllocatingModal extends Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: (o) => {
-      if (o) {
-        return <Button size="small">{o}</Button>;
-      }
-    },
+    render: o => o && <Button size="small">{o}</Button>,
   }, {
     title: '库位',
     dataIndex: 'location',
     width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
+    render: o => o && <Tag>{o}</Tag>,
   }, {
     title: '库别',
     width: 100,
@@ -269,13 +266,11 @@ export default class AllocatingModal extends Component {
   }, {
     title: '进区凭单号',
     dataIndex: 'ftz_ent_no',
-    width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
+    width: 180,
   }, {
     title: '报关单号',
     dataIndex: 'in_cus_decl_no',
-    width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
+    width: 180,
   }]
 
   allocatedColumns = [{
@@ -292,20 +287,12 @@ export default class AllocatingModal extends Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: (o) => {
-      if (o) {
-        return <Button size="small">{o}</Button>;
-      }
-    },
+    render: o => o && <Button size="small">{o}</Button>,
   }, {
     title: '库位',
     dataIndex: 'location',
     width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
+    render: o => o && <Tag>{o}</Tag>,
   }, {
     title: '库别',
     width: 120,
@@ -351,18 +338,20 @@ export default class AllocatingModal extends Component {
   }, {
     title: '进区凭单号',
     dataIndex: 'ftz_ent_no',
-    width: 150,
+    width: 180,
   }, {
     title: '报关单号',
     dataIndex: 'in_cus_decl_no',
-    width: 150,
+    width: 180,
   }, {
     dataIndex: 'spacer',
+    width: 100,
   }]
   handleAllocChange = (value, traceId) => {
     const allocValue = parseFloat(value);
-    if (!isNaN(allocValue)) {
-      if (allocValue > this.state.inventoryData.find(data => data.trace_id === traceId).avail_pack_qty) {
+    if (!Number.isNaN(allocValue)) {
+      if (allocValue > this.state.inventoryData.find(data =>
+        data.trace_id === traceId).avail_pack_qty) {
         message.info('分配数量不能大于可用数量');
       } else {
         const inventoryData = [...this.state.inventoryData];
@@ -383,7 +372,8 @@ export default class AllocatingModal extends Component {
     const allocatedOne = { ...inventoryData.find(data => data.trace_id === traceId) };
     const index = inventoryData.findIndex(data => data.trace_id === traceId);
     const allocatedAmount = allocatedData.reduce((pre, cur) => (pre + cur.allocated_qty), 0);
-    const currAlloc = allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty;
+    const currAlloc = allocatedOne.allocated_qty ? allocatedOne.allocated_qty
+      : allocatedOne.avail_qty;
     if (allocatedAmount + currAlloc > this.props.outboundProduct.order_qty) {
       message.info('分配数量不能大于订单总数');
       return;
@@ -504,8 +494,14 @@ export default class AllocatingModal extends Component {
           } else {
             message.info('保存成功');
             const { outboundProduct, defaultWhse, outboundHead } = this.props;
-            this.props.loadProductInboundDetail(outboundProduct.product_no, defaultWhse.code, outboundHead.owner_partner_id);
-            this.props.loadAllocatedDetails(outboundProduct.outbound_no, outboundProduct.seq_no);
+            this.props.loadProductInboundDetail(
+              outboundProduct.product_no,
+              defaultWhse.code, outboundHead.owner_partner_id
+            );
+            this.props.loadAllocatedDetails(
+              outboundProduct.outbound_no,
+              outboundProduct.seq_no
+            );
           }
         });
       } else {
@@ -527,7 +523,7 @@ export default class AllocatingModal extends Component {
       muteInvColumns[value] = true;
     }
     const filters = { ...this.props.filters, searchType: value || 'external_lot_no' };
-    const bonded = this.props.outboundHead.bonded;
+    const { bonded } = this.props.outboundHead;
     const filterInventoryColumns = this.inventoryColumns.filter((col) => {
       let filter = true;
       if (bonded === 0) {
@@ -540,9 +536,9 @@ export default class AllocatingModal extends Component {
       filters,
     });
   }
-  handleSearchContentChange = (e) => {
+  handleSearchContentChange = (ev) => {
     this.setState({
-      searchContent: e.target.value,
+      searchContent: ev.target.value || '',
     });
   }
   handleSearchDetails = (type, value, dataString) => {
@@ -580,7 +576,10 @@ export default class AllocatingModal extends Component {
       outboundProduct, defaultWhse, outboundHead, outboundProducts,
     } = this.props;
     const newOutboundProduct = outboundProducts.find(pro => pro.seq_no === value);
-    this.props.loadProductInboundDetail(newOutboundProduct.product_no, defaultWhse.code, outboundHead.owner_partner_id);
+    this.props.loadProductInboundDetail(
+      newOutboundProduct.product_no,
+      defaultWhse.code, outboundHead.owner_partner_id
+    );
     this.props.loadAllocatedDetails(outboundProduct.outbound_no, value);
     this.setState({
       outboundProduct: newOutboundProduct,
@@ -592,7 +591,13 @@ export default class AllocatingModal extends Component {
       outboundProduct, filterInventoryColumns, filterAllocatedColumns, filters,
     } = this.state;
     const searchOptions = (
-      <Select value={filters.searchType} allowClear style={{ width: 120 }} onSelect={this.handleSelectChangeType} onChange={this.handleSelectChangeType}>
+      <Select
+        value={filters.searchType}
+        allowClear
+        style={{ width: 120 }}
+        onSelect={this.handleSelectChangeType}
+        onChange={this.handleSelectChangeType}
+      >
         <Option value="external_lot_no">批次号</Option>
         <Option value="serial_no">序列号</Option>
         <Option value="po_no">采购订单号</Option>
@@ -655,8 +660,14 @@ export default class AllocatingModal extends Component {
         <Card bodyStyle={{ paddingBottom: 16 }} >
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
-              商品货号：<Select style={{ width: 200 }} value={outboundProduct.product_no} onChange={this.handleSeqNoChange}>
-                {outboundProducts.map(pro => <Option value={pro.seq_no} key={pro.seq_no}>{pro.product_no}</Option>)}
+              商品货号：
+              <Select
+                style={{ width: 200 }}
+                value={outboundProduct.product_no}
+                onChange={this.handleSeqNoChange}
+              >
+                {outboundProducts.map(pro => (<Option value={pro.seq_no} key={pro.seq_no}>
+                  {pro.product_no}</Option>))}
               </Select>
             </Col>
             <Col sm={12} md={8} lg={6}>
@@ -668,7 +679,11 @@ export default class AllocatingModal extends Component {
             <Col sm={12} md={8} lg={6}>
               <InfoItem
                 label="已分配总数"
-                field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} expectQty={outboundProduct.order_qty} />}
+                field={<QuantityInput
+                  packQty={outboundProduct.alloc_pack_qty}
+                  pcsQty={outboundProduct.alloc_qty}
+                  expectQty={outboundProduct.order_qty}
+                />}
               />
             </Col>
             {outboundHead.bonded === 1 && <Col sm={12} md={8} lg={2}>
@@ -682,7 +697,11 @@ export default class AllocatingModal extends Component {
               size="middle"
               columns={filterInventoryColumns}
               dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))}
-              scroll={{ x: filterInventoryColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+              scroll={{
+ x: filterInventoryColumns.reduce((acc, cur) =>
+                acc + (cur.width ? cur.width : 240), 0),
+y: this.state.scrollY,
+}}
               loading={this.props.inventoryDataLoading}
               rowKey="trace_id"
             />
@@ -694,7 +713,11 @@ export default class AllocatingModal extends Component {
               size="middle"
               columns={filterAllocatedColumns}
               dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))}
-              scroll={{ x: filterAllocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+              scroll={{
+ x: filterAllocatedColumns.reduce((acc, cur) =>
+                acc + (cur.width ? cur.width : 240), 0),
+y: this.state.scrollY,
+}}
               loading={this.props.allocatedDataLoading}
               rowKey="id"
             />

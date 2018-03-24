@@ -26,7 +26,7 @@ export default class FlowCwmRecPanel extends Component {
     onFormInit: PropTypes.func.isRequired,
   }
   componentDidMount() {
-    this.props.loadCwmBizParams(this.props.tenantId, this.props.partnerId);
+    this.props.loadCwmBizParams(this.props.partnerId);
     this.props.onFormInit(this.props.form);
   }
   msg = formatMsg(this.props.intl)
@@ -45,7 +45,7 @@ export default class FlowCwmRecPanel extends Component {
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="cwmReceiving">
                 <TabPane tab={this.msg('cwmRecAsn')} key="cwmReceiving">
-                  <ReceivingPane form={form} model={model} />
+                  <ReceivingPane form={form} model={model} graph={graph} node={node} />
                 </TabPane>
               </Tabs>
             </Card>

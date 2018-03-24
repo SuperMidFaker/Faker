@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Layout, Steps, Tabs } from 'antd';
+import { Badge, Button, Layout, Steps, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
@@ -81,10 +81,10 @@ export default class ReceivableBillDetail extends Component {
           <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="unaccepted" onChange={this.handleTabChange}>
-                <TabPane tab="待我方认可" key="unaccepted" >
+                <TabPane tab={<span>待我方认可<Badge count={25} /></span>} key="unaccepted" >
                   <ReconciliationPane status="unaccepted" />
                 </TabPane>
-                <TabPane tab="需对方认可" key="accepted" >
+                <TabPane tab={<span>需对方认可<Badge count={0} /></span>} key="accepted" >
                   <ReconciliationPane status="accepted" />
                 </TabPane>
                 <TabPane tab="双方已认可" key="bothAccepted" >

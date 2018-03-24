@@ -78,7 +78,7 @@ export default class OrderForm extends Component {
         partnerId: formData.customer_partner_id,
         tenantId: this.props.tenantId,
       });
-      this.props.loadCwmBizParams(this.props.tenantId, formData.customer_partner_id);
+      this.props.loadCwmBizParams(formData.customer_partner_id);
       this.props.loadOperators(formData.customer_partner_id, this.props.tenantId);
     }
   }

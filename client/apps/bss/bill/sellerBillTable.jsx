@@ -3,43 +3,78 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, DatePicker, Select } from 'antd';
+import { DatePicker, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
-import EmptyState from 'client/components/EmptyState';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
+import { loadBills, loadBillStatistics, sendBill, deleteBills } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
-@connectFetch()()
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
+    billlist: state.bssBill.billlist,
+    listFilter: state.bssBill.billListFilter,
+    loading: state.bssBill.billListLoading,
+    partners: state.partner.partners,
+    reload: state.bssBill.reload,
+    statistics: state.bssBill.statistics,
   }),
-  { }
+  {
+    loadBills, loadBillStatistics, sendBill, deleteBills,
+  }
 )
-export default class BuyerBills extends React.Component {
+export default class SellerBills extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    extraVisible: false,
+  }
+  componentDidMount() {
+    this.handleBillsLoad(1);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.handleBillsLoad(1, nextProps.listFilter);
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadBills(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      const filter = {
+        ...this.props.listFilter,
+        bill_type: 'sellerBill',
+      };
+      params.filter = JSON.stringify(filter);
+      return params;
+    },
+    remotes: this.props.billlist,
+  });
   columns = [{
     title: '账单名称',
     dataIndex: 'bill_title',
@@ -47,27 +82,27 @@ export default class BuyerBills extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '起始日期',
-    dataIndex: 'start_date',
+    title: '开始日期',
+    dataIndex: 'order_begin_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
-    title: '截止日期',
-    dataIndex: 'end_date',
+    title: '结束日期',
+    dataIndex: 'order_end_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
     title: '服务商',
     width: 240,
-    dataIndex: 'billing_party',
+    dataIndex: 'seller_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '账单类型',
-    dataIndex: 'type',
+    dataIndex: 'bill_type',
     width: 150,
   }, {
     title: '状态',
-    dataIndex: 'status',
+    dataIndex: 'bill_status',
     width: 100,
   }, {
     title: '总单数',
@@ -75,7 +110,7 @@ export default class BuyerBills extends React.Component {
     width: 100,
   }, {
     title: '账单金额',
-    dataIndex: 'bill_amount',
+    dataIndex: 'total_amount',
     width: 150,
   }, {
     title: '调整金额',
@@ -108,32 +143,84 @@ export default class BuyerBills extends React.Component {
     className: 'table-col-ops',
     width: 130,
     render: (o, record) => {
-      if (record.status === 0) {
+      if (record.bill_type === 'OFB') {
+        if (record.bill_status === 1) {
+          return (<span>
+            <RowAction icon="share-alt" onClick={this.handleSendEmail} label="发送邮件" row={record} />
+            <RowAction icon="edit" onClick={this.handleDetail} tooltip="修改账单" row={record} />
+            <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
+          </span>);
+        } else if (record.bill_status === 2) {
+          return (<span>
+            <RowAction icon="swap" onClick={this.handleCheckOFB} label="对账" row={record} />
+            <RowAction icon="share-alt" onClick={this.handleSendOFB} label="重新发送" row={record} />
+          </span>);
+        } else if (record.bill_status === 4) {
+          return (<span>
+            <RowAction icon="swap" onClick={this.handleView} label="查看" row={record} />
+            <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
+          </span>);
+        }
+      } else if (record.bill_status === 1) {
         return (<span>
           <RowAction icon="share-alt" onClick={this.handleSend} label="发送" row={record} />
           <RowAction icon="edit" onClick={this.handleDetail} tooltip="修改账单" row={record} />
+          <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
         </span>);
-      } else if (record.status === 1) {
+      } else if (record.bill_status === 2) {
+        return (<RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />);
+      } else if (record.bill_status === 3) {
+        return (<RowAction icon="swap" onClick={this.handleRecall} label="撤销" row={record} />);
+      } else if (record.bill_status === 4 && record.tenant_id === this.props.tenantId) {
         return (<span>
-          <RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />
-        </span>);
-      } else if (record.status === 2) {
-        return (<span>
-          <RowAction icon="eye-o" onClick={this.handleDetail} label="查看" row={record} />
+          <RowAction icon="swap" onClick={this.handleView} label="查看" row={record} />
+          <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
         </span>);
       }
       return null;
     },
   }]
+  handleBillsLoad = (currentPage, filter) => {
+    const { listFilter, billlist: { pageSize, current } } = this.props;
+    const filters = filter || listFilter;
+    filters.bill_type = 'sellerBill';
+    this.props.loadBillStatistics({ filter: JSON.stringify(filters) });
+    this.props.loadBills({
+      filter: JSON.stringify(filters),
+      pageSize,
+      current: currentPage || current,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleDeselectRows();
+      }
+    });
+  }
   handleSearch = (value) => {
-    const filters = { ...this.props.filters, name: value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
-      current: 1,
-      filters,
+    const filter = { ...this.props.listFilter, searchText: value };
+    this.handleBillsLoad(1, filter);
+  }
+  handleDateRangeChange = (data, dataString) => {
+    const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
+    this.handleBillsLoad(1, filter);
+  }
+  handleClientSelectChange = (value) => {
+    const filter = { ...this.props.listFilter, clientPid: value };
+    this.handleBillsLoad(1, filter);
+  }
+  handleSend = (row) => {
+    this.props.sendBill({ bill_no: row.bill_no }).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
+    });
+  }
+  handleDelete = (row) => {
+    this.props.deleteBills([row.bill_no]).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
     });
   }
   handleDetail = (row) => {
@@ -147,86 +234,17 @@ export default class BuyerBills extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  toggleExtra = () => {
-    this.setState({ extraVisible: !this.state.extraVisible });
-  }
   render() {
-    const { loading } = this.props;
-    const mockData = [{
-      id: 1,
-      bill_title: '1',
-      type: 'FPB',
-      status: 0,
-    }, {
-      id: 2,
-      bill_title: '2',
-      type: 'FPB',
-      status: 1,
-    }, {
-      id: 3,
-      bill_title: '3',
-      type: 'FPB',
-      status: 2,
-    }, {
-      id: 4,
-      bill_title: '4',
-      type: 'BPB',
-      status: 0,
-    }, {
-      id: 5,
-      order_rel_no: '5',
-      type: 'BPB',
-      status: 1,
-    }, {
-      id: 6,
-      order_rel_no: '6',
-      type: 'BPB',
-      status: 2,
-    }, {
-      id: 7,
-      order_rel_no: '7',
-      type: 'OFB',
-      status: 1,
-    }, {
-      id: 8,
-      order_rel_no: '8',
-      type: 'OFB',
-      status: 2,
-    }];
+    const {
+      loading, partners, billlist, statistics,
+    } = this.props;
+    this.dataSource.remotes = billlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-    /*
-    const dataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadAsnLists(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: resolve(result.totalCount, result.current, result.pageSize),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: result.pageSize,
-        showTotal: total => `共 ${total} 条`,
-      }),
-      getParams: (pagination, tblfilters) => {
-        const newfilters = { ...this.props.filters, ...tblfilters[0] };
-        const params = {
-          tenantId: this.props.tenantId,
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          filters: newfilters,
-        };
-        return params;
-      },
-      remotes: this.props.asnlist,
-    });
-    */
-    const primaryAction = (<Button type="primary" icon="plus" onClick={this.handleCreate}>
-      {this.msg('新建账单')}
-    </Button>);
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
       <Select
@@ -234,24 +252,25 @@ export default class BuyerBills extends React.Component {
         placeholder="服务商"
         optionFilterProp="children"
         style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
-      />
+      >
+        <Option value="all" key="all">全部</Option>
+        {partners.map(data => (
+          <Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+          </Option>))
+        }
+      </Select>
       <RangePicker
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        ranges={{ 当天: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       />
     </span>);
-    const emptyProps = {
-      header: 'This is Header',
-      imageUrl: 'https://atlaskit.atlassian.com/b9c4dc7ef2c2a1036fe13a5b229d39df.svg',
-      description: 'lots of descritions',
-      primaryAction,
-    };
     const totCol = (
       <Summary>
-        <Summary.Item label="账单金额合计">{10000}</Summary.Item>
-        <Summary.Item label="结算金额合计">{6666}</Summary.Item>
+        <Summary.Item label="账单金额合计">{statistics.total_amount}</Summary.Item>
+        <Summary.Item label="确认金额合计">{0}</Summary.Item>
       </Summary>
     );
     return (
@@ -260,12 +279,11 @@ export default class BuyerBills extends React.Component {
         selectedRowKeys={this.state.selectedRowKeys}
         onDeselectRows={this.handleDeselectRows}
         columns={this.columns}
-        dataSource={mockData}
+        dataSource={this.dataSource}
         rowSelection={rowSelection}
-        rowKey="id"
+        rowKey="bill_no"
         loading={loading}
         total={totCol}
-        locale={{ emptyText: <EmptyState {...emptyProps} /> }}
       />
     );
   }
