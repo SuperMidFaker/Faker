@@ -125,7 +125,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ZONE_SUCCEED:
       return { ...state, zoneList: action.result.data, locationLoading: false };
     case actionTypes.SHOW_LOCATION_MODAL:
-      return { ...state, locationModal: { ...state.locationModal, visible: true }, record: action.data ? action.data : {} };
+      return {
+        ...state,
+        locationModal: {
+          ...state.locationModal,
+          visible: true,
+        },
+        record: action.data ? action.data : {},
+      };
     case actionTypes.HIDE_LOCATION_MODAL:
       return { ...state, locationModal: { ...state.locationModal, visible: false } };
     case actionTypes.LOAD_LOCATIONS_SUCCEED:
@@ -135,7 +142,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_WHSE_OWNERS_MODAL:
       return { ...state, whseOwnersModal: { ...state.whseOwnersModal, visible: false } };
     case actionTypes.SHOW_OWNER_CONTROL_MODAL:
-      return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: true, whOwnerAuth: action.data } };
+      return {
+        ...state,
+        ownerControlModal: {
+          ...state.ownerControlModal,
+          visible: true,
+          whOwnerAuth: action.data,
+        },
+      };
     case actionTypes.HIDE_OWNER_CONTROL_MODAL:
       return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: false } };
     case actionTypes.LOAD_WHSE_OWNERS_SUCCEED:
@@ -147,7 +161,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLEAR_LOCATIONS:
       return { ...state, locations: [] };
     case actionTypes.SHOW_EDIT_WHSE:
-      return { ...state, editWarehouseModal: { ...state.editWarehouseModal, ...action.data, visible: true } };
+      return {
+        ...state,
+        editWarehouseModal: {
+          ...state.editWarehouseModal,
+          ...action.data,
+          visible: true,
+        },
+      };
     case actionTypes.HIDE_EDIT_WHSE:
       return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: false } };
     case actionTypes.SHOW_STAFF_MODAL:
@@ -701,7 +722,7 @@ export function toggleSupplierModal(visible, supplier = {}) {
   };
 }
 
-export function addSupplier(data, whseCode, loginId, ownerTenantId) {
+export function addSupplier(data, whseCode, ownerTenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -712,7 +733,7 @@ export function addSupplier(data, whseCode, loginId, ownerTenantId) {
       endpoint: 'v1/cwm/warehouse/supplier/add',
       method: 'post',
       data: {
-        data, whseCode, loginId, ownerTenantId,
+        data, whseCode, ownerTenantId,
       },
     },
   };
@@ -748,7 +769,7 @@ export function deleteSupplier(id) {
   };
 }
 
-export function updateSupplier(data, id, loginId) {
+export function updateSupplier(data, id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -758,7 +779,7 @@ export function updateSupplier(data, id, loginId) {
       ],
       endpoint: 'v1/cwm/warehouse/supplier/update',
       method: 'post',
-      data: { data, id, loginId },
+      data: { data, id },
     },
   };
 }

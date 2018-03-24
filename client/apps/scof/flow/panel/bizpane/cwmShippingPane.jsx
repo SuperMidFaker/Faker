@@ -41,10 +41,20 @@ export default class CWMShippingPane extends Component {
       }
     }
   }
+  handleWhseSelect = (tWhseCode) => {
+    const { shipParams } = this.props;
+    const selWhse = shipParams.whses.filter(whse => `${whse.wh_ent_tenant_id}-${whse.code}` === tWhseCode)[0];
+    if (selWhse) {
+      if (!selWhse.bonded) {
+        this.props.form.setFieldsValue({ bonded: 0 });
+      }
+    }
+  }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, model, shipParams } = this.props;
     model.t_whse_code = model.t_whse_code || (model.whse_code && `${model.wh_ent_tenant_id}-${model.whse_code}`);
-    // todo wh !bonded -> 只选非保
+    const tWhseCode = getFieldValue('t_whse_code') || model.t_whse_code;
+    const selWhse = shipParams.whses.filter(whse => `${whse.wh_ent_tenant_id}-${whse.code}` === tWhseCode)[0];
     return (
       <Collapse accordion bordered={false} defaultActiveKey={['properties']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -53,7 +63,7 @@ export default class CWMShippingPane extends Component {
               <FormItem label={this.msg('cwmWarehouse')}>
                 {getFieldDecorator('t_whse_code', {
                   initialValue: model.t_whse_code,
-                })(<Select showSearch allowClear optionFilterProp="children">
+                })(<Select showSearch allowClear optionFilterProp="children" onSelect={this.handleWhseSelect}>
                   {shipParams.whses.map(wh =>
                     <Option key={`${wh.wh_ent_tenant_id}-${wh.code}`} value={`${wh.wh_ent_tenant_id}-${wh.code}`}>{wh.code}|{wh.name}</Option>)}
                 </Select>)}
@@ -75,9 +85,9 @@ export default class CWMShippingPane extends Component {
                   initialValue: model.bonded,
                   onChange: this.handleBondedChange,
                 })(<RadioGroup>
-                  <RadioButton value={-1}>不限</RadioButton>
                   <RadioButton value={0}>非保税</RadioButton>
-                  <RadioButton value={1}>保税</RadioButton>
+                  {selWhse && selWhse.bonded ? <RadioButton value={1}>保税</RadioButton> : null}
+                  {selWhse && selWhse.bonded ? <RadioButton value={-1}>不限</RadioButton> : null}
                 </RadioGroup>)}
               </FormItem>
             </Col>

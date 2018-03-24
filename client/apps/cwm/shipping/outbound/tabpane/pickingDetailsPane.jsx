@@ -106,6 +106,12 @@ export default class PickingDetailsPane extends React.Component {
       return null;
     },
   }, {
+    title: '发货数量',
+    dataIndex: 'shipped_qty',
+    width: 100,
+    align: 'right',
+    render: o => (<span className="text-emphasis">{o}</span>),
+  }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
     width: 180,
@@ -335,7 +341,6 @@ export default class PickingDetailsPane extends React.Component {
     };
     return (
       <DataPane
-
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
