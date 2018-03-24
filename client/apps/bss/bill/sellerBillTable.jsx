@@ -39,12 +39,10 @@ export default class SellerBills extends React.Component {
   }
   componentDidMount() {
     this.handleBillsLoad(1);
-    this.handleStatisticsLoad();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.handleBillsLoad(1, nextProps.listFilter);
-      this.handleStatisticsLoad(nextProps.listFilter);
     }
   }
   msg = formatMsg(this.props.intl)
@@ -163,6 +161,7 @@ export default class SellerBills extends React.Component {
     const { listFilter, billlist: { pageSize, current } } = this.props;
     const filters = filter || listFilter;
     filters.bill_type = 'sellerBill';
+    this.props.loadBillStatistics({ filter: JSON.stringify(filters) });
     this.props.loadBills({
       filter: JSON.stringify(filters),
       pageSize,
@@ -175,23 +174,17 @@ export default class SellerBills extends React.Component {
       }
     });
   }
-  handleStatisticsLoad = (filter) => {
-    const { listFilter } = this.props;
-    const filters = filter || listFilter;
-    filters.bill_type = 'buyerBill';
-    this.props.loadBillStatistics({ filter: JSON.stringify(filters) });
-  }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, searchText: value };
-    this.props.reloadBillList(filter);
+    this.handleBillsLoad(1, filter);
   }
   handleDateRangeChange = (data, dataString) => {
     const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
-    this.props.reloadBillList(filter);
+    this.handleBillsLoad(1, filter);
   }
   handleClientSelectChange = (value) => {
     const filter = { ...this.props.listFilter, clientPid: value };
-    this.props.reloadBillList(filter);
+    this.handleBillsLoad(1, filter);
   }
   handleDetail = (row) => {
     const link = `/bss/bill/${row.order_rel_no}`;
