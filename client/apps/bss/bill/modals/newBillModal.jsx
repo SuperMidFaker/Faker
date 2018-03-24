@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Form, Modal, message, Select, Radio, DatePicker } from 'antd';
+import { Form, Modal, message, Select, Radio, DatePicker, Input } from 'antd';
 import { toggleNewBillModal, createBill } from 'common/reducers/bssBill';
 import { loadAllBillTemplates } from 'common/reducers/bssBillTemplate';
 import { BILL_TYPE, PARTNER_ROLES } from 'common/constants';
@@ -15,11 +15,6 @@ const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-
-const date = new Date();
-date.setMonth(date.getMonth() - 1);
-const firstDay = date.setDate(1);
-const endDay = new Date().setDate(0);
 
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -48,11 +43,20 @@ export default class NewBill extends React.Component {
     partners: [],
     partnerLabel: '客户',
     billTemplates: [],
-    beginDate: firstDay,
-    endDate: endDay,
+    beginDate: new Date(),
+    endDate: new Date(),
   }
   componentDidMount() {
     this.props.loadAllBillTemplates();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible !== this.props.visible && nextProps.visible) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - 1);
+      const firstDay = new Date(date.setDate(1)).setHours(0, 0, 0, 0);
+      const endDay = new Date(new Date().setDate(0)).setHours(0, 0, 0, 0);
+      this.setState({ beginDate: firstDay, endDate: endDay });
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -71,6 +75,7 @@ export default class NewBill extends React.Component {
     const end = moment(endDate).format('YYYY-MM-DD HH:mm:ss');
     const formVal = this.props.form.getFieldsValue();
     this.props.createBill({
+      bill_title: formVal.bill_title,
       bill_type: formVal.bill_type,
       template_id: Number(formVal.template_id),
       partner_id: Number(formVal.partner_id),
@@ -108,13 +113,18 @@ export default class NewBill extends React.Component {
     return (
       <Modal
         maskClosable={false}
-        title={this.msg('newBillTemplate')}
+        title={this.msg('newBill')}
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         destroyOnClose
       >
         <Form>
+          <FormItem label="账单名称" {...formItemLayout} >
+            {getFieldDecorator('bill_title', {
+              rules: [{ required: true }],
+            })(<Input />)}
+          </FormItem>
           <FormItem label={this.msg('billType')} {...formItemLayout}>
             {getFieldDecorator('bill_type', {
               rules: [{ required: true, message: '账单类型必选' }],

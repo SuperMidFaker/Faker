@@ -6,6 +6,7 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'RELOAD_BILL_LIST',
   'TOGGLE_NEW_BILL_MODAL',
   'CREATE_BILL', 'CREATE_BILL_SUCCEED', 'CREATE_BILL_FAIL',
+  'LOAD_BILL_STATISTICS', 'LOAD_BILL_STATISTICS_SUCCEED', 'LOAD_BILL_STATISTICS_FAIL',
 ]);
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   billListLoading: false,
   visibleNewBillModal: false,
   reload: false,
+  statistics: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -41,6 +43,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleNewBillModal: action.data };
     case actionTypes.RELOAD_BILL_LIST:
       return { ...state, reload: true, billListFilter: action.data.filter };
+    case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
+      return { ...state, statistics: action.result.data };
     default:
       return state;
   }
@@ -69,6 +73,21 @@ export function loadBills(params) {
         actionTypes.LOAD_BILLS_FAIL,
       ],
       endpoint: 'v1/bss/bills/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadBillStatistics(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BILL_STATISTICS,
+        actionTypes.LOAD_BILL_STATISTICS_SUCCEED,
+        actionTypes.LOAD_BILL_STATISTICS_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/statistics',
       method: 'get',
       params,
     },

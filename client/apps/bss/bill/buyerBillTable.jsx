@@ -9,7 +9,7 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
-import { loadBills } from 'common/reducers/bssBill';
+import { loadBills, loadBillStatistics, reloadBillList } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -23,8 +23,9 @@ const { Option } = Select;
     loading: state.bssBill.billListLoading,
     partners: state.partner.partners,
     reload: state.bssBill.reload,
+    statistics: state.bssBill.statistics,
   }),
-  { loadBills }
+  { loadBills, loadBillStatistics, reloadBillList }
 )
 export default class BuyerBills extends React.Component {
   static propTypes = {
@@ -35,14 +36,15 @@ export default class BuyerBills extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    totalAmount: 0,
   }
   componentDidMount() {
     this.handleBillsLoad(1);
+    this.handleStatisticsLoad();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      this.handleBillsLoad(1);
+      this.handleBillsLoad(1, nextProps.listFilter);
+      this.handleStatisticsLoad(nextProps.listFilter);
     }
   }
   msg = formatMsg(this.props.intl)
@@ -170,26 +172,26 @@ export default class BuyerBills extends React.Component {
         message.error(result.error.message, 10);
       } else {
         this.handleDeselectRows();
-        const calresult = result.data.data.reduce((acc, det) => ({
-          total_amount: acc.total_amount + det.total_amount,
-        }), { total_amount: 0 });
-        this.setState({
-          totalAmount: calresult.total_amount,
-        });
       }
     });
   }
+  handleStatisticsLoad = (filter) => {
+    const { listFilter } = this.props;
+    const filters = filter || listFilter;
+    filters.bill_type = 'buyerBill';
+    this.props.loadBillStatistics({ filter: JSON.stringify(filters) });
+  }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, searchText: value };
-    this.handleBillsLoad(1, filter);
+    this.props.reloadBillList(filter);
   }
   handleDateRangeChange = (data, dataString) => {
     const filter = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
-    this.handleBillsLoad(1, filter);
+    this.props.reloadBillList(filter);
   }
   handleClientSelectChange = (value) => {
-    const filters = { ...this.props.listFilter, clientPid: value };
-    this.handleBillsLoad(1, filters);
+    const filter = { ...this.props.listFilter, clientPid: value };
+    this.props.reloadBillList(filter);
   }
   handleDetail = (row) => {
     const link = `/bss/bill/${row.order_rel_no}`;
@@ -203,7 +205,9 @@ export default class BuyerBills extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { loading, partners, billlist } = this.props;
+    const {
+      loading, partners, billlist, statistics,
+    } = this.props;
     this.dataSource.remotes = billlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -235,7 +239,7 @@ export default class BuyerBills extends React.Component {
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="账单金额合计">{this.state.totalAmount}</Summary.Item>
+        <Summary.Item label="账单金额合计">{statistics.total_amount}</Summary.Item>
         <Summary.Item label="确认金额合计">{0}</Summary.Item>
       </Summary>
     );
