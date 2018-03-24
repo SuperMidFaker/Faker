@@ -9,7 +9,7 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
-import { loadBills } from 'common/reducers/bssBill';
+import { loadBills, loadBillStatistics, sendBill, deleteBills } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -18,6 +18,7 @@ const { Option } = Select;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     billlist: state.bssBill.billlist,
     listFilter: state.bssBill.billListFilter,
     loading: state.bssBill.billListLoading,
@@ -25,7 +26,9 @@ const { Option } = Select;
     reload: state.bssBill.reload,
     statistics: state.bssBill.statistics,
   }),
-  { loadBills }
+  {
+    loadBills, loadBillStatistics, sendBill, deleteBills,
+  }
 )
 export default class SellerBills extends React.Component {
   static propTypes = {
@@ -140,18 +143,38 @@ export default class SellerBills extends React.Component {
     className: 'table-col-ops',
     width: 130,
     render: (o, record) => {
-      if (record.status === 0) {
+      if (record.bill_type === 'OFB') {
+        if (record.bill_status === 1) {
+          return (<span>
+            <RowAction icon="share-alt" onClick={this.handleSendEmail} label="发送邮件" row={record} />
+            <RowAction icon="edit" onClick={this.handleDetail} tooltip="修改账单" row={record} />
+            <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
+          </span>);
+        } else if (record.bill_status === 2) {
+          return (<span>
+            <RowAction icon="swap" onClick={this.handleCheckOFB} label="对账" row={record} />
+            <RowAction icon="share-alt" onClick={this.handleSendOFB} label="重新发送" row={record} />
+          </span>);
+        } else if (record.bill_status === 4) {
+          return (<span>
+            <RowAction icon="swap" onClick={this.handleView} label="查看" row={record} />
+            <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
+          </span>);
+        }
+      } else if (record.bill_status === 1) {
         return (<span>
           <RowAction icon="share-alt" onClick={this.handleSend} label="发送" row={record} />
           <RowAction icon="edit" onClick={this.handleDetail} tooltip="修改账单" row={record} />
+          <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
         </span>);
-      } else if (record.status === 1) {
+      } else if (record.bill_status === 2) {
+        return (<RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />);
+      } else if (record.bill_status === 3) {
+        return (<RowAction icon="swap" onClick={this.handleRecall} label="撤销" row={record} />);
+      } else if (record.bill_status === 4 && record.tenant_id === this.props.tenantId) {
         return (<span>
-          <RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />
-        </span>);
-      } else if (record.status === 2) {
-        return (<span>
-          <RowAction icon="eye-o" onClick={this.handleDetail} label="查看" row={record} />
+          <RowAction icon="swap" onClick={this.handleView} label="查看" row={record} />
+          <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
         </span>);
       }
       return null;
@@ -185,6 +208,20 @@ export default class SellerBills extends React.Component {
   handleClientSelectChange = (value) => {
     const filter = { ...this.props.listFilter, clientPid: value };
     this.handleBillsLoad(1, filter);
+  }
+  handleSend = (row) => {
+    this.props.sendBill({ bill_no: row.bill_no }).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
+    });
+  }
+  handleDelete = (row) => {
+    this.props.deleteBills([row.bill_no]).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
+    });
   }
   handleDetail = (row) => {
     const link = `/bss/bill/${row.order_rel_no}`;
