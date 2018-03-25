@@ -163,7 +163,7 @@ export default class BuyerBills extends React.Component {
         }
       } else if (record.bill_status === 1) {
         return (<span>
-          <RowAction icon="share-alt" onClick={this.handleSend} label="发送" row={record} />
+          <RowAction icon="mail" onClick={this.handleSend} label="发送" row={record} />
           <RowAction icon="edit" onClick={this.handleDetail} tooltip="修改账单" row={record} />
           <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDelete} icon="delete" row={record} />
         </span>);

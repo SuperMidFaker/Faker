@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Col, Row, Layout, Steps, Tabs } from 'antd';
+import { Badge, Button, Layout, Steps, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
@@ -39,14 +39,14 @@ export default class ReceivableBillDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    summary: {},
+    bill: {},
   }
 
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
 
   render() {
-    const { summary } = this.state;
+    const { bill } = this.state;
 
     return (
       <Layout>
@@ -62,29 +62,16 @@ export default class ReceivableBillDetail extends Component {
         </PageHeader>
         <Layout>
           <Drawer top onCollapseChange={this.handleCollapseChange}>
-            <Row type="flex">
-              <Col span={16}>
-                <DescriptionList col={4}>
-                  <Description term="账单编号">{summary.asn_no}</Description>
-                  <Description term="客户">{summary.owner_name}</Description>
-                  <Description term="账单期间">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-                </DescriptionList>
-              </Col>
-              <Col span={8} className="extra">
-                <div>
-                  <p>账单金额</p>
-                  <p>5,680</p>
-                </div>
-                <div>
-                  <p>调整金额</p>
-                  <p>2,890</p>
-                </div>
-                <div>
-                  <p>最终金额</p>
-                  <p>2,223</p>
-                </div>
-              </Col>
-            </Row>
+            <DescriptionList col={4}>
+              <Description term="账单名称">{bill.title}</Description>
+              <Description term="客户">{bill.buyer_name}</Description>
+              <Description term="账期">{bill.order_begin_date && moment(bill.order_begin_date).format('YYYY.MM.DD')} ~ {bill.order_end_date && moment(bill.order_end_date).format('YYYY.MM.DD')}</Description>
+              <Description term="类型">{bill.bill_type}</Description>
+              <Description term="订单数量">{bill.order_count}</Description>
+              <Description term="账单金额合计">{bill.total_amount}</Description>
+              <Description term="调整金额">{bill.adjusted_amount}</Description>
+              <Description term="最终结算金额">{bill.final_amount}</Description>
+            </DescriptionList>
             <Steps progressDot current={1} className="progress-tracker">
               <Step title="草稿" />
               <Step title="对账中" />
@@ -94,10 +81,10 @@ export default class ReceivableBillDetail extends Component {
           <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="unaccepted" onChange={this.handleTabChange}>
-                <TabPane tab="待我方认可" key="unaccepted" >
+                <TabPane tab={<span>待我方认可<Badge count={25} /></span>} key="unaccepted" >
                   <ReconciliationPane status="unaccepted" />
                 </TabPane>
-                <TabPane tab="需对方认可" key="accepted" >
+                <TabPane tab={<span>需对方认可<Badge count={0} /></span>} key="accepted" >
                   <ReconciliationPane status="accepted" />
                 </TabPane>
                 <TabPane tab="双方已认可" key="bothAccepted" >

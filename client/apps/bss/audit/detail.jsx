@@ -399,7 +399,7 @@ export default class FeeSummaryDetail extends Component {
     const { head, receives, pays } = this.state;
     return (
       <Layout>
-        <PageHeader breadcrumb={[this.msg('fee'), this.msg('feeSummary'), this.props.params.orderRelNo]}>
+        <PageHeader breadcrumb={[this.msg('audit'), this.props.params.orderRelNo]}>
           <PageHeader.Actions>
             <Button disabled={head.status === 2} type="primary" icon="check-circle-o" onClick={this.handleConfirm}>
               {this.msg('confirm')}
