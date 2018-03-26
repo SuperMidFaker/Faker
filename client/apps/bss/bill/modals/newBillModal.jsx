@@ -28,7 +28,9 @@ const formItemLayout = {
     partners: state.partner.partners,
     allBillTemplates: state.bssBillTemplate.billTemplates,
   }),
-  { toggleNewBillModal, createBill, loadAllBillTemplates }
+  {
+    toggleNewBillModal, createBill, loadAllBillTemplates,
+  }
 )
 @Form.create()
 export default class NewBill extends React.Component {

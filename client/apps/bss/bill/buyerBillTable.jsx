@@ -9,6 +9,7 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
+import { PARTNER_ROLES } from 'common/constants';
 import { loadBills, loadBillStatistics, sendBill, deleteBills } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -20,10 +21,10 @@ const { Option } = Select;
   state => ({
     tenantId: state.account.tenantId,
     billlist: state.bssBill.billlist,
-    listFilter: state.bssBill.billListFilter,
-    loading: state.bssBill.billListLoading,
+    listFilter: state.bssBill.listFilter,
+    loading: state.bssBill.loading,
     partners: state.partner.partners,
-    reload: state.bssBill.reload,
+    billReload: state.bssBill.billReload,
     statistics: state.bssBill.statistics,
   }),
   {
@@ -44,7 +45,7 @@ export default class BuyerBills extends React.Component {
     this.handleBillsLoad(1);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.reload) {
+    if (nextProps.billReload) {
       this.handleBillsLoad(1, nextProps.listFilter);
     }
   }
@@ -244,8 +245,9 @@ export default class BuyerBills extends React.Component {
   }
   render() {
     const {
-      loading, partners, billlist, statistics,
+      loading, billlist, statistics,
     } = this.props;
+    const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
     this.dataSource.remotes = billlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
