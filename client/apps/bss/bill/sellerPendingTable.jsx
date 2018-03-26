@@ -38,7 +38,6 @@ export default class SellerPendingTable extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    extraVisible: false,
     totalAmount: 0,
   }
   componentDidMount() {
@@ -55,7 +54,6 @@ export default class SellerPendingTable extends React.Component {
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '服务商',
-    width: 200,
     dataIndex: 'vendor_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
@@ -111,7 +109,7 @@ export default class SellerPendingTable extends React.Component {
       } else {
         this.handleDeselectRows();
         const calresult = result.data.data.reduce((acc, det) => ({
-          total_amount: acc.seller_settled_amount + det.seller_settled_amount,
+          total_amount: acc.total_amount + det.buyer_settled_amount,
         }), { total_amount: 0 });
         this.setState({
           totalAmount: calresult.total_amount,
@@ -131,19 +129,8 @@ export default class SellerPendingTable extends React.Component {
     const filters = { ...this.props.listFilter, clientPid: value };
     this.handleOrdersLoad(1, filters);
   }
-  handleDetail = (row) => {
-    const link = `/bss/bill/${row.order_rel_no}`;
-    this.context.router.push(link);
-  }
-  handleCheck = (row) => {
-    const link = `/bss/bill/reconcile/${row.order_rel_no}`;
-    this.context.router.push(link);
-  }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
-  }
-  toggleExtra = () => {
-    this.setState({ extraVisible: !this.state.extraVisible });
   }
   render() {
     const { loading, orderStatementlist, partners } = this.props;

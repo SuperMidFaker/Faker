@@ -49,7 +49,7 @@ const messages = defineMessages({
   },
   searchTips: {
     id: 'bss.bill.search.tips',
-    defaultMessage: '业务编号/客户单号',
+    defaultMessage: '账单名称',
   },
   billTemplates: {
     id: 'bss.bill.templates',

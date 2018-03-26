@@ -28,7 +28,7 @@ export default function reducer(state = initialState, action) {
         loading: true,
       };
     case actionTypes.LOAD_ORDER_STATEMENTS_SUCCEED:
-      return { ...state, loading: false, auditslist: action.result.data };
+      return { ...state, loading: false, orderStatementlist: action.result.data };
     case actionTypes.LOAD_ORDER_STATEMENTS_FAIL:
       return { ...state, loading: false };
     default:
