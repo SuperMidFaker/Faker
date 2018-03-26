@@ -21,6 +21,7 @@ const { TabPane } = Tabs;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     billHead: state.bssBill.billHead,
     reload: state.bssBill.reload,
   }),
@@ -49,7 +50,7 @@ export default class ReceivableBillDetail extends Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   render() {
-    const { billHead } = this.props;
+    const { billHead, tenantId } = this.props;
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
@@ -66,7 +67,9 @@ export default class ReceivableBillDetail extends Component {
           <Drawer top onCollapseChange={this.handleCollapseChange}>
             <DescriptionList col={4}>
               <Description term="账单名称">{billHead.bill_title}</Description>
-              <Description term="客户">{billHead.buyer_name}</Description>
+              {tenantId === billHead.buyer_tenant_id ?
+                <Description term="服务商">{billHead.seller_name}</Description> :
+                <Description term="客户">{billHead.buyer_name}</Description>}
               <Description term="账期">{billHead.order_begin_date && moment(billHead.order_begin_date).format('YYYY.MM.DD')} ~ {billHead.order_end_date && moment(billHead.order_end_date).format('YYYY.MM.DD')}</Description>
               <Description term="类型">{billHead.bill_type}</Description>
               <Description term="订单数量">{billHead.order_count}</Description>

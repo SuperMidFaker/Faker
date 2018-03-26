@@ -67,7 +67,6 @@ export default class StatementsPane extends Component {
   }
   handleOk = () => {
     const item = { ...this.state.editItem };
-    const billHead = { ...this.props.billHead };
     const billStatements = [...this.props.billStatements];
     const index = billStatements.findIndex(data => data.id === item.id);
     let delta;
@@ -78,7 +77,6 @@ export default class StatementsPane extends Component {
     }
     billStatements[index] = item;
     item.delta = delta;
-    billHead.total_amount += delta;
     this.props.updateBill(item, this.props.billNo).then((result) => {
       if (!result.error) {
         this.setState({
