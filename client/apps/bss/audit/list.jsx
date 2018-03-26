@@ -119,7 +119,7 @@ export default class AuditList extends React.Component {
       if (record.status === 1) {
         return (<span>
           <RowAction icon="check-circle-o" onClick={this.handleConfirm} label={this.gmsg('confirm')} row={record} />
-          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+          <RowAction icon="edit" onClick={this.handleDetail} tooltip={this.gmsg('edit')} row={record} />
         </span>);
       } else if (record.status === 2) {
         return (<span>

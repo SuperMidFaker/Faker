@@ -232,11 +232,11 @@ export default class BuyerBills extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/bill/${row.order_rel_no}`;
+    const link = `/bss/bill/${row.bill_no}`;
     this.context.router.push(link);
   }
   handleCheck = (row) => {
-    const link = `/bss/bill/reconcile/${row.order_rel_no}`;
+    const link = `/bss/bill/reconcile/${row.bill_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
