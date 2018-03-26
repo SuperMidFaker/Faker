@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, Modal, message, Select, Radio, DatePicker, Input } from 'antd';
-import { toggleNewBillModal, createBill } from 'common/reducers/bssBill';
+import { toggleNewBillModal, createBill, reloadBillList } from 'common/reducers/bssBill';
 import { loadAllBillTemplates } from 'common/reducers/bssBillTemplate';
 import { BILL_TYPE, PARTNER_ROLES } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -27,8 +27,11 @@ const formItemLayout = {
     visible: state.bssBill.visibleNewBillModal,
     partners: state.partner.partners,
     allBillTemplates: state.bssBillTemplate.billTemplates,
+    listFilter: state.bssBill.billListFilter,
   }),
-  { toggleNewBillModal, createBill, loadAllBillTemplates }
+  {
+    toggleNewBillModal, createBill, loadAllBillTemplates, reloadBillList,
+  }
 )
 @Form.create()
 export default class NewBill extends React.Component {
@@ -86,6 +89,8 @@ export default class NewBill extends React.Component {
         message.error(result.error.message, 5);
       } else {
         this.props.toggleNewBillModal(false);
+        const filter = this.props.listFilter;
+        this.props.reloadBillList(filter);
       }
     });
   }

@@ -44,7 +44,7 @@ export default class BillList extends React.Component {
   state = {
     extraVisible: false,
     currentTab: 'buyerBill',
-    mode: 'pendingExpense',
+    // mode: 'pendingExpense',
   }
   componentDidMount() {
     if (this.props.aspect === 0) {
@@ -57,7 +57,7 @@ export default class BillList extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleFilterMenuClick = (ev) => {
-    this.setState({ mode: ev.key });
+    // this.setState({ mode: ev.key });
     const filter = { ...this.props.listFilter, status: ev.key };
     this.props.reloadBillList(filter);
   }
@@ -85,7 +85,8 @@ export default class BillList extends React.Component {
     this.props.toggleNewBillModal(true);
   }
   renderDataTable() {
-    const { currentTab, mode } = this.state;
+    const { currentTab } = this.state;
+    const mode = this.props.listFilter.status;
     if (mode === 'pendingExpense') {
       if (currentTab === 'sellerBill') {
         return <SellerPendingTable />;
@@ -139,7 +140,7 @@ export default class BillList extends React.Component {
         </PageHeader>
         <Layout>
           <Drawer width={160}>
-            <Menu mode="inline" selectedKeys={[this.state.mode]} onClick={this.handleFilterMenuClick}>
+            <Menu mode="inline" selectedKeys={[this.props.listFilter.status]} onClick={this.handleFilterMenuClick}>
               <Menu.Item key="pendingExpense">
                 {this.msg('pendingExpense')}
               </Menu.Item>
