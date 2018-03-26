@@ -62,6 +62,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, billHead: action.result.data };
     case actionTypes.BILL_UPDATE_SUCCEED:
       return { ...state, reload: true };
+    case actionTypes.CREATE_BILL_SUCCEED:
+      return { ...state, reload: true };
     case actionTypes.GET_BILL_STATEMENTS_SUCCEED:
       return { ...state, billStatements: action.result.data };
     default:

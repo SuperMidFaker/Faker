@@ -18,9 +18,8 @@ const initialState = {
     clientPid: 'all',
   },
   loading: false,
-  statistics: {
-    buyer_settled_amount: 0,
-    seller_settled_amount: 0,
+  statementStat: {
+    total_amount: 0,
   },
 };
 
@@ -37,7 +36,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_STATEMENTS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_PENDING_STATISTICS_SUCCEED:
-      return { ...state, statistics: action.result.data };
+      return { ...state, statementStat: action.result.data };
     default:
       return state;
   }

@@ -24,7 +24,7 @@ const { Option } = Select;
     orderStatementlist: state.bssStatement.orderStatementlist,
     listFilter: state.bssStatement.listFilter,
     loading: state.bssStatement.loading,
-    statistics: state.bssStatement.statistics,
+    statementStat: state.bssStatement.statementStat,
     partners: state.partner.partners,
   }),
   { loadOrderStatements, loadPendingStatistics }
@@ -126,7 +126,7 @@ export default class BuyerPendingTable extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { loading, orderStatementlist, statistics } = this.props;
+    const { loading, orderStatementlist, statementStat } = this.props;
     const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -159,7 +159,7 @@ export default class BuyerPendingTable extends React.Component {
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="未入账单金额合计">{statistics.seller_settled_amount}</Summary.Item>
+        <Summary.Item label="未入账单金额合计">{statementStat.total_amount}</Summary.Item>
       </Summary>
     );
     return (
