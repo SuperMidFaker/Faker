@@ -11,7 +11,8 @@ import SearchBox from 'client/components/SearchBox';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES } from 'common/constants';
-import { loadOrderStatements, loadPendingStatistics } from 'common/reducers/bssStatement';
+import { loadPendingStatistics } from 'common/reducers/bssStatement';
+import { loadOrderStatements } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -21,9 +22,10 @@ const { Option } = Select;
 @injectIntl
 @connect(
   state => ({
-    orderStatementlist: state.bssStatement.orderStatementlist,
-    listFilter: state.bssStatement.listFilter,
-    loading: state.bssStatement.loading,
+    orderStatementlist: state.bssBill.orderStatementlist,
+    listFilter: state.bssBill.listFilter,
+    loading: state.bssBill.loading,
+    pendingReload: state.bssBill.pendingReload,
     statementStat: state.bssStatement.statementStat,
     partners: state.partner.partners,
   }),
@@ -41,6 +43,11 @@ export default class BuyerPendingTable extends React.Component {
   }
   componentDidMount() {
     this.handleOrdersLoad(1);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.pendingReload) {
+      this.handleOrdersLoad(1, nextProps.listFilter);
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)

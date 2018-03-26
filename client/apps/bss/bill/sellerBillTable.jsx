@@ -21,10 +21,10 @@ const { Option } = Select;
   state => ({
     tenantId: state.account.tenantId,
     billlist: state.bssBill.billlist,
-    listFilter: state.bssBill.billListFilter,
-    loading: state.bssBill.billListLoading,
+    listFilter: state.bssBill.listFilter,
+    loading: state.bssBill.loading,
     partners: state.partner.partners,
-    reload: state.bssBill.reload,
+    billReload: state.bssBill.billReload,
     statistics: state.bssBill.statistics,
   }),
   {
@@ -45,7 +45,7 @@ export default class SellerBills extends React.Component {
     this.handleBillsLoad(1);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.reload) {
+    if (nextProps.billReload) {
       this.handleBillsLoad(1, nextProps.listFilter);
     }
   }
