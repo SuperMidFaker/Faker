@@ -9,6 +9,7 @@ import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import { getBill } from 'common/reducers/bssBill';
 import StatementsPane from './tabpane/statementsPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -19,12 +20,9 @@ const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
-  state => ({
-    loginId: state.account.loginId,
-    username: state.account.username,
-
+  () => ({
   }),
-  { }
+  { getBill }
 )
 @connectNav({
   depth: 3,
@@ -39,14 +37,28 @@ export default class ReceivableBillDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    bill: {},
+    billHead: {},
+    billDetails: [],
   }
-
+  componentDidMount() {
+    this.props.getBill(this.props.params.billNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          billHead: result.data.head,
+          billDetails: result.data.details,
+        });
+      }
+    });
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-
+  handleBillChange = (billHead) => {
+    this.setState({
+      billHead,
+    });
+  }
   render() {
-    const { bill } = this.state;
+    const { billHead } = this.state;
 
     return (
       <Layout>
@@ -63,16 +75,16 @@ export default class ReceivableBillDetail extends Component {
         <Layout>
           <Drawer top onCollapseChange={this.handleCollapseChange}>
             <DescriptionList col={4}>
-              <Description term="账单名称">{bill.title}</Description>
-              <Description term="客户">{bill.buyer_name}</Description>
-              <Description term="账期">{bill.order_begin_date && moment(bill.order_begin_date).format('YYYY.MM.DD')} ~ {bill.order_end_date && moment(bill.order_end_date).format('YYYY.MM.DD')}</Description>
-              <Description term="类型">{bill.bill_type}</Description>
-              <Description term="订单数量">{bill.order_count}</Description>
-              <Description term="账单金额">{bill.total_amount}</Description>
-              <Description term="调整金额">{bill.adjusted_amount}</Description>
-              <Description term="最终结算金额">{bill.final_amount}</Description>
+              <Description term="账单名称">{billHead.bill_title}</Description>
+              <Description term="客户">{billHead.buyer_name}</Description>
+              <Description term="账期">{billHead.order_begin_date && moment(billHead.order_begin_date).format('YYYY.MM.DD')} ~ {billHead.order_end_date && moment(billHead.order_end_date).format('YYYY.MM.DD')}</Description>
+              <Description term="类型">{billHead.bill_type}</Description>
+              <Description term="订单数量">{billHead.order_count}</Description>
+              <Description term="账单总金额">{billHead.total_amount}</Description>
+              <Description term="调整金额">{billHead.adjusted_amount}</Description>
+              <Description term="最终结算金额">{billHead.final_amount}</Description>
             </DescriptionList>
-            <Steps progressDot current={0} className="progress-tracker">
+            <Steps progressDot current={this.state.billHead.status} className="progress-tracker">
               <Step title="草稿" />
               <Step title="对账中" />
               <Step title="已接受" />
@@ -80,9 +92,14 @@ export default class ReceivableBillDetail extends Component {
           </Drawer>
           <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="statements" onChange={this.handleTabChange}>
+              <Tabs defaultActiveKey="statements">
                 <TabPane tab="费用清单" key="statements" >
-                  <StatementsPane />
+                  <StatementsPane
+                    billDetails={this.state.billDetails}
+                    billHead={this.state.billHead}
+                    billNo={this.props.params.billNo}
+                    handleBillChange={this.handleBillChange}
+                  />
                 </TabPane>
               </Tabs>
             </MagicCard>

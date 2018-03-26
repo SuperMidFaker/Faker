@@ -1,37 +1,109 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
+import { updateBill } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
-    temporaryDetails: state.cwmReceive.temporaryDetails,
-    loginId: state.account.loginId,
+    userMembers: state.account.userMembers,
   }),
-  { }
+  { updateBill }
 )
 export default class StatementsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-
+    billDetails: PropTypes.arrayOf(PropTypes.shape({
+      cust_order_no: PropTypes.string,
+      buyer_settled_amount: PropTypes.number,
+    })),
+    billNo: PropTypes.string.isRequired,
+    handleBillChange: PropTypes.func.isRequired,
+    billHead: PropTypes.shape({
+      bill_title: PropTypes.string,
+      total_amount: PropTypes.number,
+    }),
   }
   state = {
     selectedRowKeys: [],
-
+    billDetails: [],
+    editItem: {},
+    currentPage: 1,
   };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.billDetails !== this.props.billDetails) {
+      this.setState({
+        billDetails: nextProps.billDetails,
+      });
+    }
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  }
+  handleEdit = (row) => {
+    this.setState({
+      editItem: row,
+    });
+  }
+  handleColumnChange = (field, value) => {
+    const editItem = { ...this.state.editItem };
+    const amount = parseInt(value, 10);
+    if (!Number.isNaN(amount)) {
+      editItem[field] = amount;
+    } else {
+      editItem[field] = null;
+    }
+    this.setState({
+      editItem,
+    });
+  }
+  handleOk = () => {
+    const item = { ...this.state.editItem };
+    const billHead = { ...this.props.billHead };
+    const billDetails = [...this.props.billDetails];
+    const index = billDetails.findIndex(data => data.id === item.id);
+    let delta;
+    if (item.settle_type === 1) {
+      delta = item.seller_settled_amount - billDetails[index].seller_settled_amount;
+    } else {
+      delta = item.buyer_settled_amount - billDetails[index].buyer_settled_amount;
+    }
+    billDetails[index] = item;
+    item.delta = delta;
+    billHead.total_amount += delta;
+    this.props.updateBill(item, this.props.billNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          billDetails,
+          editItem: {},
+        });
+        this.props.handleBillChange(billHead);
+      }
+    });
+  }
+  handleSearch = (value) => {
+    let { billDetails } = this.props;
+    if (value) {
+      billDetails = this.props.billDetails.filter((item) => {
+        const reg = new RegExp(value);
+        return reg.test(item.cust_order_no) || reg.test(item.sof_order_no);
+      });
+    }
+    this.setState({ billDetails, currentPage: 1 });
+  }
   render() {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -39,30 +111,9 @@ export default class StatementsPane extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const mockData = [{
-      id: 1,
-      order_rel_no: '1',
-      type: 'FPB',
-      status: 0,
-    }, {
-      id: 2,
-      order_rel_no: '2',
-      type: 'FPB',
-      status: 1,
-    }, {
-      id: 3,
-      order_rel_no: '3',
-      type: 'FPB',
-      status: 1,
-    }, {
-      id: 4,
-      order_rel_no: '4',
-      type: 'BPB',
-      status: 0,
-    }];
     const columns = [{
       title: '业务编号',
-      dataIndex: 'order_rel_no',
+      dataIndex: 'sof_order_no',
       width: 150,
     }, {
       title: '客户单号',
@@ -71,9 +122,25 @@ export default class StatementsPane extends Component {
     /* 此处加入各费用项 */
     }, {
       title: '结算金额',
-      dataIndex: 'buyer_amount',
+      dataIndex: 'amount',
       width: 150,
       align: 'right',
+      render: (o, record) => {
+        if (this.state.editItem.id === record.id) {
+          if (this.state.editItem.settle_type === 1) {
+            return (<Input
+              value={this.state.editItem.seller_settled_amount}
+              onChange={e => this.handleColumnChange('seller_settled_amount', e.target.value)}
+            />);
+          }
+          return (<Input
+            value={this.state.editItem.buyer_settled_amount}
+            onChange={e => this.handleColumnChange('buyer_settled_amount', e.target.value)}
+          />);
+        }
+        return record.settle_type === 1 ?
+          record.seller_settled_amount : record.buyer_settled_amount;
+      },
     }, {
       title: '备注',
       dataIndex: 'remark',
@@ -81,26 +148,31 @@ export default class StatementsPane extends Component {
       title: '订单日期',
       width: 150,
       dataIndex: 'order_date',
+      render: o => o && moment(o).format('YYYY/MM/DD'),
     }, {
       title: '审核时间',
-      dataIndex: 'auditted_date',
+      dataIndex: 'confirmed_date',
       width: 150,
+      render: o => o && moment(o).format('YYYY/MM/DD'),
     }, {
       title: '审核人员',
-      dataIndex: 'auditted_by',
+      dataIndex: 'confirmed_by',
       width: 150,
+      render: o => this.props.userMembers.find(user => user.login_id === o) &&
+      this.props.userMembers.find(user => user.login_id === o).name,
     }, {
       title: '操作',
       width: 90,
       fixed: 'right',
       render: (o, record) => {
-        if (record.status === 0) {
+        if (record.status === 1) {
+          if (this.state.editItem.id === record.id) {
+            return (<span>
+              <RowAction icon="save" onClick={this.handleOk} tooltip={this.gmsg('confirm')} row={record} />
+            </span>);
+          }
           return (<span>
             <RowAction icon="edit" onClick={this.handleEdit} tooltip={this.gmsg('edit')} row={record} />
-          </span>);
-        } else if (record.status === 1) {
-          return (<span>
-            <RowAction icon="eye-o" onClick={this.handleEdit} tooltip={this.gmsg('view')} row={record} />
           </span>);
         }
         return null;
@@ -111,9 +183,14 @@ export default class StatementsPane extends Component {
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
-        dataSource={mockData}
+        dataSource={this.state.billDetails}
         rowKey="index"
         loading={this.state.loading}
+        pagination={{
+          current: this.state.currentPage,
+          defaultPageSize: 10,
+          onChange: this.handlePageChange,
+        }}
       >
         <DataPane.Toolbar>
           <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />

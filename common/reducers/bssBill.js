@@ -11,6 +11,8 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
   'RECALL_BILL', 'RECALL_BILL_SUCCEED', 'RECALL_BILL_FAIL',
   'ACCEPT_BILL', 'ACCEPT_BILL_SUCCEED', 'ACCEPT_BILL_FAIL',
+  'GET_BILL', 'GET_BILL_SUCCEED', 'GET_BILL_FAIL',
+  'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
 ]);
 
 const initialState = {
@@ -160,6 +162,21 @@ export function recallBill(data) {
   };
 }
 
+export function getBill(billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_BILL,
+        actionTypes.GET_BILL_SUCCEED,
+        actionTypes.GET_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/get',
+      method: 'get',
+      params: { billNo },
+    },
+  };
+}
+
 export function acceptBill(data) {
   return {
     [CLIENT_API]: {
@@ -171,6 +188,21 @@ export function acceptBill(data) {
       endpoint: 'v1/bss/bill/accept',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function updateBill(data, billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BILL_UPDATE,
+        actionTypes.BILL_UPDATE_SUCCEED,
+        actionTypes.BILL_UPDATE_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/update',
+      method: 'post',
+      data: { data, billNo },
     },
   };
 }
