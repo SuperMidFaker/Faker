@@ -9,7 +9,7 @@ import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
-import { getBill } from 'common/reducers/bssBill';
+import { loadBillHead } from 'common/reducers/bssBill';
 import StatementsPane from './tabpane/statementsPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -20,9 +20,11 @@ const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
-  () => ({
+  state => ({
+    billHead: state.bssBill.billHead,
+    reload: state.bssBill.reload,
   }),
-  { getBill }
+  { loadBillHead }
 )
 @connectNav({
   depth: 3,
@@ -36,30 +38,18 @@ export default class ReceivableBillDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    billHead: {},
-    billDetails: [],
-  }
   componentDidMount() {
-    this.props.getBill(this.props.params.billNo).then((result) => {
-      if (!result.error) {
-        this.setState({
-          billHead: result.data.head,
-          billDetails: result.data.details,
-        });
-      }
-    });
+    this.props.loadBillHead(this.props.params.billNo);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.props.loadBillHead(this.props.params.billNo);
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-  handleBillChange = (billHead) => {
-    this.setState({
-      billHead,
-    });
-  }
   render() {
-    const { billHead } = this.state;
-
+    const { billHead } = this.props;
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
@@ -84,7 +74,7 @@ export default class ReceivableBillDetail extends Component {
               <Description term="调整金额">{billHead.adjusted_amount}</Description>
               <Description term="最终结算金额">{billHead.final_amount}</Description>
             </DescriptionList>
-            <Steps progressDot current={this.state.billHead.status} className="progress-tracker">
+            <Steps progressDot current={billHead.bill_status - 1} className="progress-tracker">
               <Step title="草稿" />
               <Step title="对账中" />
               <Step title="已接受" />
@@ -95,10 +85,7 @@ export default class ReceivableBillDetail extends Component {
               <Tabs defaultActiveKey="statements">
                 <TabPane tab="费用清单" key="statements" >
                   <StatementsPane
-                    billDetails={this.state.billDetails}
-                    billHead={this.state.billHead}
                     billNo={this.props.params.billNo}
-                    handleBillChange={this.handleBillChange}
                   />
                 </TabPane>
               </Tabs>

@@ -160,16 +160,19 @@ export default class FeeSummaryDetail extends Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (this.state.editItem.id === record.id) {
-        return (<span>
-          <RowAction icon="save" onClick={() => this.handleOk('receives')} tooltip={this.gmsg('confirm')} row={record} />
-          <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
+      if (this.props.location.query.type === 'edit') {
+        if (this.state.editItem.id === record.id) {
+          return (<span>
+            <RowAction icon="save" onClick={() => this.handleOk('receives')} tooltip={this.gmsg('confirm')} row={record} />
+            <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
+          </span>);
+        }
+        return (<span><RowAction onClick={this.handleEdit} label="调整" row={record} />
+          <span className="ant-divider" />
+          <RowAction onClick={() => this.handleDelete(record, 'receives')} label="排除" row={record} />
         </span>);
       }
-      return (<span><RowAction onClick={this.handleEdit} label="调整" row={record} />
-        <span className="ant-divider" />
-        <RowAction onClick={() => this.handleDelete(record, 'receives')} label="排除" row={record} />
-      </span>);
+      return null;
     },
   }]
   payColumns = [{

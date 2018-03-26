@@ -119,15 +119,15 @@ export default class AuditList extends React.Component {
       if (record.status === 1) {
         return (<span>
           <RowAction icon="check-circle-o" onClick={this.handleConfirm} label={this.gmsg('confirm')} row={record} />
-          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+          <RowAction icon="edit" onClick={row => this.handleDetail(row, 'edit')} tooltip={this.gmsg('edit')} row={record} />
         </span>);
       } else if (record.status === 2) {
         return (<span>
           <RowAction icon="close-circle-o" onClick={this.handleReturn} label={this.gmsg('return')} row={record} />
-          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+          <RowAction icon="eye-o" onClick={row => this.handleDetail(row, 'view')} tooltip={this.gmsg('view')} row={record} />
         </span>);
       }
-      return (<RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />);
+      return (<RowAction icon="eye-o" onClick={row => this.handleDetail(row, 'view')} tooltip={this.gmsg('view')} row={record} />);
     },
   }]
   dataSource = new DataTable.DataSource({
@@ -219,8 +219,8 @@ export default class AuditList extends React.Component {
       }
     });
   }
-  handleDetail = (row) => {
-    const link = `/bss/audit/${row.sof_order_no}`;
+  handleDetail = (row, type) => {
+    const link = `/bss/audit/${row.sof_order_no}?type=${type}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {

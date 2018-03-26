@@ -8,42 +8,37 @@ import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateBill } from 'common/reducers/bssBill';
+import { updateBill, getBillStatements } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
     userMembers: state.account.userMembers,
+    billHead: state.bssBill.billHead,
+    billStatements: state.bssBill.billStatements,
   }),
-  { updateBill }
+  { updateBill, getBillStatements }
 )
 export default class StatementsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    billDetails: PropTypes.arrayOf(PropTypes.shape({
-      cust_order_no: PropTypes.string,
-      buyer_settled_amount: PropTypes.number,
-    })),
     billNo: PropTypes.string.isRequired,
-    handleBillChange: PropTypes.func.isRequired,
-    billHead: PropTypes.shape({
-      bill_title: PropTypes.string,
-      total_amount: PropTypes.number,
-    }),
   }
   state = {
     selectedRowKeys: [],
-    billDetails: [],
+    billStatements: [],
     editItem: {},
     currentPage: 1,
   };
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.billDetails !== this.props.billDetails) {
-      this.setState({
-        billDetails: nextProps.billDetails,
-      });
-    }
+  componentDidMount() {
+    this.props.getBillStatements(this.props.billNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          billStatements: result.data,
+        });
+      }
+    });
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -73,36 +68,35 @@ export default class StatementsPane extends Component {
   handleOk = () => {
     const item = { ...this.state.editItem };
     const billHead = { ...this.props.billHead };
-    const billDetails = [...this.props.billDetails];
-    const index = billDetails.findIndex(data => data.id === item.id);
+    const billStatements = [...this.props.billStatements];
+    const index = billStatements.findIndex(data => data.id === item.id);
     let delta;
     if (item.settle_type === 1) {
-      delta = item.seller_settled_amount - billDetails[index].seller_settled_amount;
+      delta = item.seller_settled_amount - billStatements[index].seller_settled_amount;
     } else {
-      delta = item.buyer_settled_amount - billDetails[index].buyer_settled_amount;
+      delta = item.buyer_settled_amount - billStatements[index].buyer_settled_amount;
     }
-    billDetails[index] = item;
+    billStatements[index] = item;
     item.delta = delta;
     billHead.total_amount += delta;
     this.props.updateBill(item, this.props.billNo).then((result) => {
       if (!result.error) {
         this.setState({
-          billDetails,
+          billStatements,
           editItem: {},
         });
-        this.props.handleBillChange(billHead);
       }
     });
   }
   handleSearch = (value) => {
-    let { billDetails } = this.props;
+    let { billStatements } = this.props;
     if (value) {
-      billDetails = this.props.billDetails.filter((item) => {
+      billStatements = this.props.billStatements.filter((item) => {
         const reg = new RegExp(value);
         return reg.test(item.cust_order_no) || reg.test(item.sof_order_no);
       });
     }
-    this.setState({ billDetails, currentPage: 1 });
+    this.setState({ billStatements, currentPage: 1 });
   }
   render() {
     const rowSelection = {
@@ -183,7 +177,7 @@ export default class StatementsPane extends Component {
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
-        dataSource={this.state.billDetails}
+        dataSource={this.state.billStatements}
         rowKey="index"
         loading={this.state.loading}
         pagination={{

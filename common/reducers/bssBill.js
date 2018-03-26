@@ -11,8 +11,9 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
   'RECALL_BILL', 'RECALL_BILL_SUCCEED', 'RECALL_BILL_FAIL',
   'ACCEPT_BILL', 'ACCEPT_BILL_SUCCEED', 'ACCEPT_BILL_FAIL',
-  'GET_BILL', 'GET_BILL_SUCCEED', 'GET_BILL_FAIL',
+  'GET_BILL_STATEMENTS', 'GET_BILL_STATEMENTS_SUCCEED', 'GET_BILL_STATEMENTS_FAIL',
   'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
+  'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
 ]);
 
 const initialState = {
@@ -32,6 +33,8 @@ const initialState = {
   statistics: {
     total_amount: 0,
   },
+  billHead: {},
+  billStatements: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -53,6 +56,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, reload: true, billListFilter: action.data.filter };
     case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
       return { ...state, statistics: action.result.data };
+    case actionTypes.LOAD_BILL_HEAD:
+      return { ...state, reload: false };
+    case actionTypes.LOAD_BILL_HEAD_SUCCEED:
+      return { ...state, billHead: action.result.data };
+    case actionTypes.BILL_UPDATE_SUCCEED:
+      return { ...state, reload: true };
+    case actionTypes.GET_BILL_STATEMENTS_SUCCEED:
+      return { ...state, billStatements: action.result.data };
     default:
       return state;
   }
@@ -162,15 +173,30 @@ export function recallBill(data) {
   };
 }
 
-export function getBill(billNo) {
+export function loadBillHead(billNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_BILL,
-        actionTypes.GET_BILL_SUCCEED,
-        actionTypes.GET_BILL_FAIL,
+        actionTypes.LOAD_BILL_HEAD,
+        actionTypes.LOAD_BILL_HEAD_SUCCEED,
+        actionTypes.LOAD_BILL_HEAD_FAIL,
       ],
-      endpoint: 'v1/bss/bill/get',
+      endpoint: 'v1/bss/bill/head/load',
+      method: 'get',
+      params: { billNo },
+    },
+  };
+}
+
+export function getBillStatements(billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_BILL_STATEMENTS,
+        actionTypes.GET_BILL_STATEMENTS_SUCCEED,
+        actionTypes.GET_BILL_STATEMENTS_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/statements/get',
       method: 'get',
       params: { billNo },
     },
