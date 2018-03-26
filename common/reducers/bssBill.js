@@ -39,7 +39,7 @@ const initialState = {
   visibleNewBillModal: false,
   billReload: false,
   pendingReload: false,
-  statistics: {
+  billStat: {
     total_amount: 0,
   },
   billHead: {},
@@ -73,11 +73,15 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TOGGLE_NEW_BILL_MODAL:
       return { ...state, visibleNewBillModal: action.data };
     case actionTypes.RELOAD_BILL_LIST:
-      return { ...state, billReload: true, listFilter: action.data.filter };
+      return {
+        ...state,
+        billReload: true,
+        listFilter: { ...state.listFilter, ...action.data.filter },
+      };
     case actionTypes.RELOAD_STATEMENT_LIST:
       return { ...state, pendingReload: true };
     case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
-      return { ...state, statistics: action.result.data };
+      return { ...state, billStat: action.result.data };
     case actionTypes.LOAD_BILL_HEAD:
       return { ...state, billReload: false };
     case actionTypes.LOAD_BILL_HEAD_SUCCEED:

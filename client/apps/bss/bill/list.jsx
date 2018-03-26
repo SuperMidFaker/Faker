@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Divider, Icon, Layout, Menu } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import DockPanel from 'client/components/DockPanel';
@@ -21,7 +20,6 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 
-@connectFetch()()
 @injectIntl
 @connect(
   state => ({
@@ -73,14 +71,6 @@ export default class BillList extends React.Component {
   }
   handleTabChange = (key) => {
     this.setState({ currentTab: key });
-  }
-  handleDetail = (row) => {
-    const link = `/bss/bill/${row.order_rel_no}`;
-    this.context.router.push(link);
-  }
-  handleCheck = (row) => {
-    const link = `/bss/bill/reconcile/${row.order_rel_no}`;
-    this.context.router.push(link);
   }
   toggleExtra = () => {
     this.setState({ extraVisible: !this.state.extraVisible });

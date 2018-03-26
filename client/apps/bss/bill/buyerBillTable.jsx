@@ -25,7 +25,7 @@ const { Option } = Select;
     loading: state.bssBill.loading,
     partners: state.partner.partners,
     billReload: state.bssBill.billReload,
-    statistics: state.bssBill.statistics,
+    billStat: state.bssBill.billStat,
   }),
   {
     loadBills, loadBillStatistics, sendBill, deleteBills,
@@ -245,7 +245,7 @@ export default class BuyerBills extends React.Component {
   }
   render() {
     const {
-      loading, billlist, statistics,
+      loading, billlist, billStat,
     } = this.props;
     const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
     this.dataSource.remotes = billlist;
@@ -279,7 +279,7 @@ export default class BuyerBills extends React.Component {
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="账单金额合计">{statistics.total_amount}</Summary.Item>
+        <Summary.Item label="账单金额合计">{billStat.total_amount}</Summary.Item>
         <Summary.Item label="确认金额合计">{0}</Summary.Item>
       </Summary>
     );
