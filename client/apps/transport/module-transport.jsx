@@ -73,7 +73,7 @@ export default class Transport extends React.Component {
         text: formatMsg(intl, 'tracking'),
       });
     }
-    if (hasPermission(privileges, { module: 'transport', feature: 'billing' })) {
+    if (hasPermission(privileges, { module: 'transport', feature: 'tariff' })) {
       linkMenus.push({
         single: false,
         key: 'tms-4',

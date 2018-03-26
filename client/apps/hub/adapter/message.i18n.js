@@ -50,6 +50,10 @@ const messages = defineMessages({
     id: 'hub.adapter.related.partner',
     defaultMessage: '关联客户',
   },
+  exampleFileMaxColumns: {
+    id: 'hub.adapter.related.examplefile.columns',
+    defaultMessage: '示例文件列数',
+  },
   profile: {
     id: 'hub.adapter.profile',
     defaultMessage: '基本信息',

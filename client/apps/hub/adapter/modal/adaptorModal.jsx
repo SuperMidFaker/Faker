@@ -43,6 +43,7 @@ export default class AdaptorModal extends Component {
           code: uuidWithoutDash(),
           name: values.name,
           model: values.biz_model,
+          file_columns: values.file_columns,
           ownerPid: values.partner_id,
           ownerTid,
         }).then((result) => {
