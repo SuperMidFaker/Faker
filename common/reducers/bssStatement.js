@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/bss/statement', [
   'LOAD_ORDER_STATEMENTS', 'LOAD_ORDER_STATEMENTS_SUCCEED', 'LOAD_ORDER_STATEMENTS_FAIL',
+  'LOAD_PENDING_STATISTICS', 'LOAD_PENDING_STATISTICS_SUCCEED', 'LOAD_PENDING_STATISTICS_FAIL',
 ]);
 
 const initialState = {
@@ -17,6 +18,10 @@ const initialState = {
     clientPid: 'all',
   },
   loading: false,
+  statistics: {
+    buyer_settled_amount: 0,
+    seller_settled_amount: 0,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -31,6 +36,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, orderStatementlist: action.result.data };
     case actionTypes.LOAD_ORDER_STATEMENTS_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_PENDING_STATISTICS_SUCCEED:
+      return { ...state, statistics: action.result.data };
     default:
       return state;
   }
@@ -45,6 +52,21 @@ export function loadOrderStatements(params) {
         actionTypes.LOAD_ORDER_STATEMENTS_FAIL,
       ],
       endpoint: 'v1/bss/order/statements/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadPendingStatistics(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PENDING_STATISTICS,
+        actionTypes.LOAD_PENDING_STATISTICS_SUCCEED,
+        actionTypes.LOAD_PENDING_STATISTICS_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/pending/statistics',
       method: 'get',
       params,
     },

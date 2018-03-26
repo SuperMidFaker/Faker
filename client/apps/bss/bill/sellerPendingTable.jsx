@@ -11,8 +11,7 @@ import SearchBox from 'client/components/SearchBox';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES } from 'common/constants';
-import { loadPartners } from 'common/reducers/partner';
-import { loadOrderStatements } from 'common/reducers/bssStatement';
+import { loadOrderStatements, loadPendingStatistics } from 'common/reducers/bssStatement';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -25,9 +24,10 @@ const { Option } = Select;
     orderStatementlist: state.bssStatement.orderStatementlist,
     listFilter: state.bssStatement.listFilter,
     loading: state.bssStatement.loading,
+    statistics: state.bssStatement.statistics,
     partners: state.partner.partners,
   }),
-  { loadOrderStatements, loadPartners }
+  { loadOrderStatements, loadPendingStatistics }
 )
 export default class SellerPendingTable extends React.Component {
   static propTypes = {
@@ -38,10 +38,8 @@ export default class SellerPendingTable extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    totalAmount: 0,
   }
   componentDidMount() {
-    this.props.loadPartners({ role: PARTNER_ROLES.SUP });
     this.handleOrdersLoad(1);
   }
   msg = formatMsg(this.props.intl)
@@ -108,14 +106,9 @@ export default class SellerPendingTable extends React.Component {
         message.error(result.error.message, 10);
       } else {
         this.handleDeselectRows();
-        const calresult = result.data.data.reduce((acc, det) => ({
-          total_amount: acc.total_amount + det.buyer_settled_amount,
-        }), { total_amount: 0 });
-        this.setState({
-          totalAmount: calresult.total_amount,
-        });
       }
     });
+    this.props.loadPendingStatistics({ filter: JSON.stringify(filters) });
   }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, searchText: value };
@@ -133,7 +126,8 @@ export default class SellerPendingTable extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { loading, orderStatementlist, partners } = this.props;
+    const { loading, orderStatementlist, statistics } = this.props;
+    const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -165,7 +159,7 @@ export default class SellerPendingTable extends React.Component {
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="未入账单金额合计">{this.state.totalAmount}</Summary.Item>
+        <Summary.Item label="未入账单金额合计">{statistics.buyer_settled_amount}</Summary.Item>
       </Summary>
     );
     return (
