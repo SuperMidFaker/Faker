@@ -57,7 +57,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUOTES_LOAD:
       return {
         ...state,
-        quoteFeesReload: false,
         quotesList: { ...state.quotesList, quotesLoading: false },
         listFilter: JSON.parse(action.params.filter),
       };
@@ -71,7 +70,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUOTE_PARAMS_LOAD_SUCCEED:
       return { ...state, quoteData: action.result.data };
     case actionTypes.QUOTE_FEES_LOAD:
-      return { ...state, quoteFeesLoading: true };
+      return { ...state, quoteFeesReload: false, quoteFeesLoading: true };
     case actionTypes.QUOTE_FEES_LOAD_SUCCEED:
       return { ...state, quoteFeesLoading: false, quoteFees: action.result.data };
     case actionTypes.REVISE_QUOTE_SETTING:
