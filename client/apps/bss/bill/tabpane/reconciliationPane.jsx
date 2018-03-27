@@ -2,19 +2,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Input } from 'antd';
+import { Button, Input, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
-import { updateReconcile, acceptStatement } from 'common/reducers/bssBill';
+import { updateStatementReconcileFee, reconcileStatement } from 'common/reducers/bssBill';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
-  () => ({
+  state => ({
+    tenantId: state.account.tenantId,
   }),
-  { updateReconcile, acceptStatement }
+  { updateStatementReconcileFee, reconcileStatement }
 )
 export default class ReconciliationPane extends Component {
   static propTypes = {
@@ -75,15 +76,8 @@ export default class ReconciliationPane extends Component {
     const item = { ...this.state.editItem };
     const reconcileStatements = [...this.props.dataSource];
     const index = reconcileStatements.findIndex(data => data.id === item.id);
-    let delta;
-    if (item.settle_type === 1) {
-      delta = item.seller_settled_amount - reconcileStatements[index].seller_settled_amount;
-    } else {
-      delta = item.buyer_settled_amount - reconcileStatements[index].buyer_settled_amount;
-    }
     reconcileStatements[index] = item;
-    item.delta = delta;
-    this.props.updateReconcile(item, this.props.billNo).then((result) => {
+    this.props.updateStatementReconcileFee(item, this.props.billNo).then((result) => {
       if (!result.error) {
         this.setState({
           reconcileStatements,
@@ -92,22 +86,35 @@ export default class ReconciliationPane extends Component {
       }
     });
   }
-  handleAccept = (row) => {
+  handleReconcile = (row) => {
+    const { tenantId } = this.props;
     const reconcileStatements = [...this.props.dataSource];
     const index = reconcileStatements.findIndex(data => data.id === row.id);
     const item = reconcileStatements[index];
-    if (row.settle_type === 1) {
-      item.delta = item.buyer_settled_amount - item.seller_settled_amount;
-      item.seller_settled_amount = item.buyer_settled_amount;
-      item.reconciled_amount = item.buyer_settled_amount;
-    } else {
-      item.delta = item.seller_settled_amount - item.buyer_settled_amount;
-      item.buyer_settled_amount = item.seller_settled_amount;
-      item.reconciled_amount = item.seller_settled_amount;
+    if (!item.seller_settled_amount || item.buyer_settled_amount) {
+      message.error('缺少对方金额或者我方金额');
     }
-    item.diff_settled_amount = 0;
+    if (row.settle_type === 1) {
+      if (tenantId === row.owner_tenant_id) {
+        item.reconciled_amount = item.seller_settled_amount;
+        item.buyer_settled_amount = item.seller_settled_amount;
+      }
+      if (tenantId === row.tenant_id) {
+        item.reconciled_amount = item.buyer_settled_amount;
+        item.seller_settled_amount = item.buyer_settled_amount;
+      }
+    } else if (row.settle_type === 2) {
+      if (tenantId === row.vendor_tenant_id) {
+        item.reconciled_amount = item.buyer_settled_amount;
+        item.seller_settled_amount = item.buyer_settled_amount;
+      }
+      if (tenantId === row.tenant_id) {
+        item.reconciled_amount = item.seller_settled_amount;
+        item.buyer_settled_amount = item.seller_settled_amount;
+      }
+    }
     reconcileStatements[index] = item;
-    this.props.acceptStatement(item, this.props.billNo).then((result) => {
+    this.props.reconcileStatement(row.id).then((result) => {
       if (!result.error) {
         this.setState({
           reconcileStatements,
@@ -154,10 +161,23 @@ export default class ReconciliationPane extends Component {
       width: 150,
       align: 'right',
       render: (o, record) => {
+        const { tenantId } = this.props;
         if (record.settle_type === 1) {
-          return record.buyer_settled_amount;
+          if (tenantId === record.owner_tenant_id) {
+            return record.seller_settled_amount;
+          }
+          if (tenantId === record.tenant_id) {
+            return record.buyer_settled_amount;
+          }
+        } else if (record.settle_type === 2) {
+          if (tenantId === record.vendor_tenant_id) {
+            return record.buyer_settled_amount;
+          }
+          if (tenantId === record.tenant_id) {
+            return record.seller_settled_amount;
+          }
         }
-        return record.seller_settled_amount;
+        return null;
       },
     }, {
       title: '我方金额',
@@ -165,20 +185,51 @@ export default class ReconciliationPane extends Component {
       width: 150,
       align: 'right',
       render: (o, record) => {
+        const { tenantId } = this.props;
         if (this.state.editItem.id === record.id) {
           if (this.state.editItem.settle_type === 1) {
-            return (<Input
-              value={this.state.editItem.seller_settled_amount}
-              onChange={e => this.handleColumnChange('seller_settled_amount', e.target.value)}
-            />);
+            if (tenantId === record.owner_tenant_id) {
+              return (<Input
+                value={this.state.editItem.buyer_settled_amount}
+                onChange={e => this.handleColumnChange('buyer_settled_amount', e.target.value)}
+              />);
+            }
+            if (tenantId === record.tenant_id) {
+              return (<Input
+                value={this.state.editItem.seller_settled_amount}
+                onChange={e => this.handleColumnChange('seller_settled_amount', e.target.value)}
+              />);
+            }
+          } else if (this.state.editItem.settle_type === 2) {
+            if (tenantId === record.vendor_tenant_id) {
+              return (<Input
+                value={this.state.editItem.seller_settled_amount}
+                onChange={e => this.handleColumnChange('seller_settled_amount', e.target.value)}
+              />);
+            }
+            if (tenantId === record.tenant_id) {
+              return (<Input
+                value={this.state.editItem.buyer_settled_amount}
+                onChange={e => this.handleColumnChange('buyer_settled_amount', e.target.value)}
+              />);
+            }
           }
-          return (<Input
-            value={this.state.editItem.buyer_settled_amount}
-            onChange={e => this.handleColumnChange('buyer_settled_amount', e.target.value)}
-          />);
+        } else if (record.settle_type === 1) {
+          if (tenantId === record.owner_tenant_id) {
+            return record.buyer_settled_amount;
+          }
+          if (tenantId === record.tenant_id) {
+            return record.seller_settled_amount;
+          }
+        } else if (record.settle_type === 2) {
+          if (tenantId === record.vendor_tenant_id) {
+            return record.seller_settled_amount;
+          }
+          if (tenantId === record.tenant_id) {
+            return record.buyer_settled_amount;
+          }
         }
-        return record.settle_type === 1 ?
-          record.seller_settled_amount : record.buyer_settled_amount;
+        return null;
       },
     }, {
       title: '差异金额',
@@ -212,7 +263,7 @@ export default class ReconciliationPane extends Component {
             </span>);
           }
           return (<span>
-            <RowAction icon="like-o" onClick={this.handleAccept} tooltip={this.msg('accept')} row={record} />
+            <RowAction icon="like-o" onClick={this.handleReconcile} tooltip={this.msg('accept')} row={record} />
             <RowAction icon="edit" onClick={this.handleEdit} tooltip={this.gmsg('edit')} row={record} />
           </span>);
         }

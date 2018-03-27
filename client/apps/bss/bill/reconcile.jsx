@@ -24,7 +24,7 @@ const { TabPane } = Tabs;
     tenantId: state.account.tenantId,
     billHead: state.bssBill.billHead,
     billStatements: state.bssBill.billStatements,
-    billHeadReload: state.bssBill.billHeadReload,
+    billReload: state.bssBill.billReload,
   }),
   { loadBillHead, getBillStatements }
 )
@@ -45,7 +45,7 @@ export default class ReceivableBillDetail extends Component {
     this.props.getBillStatements(this.props.params.billNo);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.billHeadReload) {
+    if (nextProps.billReload) {
       this.props.loadBillHead(this.props.params.billNo);
       this.props.getBillStatements(this.props.params.billNo);
     }
@@ -58,23 +58,44 @@ export default class ReceivableBillDetail extends Component {
     const accepted = [];
     const bothAccepted = [];
     billStatements.forEach((statemt) => {
-      if (statemt.settle_type === 1) {
-        if (statemt.seller_settle_status === 0) {
-          unaccepted.push(statemt);
-        }
-        if (statemt.buyer_settle_status === 0) {
-          accepted.push(statemt);
-        }
-      } else {
-        if (statemt.buyer_settle_status === 0) {
-          unaccepted.push(statemt);
-        }
-        if (statemt.seller_settle_status === 0) {
-          accepted.push(statemt);
-        }
-      }
       if (statemt.seller_settle_status === 1 && statemt.buyer_settle_status === 1) {
         bothAccepted.push(statemt);
+        return;
+      }
+      if (statemt.settle_type === 1) {
+        if (tenantId === statemt.owner_tenant_id) {
+          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+            unaccepted.push(statemt);
+          }
+          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+            accepted.push(statemt);
+          }
+        }
+        if (tenantId === statemt.tenant_id) {
+          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+            unaccepted.push(statemt);
+          }
+          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+            accepted.push(statemt);
+          }
+        }
+      } else if (statemt.settle_type === 2) {
+        if (tenantId === statemt.vendor_tenant_id) {
+          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+            unaccepted.push(statemt);
+          }
+          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+            accepted.push(statemt);
+          }
+        }
+        if (tenantId === statemt.tenant_id) {
+          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+            unaccepted.push(statemt);
+          }
+          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+            accepted.push(statemt);
+          }
+        }
       }
     });
     return (

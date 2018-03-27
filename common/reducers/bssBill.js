@@ -16,8 +16,8 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'GET_BILL_STATEMENT_FEES', 'GET_BILL_STATEMENT_FEES_SUCCEED', 'GET_BILL_STATEMENT_FEES_FAIL',
   'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
-  'UPDATE_RECONCILE', 'UPDATE_RECONCILE_SUCCEED', 'UPDATE_RECONCILE_FAIL',
-  'ACCEPT_STATEMENT', 'ACCEPT_STATEMENT_SUCCEED', 'ACCEPT_STATEMENT_FAIL',
+  'UPDATE_RECONCILE_FEE', 'UPDATE_RECONCILE_FEE_SUCCEED', 'UPDATE_RECONCILE_FEE_FAIL',
+  'RECONCILE_STATEMENT', 'RECONCILE_STATEMENT_SUCCEED', 'RECONCILE_STATEMENT_FAIL',
 ]);
 
 const initialState = {
@@ -47,7 +47,6 @@ const initialState = {
   billStatements: [],
   billTemplateFees: [],
   statementFees: [],
-  billHeadReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -303,32 +302,32 @@ export function updateBill(data, billNo) {
   };
 }
 
-export function updateReconcile(data, billNo) {
+export function updateStatementReconcileFee(data, billNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_RECONCILE,
-        actionTypes.UPDATE_RECONCILE_SUCCEED,
-        actionTypes.UPDATE_RECONCILE_FAIL,
+        actionTypes.UPDATE_RECONCILE_FEE,
+        actionTypes.UPDATE_RECONCILE_FEE_SUCCEED,
+        actionTypes.UPDATE_RECONCILE_FEE_FAIL,
       ],
-      endpoint: 'v1/bss/reconcile/update',
+      endpoint: 'v1/bss/reconcile/fee/update',
       method: 'post',
       data: { data, billNo },
     },
   };
 }
 
-export function acceptStatement(item, billNo) {
+export function reconcileStatement(id) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.ACCEPT_STATEMENT,
-        actionTypes.ACCEPT_STATEMENT_SUCCEED,
-        actionTypes.ACCEPT_STATEMENT_FAIL,
+        actionTypes.RECONCILE_STATEMENT,
+        actionTypes.RECONCILE_STATEMENT_SUCCEED,
+        actionTypes.RECONCILE_STATEMENT_FAIL,
       ],
-      endpoint: 'v1/bss/bill/statement/accept',
+      endpoint: 'v1/bss/bill/statement/reconcile',
       method: 'post',
-      data: { item, billNo },
+      data: { id },
     },
   };
 }
