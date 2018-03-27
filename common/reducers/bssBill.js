@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'RECALL_BILL', 'RECALL_BILL_SUCCEED', 'RECALL_BILL_FAIL',
   'ACCEPT_BILL', 'ACCEPT_BILL_SUCCEED', 'ACCEPT_BILL_FAIL',
   'GET_BILL_STATEMENTS', 'GET_BILL_STATEMENTS_SUCCEED', 'GET_BILL_STATEMENTS_FAIL',
+  'GET_BILL_STATEMENT_FEES', 'GET_BILL_STATEMENT_FEES_SUCCEED', 'GET_BILL_STATEMENT_FEES_FAIL',
   'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
 ]);
@@ -42,6 +43,8 @@ const initialState = {
   },
   billHead: {},
   billStatements: [],
+  billTemplateFees: [],
+  statementFees: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -90,6 +93,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, billReload: true };
     case actionTypes.GET_BILL_STATEMENTS_SUCCEED:
       return { ...state, billStatements: action.result.data };
+    case actionTypes.GET_BILL_STATEMENT_FEES_SUCCEED:
+      return {
+        ...state,
+        billTemplateFees: action.result.data.billTemplateFees,
+        statementFees: action.result.data.statementFees,
+      };
     default:
       return state;
   }
@@ -238,6 +247,21 @@ export function getBillStatements(billNo) {
         actionTypes.GET_BILL_STATEMENTS_FAIL,
       ],
       endpoint: 'v1/bss/bill/statements/get',
+      method: 'get',
+      params: { billNo },
+    },
+  };
+}
+
+export function getBillStatementFees(billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_BILL_STATEMENT_FEES,
+        actionTypes.GET_BILL_STATEMENT_FEES_SUCCEED,
+        actionTypes.GET_BILL_STATEMENT_FEES_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/statement/fees/get',
       method: 'get',
       params: { billNo },
     },
