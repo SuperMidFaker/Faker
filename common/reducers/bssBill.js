@@ -5,7 +5,6 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'LOAD_BILLS', 'LOAD_BILLS_SUCCEED', 'LOAD_BILLS_FAIL',
   'LOAD_ORDER_STATEMENTS', 'LOAD_ORDER_STATEMENTS_SUCCEED', 'LOAD_ORDER_STATEMENTS_FAIL',
   'RELOAD_BILL_LIST',
-  'RELOAD_STATEMENT_LIST',
   'TOGGLE_NEW_BILL_MODAL',
   'CREATE_BILL', 'CREATE_BILL_SUCCEED', 'CREATE_BILL_FAIL',
   'LOAD_BILL_STATISTICS', 'LOAD_BILL_STATISTICS_SUCCEED', 'LOAD_BILL_STATISTICS_FAIL',
@@ -38,13 +37,11 @@ const initialState = {
   loading: false,
   visibleNewBillModal: false,
   billReload: false,
-  pendingReload: false,
   billStat: {
     total_amount: 0,
   },
   billHead: {},
   billStatements: [],
-  listReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -63,7 +60,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_STATEMENTS:
       return {
         ...state,
-        pendingReload: false,
+        billReload: false,
         listFilter: JSON.parse(action.params.filter),
         loading: true,
       };
@@ -77,11 +74,10 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         billReload: true,
-        listReload: false,
         listFilter: { ...state.listFilter, ...action.data.filter },
       };
-    case actionTypes.RELOAD_STATEMENT_LIST:
-      return { ...state, pendingReload: true, listReload: false };
+    case actionTypes.LOAD_BILL_STATISTICS:
+      return { ...state, billReload: false, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
       return { ...state, billStat: action.result.data };
     case actionTypes.LOAD_BILL_HEAD:
@@ -91,7 +87,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.BILL_UPDATE_SUCCEED:
       return { ...state, billReload: true };
     case actionTypes.CREATE_BILL_SUCCEED:
-      return { ...state, listReload: true };
+      return { ...state, billReload: true };
     case actionTypes.GET_BILL_STATEMENTS_SUCCEED:
       return { ...state, billStatements: action.result.data };
     default:
@@ -110,12 +106,6 @@ export function reloadBillList(filter) {
   return {
     type: actionTypes.RELOAD_BILL_LIST,
     data: { filter },
-  };
-}
-
-export function reloadOrderStatements() {
-  return {
-    type: actionTypes.RELOAD_STATEMENT_LIST,
   };
 }
 

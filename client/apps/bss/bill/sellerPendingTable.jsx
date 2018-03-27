@@ -25,7 +25,7 @@ const { Option } = Select;
     orderStatementlist: state.bssBill.orderStatementlist,
     listFilter: state.bssBill.listFilter,
     loading: state.bssBill.loading,
-    pendingReload: state.bssBill.pendingReload,
+    reload: state.bssBill.billReload,
     statementStat: state.bssStatement.statementStat,
     partners: state.partner.partners,
   }),
@@ -45,7 +45,7 @@ export default class SellerPendingTable extends React.Component {
     this.handleOrdersLoad(1);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.pendingReload) {
+    if (nextProps.reload) {
       this.handleOrdersLoad(1, nextProps.listFilter);
     }
   }
