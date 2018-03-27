@@ -17,10 +17,7 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     userMembers: state.account.userMembers,
     billHead: state.bssBill.billHead,
     billStatements: state.bssBill.billStatements,
-    billColumns: state.bssBill.billTemplateFees.map(data => ({
-      title: data.fee_name,
-      dataIndex: data.fee_uid,
-    })),
+    billTemplateFees: state.bssBill.billTemplateFees,
     statementFees: state.bssBill.statementFees,
   }),
   { updateBill, getBillStatements, getBillStatementFees }
@@ -39,27 +36,22 @@ export default class StatementsPane extends Component {
   componentDidMount() {
     this.props.getBillStatements(this.props.billNo).then((result) => {
       if (!result.error) {
-        this.setState({
-          billStatements: result.data,
-        });
+        this.props.getBillStatementFees(this.props.billNo);
       }
     });
-    this.props.getBillStatementFees(this.props.billNo);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.statementFees !== this.props.statementFees
       && nextProps.statementFees.length > 0) {
       const stFees = nextProps.statementFees;
-      const statements = this.state.billStatements;
+      const statements = nextProps.billStatements;
       const newStatements = [];
       statements.forEach((st) => {
         const row = { ...st };
         const fees = stFees.filter(fee => fee.sof_order_no === st.sof_order_no);
-        if (fees.length > 0) {
-          fees.forEach((fe) => {
-            row[fe.fee_uid] = fe.fee_amount;
-          });
-        }
+        fees.forEach((fe) => {
+          row[fe.fee_uid] = fe.fee_amount;
+        });
         newStatements.push(row);
       });
       this.setState({ billStatements: newStatements });
@@ -122,7 +114,7 @@ export default class StatementsPane extends Component {
     this.setState({ billStatements, currentPage: 1 });
   }
   render() {
-    const { billColumns } = this.props;
+    const { billTemplateFees } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -138,7 +130,12 @@ export default class StatementsPane extends Component {
       dataIndex: 'cust_order_no',
       width: 150,
     }];
-    if (billColumns.length > 0) {
+    if (billTemplateFees.length > 0) {
+      const billColumns = billTemplateFees.map(data => ({
+        title: data.fee_name,
+        dataIndex: data.fee_uid,
+        width: 100,
+      }));
       columns = columns.concat(billColumns);
     }
     columns.push({
