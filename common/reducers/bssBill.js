@@ -44,7 +44,7 @@ const initialState = {
   },
   billHead: {},
   billStatements: [],
-  billListReload: false,
+  listReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -63,6 +63,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ORDER_STATEMENTS:
       return {
         ...state,
+        pendingReload: false,
         listFilter: JSON.parse(action.params.filter),
         loading: true,
       };
@@ -76,10 +77,11 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         billReload: true,
+        listReload: false,
         listFilter: { ...state.listFilter, ...action.data.filter },
       };
     case actionTypes.RELOAD_STATEMENT_LIST:
-      return { ...state, pendingReload: true };
+      return { ...state, pendingReload: true, listReload: false };
     case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
       return { ...state, billStat: action.result.data };
     case actionTypes.LOAD_BILL_HEAD:

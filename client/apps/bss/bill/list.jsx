@@ -25,7 +25,7 @@ const { Content } = Layout;
   state => ({
     aspect: state.account.aspect,
     listFilter: state.bssBill.listFilter,
-    billListReload: state.bssBill.billListReload,
+    listReload: state.bssBill.listReload,
   }),
   {
     toggleNewBillModal, loadPartners, reloadBillList, reloadOrderStatements,
