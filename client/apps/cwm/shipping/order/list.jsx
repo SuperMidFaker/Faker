@@ -568,9 +568,6 @@ export default class ShippingOrderList extends React.Component {
                 <Menu.Item key={CWM_SO_STATUS.PARTIAL.key}>
                   <Icon type="" /> {CWM_SO_STATUS.PARTIAL.text}
                 </Menu.Item>
-                <Menu.Item key="partial">
-                  <Icon type="upload" /> {this.msg('statusPartial')}
-                </Menu.Item>
                 <Menu.Item key={CWM_SO_STATUS.COMPLETED.key}>
                   <Icon type="" /> {CWM_SO_STATUS.COMPLETED.text}
                 </Menu.Item>
