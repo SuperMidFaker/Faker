@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Form, Layout, Tabs, message, Button } from 'antd';
+import { Form, Layout, Tabs, message, Button, Menu, Dropdown, Icon } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadQuoteParams, reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal } from 'common/reducers/cmsQuote';
+import { createFilename } from 'client/util/dataTransform';
+import { loadQuoteParams, reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal, reloadQuoteFees } from 'common/reducers/cmsQuote';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import TariffPane from './tabpane/tariffPane';
 import SettingPane from './tabpane/settingPane';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -36,7 +38,7 @@ function fetchData({ params, dispatch }) {
     loginName: state.account.username,
   }),
   {
-    reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal,
+    reviseQuoteSetting, copyQuote, openPublishModal, openTrialModal, reloadQuoteFees,
   }
 )
 @Form.create()
@@ -50,6 +52,7 @@ export default class QuotingEdit extends Component {
   }
   state = {
     tabKey: 'tariff',
+    importPanelVisible: false,
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -123,6 +126,19 @@ export default class QuotingEdit extends Component {
   handleCancel = () => {
     this.context.router.push('/clearance/billing/quote');
   }
+  handleFeesUpload = () => {
+    this.setState({ importPanelVisible: false });
+    this.props.reloadQuoteFees();
+  }
+  handleMoreMenuClick = (e) => {
+    if (e.key === 'import') {
+      this.setState({
+        importPanelVisible: true,
+      });
+    } else {
+      window.open(`${API_ROOTS.default}v1/cms/billing/quote/tariff/export/${createFilename('quote_tariff')}.xlsx?quoteNo=${this.props.quoteData.quote_no}`);
+    }
+  }
   render() {
     const {
       form, saving, quoteData, tenantId,
@@ -131,6 +147,12 @@ export default class QuotingEdit extends Component {
     if (tenantId !== quoteData.tenant_id) {
       readOnly = true;
     }
+    const moreMenu = (
+      <Menu onClick={this.handleMoreMenuClick}>
+        <Menu.Item key="import"><Icon type="upload" /> 导入报价费率</Menu.Item>
+        <Menu.Item key="export"><Icon type="download" /> 导出报价费率</Menu.Item>
+      </Menu>
+    );
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('quote'), this.props.params.quoteNo]}>
@@ -138,6 +160,7 @@ export default class QuotingEdit extends Component {
             {/* <Button icon="copy">{this.msg('clone')}</Button> */}
             <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>{this.gmsg('save')}</Button>
             <Button onClick={this.handleCancel}>{this.gmsg('cancel')}</Button>
+            <Dropdown overlay={moreMenu}><Button icon="ellipsis" /></Dropdown>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
@@ -152,6 +175,16 @@ export default class QuotingEdit extends Component {
             </Tabs>
           </MagicCard>
         </Content>
+        <ImportDataPanel
+          adaptors={null}
+          title="报价费率导入"
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cms/billing/quote/tariff/import`}
+          formData={{ quoteNo: quoteData.quote_no }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.handleFeesUpload}
+          template={`${XLSX_CDN}/报价费率导入模板.xlsx`}
+        />
       </Layout>
     );
   }
