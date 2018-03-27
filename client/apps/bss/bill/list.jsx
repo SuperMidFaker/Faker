@@ -8,7 +8,7 @@ import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { toggleNewBillModal, reloadBillList, reloadOrderStatements } from 'common/reducers/bssBill';
+import { toggleNewBillModal, reloadBillList } from 'common/reducers/bssBill';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import BuyerBillTable from './buyerBillTable';
@@ -25,10 +25,9 @@ const { Content } = Layout;
   state => ({
     aspect: state.account.aspect,
     listFilter: state.bssBill.listFilter,
-    billListReload: state.bssBill.billListReload,
   }),
   {
-    toggleNewBillModal, loadPartners, reloadBillList, reloadOrderStatements,
+    toggleNewBillModal, loadPartners, reloadBillList,
   }
 )
 @connectNav({
@@ -52,15 +51,6 @@ export default class BillList extends React.Component {
       this.props.loadPartners({ role: [PARTNER_ROLES.SUP] });
     } else {
       this.props.loadPartners({ role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP] });
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.listReload) {
-      if (nextProps.listFilter.status === 'pendingExpense') {
-        this.props.reloadOrderStatements();
-      } else {
-        this.props.reloadBillList();
-      }
     }
   }
   msg = formatMsg(this.props.intl)
