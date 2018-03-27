@@ -15,6 +15,18 @@ const messages = defineMessages({
     id: 'bss.bill.seller.bill',
     defaultMessage: '服务商账单',
   },
+  offlineBill: {
+    id: 'bss.bill.type.offline.bill',
+    defaultMessage: '线下账单',
+  },
+  forwardProposedBill: {
+    id: 'bss.bill.type.forward.proposed.bill',
+    defaultMessage: '正向账单',
+  },
+  backwardProposedBill: {
+    id: 'bss.bill.type.backward.proposed.bill',
+    defaultMessage: '反向账单',
+  },
   expense: {
     id: 'bss.bill.expense',
     defaultMessage: '费用',

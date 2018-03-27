@@ -471,7 +471,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   render() {
     const {
-      relSo, relRegs, whse, submitting,
+      relSo, relRegs, submitting,
     } = this.props;
     const { reg, filingDetails, exitDetails } = this.state;
     if (relRegs.length === 0) {
@@ -541,7 +541,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             relType && relType.ftztext,
             this.props.params.soNo,
           ]}

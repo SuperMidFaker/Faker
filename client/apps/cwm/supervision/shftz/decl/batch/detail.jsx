@@ -357,7 +357,7 @@ export default class BatchDeclDetail extends Component {
   }
   render() {
     const {
-      batchDecl, whse, submitting,
+      batchDecl, submitting,
     } = this.props;
     const { batchApplies, regs, details } = this.state;
     const statWt = details.reduce((acc, det) => ({
@@ -394,7 +394,6 @@ export default class BatchDeclDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             this.msg('ftzBatchDecl'),
             this.props.params.batchNo,
           ]}

@@ -19,6 +19,18 @@ const messages = defineMessages({
     id: 'cwm.shipping.order',
     defaultMessage: '出货订单SO',
   },
+  regStatus: {
+    id: 'cwm.shipping.reg.status',
+    defaultMessage: '备案状态',
+  },
+  allSO: {
+    id: 'cwm.shipping.order.all',
+    defaultMessage: '全部出货订单',
+  },
+  inWaveSO: {
+    id: 'cwm.shipping.order.in.wave',
+    defaultMessage: '波次出货订单',
+  },
   createSO: {
     id: 'cwm.shipping.order.create',
     defaultMessage: '创建出货订单',
@@ -34,6 +46,10 @@ const messages = defineMessages({
   shippingOutbound: {
     id: 'cwm.shipping.outbound',
     defaultMessage: '出库单',
+  },
+  outboundStatus: {
+    id: 'cwm.shipping.outbound.status',
+    defaultMessage: '出库状态',
   },
   soPlaceholder: {
     id: 'cwm.shipping.so.search.placeholder',

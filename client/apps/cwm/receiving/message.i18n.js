@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   receiving: {
@@ -14,9 +15,17 @@ const messages = defineMessages({
     id: 'cwm.receiving.cancel',
     defaultMessage: '取消',
   },
+  regStatus: {
+    id: 'cwm.receiving.reg.status',
+    defaultMessage: '备案状态',
+  },
   receivingASN: {
     id: 'cwm.receiving.asn',
     defaultMessage: '收货通知ASN',
+  },
+  allASN: {
+    id: 'cwm.receiving.asn.all',
+    defaultMessage: '全部收货通知',
   },
   createASN: {
     id: 'cwm.receiving.asn.create',
@@ -25,6 +34,10 @@ const messages = defineMessages({
   receivingInound: {
     id: 'cwm.receiving.inbound',
     defaultMessage: '入库单',
+  },
+  inboundStatus: {
+    id: 'cwm.receiving.inbound.status',
+    defaultMessage: '入库状态',
   },
   inboundListSearchPlaceholder: {
     id: 'cwm.receiving.list.placeholder',
@@ -94,3 +107,4 @@ const messages = defineMessages({
 
 export default messages;
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Button, Layout, Radio, Select, Tag, notification, DatePicker } from 'antd';
+import { Badge, Button, Divider, Form, Layout, Icon, Menu, Select, Tag, notification, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
-import QueueAnim from 'rc-queue-anim';
+import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
@@ -15,15 +15,13 @@ import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease }
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import WhseSelect from '../../common/whseSelect';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
-import { formatMsg } from '../message.i18n';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { RangePicker } = DatePicker;
 
 @injectIntl
@@ -82,17 +80,8 @@ export default class ReceivingASNList extends React.Component {
       this.handleListReload();
     }
   }
-  onDateChange = (data, dataString) => {
-    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
-      filters,
-    });
-  }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
     title: 'ASN编号',
     dataIndex: 'asn_no',
@@ -306,8 +295,8 @@ export default class ReceivingASNList extends React.Component {
       filters,
     });
   }
-  handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
+  handleFilterMenuClick = (ev) => {
+    const filters = { ...this.props.filters, status: ev.key };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
@@ -331,6 +320,16 @@ export default class ReceivingASNList extends React.Component {
   }
   handleSupplierChange = (value) => {
     const filters = { ...this.props.filters, supplierCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
+      filters,
+    });
+  }
+  handleDateChange = (data, dataString) => {
+    const filters = { ...this.props.filters, startDate: dataString[0], endDate: dataString[1] };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
@@ -424,7 +423,7 @@ export default class ReceivingASNList extends React.Component {
                 {supplier.name}</Option>))}
       </Select>
       <RangePicker
-        onChange={this.onDateChange}
+        onChange={this.handleDateChange}
         value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
       />
@@ -434,47 +433,77 @@ export default class ReceivingASNList extends React.Component {
       : <a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>;
       */
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <PageHeader
           breadcrumb={[
             <WhseSelect onChange={this.handleWhseChange} />,
             this.msg('receivingASN'),
           ]}
         >
-          <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">{CWM_ASN_STATUS.PENDING.text}</RadioButton>
-              <RadioButton value="inbound">{CWM_ASN_STATUS.INBOUND.text}</RadioButton>
-              <RadioButton value="partial">{CWM_ASN_STATUS.DISCREPANT.text}</RadioButton>
-              <RadioButton value="completed">{CWM_ASN_STATUS.COMPLETED.text}</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            toolbarActions={toolbarActions}
-            bulkActions={bulkActions}
-            selectedRowKeys={this.state.selectedRowKeys}
-            onDeselectRows={this.handleDeselectRows}
-            columns={this.columns}
-            dataSource={dataSource}
-            rowSelection={rowSelection}
-            rowKey="asn_no"
-            loading={loading}
-            locale={{ emptyText: '没有当前状态的ASN' }}
-          />
-        </Content>
+        <Layout>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[filters.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.msg('allASN')}
+              </Menu.Item>
+              <Menu.ItemGroup key="inboundStatus" title={this.msg('inboundStatus')}>
+                <Menu.Item key={CWM_ASN_STATUS.PENDING.key}>
+                  <Icon type="" /> {CWM_ASN_STATUS.PENDING.text}
+                </Menu.Item>
+                <Menu.Item key={CWM_ASN_STATUS.INBOUND.key}>
+                  <Icon type="" /> {CWM_ASN_STATUS.INBOUND.text}
+                </Menu.Item>
+                <Menu.Item key={CWM_ASN_STATUS.DISCREPANT.key}>
+                  <Icon type="" /> {CWM_ASN_STATUS.DISCREPANT.text}
+                </Menu.Item>
+                <Menu.Item key={CWM_ASN_STATUS.COMPLETED.key}>
+                  <Icon type="" /> {CWM_ASN_STATUS.COMPLETED.text}
+                </Menu.Item>
+              </Menu.ItemGroup>
+              {defaultWhse.bonded &&
+              <Menu.ItemGroup key="regStatus" title={this.msg('regStatus')}>
+                <Menu.Item key="regPending">
+                  <Icon type="" /> 待备案
+                </Menu.Item>
+                <Menu.Item key="regProcessing">
+                  <Icon type="" /> 已发送
+                </Menu.Item>
+                <Menu.Item key="regCompleted">
+                  <Icon type="" /> 备案完成
+                </Menu.Item>
+              </Menu.ItemGroup>}
+            </Menu>
+            <Divider />
+            <Form layout="vertical">
+              <Button icon="filter">{this.gmsg('manageFilters')}</Button>
+            </Form>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={dataSource}
+              rowSelection={rowSelection}
+              rowKey="asn_no"
+              loading={loading}
+              locale={{ emptyText: '没有当前状态的ASN' }}
+            />
+          </Content>
+        </Layout>
         <ReceivingDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
         <ShipmentDockPanel />
-      </QueueAnim>
+      </Layout>
     );
   }
 }
