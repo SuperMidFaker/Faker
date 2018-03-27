@@ -549,21 +549,36 @@ export default class ShippingOrderList extends React.Component {
               <Menu.Item key="inWave">
                 {this.msg('inWaveSO')}
               </Menu.Item>
-              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
-                <Menu.Item key="pending">
-                  <Icon type="upload" /> {this.msg('statusPending')}
+              <Menu.ItemGroup key="outboundStatus" title={this.msg('outboundStatus')}>
+                <Menu.Item key={CWM_SO_STATUS.PENDING.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.PENDING.text}
                 </Menu.Item>
-                <Menu.Item key="outbound">
-                  <Icon type="check-square-o" /> {this.msg('statusOutbound')}
+                <Menu.Item key={CWM_SO_STATUS.OUTBOUND.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.OUTBOUND.text}
                 </Menu.Item>
-                <Menu.Item key="partial">
-                  <Icon type="upload" /> {this.msg('statusPartial')}
+                <Menu.Item key={CWM_SO_STATUS.PARTIAL.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.PARTIAL.text}
                 </Menu.Item>
-                <Menu.Item key="completed">
-                  <Icon type="check-square-o" /> {this.msg('statusCompleted')}
+                <Menu.Item key={CWM_SO_STATUS.COMPLETED.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.COMPLETED.text}
                 </Menu.Item>
               </Menu.ItemGroup>
+              {defaultWhse.bonded &&
+                <Menu.ItemGroup key="regStatus" title={this.msg('regStatus')}>
+                  <Menu.Item key="regPending">
+                    <Icon type="" /> 待备案
+                  </Menu.Item>
+                  <Menu.Item key="regProcessing">
+                    <Icon type="" /> 已发送
+                  </Menu.Item>
+                  <Menu.Item key="regCompleted">
+                    <Icon type="" /> 备案完成
+                  </Menu.Item>
+                </Menu.ItemGroup>}
               <Divider />
+              <Menu.Item key="manageFilter">
+                <Icon type="filter" /> {this.gmsg('manageFilters')}
+              </Menu.Item>
             </Menu>
           </Drawer>
           <Content className="page-content" key="main">

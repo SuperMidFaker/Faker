@@ -262,7 +262,7 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   render() {
     const {
-      relSo, relRegs, whse, submitting, receivers,
+      relSo, relRegs, submitting, receivers,
     } = this.props;
     if (relRegs.length !== 1 || !relSo) {
       return null;
@@ -300,8 +300,7 @@ export default class SHFTZTransferOutDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
-            <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
+            relType.ftztext,
             this.props.params.soNo,
           ]}
         >

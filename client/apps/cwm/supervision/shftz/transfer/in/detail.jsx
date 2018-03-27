@@ -241,7 +241,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   render() {
     const {
-      transfInReg, entryRegs, whse, submitting,
+      transfInReg, entryRegs, submitting,
     } = this.props;
     const { searchVal } = this.state;
     if (entryRegs.length !== 1) {
@@ -278,8 +278,7 @@ export default class SHFTZTransferInDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
-            <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>,
+            entType.ftztext,
             this.props.params.preFtzEntNo,
           ]}
         >

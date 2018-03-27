@@ -306,7 +306,7 @@ export default class SHFTZTransferSelfDetail extends Component {
     this.setState({ searchVal: searchText });
   }
   render() {
-    const { transfSelfReg, whse, submitting } = this.props;
+    const { transfSelfReg, submitting } = this.props;
     if (!transfSelfReg.details) {
       return null;
     }
@@ -345,7 +345,6 @@ export default class SHFTZTransferSelfDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             this.msg('ftzTransferSelf'),
             this.props.params.asnNo,
           ]}

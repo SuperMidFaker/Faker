@@ -8,7 +8,7 @@ export default class DescriptionList extends PureComponent {
   static defaultProps = {
     prefixCls: 'welo-desc-list',
     col: 3,
-    gutter: 0,
+    gutter: 16,
     layout: 'horizontal',
   };
   static propTypes = {

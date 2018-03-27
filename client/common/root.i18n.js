@@ -90,6 +90,10 @@ const messages = defineMessages({
     id: 'root.actions.edit',
     defaultMessage: '编辑',
   },
+  view: {
+    id: 'root.actions.view',
+    defaultMessage: '查看',
+  },
   modify: {
     id: 'root.actions.modify',
     defaultMessage: '修改',
@@ -162,6 +166,10 @@ const messages = defineMessages({
     id: 'root.actions.reject',
     defaultMessage: '拒绝',
   },
+  return: {
+    id: 'root.actions.return',
+    defaultMessage: '退回',
+  },
   approve: {
     id: 'root.actions.approve',
     defaultMessage: '通过',
@@ -169,6 +177,10 @@ const messages = defineMessages({
   revoke: {
     id: 'root.actions.revoke',
     defaultMessage: '撤销',
+  },
+  withdraw: {
+    id: 'root.actions.withdraw',
+    defaultMessage: '撤回',
   },
   batchImport: {
     id: 'root.batch.import',
@@ -237,6 +249,10 @@ const messages = defineMessages({
   items: {
     id: 'root.pagination.items',
     defaultMessage: '条',
+  },
+  manageFilters: {
+    id: 'root.manage.filters',
+    defaultMessage: '管理筛选器',
   },
   CUS: {
     id: 'root.partnership.customer',

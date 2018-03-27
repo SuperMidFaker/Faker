@@ -444,7 +444,7 @@ export default class SHFTZRelDetail extends Component {
   }
   render() {
     const {
-      relSo, relRegs, whse, submitting,
+      relSo, relRegs, submitting,
     } = this.props;
     const { reg, decl, filingDetails } = this.state;
     if (relRegs.length === 0) {
@@ -490,7 +490,6 @@ export default class SHFTZRelDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
             this.props.params.soNo,
           ]}

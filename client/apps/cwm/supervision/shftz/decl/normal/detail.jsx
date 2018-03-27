@@ -240,7 +240,7 @@ export default class NormalDeclDetail extends Component {
     this.setState({ details });
   }
   render() {
-    const { normalDecl, whse, trxModes } = this.props;
+    const { normalDecl, trxModes } = this.props;
     const { details, regs } = this.state;
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
@@ -275,7 +275,6 @@ export default class NormalDeclDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             this.msg('ftzNormalDecl'),
             this.props.params.clearanceNo,
           ]}

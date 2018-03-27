@@ -572,7 +572,7 @@ export default class SHFTZEntryDetail extends Component {
   }
   render() {
     const {
-      primaryEntryReg, entryRegs, whse, submitting, whseOwners,
+      primaryEntryReg, entryRegs, submitting, whseOwners,
     } = this.props;
     const {
       reg, alertInfo, splitNum, filingDetails,
@@ -608,7 +608,6 @@ export default class SHFTZEntryDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             entType && entType.ftztext,
             primaryEntryReg.cus_decl_no || this.props.params.preEntrySeqNo,
           ]}

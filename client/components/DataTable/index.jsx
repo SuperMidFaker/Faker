@@ -378,7 +378,7 @@ class DataTable extends React.Component {
                 <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={onDeselectRows} />
               </Tooltip>
               <h4 className={`${baseCls}-body-row-selection-text`}>
-                已选中<a onClick={onFilterSelected}>{selectedRowKeys.length}</a>项
+                已选中<Button type="dashed" size="small" onClick={onFilterSelected}>{selectedRowKeys.length}</Button> 项
               </h4>
               {bulkActions}
             </div>}

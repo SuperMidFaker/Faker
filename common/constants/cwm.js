@@ -48,23 +48,27 @@ exports.CWM_ASN_BONDED_REGTYPES = [{
 
 exports.CWM_ASN_STATUS = {
   PENDING: {
+    key: 'pending',
     value: 0,
     text: '未处理',
     badge: 'default',
   },
   INBOUND: {
+    key: 'inbound',
     value: 1,
-    text: '已释放',
+    text: '入库中',
     badge: 'processing',
   },
   DISCREPANT: {
+    key: 'partial',
     value: 2,
     text: '收货差异',
     badge: 'warning',
   },
   COMPLETED: {
+    key: 'completed',
     value: 3,
-    text: '已完成',
+    text: '入库完成',
     badge: 'success',
   },
 };
@@ -100,23 +104,27 @@ exports.CWM_SHFTZ_APIREG_STATUS = {
 
 exports.CWM_SO_STATUS = {
   PENDING: {
+    key: 'pending',
     value: 0,
     text: '未处理',
     badge: 'default',
   },
   OUTBOUND: {
+    key: 'outbound',
     value: 1,
-    text: '已释放',
+    text: '出库中',
     badge: 'processing',
   },
   PARTIAL: {
+    key: 'partial',
     value: 2,
     text: '部分出库',
     badge: 'warning',
   },
   COMPLETED: {
+    key: 'completed',
     value: 3,
-    text: '已完成',
+    text: '出库完成',
     badge: 'success',
   },
 };

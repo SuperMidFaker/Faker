@@ -13,6 +13,7 @@ import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
@@ -67,29 +68,40 @@ export default class AuditList extends React.Component {
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '客户',
-    width: 200,
+    width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '客户单号',
-    width: 180,
+    width: 150,
     dataIndex: 'cust_order_no',
   }, {
     title: '应收金额',
     dataIndex: 'receivable_amount',
+    align: 'right',
     width: 150,
   }, {
     title: '应付金额',
     dataIndex: 'payable_amount',
+    align: 'right',
     width: 150,
   }, {
     title: '差异金额',
     dataIndex: 'profit_amount',
+    align: 'right',
     width: 150,
+    render: o => ((o < 0) ? <span className="text-error">{o}</span> : o),
   }, {
-    title: '毛利率',
+    title: '毛利率%',
     dataIndex: 'gross_profit_ratio',
+    align: 'right',
     width: 100,
+    render: (o) => {
+      if (o) {
+        return o < 0 ? <span className="text-error">{o.toFixed(1)}</span> : o.toFixed(1);
+      }
+      return null;
+    },
   }, {
     title: '订单日期',
     dataIndex: 'order_date',
@@ -108,7 +120,8 @@ export default class AuditList extends React.Component {
   }, {
     title: '审核人员',
     dataIndex: 'confirmed_by',
-    width: 80,
+    width: 120,
+    render: lid => lid && <UserAvatar size="small" loginId={lid} showName />,
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
