@@ -9,6 +9,7 @@ import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import { loadBillHead, getBillStatements } from 'common/reducers/bssBill';
 import ReconciliationPane from './tabpane/reconciliationPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -20,11 +21,12 @@ const { TabPane } = Tabs;
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
-    username: state.account.username,
-
+    tenantId: state.account.tenantId,
+    billHead: state.bssBill.billHead,
+    billStatements: state.bssBill.billStatements,
+    billHeadReload: state.bssBill.billHeadReload,
   }),
-  { }
+  { loadBillHead, getBillStatements }
 )
 @connectNav({
   depth: 3,
@@ -38,16 +40,43 @@ export default class ReceivableBillDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    bill: {},
+  componentDidMount() {
+    this.props.loadBillHead(this.props.params.billNo);
+    this.props.getBillStatements(this.props.params.billNo);
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.billHeadReload) {
+      this.props.loadBillHead(this.props.params.billNo);
+      this.props.getBillStatements(this.props.params.billNo);
+    }
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-
   render() {
-    const { bill } = this.state;
-
+    const { billHead, tenantId, billStatements } = this.props;
+    const unaccepted = [];
+    const accepted = [];
+    const bothAccepted = [];
+    billStatements.forEach((statemt) => {
+      if (statemt.settle_type === 1) {
+        if (statemt.seller_settle_status === 0) {
+          unaccepted.push(statemt);
+        }
+        if (statemt.buyer_settle_status === 0) {
+          accepted.push(statemt);
+        }
+      } else {
+        if (statemt.buyer_settle_status === 0) {
+          unaccepted.push(statemt);
+        }
+        if (statemt.seller_settle_status === 0) {
+          accepted.push(statemt);
+        }
+      }
+      if (statemt.seller_settle_status === 1 && statemt.buyer_settle_status === 1) {
+        bothAccepted.push(statemt);
+      }
+    });
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
@@ -63,16 +92,18 @@ export default class ReceivableBillDetail extends Component {
         <Layout>
           <Drawer top onCollapseChange={this.handleCollapseChange}>
             <DescriptionList col={4}>
-              <Description term="账单名称">{bill.title}</Description>
-              <Description term="客户">{bill.buyer_name}</Description>
-              <Description term="账期">{bill.order_begin_date && moment(bill.order_begin_date).format('YYYY.MM.DD')} ~ {bill.order_end_date && moment(bill.order_end_date).format('YYYY.MM.DD')}</Description>
-              <Description term="类型">{bill.bill_type}</Description>
-              <Description term="订单数量">{bill.order_count}</Description>
-              <Description term="账单金额合计">{bill.total_amount}</Description>
-              <Description term="调整金额">{bill.adjusted_amount}</Description>
-              <Description term="最终结算金额">{bill.final_amount}</Description>
+              <Description term="账单名称">{billHead.bill_title}</Description>
+              {tenantId === billHead.buyer_tenant_id ?
+                <Description term="服务商">{billHead.seller_name}</Description> :
+                <Description term="客户">{billHead.buyer_name}</Description>}
+              <Description term="账期">{billHead.order_begin_date && moment(billHead.order_begin_date).format('YYYY.MM.DD')} ~ {billHead.order_end_date && moment(billHead.order_end_date).format('YYYY.MM.DD')}</Description>
+              <Description term="类型">{billHead.bill_type}</Description>
+              <Description term="订单数量">{billHead.order_count}</Description>
+              <Description term="账单总金额">{billHead.total_amount}</Description>
+              <Description term="调整金额">{billHead.adjusted_amount}</Description>
+              <Description term="最终结算金额">{billHead.final_amount}</Description>
             </DescriptionList>
-            <Steps progressDot current={1} className="progress-tracker">
+            <Steps progressDot current={billHead.bill_status - 1} className="progress-tracker">
               <Step title="草稿" />
               <Step title="对账中" />
               <Step title="已接受" />
@@ -81,14 +112,26 @@ export default class ReceivableBillDetail extends Component {
           <Content className="page-content">
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="unaccepted" onChange={this.handleTabChange}>
-                <TabPane tab={<span>待我方认可<Badge count={25} /></span>} key="unaccepted" >
-                  <ReconciliationPane status="unaccepted" />
+                <TabPane tab={<span>待我方认可<Badge count={unaccepted.length} /></span>} key="unaccepted" >
+                  <ReconciliationPane
+                    dataSource={unaccepted}
+                    billNo={this.props.params.billNo}
+                    status="unaccepted"
+                  />
                 </TabPane>
-                <TabPane tab={<span>需对方认可<Badge count={0} /></span>} key="accepted" >
-                  <ReconciliationPane status="accepted" />
+                <TabPane tab={<span>需对方认可<Badge count={accepted.length} /></span>} key="accepted" >
+                  <ReconciliationPane
+                    dataSource={accepted}
+                    billNo={this.props.params.billNo}
+                    status="accepted"
+                  />
                 </TabPane>
                 <TabPane tab="双方已认可" key="bothAccepted" >
-                  <ReconciliationPane status="bothAccepted" />
+                  <ReconciliationPane
+                    dataSource={bothAccepted}
+                    billNo={this.props.params.billNo}
+                    status="bothAccepted"
+                  />
                 </TabPane>
               </Tabs>
             </MagicCard>

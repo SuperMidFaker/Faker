@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'GET_BILL_STATEMENT_FEES', 'GET_BILL_STATEMENT_FEES_SUCCEED', 'GET_BILL_STATEMENT_FEES_FAIL',
   'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
+  'UPDATE_RECONCILE', 'UPDATE_RECONCILE_SUCCEED', 'UPDATE_RECONCILE_FAIL',
+  'ACCEPT_STATEMENT', 'ACCEPT_STATEMENT_SUCCEED', 'ACCEPT_STATEMENT_FAIL',
 ]);
 
 const initialState = {
@@ -45,6 +47,7 @@ const initialState = {
   billStatements: [],
   billTemplateFees: [],
   statementFees: [],
+  billHeadReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -87,7 +90,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, billReload: false };
     case actionTypes.LOAD_BILL_HEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
+    case actionTypes.UPDATE_RECONCILE_SUCCEED:
     case actionTypes.BILL_UPDATE_SUCCEED:
+    case actionTypes.ACCEPT_STATEMENT_SUCCEED:
       return { ...state, billReload: true };
     case actionTypes.CREATE_BILL_SUCCEED:
       return { ...state, billReload: true };
@@ -294,6 +299,36 @@ export function updateBill(data, billNo) {
       endpoint: 'v1/bss/bill/update',
       method: 'post',
       data: { data, billNo },
+    },
+  };
+}
+
+export function updateReconcile(data, billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_RECONCILE,
+        actionTypes.UPDATE_RECONCILE_SUCCEED,
+        actionTypes.UPDATE_RECONCILE_FAIL,
+      ],
+      endpoint: 'v1/bss/reconcile/update',
+      method: 'post',
+      data: { data, billNo },
+    },
+  };
+}
+
+export function acceptStatement(item, billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACCEPT_STATEMENT,
+        actionTypes.ACCEPT_STATEMENT_SUCCEED,
+        actionTypes.ACCEPT_STATEMENT_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/statement/accept',
+      method: 'post',
+      data: { item, billNo },
     },
   };
 }
