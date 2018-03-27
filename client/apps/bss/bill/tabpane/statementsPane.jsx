@@ -8,7 +8,7 @@ import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateBill, getBillStatements } from 'common/reducers/bssBill';
+import { updateBill, getBillStatements, getBillStatementFees } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
@@ -17,8 +17,10 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     userMembers: state.account.userMembers,
     billHead: state.bssBill.billHead,
     billStatements: state.bssBill.billStatements,
+    billTemplateFees: state.bssBill.billTemplateFees,
+    statementFees: state.bssBill.statementFees,
   }),
-  { updateBill, getBillStatements }
+  { updateBill, getBillStatements, getBillStatementFees }
 )
 export default class StatementsPane extends Component {
   static propTypes = {
@@ -34,11 +36,26 @@ export default class StatementsPane extends Component {
   componentDidMount() {
     this.props.getBillStatements(this.props.billNo).then((result) => {
       if (!result.error) {
-        this.setState({
-          billStatements: result.data,
-        });
+        this.props.getBillStatementFees(this.props.billNo);
       }
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.statementFees !== this.props.statementFees
+      && nextProps.statementFees.length > 0) {
+      const stFees = nextProps.statementFees;
+      const statements = nextProps.billStatements;
+      const newStatements = [];
+      statements.forEach((st) => {
+        const row = { ...st };
+        const fees = stFees.filter(fee => fee.sof_order_no === st.sof_order_no);
+        fees.forEach((fe) => {
+          row[fe.fee_uid] = fe.fee_amount;
+        });
+        newStatements.push(row);
+      });
+      this.setState({ billStatements: newStatements });
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -97,13 +114,14 @@ export default class StatementsPane extends Component {
     this.setState({ billStatements, currentPage: 1 });
   }
   render() {
+    const { billTemplateFees } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-    const columns = [{
+    let columns = [{
       title: '业务编号',
       dataIndex: 'sof_order_no',
       width: 150,
@@ -111,8 +129,16 @@ export default class StatementsPane extends Component {
       title: '客户单号',
       dataIndex: 'cust_order_no',
       width: 150,
-    /* 此处加入各费用项 */
-    }, {
+    }];
+    if (billTemplateFees.length > 0) {
+      const billColumns = billTemplateFees.map(data => ({
+        title: data.fee_name,
+        dataIndex: data.fee_uid,
+        width: 100,
+      }));
+      columns = columns.concat(billColumns);
+    }
+    columns.push({
       title: '结算金额',
       dataIndex: 'amount',
       width: 150,
@@ -169,14 +195,14 @@ export default class StatementsPane extends Component {
         }
         return null;
       },
-    }];
+    });
     return (
       <DataPane
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
         dataSource={this.state.billStatements}
-        rowKey="index"
+        rowKey="sof_order_no"
         loading={this.state.loading}
         pagination={{
           current: this.state.currentPage,
