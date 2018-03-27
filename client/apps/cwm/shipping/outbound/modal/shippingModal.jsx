@@ -4,7 +4,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Select, DatePicker, Form, Modal, Input, Radio, message } from 'antd';
-import { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails } from 'common/reducers/cwmOutbound';
+import { closeShippingModal, shipConfirm, shipBatchSoConfirm } from 'common/reducers/cwmOutbound';
 import { WRAP_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -25,7 +25,7 @@ const { Option } = Select;
     submitting: state.cwmOutbound.submitting,
   }),
   {
-    closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails,
+    closeShippingModal, shipConfirm, shipBatchSoConfirm,
   }
 )
 @Form.create()
@@ -33,28 +33,36 @@ export default class ShippingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
-    shipMode: PropTypes.string.isRequired,
-    selectedRows: PropTypes.arrayOf(PropTypes.shape({ picked_qty: PropTypes.number })),
-    resetState: PropTypes.func,
+    shipMode: PropTypes.oneOf(['single', 'batch', 'batchSo']).isRequired,
+    selectedRows: PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.shape({ picked_qty: PropTypes.number }),
+      PropTypes.string])),
+    onShipped: PropTypes.func,
   }
   state = {
     shippingMode: 0,
   }
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.visible && this.props.visible !== nextProps.visible) {
-      this.props.form.setFieldsValue({
-        waybill: '',
-        pieces: '',
-        volumes: '',
-      });
-    }
-  }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
     this.props.closeShippingModal();
+    this.props.form.resetFields();
   }
   handleChange = (ev) => {
     this.setState({ shippingMode: ev.target.value });
+  }
+  handleConfirmResult = (result) => {
+    if (!result.error) {
+      this.props.closeShippingModal();
+      if (this.props.onShipped) {
+        this.props.onShipped();
+      }
+    } else if (result.error.message === 'normal_relno_empty') {
+      message.error('对应保税普通出库未完成备案');
+    } else if (result.error.message === 'normal_cusdeclno_empty') {
+      message.error('对应保税普通出库未完成清关');
+    } else {
+      message.error(result.error.message);
+    }
   }
   handleSubmit = () => {
     const {
@@ -62,9 +70,7 @@ export default class ShippingModal extends Component {
     } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        let list = [];
         const outbounddata = {
-          no: outboundNo,
           pieces: values.pieces,
           volumes: values.volumes,
           pack_type: values.pack,
@@ -72,38 +78,35 @@ export default class ShippingModal extends Component {
           drop_id: '',
           shipped_type: this.state.shippingMode,
         };
-        if (shipMode === 'single') {
-          list.push({
-            id,
-            shipped_qty: pickedQty,
-            shipped_pack_qty: pickedQty / skuPackQty,
-          });
+        if (shipMode === 'batchSo') {
+          outbounddata.shipped_by = values.shippedBy;
+          outbounddata.shipped_date = values.shippedDate;
+          this.props.shipBatchSoConfirm(
+            outbounddata,
+            selectedRows,
+          ).then(this.handleConfirmResult);
         } else {
-          list = selectedRows.filter(sr => sr.picked_qty > 0 && sr.picked_qty > sr.shipped_qty)
-            .map(sr => ({
-              id: sr.id,
-              shipped_qty: sr.picked_qty - sr.shipped_qty,
-              shipped_pack_qty: (sr.picked_qty - sr.shipped_qty) / sr.sku_pack_qty,
-            }));
-        }
-        this.props.shipConfirm(
-          outbounddata, list, username,
-          values.shippedBy, values.shippedDate
-        ).then((result) => {
-          if (!result.error) {
-            this.props.closeShippingModal();
-            this.props.loadPickDetails(this.props.outboundNo);
-            this.props.loadOutboundHead(this.props.outboundNo);
-            this.props.resetState();
-            this.props.loadShipDetails(this.props.outboundNo);
-          } else if (result.error.message === 'normal_relno_empty') {
-            message.error('对应保税普通出库未完成备案');
-          } else if (result.error.message === 'normal_cusdeclno_empty') {
-            message.error('对应保税普通出库未完成清关');
+          outbounddata.no = outboundNo;
+          let list = [];
+          if (shipMode === 'single') {
+            list.push({
+              id,
+              shipped_qty: pickedQty,
+              shipped_pack_qty: pickedQty / skuPackQty,
+            });
           } else {
-            message.error(result.error.message);
+            list = selectedRows.filter(sr => sr.picked_qty > 0 && sr.picked_qty > sr.shipped_qty)
+              .map(sr => ({
+                id: sr.id,
+                shipped_qty: sr.picked_qty - sr.shipped_qty,
+                shipped_pack_qty: (sr.picked_qty - sr.shipped_qty) / sr.sku_pack_qty,
+              }));
           }
-        });
+          this.props.shipConfirm(
+            outbounddata, list, username,
+            values.shippedBy, values.shippedDate
+          ).then(this.handleConfirmResult);
+        }
       }
     });
   }
@@ -140,14 +143,12 @@ export default class ShippingModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="总包装件数">
             {
-              getFieldDecorator('pieces', {
-              })(<Input type="number" />)
+              getFieldDecorator('pieces')(<Input type="number" />)
             }
           </FormItem>
           <FormItem {...formItemLayout} label="总体积">
             {
-              getFieldDecorator('volumes', {
-              })(<Input type="number" />)
+              getFieldDecorator('volumes')(<Input type="number" />)
             }
           </FormItem>
           <FormItem {...formItemLayout} label="发货人员" >

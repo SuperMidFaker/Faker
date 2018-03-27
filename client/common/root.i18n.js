@@ -254,6 +254,14 @@ const messages = defineMessages({
     id: 'root.manage.filters',
     defaultMessage: '管理筛选器',
   },
+  rangeDateToday: {
+    id: 'root.range.today',
+    defaultMessage: '今日',
+  },
+  rangeDateMonth: {
+    id: 'root.range.month',
+    defaultMessage: '当月',
+  },
   CUS: {
     id: 'root.partnership.customer',
     defaultMessage: '客户',

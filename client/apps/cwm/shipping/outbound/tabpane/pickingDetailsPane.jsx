@@ -58,6 +58,7 @@ export default class PickingDetailsPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.handleLoad();
+      this.handleDeselectRows();
     }
   }
   msg = formatMsg(this.props.intl)
@@ -218,11 +219,7 @@ export default class PickingDetailsPane extends React.Component {
     },
   }]
   handleCancelAllocated = (row) => {
-    this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId).then((result) => {
-      if (!result.error) {
-        this.resetState();
-      }
-    });
+    this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId);
   }
   handleCancelPicked = (id, pickedQty, pickedPackQty) => {
     const data = {
@@ -266,26 +263,15 @@ export default class PickingDetailsPane extends React.Component {
       data.picked_pack_qty = selectedRows[i].picked_qty / selectedRows[i].sku_pack_qty;
       list.push(data);
     }
-    this.props.cancelPicked(this.props.outboundNo, list).then((result) => {
-      if (!result.error) {
-        this.resetState();
-      }
-    });
+    this.props.cancelPicked(this.props.outboundNo, list);
   }
   handleAllocBatchCancel = () => {
     this.props.cancelTraceAlloc(
       this.props.outboundNo, this.state.selectedRowKeys,
       this.props.loginId
-    ).then((result) => {
-      if (!result.error) {
-        this.resetState();
-      }
-    });
+    );
   }
   handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [] });
-  }
-  resetState = () => {
     this.setState({
       selectedRows: [],
       selectedRowKeys: [],
@@ -376,13 +362,11 @@ export default class PickingDetailsPane extends React.Component {
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <PickingModal
-          resetState={this.resetState}
           pickMode={this.state.operationMode}
           selectedRows={this.state.selectedRows}
           outboundNo={this.props.outboundNo}
         />
         <ShippingModal
-          resetState={this.resetState}
           shipMode={this.state.operationMode}
           selectedRows={this.state.selectedRows}
           outboundNo={this.props.outboundNo}

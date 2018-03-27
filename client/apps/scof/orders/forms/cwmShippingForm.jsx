@@ -120,6 +120,7 @@ export default class CwmSoForm extends Component {
                 <Select onChange={this.handleBondedChange} value={node.bonded}>
                   <Option value={0}><Tag>非保税</Tag></Option>
                   <Option value={1}><Tag color="blue">保税</Tag></Option>
+                  <Option value={-1}><Tag color="blue">不限</Tag></Option>
                 </Select>
               </FormItem>
             </Col>

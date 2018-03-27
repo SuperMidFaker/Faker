@@ -16,10 +16,11 @@ import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FI
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
-import { exportNormalExitBySo } from 'common/reducers/cwmOutbound';
+import { exportNormalExitBySo, openShippingModal } from 'common/reducers/cwmOutbound';
 import WhseSelect from '../../common/whseSelect';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
+import ShippingModal from '../outbound/modal/shippingModal';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
@@ -54,6 +55,7 @@ const { RangePicker } = DatePicker;
     showAddToWave,
     batchRelease,
     exportNormalExitBySo,
+    openShippingModal,
     loadModelAdaptors,
   }
 )
@@ -272,6 +274,9 @@ export default class ShippingOrderList extends React.Component {
         });
       }
     });
+  }
+  handleBatchShip = () => {
+    this.props.openShippingModal();
   }
   handleReload = () => {
     this.props.loadSos({
@@ -515,11 +520,12 @@ export default class ShippingOrderList extends React.Component {
       <RangePicker
         onChange={this.onDateChange}
         value={dateVal}
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        ranges={{ [this.gmsg('rangeDateToday')]: [moment(), moment()], [this.gmsg('rangeDateMonth')]: [moment().startOf('month'), moment()] }}
       />
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}
+      {filters.status === 'tbdexit' && <Button onClick={this.handleBatchShip}>批量发货</Button>}
       {(filters.status === 'partial' || filters.status === 'completed') && <Button onClick={this.handleExportExitVoucher}>导出出区凭单</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.handleCreateWave}>创建波次计划</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
@@ -556,8 +562,14 @@ export default class ShippingOrderList extends React.Component {
                 <Menu.Item key={CWM_SO_STATUS.OUTBOUND.key}>
                   <Icon type="" /> {CWM_SO_STATUS.OUTBOUND.text}
                 </Menu.Item>
+                <Menu.Item key="tbdexit">
+                  <Icon type="check-square-o" /> {this.msg('statusTbdExitable')}
+                </Menu.Item>
                 <Menu.Item key={CWM_SO_STATUS.PARTIAL.key}>
                   <Icon type="" /> {CWM_SO_STATUS.PARTIAL.text}
+                </Menu.Item>
+                <Menu.Item key="partial">
+                  <Icon type="upload" /> {this.msg('statusPartial')}
                 </Menu.Item>
                 <Menu.Item key={CWM_SO_STATUS.COMPLETED.key}>
                   <Icon type="" /> {CWM_SO_STATUS.COMPLETED.text}
@@ -615,6 +627,7 @@ export default class ShippingOrderList extends React.Component {
           template={`${XLSX_CDN}/SO批量导入模板.xlsx`}
         />
         <AddToWaveModal reload={this.handleReload} selectedRowKeys={this.state.selectedRowKeys} />
+        <ShippingModal shipMode="batchSo" selectedRows={this.state.selectedRows.map(sr => sr.so_no)} onShipped={this.handleReload} />
       </Layout>
     );
   }

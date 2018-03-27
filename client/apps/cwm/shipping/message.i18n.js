@@ -51,6 +51,10 @@ const messages = defineMessages({
     id: 'cwm.shipping.outbound.status',
     defaultMessage: '出库状态',
   },
+  statusTbdExitable: {
+    id: 'cwm.shipping.list.so.status.tbd.exitable',
+    defaultMessage: '待定可出区',
+  },
   soPlaceholder: {
     id: 'cwm.shipping.so.search.placeholder',
     defaultMessage: '搜索SO编号/客户单号',

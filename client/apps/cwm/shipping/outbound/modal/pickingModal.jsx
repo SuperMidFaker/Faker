@@ -33,7 +33,6 @@ export default class PickingModal extends Component {
     outboundNo: PropTypes.string.isRequired,
     pickMode: PropTypes.string,
     selectedRows: PropTypes.arrayOf(PropTypes.shape({ alloc_qty: PropTypes.number.isRequired })),
-    resetState: PropTypes.func,
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.visible && nextProps.visible !== this.props.visible) {
@@ -79,7 +78,6 @@ export default class PickingModal extends Component {
         ).then((result) => {
           if (!result.error) {
             this.props.closePickingModal();
-            this.props.resetState();
           }
         });
       }
