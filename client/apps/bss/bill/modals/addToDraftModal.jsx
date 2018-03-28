@@ -37,7 +37,7 @@ export default class AddToDraft extends React.Component {
     draftBills: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.visible) {
+    if (nextProps.visible && !this.props.visible) {
       this.props.loadDraftBillByPartner({
         partnerId: nextProps.partnerId,
         billType: nextProps.listFilter.bill_type,

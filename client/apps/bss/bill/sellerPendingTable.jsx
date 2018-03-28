@@ -122,7 +122,7 @@ export default class SellerPendingTable extends React.Component {
     this.props.toggleAddToDraftModal(true, partnerId, sofOrderNos);
   }
   handleAddToDraft = (row) => {
-    this.addToDraft(row.owner_partner_id, [row.sof_order_no]);
+    this.addToDraft(row.vendor_partner_id, [row.sof_order_no]);
   }
   handleBatchAddToDraft = () => {
     const sofOrderNos = this.state.selectedRowKeys;
