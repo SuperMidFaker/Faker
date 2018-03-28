@@ -7,12 +7,13 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { DatePicker, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
-// import RowAction from 'client/components/RowAction';
+import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
+import ToolbarAction from 'client/components/ToolbarAction';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPendingStatistics } from 'common/reducers/bssStatement';
-import { loadOrderStatements } from 'common/reducers/bssBill';
+import { loadOrderStatements, toggleAddToDraftModal } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -29,7 +30,11 @@ const { Option } = Select;
     statementStat: state.bssStatement.statementStat,
     partners: state.partner.partners,
   }),
-  { loadOrderStatements, loadPendingStatistics }
+  {
+    loadOrderStatements,
+    loadPendingStatistics,
+    toggleAddToDraftModal,
+  }
 )
 export default class SellerPendingTable extends React.Component {
   static propTypes = {
@@ -74,6 +79,7 @@ export default class SellerPendingTable extends React.Component {
     dataIndex: 'OPS_COL',
     className: 'table-col-ops',
     width: 130,
+    render: (o, record) => (<RowAction icon="folder-add" onClick={this.handleAddToDraft} tooltip={this.msg('加入草稿账单')} row={record} />),
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadOrderStatements(params),
@@ -116,6 +122,17 @@ export default class SellerPendingTable extends React.Component {
     });
     this.props.loadPendingStatistics({ filter: JSON.stringify(filters) });
   }
+  addToDraft = (partnerId, sofOrderNos) => {
+    this.props.toggleAddToDraftModal(true, partnerId, sofOrderNos);
+  }
+  handleAddToDraft = (row) => {
+    this.addToDraft(row.owner_partner_id, [row.sof_order_no]);
+  }
+  handleBatchAddToDraft = () => {
+    const sofOrderNos = this.state.selectedRowKeys;
+    const { clientPid } = this.props.listFilter;
+    this.addToDraft(clientPid, sofOrderNos);
+  }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, searchText: value };
     this.handleOrdersLoad(1, filter);
@@ -132,7 +149,9 @@ export default class SellerPendingTable extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { loading, orderStatementlist, statementStat } = this.props;
+    const {
+      loading, orderStatementlist, statementStat, listFilter,
+    } = this.props;
     const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -142,12 +161,13 @@ export default class SellerPendingTable extends React.Component {
     };
     this.dataSource.remotes = orderStatementlist;
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('searchTips')} onSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('billableStatementSearchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
         placeholder="服务商"
         optionFilterProp="children"
         style={{ width: 160 }}
+        value={listFilter.clientPid}
         onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
@@ -168,11 +188,16 @@ export default class SellerPendingTable extends React.Component {
         <Summary.Item label="未入账单金额合计">{statementStat.total_amount}</Summary.Item>
       </Summary>
     );
+    const bulkActions = (<span>
+      {this.props.listFilter.clientPid !== 'all' &&
+      <ToolbarAction icon="add" onClick={this.handleBatchAddToDraft} label={this.msg('addToDraft')} />}
+    </span>);
     return (
       <DataTable
         toolbarActions={toolbarActions}
         selectedRowKeys={this.state.selectedRowKeys}
         onDeselectRows={this.handleDeselectRows}
+        bulkActions={bulkActions}
         columns={this.columns}
         dataSource={this.dataSource}
         rowSelection={rowSelection}

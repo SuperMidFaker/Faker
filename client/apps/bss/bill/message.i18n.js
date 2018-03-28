@@ -76,7 +76,7 @@ const messages = defineMessages({
     defaultMessage: '新建账单模板',
   },
   templateSearchTips: {
-    id: 'bss.bill.search.tips',
+    id: 'bss.bill.template.search.tips',
     defaultMessage: '模板名称/结算对象名称',
   },
   feeName: {
@@ -90,6 +90,14 @@ const messages = defineMessages({
   billType: {
     id: 'bss.bill.type',
     defaultMessage: '账单类型',
+  },
+  addToDraft: {
+    id: 'bss.bill.statements.to.draft',
+    defaultMessage: '添加到草稿账单',
+  },
+  billableStatementSearchTips: {
+    id: 'bss.bill.billable.statement.search.tips',
+    defaultMessage: '业务编号/客户单号',
   },
 });
 

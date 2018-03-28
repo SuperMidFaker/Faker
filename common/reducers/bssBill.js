@@ -19,6 +19,9 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'UPDATE_RECONCILE_FEE', 'UPDATE_RECONCILE_FEE_SUCCEED', 'UPDATE_RECONCILE_FEE_FAIL',
   'RECONCILE_STATEMENT', 'RECONCILE_STATEMENT_SUCCEED', 'RECONCILE_STATEMENT_FAIL',
   'REJECT_BILL', 'REJECT_BILL_SUCCEED', 'REJECT_BILL_FAIL',
+  'GET_DRAFT_BILL', 'GET_DRAFT_BILL_SUCCEED', 'GET_DRAFT_BILL_FAIL',
+  'TOGGLE_ADDTO_DRAFT_MODAL',
+  'ADD_ORDERS_TO_DRAFT_BILL', 'ADD_ORDERS_TO_DRAFT_BILL_SUCCEED', 'ADD_ORDERS_TO_DRAFT_BILL_FAIL',
 ]);
 
 const initialState = {
@@ -51,6 +54,11 @@ const initialState = {
   statementFees: [],
   statementReload: false,
   billHeadReload: false,
+  draftModal: {
+    visibleAddToDraftModal: false,
+    sofOrderNos: [],
+    partnerId: null,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -111,6 +119,18 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.UPDATE_RECONCILE_FEE_SUCCEED:
       return { ...state, statementReload: true, billHeadReload: true };
+    case actionTypes.TOGGLE_ADDTO_DRAFT_MODAL:
+      return {
+        ...state,
+        draftModal: {
+          ...state.draftModal,
+          visibleAddToDraftModal: action.data.visible,
+          sofOrderNos: action.data.sofOrderNos,
+          partnerId: action.data.partnerId,
+        },
+      };
+    case actionTypes.ADD_ORDERS_TO_DRAFT_BILL_SUCCEED:
+      return { ...state, billReload: true };
     default:
       return state;
   }
@@ -349,6 +369,43 @@ export function rejectBill(data) {
         actionTypes.REJECT_BILL_FAIL,
       ],
       endpoint: 'v1/bss/bill/reject',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadDraftBillByPartner(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_DRAFT_BILL,
+        actionTypes.GET_DRAFT_BILL_SUCCEED,
+        actionTypes.GET_DRAFT_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/partner/drafts',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function toggleAddToDraftModal(visible, partnerId, sofOrderNos) {
+  return {
+    type: actionTypes.TOGGLE_ADDTO_DRAFT_MODAL,
+    data: { visible, partnerId, sofOrderNos },
+  };
+}
+
+export function appendDraftStatements(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_ORDERS_TO_DRAFT_BILL,
+        actionTypes.ADD_ORDERS_TO_DRAFT_BILL_SUCCEED,
+        actionTypes.ADD_ORDERS_TO_DRAFT_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/draft/append/statements',
       method: 'post',
       data,
     },
