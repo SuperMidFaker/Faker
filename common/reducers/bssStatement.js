@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/bss/statement', [
-  'LOAD_PENDING_STATISTICS', 'LOAD_PENDING_STATISTICS_SUCCEED', 'LOAD_PENDING_STATISTICS_FAIL',
+  'LOAD_BILLABLESTAT', 'LOAD_BILLABLESTAT_SUCCEED', 'LOAD_BILLABLESTAT_FAIL',
 ]);
 
 const initialState = {
@@ -13,22 +13,22 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_PENDING_STATISTICS_SUCCEED:
+    case actionTypes.LOAD_BILLABLESTAT_SUCCEED:
       return { ...state, statementStat: action.result.data };
     default:
       return state;
   }
 }
 
-export function loadPendingStatistics(params) {
+export function loadBillableStatementStat(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_PENDING_STATISTICS,
-        actionTypes.LOAD_PENDING_STATISTICS_SUCCEED,
-        actionTypes.LOAD_PENDING_STATISTICS_FAIL,
+        actionTypes.LOAD_BILLABLESTAT,
+        actionTypes.LOAD_BILLABLESTAT_SUCCEED,
+        actionTypes.LOAD_BILLABLESTAT_FAIL,
       ],
-      endpoint: 'v1/bss/bill/pending/statistics',
+      endpoint: 'v1/bss/billable/statement/stat',
       method: 'get',
       params,
     },

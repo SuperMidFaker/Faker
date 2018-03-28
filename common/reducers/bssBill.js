@@ -14,7 +14,7 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'ACCEPT_BILL', 'ACCEPT_BILL_SUCCEED', 'ACCEPT_BILL_FAIL',
   'GET_BILL_STATEMENTS', 'GET_BILL_STATEMENTS_SUCCEED', 'GET_BILL_STATEMENTS_FAIL',
   'GET_BILL_STATEMENT_FEES', 'GET_BILL_STATEMENT_FEES_SUCCEED', 'GET_BILL_STATEMENT_FEES_FAIL',
-  'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
+  'ADJUST_BILLSTATMENT', 'ADJUST_BILLSTATMENT_SUCCEED', 'ADJUST_BILLSTATMENT_FAIL',
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
   'UPDATE_RECONCILE_FEE', 'UPDATE_RECONCILE_FEE_SUCCEED', 'UPDATE_RECONCILE_FEE_FAIL',
   'RECONCILE_STATEMENT', 'RECONCILE_STATEMENT_SUCCEED', 'RECONCILE_STATEMENT_FAIL',
@@ -101,7 +101,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, billHeadReload: false };
     case actionTypes.LOAD_BILL_HEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
-    case actionTypes.BILL_UPDATE_SUCCEED:
+    case actionTypes.ADJUST_BILLSTATMENT_SUCCEED:
       return { ...state, billHeadReload: true };
     case actionTypes.RECONCILE_STATEMENT_SUCCEED:
       return { ...state, billHeadReload: true, statementReload: true };
@@ -150,7 +150,7 @@ export function reloadBillList(filter) {
   };
 }
 
-export function loadOrderStatements(params) {
+export function loadBillableStatements(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -158,7 +158,7 @@ export function loadOrderStatements(params) {
         actionTypes.LOAD_ORDER_STATEMENTS_SUCCEED,
         actionTypes.LOAD_ORDER_STATEMENTS_FAIL,
       ],
-      endpoint: 'v1/bss/order/statements/load',
+      endpoint: 'v1/bss/billable/statements',
       method: 'get',
       params,
     },
@@ -315,15 +315,15 @@ export function acceptBill(data) {
   };
 }
 
-export function updateBill(data, billNo) {
+export function adjustBillStatement(data, billNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.BILL_UPDATE,
-        actionTypes.BILL_UPDATE_SUCCEED,
-        actionTypes.BILL_UPDATE_FAIL,
+        actionTypes.ADJUST_BILLSTATMENT,
+        actionTypes.ADJUST_BILLSTATMENT_SUCCEED,
+        actionTypes.ADJUST_BILLSTATMENT_FAIL,
       ],
-      endpoint: 'v1/bss/bill/update',
+      endpoint: 'v1/bss/bill/statement/adjust',
       method: 'post',
       data: { data, billNo },
     },

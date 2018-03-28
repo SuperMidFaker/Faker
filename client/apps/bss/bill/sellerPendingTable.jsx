@@ -12,8 +12,8 @@ import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import ToolbarAction from 'client/components/ToolbarAction';
 import { PARTNER_ROLES } from 'common/constants';
-import { loadPendingStatistics } from 'common/reducers/bssStatement';
-import { loadOrderStatements, toggleAddToDraftModal } from 'common/reducers/bssBill';
+import { loadBillableStatementStat } from 'common/reducers/bssStatement';
+import { loadBillableStatements, toggleAddToDraftModal } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -30,11 +30,7 @@ const { Option } = Select;
     statementStat: state.bssStatement.statementStat,
     partners: state.partner.partners,
   }),
-  {
-    loadOrderStatements,
-    loadPendingStatistics,
-    toggleAddToDraftModal,
-  }
+  { toggleAddToDraftModal, loadBillableStatements, loadBillableStatementStat }
 )
 export default class SellerPendingTable extends React.Component {
   static propTypes = {
@@ -82,7 +78,7 @@ export default class SellerPendingTable extends React.Component {
     render: (o, record) => (<RowAction icon="folder-add" onClick={this.handleAddToDraft} tooltip={this.msg('加入草稿账单')} row={record} />),
   }]
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadOrderStatements(params),
+    fetcher: params => this.props.loadBillableStatements(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -109,7 +105,7 @@ export default class SellerPendingTable extends React.Component {
   handleOrdersLoad = (currentPage, filter) => {
     const { listFilter, orderStatementlist: { pageSize, current } } = this.props;
     const filters = filter || listFilter;
-    this.props.loadOrderStatements({
+    this.props.loadBillableStatements({
       filter: JSON.stringify(filters),
       pageSize,
       current: currentPage || current,
@@ -120,7 +116,7 @@ export default class SellerPendingTable extends React.Component {
         this.handleDeselectRows();
       }
     });
-    this.props.loadPendingStatistics({ filter: JSON.stringify(filters) });
+    this.props.loadBillableStatementStat({ filter: JSON.stringify(filters) });
   }
   addToDraft = (partnerId, sofOrderNos) => {
     this.props.toggleAddToDraftModal(true, partnerId, sofOrderNos);
