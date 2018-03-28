@@ -43,7 +43,6 @@ export default class BillList extends React.Component {
   }
   state = {
     extraVisible: false,
-    currentTab: 'buyerBill',
   }
   componentDidMount() {
     if (this.props.aspect === 0) {
@@ -60,7 +59,8 @@ export default class BillList extends React.Component {
     this.props.reloadBillList(filter);
   }
   handleTabChange = (key) => {
-    this.setState({ currentTab: key });
+    const filter = { ...this.props.listFilter, bill_type: key };
+    this.props.reloadBillList(filter);
   }
   toggleExtra = () => {
     this.setState({ extraVisible: !this.state.extraVisible });
@@ -75,7 +75,7 @@ export default class BillList extends React.Component {
     this.props.toggleNewBillModal(true);
   }
   renderDataTable() {
-    const { currentTab } = this.state;
+    const currentTab = this.props.listFilter.bill_type;
     const mode = this.props.listFilter.status;
     if (mode === 'pendingExpense') {
       if (currentTab === 'sellerBill') {
@@ -96,7 +96,6 @@ export default class BillList extends React.Component {
       {
         key: 'buyerBill',
         menu: this.msg('buyerBill'),
-        default: true,
       },
       {
         key: 'sellerBill',
@@ -120,6 +119,7 @@ export default class BillList extends React.Component {
         <PageHeader
           title={this.msg('bill')}
           menus={menus}
+          currentKey={this.props.listFilter.bill_type}
           onTabChange={this.handleTabChange}
         >
           <PageHeader.Actions>
