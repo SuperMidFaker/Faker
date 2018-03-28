@@ -13,7 +13,7 @@ import TrimSpan from 'client/components/trimSpan';
 import ToolbarAction from 'client/components/ToolbarAction';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPendingStatistics } from 'common/reducers/bssStatement';
-import { loadOrderStatements, loadDraftBillByPartner, toggleAddToDraftModal } from 'common/reducers/bssBill';
+import { loadOrderStatements, toggleAddToDraftModal } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -33,7 +33,6 @@ const { Option } = Select;
   {
     loadOrderStatements,
     loadPendingStatistics,
-    loadDraftBillByPartner,
     toggleAddToDraftModal,
   }
 )
@@ -124,16 +123,7 @@ export default class SellerPendingTable extends React.Component {
     this.props.loadPendingStatistics({ filter: JSON.stringify(filters) });
   }
   addToDraft = (partnerId, sofOrderNos) => {
-    this.props.loadDraftBillByPartner({ seller_partner_id: Number(partnerId) }).then((result) => {
-      if (!result.error) {
-        const draftBills = result.data;
-        if (draftBills.length > 0) {
-          this.props.toggleAddToDraftModal(true, sofOrderNos);
-        } else {
-          message.error('没有对应草稿账单', 10);
-        }
-      }
-    });
+    this.props.toggleAddToDraftModal(true, partnerId, sofOrderNos);
   }
   handleAddToDraft = (row) => {
     this.addToDraft(row.owner_partner_id, [row.sof_order_no]);
@@ -171,7 +161,7 @@ export default class SellerPendingTable extends React.Component {
     };
     this.dataSource.remotes = orderStatementlist;
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('pendingSearchTips')} onSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('billableStatementSearchTips')} onSearch={this.handleSearch} />
       <Select
         showSearch
         placeholder="服务商"

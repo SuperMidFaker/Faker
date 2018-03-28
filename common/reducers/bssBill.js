@@ -54,9 +54,11 @@ const initialState = {
   statementFees: [],
   statementReload: false,
   billHeadReload: false,
-  dratBills: [],
-  visibleAddToDraftModal: false,
-  sofOrderNos: [],
+  draftModal: {
+    visibleAddToDraftModal: false,
+    sofOrderNos: [],
+    partnerId: null,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -117,13 +119,15 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.UPDATE_RECONCILE_FEE_SUCCEED:
       return { ...state, statementReload: true, billHeadReload: true };
-    case actionTypes.GET_DRAFT_BILL_SUCCEED:
-      return { ...state, dratBills: action.result.data };
     case actionTypes.TOGGLE_ADDTO_DRAFT_MODAL:
       return {
         ...state,
-        visibleAddToDraftModal: action.data.visible,
-        sofOrderNos: action.data.sofOrderNos,
+        draftModal: {
+          ...state.draftModal,
+          visibleAddToDraftModal: action.data.visible,
+          sofOrderNos: action.data.sofOrderNos,
+          partnerId: action.data.partnerId,
+        },
       };
     case actionTypes.ADD_ORDERS_TO_DRAFT_BILL_SUCCEED:
       return { ...state, billReload: true };
@@ -379,21 +383,21 @@ export function loadDraftBillByPartner(params) {
         actionTypes.GET_DRAFT_BILL_SUCCEED,
         actionTypes.GET_DRAFT_BILL_FAIL,
       ],
-      endpoint: 'v1/bss/bill/draft/get',
+      endpoint: 'v1/bss/bill/partner/drafts',
       method: 'get',
       params,
     },
   };
 }
 
-export function toggleAddToDraftModal(visible, sofOrderNos) {
+export function toggleAddToDraftModal(visible, partnerId, sofOrderNos) {
   return {
     type: actionTypes.TOGGLE_ADDTO_DRAFT_MODAL,
-    data: { visible, sofOrderNos },
+    data: { visible, partnerId, sofOrderNos },
   };
 }
 
-export function addOrdersToDraftBill(data) {
+export function appendDraftStatements(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -401,7 +405,7 @@ export function addOrdersToDraftBill(data) {
         actionTypes.ADD_ORDERS_TO_DRAFT_BILL_SUCCEED,
         actionTypes.ADD_ORDERS_TO_DRAFT_BILL_FAIL,
       ],
-      endpoint: 'v1/bss/bill/add/to/draft',
+      endpoint: 'v1/bss/bill/draft/append/statements',
       method: 'post',
       data,
     },

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, message, Select } from 'antd';
-import { toggleAddToDraftModal, addOrdersToDraftBill } from 'common/reducers/bssBill';
+import { toggleAddToDraftModal, appendDraftStatements, loadDraftBillByPartner } from 'common/reducers/bssBill';
 import { formatMsg } from '../message.i18n';
 
 
@@ -17,12 +17,12 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    dratBills: state.bssBill.dratBills,
-    sofOrderNos: state.bssBill.sofOrderNos,
-    visible: state.bssBill.visibleAddToDraftModal,
+    sofOrderNos: state.bssBill.draftModal.sofOrderNos,
+    visible: state.bssBill.draftModal.visibleAddToDraftModal,
+    partnerId: state.bssBill.draftModal.partnerId,
     listFilter: state.bssBill.listFilter,
   }),
-  { toggleAddToDraftModal, addOrdersToDraftBill }
+  { toggleAddToDraftModal, appendDraftStatements, loadDraftBillByPartner }
 )
 @Form.create()
 export default class AddToDraft extends React.Component {
@@ -33,29 +33,48 @@ export default class AddToDraft extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    draftBills: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible) {
+      this.props.loadDraftBillByPartner({
+        partnerId: nextProps.partnerId,
+        billType: nextProps.listFilter.bill_type,
+      }).then((result) => {
+        if (!result.error) {
+          this.setState({ draftBills: result.data });
+        }
+      });
+    }
+  }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
+    this.setState({ draftBills: [] });
     this.props.toggleAddToDraftModal(false);
   }
   handleOk = () => {
-    const { listFilter, sofOrderNos } = this.props;
-    const data = this.props.form.getFieldsValue();
-    this.props.addOrdersToDraftBill({
-      sofOrderNos,
-      billNo: data.bill_no,
-      billType: listFilter.bill_type,
-      partnerId: listFilter.clientPid,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        this.props.toggleAddToDraftModal(false);
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const { sofOrderNos } = this.props;
+        const data = this.props.form.getFieldsValue();
+        this.props.appendDraftStatements({
+          sofOrderNos,
+          billNo: data.bill_no,
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 5);
+          } else {
+            this.props.toggleAddToDraftModal(false);
+          }
+        });
       }
     });
   }
 
   render() {
-    const { visible, dratBills, form: { getFieldDecorator } } = this.props;
+    const { visible, form: { getFieldDecorator } } = this.props;
+    const { draftBills } = this.state;
     return (
       <Modal
         maskClosable={false}
@@ -68,8 +87,9 @@ export default class AddToDraft extends React.Component {
         <Form>
           <FormItem label="加入账单" {...formItemLayout} >
             {getFieldDecorator('bill_no', {
+              rules: [{ required: true }],
             })(<Select showSearch optionFilterProp="children">
-              {dratBills.map(data => (
+              {draftBills.map(data => (
                 <Option key={String(data.bill_no)} value={String(data.bill_no)}>{data.bill_title}
                 </Option>))
               }

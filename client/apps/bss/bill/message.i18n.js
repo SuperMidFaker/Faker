@@ -95,8 +95,8 @@ const messages = defineMessages({
     id: 'bss.bill.statements.to.draft',
     defaultMessage: '添加到草稿账单',
   },
-  pendingSearchTips: {
-    id: 'bss.bill.pending.search.tips',
+  billableStatementSearchTips: {
+    id: 'bss.bill.billable.statement.search.tips',
     defaultMessage: '业务编号/客户单号',
   },
 });
