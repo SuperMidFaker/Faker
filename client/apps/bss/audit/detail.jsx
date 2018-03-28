@@ -296,11 +296,15 @@ export default class FeeSummaryDetail extends Component {
           dataSource = this.state.receives.filter(rec => rec.id !== row.id);
           head.receivable_amount = (head.receivable_amount - row.settled_amount).toFixed(3);
           head.profit_amount = (head.profit_amount - row.settled_amount).toFixed(3);
+          const profitRatio = head.profit_amount / head.receivable_amount;
+          head.gross_profit_ratio = Number((profitRatio * 100).toFixed(3));
           this.setState({ receives: dataSource, head });
         } else {
           dataSource = this.state.pays.filter(pay => pay.id !== row.id);
           head.payable_amount = (head.payable_amount - row.settled_amount).toFixed(3);
           head.profit_amount = (head.profit_amount + row.settled_amount).toFixed(3);
+          const profitRatio = head.profit_amount / head.receivable_amount;
+          head.gross_profit_ratio = Number((profitRatio * 100).toFixed(3));
           this.setState({ pays: dataSource, head });
         }
       }
@@ -379,6 +383,8 @@ export default class FeeSummaryDetail extends Component {
       head.payable_amount += delta;
       head.profit_amount -= delta;
     }
+    const profitRatio = head.profit_amount / head.receivable_amount;
+    head.gross_profit_ratio = Number((profitRatio * 100).toFixed(3));
     this.props.updateFee(item, dataType, this.props.params.orderRelNo);
     if (dataType === 'receives') {
       this.setState({
