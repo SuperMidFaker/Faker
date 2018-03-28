@@ -25,6 +25,7 @@ const { TabPane } = Tabs;
     billHead: state.bssBill.billHead,
     billStatements: state.bssBill.billStatements,
     billReload: state.bssBill.billReload,
+    statementReload: state.bssBill.statementReload,
   }),
   { loadBillHead, getBillStatements }
 )
@@ -49,6 +50,9 @@ export default class ReceivableBillDetail extends Component {
       this.props.loadBillHead(this.props.params.billNo);
       this.props.getBillStatements(this.props.params.billNo);
     }
+    if (nextProps.statementReload) {
+      this.props.getBillStatements(this.props.params.billNo);
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -70,8 +74,7 @@ export default class ReceivableBillDetail extends Component {
           if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
             accepted.push(statemt);
           }
-        }
-        if (tenantId === statemt.tenant_id) {
+        } else if (tenantId === statemt.tenant_id) {
           if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
             unaccepted.push(statemt);
           }
@@ -87,8 +90,7 @@ export default class ReceivableBillDetail extends Component {
           if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
             accepted.push(statemt);
           }
-        }
-        if (tenantId === statemt.tenant_id) {
+        } else if (tenantId === statemt.tenant_id) {
           if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
             unaccepted.push(statemt);
           }

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Input, message } from 'antd';
+import { Button, Input } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
@@ -28,22 +28,9 @@ export default class ReconciliationPane extends Component {
   }
   state = {
     selectedRowKeys: [],
-    reconcileStatements: [],
     editItem: {},
     currentPage: 1,
   };
-  componentWillMount() {
-    this.setState({
-      reconcileStatements: this.props.dataSource,
-    });
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.dataSource !== this.props.dataSource) {
-      this.setState({
-        reconcileStatements: nextProps.dataSource,
-      });
-    }
-  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleDeselectRows = () => {
@@ -65,8 +52,12 @@ export default class ReconciliationPane extends Component {
     if (!Number.isNaN(editItem.buyer_settled_amount)
     && !Number.isNaN(editItem.seller_settled_amount)) {
       editItem.diff_settled_amount = editItem.buyer_settled_amount - editItem.seller_settled_amount;
-    } else {
-      editItem.diff_settled_amount = null;
+    } else if (!Number.isNaN(editItem.buyer_settled_amount)
+    && Number.isNaN(editItem.seller_settled_amount)) {
+      editItem.diff_settled_amount = editItem.buyer_settled_amount;
+    } else if (!Number.isNaN(editItem.seller_settled_amount)
+    && Number.isNaN(editItem.buyer_settled_amount)) {
+      editItem.diff_settled_amount = -editItem.seller_settled_amount;
     }
     this.setState({
       editItem,
@@ -74,50 +65,19 @@ export default class ReconciliationPane extends Component {
   }
   handleOk = () => {
     const item = { ...this.state.editItem };
-    const reconcileStatements = [...this.props.dataSource];
-    const index = reconcileStatements.findIndex(data => data.id === item.id);
-    reconcileStatements[index] = item;
     this.props.updateStatementReconcileFee(item, this.props.billNo).then((result) => {
       if (!result.error) {
         this.setState({
-          reconcileStatements,
           editItem: {},
         });
       }
     });
   }
   handleReconcile = (row) => {
-    const { tenantId } = this.props;
-    const reconcileStatements = [...this.props.dataSource];
-    const index = reconcileStatements.findIndex(data => data.id === row.id);
-    const item = reconcileStatements[index];
-    if (!item.seller_settled_amount || item.buyer_settled_amount) {
-      message.error('缺少对方金额或者我方金额');
-    }
-    if (row.settle_type === 1) {
-      if (tenantId === row.owner_tenant_id) {
-        item.reconciled_amount = item.seller_settled_amount;
-        item.buyer_settled_amount = item.seller_settled_amount;
-      }
-      if (tenantId === row.tenant_id) {
-        item.reconciled_amount = item.buyer_settled_amount;
-        item.seller_settled_amount = item.buyer_settled_amount;
-      }
-    } else if (row.settle_type === 2) {
-      if (tenantId === row.vendor_tenant_id) {
-        item.reconciled_amount = item.buyer_settled_amount;
-        item.seller_settled_amount = item.buyer_settled_amount;
-      }
-      if (tenantId === row.tenant_id) {
-        item.reconciled_amount = item.seller_settled_amount;
-        item.buyer_settled_amount = item.seller_settled_amount;
-      }
-    }
-    reconcileStatements[index] = item;
     this.props.reconcileStatement(row.id).then((result) => {
       if (!result.error) {
         this.setState({
-          reconcileStatements,
+          editItem: {},
         });
       }
     });
@@ -128,25 +88,26 @@ export default class ReconciliationPane extends Component {
     });
   }
   handleSearch = (value) => {
-    let reconcileStatements = [...this.props.dataSource];
-    if (value) {
-      reconcileStatements = this.props.dataSource.filter((item) => {
-        const reg = new RegExp(value);
-        return reg.test(item.cust_order_no) || reg.test(item.sof_order_no);
-      });
-    }
-    this.setState({ reconcileStatements, currentPage: 1 });
+    this.setState({ searchText: value, currentPage: 1 });
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
   }
   render() {
+    const { searchText } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    let filterDataSource = this.props.dataSource;
+    if (searchText) {
+      filterDataSource = this.props.dataSource.filter((item) => {
+        const reg = new RegExp(searchText);
+        return reg.test(item.cust_order_no) || reg.test(item.sof_order_no);
+      });
+    }
     const columns = [{
       title: '业务编号',
       dataIndex: 'sof_order_no',
@@ -275,7 +236,7 @@ export default class ReconciliationPane extends Component {
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
-        dataSource={this.state.reconcileStatements}
+        dataSource={filterDataSource}
         rowKey="index"
         pagination={{
           current: this.state.currentPage,
