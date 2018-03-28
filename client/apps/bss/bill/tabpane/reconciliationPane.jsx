@@ -25,6 +25,7 @@ export default class ReconciliationPane extends Component {
       cust_order_no: PropTypes.string,
     })),
     billNo: PropTypes.string,
+
   }
   state = {
     selectedRowKeys: [],

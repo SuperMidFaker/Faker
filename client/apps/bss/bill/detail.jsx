@@ -10,6 +10,7 @@ import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import { loadBillHead } from 'common/reducers/bssBill';
+import { createFilename } from 'client/util/dataTransform';
 import StatementsPane from './tabpane/statementsPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -49,18 +50,16 @@ export default class ReceivableBillDetail extends Component {
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
+  handleExport = () => {
+    window.open(`${API_ROOTS.default}v1/bss/bill/export/${createFilename(`${this.props.billHead.bill_title}`)}.xlsx?billNo=${this.props.params.billNo}`);
+  }
   render() {
     const { billHead, tenantId } = this.props;
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
           <PageHeader.Actions>
-            <Button icon="mail" onClick={this.handleCreateASN}>
-              {this.msg('发送账单')}
-            </Button>
-            <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
-              {this.msg('对账确认')}
-            </Button>
+            <Button icon="download" onClick={this.handleExport}>导出</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Layout>

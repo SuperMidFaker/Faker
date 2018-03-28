@@ -9,7 +9,8 @@ import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
-import { loadBillHead, getBillStatements } from 'common/reducers/bssBill';
+import { createFilename } from 'client/util/dataTransform';
+import { loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill } from 'common/reducers/bssBill';
 import ReconciliationPane from './tabpane/reconciliationPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -27,7 +28,9 @@ const { TabPane } = Tabs;
     billHeadReload: state.bssBill.billHeadReload,
     statementReload: state.bssBill.statementReload,
   }),
-  { loadBillHead, getBillStatements }
+  {
+    loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill,
+  }
 )
 @connectNav({
   depth: 3,
@@ -55,6 +58,30 @@ export default class ReceivableBillDetail extends Component {
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
+  handleAcceptBill = () => {
+    this.props.acceptBill({ billNo: this.props.params.billNo }).then((result) => {
+      if (!result.error) {
+        this.context.router.push('/bss/bill');
+      }
+    });
+  }
+  handleRecallBill = () => {
+    this.props.recallBill({ billNo: this.props.params.billNo }).then((result) => {
+      if (!result.error) {
+        this.context.router.push('/bss/bill');
+      }
+    });
+  }
+  handleRejectBill = () => {
+    this.props.rejectBill({ billNo: this.props.params.billNo }).then((result) => {
+      if (!result.error) {
+        this.context.router.push('/bss/bill');
+      }
+    });
+  }
+  handleExport = () => {
+    window.open(`${API_ROOTS.default}v1/bss/bill/export/${createFilename(`${this.props.billHead.bill_title}`)}.xlsx?billNo=${this.props.params.billNo}`);
+  }
   render() {
     const { billHead, tenantId, billStatements } = this.props;
     const unaccepted = [];
@@ -99,16 +126,48 @@ export default class ReceivableBillDetail extends Component {
         }
       }
     });
+    let actions = null;
+    if (billHead.bill_type === 'OFB') {
+      if (billHead.bill_status === 2) {
+        actions = (
+          <span>
+            <Button icon="check" onClick={this.handleAcceptBill}>
+              {this.msg('接受账单')}
+            </Button>
+            <Button icon="close" onClick={this.handleRecallBill} style={{ marginLeft: 8 }}>
+              {this.msg('撤销账单')}
+            </Button>
+          </span>
+        );
+      }
+    } else if (tenantId !== billHead.tenant_id) {
+      if (billHead.bill_status === 2) {
+        actions = (
+          <span>
+            <Button icon="check" onClick={this.handleAcceptBill}>
+              {this.msg('接受账单')}
+            </Button>
+            <Button icon="exclamation" onClick={this.handleRejectBill} style={{ marginLeft: 8 }}>
+              {this.msg('拒绝账单')}
+            </Button>
+          </span>
+        );
+      }
+    } else if (tenantId === billHead.tenant_id) {
+      if (billHead.bill_status === 3) {
+        actions = (
+          <Button icon="close" onClick={this.handleRecallBill}>
+            {this.msg('撤销账单')}
+          </Button>
+        );
+      }
+    }
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
           <PageHeader.Actions>
-            <Button icon="mail" onClick={this.handleCreateASN}>
-              {this.msg('发送账单')}
-            </Button>
-            <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
-              {this.msg('对账确认')}
-            </Button>
+            {actions}
+            <Button icon="download" onClick={this.handleExport} style={{ marginLeft: 8 }}>导出</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
