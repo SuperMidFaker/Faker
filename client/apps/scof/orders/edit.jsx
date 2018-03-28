@@ -56,12 +56,16 @@ export default class EditOrder extends Component {
     formData: PropTypes.shape({ shipmt_order_no: PropTypes.string }).isRequired,
     editOrder: PropTypes.func.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
     const { formData } = this.props;
     const valitFormData = {};
     ['customer_name', 'cust_shipmt_goods_type', 'cust_shipmt_transfer', 'flow_id',
-      'ext_attr_1', 'ext_attr_2', 'ext_attr_3', 'ext_attr_4', 'cust_order_no'].forEach((vaKey) => {
+      'ext_attr_1', 'ext_attr_2', 'ext_attr_3', 'ext_attr_4', 'cust_order_no', 'id',
+      'customer_partner_id'].forEach((vaKey) => {
       valitFormData[vaKey] = formData[vaKey];
     });
     this.props.validateOrder(valitFormData).then((result) => {
