@@ -16,6 +16,7 @@ import SellerBillTable from './sellerBillTable';
 import BuyerPendingTable from './buyerPendingTable';
 import SellerPendingTable from './sellerPendingTable';
 import NewBill from './modals/newBillModal';
+import AddToDraft from './modals/addToDraftModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -182,6 +183,7 @@ export default class BillList extends React.Component {
             </Menu>
           </DockPanel>
           <NewBill />
+          <AddToDraft />
         </Layout>
       </Layout>
     );
