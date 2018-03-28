@@ -528,6 +528,7 @@ export default class SHFTZRelDetail extends Component {
               <Description term="是否需加封">
                 <EditableCell
                   type="select"
+                  editable={relEditable}
                   value={reg.need_seal}
                   options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'need_seal', value)}
@@ -535,24 +536,28 @@ export default class SHFTZRelDetail extends Component {
               </Description>
               <Description term="封志">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.seal_no}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
                 />
               </Description>
               <Description term="唛头">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.marks}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
                 />
               </Description>
               <Description term="发票号">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.invoice_no}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
                 />
               </Description>
               <Description term="凭单号">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.voucher_no}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'voucher_no', value)}
                 />

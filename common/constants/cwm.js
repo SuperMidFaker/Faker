@@ -490,3 +490,9 @@ exports.WHSE_OPERATION_MODES = {
   scan: { value: 'scan', text: '扫描' },
   manual: { value: 'manual', text: '手动' },
 };
+
+exports.ALLOC_ERROR_MESSAGE_DESC = {
+  shftz_rel_no_exist: '出库备案号已存在,请确保终端已删除对应备案号,清除备案单号后重新取消分配',
+  shftz_portion_detail_queried: '分拨出库单已提交,无法取消分配',
+  shftz_normal_reg_detail_in_decl: '出库明细处于清关中,无法取消分配',
+};

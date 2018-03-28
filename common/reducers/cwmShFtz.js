@@ -275,7 +275,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         rel_regs: state.rel_regs.map((rr) => {
           if (rr.pre_entry_seq_no === action.data.pre_entry_seq_no) {
-            return { ...rr, [action.data.field]: action.data.value };
+            return { ...rr, ...action.result.data };
           }
           return rr;
         }),

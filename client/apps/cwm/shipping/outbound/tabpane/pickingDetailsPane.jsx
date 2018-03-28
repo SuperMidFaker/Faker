@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Icon, Button } from 'antd';
+import { Tag, Icon, Button, notification } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
-import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS } from 'common/constants';
+import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS, ALLOC_ERROR_MESSAGE_DESC } from 'common/constants';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -219,7 +219,18 @@ export default class PickingDetailsPane extends React.Component {
     },
   }]
   handleCancelAllocated = (row) => {
-    this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId);
+    this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId)
+      .then((result) => {
+        if (result.error) {
+          let msg = result.error.message;
+          if (ALLOC_ERROR_MESSAGE_DESC[result.error.message]) {
+            msg = ALLOC_ERROR_MESSAGE_DESC[result.error.message];
+          }
+          notification.error({
+            message: msg,
+          });
+        }
+      });
   }
   handleCancelPicked = (id, pickedQty, pickedPackQty) => {
     const data = {
@@ -269,7 +280,17 @@ export default class PickingDetailsPane extends React.Component {
     this.props.cancelTraceAlloc(
       this.props.outboundNo, this.state.selectedRowKeys,
       this.props.loginId
-    );
+    ).then((result) => {
+      if (result.error) {
+        let msg = result.error.message;
+        if (ALLOC_ERROR_MESSAGE_DESC[result.error.message]) {
+          msg = ALLOC_ERROR_MESSAGE_DESC[result.error.message];
+        }
+        notification.error({
+          message: msg,
+        });
+      }
+    });
   }
   handleDeselectRows = () => {
     this.setState({
