@@ -59,21 +59,21 @@ export default class ReceivableBillDetail extends Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleAcceptBill = () => {
-    this.props.acceptBill({ billNo: this.props.params.billNo }).then((result) => {
+    this.props.acceptBill({ bill_no: this.props.params.billNo }).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/bill');
       }
     });
   }
   handleRecallBill = () => {
-    this.props.recallBill({ billNo: this.props.params.billNo }).then((result) => {
+    this.props.recallBill({ bill_no: this.props.params.billNo }).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/bill');
       }
     });
   }
   handleRejectBill = () => {
-    this.props.rejectBill({ billNo: this.props.params.billNo }).then((result) => {
+    this.props.rejectBill({ bill_no: this.props.params.billNo }).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/bill');
       }
