@@ -9,6 +9,7 @@ import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
 import { updateBill, getBillStatements, getBillStatementFees } from 'common/reducers/bssBill';
+import { createFilename } from 'client/util/dataTransform';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
@@ -113,6 +114,9 @@ export default class StatementsPane extends Component {
     }
     this.setState({ billStatements, currentPage: 1 });
   }
+  handleExport = () => {
+    window.open(`${API_ROOTS.default}v1/bss/bill/export/${createFilename('bill')}.xlsx?billNo=${this.props.billNo}`);
+  }
   render() {
     const { billTemplateFees } = this.props;
     const rowSelection = {
@@ -212,6 +216,7 @@ export default class StatementsPane extends Component {
       >
         <DataPane.Toolbar>
           <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+          <Button onClick={this.handleExport}>导出</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}

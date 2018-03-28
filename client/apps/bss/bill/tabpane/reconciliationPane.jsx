@@ -6,6 +6,7 @@ import { Button, Input } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
+import { createFilename } from 'client/util/dataTransform';
 import { updateStatementReconcileFee, reconcileStatement } from 'common/reducers/bssBill';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -102,6 +103,9 @@ export default class ReconciliationPane extends Component {
   }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
+  }
+  handleExport = () => {
+    window.open(`${API_ROOTS.default}v1/bss/bill/export/${createFilename('bill')}.xlsx?billNo=${this.props.billNo}`);
   }
   render() {
     const { searchText } = this.state;
@@ -256,6 +260,7 @@ export default class ReconciliationPane extends Component {
       >
         <DataPane.Toolbar>
           <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+          <Button onClick={this.handleExport}>导出</Button>
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}

@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
   'UPDATE_RECONCILE_FEE', 'UPDATE_RECONCILE_FEE_SUCCEED', 'UPDATE_RECONCILE_FEE_FAIL',
   'RECONCILE_STATEMENT', 'RECONCILE_STATEMENT_SUCCEED', 'RECONCILE_STATEMENT_FAIL',
+  'REJECT_BILL', 'REJECT_BILL_SUCCEED', 'REJECT_BILL_FAIL',
 ]);
 
 const initialState = {
@@ -335,6 +336,21 @@ export function reconcileStatement(id) {
       endpoint: 'v1/bss/bill/statement/reconcile',
       method: 'post',
       data: { id },
+    },
+  };
+}
+
+export function rejectBill(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REJECT_BILL,
+        actionTypes.REJECT_BILL_SUCCEED,
+        actionTypes.REJECT_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/reject',
+      method: 'post',
+      data,
     },
   };
 }
