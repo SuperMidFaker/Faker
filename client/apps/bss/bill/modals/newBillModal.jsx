@@ -78,10 +78,11 @@ export default class NewBill extends React.Component {
         const begin = moment(beginDate).format('YYYY-MM-DD HH:mm:ss');
         const end = moment(endDate).format('YYYY-MM-DD HH:mm:ss');
         const formVal = this.props.form.getFieldsValue();
+        const templateId = Number.isNaN(formVal.template_id) ? null : Number(formVal.template_id);
         this.props.createBill({
           bill_title: formVal.bill_title,
           bill_type: formVal.bill_type,
-          template_id: Number(formVal.template_id),
+          template_id: templateId,
           partner_id: Number(formVal.partner_id),
           start_date: begin,
           end_date: end,
