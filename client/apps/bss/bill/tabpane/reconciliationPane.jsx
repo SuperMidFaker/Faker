@@ -38,7 +38,7 @@ export default class ReconciliationPane extends Component {
   }
   handleEdit = (row) => {
     this.setState({
-      editItem: row,
+      editItem: { ...row },
     });
   }
   handleColumnChange = (field, value) => {
@@ -64,7 +64,17 @@ export default class ReconciliationPane extends Component {
     });
   }
   handleOk = () => {
-    const item = { ...this.state.editItem };
+    const { editItem } = this.state;
+    const item = {
+      diff_settled_amount: editItem.diff_settled_amount,
+      seller_settled_amount: editItem.seller_settled_amount,
+      buyer_settled_amount: editItem.buyer_settled_amount,
+      settle_type: editItem.settle_type,
+      owner_tenant_id: editItem.owner_tenant_id,
+      tenant_id: editItem.tenant_id,
+      vendor_tenant_id: editItem.vendor_tenant_id,
+      id: editItem.id,
+    };
     this.props.updateStatementReconcileFee(item, this.props.billNo).then((result) => {
       if (!result.error) {
         this.setState({

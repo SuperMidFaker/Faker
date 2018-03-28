@@ -24,7 +24,7 @@ const { TabPane } = Tabs;
     tenantId: state.account.tenantId,
     billHead: state.bssBill.billHead,
     billStatements: state.bssBill.billStatements,
-    billReload: state.bssBill.billReload,
+    billHeadReload: state.bssBill.billHeadReload,
     statementReload: state.bssBill.statementReload,
   }),
   { loadBillHead, getBillStatements }
@@ -46,9 +46,8 @@ export default class ReceivableBillDetail extends Component {
     this.props.getBillStatements(this.props.params.billNo);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.billReload) {
+    if (nextProps.billHeadReload) {
       this.props.loadBillHead(this.props.params.billNo);
-      this.props.getBillStatements(this.props.params.billNo);
     }
     if (nextProps.statementReload) {
       this.props.getBillStatements(this.props.params.billNo);

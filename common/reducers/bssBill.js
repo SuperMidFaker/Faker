@@ -48,6 +48,7 @@ const initialState = {
   billTemplateFees: [],
   statementFees: [],
   statementReload: false,
+  billHeadReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -87,12 +88,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
       return { ...state, billStat: action.result.data };
     case actionTypes.LOAD_BILL_HEAD:
-      return { ...state, billReload: false };
+      return { ...state, billHeadReload: false };
     case actionTypes.LOAD_BILL_HEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
     case actionTypes.BILL_UPDATE_SUCCEED:
+      return { ...state, billHeadReload: true };
     case actionTypes.RECONCILE_STATEMENT_SUCCEED:
-      return { ...state, billReload: true };
+      return { ...state, billHeadReload: true, statementReload: true };
     case actionTypes.CREATE_BILL_SUCCEED:
       return { ...state, billReload: true };
     case actionTypes.GET_BILL_STATEMENTS:
@@ -106,7 +108,7 @@ export default function reducer(state = initialState, action) {
         statementFees: action.result.data.statementFees,
       };
     case actionTypes.UPDATE_RECONCILE_FEE_SUCCEED:
-      return { ...state, statementReload: true };
+      return { ...state, statementReload: true, billHeadReload: true };
     default:
       return state;
   }

@@ -23,7 +23,7 @@ const { TabPane } = Tabs;
   state => ({
     tenantId: state.account.tenantId,
     billHead: state.bssBill.billHead,
-    reload: state.bssBill.reload,
+    billHeadReload: state.bssBill.billHeadReload,
   }),
   { loadBillHead }
 )
@@ -43,7 +43,7 @@ export default class ReceivableBillDetail extends Component {
     this.props.loadBillHead(this.props.params.billNo);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.reload) {
+    if (nextProps.billHeadReload) {
       this.props.loadBillHead(this.props.params.billNo);
     }
   }
