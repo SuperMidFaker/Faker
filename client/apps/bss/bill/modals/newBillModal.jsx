@@ -97,9 +97,10 @@ export default class NewBill extends React.Component {
   }
   handleTypeSelect = (ev) => {
     this.props.form.setFieldsValue({
-      partner_id: '',
-      template_id: '',
+      partner_id: null,
+      template_id: null,
     });
+    this.setState({ billTemplates: [] });
     const billType = ev.target.value;
     if (billType === 'buyerBill') {
       const client = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
