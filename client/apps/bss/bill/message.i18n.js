@@ -7,6 +7,10 @@ const messages = defineMessages({
     id: 'bss.bill',
     defaultMessage: '账单管理',
   },
+  createBill: {
+    id: 'bss.bill.create',
+    defaultMessage: '新建账单',
+  },
   buyerBill: {
     id: 'bss.bill.buyer.bill',
     defaultMessage: '客户账单',

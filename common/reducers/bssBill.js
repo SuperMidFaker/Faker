@@ -32,7 +32,7 @@ const initialState = {
     data: [],
   },
   listFilter: {
-    status: 'pendingExpense',
+    status: 'processingBills',
     clientPid: 'all',
   },
   loading: false,

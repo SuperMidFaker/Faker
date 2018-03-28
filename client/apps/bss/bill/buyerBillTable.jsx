@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { DatePicker, Select, Tag, message } from 'antd';
+import { Badge, DatePicker, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -85,22 +85,22 @@ export default class BuyerBills extends React.Component {
   }, {
     title: '开始日期',
     dataIndex: 'order_begin_date',
-    width: 120,
+    width: 100,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
     title: '结束日期',
     dataIndex: 'order_end_date',
-    width: 120,
+    width: 100,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
     title: '客户',
-    width: 240,
+    width: 200,
     dataIndex: 'buyer_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
+    render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: '账单类型',
     dataIndex: 'bill_type',
-    width: 150,
+    width: 100,
     render: (o) => {
       if (o === 'OFB') {
         return <Tag>{this.msg('offlineBill')}</Tag>;
@@ -115,6 +115,16 @@ export default class BuyerBills extends React.Component {
     title: '状态',
     dataIndex: 'bill_status',
     width: 100,
+    render: (o) => {
+      if (o === 1) {
+        return <Badge status="default" text="草稿" />;
+      } else if (o === 2) {
+        return <Badge status="processing" text="对账中" />;
+      } else if (o === 3) {
+        return <Badge status="success" text="已接受" />;
+      }
+      return null;
+    },
   }, {
     title: '总单数',
     dataIndex: 'order_count',
@@ -271,12 +281,11 @@ export default class BuyerBills extends React.Component {
         showSearch
         placeholder="客户"
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >
-        <Option value="all" key="all">全部</Option>
+        <Option value="all" key="all">全部客户</Option>
         {partners.map(data => (
           <Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
           </Option>))

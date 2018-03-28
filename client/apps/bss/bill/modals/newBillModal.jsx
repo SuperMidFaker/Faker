@@ -18,7 +18,7 @@ const RadioGroup = Radio.Group;
 
 const formItemLayout = {
   labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  wrapperCol: { span: 16 },
 };
 
 @injectIntl
@@ -33,7 +33,7 @@ const formItemLayout = {
   }
 )
 @Form.create()
-export default class NewBill extends React.Component {
+export default class CreateBillModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -115,7 +115,7 @@ export default class NewBill extends React.Component {
     return (
       <Modal
         maskClosable={false}
-        title={this.msg('newBill')}
+        title={this.msg('createBill')}
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}

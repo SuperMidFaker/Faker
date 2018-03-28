@@ -15,7 +15,7 @@ import BuyerBillTable from './buyerBillTable';
 import SellerBillTable from './sellerBillTable';
 import BuyerPendingTable from './buyerPendingTable';
 import SellerPendingTable from './sellerPendingTable';
-import NewBill from './modals/newBillModal';
+import CreateBillModal from './modals/newBillModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -112,9 +112,8 @@ export default class BillList extends React.Component {
       }];
     }
     const primaryAction = (<Button type="primary" icon="plus" onClick={this.handleCreate}>
-      {this.msg('新建账单')}
+      {this.msg('createBill')}
     </Button>);
-    const secondaryAction = <Button>导出</Button>;
     return (
       <Layout>
         <PageHeader
@@ -124,7 +123,6 @@ export default class BillList extends React.Component {
         >
           <PageHeader.Actions>
             {primaryAction}
-            {secondaryAction}
             <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
@@ -181,7 +179,7 @@ export default class BillList extends React.Component {
               </Menu.ItemGroup>
             </Menu>
           </DockPanel>
-          <NewBill />
+          <CreateBillModal />
         </Layout>
       </Layout>
     );
