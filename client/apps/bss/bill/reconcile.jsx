@@ -9,6 +9,7 @@ import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import { createFilename } from 'client/util/dataTransform';
 import { loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill } from 'common/reducers/bssBill';
 import ReconciliationPane from './tabpane/reconciliationPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
@@ -58,25 +59,28 @@ export default class ReceivableBillDetail extends Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleAcceptBill = () => {
-    this.props.acceptBill({ bill_no: this.props.params.billNo }).then((result) => {
+    this.props.acceptBill({ billNo: this.props.params.billNo }).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/bill');
       }
     });
   }
   handleRecallBill = () => {
-    this.props.recallBill({ bill_no: this.props.params.billNo }).then((result) => {
+    this.props.recallBill({ billNo: this.props.params.billNo }).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/bill');
       }
     });
   }
   handleRejectBill = () => {
-    this.props.rejectBill({ bill_no: this.props.params.billNo }).then((result) => {
+    this.props.rejectBill({ billNo: this.props.params.billNo }).then((result) => {
       if (!result.error) {
         this.context.router.push('/bss/bill');
       }
     });
+  }
+  handleExport = () => {
+    window.open(`${API_ROOTS.default}v1/bss/bill/export/${createFilename(`${this.props.billHead.bill_title}`)}.xlsx?billNo=${this.props.params.billNo}`);
   }
   render() {
     const { billHead, tenantId, billStatements } = this.props;
@@ -136,7 +140,7 @@ export default class ReceivableBillDetail extends Component {
           </span>
         );
       }
-    } else if (tenantId === billHead.buyer_tenant_id || tenantId === billHead.seller_tenant_id) {
+    } else if (tenantId !== billHead.tenant_id) {
       if (billHead.bill_status === 2) {
         actions = (
           <span>
@@ -163,6 +167,7 @@ export default class ReceivableBillDetail extends Component {
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
           <PageHeader.Actions>
             {actions}
+            <Button icon="download" onClick={this.handleExport} style={{ marginLeft: 8 }}>导出</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
