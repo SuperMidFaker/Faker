@@ -168,7 +168,7 @@ export default class BuyerBills extends React.Component {
           </span>);
         } else if (record.bill_status === 4) {
           return (<span>
-            <RowAction icon="swap" onClick={this.handleView} label="查看" row={record} />
+            <RowAction icon="swap" onClick={this.handleDetail} label="查看" row={record} />
             <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
           </span>);
         }
@@ -184,7 +184,7 @@ export default class BuyerBills extends React.Component {
         return (<RowAction icon="swap" onClick={this.handleRecall} label="撤销" row={record} />);
       } else if (record.bill_status === 4 && record.tenant_id === this.props.tenantId) {
         return (<span>
-          <RowAction icon="swap" onClick={this.handleView} label="查看" row={record} />
+          <RowAction icon="swap" onClick={this.handleDetail} label="查看" row={record} />
           <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
         </span>);
       }

@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'GET_BILL_STATEMENT_FEES', 'GET_BILL_STATEMENT_FEES_SUCCEED', 'GET_BILL_STATEMENT_FEES_FAIL',
   'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
+  'UPDATE_RECONCILE_FEE', 'UPDATE_RECONCILE_FEE_SUCCEED', 'UPDATE_RECONCILE_FEE_FAIL',
+  'RECONCILE_STATEMENT', 'RECONCILE_STATEMENT_SUCCEED', 'RECONCILE_STATEMENT_FAIL',
 ]);
 
 const initialState = {
@@ -45,6 +47,8 @@ const initialState = {
   billStatements: [],
   billTemplateFees: [],
   statementFees: [],
+  statementReload: false,
+  billHeadReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -84,13 +88,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
       return { ...state, billStat: action.result.data };
     case actionTypes.LOAD_BILL_HEAD:
-      return { ...state, billReload: false };
+      return { ...state, billHeadReload: false };
     case actionTypes.LOAD_BILL_HEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
     case actionTypes.BILL_UPDATE_SUCCEED:
-      return { ...state, billReload: true };
+      return { ...state, billHeadReload: true };
+    case actionTypes.RECONCILE_STATEMENT_SUCCEED:
+      return { ...state, billHeadReload: true, statementReload: true };
     case actionTypes.CREATE_BILL_SUCCEED:
       return { ...state, billReload: true };
+    case actionTypes.GET_BILL_STATEMENTS:
+      return { ...state, statementReload: false };
     case actionTypes.GET_BILL_STATEMENTS_SUCCEED:
       return { ...state, billStatements: action.result.data };
     case actionTypes.GET_BILL_STATEMENT_FEES_SUCCEED:
@@ -99,6 +107,8 @@ export default function reducer(state = initialState, action) {
         billTemplateFees: action.result.data.billTemplateFees,
         statementFees: action.result.data.statementFees,
       };
+    case actionTypes.UPDATE_RECONCILE_FEE_SUCCEED:
+      return { ...state, statementReload: true, billHeadReload: true };
     default:
       return state;
   }
@@ -294,6 +304,36 @@ export function updateBill(data, billNo) {
       endpoint: 'v1/bss/bill/update',
       method: 'post',
       data: { data, billNo },
+    },
+  };
+}
+
+export function updateStatementReconcileFee(data, billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_RECONCILE_FEE,
+        actionTypes.UPDATE_RECONCILE_FEE_SUCCEED,
+        actionTypes.UPDATE_RECONCILE_FEE_FAIL,
+      ],
+      endpoint: 'v1/bss/reconcile/fee/update',
+      method: 'post',
+      data: { data, billNo },
+    },
+  };
+}
+
+export function reconcileStatement(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECONCILE_STATEMENT,
+        actionTypes.RECONCILE_STATEMENT_SUCCEED,
+        actionTypes.RECONCILE_STATEMENT_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/statement/reconcile',
+      method: 'post',
+      data: { id },
     },
   };
 }
