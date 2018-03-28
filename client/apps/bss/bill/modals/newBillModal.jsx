@@ -72,26 +72,34 @@ export default class NewBill extends React.Component {
     });
   }
   handleOk = () => {
-    const { beginDate, endDate } = this.state;
-    const begin = moment(beginDate).format('YYYY-MM-DD HH:mm:ss');
-    const end = moment(endDate).format('YYYY-MM-DD HH:mm:ss');
-    const formVal = this.props.form.getFieldsValue();
-    this.props.createBill({
-      bill_title: formVal.bill_title,
-      bill_type: formVal.bill_type,
-      template_id: Number(formVal.template_id),
-      partner_id: Number(formVal.partner_id),
-      start_date: begin,
-      end_date: end,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        this.props.toggleNewBillModal(false);
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const { beginDate, endDate } = this.state;
+        const begin = moment(beginDate).format('YYYY-MM-DD HH:mm:ss');
+        const end = moment(endDate).format('YYYY-MM-DD HH:mm:ss');
+        const formVal = this.props.form.getFieldsValue();
+        this.props.createBill({
+          bill_title: formVal.bill_title,
+          bill_type: formVal.bill_type,
+          template_id: Number(formVal.template_id),
+          partner_id: Number(formVal.partner_id),
+          start_date: begin,
+          end_date: end,
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 5);
+          } else {
+            this.props.toggleNewBillModal(false);
+          }
+        });
       }
     });
   }
   handleTypeSelect = (ev) => {
+    this.props.form.setFieldsValue({
+      partner_id: '',
+      template_id: '',
+    });
     const billType = ev.target.value;
     if (billType === 'buyerBill') {
       const client = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
