@@ -184,7 +184,6 @@ export default class SellerBills extends React.Component {
   handleBillsLoad = (currentPage, filter) => {
     const { listFilter, billlist: { pageSize, current } } = this.props;
     const filters = filter || listFilter;
-    filters.bill_type = 'sellerBill';
     this.props.loadBillStatistics({ filter: JSON.stringify(filters) });
     this.props.loadBills({
       filter: JSON.stringify(filters),

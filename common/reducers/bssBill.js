@@ -36,6 +36,7 @@ const initialState = {
   listFilter: {
     status: 'pendingExpense',
     clientPid: 'all',
+    bill_type: 'buyerBill',
   },
   loading: false,
   visibleNewBillModal: false,

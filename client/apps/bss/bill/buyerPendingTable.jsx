@@ -103,7 +103,6 @@ export default class BuyerPendingTable extends React.Component {
   handleOrdersLoad = (currentPage, filter) => {
     const { listFilter, orderStatementlist: { pageSize, current } } = this.props;
     const filters = filter || listFilter;
-    filters.bill_type = 'buyerBill';
     this.props.loadOrderStatements({
       filter: JSON.stringify(filters),
       pageSize,
