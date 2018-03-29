@@ -182,7 +182,7 @@ export default class StatementsPane extends Component {
       width: 90,
       fixed: 'right',
       render: (o, record) => {
-        if (record.bill_status === 1) {
+        if (this.props.billHead.bill_status === 1) {
           if (this.state.editItem.id === record.id) {
             return (<span>
               <RowAction icon="save" onClick={this.handleOk} tooltip={this.gmsg('confirm')} row={record} />
