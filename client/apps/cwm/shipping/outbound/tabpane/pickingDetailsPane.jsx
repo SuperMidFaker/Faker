@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Icon, Button } from 'antd';
+import { Tag, Icon, Button, notification } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
-import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS } from 'common/constants';
+import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS, ALLOC_ERROR_MESSAGE_DESC } from 'common/constants';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -58,6 +58,7 @@ export default class PickingDetailsPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.handleLoad();
+      this.handleDeselectRows();
     }
   }
   msg = formatMsg(this.props.intl)
@@ -105,6 +106,12 @@ export default class PickingDetailsPane extends React.Component {
       }
       return null;
     },
+  }, {
+    title: '发货数量',
+    dataIndex: 'shipped_qty',
+    width: 100,
+    align: 'right',
+    render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
@@ -212,11 +219,18 @@ export default class PickingDetailsPane extends React.Component {
     },
   }]
   handleCancelAllocated = (row) => {
-    this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId).then((result) => {
-      if (!result.error) {
-        this.resetState();
-      }
-    });
+    this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId)
+      .then((result) => {
+        if (result.error) {
+          let msg = result.error.message;
+          if (ALLOC_ERROR_MESSAGE_DESC[result.error.message]) {
+            msg = ALLOC_ERROR_MESSAGE_DESC[result.error.message];
+          }
+          notification.error({
+            message: msg,
+          });
+        }
+      });
   }
   handleCancelPicked = (id, pickedQty, pickedPackQty) => {
     const data = {
@@ -260,26 +274,25 @@ export default class PickingDetailsPane extends React.Component {
       data.picked_pack_qty = selectedRows[i].picked_qty / selectedRows[i].sku_pack_qty;
       list.push(data);
     }
-    this.props.cancelPicked(this.props.outboundNo, list).then((result) => {
-      if (!result.error) {
-        this.resetState();
-      }
-    });
+    this.props.cancelPicked(this.props.outboundNo, list);
   }
   handleAllocBatchCancel = () => {
     this.props.cancelTraceAlloc(
       this.props.outboundNo, this.state.selectedRowKeys,
       this.props.loginId
     ).then((result) => {
-      if (!result.error) {
-        this.resetState();
+      if (result.error) {
+        let msg = result.error.message;
+        if (ALLOC_ERROR_MESSAGE_DESC[result.error.message]) {
+          msg = ALLOC_ERROR_MESSAGE_DESC[result.error.message];
+        }
+        notification.error({
+          message: msg,
+        });
       }
     });
   }
   handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [] });
-  }
-  resetState = () => {
     this.setState({
       selectedRows: [],
       selectedRowKeys: [],
@@ -335,7 +348,6 @@ export default class PickingDetailsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -371,13 +383,11 @@ export default class PickingDetailsPane extends React.Component {
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <PickingModal
-          resetState={this.resetState}
           pickMode={this.state.operationMode}
           selectedRows={this.state.selectedRows}
           outboundNo={this.props.outboundNo}
         />
         <ShippingModal
-          resetState={this.resetState}
           shipMode={this.state.operationMode}
           selectedRows={this.state.selectedRows}
           outboundNo={this.props.outboundNo}

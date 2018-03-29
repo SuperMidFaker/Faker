@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
-import { Layout, Radio, Select, Button, Badge, Tag, notification, DatePicker } from 'antd';
+import { Layout, Divider, Select, Button, Icon, Menu, Badge, Tag, notification, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import QueueAnim from 'rc-queue-anim';
+import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -16,21 +16,17 @@ import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FI
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
-import { exportNormalExitBySo } from 'common/reducers/cwmOutbound';
-import { format } from 'client/common/i18n/helpers';
+import { exportNormalExitBySo, openShippingModal } from 'common/reducers/cwmOutbound';
 import WhseSelect from '../../common/whseSelect';
-import messages from '../message.i18n';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
+import ShippingModal from '../outbound/modal/shippingModal';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
-
-const formatMsg = format(messages);
 const { Content } = Layout;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -59,6 +55,7 @@ const { RangePicker } = DatePicker;
     showAddToWave,
     batchRelease,
     exportNormalExitBySo,
+    openShippingModal,
     loadModelAdaptors,
   }
 )
@@ -112,7 +109,8 @@ export default class ShippingOrderList extends React.Component {
       filters,
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
     title: 'SO编号',
     width: 150,
@@ -277,6 +275,9 @@ export default class ShippingOrderList extends React.Component {
       }
     });
   }
+  handleBatchShip = () => {
+    this.props.openShippingModal();
+  }
   handleReload = () => {
     this.props.loadSos({
       whseCode: this.props.defaultWhse.code,
@@ -302,8 +303,8 @@ export default class ShippingOrderList extends React.Component {
     const link = `/cwm/shipping/outbound/${row.outbound_no}`;
     this.context.router.push(link);
   }
-  handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
+  handleFilterMenuClick = (ev) => {
+    const filters = { ...this.props.filters, status: ev.key };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
@@ -519,37 +520,25 @@ export default class ShippingOrderList extends React.Component {
       <RangePicker
         onChange={this.onDateChange}
         value={dateVal}
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        ranges={{ [this.gmsg('rangeDateToday')]: [moment(), moment()], [this.gmsg('rangeDateMonth')]: [moment().startOf('month'), moment()] }}
       />
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}
+      {filters.status === 'tbdexit' && <Button onClick={this.handleBatchShip}>批量发货</Button>}
       {(filters.status === 'partial' || filters.status === 'completed') && <Button onClick={this.handleExportExitVoucher}>导出出区凭单</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.handleCreateWave}>创建波次计划</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
     </span>
     );
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <PageHeader
           breadcrumb={[
             <WhseSelect onChange={this.handleWhseChange} />,
             this.msg('shippingOrder'),
           ]}
         >
-          <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">未处理</RadioButton>
-              <RadioButton value="outbound">已释放</RadioButton>
-              <RadioButton value="partial">部分发货</RadioButton>
-              <RadioButton value="completed">已完成</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
-              <RadioButton value="inWave">已加入波次计划</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button onClick={() => { this.setState({ importPanelVisible: true }); }}>{this.msg('batchImport')}</Button>
             <Button type="primary" icon="plus" onClick={this.handleCreateSO}>
@@ -557,20 +546,65 @@ export default class ShippingOrderList extends React.Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            columns={columns}
-            rowSelection={rowSelection}
-            dataSource={dataSource}
-            rowKey="id"
-            toolbarActions={toolbarActions}
-            scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-            loading={loading}
-            bulkActions={bulkActions}
-            selectedRowKeys={this.state.selectedRowKeys}
-            onDeselectRows={this.handleDeselectRows}
-          />
-        </Content>
+        <Layout>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[filters.status]} onClick={this.handleFilterMenuClick}>
+              <Menu.Item key="all">
+                {this.msg('allSO')}
+              </Menu.Item>
+              <Menu.Item key="inWave">
+                {this.msg('inWaveSO')}
+              </Menu.Item>
+              <Menu.ItemGroup key="outboundStatus" title={this.msg('outboundStatus')}>
+                <Menu.Item key={CWM_SO_STATUS.PENDING.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.PENDING.text}
+                </Menu.Item>
+                <Menu.Item key={CWM_SO_STATUS.OUTBOUND.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.OUTBOUND.text}
+                </Menu.Item>
+                <Menu.Item key="tbdexit">
+                  <Icon type="check-square-o" /> {this.msg('statusTbdExitable')}
+                </Menu.Item>
+                <Menu.Item key={CWM_SO_STATUS.PARTIAL.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.PARTIAL.text}
+                </Menu.Item>
+                <Menu.Item key={CWM_SO_STATUS.COMPLETED.key}>
+                  <Icon type="" /> {CWM_SO_STATUS.COMPLETED.text}
+                </Menu.Item>
+              </Menu.ItemGroup>
+              {defaultWhse.bonded &&
+                <Menu.ItemGroup key="regStatus" title={this.msg('regStatus')}>
+                  <Menu.Item key="regPending">
+                    <Icon type="" /> 待备案
+                  </Menu.Item>
+                  <Menu.Item key="regProcessing">
+                    <Icon type="" /> 已发送
+                  </Menu.Item>
+                  <Menu.Item key="regCompleted">
+                    <Icon type="" /> 备案完成
+                  </Menu.Item>
+                </Menu.ItemGroup>}
+              <Divider />
+              <Menu.Item key="manageFilter">
+                <Icon type="filter" /> {this.gmsg('manageFilters')}
+              </Menu.Item>
+            </Menu>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              columns={columns}
+              rowSelection={rowSelection}
+              dataSource={dataSource}
+              rowKey="id"
+              toolbarActions={toolbarActions}
+              scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+              loading={loading}
+              bulkActions={bulkActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+            />
+          </Content>
+        </Layout>
         <ShippingDockPanel />
         <OrderDockPanel />
         <DelegationDockPanel />
@@ -580,17 +614,18 @@ export default class ShippingOrderList extends React.Component {
           adaptors={this.props.adaptors}
           endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
           formData={{
-            tenantName: this.props.tenantName,
-            loginId: this.props.loginId,
-            whseCode: defaultWhse.code,
-            whseName: defaultWhse.name,
-          }}
+              tenantName: this.props.tenantName,
+              loginId: this.props.loginId,
+              whseCode: defaultWhse.code,
+              whseName: defaultWhse.name,
+            }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}
           template={`${XLSX_CDN}/SO批量导入模板.xlsx`}
         />
         <AddToWaveModal reload={this.handleReload} selectedRowKeys={this.state.selectedRowKeys} />
-      </QueueAnim>
+        <ShippingModal shipMode="batchSo" selectedRows={this.state.selectedRows.map(sr => sr.so_no)} onShipped={this.handleReload} />
+      </Layout>
     );
   }
 }

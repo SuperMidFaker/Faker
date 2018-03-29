@@ -208,7 +208,7 @@ export default class ItemMasterPane extends React.Component {
     };
 
     return (
-      <FormPane fullscreen={this.props.fullscreen}>
+      <FormPane >
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col span={6}>
@@ -315,7 +315,7 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('unit1')}>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
-                })(<Select disabled>
+                })(<Select >
                   {
                     units.map(gt =>
                       <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
@@ -327,7 +327,7 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('unit2')}>
                 {getFieldDecorator('unit_2', {
                   initialValue: fieldInits.unit_2,
-                })(<Select disabled>
+                })(<Select >
                   {
                     units.map(gt =>
                       <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)

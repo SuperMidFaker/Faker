@@ -186,7 +186,7 @@ export default class AttachedDocsPane extends React.Component {
     link.setAttribute('download', null);
     link.style.display = 'none';
     document.body.appendChild(link);
-    for (var i = 0; i < this.state.datas.length; i++) {
+    for (let i = 0; i < this.state.datas.length; i++) {
       link.setAttribute('href', this.state.datas[i].docu_file);
       link.click();
     }
@@ -265,7 +265,7 @@ export default class AttachedDocsPane extends React.Component {
     }];
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         bordered
         scrollOffset={312}

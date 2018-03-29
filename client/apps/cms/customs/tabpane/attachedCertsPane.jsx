@@ -254,7 +254,7 @@ export default class CertMarkPane extends React.Component {
     }];
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         bordered
         scrollOffset={312}

@@ -17,6 +17,9 @@ import operationLog from './operationLog';
 import bssAudit from './bssAudit';
 import bssFeeSettings from './bssFeeSettings';
 import bssExRateSettings from './bssExRateSettings';
+import bssBillTemplate from './bssBillTemplate';
+import bssBill from './bssBill';
+import bssStatement from './bssStatement';
 import cmsDashboard from './cmsDashboard';
 import cmsDelegation from './cmsDelegation';
 import cmsDelegationDock from './cmsDelegationDock';
@@ -107,6 +110,9 @@ export default combineReducers({
   bssAudit,
   bssFeeSettings,
   bssExRateSettings,
+  bssBill,
+  bssBillTemplate,
+  bssStatement,
   cmsDashboard,
   cmsDelegation,
   cmsDelegationDock,

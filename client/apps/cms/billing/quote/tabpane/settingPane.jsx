@@ -55,12 +55,12 @@ export default class SettingPane extends Component {
             </Col>
             <Col span={6}>
               <FormItem label="服务需求方" {...formItemLayout}>
-                <Input value={formData.seller_name} disabled />
+                <Input value={formData.buyer_name} disabled />
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="报价提供方" {...formItemLayout}>
-                <Input value={formData.buyer_name} disabled />
+                <Input value={formData.seller_name} disabled />
               </FormItem>
             </Col>
           </Row>

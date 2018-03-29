@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { intlShape, injectIntl } from 'react-intl';
+// import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
@@ -9,7 +9,7 @@ import { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails } from 
 import { CWM_SO_TYPES } from 'common/constants';
 
 
-@injectIntl
+// @injectIntl
 @connect(
   state => ({
     loginId: state.account.loginId,
@@ -22,7 +22,7 @@ import { CWM_SO_TYPES } from 'common/constants';
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -90,7 +90,7 @@ export default class OrderDetailsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -100,7 +100,10 @@ export default class OrderDetailsPane extends React.Component {
       >
         <DataPane.Toolbar>
           <SearchBox placeholder="SO编号" onSearch={this.handleSearch} />
-          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+          <DataPane.BulkActions
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+          >
             <Button onClick={this.handleRemoveOrders} icon="close">
               移除订单
             </Button>

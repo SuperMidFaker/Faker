@@ -14,7 +14,6 @@ export default class Description extends PureComponent {
     term: PropTypes.string,
     column: PropTypes.number,
     className: PropTypes.string,
-    children: PropTypes.node,
   }
   render() {
     const {
@@ -24,7 +23,7 @@ export default class Description extends PureComponent {
     return (
       <Col className={clsString} {...responsive[column]}>
         {term && <div className={`${prefixCls}-term`}>{term}</div>}
-        {children && <div className={`${prefixCls}-detail`}>{children}</div>}
+        <div className={`${prefixCls}-detail`}>{children}</div>
       </Col>
     );
   }

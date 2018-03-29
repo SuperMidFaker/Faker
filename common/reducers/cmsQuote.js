@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'RESTORE_QUOTE', 'RESTORE_QUOTE_SUCCEED', 'RESTORE_QUOTE_FAIL',
   'CLOSE_TRIAL_MODAL', 'OPEN_TRIAL_MODAL',
   'TRIAL_QUOTE', 'TRIAL_QUOTE_SUCCEED', 'TRIAL_QUOTE_FAIL',
+  'RELOAD_QUOTE_FEES',
 ]);
 
 const initialState = {
@@ -46,6 +47,7 @@ const initialState = {
   trialModalVisible: false,
   trialBegin: false,
   visibleAddFeeModal: false,
+  quoteFeesReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -68,7 +70,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUOTE_PARAMS_LOAD_SUCCEED:
       return { ...state, quoteData: action.result.data };
     case actionTypes.QUOTE_FEES_LOAD:
-      return { ...state, quoteFeesLoading: true };
+      return { ...state, quoteFeesReload: false, quoteFeesLoading: true };
     case actionTypes.QUOTE_FEES_LOAD_SUCCEED:
       return { ...state, quoteFeesLoading: false, quoteFees: action.result.data };
     case actionTypes.REVISE_QUOTE_SETTING:
@@ -94,6 +96,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TRIAL_QUOTE_SUCCEED:
     case actionTypes.TRIAL_QUOTE_FAIL:
       return { ...state, trialBegin: false };
+    case actionTypes.RELOAD_QUOTE_FEES:
+      return { ...state, quoteFeesReload: true };
     default:
       return state;
   }
@@ -103,6 +107,12 @@ export function toggleQuoteCreateModal(visible) {
   return {
     type: actionTypes.VISIBLE_QUOTE_CREATE_MODAL,
     data: visible,
+  };
+}
+
+export function reloadQuoteFees() {
+  return {
+    type: actionTypes.RELOAD_QUOTE_FEES,
   };
 }
 

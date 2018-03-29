@@ -94,7 +94,7 @@ export default class TradeItemAdd extends Component {
           <MagicCard
             bodyStyle={{ padding: 0 }}
 
-            onSizeChange={this.toggleFullscreen}
+
           >
             <Tabs defaultActiveKey="master">
               {tabs}

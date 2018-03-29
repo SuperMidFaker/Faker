@@ -40,7 +40,10 @@ function apiRequestPromise(initialReq) {
         }
         request.end((err, resp) => {
           if (err || !resp.body || resp.body.status !== 200) {
-            console.log('api mw err', err, 'body', resp && resp.body);
+            console.log('api mw err', JSON.stringify(err), 'body', resp && resp.body);
+            if (err && err.crossDomain === true) {
+              return reject(new Error('网络断开/无法连接到服务器'));
+            }
             if (resp && resp.body && resp.body.status === 401) {
               // 在浏览器端验证api请求验证错误时跳转至login页面
               if (!(typeof document === 'undefined' ||
@@ -52,9 +55,8 @@ function apiRequestPromise(initialReq) {
               }
             }
             return reject((resp && resp.body) || err);
-          } else {
-            return resolve(resp.body);
           }
+          return resolve(resp.body);
         });
       });
     };

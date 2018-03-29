@@ -87,7 +87,7 @@ export default class SHFTZRelDetail extends Component {
   }
   state = {
     reg: {},
-    fullscreen: true,
+
     origDecl: [],
     decl: [],
     view: 'splitted',
@@ -260,9 +260,6 @@ export default class SHFTZRelDetail extends Component {
   }
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   handleViewChange = (e) => {
     const { merged, reg } = this.state;
@@ -447,7 +444,7 @@ export default class SHFTZRelDetail extends Component {
   }
   render() {
     const {
-      relSo, relRegs, whse, submitting,
+      relSo, relRegs, submitting,
     } = this.props;
     const { reg, decl, filingDetails } = this.state;
     if (relRegs.length === 0) {
@@ -493,7 +490,6 @@ export default class SHFTZRelDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
             this.props.params.soNo,
           ]}
@@ -532,6 +528,7 @@ export default class SHFTZRelDetail extends Component {
               <Description term="是否需加封">
                 <EditableCell
                   type="select"
+                  editable={relEditable}
                   value={reg.need_seal}
                   options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'need_seal', value)}
@@ -539,24 +536,28 @@ export default class SHFTZRelDetail extends Component {
               </Description>
               <Description term="封志">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.seal_no}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
                 />
               </Description>
               <Description term="唛头">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.marks}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
                 />
               </Description>
               <Description term="发票号">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.invoice_no}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
                 />
               </Description>
               <Description term="凭单号">
                 <EditableCell
+                  editable={relEditable}
                   value={reg.voucher_no}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'voucher_no', value)}
                 />
@@ -572,11 +573,11 @@ export default class SHFTZRelDetail extends Component {
           </Drawer>
           <Content className="page-content">
             {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="regDetails">
                 <TabPane tab="备案明细" key="regDetails">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}
@@ -603,7 +604,7 @@ export default class SHFTZRelDetail extends Component {
                 {regStatus >= CWM_SHFTZ_APIREG_STATUS.completed &&
                 <TabPane tab="集中报关" key="batchDecl">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.declColumns}
                     dataSource={decl}
                     rowKey="id"

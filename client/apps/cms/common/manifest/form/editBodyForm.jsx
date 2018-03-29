@@ -183,19 +183,31 @@ export default class EditBodyForm extends Component {
       copProdNo: ev.target.value,
     });
   }
+  handleDecQtyChange = (ev) => {
+    const tradeTot = parseFloat(this.props.form.getFieldValue('trade_total'));
+    const qty = parseFloat(ev.target.value);
+    if (!Number.isNaN(qty)) {
+      if (!Number.isNaN(tradeTot) && qty > 0) {
+        const decPrice = parseFloat((tradeTot / qty).toFixed(3));
+        this.props.form.setFieldsValue({ dec_price: decPrice });
+      }
+    }
+  }
   handleTradeTotChange = (ev) => {
-    const qty = this.props.form.getFieldValue('g_qty');
-    if (!isNaN(qty) && qty > 0) { // eslint-disable-line
-      const decPrice = Number(ev.target.value / qty);
+    const qty = parseFloat(this.props.form.getFieldValue('g_qty'));
+    const tradeTot = parseFloat(ev.target.value);
+    if (!Number.isNaN(qty) && qty > 0) {
+      const decPrice = Number((tradeTot / qty).toFixed(3));
       this.props.form.setFieldsValue({ dec_price: decPrice });
     }
   }
   handleDecPriceChange = (ev) => {
-    const qty = this.props.form.getFieldValue('g_qty');
-    if (!isNaN(qty)) { // eslint-disable-line
-      const digits = ev.target.value.toString().split('.')[1];
+    const qty = parseFloat(this.props.form.getFieldValue('g_qty'));
+    const decPrice = parseFloat(ev.target.value);
+    if (!Number.isNaN(qty)) {
+      const digits = decPrice.toString().split('.')[1];
       const decimal = digits ? digits.length : 0;
-      const tradeTot = Number(ev.target.value * qty).toFixed(decimal);
+      const tradeTot = Number(decPrice * qty).toFixed(decimal);
       this.props.form.setFieldsValue({ trade_total: tradeTot });
     }
   }
@@ -301,6 +313,7 @@ export default class EditBodyForm extends Component {
             <FormItem {...formItemLayout} colon={false} label={this.msg('quantity')}>
               {getFieldDecorator('g_qty', {
                 initialValue: editBody.g_qty,
+ onChange: this.handleDecQtyChange,
               })(<Input />)}
             </FormItem>
           </Col>

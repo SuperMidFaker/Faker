@@ -162,7 +162,7 @@ export default class PermitHeadPane extends Component {
       },
     };
     return (
-      <FormPane fullscreen={this.props.fullscreen}>
+      <FormPane >
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col {...colSpan}>

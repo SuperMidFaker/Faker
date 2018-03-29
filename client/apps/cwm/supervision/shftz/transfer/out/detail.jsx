@@ -81,7 +81,6 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   state = {
     tabKey: '',
-    fullscreen: true,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
@@ -138,9 +137,6 @@ export default class SHFTZTransferOutDetail extends Component {
         });
       }
     });
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   columns = [{
     title: '行号',
@@ -266,7 +262,7 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   render() {
     const {
-      relSo, relRegs, whse, submitting, receivers,
+      relSo, relRegs, submitting, receivers,
     } = this.props;
     if (relRegs.length !== 1 || !relSo) {
       return null;
@@ -304,8 +300,7 @@ export default class SHFTZTransferOutDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
-            <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>,
+            relType.ftztext,
             this.props.params.soNo,
           ]}
         >
@@ -326,7 +321,7 @@ export default class SHFTZTransferOutDetail extends Component {
               <Description term="海关出库单号">
                 <EditableCell
                   value={relReg.ftz_rel_no}
-                  editable={relEditable}
+                  editable={regStatus <= CWM_SHFTZ_APIREG_STATUS.completed}
                   onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_no', value)}
                 />
               </Description>
@@ -374,7 +369,7 @@ export default class SHFTZTransferOutDetail extends Component {
           </Drawer>
           <Content className="page-content">
             {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   let { details } = reg;
@@ -404,7 +399,7 @@ export default class SHFTZTransferOutDetail extends Component {
                   return (
                     <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
                       <DataPane
-                        fullscreen={this.state.fullscreen}
+
                         columns={this.columns}
                         rowSelection={rowSelection}
                         indentSize={8}

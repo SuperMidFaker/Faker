@@ -38,11 +38,9 @@ export default class HeadRulesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
-    form: PropTypes.object.isRequired,
-    formData: PropTypes.object.isRequired,
-    formRequire: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    formData: PropTypes.shape({ owner_code: PropTypes.string }).isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
-    template: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
   handleSheetSave = (ev) => {
@@ -90,7 +88,7 @@ export default class HeadRulesPane extends React.Component {
     const tradesOpt = formRequire.trades.filter(data =>
       data.customer_partner_id === template.customer_partner_id);
     return (
-      <FormPane fullscreen={this.props.fullscreen}>
+      <FormPane >
         <Card
           bodyStyle={{ padding: 16 }}
 

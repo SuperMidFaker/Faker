@@ -103,7 +103,7 @@ export default class PermitItemsPane extends React.Component {
   render() {
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         bordered
         scrollOffset={312}

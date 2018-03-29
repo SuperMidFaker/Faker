@@ -8,12 +8,11 @@ import { getSuppliers } from 'common/reducers/cwmReceive';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
     whseOwners: state.cwmWarehouse.whseOwners,
     visible: state.cwmWarehouse.supplierModal.visible,
     supplier: state.cwmWarehouse.supplierModal.supplier,
@@ -33,11 +32,6 @@ export default class SuppliersModal extends Component {
   componentWillMount() {
     this.props.loadwhseOwners(this.props.whseCode);
   }
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.visible && nextProps.visible && nextProps.supplier.id) {
-      this.props.form.setFieldsValue(nextProps.supplier);
-    }
-  }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleSupplierModal(false);
@@ -45,34 +39,34 @@ export default class SuppliersModal extends Component {
   }
   handleAdd = () => {
     const {
-      whseCode, loginId, whseOwners, supplier, ownerPartnerId,
+      whseCode, supplier, ownerPartnerId,
     } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const ownerTenantId = whseOwners.find(owner => owner.owner_partner_id === values.owner_partner_id).owner_tenant_id;
         if (supplier.id) {
-          this.props.updateSupplier(values, supplier.id, loginId).then(() => {
-            this.props.loadSuppliers(whseCode);
-            this.props.toggleSupplierModal(false);
-          });
-        } else {
-          this.props.addSupplier(values, whseCode, loginId, ownerTenantId).then((result) => {
+          this.props.updateSupplier(values, supplier.id).then((result) => {
             if (!result.error) {
               this.props.loadSuppliers(whseCode);
-              this.props.toggleSupplierModal(false);
+              this.handleCancel();
+            }
+          });
+        } else {
+          this.props.addSupplier(values, whseCode).then((result) => {
+            if (!result.error) {
+              this.props.loadSuppliers(whseCode);
               if (ownerPartnerId) {
                 this.props.getSuppliers(whseCode, ownerPartnerId);
               }
+              this.handleCancel();
             }
           });
         }
       }
-      this.props.form.resetFields();
     });
   }
   render() {
     const {
-      form: { getFieldDecorator }, visible, whseOwners, ownerPartnerId,
+      form: { getFieldDecorator }, visible, whseOwners, ownerPartnerId, supplier = {},
     } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -80,22 +74,24 @@ export default class SuppliersModal extends Component {
     }; return (
       <Modal maskClosable={false} title="添加供货商" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Form layout="horizontal">
-          <FormItem label="名称:" required {...formItemLayout}>
-            {getFieldDecorator('name')(<Input required />)}
+          <FormItem label="名称" {...formItemLayout}>
+            {getFieldDecorator('name', { rules: [{ required: true }], initialValue: supplier.name })(<Input />)}
           </FormItem>
-          <FormItem label="代码:" required {...formItemLayout}>
-            {getFieldDecorator('code')(<Input />)}
+          <FormItem label="代码" {...formItemLayout}>
+            {getFieldDecorator('code', { rules: [{ required: true }], initialValue: supplier.code })(<Input />)}
           </FormItem>
-          <FormItem label="海关编码:" {...formItemLayout}>
-            {getFieldDecorator('customs_code')(<Input />)}
+          <FormItem label="海关编码" {...formItemLayout}>
+            {getFieldDecorator('customs_code', { initialValue: supplier.customs_code })(<Input />)}
           </FormItem>
-          <FormItem label="发货仓库号:" {...formItemLayout}>
-            {getFieldDecorator('ftz_whse_code')(<Input />)}
+          <FormItem label="供货商仓库海关编码" {...formItemLayout}>
+            {getFieldDecorator('ftz_whse_code', { initialValue: supplier.ftz_whse_code })(<Input />)}
           </FormItem>
-          <FormItem label="关联货主:" required {...formItemLayout}>
+          <FormItem label="关联货主" {...formItemLayout}>
             {getFieldDecorator('owner_partner_id', {
               initialValue: ownerPartnerId,
-            })(<Select id="select"
+              rules: [{ required: true }],
+            })(<Select
+              id="select"
               showSearch
               placeholder=""
               optionFilterProp="children"
@@ -104,8 +100,10 @@ export default class SuppliersModal extends Component {
             >
               {
                   whseOwners.map(pt => (
-                    <Option searched={`${pt.owner_code}${pt.owner_name}`}
-                      value={pt.owner_partner_id} key={pt.owner_partner_id}
+                    <Option
+                      searched={`${pt.owner_code}${pt.owner_name}`}
+                      value={pt.owner_partner_id}
+                      key={pt.owner_partner_id}
                     >
                       {pt.owner_code ? `${pt.owner_code} | ${pt.owner_name}` : pt.owner_name}
                     </Option>))

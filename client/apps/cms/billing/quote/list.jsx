@@ -135,14 +135,13 @@ export default class RatesList extends Component {
       {
         title: this.msg('quoteNo'),
         dataIndex: 'quote_no',
-        width: 140,
+        width: 180,
       }, {
         title: this.msg('quoteName'),
         dataIndex: 'quote_name',
-        width: 200,
       }, {
         title: this.props.listFilter.viewStatus === 'clientQuote' ? this.msg('buyerName') : this.msg('sellerName'),
-        width: 200,
+        width: 250,
         render: (text, record) => {
           let partnerName = '';
           if (record.buyer_tenant_id === tenantId) {
@@ -172,8 +171,8 @@ export default class RatesList extends Component {
       }, {
         title: this.gmsg('actions'),
         dataIndex: 'OPS_COL',
-        align: 'right',
         fixed: 'right',
+        className: 'table-col-ops',
         width: 60,
         render: (o, record) => {
           if (record.tenant_id === tenantId) {

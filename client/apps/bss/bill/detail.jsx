@@ -2,29 +2,31 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Col, Row, Layout, Tabs } from 'antd';
+import { Button, Layout, Steps, Tabs, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import { loadBillHead } from 'common/reducers/bssBill';
+import { createFilename } from 'client/util/dataTransform';
 import StatementsPane from './tabpane/statementsPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Description } = DescriptionList;
-
+const { Step } = Steps;
 const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
-    username: state.account.username,
-
+    tenantId: state.account.tenantId,
+    billHead: state.bssBill.billHead,
+    billHeadReload: state.bssBill.billHeadReload,
   }),
-  { }
+  { loadBillHead }
 )
 @connectNav({
   depth: 3,
@@ -38,59 +40,63 @@ export default class ReceivableBillDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    summary: {},
+  componentDidMount() {
+    this.props.loadBillHead(this.props.params.billNo);
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.billHeadReload) {
+      this.props.loadBillHead(this.props.params.billNo);
+    }
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-
+  handleExport = () => {
+    window.open(`${API_ROOTS.default}v1/bss/bill/export/${createFilename(`${this.props.billHead.bill_title}`)}.xlsx?billNo=${this.props.params.billNo}`);
+  }
   render() {
-    const { summary } = this.state;
-
+    const { billHead, tenantId } = this.props;
+    let billType = null;
+    if (billHead.bill_type === 'OFB') {
+      billType = <Tag>{this.msg('offlineBill')}</Tag>;
+    } else if (billHead.bill_type === 'FPB') {
+      billType = <Tag color="blue">{this.msg('forwardProposedBill')}</Tag>;
+    } else if (billHead.bill_type === 'BPB') {
+      billType = <Tag color="orange">{this.msg('backwardProposedBill')}</Tag>;
+    }
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
           <PageHeader.Actions>
-            <Button icon="mail" onClick={this.handleCreateASN}>
-              {this.msg('发送账单')}
-            </Button>
-            <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
-              {this.msg('对账确认')}
-            </Button>
+            <Button icon="download" onClick={this.handleExport}>导出</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
           <Drawer top onCollapseChange={this.handleCollapseChange}>
-            <Row type="flex">
-              <Col span={16}>
-                <DescriptionList col={4}>
-                  <Description term="账单编号">{summary.asn_no}</Description>
-                  <Description term="客户">{summary.owner_name}</Description>
-                  <Description term="账单期间">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-                </DescriptionList>
-              </Col>
-              <Col span={8} className="extra">
-                <div>
-                  <p>账单金额</p>
-                  <p>5,680</p>
-                </div>
-                <div>
-                  <p>调整金额</p>
-                  <p>2,890</p>
-                </div>
-                <div>
-                  <p>最终金额</p>
-                  <p>2,223</p>
-                </div>
-              </Col>
-            </Row>
+            <DescriptionList col={4}>
+              <Description term="账单名称">{billHead.bill_title}</Description>
+              {tenantId === billHead.buyer_tenant_id ?
+                <Description term="服务商">{billHead.seller_name}</Description> :
+                <Description term="客户">{billHead.buyer_name}</Description>}
+              <Description term="账期">{billHead.order_begin_date && moment(billHead.order_begin_date).format('YYYY.MM.DD')} ~ {billHead.order_end_date && moment(billHead.order_end_date).format('YYYY.MM.DD')}</Description>
+              <Description term="类型">{billType}</Description>
+              <Description term="订单数量">{billHead.order_count}</Description>
+              <Description term="账单总金额">{billHead.total_amount}</Description>
+              <Description term="调整金额">{billHead.adjusted_amount}</Description>
+              <Description term="最终结算金额">{billHead.final_amount}</Description>
+            </DescriptionList>
+            <Steps progressDot current={billHead.bill_status - 1} className="progress-tracker">
+              <Step title="草稿" />
+              <Step title="对账中" />
+              <Step title="已接受" />
+            </Steps>
           </Drawer>
           <Content className="page-content">
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
-              <Tabs defaultActiveKey="statements" onChange={this.handleTabChange}>
-                <TabPane tab="账单明细" key="statements" >
-                  <StatementsPane />
+            <MagicCard bodyStyle={{ padding: 0 }}>
+              <Tabs defaultActiveKey="statements">
+                <TabPane tab="费用清单" key="statements" >
+                  <StatementsPane
+                    billNo={this.props.params.billNo}
+                  />
                 </TabPane>
               </Tabs>
             </MagicCard>

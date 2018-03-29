@@ -492,7 +492,6 @@ export default class DelegationList extends Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
         value={clientPid}
         dropdownMatchSelectWidth={false}
@@ -504,7 +503,6 @@ export default class DelegationList extends Component {
       </Select>
       <Select
         value={listFilter.viewStatus}
-        style={{ width: 160 }}
         showSearch={false}
         onChange={this.handleExecutorChange}
       >

@@ -111,7 +111,7 @@ export default class ItemPermitPane extends React.Component {
     const { permits, loading } = this.state;
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowKey="id"
         dataSource={permits}

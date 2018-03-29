@@ -2,6 +2,9 @@
 @import "~antd/lib/style/components.less";
 @import "../../variable.less";
 body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-color: #F0F0F0;
 }
 ol {
@@ -385,7 +388,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 .text-emphasis,
 .text-emphasis a {
   color: #404040;
-  font-weight: 600;
+  font-weight: 500;
 }
 .text-line-through {
   text-decoration: line-through;

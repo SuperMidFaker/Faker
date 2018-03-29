@@ -39,9 +39,8 @@ export default class ManifestHeadPane extends React.Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
     readonly: PropTypes.bool,
-    form: PropTypes.object.isRequired,
-    formData: PropTypes.object.isRequired,
-    formRequire: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
+    formData: PropTypes.shape({ bill_seq_no: PropTypes.string }).isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
@@ -124,7 +123,7 @@ export default class ManifestHeadPane extends React.Component {
     const tradesOpt = formRequire.trades.filter(data =>
       data.customer_partner_id === formData.owner_cuspartner_id);
     return (
-      <FormPane fullscreen={this.props.fullscreen} hideRequiredMark>
+      <FormPane hideRequiredMark>
         <Card >
           <Row>
             <Col span="6">
@@ -230,7 +229,13 @@ export default class ManifestHeadPane extends React.Component {
             </Col>
             <TradeRemission {...formProps} intl={intl} formRequire={formRequire} />
           </Row>
-          <CountryAttr {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} onSearch={this.handlePortSearch} />
+          <CountryAttr
+            {...formProps}
+            intl={intl}
+            formRequire={formRequire}
+            ietype={ietype}
+            onSearch={this.handlePortSearch}
+          />
           <Row>
             <Col span="5">
               <LicenseNo {...formProps} intl={intl} formRequire={formRequire} />

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { Menu } from 'antd';
 import { format } from 'client/common/i18n/helpers';
@@ -25,15 +24,14 @@ export default class ModuleMenu extends React.Component {
     })).isRequired,
   }
   static contextTypes = {
-    location: locationShape,
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedKeys: [],
   }
   componentWillMount() {
-    if (this.context.location) {
-      const { pathname } = this.context.location;
+    if (this.context.router.location) {
+      const { pathname } = this.context.router.location;
       for (let i = 0; i < this.props.enabledmods.length; i++) {
         const mod = this.props.enabledmods[i];
         const emod = DEFAULT_MODULES[mod.id];

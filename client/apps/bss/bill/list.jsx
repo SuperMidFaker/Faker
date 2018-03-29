@@ -2,31 +2,34 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Icon, Layout, Menu } from 'antd';
+import { Button, Divider, Icon, Layout, Menu } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
-
+import { PARTNER_ROLES } from 'common/constants';
+import { loadPartners } from 'common/reducers/partner';
+import { toggleNewBillModal, reloadBillList } from 'common/reducers/bssBill';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import BuyerBillTable from './buyerBillTable';
 import SellerBillTable from './sellerBillTable';
-import PendingTable from './pendingTable';
+import BuyerPendingTable from './buyerPendingTable';
+import SellerPendingTable from './sellerPendingTable';
+import NewBill from './modals/newBillModal';
+import AddToDraft from './modals/addToDraftModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 
-@connectFetch()()
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
+    aspect: state.account.aspect,
+    listFilter: state.bssBill.listFilter,
   }),
-  { }
+  {
+    toggleNewBillModal, loadPartners, reloadBillList,
+  }
 )
 @connectNav({
   depth: 2,
@@ -35,51 +38,54 @@ const { Content } = Layout;
 export default class BillList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     extraVisible: false,
-    currentTab: 'buyerBill',
-    mode: 'pendingExpense',
+  }
+  componentDidMount() {
+    if (this.props.aspect === 0) {
+      this.handleTabChange('sellerBill');
+      this.props.loadPartners({ role: [PARTNER_ROLES.SUP] });
+    } else {
+      this.props.loadPartners({ role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP] });
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
-
   handleFilterMenuClick = (ev) => {
-    this.setState({ mode: ev.key });
+    const filter = { ...this.props.listFilter, status: ev.key };
+    this.props.reloadBillList(filter);
   }
   handleTabChange = (key) => {
-    this.setState({ currentTab: key });
-  }
-  handleSearch = (value) => {
-    const filters = { ...this.props.filters, name: value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
-      current: 1,
-      filters,
-    });
-  }
-  handleDetail = (row) => {
-    const link = `/bss/bill/${row.order_rel_no}`;
-    this.context.router.push(link);
-  }
-  handleCheck = (row) => {
-    const link = `/bss/bill/check/${row.order_rel_no}`;
-    this.context.router.push(link);
+    const filter = {
+      ...this.props.listFilter, bill_type: key, clientPid: 'all', searchText: '',
+    };
+    this.props.reloadBillList(filter);
   }
   toggleExtra = () => {
     this.setState({ extraVisible: !this.state.extraVisible });
   }
+  handleExtraMenuClick = (ev) => {
+    if (ev.key === 'templates') {
+      const link = '/bss/bill/templates';
+      this.context.router.push(link);
+    }
+  }
+  handleCreate = () => {
+    this.props.toggleNewBillModal(true);
+  }
   renderDataTable() {
-    const { currentTab, mode } = this.state;
+    const currentTab = this.props.listFilter.bill_type;
+    const mode = this.props.listFilter.status;
     if (mode === 'pendingExpense') {
-      return <PendingTable />;
+      if (currentTab === 'sellerBill') {
+        return <SellerPendingTable />;
+      } else if (currentTab === 'buyerBill') {
+        return <BuyerPendingTable />;
+      }
     }
     if (currentTab === 'buyerBill') {
       return <BuyerBillTable />;
@@ -89,17 +95,24 @@ export default class BillList extends React.Component {
     return null;
   }
   render() {
-    const menus = [
+    let menus = [
       {
         key: 'buyerBill',
         menu: this.msg('buyerBill'),
-        default: true,
       },
       {
         key: 'sellerBill',
         menu: this.msg('sellerBill'),
       },
     ];
+    const { aspect } = this.props;
+    if (aspect === 0) {
+      menus = [{
+        key: 'sellerBill',
+        menu: this.msg('sellerBill'),
+        default: true,
+      }];
+    }
     const primaryAction = (<Button type="primary" icon="plus" onClick={this.handleCreate}>
       {this.msg('新建账单')}
     </Button>);
@@ -109,6 +122,7 @@ export default class BillList extends React.Component {
         <PageHeader
           title={this.msg('bill')}
           menus={menus}
+          currentKey={this.props.listFilter.bill_type}
           onTabChange={this.handleTabChange}
         >
           <PageHeader.Actions>
@@ -119,24 +133,29 @@ export default class BillList extends React.Component {
         </PageHeader>
         <Layout>
           <Drawer width={160}>
-            <Menu mode="inline" selectedKeys={[this.state.mode]} onClick={this.handleFilterMenuClick}>
+            <Menu mode="inline" selectedKeys={[this.props.listFilter.status]} onClick={this.handleFilterMenuClick}>
               <Menu.Item key="pendingExpense">
                 {this.msg('pendingExpense')}
               </Menu.Item>
-              <Menu.Item key="offlineBill">
-                {this.msg('offlineBill')}
+              <Divider />
+              <Menu.Item key="processingBills">
+                {this.msg('processingBills')}
               </Menu.Item>
-              <Menu.ItemGroup key="onlineBill" title={this.msg('onlineBill')}>
+              <Menu.ItemGroup key="billStatus" title={this.msg('billStatus')}>
                 <Menu.Item key="draft">
                   <Icon type="inbox" /> {this.msg('statusDraft')}
                 </Menu.Item>
-                <Menu.Item key="checking">
-                  <Icon type="swap" /> {this.msg('statusChecking')}
+                <Menu.Item key="reconciling">
+                  <Icon type="swap" /> {this.msg('statusReconciling')}
                 </Menu.Item>
-                <Menu.Item key="accepted">
-                  <Icon type="check-square-o" /> {this.msg('statusAccepted')}
+                <Menu.Item key="writeOff">
+                  <Icon type="check-square-o" /> {this.msg('statusWriteOff')}
                 </Menu.Item>
               </Menu.ItemGroup>
+              <Divider />
+              <Menu.Item key="writtenOffBills">
+                {this.msg('writtenOffBills')}
+              </Menu.Item>
             </Menu>
           </Drawer>
           <Content className="page-content" key="main">
@@ -159,12 +178,14 @@ export default class BillList extends React.Component {
                 </Menu.Item>
               </Menu.ItemGroup>
               <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
-                <Menu.Item key="rules">
+                <Menu.Item key="templates">
                   <Icon type="tool" /> {this.msg('billTemplates')}
                 </Menu.Item>
               </Menu.ItemGroup>
             </Menu>
           </DockPanel>
+          <NewBill />
+          <AddToDraft />
         </Layout>
       </Layout>
     );

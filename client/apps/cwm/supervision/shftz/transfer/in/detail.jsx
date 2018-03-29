@@ -74,7 +74,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   state = {
     comparable: false,
-    fullscreen: true,
+
     searchVal: null,
   }
   componentWillReceiveProps(nextProps) {
@@ -132,9 +132,6 @@ export default class SHFTZTransferInDetail extends Component {
         });
       }
     });
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   columns = [{
     title: '行号',
@@ -244,7 +241,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   render() {
     const {
-      transfInReg, entryRegs, whse, submitting,
+      transfInReg, entryRegs, submitting,
     } = this.props;
     const { searchVal } = this.state;
     if (entryRegs.length !== 1) {
@@ -281,8 +278,7 @@ export default class SHFTZTransferInDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
-            <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>,
+            entType.ftztext,
             this.props.params.preFtzEntNo,
           ]}
         >
@@ -356,10 +352,10 @@ export default class SHFTZTransferInDetail extends Component {
             <MagicCard
               bodyStyle={{ padding: 0 }}
 
-              onSizeChange={this.toggleFullscreen}
+
             >
               <DataPane
-                fullscreen={this.state.fullscreen}
+
                 columns={this.columns}
                 rowSelection={rowSelection}
                 indentSize={0}

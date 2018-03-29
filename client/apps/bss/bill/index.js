@@ -2,4 +2,6 @@
 // export VendorList from './vendorList';
 export List from './list';
 export Detail from './detail';
-export Check from './check';
+export Reconcile from './reconcile';
+export Templates from './templates';
+export TemplateFees from './templateFees';

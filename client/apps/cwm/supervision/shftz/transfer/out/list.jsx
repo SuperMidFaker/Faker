@@ -70,7 +70,7 @@ export default class SHFTZTransferOutList extends React.Component {
       ownerView = 'all';
     }
     const filter = {
-      ...listFilter, status, type: 'transfer', ownerView,
+      ...listFilter, status, type: 'transfer', ownerView, filterNo: '',
     };
     this.handleReleaseListLoad(null, null, filter);
   }

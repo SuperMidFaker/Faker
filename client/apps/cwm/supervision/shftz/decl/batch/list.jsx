@@ -60,7 +60,9 @@ export default class BatchDeclList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, ownerView };
+    const filter = {
+      ...listFilter, status, ownerView, filterNo: '',
+    };
     this.handleBatchApplyLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);

@@ -55,6 +55,11 @@ export default class TariffPane extends Component {
       this.handleElementLoad(result.data);
     });
   }
+  compontentWillReceiveProps(nextProps) {
+    if (nextProps.quoteFeesReload) {
+      this.handleElementLoad(nextProps.parentFeeElements);
+    }
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleElementLoad = (parentFeeElements) => {
@@ -284,7 +289,6 @@ export default class TariffPane extends Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
         columns={columns}
         rowSelection={rowSelection}
         dataSource={fees}

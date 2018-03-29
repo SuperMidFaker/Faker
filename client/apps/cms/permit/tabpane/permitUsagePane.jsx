@@ -73,7 +73,7 @@ export default class PermitUsagePane extends React.Component {
     const { permitItems } = this.props;
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         scrollOffset={312}
         dataSource={permitItems}

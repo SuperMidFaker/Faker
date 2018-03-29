@@ -14,6 +14,8 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'LOAD_EPLIST', 'LOAD_EPLIST_SUCCEED', 'LOAD_EPLIST_FAIL',
   'LOAD_TMSBIZPARAMS', 'LOAD_TMSBIZPARAMS_SUCCEED', 'LOAD_TMSBIZPARAMS_FAIL',
   'LOAD_CWMBIZPARAMS', 'LOAD_CWMBIZPARAMS_SUCCEED', 'LOAD_CWMBIZPARAMS_FAIL',
+  'LOAD_WHSESUPLS', 'LOAD_WHSESUPLS_SUCCEED', 'LOAD_WHSESUPLS_FAIL',
+  'CWMSUPPLIER_MODAL',
   'LOAD_PROVDQUOTES', 'LOAD_PROVDQUOTES_SUCCEED', 'LOAD_PROVDQUOTES_FAIL',
   'LOAD_CUSTMQUOTES', 'LOAD_CUSTMQUOTES_SUCCEED', 'LOAD_CUSTMQUOTES_FAIL',
   'SAVE_FLOW', 'SAVE_FLOW_SUCCEED', 'SAVE_FLOW_FAIL',
@@ -83,7 +85,12 @@ const initialState = {
   tmsParams: {
     consigners: [], consignees: [], transitModes: [], packagings: [],
   },
-  cwmParams: { whses: [] },
+  cwmParams: { whses: [], suppliers: [] },
+  cwmSupplierModal: {
+    visible: false,
+    whseCode: null,
+    ownerPid: null,
+  },
   addLineModal: {
     visible: false,
     line: {},
@@ -159,7 +166,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TMSBIZPARAMS_SUCCEED:
       return { ...state, tmsParams: action.result.data };
     case actionTypes.LOAD_CWMBIZPARAMS_SUCCEED:
-      return { ...state, cwmParams: action.result.data };
+      return { ...state, cwmParams: { ...state.cwmParams, ...action.result.data } };
+    case actionTypes.LOAD_WHSESUPLS_SUCCEED:
+      return { ...state, cwmParams: { ...state.cwmParams, suppliers: action.result.data } };
+    case actionTypes.CWMSUPPLIER_MODAL:
+      return { ...state, cwmSupplierModal: action.data };
     case actionTypes.LOAD_FLOWLIST:
       return { ...state, flowListLoading: true, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_FLOWLIST_FAIL:
@@ -485,7 +496,7 @@ export function loadTmsBizParams(tenantId) {
   };
 }
 
-export function loadCwmBizParams(tenantId, ownerPid) {
+export function loadCwmBizParams(ownerPid) {
   return {
     [CLIENT_API]: {
       types: [
@@ -495,8 +506,30 @@ export function loadCwmBizParams(tenantId, ownerPid) {
       ],
       endpoint: 'v1/cwm/flow/params',
       method: 'get',
-      params: { tenantId, owner_partner_id: ownerPid },
+      params: { owner_partner_id: ownerPid },
     },
+  };
+}
+
+export function loadWhseOwnerSuppliers(whseCode, ownerPid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WHSESUPLS,
+        actionTypes.LOAD_WHSESUPLS_SUCCEED,
+        actionTypes.LOAD_WHSESUPLS_FAIL,
+      ],
+      endpoint: 'v1/cwm/whse/owner/suppliers',
+      method: 'get',
+      params: { whseCode, ownerPid },
+    },
+  };
+}
+
+export function showCwmSupplierModal({ visible, whseCode, ownerPid }) {
+  return {
+    type: actionTypes.CWMSUPPLIER_MODAL,
+    data: { visible, whseCode, ownerPid },
   };
 }
 

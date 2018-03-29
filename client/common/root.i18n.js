@@ -1,3 +1,4 @@
+
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
@@ -89,6 +90,10 @@ const messages = defineMessages({
     id: 'root.actions.edit',
     defaultMessage: '编辑',
   },
+  view: {
+    id: 'root.actions.view',
+    defaultMessage: '查看',
+  },
   modify: {
     id: 'root.actions.modify',
     defaultMessage: '修改',
@@ -145,6 +150,14 @@ const messages = defineMessages({
     id: 'root.actions.confirm',
     defaultMessage: '确认',
   },
+  download: {
+    id: 'root.actions.download',
+    defaultMessage: '下载',
+  },
+  empty: {
+    id: 'root.actions.empty',
+    defaultMessage: '清空',
+  },
   accept: {
     id: 'root.actions.accept',
     defaultMessage: '接受',
@@ -153,6 +166,10 @@ const messages = defineMessages({
     id: 'root.actions.reject',
     defaultMessage: '拒绝',
   },
+  return: {
+    id: 'root.actions.return',
+    defaultMessage: '退回',
+  },
   approve: {
     id: 'root.actions.approve',
     defaultMessage: '通过',
@@ -160,6 +177,10 @@ const messages = defineMessages({
   revoke: {
     id: 'root.actions.revoke',
     defaultMessage: '撤销',
+  },
+  withdraw: {
+    id: 'root.actions.withdraw',
+    defaultMessage: '撤回',
   },
   batchImport: {
     id: 'root.batch.import',
@@ -184,6 +205,14 @@ const messages = defineMessages({
   savedSuccess: {
     id: 'root.saved.success',
     defaultMessage: '保存成功',
+  },
+  completed: {
+    id: 'root.completed',
+    defaultMessage: '完成',
+  },
+  error: {
+    id: 'root.error',
+    defaultMessage: '错误',
   },
   seqNo: {
     id: 'root.seq.no',
@@ -221,9 +250,25 @@ const messages = defineMessages({
     id: 'root.pagination.items',
     defaultMessage: '条',
   },
+  manageFilters: {
+    id: 'root.manage.filters',
+    defaultMessage: '管理筛选器',
+  },
+  rangeDateToday: {
+    id: 'root.range.today',
+    defaultMessage: '今日',
+  },
+  rangeDateMonth: {
+    id: 'root.range.month',
+    defaultMessage: '当月',
+  },
   CUS: {
     id: 'root.partnership.customer',
     defaultMessage: '客户',
+  },
+  SUP: {
+    id: 'root.partnership.supplier',
+    defaultMessage: '服务商',
   },
   CCB: {
     id: 'root.partnership.clearanceBroker',

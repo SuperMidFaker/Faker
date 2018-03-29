@@ -11,7 +11,8 @@ import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(state => ({
-  diffviews: state.cwmShFtz.compareTask.views.filter(vw => vw.diff_qty !== 0 || vw.diff_net_wt !== 0),
+  diffviews: state.cwmShFtz.compareTask.views.filter(vw =>
+    vw.diff_qty !== 0 || vw.diff_net_wt !== 0),
   entrydiffs: state.cwmShFtz.compareTask.entrydiffs,
   inbounddiffs: state.cwmShFtz.compareTask.inbounddiffs,
 }))
@@ -102,11 +103,13 @@ export default class FTZDiscrepancyPane extends React.Component {
     width: 100,
   }]
   expandedRowRender = (row) => {
-    const entrylist = this.props.entrydiffs.filter(erd => erd.ftz_ent_detail_id === row.ftz_ent_detail_id);
+    const entrylist = this.props.entrydiffs.filter(erd =>
+      erd.ftz_ent_detail_id === row.ftz_ent_detail_id);
     for (let i = 0; i < entrylist.length; i++) {
       const el = entrylist[i];
       el.key = `${el.asn_no}${el.asn_seq_no}`;
-      const ins = this.props.inbounddiffs.filter(ibd => ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
+      const ins = this.props.inbounddiffs.filter(ibd =>
+        ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
       if (ins.length > 1) {
         el.children = ins;
       } else if (ins.length === 1) {
@@ -121,10 +124,12 @@ export default class FTZDiscrepancyPane extends React.Component {
     const csvData = [];
     this.props.diffviews.forEach((dv) => {
       const out = {};
-      const entrylist = this.props.entrydiffs.filter(erd => erd.ftz_ent_detail_id === dv.ftz_ent_detail_id);
+      const entrylist = this.props.entrydiffs.filter(erd =>
+        erd.ftz_ent_detail_id === dv.ftz_ent_detail_id);
       for (let i = 0; i < entrylist.length; i++) {
         const el = entrylist[i];
-        const ins = this.props.inbounddiffs.filter(ibd => ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
+        const ins = this.props.inbounddiffs.filter(ibd =>
+          ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
         for (let j = 0; j < ins.length; j++) {
           const inb = ins[j];
           out[this.msg('billNo')] = dv.ftz_ent_no;
@@ -156,7 +161,7 @@ export default class FTZDiscrepancyPane extends React.Component {
   render() {
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         expandedRowRender={this.expandedRowRender}
         dataSource={this.props.diffviews}

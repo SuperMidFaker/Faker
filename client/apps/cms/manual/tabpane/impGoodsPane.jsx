@@ -37,7 +37,6 @@ export default class ImpGoodsPane extends React.Component {
     manualNo: PropTypes.string.isRequired,
   }
   state = {
-    searchValue: '',
     loading: false,
     dataSource: [],
   }
@@ -59,8 +58,8 @@ export default class ImpGoodsPane extends React.Component {
       }
     });
   }
-  handleSearch = (value) => {
-    this.setState({ searchValue: value });
+  handleSearch = () => {
+    // this.setState({ searchValue: value });
   }
   columns = [{
     title: this.msg('no'),
@@ -147,7 +146,7 @@ export default class ImpGoodsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}

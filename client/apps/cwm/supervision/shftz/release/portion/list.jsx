@@ -77,7 +77,7 @@ export default class SHFTZReleaseList extends React.Component {
       listFilter.endDate = '';
     }
     const filter = {
-      ...listFilter, status, type: 'portion', ownerView,
+      ...listFilter, status, type: 'portion', ownerView, filterNo: '',
     };
     this.handleReleaseListLoad(null, null, filter);
   }

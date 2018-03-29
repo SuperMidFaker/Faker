@@ -48,23 +48,27 @@ exports.CWM_ASN_BONDED_REGTYPES = [{
 
 exports.CWM_ASN_STATUS = {
   PENDING: {
+    key: 'pending',
     value: 0,
     text: '未处理',
     badge: 'default',
   },
   INBOUND: {
+    key: 'inbound',
     value: 1,
-    text: '已释放',
+    text: '入库中',
     badge: 'processing',
   },
   DISCREPANT: {
+    key: 'partial',
     value: 2,
     text: '收货差异',
     badge: 'warning',
   },
   COMPLETED: {
+    key: 'completed',
     value: 3,
-    text: '已完成',
+    text: '入库完成',
     badge: 'success',
   },
 };
@@ -100,23 +104,27 @@ exports.CWM_SHFTZ_APIREG_STATUS = {
 
 exports.CWM_SO_STATUS = {
   PENDING: {
+    key: 'pending',
     value: 0,
     text: '未处理',
     badge: 'default',
   },
   OUTBOUND: {
+    key: 'outbound',
     value: 1,
-    text: '已释放',
+    text: '出库中',
     badge: 'processing',
   },
   PARTIAL: {
+    key: 'partial',
     value: 2,
     text: '部分出库',
     badge: 'warning',
   },
   COMPLETED: {
+    key: 'completed',
     value: 3,
-    text: '已完成',
+    text: '出库完成',
     badge: 'success',
   },
 };
@@ -481,4 +489,10 @@ exports.DELIVER_TYPES = [{
 exports.WHSE_OPERATION_MODES = {
   scan: { value: 'scan', text: '扫描' },
   manual: { value: 'manual', text: '手动' },
+};
+
+exports.ALLOC_ERROR_MESSAGE_DESC = {
+  shftz_rel_no_exist: '出库备案号已存在,请确保终端已删除对应备案号,清除备案单号后重新取消分配',
+  shftz_portion_detail_queried: '分拨出库单已提交,无法取消分配',
+  shftz_normal_reg_detail_in_decl: '出库明细处于清关中,无法取消分配',
 };

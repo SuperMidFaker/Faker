@@ -66,7 +66,7 @@ export default class SHFTZTransferSelfList extends React.Component {
       ownerView = 'all';
     }
     const filter = {
-      ...listFilter, status, type: 'vtransfer', ownerView,
+      ...listFilter, status, type: 'vtransfer', ownerView, filterNo: '',
     };
     this.handleEntryListLoad(null, null, filter);
   }

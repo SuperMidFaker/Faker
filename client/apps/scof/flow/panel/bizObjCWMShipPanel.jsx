@@ -26,7 +26,7 @@ export default class FlowCwmShippingPanel extends Component {
     onFormInit: PropTypes.func.isRequired,
   }
   componentDidMount() {
-    this.props.loadCwmBizParams(this.props.tenantId, this.props.partnerId);
+    this.props.loadCwmBizParams(this.props.partnerId);
     this.props.onFormInit(this.props.form);
   }
   msg = formatMsg(this.props.intl)

@@ -195,7 +195,7 @@ export default class CiqDeclGoodsPane extends React.Component {
     const columns = this.getColumns();
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={columns}
         bordered
         scrollOffset={312}

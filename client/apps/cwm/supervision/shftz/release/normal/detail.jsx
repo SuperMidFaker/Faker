@@ -91,7 +91,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   state = {
     reg: {},
     groupVals: ['supplier', 'trxn_mode', 'currency'],
-    fullscreen: true,
+
     view: 'splitted',
     filingDetails: [],
     exitDetails: [],
@@ -268,9 +268,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   handleRelAndDetailsReload = () => {
     this.props.loadRelDetails(this.props.params.soNo, 'normal');
-  }
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
   }
   handleViewChange = (e) => {
     const { merged, reg } = this.state;
@@ -474,7 +471,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   render() {
     const {
-      relSo, relRegs, whse, submitting,
+      relSo, relRegs, submitting,
     } = this.props;
     const { reg, filingDetails, exitDetails } = this.state;
     if (relRegs.length === 0) {
@@ -544,7 +541,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             relType && relType.ftztext,
             this.props.params.soNo,
           ]}
@@ -576,17 +572,25 @@ export default class SHFTZNormalRelRegDetail extends Component {
         <Layout>
           <Drawer top onCollapseChange={this.handleCollapseChange}>
             <DescriptionList col={4}>
-              <Description term="出区提货单号">{reg.ftz_rel_no}</Description>
+              <Description term="出区提货单号">
+                <EditableCell
+                  value={reg.ftz_rel_no}
+                  editable={regStatus <= CWM_SHFTZ_APIREG_STATUS.completed}
+                  onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
+                />
+              </Description>
               <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
               <Description term="提货单位">
                 <EditableCell
                   value={reg.receiver_name}
+                  editable={relEditable}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'receiver_name', value)}
                 />
               </Description>
               <Description term="运输单位">
                 <EditableCell
                   value={reg.carrier_name}
+                  editable={relEditable}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'carrier_name', value)}
                 />
               </Description>
@@ -600,24 +604,28 @@ export default class SHFTZNormalRelRegDetail extends Component {
               <Description term="发票号">
                 <EditableCell
                   value={reg.invoice_no}
+                  editable={relEditable}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
                 />
               </Description>
               <Description term="封志">
                 <EditableCell
                   value={reg.seal_no}
+                  editable={relEditable}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
                 />
               </Description>
               <Description term="唛头">
                 <EditableCell
                   value={reg.marks}
+                  editable={relEditable}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
                 />
               </Description>
               <Description term="出口日期">
                 <EditableCell
                   type="date"
+                  editable={relEditable}
                   value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
                 />
@@ -625,6 +633,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
               <Description term="报关日期">
                 <EditableCell
                   type="date"
+                  editable={relEditable}
                   value={reg.cus_decl_date && moment(reg.cus_decl_date).format('YYYY-MM-DD')}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_date', new Date(value))}
                 />
@@ -632,6 +641,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
               <Description term="预计出区日期">
                 <EditableCell
                   type="date"
+                  editable={relEditable}
                   value={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')}
                   onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
                 />
@@ -649,11 +659,11 @@ export default class SHFTZNormalRelRegDetail extends Component {
           </Drawer>
           <Content className="page-content">
             {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="regd">
                 <TabPane tab="备案明细" key="regd">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}
@@ -682,7 +692,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 </TabPane>
                 <TabPane tab="出区明细" key="exitd">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
+
                     columns={this.exitColumns}
                     rowSelection={rowSelection}
                     indentSize={8}

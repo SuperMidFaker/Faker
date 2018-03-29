@@ -44,7 +44,7 @@ export default class LineFileAdapterList extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadAdaptors('', '', this.props.pageSize, 1, this.props.filter);
     this.props.loadPartners({
       role: PARTNER_ROLES.CUS,

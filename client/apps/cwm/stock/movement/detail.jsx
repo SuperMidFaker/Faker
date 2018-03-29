@@ -47,7 +47,6 @@ export default class MovementDetail extends Component {
   }
   state = {
     mode: 'scan',
-    fullscreen: true,
   }
   componentWillMount() {
     this.props.loadMovementHead(this.props.params.movementNo).then((result) => {
@@ -64,9 +63,6 @@ export default class MovementDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   handleMovingModeChange = (ev) => {
     this.setState({
       mode: ev.target.value,
@@ -124,14 +120,14 @@ export default class MovementDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
                 <MovementDetailsPane
                   movementNo={this.props.params.movementNo}
                   mode={this.state.mode}
                   movementHead={movementHead}
-                  fullscreen={this.state.fullscreen}
+
                 />
               </TabPane>
             </Tabs>

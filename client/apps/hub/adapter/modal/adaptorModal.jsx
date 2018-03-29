@@ -43,6 +43,7 @@ export default class AdaptorModal extends Component {
           code: uuidWithoutDash(),
           name: values.name,
           model: values.biz_model,
+          file_columns: values.file_columns,
           ownerPid: values.partner_id,
           ownerTid,
         }).then((result) => {
@@ -73,12 +74,12 @@ export default class AdaptorModal extends Component {
         destroyOnClose
       >
         <Form layout="horizontal">
-          <FormItem label={this.msg('adapterName')} required {...formItemLayout}>
+          <FormItem label={this.msg('adapterName')} {...formItemLayout}>
             {getFieldDecorator('name', {
               rules: [{ required: true, message: this.msg('nameRequired') }],
             })(<Input />)}
           </FormItem>
-          <FormItem label={this.msg('adapterBizModel')} required {...formItemLayout}>
+          <FormItem label={this.msg('adapterBizModel')} {...formItemLayout}>
             {getFieldDecorator('biz_model', {
               rules: [{ required: true, message: this.msg('bizModelRequired') }],
             })(<Select>
@@ -92,6 +93,9 @@ export default class AdaptorModal extends Component {
               {customers.map(cus =>
                 <Option value={cus.id} key={cus.id}>{cus.name}</Option>)}
             </Select>)}
+          </FormItem>
+          <FormItem label={this.msg('exampleFileMaxColumns')} {...formItemLayout}>
+            {getFieldDecorator('file_columns')(<Input />)}
           </FormItem>
         </Form>
       </Modal>

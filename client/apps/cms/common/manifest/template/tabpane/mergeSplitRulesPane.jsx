@@ -4,9 +4,9 @@ import { Checkbox, Card, Col, Row, Form, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import FormPane from 'client/components/FormPane';
+import { loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { formatMsg } from '../../../message.i18n';
 import MergeSplitForm from '../../form/mergeSplitRuleForm';
-import { loadInvTemplates } from 'common/reducers/cmsInvoice';
 
 
 const { Option } = Select;
@@ -24,7 +24,6 @@ export default class MergeSplitRulesPane extends React.Component {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     formData: PropTypes.shape({ merge_checked: PropTypes.bool }).isRequired,
-    invTemplates: PropTypes.array.isRequired,
   }
   state = {
     mergeSplit: this.props.formData.set_merge_split === 1,
@@ -32,12 +31,12 @@ export default class MergeSplitRulesPane extends React.Component {
     packingListTemplates: [],
     contractTemplates: [],
   }
-  msg = formatMsg(this.props.intl)
-  handleOnChange = (checked) => {
-    this.setState({ mergeSplit: checked });
-  }
   componentDidMount() {
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: [0, 1, 2], partnerId: this.props.template.customer_partner_id });
+    this.props.loadInvTemplates({
+      tenantId: this.props.tenantId,
+      docuType: [0, 1, 2],
+      partnerId: this.props.template.customer_partner_id,
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.invTemplates !== this.props.invTemplates) {
@@ -47,18 +46,24 @@ export default class MergeSplitRulesPane extends React.Component {
       this.setState({ invoiceTemplates, contractTemplates, packingListTemplates });
     }
   }
+  msg = formatMsg(this.props.intl)
+  handleOnChange = (checked) => {
+    this.setState({ mergeSplit: checked });
+  }
   render() {
-    const { mergeSplit,
+    const {
+      mergeSplit,
       invoiceTemplates,
       packingListTemplates,
-      contractTemplates } = this.state;
+      contractTemplates,
+    } = this.state;
     const {
       form,
       form: { getFieldDecorator, getFieldValue },
       formData,
     } = this.props;
     return (
-      <FormPane fullscreen={this.props.fullscreen}>
+      <FormPane >
         <FormItem>{getFieldDecorator('set_merge_split')(<Switch checked={mergeSplit} onChange={this.handleOnChange} checkedChildren="启用" unCheckedChildren="关闭" />)}
         </FormItem>
         <Row gutter={16}>

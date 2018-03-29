@@ -35,7 +35,7 @@ export default class FTZComparisonPane extends React.Component {
     title: this.msg('cargoType'),
     width: 150,
     dataIndex: 'portion',
-    render: por => por ? '可分拨' : '非分拨',
+    render: por => (por ? '可分拨' : '非分拨'),
   }, {
     title: this.msg('ftzStockQty'),
     dataIndex: 'ftz_qty',
@@ -70,9 +70,12 @@ export default class FTZComparisonPane extends React.Component {
       },
     };
     return (
-      <DataPane fullscreen={this.props.fullscreen}
-        columns={this.columns} rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys}
-        dataSource={this.props.views} rowKey="id"
+      <DataPane
+        columns={this.columns}
+        rowSelection={rowSelection}
+        selectedRowKeys={this.state.selectedRowKeys}
+        dataSource={this.props.views}
+        rowKey="id"
       />
     );
   }

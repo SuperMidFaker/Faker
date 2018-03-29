@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, DatePicker, Divider, Icon, Input, Layout, Menu, Select, Switch, message } from 'antd';
+import { Button, DatePicker, Divider, Icon, Input, Layout, Menu, Radio, Select, Switch, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ToolbarAction from 'client/components/ToolbarAction';
@@ -13,6 +13,7 @@ import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
@@ -22,6 +23,8 @@ import { formatMsg, formatGlobalMsg } from './message.i18n';
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @connectFetch()()
 @injectIntl
@@ -65,29 +68,40 @@ export default class AuditList extends React.Component {
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '客户',
-    width: 200,
+    width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '客户单号',
-    width: 180,
+    width: 150,
     dataIndex: 'cust_order_no',
   }, {
     title: '应收金额',
     dataIndex: 'receivable_amount',
+    align: 'right',
     width: 150,
   }, {
     title: '应付金额',
     dataIndex: 'payable_amount',
+    align: 'right',
     width: 150,
   }, {
     title: '差异金额',
     dataIndex: 'profit_amount',
+    align: 'right',
     width: 150,
+    render: o => ((o < 0) ? <span className="text-error">{o}</span> : o),
   }, {
-    title: '毛利率',
+    title: '毛利率%',
     dataIndex: 'gross_profit_ratio',
+    align: 'right',
     width: 100,
+    render: (o) => {
+      if (o) {
+        return o < 0 ? <span className="text-error">{o.toFixed(1)}</span> : o.toFixed(1);
+      }
+      return null;
+    },
   }, {
     title: '订单日期',
     dataIndex: 'order_date',
@@ -106,18 +120,19 @@ export default class AuditList extends React.Component {
   }, {
     title: '审核人员',
     dataIndex: 'confirmed_by',
-    width: 80,
+    width: 120,
+    render: lid => lid && <UserAvatar size="small" loginId={lid} showName />,
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
-    align: 'right',
+    className: 'table-col-ops',
     fixed: 'right',
     width: 120,
     render: (o, record) => {
       if (record.status === 1) {
         return (<span>
           <RowAction icon="check-circle-o" onClick={this.handleConfirm} label={this.gmsg('confirm')} row={record} />
-          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip={this.gmsg('view')} row={record} />
+          <RowAction icon="edit" onClick={this.handleDetail} tooltip={this.gmsg('edit')} row={record} />
         </span>);
       } else if (record.status === 2) {
         return (<span>
@@ -218,7 +233,7 @@ export default class AuditList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/audit/${row.order_rel_no}`;
+    const link = `/bss/audit/${row.sof_order_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -268,20 +283,16 @@ export default class AuditList extends React.Component {
     const menuStack = [
       [
         {
-          key: 'g_view',
+          key: 'g_views',
           title: this.gmsg('views'),
           type: 'group',
           children: [
             {
-              key: 'table',
-              icon: 'table',
-              title: this.gmsg('tableView'),
-            },
-            {
-              key: 'board',
-              icon: 'layout',
-              title: this.gmsg('boardView'),
-              disabled: true,
+              key: 'viewRadioGroup',
+              extra: <RadioGroup defaultValue="table">
+                <RadioButton value="table"><Icon type="table" /> {this.gmsg('tableView')}</RadioButton>
+                <RadioButton value="board"><Icon type="layout" /> {this.gmsg('boardView')}</RadioButton>
+              </RadioGroup>,
             },
           ],
         },

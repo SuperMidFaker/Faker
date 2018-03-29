@@ -74,7 +74,6 @@ export default class NormalDeclDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    fullscreen: true,
     regs: [],
     details: [],
   }
@@ -87,9 +86,6 @@ export default class NormalDeclDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
   regColumns = [{
     title: '出区提货单号',
     dataIndex: 'ftz_rel_no',
@@ -244,7 +240,7 @@ export default class NormalDeclDetail extends Component {
     this.setState({ details });
   }
   render() {
-    const { normalDecl, whse, trxModes } = this.props;
+    const { normalDecl, trxModes } = this.props;
     const { details, regs } = this.state;
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
@@ -279,7 +275,6 @@ export default class NormalDeclDetail extends Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            whse.name,
             this.msg('ftzNormalDecl'),
             this.props.params.clearanceNo,
           ]}
@@ -304,12 +299,10 @@ export default class NormalDeclDetail extends Component {
             </Steps>
           </Drawer>
           <Content className="page-content">
-
-            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
                     columns={this.regColumns}
                     indentSize={8}
                     dataSource={regs}
@@ -322,7 +315,6 @@ export default class NormalDeclDetail extends Component {
                 </TabPane>
                 <TabPane tab="出库报关明细" key="details">
                   <DataPane
-                    fullscreen={this.state.fullscreen}
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={0}

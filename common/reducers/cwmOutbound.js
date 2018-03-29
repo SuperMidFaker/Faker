@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'OUTBOUNDS_PICK', 'OUTBOUNDS_PICK_SUCCEED', 'OUTBOUNDS_PICK_FAIL',
   'UNDO_PICKED', 'UNDO_PICKED_SUCCEED', 'UNDO_PICKED_FAIL',
   'OUTBOUNDS_SHIP', 'OUTBOUNDS_SHIP_SUCCEED', 'OUTBOUNDS_SHIP_FAIL',
+  'CONFIRM_BATCHSOSHIP', 'CONFIRM_BATCHSOSHIP_SUCCEED', 'CONFIRM_BATCHSOSHIP_FAIL',
   'CANCEL_TRACE_ALLOC', 'CANCEL_TRACE_ALLOC_SUCCEED', 'CANCEL_TRACE_ALLOC_FAIL',
   'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
   'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
@@ -149,6 +150,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.OUTBOUNDS_PICK:
     case actionTypes.UNDO_PICKED:
     case actionTypes.OUTBOUNDS_SHIP:
+    case actionTypes.CONFIRM_BATCHSOSHIP:
       return { ...state, submitting: true };
     case actionTypes.MANUAL_ALLOC_FAIL:
     case actionTypes.AUTO_ALLOC_FAIL:
@@ -157,6 +159,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.OUTBOUNDS_PICK_FAIL:
     case actionTypes.UNDO_PICKED_FAIL:
     case actionTypes.OUTBOUNDS_SHIP_FAIL:
+    case actionTypes.CONFIRM_BATCHSOSHIP_FAIL:
+    case actionTypes.CONFIRM_BATCHSOSHIP_SUCCEED:
       return { ...state, submitting: false };
     case actionTypes.AUTO_ALLOC_SUCCEED:
     case actionTypes.MANUAL_ALLOC_SUCCEED:
@@ -477,6 +481,21 @@ export function shipConfirm(outbounddata, skulist, loginName, shippedBy, shipped
       data: {
         outbounddata, skulist, loginName, shippedBy, shippedDate,
       },
+    },
+  };
+}
+
+export function shipBatchSoConfirm(outbounddata, soNos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CONFIRM_BATCHSOSHIP,
+        actionTypes.CONFIRM_BATCHSOSHIP_SUCCEED,
+        actionTypes.CONFIRM_BATCHSOSHIP_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbound/ship/byso',
+      method: 'post',
+      data: { outbounddata, soNos },
     },
   };
 }

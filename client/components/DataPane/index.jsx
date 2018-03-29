@@ -1,24 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table } from 'antd';
+import { Button, Table, Tooltip } from 'antd';
 import './style.less';
 import toolbar from './toolbar';
 import actions from './actions';
 import extra from './extra';
-import bulkActions from './bulkActions';
+import BulkActions from './bulkActions';
 
 
 export default class DataPane extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-pane',
-    scrollOffset: 470,
+    scrollOffset: 480,
   }
   static propTypes = {
     baseCls: PropTypes.string,
     children: PropTypes.node,
     header: PropTypes.string,
-    fullscreen: PropTypes.bool,
+    // fullscreen: PropTypes.bool,
     scrollOffset: PropTypes.number,
+    bulkActions: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+    selectedRowKeys: PropTypes.arrayOf(PropTypes.string),
+    onDeselectRows: PropTypes.func,
+    onFilterSelected: PropTypes.func,
+  }
+  static contextTypes = {
+    fullscreen: PropTypes.bool,
   }
   state = { scrollY: 0 }
   componentWillMount() {
@@ -28,15 +35,15 @@ export default class DataPane extends React.Component {
       });
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.fullscreen !== this.props.fullscreen) {
-      if (nextProps.fullscreen) {
+  componentWillReceiveProps(nextProps, nextContext) {
+    if (nextContext.fullscreen !== this.context.fullscreen) {
+      if (nextContext.fullscreen) {
         this.setState({
           scrollY: window.innerHeight - this.props.scrollOffset,
         });
       } else {
         this.setState({
-          scrollY: window.innerHeight - 200,
+          scrollY: window.innerHeight - 198,
         });
       }
     }
@@ -44,6 +51,7 @@ export default class DataPane extends React.Component {
   render() {
     const {
       baseCls, children, columns, header, pagination,
+      selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
     } = this.props;
     return (
       <div className={baseCls}>
@@ -62,6 +70,16 @@ export default class DataPane extends React.Component {
             y: this.state.scrollY,
           }}
         />
+        {selectedRowKeys &&
+          <div className={`${baseCls}-toolbar-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <Tooltip title="取消选择" placement="top">
+              <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={onDeselectRows} />
+            </Tooltip>
+            <span className={`${baseCls}-toolbar-row-selection-text`}>
+              已选中<a onClick={onFilterSelected}>{selectedRowKeys.length}</a>项
+            </span>
+            {bulkActions}
+          </div>}
       </div>
     );
   }
@@ -70,4 +88,4 @@ export default class DataPane extends React.Component {
 DataPane.Toolbar = toolbar;
 DataPane.Actions = actions;
 DataPane.Extra = extra;
-DataPane.BulkActions = bulkActions;
+DataPane.BulkActions = BulkActions;

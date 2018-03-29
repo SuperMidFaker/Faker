@@ -13,7 +13,6 @@ import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -38,22 +37,6 @@ const { Content } = Layout;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-// 暂时由 CreatorSelect 触发获取list
-function fetchData({ state, dispatch }) {
-  const promises = [
-    // dispatch(loadOrders({
-    //   tenantId: state.account.tenantId,
-    //   pageSize: state.sofOrders.orders.pageSize,
-    //   current: state.sofOrders.orders.current,
-    //   filters: state.sofOrders.orderFilters,
-    //   partners: state.partner.partners,
-    // })),
-    dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
-  ];
-  return Promise.all(promises);
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -70,6 +53,7 @@ function fetchData({ state, dispatch }) {
   uploadRecords: state.uploadRecords.uploadRecords,
 }), {
   loadOrders,
+  loadPartners,
   removeOrder,
   setClientForm,
   acceptOrder,
@@ -116,7 +100,15 @@ export default class OrderList extends React.Component {
       flow_id: undefined,
     },
   }
-  componentWillMount() {
+  componentDidMount() {
+    const { query } = this.props.location;
+    if (query.shipmt_order_no) {
+      this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
+    }
+    this.props.loadPartners({ role: PARTNER_ROLES.CUS });
+    this.props.loadPartnerFlowList();
+    this.props.loadModelAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
+    this.props.loadRequireOrderTypes();
     const filters = {
       progress: 'all',
       transfer: 'all',
@@ -128,12 +120,18 @@ export default class OrderList extends React.Component {
       startDate: '',
       endDate: '',
     };
-    if (window.location.search.indexOf('dashboard') > 0 && window.localStorage && window.localStorage.scofOrderLists) {
-      const scofOrderLists = JSON.parse(window.localStorage.scofOrderLists);
-      filters.startDate = scofOrderLists.startDate;
-      filters.endDate = scofOrderLists.endDate;
-      filters.progress = scofOrderLists.progress;
-      filters.expedited = scofOrderLists.expedited;
+    if (window.localStorage) {
+      if (query.from === 'dashboard' && window.localStorage.scofOrderLists) {
+        const scofOrderLists = JSON.parse(window.localStorage.scofOrderLists);
+        filters.startDate = scofOrderLists.startDate;
+        filters.endDate = scofOrderLists.endDate;
+        filters.progress = scofOrderLists.progress;
+        filters.expedited = scofOrderLists.expedited;
+      }
+      if (window.localStorage.scofAdvancedSearchFieldsValue) {
+        const creatorObj = JSON.parse(window.localStorage.scofAdvancedSearchFieldsValue);
+        filters.creator = creatorObj.creator;
+      }
     }
     this.props.loadOrders({
       tenantId: this.props.tenantId,
@@ -142,15 +140,6 @@ export default class OrderList extends React.Component {
       filters,
     });
     this.props.hideDock();
-  }
-  componentDidMount() {
-    const { query } = this.props.location;
-    if (query.shipmt_order_no) {
-      this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
-    }
-    this.props.loadPartnerFlowList();
-    this.props.loadModelAdaptors(null, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
-    this.props.loadRequireOrderTypes();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.location) {
@@ -356,15 +345,16 @@ export default class OrderList extends React.Component {
     );
     const columns = [{
       title: '订单',
-      width: 180,
+      width: 200,
+      fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
       dataIndex: 'order_status',
-      width: 60,
+      width: 80,
       render: (o, record) => {
         const percent = record.flow_node_num ?
           Number(((record.finish_num / record.flow_node_num) * 100).toFixed(1)) : 0;
-        return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={40} />
+        return (<div style={{ textAlign: 'center' }}><Progress type="circle" percent={percent} width={36} />
           <div className="mdc-text-grey table-font-small">
             <Tooltip title={`创建于${moment(record.created_date).format('YYYY.MM.DD HH:mm')}`} placement="bottom">
               <Icon type="clock-circle-o" /> {moment(record.created_date).fromNow()}
@@ -376,21 +366,21 @@ export default class OrderList extends React.Component {
       width: 250,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
+      title: '跟单人员',
+      dataindex: 'exec_login_id',
+      width: 80,
+      render: lid => <UserAvatar size="small" loginId={lid} />,
+    }, {
       title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
-      dataindex: 'exec_login_id',
-      width: 40,
-      render: lid => <UserAvatar size="small" loginId={lid} />,
-    }, {
       title: '操作',
-      width: 100,
-      align: 'right',
+      width: 88,
       fixed: 'right',
       render: (o, record) => {
         if (record.order_status === CRM_ORDER_STATUS.created) {
           return (
-            <div>
+            <span>
               {record.flow_node_num > 0 &&
                 <RowAction onClick={this.handleStart} tooltip={this.msg('startOrder')} icon="caret-right" row={record} />
               }
@@ -406,7 +396,7 @@ export default class OrderList extends React.Component {
                   </Menu.Item>
                 </Menu>)}
               />
-            </div>
+            </span>
           );
         }
         return (
@@ -452,7 +442,7 @@ export default class OrderList extends React.Component {
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
       <span />
-      <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
+      <CreatorSelect onChange={this.handleCreatorChange} />
       <RangePicker
         onChange={this.onDateChange}
         value={dateVal}
@@ -482,7 +472,7 @@ export default class OrderList extends React.Component {
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleFilterMenuClick}>
               <Menu.Item key="all">
-                {this.gmsg('all')}
+                {this.msg('allOrders')}
               </Menu.Item>
               <Menu.ItemGroup key="status" title={this.gmsg('status')}>
                 <Menu.Item key="pending">
@@ -503,7 +493,6 @@ export default class OrderList extends React.Component {
           <Content className="page-content" key="main">
             <DataTable
               noSetting
-              fixedBody={false}
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
               rowSelection={rowSelection}
@@ -513,6 +502,7 @@ export default class OrderList extends React.Component {
               columns={columns}
               rowKey="shipmt_order_no"
               loading={loading}
+              minWidth={1200}
             />
           </Content>
         </Layout>

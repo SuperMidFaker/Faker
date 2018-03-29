@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import { Alert, Button, notification } from 'antd';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { CWM_OUTBOUND_STATUS, ALLOC_ERROR_MESSAGE_DESC } from 'common/constants';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import RowAction from 'client/components/RowAction';
@@ -14,7 +14,6 @@ import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { string2Bytes } from 'client/util/dataTransform';
 import AllocatingModal from '../modal/allocatingModal';
-
 
 @injectIntl
 @connect(
@@ -225,8 +224,12 @@ export default class OrderDetailsPane extends React.Component {
     this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId)
       .then((result) => {
         if (result.error) {
+          let msg = result.error.message;
+          if (ALLOC_ERROR_MESSAGE_DESC[result.error.message]) {
+            msg = ALLOC_ERROR_MESSAGE_DESC[result.error.message];
+          }
           notification.error({
-            message: result.error.message,
+            message: msg,
           });
         }
       });
@@ -236,14 +239,17 @@ export default class OrderDetailsPane extends React.Component {
       this.props.outboundNo,
       this.state.selectedRowKeys,
       this.props.loginId
-    )
-      .then((result) => {
-        if (result.error) {
-          notification.error({
-            message: result.error.message,
-          });
+    ).then((result) => {
+      if (result.error) {
+        let msg = result.error.message;
+        if (ALLOC_ERROR_MESSAGE_DESC[result.error.message]) {
+          msg = ALLOC_ERROR_MESSAGE_DESC[result.error.message];
         }
-      });
+        notification.error({
+          message: msg,
+        });
+      }
+    });
   }
   handleExportUnAllocs = () => {
     const { outboundHead, outboundProducts, units } = this.props;
@@ -361,7 +367,7 @@ export default class OrderDetailsPane extends React.Component {
     };
     return (
       <DataPane
-        fullscreen={this.props.fullscreen}
+
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}

@@ -66,6 +66,7 @@ class DataTable extends React.Component {
     total: PropTypes.node,
     paginationSize: PropTypes.string,
     showToolbar: PropTypes.bool,
+    minWidth: PropTypes.number,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -135,6 +136,11 @@ class DataTable extends React.Component {
       });
     }
   }
+  componentDidMount() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.onResize, false);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (!this.isSameColumns(nextProps.columns, this.props.columns)) {
       const tableColumns = nextProps.columns.map((column, index) => ({
@@ -155,6 +161,16 @@ class DataTable extends React.Component {
     }
     if (nextProps.scrollOffset !== this.props.scrollOffset) {
       this.setState({ scrollY: window.innerHeight - nextProps.scrollOffset });
+    }
+  }
+  componentWillUnmount() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.onResize);
+    }
+  }
+  onResize = () => {
+    if (typeof window !== 'undefined') {
+      this.setState({ scrollY: window.innerHeight - this.props.scrollOffset });
     }
   }
   isSameColumns = (nextColumns, currColumns) => {
@@ -277,7 +293,7 @@ class DataTable extends React.Component {
   }
   render() {
     const {
-      baseCls, noBorder, fixedBody, noSetting, paginationSize,
+      baseCls, noBorder, fixedBody, noSetting, paginationSize, minWidth,
       selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
       showToolbar, toolbarActions, onSearch, searchTips,
     } = this.props;
@@ -298,7 +314,8 @@ class DataTable extends React.Component {
     if (this.state.scrollY) {
       scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } :
         {
-          x: this.state.tableColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0),
+          x: minWidth || this.state.tableColumns.reduce((acc, cur) =>
+            acc + (cur.width ? cur.width : 220), 0),
           y: this.state.scrollY,
         };
     }
@@ -356,13 +373,13 @@ class DataTable extends React.Component {
             columns={this.state.tableColumns}
           />
           {selectedRowKeys &&
-            <div className={`${baseCls}-toolbar-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <div className={`${baseCls}-body-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
               <Tooltip title="取消选择" placement="top">
                 <Button type="primary" ghost size="small" shape="circle" icon="close" onClick={onDeselectRows} />
               </Tooltip>
-              <span className={`${baseCls}-toolbar-row-selection-text`}>
-                已选中<a onClick={onFilterSelected}>{selectedRowKeys.length}</a>项
-              </span>
+              <h4 className={`${baseCls}-body-row-selection-text`}>
+                已选中<Button type="dashed" size="small" onClick={onFilterSelected}>{selectedRowKeys.length}</Button> 项
+              </h4>
               {bulkActions}
             </div>}
         </div>
