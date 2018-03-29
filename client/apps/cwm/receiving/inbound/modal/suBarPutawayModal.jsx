@@ -128,6 +128,10 @@ export default class SuBarPutawayModal extends Component {
     }
   }
   handleLocationInputRef = (input) => { this.locationInputRef = input; }
+  emptySuInputElement = () => {
+    this.suInputRef.focus();
+    document.getElementById('su-input-elem').value = '';
+  }
   handleSuBarKeyDown = (ev) => {
     if (ev.key === 'Enter') {
       const barcode = ev.target.value;
@@ -139,7 +143,6 @@ export default class SuBarPutawayModal extends Component {
         }
       });
       const suScan = {};
-      document.getElementById('su-input-elem').value = '';
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
@@ -148,6 +151,7 @@ export default class SuBarPutawayModal extends Component {
           this.setState({
             alertMsg: '错误条码',
           });
+          this.emptySuInputElement();
           return;
         }
       }
@@ -155,12 +159,14 @@ export default class SuBarPutawayModal extends Component {
         this.setState({
           alertMsg: `收货明细无此序列号:${suScan.serial_no}`,
         });
+        this.emptySuInputElement();
         return;
       }
       if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
         this.setState({
           alertMsg: `序列号${suScan.serial_no}已经扫描`,
         });
+        this.emptySuInputElement();
         return;
       }
       const serialDetails = this.state.serialDetailMap.get(suScan.serial_no);
@@ -169,6 +175,7 @@ export default class SuBarPutawayModal extends Component {
         this.setState({
           alertMsg: `序列号${suScan.serial_no}已上架`,
         });
+        this.emptySuInputElement();
         return;
       }
       const dataSource = unputawayDetails.map(pd => ({
@@ -181,7 +188,7 @@ export default class SuBarPutawayModal extends Component {
         alertMsg: null,
         dataSource,
       });
-      this.suInputRef.focus();
+      this.emptySuInputElement();
       if (window.localStorage) {
         window.localStorage.setItem('subarcode-putaway', JSON.stringify(dataSource));
       }
@@ -194,7 +201,7 @@ export default class SuBarPutawayModal extends Component {
   }
   barColumns = [{
     title: '序号',
-    dataIndex: 'trace_id',
+    dataIndex: 'seqno',
     width: 100,
     render: (id, row, index) => index + 1,
   }, {
@@ -219,7 +226,10 @@ export default class SuBarPutawayModal extends Component {
     render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
-    const { saveLoading } = this.props;
+    const { saveLoading, visible } = this.props;
+    if (!visible) {
+      return null;
+    }
     const {
       alertMsg, dataSource, location,
     } = this.state;
