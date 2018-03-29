@@ -36,17 +36,21 @@ export default class StatementTemplate extends React.Component {
     this.props.toggleNewTemplateModal(false);
   }
   handleOk = () => {
-    const data = this.props.form.getFieldsValue();
-    this.props.createTemplate({
-      partnerId: data.partnerId,
-      name: data.name,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        this.props.toggleNewTemplateModal(false);
-        const link = `/bss/bill/template/${result.data}/fees`;
-        this.context.router.push(link);
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const data = this.props.form.getFieldsValue();
+        this.props.createTemplate({
+          partnerId: data.partnerId,
+          name: data.name,
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 5);
+          } else {
+            this.props.toggleNewTemplateModal(false);
+            const link = `/bss/bill/template/${result.data}/fees`;
+            this.context.router.push(link);
+          }
+        });
       }
     });
   }
@@ -65,7 +69,7 @@ export default class StatementTemplate extends React.Component {
         <Form>
           <FormItem label="模板名称" {...formItemLayout} >
             {getFieldDecorator('name', {
-              rules: [{ required: true }],
+              rules: [{ required: true, message: '模板名称必填' }],
             })(<Input />)}
           </FormItem>
           <FormItem label="结算对象" {...formItemLayout} >
