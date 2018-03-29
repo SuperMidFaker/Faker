@@ -54,8 +54,8 @@ export default class CreateBillModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
       const date = new Date();
-      date.setMonth(date.getMonth() - 1);
-      const firstDay = new Date(date.setDate(1)).setHours(0, 0, 0, 0);
+      const month = date.getMonth();
+      const firstDay = new Date(date.setMonth(month - 1, 1)).setHours(0, 0, 0, 0);
       const endDay = new Date(new Date().setDate(0)).setHours(23, 59, 59, 999);
       this.setState({ beginDate: firstDay, endDate: endDay });
     }
@@ -72,26 +72,36 @@ export default class CreateBillModal extends React.Component {
     });
   }
   handleOk = () => {
-    const { beginDate, endDate } = this.state;
-    const begin = moment(beginDate).format('YYYY-MM-DD HH:mm:ss');
-    const end = moment(endDate).format('YYYY-MM-DD HH:mm:ss');
-    const formVal = this.props.form.getFieldsValue();
-    this.props.createBill({
-      bill_title: formVal.bill_title,
-      bill_type: formVal.bill_type,
-      template_id: Number(formVal.template_id),
-      partner_id: Number(formVal.partner_id),
-      start_date: begin,
-      end_date: end,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        this.props.toggleNewBillModal(false);
+    this.props.form.validateFields((errors) => {
+      if (!errors) {
+        const { beginDate, endDate } = this.state;
+        const begin = moment(beginDate).format('YYYY-MM-DD HH:mm:ss');
+        const end = moment(endDate).format('YYYY-MM-DD HH:mm:ss');
+        const formVal = this.props.form.getFieldsValue();
+        const templateId = Number.isNaN(formVal.template_id) ? null : Number(formVal.template_id);
+        this.props.createBill({
+          bill_title: formVal.bill_title,
+          bill_type: formVal.bill_type,
+          template_id: templateId,
+          partner_id: Number(formVal.partner_id),
+          start_date: begin,
+          end_date: end,
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 5);
+          } else {
+            this.props.toggleNewBillModal(false);
+          }
+        });
       }
     });
   }
   handleTypeSelect = (ev) => {
+    this.props.form.setFieldsValue({
+      partner_id: null,
+      template_id: null,
+    });
+    this.setState({ billTemplates: [] });
     const billType = ev.target.value;
     if (billType === 'buyerBill') {
       const client = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
@@ -122,9 +132,9 @@ export default class CreateBillModal extends React.Component {
         destroyOnClose
       >
         <Form>
-          <FormItem label="账单名称" {...formItemLayout} >
+          <FormItem label={this.msg('billName')} {...formItemLayout} >
             {getFieldDecorator('bill_title', {
-              rules: [{ required: true }],
+              rules: [{ required: true, message: '账单名称必填' }],
             })(<Input />)}
           </FormItem>
           <FormItem label={this.msg('billType')} {...formItemLayout}>
@@ -139,7 +149,7 @@ export default class CreateBillModal extends React.Component {
           </FormItem>
           <FormItem label={this.state.partnerLabel} {...formItemLayout}>
             {getFieldDecorator('partner_id', {
-              rules: [{ required: true, message: '必选' }],
+              rules: [{ required: true, message: '结算对象必选' }],
             })(<Select
               showSearch
               showArrow
@@ -158,7 +168,7 @@ export default class CreateBillModal extends React.Component {
           </FormItem>
           <FormItem label={this.msg('billTemplates')} {...formItemLayout} >
             {getFieldDecorator('template_id', {
-              rules: [{ required: true, message: '必选' }],
+              rules: [{ required: true, message: '账单模板必选' }],
             })(<Select showSearch optionFilterProp="children">
               {billTemplates.map(data => (
                 <Option key={String(data.id)} value={String(data.id)}>{data.name}</Option>))}

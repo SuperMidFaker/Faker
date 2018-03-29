@@ -14,8 +14,15 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'ACCEPT_BILL', 'ACCEPT_BILL_SUCCEED', 'ACCEPT_BILL_FAIL',
   'GET_BILL_STATEMENTS', 'GET_BILL_STATEMENTS_SUCCEED', 'GET_BILL_STATEMENTS_FAIL',
   'GET_BILL_STATEMENT_FEES', 'GET_BILL_STATEMENT_FEES_SUCCEED', 'GET_BILL_STATEMENT_FEES_FAIL',
-  'BILL_UPDATE', 'BILL_UPDATE_SUCCEED', 'BILL_UPDATE_FAIL',
+  'ADJUST_BILLSTATMENT', 'ADJUST_BILLSTATMENT_SUCCEED', 'ADJUST_BILLSTATMENT_FAIL',
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
+  'UPDATE_RECONCILE_FEE', 'UPDATE_RECONCILE_FEE_SUCCEED', 'UPDATE_RECONCILE_FEE_FAIL',
+  'RECONCILE_STATEMENT', 'RECONCILE_STATEMENT_SUCCEED', 'RECONCILE_STATEMENT_FAIL',
+  'REJECT_BILL', 'REJECT_BILL_SUCCEED', 'REJECT_BILL_FAIL',
+  'GET_DRAFT_BILL', 'GET_DRAFT_BILL_SUCCEED', 'GET_DRAFT_BILL_FAIL',
+  'TOGGLE_ADDTO_DRAFT_MODAL',
+  'ADD_ORDERS_TO_DRAFT_BILL', 'ADD_ORDERS_TO_DRAFT_BILL_SUCCEED', 'ADD_ORDERS_TO_DRAFT_BILL_FAIL',
+  'WRITEOFF_BILL', 'WRITEOFF_BILL_SUCCEED', 'WRITEOFF_BILL_FAIL',
 ]);
 
 const initialState = {
@@ -34,6 +41,7 @@ const initialState = {
   listFilter: {
     status: 'processingBills',
     clientPid: 'all',
+    bill_type: 'buyerBill',
   },
   loading: false,
   visibleNewBillModal: false,
@@ -45,6 +53,13 @@ const initialState = {
   billStatements: [],
   billTemplateFees: [],
   statementFees: [],
+  statementReload: false,
+  billHeadReload: false,
+  draftModal: {
+    visibleAddToDraftModal: false,
+    sofOrderNos: [],
+    partnerId: null,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -84,13 +99,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BILL_STATISTICS_SUCCEED:
       return { ...state, billStat: action.result.data };
     case actionTypes.LOAD_BILL_HEAD:
-      return { ...state, billReload: false };
+      return { ...state, billHeadReload: false };
     case actionTypes.LOAD_BILL_HEAD_SUCCEED:
       return { ...state, billHead: action.result.data };
-    case actionTypes.BILL_UPDATE_SUCCEED:
-      return { ...state, billReload: true };
+    case actionTypes.ADJUST_BILLSTATMENT_SUCCEED:
+      return { ...state, billHeadReload: true };
+    case actionTypes.RECONCILE_STATEMENT_SUCCEED:
+      return { ...state, billHeadReload: true, statementReload: true };
     case actionTypes.CREATE_BILL_SUCCEED:
       return { ...state, billReload: true };
+    case actionTypes.GET_BILL_STATEMENTS:
+      return { ...state, statementReload: false };
     case actionTypes.GET_BILL_STATEMENTS_SUCCEED:
       return { ...state, billStatements: action.result.data };
     case actionTypes.GET_BILL_STATEMENT_FEES_SUCCEED:
@@ -99,6 +118,20 @@ export default function reducer(state = initialState, action) {
         billTemplateFees: action.result.data.billTemplateFees,
         statementFees: action.result.data.statementFees,
       };
+    case actionTypes.UPDATE_RECONCILE_FEE_SUCCEED:
+      return { ...state, statementReload: true, billHeadReload: true };
+    case actionTypes.TOGGLE_ADDTO_DRAFT_MODAL:
+      return {
+        ...state,
+        draftModal: {
+          ...state.draftModal,
+          visibleAddToDraftModal: action.data.visible,
+          sofOrderNos: action.data.sofOrderNos,
+          partnerId: action.data.partnerId,
+        },
+      };
+    case actionTypes.ADD_ORDERS_TO_DRAFT_BILL_SUCCEED:
+      return { ...state, billReload: true };
     default:
       return state;
   }
@@ -118,7 +151,7 @@ export function reloadBillList(filter) {
   };
 }
 
-export function loadOrderStatements(params) {
+export function loadBillableStatements(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -126,7 +159,7 @@ export function loadOrderStatements(params) {
         actionTypes.LOAD_ORDER_STATEMENTS_SUCCEED,
         actionTypes.LOAD_ORDER_STATEMENTS_FAIL,
       ],
-      endpoint: 'v1/bss/order/statements/load',
+      endpoint: 'v1/bss/billable/statements',
       method: 'get',
       params,
     },
@@ -283,17 +316,114 @@ export function acceptBill(data) {
   };
 }
 
-export function updateBill(data, billNo) {
+export function adjustBillStatement(data, billNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.BILL_UPDATE,
-        actionTypes.BILL_UPDATE_SUCCEED,
-        actionTypes.BILL_UPDATE_FAIL,
+        actionTypes.ADJUST_BILLSTATMENT,
+        actionTypes.ADJUST_BILLSTATMENT_SUCCEED,
+        actionTypes.ADJUST_BILLSTATMENT_FAIL,
       ],
-      endpoint: 'v1/bss/bill/update',
+      endpoint: 'v1/bss/bill/statement/adjust',
       method: 'post',
       data: { data, billNo },
+    },
+  };
+}
+
+export function updateStatementReconcileFee(data, billNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_RECONCILE_FEE,
+        actionTypes.UPDATE_RECONCILE_FEE_SUCCEED,
+        actionTypes.UPDATE_RECONCILE_FEE_FAIL,
+      ],
+      endpoint: 'v1/bss/reconcile/fee/update',
+      method: 'post',
+      data: { data, billNo },
+    },
+  };
+}
+
+export function reconcileStatement(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RECONCILE_STATEMENT,
+        actionTypes.RECONCILE_STATEMENT_SUCCEED,
+        actionTypes.RECONCILE_STATEMENT_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/statement/reconcile',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function rejectBill(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REJECT_BILL,
+        actionTypes.REJECT_BILL_SUCCEED,
+        actionTypes.REJECT_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/reject',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadDraftBillByPartner(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_DRAFT_BILL,
+        actionTypes.GET_DRAFT_BILL_SUCCEED,
+        actionTypes.GET_DRAFT_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/partner/drafts',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function toggleAddToDraftModal(visible, partnerId, sofOrderNos) {
+  return {
+    type: actionTypes.TOGGLE_ADDTO_DRAFT_MODAL,
+    data: { visible, partnerId, sofOrderNos },
+  };
+}
+
+export function appendDraftStatements(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_ORDERS_TO_DRAFT_BILL,
+        actionTypes.ADD_ORDERS_TO_DRAFT_BILL_SUCCEED,
+        actionTypes.ADD_ORDERS_TO_DRAFT_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/draft/append/statements',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function writeOffBill(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.WRITEOFF_BILL,
+        actionTypes.WRITEOFF_BILL_SUCCEED,
+        actionTypes.WRITEOFF_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/writeoff',
+      method: 'post',
+      data,
     },
   };
 }

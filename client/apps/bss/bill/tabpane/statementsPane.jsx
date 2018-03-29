@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -8,7 +7,7 @@ import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { updateBill, getBillStatements, getBillStatementFees } from 'common/reducers/bssBill';
+import { adjustBillStatement, getBillStatements, getBillStatementFees } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
@@ -20,7 +19,7 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     billTemplateFees: state.bssBill.billTemplateFees,
     statementFees: state.bssBill.statementFees,
   }),
-  { updateBill, getBillStatements, getBillStatementFees }
+  { adjustBillStatement, getBillStatements, getBillStatementFees }
 )
 export default class StatementsPane extends Component {
   static propTypes = {
@@ -94,7 +93,7 @@ export default class StatementsPane extends Component {
     }
     billStatements[index] = item;
     item.delta = delta;
-    this.props.updateBill(item, this.props.billNo).then((result) => {
+    this.props.adjustBillStatement(item, this.props.billNo).then((result) => {
       if (!result.error) {
         this.setState({
           billStatements,
@@ -183,7 +182,7 @@ export default class StatementsPane extends Component {
       width: 90,
       fixed: 'right',
       render: (o, record) => {
-        if (record.status === 1) {
+        if (record.bill_status === 1) {
           if (this.state.editItem.id === record.id) {
             return (<span>
               <RowAction icon="save" onClick={this.handleOk} tooltip={this.gmsg('confirm')} row={record} />

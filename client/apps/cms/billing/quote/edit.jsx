@@ -136,7 +136,8 @@ export default class QuotingEdit extends Component {
         importPanelVisible: true,
       });
     } else {
-      window.open(`${API_ROOTS.default}v1/cms/billing/quote/tariff/export/${createFilename('quote_tariff')}.xlsx?quoteNo=${this.props.quoteData.quote_no}`);
+      const { quoteData } = this.props;
+      window.open(`${API_ROOTS.default}v1/cms/billing/quote/tariff/export/${createFilename(quoteData.quote_name)}.xlsx?quoteNo=${quoteData.quote_no}`);
     }
   }
   render() {

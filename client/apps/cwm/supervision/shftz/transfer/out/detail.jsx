@@ -321,7 +321,7 @@ export default class SHFTZTransferOutDetail extends Component {
               <Description term="海关出库单号">
                 <EditableCell
                   value={relReg.ftz_rel_no}
-                  editable={relEditable}
+                  editable={regStatus <= CWM_SHFTZ_APIREG_STATUS.completed}
                   onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_no', value)}
                 />
               </Description>

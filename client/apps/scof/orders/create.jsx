@@ -65,7 +65,7 @@ export default class CreateOrder extends Component {
     const { formData } = this.props;
     const valitFormData = {};
     ['customer_name', 'cust_shipmt_goods_type', 'cust_shipmt_transfer', 'flow_id',
-      'ext_attr_1', 'ext_attr_2', 'ext_attr_3', 'ext_attr_4', 'cust_order_no'].forEach((vaKey) => {
+      'ext_attr_1', 'ext_attr_2', 'ext_attr_3', 'ext_attr_4', 'cust_order_no', 'customer_partner_id'].forEach((vaKey) => {
       valitFormData[vaKey] = formData[vaKey];
     });
     this.props.validateOrder(valitFormData).then((result) => {
@@ -132,6 +132,7 @@ export default class CreateOrder extends Component {
           </div>),
           key: 'continue-edit',
           duration: 0,
+          onClose: this.handleCancel,
         });
       }
     });
