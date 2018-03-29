@@ -132,9 +132,9 @@ export default class NewBill extends React.Component {
         destroyOnClose
       >
         <Form>
-          <FormItem label="账单名称" {...formItemLayout} >
+          <FormItem label={this.msg('billName')} {...formItemLayout} >
             {getFieldDecorator('bill_title', {
-              rules: [{ required: true }],
+              rules: [{ required: true, message: '账单名称必填' }],
             })(<Input />)}
           </FormItem>
           <FormItem label={this.msg('billType')} {...formItemLayout}>
@@ -149,7 +149,7 @@ export default class NewBill extends React.Component {
           </FormItem>
           <FormItem label={this.state.partnerLabel} {...formItemLayout}>
             {getFieldDecorator('partner_id', {
-              rules: [{ required: true, message: '必选' }],
+              rules: [{ required: true, message: '结算对象必选' }],
             })(<Select
               showSearch
               showArrow
@@ -168,7 +168,7 @@ export default class NewBill extends React.Component {
           </FormItem>
           <FormItem label={this.msg('billTemplates')} {...formItemLayout} >
             {getFieldDecorator('template_id', {
-              rules: [{ required: true, message: '必选' }],
+              rules: [{ required: true, message: '账单模板必选' }],
             })(<Select showSearch optionFilterProp="children">
               {billTemplates.map(data => (
                 <Option key={String(data.id)} value={String(data.id)}>{data.name}</Option>))}

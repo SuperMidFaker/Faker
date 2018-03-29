@@ -87,7 +87,7 @@ export default class AddToDraft extends React.Component {
         <Form>
           <FormItem label="加入账单" {...formItemLayout} >
             {getFieldDecorator('bill_no', {
-              rules: [{ required: true }],
+              rules: [{ required: true, message: '账单必选' }],
             })(<Select showSearch optionFilterProp="children">
               {draftBills.map(data => (
                 <Option key={String(data.bill_no)} value={String(data.bill_no)}>{data.bill_title}
