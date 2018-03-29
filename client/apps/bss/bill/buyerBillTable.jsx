@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { DatePicker, Select, Tag, message } from 'antd';
+import { DatePicker, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
@@ -11,6 +11,7 @@ import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES, BILL_STATUS } from 'common/constants';
 import { loadBills, loadBillStatistics, sendBill, deleteBills, writeOffBill, recallBill } from 'common/reducers/bssBill';
+import BillTypeTag from './common/billTypeTag';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -101,16 +102,7 @@ export default class BuyerBills extends React.Component {
     title: '账单类型',
     dataIndex: 'bill_type',
     width: 150,
-    render: (o) => {
-      if (o === 'OFB') {
-        return <Tag>{this.msg('offlineBill')}</Tag>;
-      } else if (o === 'FPB') {
-        return <Tag color="blue">{this.msg('forwardProposedBill')}</Tag>;
-      } else if (o === 'BPB') {
-        return <Tag color="orange">{this.msg('backwardProposedBill')}</Tag>;
-      }
-      return null;
-    },
+    render: o => <BillTypeTag billType={o} msg={this.msg} />,
   }, {
     title: '状态',
     dataIndex: 'bill_status',

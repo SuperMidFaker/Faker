@@ -11,6 +11,7 @@ import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES, BILL_STATUS } from 'common/constants';
 import { loadBills, loadBillStatistics, sendBill, deleteBills, writeOffBill, recallBill } from 'common/reducers/bssBill';
+import BillTypeTag from './common/billTypeTag';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -101,6 +102,7 @@ export default class SellerBills extends React.Component {
     title: '账单类型',
     dataIndex: 'bill_type',
     width: 150,
+    render: o => <BillTypeTag billType={o} msg={this.msg} />,
   }, {
     title: '状态',
     dataIndex: 'bill_status',
