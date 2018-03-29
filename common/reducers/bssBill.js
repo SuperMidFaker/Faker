@@ -22,6 +22,7 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'GET_DRAFT_BILL', 'GET_DRAFT_BILL_SUCCEED', 'GET_DRAFT_BILL_FAIL',
   'TOGGLE_ADDTO_DRAFT_MODAL',
   'ADD_ORDERS_TO_DRAFT_BILL', 'ADD_ORDERS_TO_DRAFT_BILL_SUCCEED', 'ADD_ORDERS_TO_DRAFT_BILL_FAIL',
+  'WRITEOFF_BILL', 'WRITEOFF_BILL_SUCCEED', 'WRITEOFF_BILL_FAIL',
 ]);
 
 const initialState = {
@@ -406,6 +407,21 @@ export function appendDraftStatements(data) {
         actionTypes.ADD_ORDERS_TO_DRAFT_BILL_FAIL,
       ],
       endpoint: 'v1/bss/bill/draft/append/statements',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function writeOffBill(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.WRITEOFF_BILL,
+        actionTypes.WRITEOFF_BILL_SUCCEED,
+        actionTypes.WRITEOFF_BILL_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/writeoff',
       method: 'post',
       data,
     },

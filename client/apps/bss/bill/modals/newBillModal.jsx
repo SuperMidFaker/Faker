@@ -54,8 +54,8 @@ export default class NewBill extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
       const date = new Date();
-      date.setMonth(date.getMonth() - 1);
-      const firstDay = new Date(date.setDate(1)).setHours(0, 0, 0, 0);
+      const month = date.getMonth();
+      const firstDay = new Date(date.setMonth(month - 1, 1)).setHours(0, 0, 0, 0);
       const endDay = new Date(new Date().setDate(0)).setHours(23, 59, 59, 999);
       this.setState({ beginDate: firstDay, endDate: endDay });
     }

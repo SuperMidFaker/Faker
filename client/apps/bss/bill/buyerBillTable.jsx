@@ -10,7 +10,7 @@ import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES } from 'common/constants';
-import { loadBills, loadBillStatistics, sendBill, deleteBills } from 'common/reducers/bssBill';
+import { loadBills, loadBillStatistics, sendBill, deleteBills, writeOffBill, recallBill } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -28,7 +28,7 @@ const { Option } = Select;
     billStat: state.bssBill.billStat,
   }),
   {
-    loadBills, loadBillStatistics, sendBill, deleteBills,
+    loadBills, loadBillStatistics, sendBill, deleteBills, writeOffBill, recallBill,
   }
 )
 export default class BuyerBills extends React.Component {
@@ -169,7 +169,7 @@ export default class BuyerBills extends React.Component {
         } else if (record.bill_status === 4) {
           return (<span>
             <RowAction icon="swap" onClick={this.handleDetail} label="查看" row={record} />
-            <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
+            <RowAction icon="swap" onClick={this.handleWriteOff} label="确认核销" row={record} />
           </span>);
         }
       } else if (record.bill_status === 1) {
@@ -185,12 +185,26 @@ export default class BuyerBills extends React.Component {
       } else if (record.bill_status === 4 && record.tenant_id === this.props.tenantId) {
         return (<span>
           <RowAction icon="swap" onClick={this.handleDetail} label="查看" row={record} />
-          <RowAction icon="swap" onClick={this.handleAccept} label="确认核销" row={record} />
+          <RowAction icon="swap" onClick={this.handleWriteOff} label="确认核销" row={record} />
         </span>);
       }
       return null;
     },
   }]
+  handleRecall = (row) => {
+    this.props.recallBill({ bill_no: row.bill_no }).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
+    });
+  }
+  handleWriteOff = (row) => {
+    this.props.writeOffBill({ bill_no: row.bill_no }).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
+    });
+  }
   handleBillsLoad = (currentPage, filter) => {
     const { listFilter, billlist: { pageSize, current } } = this.props;
     const filters = filter || listFilter;
