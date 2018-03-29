@@ -61,7 +61,9 @@ export default class NormalDeclList extends React.Component {
       listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, ownerView };
+    const filter = {
+      ...listFilter, status, ownerView, filterNo: '',
+    };
     this.handleNormalDelgLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
