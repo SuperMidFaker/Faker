@@ -163,8 +163,8 @@ export default class BuyerBills extends React.Component {
           </span>);
         } else if (record.bill_status === 2) {
           return (<span>
-            <RowAction icon="swap" onClick={this.handleCheckOFB} label="对账" row={record} />
-            <RowAction icon="share-alt" onClick={this.handleSendOFB} label="重新发送" row={record} />
+            <RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />
+            <RowAction icon="share-alt" onClick={this.handleSendEmail} label="重新发送" row={record} />
           </span>);
         } else if (record.bill_status === 4) {
           return (<span>
