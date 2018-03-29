@@ -67,6 +67,11 @@ export default class BuyerPendingTable extends React.Component {
     width: 180,
     dataIndex: 'cust_order_no',
   }, {
+    title: '订单日期',
+    dataIndex: 'order_date',
+    width: 120,
+    render: ordate => ordate && moment(ordate).format('YYYY.MM.DD'),
+  }, {
     title: '应收金额',
     dataIndex: 'seller_settled_amount',
     width: 150,
