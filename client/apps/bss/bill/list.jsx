@@ -60,7 +60,9 @@ export default class BillList extends React.Component {
     this.props.reloadBillList(filter);
   }
   handleTabChange = (key) => {
-    const filter = { ...this.props.listFilter, bill_type: key };
+    const filter = {
+      ...this.props.listFilter, bill_type: key, clientPid: 'all', searchText: '',
+    };
     this.props.reloadBillList(filter);
   }
   toggleExtra = () => {
