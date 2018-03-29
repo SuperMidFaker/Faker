@@ -107,6 +107,10 @@ export default class ReceivingInboundList extends React.Component {
     fixed: 'left',
     render: (o, record) => (<a onClick={() => this.handlePreview(record.asn_no)}>{o}</a>),
   }, {
+    title: '客户单号',
+    width: 240,
+    dataIndex: 'po_no',
+  }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
     width: 50,
