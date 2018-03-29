@@ -97,6 +97,11 @@ export default class StatementsPane extends Component {
     }
     this.setState({ billStatements, currentPage: 1 });
   }
+  handleCancel = () => {
+    this.setState({
+      editItem: {},
+    });
+  }
   render() {
     const { billTemplateFees } = this.props;
     const rowSelection = {
@@ -171,6 +176,7 @@ export default class StatementsPane extends Component {
           if (this.state.editItem.id === record.id) {
             return (<span>
               <RowAction icon="save" onClick={this.handleOk} tooltip={this.gmsg('confirm')} row={record} />
+              <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
             </span>);
           }
           return (<span>
