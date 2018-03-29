@@ -94,33 +94,33 @@ export default class ReceivableBillDetail extends Component {
       }
       if (statemt.settle_type === '1') {
         if (tenantId === statemt.owner_tenant_id) {
-          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+          if (!statemt.buyer_settle_status && statemt.seller_settle_status) {
             unaccepted.push(statemt);
           }
-          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+          if (!statemt.seller_settle_status && statemt.buyer_settle_status) {
             accepted.push(statemt);
           }
         } else if (tenantId === statemt.tenant_id) {
-          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+          if (!statemt.seller_settle_status && statemt.buyer_settle_status) {
             unaccepted.push(statemt);
           }
-          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+          if (!statemt.buyer_settle_status && statemt.seller_settle_status) {
             accepted.push(statemt);
           }
         }
       } else if (statemt.settle_type === '2') {
         if (tenantId === statemt.vendor_tenant_id) {
-          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+          if (!statemt.seller_settle_status && statemt.buyer_settle_status) {
             unaccepted.push(statemt);
           }
-          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+          if (!statemt.buyer_settle_status && statemt.seller_settle_status) {
             accepted.push(statemt);
           }
         } else if (tenantId === statemt.tenant_id) {
-          if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
+          if (!statemt.buyer_settle_status && statemt.seller_settle_status) {
             unaccepted.push(statemt);
           }
-          if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
+          if (!statemt.seller_settle_status && statemt.buyer_settle_status) {
             accepted.push(statemt);
           }
         }

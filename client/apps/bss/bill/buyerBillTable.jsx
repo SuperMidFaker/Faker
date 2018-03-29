@@ -10,7 +10,7 @@ import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES } from 'common/constants';
-import { loadBills, loadBillStatistics, sendBill, deleteBills } from 'common/reducers/bssBill';
+import { loadBills, loadBillStatistics, sendBill, deleteBills, acceptBill, recallBill } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { RangePicker } = DatePicker;
@@ -28,7 +28,7 @@ const { Option } = Select;
     billStat: state.bssBill.billStat,
   }),
   {
-    loadBills, loadBillStatistics, sendBill, deleteBills,
+    loadBills, loadBillStatistics, sendBill, deleteBills, acceptBill, recallBill,
   }
 )
 export default class BuyerBills extends React.Component {
@@ -191,6 +191,20 @@ export default class BuyerBills extends React.Component {
       return null;
     },
   }]
+  handleRecall = (row) => {
+    this.props.recallBill({ bill_no: row.bill_no }).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
+    });
+  }
+  handleAccept = (row) => {
+    this.props.acceptBill({ bill_no: row.bill_no }).then((result) => {
+      if (!result.error) {
+        this.handleBillsLoad(1);
+      }
+    });
+  }
   handleBillsLoad = (currentPage, filter) => {
     const { listFilter, billlist: { pageSize, current } } = this.props;
     const filters = filter || listFilter;
