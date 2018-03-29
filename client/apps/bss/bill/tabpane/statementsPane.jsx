@@ -40,7 +40,6 @@ export default class StatementsPane extends Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.statementFees, this.props.statementFees);
     if (nextProps.statementFees !== this.props.statementFees
       && nextProps.statementFees.length > 0) {
       const stFees = nextProps.statementFees;
@@ -54,7 +53,6 @@ export default class StatementsPane extends Component {
         });
         newStatements.push(row);
       });
-      console.log(newStatements);
       this.setState({ billStatements: newStatements });
     }
   }
