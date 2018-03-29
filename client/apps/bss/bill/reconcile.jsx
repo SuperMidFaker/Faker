@@ -92,7 +92,7 @@ export default class ReceivableBillDetail extends Component {
         bothAccepted.push(statemt);
         return;
       }
-      if (statemt.settle_type === 1) {
+      if (statemt.settle_type === '1') {
         if (tenantId === statemt.owner_tenant_id) {
           if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
             unaccepted.push(statemt);
@@ -108,7 +108,7 @@ export default class ReceivableBillDetail extends Component {
             accepted.push(statemt);
           }
         }
-      } else if (statemt.settle_type === 2) {
+      } else if (statemt.settle_type === '2') {
         if (tenantId === statemt.vendor_tenant_id) {
           if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
             unaccepted.push(statemt);
