@@ -10,6 +10,7 @@ import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import { createFilename } from 'client/util/dataTransform';
+import { SETTLE_TYPE } from 'common/constants';
 import { loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill } from 'common/reducers/bssBill';
 import ReconciliationPane from './tabpane/reconciliationPane';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
@@ -92,7 +93,7 @@ export default class ReceivableBillDetail extends Component {
         bothAccepted.push(statemt);
         return;
       }
-      if (statemt.settle_type === '1') {
+      if (statemt.settle_type === SETTLE_TYPE.owner) {
         if (tenantId === statemt.owner_tenant_id) {
           if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
             unaccepted.push(statemt);
@@ -108,7 +109,7 @@ export default class ReceivableBillDetail extends Component {
             accepted.push(statemt);
           }
         }
-      } else if (statemt.settle_type === '2') {
+      } else if (statemt.settle_type === SETTLE_TYPE.vendor) {
         if (tenantId === statemt.vendor_tenant_id) {
           if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
             unaccepted.push(statemt);

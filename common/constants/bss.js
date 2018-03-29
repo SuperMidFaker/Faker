@@ -14,3 +14,14 @@ export const BILL_TYPE = [
   { key: 'buyerBill', text: '客户账单' },
   { key: 'sellerBill', text: '服务商账单' },
 ];
+
+export const BILL_STATUS = [
+  { key: 'draft', value: 1, text: '草稿' },
+  { key: 'reconciling', value: 2, text: '对账' },
+  { key: 'Written-Off', value: 4, text: '核销' },
+];
+
+export const SETTLE_TYPE = {
+  owner: 1,
+  vendor: 2,
+};
