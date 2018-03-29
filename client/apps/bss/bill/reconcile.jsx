@@ -11,7 +11,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import { createFilename } from 'client/util/dataTransform';
 import { SETTLE_TYPE } from 'common/constants';
-import { loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill } from 'common/reducers/bssBill';
+import { loadBillHead, getBillReconcilingStatements, acceptBill, recallBill, rejectBill } from 'common/reducers/bssBill';
 import ReconciliationPane from './tabpane/reconciliationPane';
 import BillTypeTag from './common/billTypeTag';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
@@ -28,10 +28,10 @@ const { TabPane } = Tabs;
     billHead: state.bssBill.billHead,
     billStatements: state.bssBill.billStatements,
     billHeadReload: state.bssBill.billHeadReload,
-    statementReload: state.bssBill.statementReload,
+    statementReload: state.bssBill.reconcileStatementReload,
   }),
   {
-    loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill,
+    loadBillHead, getBillReconcilingStatements, acceptBill, recallBill, rejectBill,
   }
 )
 @connectNav({
@@ -48,14 +48,14 @@ export default class ReceivableBillDetail extends Component {
   }
   componentDidMount() {
     this.props.loadBillHead(this.props.params.billNo);
-    this.props.getBillStatements(this.props.params.billNo);
+    this.props.getBillReconcilingStatements(this.props.params.billNo);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billHeadReload) {
       this.props.loadBillHead(this.props.params.billNo);
     }
     if (nextProps.statementReload) {
-      this.props.getBillStatements(this.props.params.billNo);
+      this.props.getBillReconcilingStatements(this.props.params.billNo);
     }
   }
   msg = formatMsg(this.props.intl)

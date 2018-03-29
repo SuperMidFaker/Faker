@@ -12,8 +12,8 @@ const actionTypes = createActionTypes('@@welogix/bss/bill', [
   'DELETE_BILL', 'DELETE_BILL_SUCCEED', 'DELETE_BILL_FAIL',
   'RECALL_BILL', 'RECALL_BILL_SUCCEED', 'RECALL_BILL_FAIL',
   'ACCEPT_BILL', 'ACCEPT_BILL_SUCCEED', 'ACCEPT_BILL_FAIL',
-  'GET_BILL_STATEMENTS', 'GET_BILL_STATEMENTS_SUCCEED', 'GET_BILL_STATEMENTS_FAIL',
-  'GET_BILL_STATEMENT_FEES', 'GET_BILL_STATEMENT_FEES_SUCCEED', 'GET_BILL_STATEMENT_FEES_FAIL',
+  'GET_BRSTATEMENTS', 'GET_BRSTATEMENTS_SUCCEED', 'GET_BRSTATEMENTS_FAIL',
+  'GET_BILLFT', 'GET_BILLFT_SUCCEED', 'GET_BILLFT_FAIL',
   'ADJUST_BILLSTATMENT', 'ADJUST_BILLSTATMENT_SUCCEED', 'ADJUST_BILLSTATMENT_FAIL',
   'LOAD_BILL_HEAD', 'LOAD_BILL_HEAD_SUCCEED', 'LOAD_BILL_HEAD_FAIL',
   'UPDATE_RECONCILE_FEE', 'UPDATE_RECONCILE_FEE_SUCCEED', 'UPDATE_RECONCILE_FEE_FAIL',
@@ -53,7 +53,7 @@ const initialState = {
   billStatements: [],
   billTemplateFees: [],
   statementFees: [],
-  statementReload: false,
+  reconcileStatementReload: false,
   billHeadReload: false,
   draftModal: {
     visibleAddToDraftModal: false,
@@ -105,21 +105,23 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ADJUST_BILLSTATMENT_SUCCEED:
       return { ...state, billHeadReload: true };
     case actionTypes.RECONCILE_STATEMENT_SUCCEED:
-      return { ...state, billHeadReload: true, statementReload: true };
+      return { ...state, billHeadReload: true, reconcileStatementReload: true };
     case actionTypes.CREATE_BILL_SUCCEED:
       return { ...state, billReload: true };
-    case actionTypes.GET_BILL_STATEMENTS:
-      return { ...state, statementReload: false };
-    case actionTypes.GET_BILL_STATEMENTS_SUCCEED:
+    case actionTypes.GET_BRSTATEMENTS:
+      return { ...state, reconcileStatementReload: false };
+    case actionTypes.GET_BRSTATEMENTS_SUCCEED:
       return { ...state, billStatements: action.result.data };
-    case actionTypes.GET_BILL_STATEMENT_FEES_SUCCEED:
+    case actionTypes.GET_BRSTATEMENTS_FAIL:
+      return { ...state, billStatements: [] };
+    case actionTypes.GET_BILLFT_SUCCEED:
       return {
         ...state,
         billTemplateFees: action.result.data.billTemplateFees,
-        statementFees: action.result.data.statementFees,
+        statementFees: action.result.data.statements,
       };
     case actionTypes.UPDATE_RECONCILE_FEE_SUCCEED:
-      return { ...state, statementReload: true, billHeadReload: true };
+      return { ...state, reconcileStatementReload: true, billHeadReload: true };
     case actionTypes.TOGGLE_ADDTO_DRAFT_MODAL:
       return {
         ...state,
@@ -271,30 +273,30 @@ export function loadBillHead(billNo) {
   };
 }
 
-export function getBillStatements(billNo) {
+export function getBillReconcilingStatements(billNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_BILL_STATEMENTS,
-        actionTypes.GET_BILL_STATEMENTS_SUCCEED,
-        actionTypes.GET_BILL_STATEMENTS_FAIL,
+        actionTypes.GET_BRSTATEMENTS,
+        actionTypes.GET_BRSTATEMENTS_SUCCEED,
+        actionTypes.GET_BRSTATEMENTS_FAIL,
       ],
-      endpoint: 'v1/bss/bill/statements/get',
+      endpoint: 'v1/bss/bill/reconciling/statements',
       method: 'get',
       params: { billNo },
     },
   };
 }
 
-export function getBillStatementFees(billNo) {
+export function getBillFeesAndTemplate(billNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_BILL_STATEMENT_FEES,
-        actionTypes.GET_BILL_STATEMENT_FEES_SUCCEED,
-        actionTypes.GET_BILL_STATEMENT_FEES_FAIL,
+        actionTypes.GET_BILLFT,
+        actionTypes.GET_BILLFT_SUCCEED,
+        actionTypes.GET_BILLFT_FAIL,
       ],
-      endpoint: 'v1/bss/bill/statement/fees/get',
+      endpoint: 'v1/bss/bill/statementandfees',
       method: 'get',
       params: { billNo },
     },
