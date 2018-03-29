@@ -6,6 +6,7 @@ import { Button, Input } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
+import { SETTLE_TYPE } from 'common/constants';
 import { updateStatementReconcileFee, reconcileStatement } from 'common/reducers/bssBill';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -134,14 +135,14 @@ export default class ReconciliationPane extends Component {
       align: 'right',
       render: (o, record) => {
         const { tenantId } = this.props;
-        if (record.settle_type === '1') {
+        if (record.settle_type === SETTLE_TYPE.owner) {
           if (tenantId === record.owner_tenant_id) {
             return record.seller_settled_amount;
           }
           if (tenantId === record.tenant_id) {
             return record.buyer_settled_amount;
           }
-        } else if (record.settle_type === '2') {
+        } else if (record.settle_type === SETTLE_TYPE.vendor) {
           if (tenantId === record.vendor_tenant_id) {
             return record.buyer_settled_amount;
           }
@@ -159,7 +160,7 @@ export default class ReconciliationPane extends Component {
       render: (o, record) => {
         const { tenantId } = this.props;
         if (this.state.editItem.id === record.id) {
-          if (this.state.editItem.settle_type === '1') {
+          if (this.state.editItem.settle_type === SETTLE_TYPE.owner) {
             if (tenantId === record.owner_tenant_id) {
               return (<Input
                 value={this.state.editItem.buyer_settled_amount}
@@ -172,7 +173,7 @@ export default class ReconciliationPane extends Component {
                 onChange={e => this.handleColumnChange('seller_settled_amount', e.target.value)}
               />);
             }
-          } else if (this.state.editItem.settle_type === '2') {
+          } else if (this.state.editItem.settle_type === SETTLE_TYPE.vendor) {
             if (tenantId === record.vendor_tenant_id) {
               return (<Input
                 value={this.state.editItem.seller_settled_amount}
@@ -186,14 +187,14 @@ export default class ReconciliationPane extends Component {
               />);
             }
           }
-        } else if (record.settle_type === '1') {
+        } else if (record.settle_type === SETTLE_TYPE.owner) {
           if (tenantId === record.owner_tenant_id) {
             return record.buyer_settled_amount;
           }
           if (tenantId === record.tenant_id) {
             return record.seller_settled_amount;
           }
-        } else if (record.settle_type === '2') {
+        } else if (record.settle_type === SETTLE_TYPE.vendor) {
           if (tenantId === record.vendor_tenant_id) {
             return record.seller_settled_amount;
           }
