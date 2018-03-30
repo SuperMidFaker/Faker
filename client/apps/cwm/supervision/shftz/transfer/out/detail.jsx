@@ -283,9 +283,11 @@ export default class SHFTZTransferOutDetail extends Component {
     const sendText = sent ? '重新发送' : '发送转出';
     let sendable = true;
     let whyunsent;
-    if (outboundStatus < CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
+    if (outboundStatus < CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
       sendable = false;
-      whyunsent = '出库单配货未完成';
+      whyunsent = '出库单未配货';
+    } else if (outboundStatus === CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
+      whyunsent = '出库单部分配货';
     } else if (!relReg.ftz_rel_date || !relReg.receiver_ftz_whse_code) {
       sendable = false;
       whyunsent = '出库时间或者收货单位未填';
