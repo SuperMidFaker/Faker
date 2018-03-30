@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { intlShape, injectIntl } from 'react-intl';
+// import { intlShape, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
-import TransitForm from './transitAttribForm';
+import FormPane from 'client/components/FormPane';
 import { splitTransit, moveTransit } from 'common/reducers/cwmTransition';
+import TransitForm from './transitAttribForm';
 
-@injectIntl
+// @injectIntl
 @connect(
   state => ({
     loginName: state.account.username,
@@ -15,7 +16,7 @@ import { splitTransit, moveTransit } from 'common/reducers/cwmTransition';
 )
 export default class TransitPane extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
   }
   formValue = {
     target_location: null,
@@ -61,10 +62,15 @@ export default class TransitPane extends React.Component {
   render() {
     const { detail, form } = this.props;
     return (
-      <div>
-        <TransitForm batched={false} detail={detail} form={form} onChange={this.handleValueChange} />
+      <FormPane descendant>
+        <TransitForm
+          batched={false}
+          detail={detail}
+          form={form}
+          onChange={this.handleValueChange}
+        />
         <Button type="primary" onClick={this.handleTransit}>执行转移</Button>
-      </div>
+      </FormPane>
     );
   }
 }

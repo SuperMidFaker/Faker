@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { transactionColumns, commonTraceColumns } from '../../commonColumns';
 import { loadTraceTransactions } from 'common/reducers/cwmTransaction';
+import DataTable from 'client/components/DataTable';
+import { transactionColumns, commonTraceColumns } from '../../commonColumns';
 import { formatMsg } from '../../../message.i18n';
 
 @injectIntl
@@ -18,9 +18,6 @@ import { formatMsg } from '../../../message.i18n';
 export default class LogsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-  }
-  state = {
-    scrollY: 0,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.detail !== this.props.detail) {
@@ -43,20 +40,13 @@ export default class LogsPane extends React.Component {
     const { loading, transactions } = this.props;
     this.columns[0].fixed = 'left';
     return (
-      <div>
-        <Card bodyStyle={{ padding: 0 }} >
-          <div className="table-panel table-fixed-layout">
-            <Table
-              size="middle"
-              dataSource={transactions}
-              loading={loading}
-              rowKey="id"
-              columns={this.columns}
-              scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-            />
-          </div>
-        </Card>
-      </div>
+      <DataTable
+        size="middle"
+        dataSource={transactions}
+        loading={loading}
+        rowKey="id"
+        columns={this.columns}
+      />
     );
   }
 }
