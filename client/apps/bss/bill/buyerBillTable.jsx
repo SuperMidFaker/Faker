@@ -86,18 +86,18 @@ export default class BuyerBills extends React.Component {
   }, {
     title: '开始日期',
     dataIndex: 'order_begin_date',
-    width: 120,
+    width: 100,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
     title: '结束日期',
     dataIndex: 'order_end_date',
-    width: 120,
+    width: 100,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
     title: '客户',
-    width: 240,
+    width: 200,
     dataIndex: 'buyer_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
+    render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: '账单类型',
     dataIndex: 'bill_type',
@@ -281,12 +281,11 @@ export default class BuyerBills extends React.Component {
         showSearch
         placeholder="客户"
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >
-        <Option value="all" key="all">全部</Option>
+        <Option value="all" key="all">全部客户</Option>
         {partners.map(data => (
           <Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
           </Option>))

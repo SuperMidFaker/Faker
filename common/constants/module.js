@@ -592,7 +592,7 @@ const MODULE_BSS = {
   id: 'bss',
   text: 'moduleBSS',
   defaultText: '结算中心',
-  status: 'dev',
+  status: 'alpha',
   features: [],
 };
 

@@ -39,7 +39,7 @@ const initialState = {
     data: [],
   },
   listFilter: {
-    status: 'pendingExpense',
+    status: 'processingBills',
     clientPid: 'all',
     bill_type: 'buyerBill',
   },

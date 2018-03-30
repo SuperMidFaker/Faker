@@ -319,6 +319,7 @@ export default class ExpenseDetailTabPane extends Component {
         dataSource={dataSource}
         rowKey="id"
         loading={loading}
+        scrollOffset={96}
         bordered
       >
         <DataPane.Toolbar>
