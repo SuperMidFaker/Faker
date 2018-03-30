@@ -251,7 +251,10 @@ export default class OwnerControlModal extends Component {
               completed = false;
               break;
             }
-          } else if (!setting.start || !setting.end || !setting.display) {
+          } else if (setting.enabled === 'maninput' && !setting.display) {
+            completed = false;
+            break;
+          } else if (setting.enabled === 'subarcode' && (!setting.start || !setting.end || !setting.display)) {
             completed = false;
             break;
           }

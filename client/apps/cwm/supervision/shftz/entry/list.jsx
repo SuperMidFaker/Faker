@@ -72,11 +72,11 @@ export default class SHFTZEntryList extends React.Component {
       if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
         status = 'all';
       }
-      listFilter.startDate = '';
-      listFilter.endDate = '';
+      listFilter.startDate = null;
+      listFilter.endDate = null;
     }
     const filter = {
-      ...listFilter, status, type: 'bonded', ownerView,
+      ...listFilter, status, type: 'bonded', ownerView, filterNo: '',
     };
     this.handleEntryListLoad(null, null, filter);
   }

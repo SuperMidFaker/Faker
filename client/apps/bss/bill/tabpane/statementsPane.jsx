@@ -7,7 +7,7 @@ import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
-import { adjustBillStatement, getBillStatements, getBillStatementFees } from 'common/reducers/bssBill';
+import { adjustBillStatement, getBillFeesAndTemplate } from 'common/reducers/bssBill';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
@@ -15,16 +15,16 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
   state => ({
     userMembers: state.account.userMembers,
     billHead: state.bssBill.billHead,
-    billStatements: state.bssBill.billStatements,
     billTemplateFees: state.bssBill.billTemplateFees,
     statementFees: state.bssBill.statementFees,
   }),
-  { adjustBillStatement, getBillStatements, getBillStatementFees }
+  { adjustBillStatement, getBillFeesAndTemplate }
 )
 export default class StatementsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     billNo: PropTypes.string.isRequired,
+    billTemplateFees: PropTypes.arrayOf(PropTypes.shape({ uid: PropTypes.string })),
   }
   state = {
     selectedRowKeys: [],
@@ -33,27 +33,12 @@ export default class StatementsPane extends Component {
     currentPage: 1,
   };
   componentDidMount() {
-    this.props.getBillStatements(this.props.billNo).then((result) => {
-      if (!result.error) {
-        this.props.getBillStatementFees(this.props.billNo);
-      }
-    });
+    this.props.getBillFeesAndTemplate(this.props.billNo);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.statementFees !== this.props.statementFees
       && nextProps.statementFees.length > 0) {
-      const stFees = nextProps.statementFees;
-      const statements = nextProps.billStatements;
-      const newStatements = [];
-      statements.forEach((st) => {
-        const row = { ...st };
-        const fees = stFees.filter(fee => fee.sof_order_no === st.sof_order_no);
-        fees.forEach((fe) => {
-          row[fe.fee_uid] = fe.fee_amount;
-        });
-        newStatements.push(row);
-      });
-      this.setState({ billStatements: newStatements });
+      this.setState({ billStatements: nextProps.statementFees });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -83,7 +68,7 @@ export default class StatementsPane extends Component {
   }
   handleOk = () => {
     const item = { ...this.state.editItem };
-    const billStatements = [...this.props.billStatements];
+    const billStatements = [...this.state.billStatements];
     const index = billStatements.findIndex(data => data.id === item.id);
     let delta;
     if (item.settle_type === 1) {
@@ -103,14 +88,19 @@ export default class StatementsPane extends Component {
     });
   }
   handleSearch = (value) => {
-    let { billStatements } = this.props;
+    let { billStatements } = this.state;
     if (value) {
-      billStatements = this.props.billStatements.filter((item) => {
+      billStatements = billStatements.filter((item) => {
         const reg = new RegExp(value);
         return reg.test(item.cust_order_no) || reg.test(item.sof_order_no);
       });
     }
     this.setState({ billStatements, currentPage: 1 });
+  }
+  handleCancel = () => {
+    this.setState({
+      editItem: {},
+    });
   }
   render() {
     const { billTemplateFees } = this.props;
@@ -131,8 +121,8 @@ export default class StatementsPane extends Component {
     }];
     if (billTemplateFees.length > 0) {
       const billColumns = billTemplateFees.map(data => ({
-        title: data.fee_name,
-        dataIndex: data.fee_uid,
+        title: data.name,
+        dataIndex: data.uid,
         width: 100,
       }));
       columns = columns.concat(billColumns);
@@ -182,10 +172,11 @@ export default class StatementsPane extends Component {
       width: 90,
       fixed: 'right',
       render: (o, record) => {
-        if (record.bill_status === 1) {
+        if (this.props.billHead.bill_status === 1) {
           if (this.state.editItem.id === record.id) {
             return (<span>
               <RowAction icon="save" onClick={this.handleOk} tooltip={this.gmsg('confirm')} row={record} />
+              <RowAction icon="close" onClick={this.handleCancel} tooltip={this.gmsg('cancel')} row={record} />
             </span>);
           }
           return (<span>

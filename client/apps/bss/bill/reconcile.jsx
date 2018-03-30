@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Button, Layout, Steps, Tabs, Tag } from 'antd';
+import { Badge, Button, Layout, Steps, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
@@ -10,8 +10,10 @@ import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import { createFilename } from 'client/util/dataTransform';
-import { loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill } from 'common/reducers/bssBill';
+import { SETTLE_TYPE } from 'common/constants';
+import { loadBillHead, getBillReconcilingStatements, acceptBill, recallBill, rejectBill } from 'common/reducers/bssBill';
 import ReconciliationPane from './tabpane/reconciliationPane';
+import BillTypeTag from './common/billTypeTag';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -26,10 +28,10 @@ const { TabPane } = Tabs;
     billHead: state.bssBill.billHead,
     billStatements: state.bssBill.billStatements,
     billHeadReload: state.bssBill.billHeadReload,
-    statementReload: state.bssBill.statementReload,
+    statementReload: state.bssBill.reconcileStatementReload,
   }),
   {
-    loadBillHead, getBillStatements, acceptBill, recallBill, rejectBill,
+    loadBillHead, getBillReconcilingStatements, acceptBill, recallBill, rejectBill,
   }
 )
 @connectNav({
@@ -46,14 +48,14 @@ export default class ReceivableBillDetail extends Component {
   }
   componentDidMount() {
     this.props.loadBillHead(this.props.params.billNo);
-    this.props.getBillStatements(this.props.params.billNo);
+    this.props.getBillReconcilingStatements(this.props.params.billNo);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billHeadReload) {
       this.props.loadBillHead(this.props.params.billNo);
     }
     if (nextProps.statementReload) {
-      this.props.getBillStatements(this.props.params.billNo);
+      this.props.getBillReconcilingStatements(this.props.params.billNo);
     }
   }
   msg = formatMsg(this.props.intl)
@@ -92,7 +94,7 @@ export default class ReceivableBillDetail extends Component {
         bothAccepted.push(statemt);
         return;
       }
-      if (statemt.settle_type === '1') {
+      if (statemt.settle_type === SETTLE_TYPE.owner) {
         if (tenantId === statemt.owner_tenant_id) {
           if (statemt.buyer_settle_status === 0 && statemt.seller_settle_status === 1) {
             unaccepted.push(statemt);
@@ -108,7 +110,7 @@ export default class ReceivableBillDetail extends Component {
             accepted.push(statemt);
           }
         }
-      } else if (statemt.settle_type === '2') {
+      } else if (statemt.settle_type === SETTLE_TYPE.vendor) {
         if (tenantId === statemt.vendor_tenant_id) {
           if (statemt.seller_settle_status === 0 && statemt.buyer_settle_status === 1) {
             unaccepted.push(statemt);
@@ -162,14 +164,6 @@ export default class ReceivableBillDetail extends Component {
         );
       }
     }
-    let billType = null;
-    if (billHead.bill_type === 'OFB') {
-      billType = <Tag>{this.msg('offlineBill')}</Tag>;
-    } else if (billHead.bill_type === 'FPB') {
-      billType = <Tag color="blue">{this.msg('forwardProposedBill')}</Tag>;
-    } else if (billHead.bill_type === 'BPB') {
-      billType = <Tag color="orange">{this.msg('backwardProposedBill')}</Tag>;
-    }
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
@@ -186,7 +180,7 @@ export default class ReceivableBillDetail extends Component {
                 <Description term="服务商">{billHead.seller_name}</Description> :
                 <Description term="客户">{billHead.buyer_name}</Description>}
               <Description term="账期">{billHead.order_begin_date && moment(billHead.order_begin_date).format('YYYY.MM.DD')} ~ {billHead.order_end_date && moment(billHead.order_end_date).format('YYYY.MM.DD')}</Description>
-              <Description term="类型">{billType}</Description>
+              <Description term="类型"><BillTypeTag billType={billHead.bill_type} msg={this.msg} /></Description>
               <Description term="订单数量">{billHead.order_count}</Description>
               <Description term="账单总金额">{billHead.total_amount}</Description>
               <Description term="调整金额">{billHead.adjusted_amount}</Description>

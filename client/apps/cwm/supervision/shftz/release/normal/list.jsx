@@ -75,11 +75,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
       if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
         status = 'all';
       }
-      listFilter.startDate = '';
-      listFilter.endDate = '';
+      listFilter.startDate = null;
+      listFilter.endDate = null;
     }
     const filter = {
-      ...listFilter, status, type: 'normal', ownerView,
+      ...listFilter, status, type: 'normal', ownerView, filterNo: '',
     };
     this.handleReleaseListLoad(null, null, filter);
   }

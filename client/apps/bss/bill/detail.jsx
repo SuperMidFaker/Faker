@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Layout, Steps, Tabs, Tag } from 'antd';
+import { Button, Layout, Steps, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import Drawer from 'client/components/Drawer';
@@ -12,6 +12,7 @@ import DescriptionList from 'client/components/DescriptionList';
 import { loadBillHead } from 'common/reducers/bssBill';
 import { createFilename } from 'client/util/dataTransform';
 import StatementsPane from './tabpane/statementsPane';
+import BillTypeTag from './common/billTypeTag';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -55,14 +56,6 @@ export default class ReceivableBillDetail extends Component {
   }
   render() {
     const { billHead, tenantId } = this.props;
-    let billType = null;
-    if (billHead.bill_type === 'OFB') {
-      billType = <Tag>{this.msg('offlineBill')}</Tag>;
-    } else if (billHead.bill_type === 'FPB') {
-      billType = <Tag color="blue">{this.msg('forwardProposedBill')}</Tag>;
-    } else if (billHead.bill_type === 'BPB') {
-      billType = <Tag color="orange">{this.msg('backwardProposedBill')}</Tag>;
-    }
     return (
       <Layout>
         <PageHeader breadcrumb={[this.msg('bill'), this.props.params.billNo]}>
@@ -78,7 +71,7 @@ export default class ReceivableBillDetail extends Component {
                 <Description term="服务商">{billHead.seller_name}</Description> :
                 <Description term="客户">{billHead.buyer_name}</Description>}
               <Description term="账期">{billHead.order_begin_date && moment(billHead.order_begin_date).format('YYYY.MM.DD')} ~ {billHead.order_end_date && moment(billHead.order_end_date).format('YYYY.MM.DD')}</Description>
-              <Description term="类型">{billType}</Description>
+              <Description term="类型"><BillTypeTag billType={billHead.bill_type} msg={this.msg} /></Description>
               <Description term="订单数量">{billHead.order_count}</Description>
               <Description term="账单总金额">{billHead.total_amount}</Description>
               <Description term="调整金额">{billHead.adjusted_amount}</Description>
