@@ -167,13 +167,12 @@ export default class SellerPendingTable extends React.Component {
         showSearch
         placeholder="服务商"
         optionFilterProp="children"
-        style={{ width: 160 }}
         value={listFilter.clientPid}
         onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
       >
-        <Option value="all" key="all">全部</Option>
+        <Option value="all" key="all">全部服务商</Option>
         {partners.map(data => (
           <Option key={String(data.id)} value={String(data.id)}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
           </Option>))
