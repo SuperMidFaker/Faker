@@ -8,7 +8,7 @@ import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { loadOwnerUndoneMovements } from 'common/reducers/cwmMovement';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -28,20 +28,26 @@ export default class TransitForm extends React.Component {
   }
   state = {
     target_location: null,
-    movement_no: null,
+    // movement_no: null,
   }
   componentWillReceiveProps(nextProps) {
     const { detail } = this.props;
     if (nextProps.detail && nextProps.detail !== detail && nextProps.detail.owner_partner_id) {
-      this.props.loadOwnerUndoneMovements(nextProps.detail.owner_partner_id, nextProps.detail.whse_code);
+      this.props.loadOwnerUndoneMovements(
+        nextProps.detail.owner_partner_id,
+        nextProps.detail.whse_code,
+      );
       this.setState({
         target_location: null,
-        movement_no: null,
+        // movement_no: null,
       });
     }
   }
   handleLocationSelect = (value) => { this.setState({ target_location: value }); this.props.onChange({ key: 'target_location', value }); }
-  handleMovementNoChange = (value) => { this.setState({ movement_no: value }); this.props.onChange({ key: 'movement_no', value }); }
+  handleMovementNoChange = (value) => {
+    // this.setState({ movement_no: value });
+    this.props.onChange({ key: 'movement_no', value });
+  }
   render() {
     const {
       batched, detail, form: { getFieldDecorator }, ownerMovements,
@@ -209,15 +215,22 @@ export default class TransitForm extends React.Component {
         <Row gutter={16}>
           <Col span={8}>
             <FormItem {...formItemLayout} label="目标库位">
-              <LocationSelect onChange={this.handleLocationSelect}
-                onSelect={this.handleLocationSelect} value={this.state.target_location}
+              <LocationSelect
+                onChange={this.handleLocationSelect}
+                onSelect={this.handleLocationSelect}
+                value={this.state.target_location}
               />
             </FormItem>
           </Col>
           {this.state.target_location && <Col span={8}>
             <FormItem {...formItemLayout} label="库存移动单">
-              <Select allowClear showSearch onSelect={this.handleMovementNoChange}>
-                {ownerMovements.map(oum => <Option key={oum.movement_no} value={oum.movement_no}>{oum.movement_no}</Option>)}
+              <Select
+                allowClear
+                showSearch
+                onSelect={this.handleMovementNoChange}
+              >
+                {ownerMovements.map(oum =>
+                  <Option key={oum.movement_no} value={oum.movement_no}>{oum.movement_no}</Option>)}
               </Select>
             </FormItem>
           </Col>}

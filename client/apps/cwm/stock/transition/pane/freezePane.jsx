@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { message, Button, Form, Row, Input, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { freezeTransit } from 'common/reducers/cwmTransition';
+import FormPane from 'client/components/FormPane';
 
 const FormItem = Form.Item;
 const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
 };
 
 @injectIntl
@@ -41,16 +42,16 @@ export default class FreezePane extends React.Component {
   render() {
     const { reason } = this.state;
     return (
-      <div>
+      <FormPane descendant>
         <Row>
-          <Col span={24}>
+          <Col span={16}>
             <FormItem {...formItemLayout} label="冻结原因">
               <Input value={reason} onChange={this.handleReasonChange} />
             </FormItem>
           </Col>
         </Row>
-        <Button type="primary" onClick={this.handleFreezeTransit}>冻结</Button>
-      </div>
+        <Button type="primary" onClick={this.handleFreezeTransit}>执行冻结</Button>
+      </FormPane>
     );
   }
 }

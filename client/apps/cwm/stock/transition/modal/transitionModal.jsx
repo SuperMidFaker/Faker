@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Col, Card, Form, Modal, Row, Spin } from 'antd';
+import { Button, Col, Collapse, Card, Form, Modal, Row, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeTransitionModal, loadTransitionTraceDetail } from 'common/reducers/cwmTransition';
 import { format } from 'client/common/i18n/helpers';
@@ -12,6 +12,7 @@ import LogsPane from '../pane/logsPane';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
+const { Panel } = Collapse;
 
 @injectIntl
 @connect(
@@ -63,24 +64,24 @@ export default class TransitionModal extends React.Component {
       >
         <Spin spinning={loading}>
           <Form>
-            <Row gutter={24}>
+            <Row gutter={16}>
               <Col span={12}>
-                <Card title="属性调整" >
-                  <TransitPane form={form} />
+                <Card bodyStyle={{ padding: 0 }}>
+                  <Collapse bordered={false} defaultActiveKey={['1']} accordion>
+                    <Panel header="属性调整" key="1">
+                      <TransitPane form={form} />
+                    </Panel>
+                    <Panel header="数量调整" key="2">
+                      <AdjustPane />
+                    </Panel>
+                    <Panel header="状态调整" key="3">
+                      <FreezePane />
+                    </Panel>
+                  </Collapse>
                 </Card>
               </Col>
-              <Col span={6}>
-                <Card title="数量调整" >
-                  <AdjustPane />
-                </Card>
-                <Card title="状态调整" >
-                  <FreezePane />
-                </Card>
-              </Col>
-              <Col span={6}>
-                <Card title="库存事务记录" >
-                  <LogsPane traceId={this.props.detail.trace_id} />
-                </Card>
+              <Col span={12}>
+                <LogsPane traceId={this.props.detail.trace_id} />
               </Col>
             </Row>
           </Form>
