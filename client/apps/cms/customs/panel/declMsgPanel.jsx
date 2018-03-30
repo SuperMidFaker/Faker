@@ -153,34 +153,33 @@ export default class DeclMsgPanel extends React.Component {
     render: o => moment(o).format('YYYY.MM.DD HH:mm'),
   }];
   hideDock = () => {
+    this.setState({
+      searchText: '',
+      recvText: '',
+    });
     this.props.hideDeclMsgDock();
   }
-  searchSend = (e) => {
-    this.setState({
-      searchText: e.target.value,
-    });
-  }
-  searchRecv = (e) => {
-    this.setState({
-      recvText: e.target.value,
-    });
-  }
-  handleSearchSend = () => {
+  handleSearchSend = (searchVal) => {
     const { sendRecords } = this.props;
-    const { searchText } = this.state;
     this.props.loadSendRecords({
-      searchText,
+      searchText: searchVal,
       current: 1,
       pageSize: sendRecords.pageSize,
     });
+    this.setState({
+      searchText: searchVal,
+    });
   }
-  handleSearchRecv = () => {
+  handleSearchRecv = (searchVal) => {
     const { returnRecords } = this.props;
     const { recvText } = this.state;
     this.props.loadReturnRecords({
       preEntrySeqNo: recvText,
       current: 1,
       pageSize: returnRecords.pageSize,
+    });
+    this.setState({
+      recvText: searchVal,
     });
   }
   hideDeclMsgModal = () => {

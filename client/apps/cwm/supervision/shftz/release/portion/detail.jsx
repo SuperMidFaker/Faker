@@ -87,7 +87,6 @@ export default class SHFTZRelDetail extends Component {
   }
   state = {
     reg: {},
-
     origDecl: [],
     decl: [],
     view: 'splitted',

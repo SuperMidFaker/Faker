@@ -59,8 +59,8 @@ export default class UploadLogsPanel extends React.Component {
   }
   columns = [
     {
-      title: this.msg('id'),
-      dataIndex: 'upload_no',
+      title: '上传文件',
+      dataIndex: 'filename',
     }, {
       title: this.msg('status'),
       dataIndex: 'status',
@@ -88,6 +88,7 @@ export default class UploadLogsPanel extends React.Component {
       dataIndex: 'file_size',
       align: 'right',
       width: 80,
+      render: size => size && `${(size / 1000).toFixed(1)}K`,
     }, {
       title: this.msg('fileType'),
       dataIndex: 'file_type',
@@ -138,6 +139,7 @@ export default class UploadLogsPanel extends React.Component {
           pageSize: pagination.pageSize,
           current: pagination.current,
           type: this.props.type,
+          filter: JSON.stringify(this.props.filter),
         };
         return params;
       },

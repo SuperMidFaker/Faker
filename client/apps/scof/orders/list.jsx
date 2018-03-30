@@ -367,7 +367,7 @@ export default class OrderList extends React.Component {
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
       title: '跟单人员',
-      dataindex: 'exec_login_id',
+      dataIndex: 'exec_login_id',
       width: 80,
       render: lid => <UserAvatar size="small" loginId={lid} />,
     }, {
