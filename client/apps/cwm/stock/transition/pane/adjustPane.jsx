@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { message, Button, Form, Row, Input, Col, InputNumber } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { adjustTransit } from 'common/reducers/cwmTransition';
+import FormPane from 'client/components/FormPane';
 
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -29,7 +30,7 @@ export default class AdjustPane extends React.Component {
   }
   handleAdjustQty = (value) => {
     const adjust = parseFloat(value);
-    if (!isNaN(adjust) && adjust !== 0) {
+    if (!isNaN(adjust) && adjust !== 0) { // eslint-disable-line
       const { detail } = this.props;
       if (detail.avail_qty + adjust > 0) {
         this.setState({ adjustQty: adjust, finalQty: detail.avail_qty + adjust });
@@ -40,7 +41,7 @@ export default class AdjustPane extends React.Component {
   }
   handleFinalQty = (value) => {
     const final = parseFloat(value);
-    if (!isNaN(final) && final > 0) {
+    if (!isNaN(final) && final > 0) { // eslint-disable-line
       const { detail } = this.props;
       this.setState({ adjustQty: final - detail.avail_qty, finalQty: final });
     } else {
@@ -65,28 +66,31 @@ export default class AdjustPane extends React.Component {
   render() {
     const { adjustQty, finalQty, reason } = this.state;
     return (
-      <div>
+      <FormPane descendant>
         <Row>
-          <Col span={24}>
+          <Col span={8}>
             <FormItem {...formItemLayout} label="增减数量">
-              <InputNumber min={-this.props.detail.avail_qty + 1} value={adjustQty}
-                onChange={this.handleAdjustQty} formatter={value => value > 0 ? `+${value}` : value}
+              <InputNumber
+                min={-this.props.detail.avail_qty + 1}
+                value={adjustQty}
+                onChange={this.handleAdjustQty}
+                formatter={value => (value > 0 ? `+${value}` : value)}
               />
             </FormItem>
           </Col>
-          <Col span={24}>
+          <Col span={8}>
             <FormItem {...formItemLayout} label="目标数量">
               <InputNumber min={1} value={finalQty} onChange={this.handleFinalQty} />
             </FormItem>
           </Col>
-          <Col span={24}>
+          <Col span={8}>
             <FormItem {...formItemLayout} label="调整原因">
               <Input value={reason} onChange={this.handleReasonChange} />
             </FormItem>
           </Col>
         </Row>
         <Button type="primary" onClick={this.handleAdjustTransit}>执行调整</Button>
-      </div>
+      </FormPane>
     );
   }
 }

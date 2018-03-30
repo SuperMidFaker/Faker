@@ -444,7 +444,7 @@ export default class StockTransitionList extends React.Component {
     const toolbarActions = (<span />);
     const bulkActions = (<span>
       <span>选中项库存数量共计 {selTotalStockQty} </span>
-      {listFilter.status === 'normal' && this.state.enableBatchTransit && <Button onClick={this.handleBatchTransit}>批量转移</Button>}
+      {listFilter.status === 'normal' && this.state.enableBatchTransit && <Button onClick={this.handleBatchTransit}>批量属性调整</Button>}
       {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
       {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
     </span>);
