@@ -7,6 +7,7 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import SearchBox from 'client/components/SearchBox';
 import SelectItem from './selectItem';
+import AnimTableBody from './animTableBody';
 import './style.less';
 
 function noop() {
@@ -341,6 +342,7 @@ class DataTable extends React.Component {
     const bodyClasses = classNames(`${baseCls}-body`, {
       [`${baseCls}-body-fixed`]: fixedBody,
     });
+    const animateBody = props => <AnimTableBody {...props} />;
     return (
       <div className={classes}>
         {showToolbar &&
@@ -371,6 +373,9 @@ class DataTable extends React.Component {
             onChange={this.handleTableChange}
             scroll={scrollProp}
             columns={this.state.tableColumns}
+            components={{
+              body: { wrapper: animateBody },
+            }}
           />
           {selectedRowKeys &&
             <div className={`${baseCls}-body-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
