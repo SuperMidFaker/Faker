@@ -376,6 +376,21 @@ export const DELG_STATUS = {
   finished: 4,
 };
 
+export const CMS_DELG_TODO = {
+  accepting: {
+    value: 0, text: '接单', icon: 'select', badge: 'default',
+  },
+  undeclared: {
+    value: 1, text: '制单', icon: 'file-text', badge: 'processing',
+  },
+  declared: {
+    value: 1, text: '申报', icon: 'export', badge: 'processing',
+  },
+  finished: {
+    value: 1, text: '完成', icon: 'check-square-o', badge: 'success',
+  },
+};
+
 export const CMS_DECL_STATUS = {
   proposed: {
     value: 0, text: '建议书', icon: 'file-text', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date',
@@ -414,6 +429,9 @@ export const CMS_DECL_TRACK = {
   },
   entered: {
     value: 3, text: '已回执', icon: 'mail', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
+  },
+  inspect: {
+    value: 5, text: '海关查验', icon: 'warning', badge: 'error', step: 4, stepDesc: '查验', date: 'clear_date',
   },
   released: {
     value: 4, text: '已放行', icon: 'flag', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',
