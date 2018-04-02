@@ -6,6 +6,7 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import PageHeader from 'client/components/PageHeader';
 import EditableCell from 'client/components/EditableCell';
 import { hideAdaptorDetailModal, updateColumnField, updateColumnDefault, updateAdaptor, delAdaptor } from 'common/reducers/hubDataAdapter';
+import { loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -20,8 +21,14 @@ const { confirm } = Modal;
   adaptor: state.hubDataAdapter.adaptor,
   visible: state.hubDataAdapter.adaptorDetailModal.visible,
   customers: state.partner.partners,
+  flows: state.scofFlow.partnerFlows,
 }), {
-  hideAdaptorDetailModal, updateColumnField, updateColumnDefault, updateAdaptor, delAdaptor,
+  hideAdaptorDetailModal,
+  updateColumnField,
+  updateColumnDefault,
+  updateAdaptor,
+  delAdaptor,
+  loadPartnerFlowList,
 })
 @Form.create()
 export default class AdaptorDetailModal extends Component {
@@ -38,12 +45,8 @@ export default class AdaptorDetailModal extends Component {
     },
     contentHeight: 0,
   }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        contentHeight: window.innerHeight - 150,
-      });
-    }
+  componentDidMount() {
+    this.props.loadPartnerFlowList({ partnerId: this.props.adaptor.owner_partner_id });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && this.props.adaptor.columns !== nextProps.adaptor.columns) {
@@ -77,6 +80,11 @@ export default class AdaptorDetailModal extends Component {
         lineData, scrollX, columnDefaults: nextProps.adaptor.columnDefaults,
       });
     }
+    if (nextProps.visible && !this.props.visible) {
+      this.setState({
+        contentHeight: window.innerHeight - 150,
+      });
+    }
   }
   msg = formatMsg(this.props.intl)
   toggleRightSider = () => {
@@ -86,6 +94,9 @@ export default class AdaptorDetailModal extends Component {
   }
   handleCancel = () => {
     this.props.hideAdaptorDetailModal();
+  }
+  handleCustomerChange = (customerPartnerId) => {
+    this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
   }
   handleFieldMap = (columnId, field, dataIndex) => {
     this.props.updateColumnField(columnId, { field: field || null });
@@ -165,6 +176,7 @@ export default class AdaptorDetailModal extends Component {
       adaptorValues.owner_tenant_id = null;
       adaptorValues.owner_partner_id = null;
     }
+    adaptorValues.flow_ids = adaptorValues.flow_ids ? adaptorValues.flow_ids.join(',') : '';
     if (adaptorValues.delimiter && this.props.adaptor.csv_option) {
       const option = JSON.parse(this.props.adaptor.csv_option);
       option.delimiter = adaptorValues.delimiter;
@@ -222,7 +234,7 @@ export default class AdaptorDetailModal extends Component {
   }
   render() {
     const {
-      form: { getFieldDecorator }, visible, adaptor, customers,
+      form: { getFieldDecorator }, visible, adaptor, customers, flows,
     } = this.props;
     const {
       lineData, scrollX, columnDefaults, mappingModal,
@@ -448,9 +460,17 @@ export default class AdaptorDetailModal extends Component {
                       <FormItem label={this.msg('relatedPartner')} >
                         {getFieldDecorator('owner_partner_id', {
                           initialValue: adaptor.owner_partner_id,
-                        })(<Select allowClear>
+                        })(<Select allowClear onChange={this.handleCustomerChange}>
                           {customers.map(cus =>
                             <Option value={cus.id} key={cus.id}>{cus.name}</Option>)}
+                        </Select>)}
+                      </FormItem>
+                      <FormItem label={this.msg('relatedFlows')} >
+                        {getFieldDecorator('flow_ids', {
+                          initialValue: adaptor.flow_ids ? adaptor.flow_ids.split(',') : null,
+                        })(<Select allowClear mode="multiple" showSearch>
+                          {flows.map(flow => (<Option value={String(flow.id)} key={String(flow.id)}>
+                            {flow.name}</Option>))}
                         </Select>)}
                       </FormItem>
                     </Panel>

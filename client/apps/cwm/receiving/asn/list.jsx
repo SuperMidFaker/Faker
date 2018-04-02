@@ -91,7 +91,7 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '客户单号',
     width: 240,
-    dataIndex: 'po_no',
+    dataIndex: 'cust_order_no',
   }, {
     title: '货主',
     dataIndex: 'owner_name',
@@ -429,9 +429,6 @@ export default class ReceivingASNList extends React.Component {
       />
     </span>);
     const bulkActions = filters.status === 'pending' && <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
-    /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
-      : <a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>;
-      */
     return (
       <Layout>
         <PageHeader

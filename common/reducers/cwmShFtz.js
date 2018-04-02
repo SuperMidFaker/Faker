@@ -285,7 +285,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         rel_regs: state.rel_regs.map((rr) => {
           if (rr.pre_entry_seq_no === action.data.preEntrySeqNo) {
-            return { ...rr, cus_decl_no: action.data.cusDeclNo };
+            return { ...rr, cus_decl_no: action.data.cusDeclNo, status: 6 };
           }
           return rr;
         }),

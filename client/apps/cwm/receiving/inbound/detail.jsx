@@ -187,7 +187,7 @@ export default class ReceiveInbound extends Component {
           <Drawer top onCollapseChange={this.handleCollapseChange}>
             <DescriptionList col={4}>
               <Description term="货主">{inboundHead.owner_name}</Description>
-              <Description term="ASN编号">{inboundHead.asn_no}</Description>
+              <Description term="客户单号">{inboundHead.cust_order_no}</Description>
               <Description term="总预期数量">{inboundHead.total_expect_qty}</Description>
               <Description term="总实收数量">{inboundHead.total_received_qty}</Description>
               <Description term="总立方数">

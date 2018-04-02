@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -85,7 +84,6 @@ export default class DetailsPane extends Component {
     const {
       editable, temporaryDetails, detailEnable, form, units, currencies,
     } = this.props;
-    const poNo = form.getFieldValue('po_no');
     const ownerPartnerId = form.getFieldValue('owner_partner_id');
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -166,7 +164,6 @@ export default class DetailsPane extends Component {
     }];
     return (
       <DataPane
-
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -197,7 +194,6 @@ export default class DetailsPane extends Component {
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <AddDetailModal
-          poNo={poNo}
           product={this.state.editRecord}
           edit={this.state.edit}
           selectedOwner={this.props.selectedOwner}
