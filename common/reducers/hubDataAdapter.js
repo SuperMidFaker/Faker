@@ -79,7 +79,7 @@ export function loadAdaptors(ownerPid, models, pageSize, current, filter) {
   };
 }
 
-export function loadModelAdaptors(ownerPid, models) {
+export function loadModelAdaptors(ownerPid, models, flowId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -90,7 +90,7 @@ export function loadModelAdaptors(ownerPid, models) {
       endpoint: 'v1/saas/linefile/model/adaptors',
       method: 'get',
       params: {
-        ownerPid, models: JSON.stringify(models),
+        ownerPid, models: JSON.stringify(models), flowId,
       },
     },
   };

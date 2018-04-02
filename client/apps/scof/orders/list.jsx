@@ -292,10 +292,13 @@ export default class OrderList extends React.Component {
   }
   handleImportClientChange = (customerPartnerId) => {
     this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
-    this.props.loadModelAdaptors(customerPartnerId, [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key]);
     this.setState({ importPanel: { ...this.state.importPanel, partner_id: customerPartnerId } });
   }
   handleImportFlowChange = (flowId) => {
+    this.props.loadModelAdaptors(
+      this.state.importPanel.partner_id,
+      [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key], flowId
+    );
     this.setState({ importPanel: { ...this.state.importPanel, flow_id: flowId } });
   }
   handleCheckUpload = (msg) => {
@@ -517,13 +520,27 @@ export default class OrderList extends React.Component {
           visible={importPanel.visible}
           endpoint={`${API_ROOTS.default}v1/sof/order/import`}
           formData={{ customer_partner_id: importPanel.partner_id, flow_id: importPanel.flow_id }}
-          onClose={() => { this.setState({ importPanel: { visible: false } }); }}
+          onClose={() => {
+            this.setState({
+              importPanel: {
+                visible: false,
+                customer_tenant_id: null,
+                flow_id: null,
+              },
+            });
+          }}
           onBeforeUpload={this.handleCheckUpload}
           onUploaded={() => {
-            this.setState({ importPanel: { visible: false } });
+            this.setState({
+              importPanel: {
+                visible: false,
+                customer_tenant_id: null,
+                flow_id: null,
+              },
+            });
             this.handleTableLoad();
             this.props.setUploadRecordsReload(true);
-}}
+          }}
           template={`${XLSX_CDN}/订单导入模板.xlsx`}
         >
           <Form.Item label="客户">
