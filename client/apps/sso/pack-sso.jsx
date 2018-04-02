@@ -47,7 +47,10 @@ export default class SSOPack extends React.Component {
         </Content>
         <Footer style={{ textAlign: 'center' }}>
           <div>
-            <a rel="noopener noreferrer" href="https://welogix.cn" target="_blank">上海微骆信息科技有限公司</a>
+            <a rel="noopener noreferrer" href="https://welogix.cn" target="_blank">Copyright © 2016-2018 WeLogix</a>
+          </div>
+          <div className="ack">
+            <a rel="noopener noreferrer" href="http://moorworld.com/?p=6165" target="_blank">Photo by moorworld</a>
           </div>
         </Footer>
       </Layout>);
