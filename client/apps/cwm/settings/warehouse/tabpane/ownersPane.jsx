@@ -10,14 +10,15 @@ import { loadWhse } from 'common/reducers/cwmContext';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ImportDataPanel from 'client/components/ImportDataPanel';
-import WhseOwnersModal from '../modal/whseOwnersModal';
-import OwnerControlModal from '../modal/ownerControlModal';
+
 import { createFilename } from 'client/util/dataTransform';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { WHSE_OPERATION_MODES } from 'common/constants';
+import WhseOwnersModal from '../modal/whseOwnersModal';
+import OwnerControlModal from '../modal/ownerControlModal';
 import { formatMsg } from '../message.i18n';
 
-const confirm = Modal.confirm;
+const { confirm } = Modal;
 
 @injectIntl
 @connect(
@@ -30,7 +31,12 @@ const confirm = Modal.confirm;
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   {
-    showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition,
+    showWhseOwnersModal,
+    loadwhseOwners,
+    showOwnerControlModal,
+    changeOwnerStatus,
+    loadWhse,
+    clearTransition,
   }
 )
 export default class OwnersPane extends Component {
@@ -46,15 +52,14 @@ export default class OwnersPane extends Component {
     })),
   }
   state = {
-    selectedRowKeys: [],
     importPanelVisible: false,
-    selectedOwner: {},
   }
   componentWillMount() {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.whseCode !== this.props.whseCode || nextProps.warehouse.whse_mode !== this.props.warehouse.whse_mode) {
+    if (nextProps.whseCode !== this.props.whseCode
+      || nextProps.warehouse.whse_mode !== this.props.warehouse.whse_mode) {
       this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
@@ -142,7 +147,7 @@ export default class OwnersPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        <RowAction onClick={this.handleOwnerControl} icon="tool" label="控制属性" row={record} />
+        <RowAction onClick={this.handleOwnerControl} icon="tool" tooltip="控制属性" row={record} />
         {record.active === 0 ?
           <RowAction onClick={() => this.changeOwnerStatus(record.id, true)} icon="play-circle" tooltip="启用" row={record} /> :
           <RowAction onClick={() => this.changeOwnerStatus(record.id, false)} icon="pause-circle" tooltip="停用" row={record} />}

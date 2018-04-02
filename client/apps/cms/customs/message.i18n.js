@@ -160,7 +160,7 @@ const messages = defineMessages({
   },
   sendDeclMsg: {
     id: 'cms.customs.decl.send.decl.msg',
-    defaultMessage: '发送申报',
+    defaultMessage: '申报',
   },
   markReleased: {
     id: 'cms.customs.decl.mark.released',
@@ -334,9 +334,13 @@ const messages = defineMessages({
     id: 'cms.customs.decl.tabpanes.tax.exchange.rate',
     defaultMessage: '汇率',
   },
-  viewDetail: {
-    id: 'cms.customs.decl.op.view.detail',
-    defaultMessage: '详情',
+  viewProposal: {
+    id: 'cms.customs.decl.op.view.proposal',
+    defaultMessage: '报关建议书',
+  },
+  viewCCD: {
+    id: 'cms.customs.decl.op.view.ccd',
+    defaultMessage: '报关单',
   },
   save: {
     id: 'cms.customs.decl.save',

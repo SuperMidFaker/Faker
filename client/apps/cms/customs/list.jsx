@@ -19,7 +19,7 @@ import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { Logixon } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
@@ -81,7 +81,7 @@ export default class CustomsList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    currentStatus: 'all',
+    currentFilter: 'all',
     selectedRows: [],
     selectedRowKeys: [],
   }
@@ -319,19 +319,23 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
-            <RowAction onClick={this.handleDetail} icon="eye-o" label={this.msg('viewDetail')} row={record} />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowAction onClick={this.handleReview} icon="check-circle-o" tooltip={this.msg('review')}row={record} />
+              <RowAction onClick={this.handleReview} icon="check-circle-o" label={this.msg('review')}row={record} />
             </PrivilegeCover>
+            <RowAction onClick={this.handleDetail} icon="eye-o" tooltip={this.msg('viewProposal')} row={record} />
           </span>
         );
       }
-      const spanElems = [];
       if (record.status === CMS_DECL_STATUS.reviewed.value) {
-        spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-          <RowAction onClick={this.showSendDeclModal} icon="mail" tooltip={this.msg('sendDeclMsg')} row={record} />
-        </PrivilegeCover>);
+        return (
+          <span>
+            <PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
+              <RowAction onClick={this.showSendDeclModal} icon="mail" label={this.msg('sendDeclMsg')} row={record} />
+            </PrivilegeCover>
+            <RowAction onClick={this.handleDetail} icon="eye-o" tooltip={this.msg('viewProposal')} row={record} />
+          </span>);
       }
+      const spanElems = [];
       if (record.status === CMS_DECL_STATUS.sent.value) {
         spanElems.push(<RowAction
           key="sent"
@@ -362,7 +366,7 @@ export default class CustomsList extends Component {
         />);
       }
       return (<span>
-        <RowAction onClick={this.handleDetail} icon="eye-o" label={this.msg('viewDetail')} row={record} />
+        <RowAction onClick={this.handleDetail} icon="eye-o" tooltip={this.msg('viewCCD')} row={record} />
         {spanElems}
       </span>);
     },
@@ -422,11 +426,11 @@ export default class CustomsList extends Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [], selectedRows: [] });
   }
-  handleStatusFilter = (ev) => {
-    this.setState({ currentStatus: ev.key });
+  handleFilterChange = (ev) => {
     if (ev.key === this.props.listFilter.status) {
       return;
     }
+    this.setState({ currentFilter: ev.key });
     const filter = { ...this.props.listFilter, status: ev.key };
     this.handleDeselectRows();
     this.handleTableLoad(1, filter);
@@ -642,11 +646,9 @@ export default class CustomsList extends Component {
           </PageHeader>
           <Layout>
             <Drawer width={160}>
-              <Menu mode="inline" selectedKeys={[this.state.currentStatus]} onClick={this.handleStatusFilter}>
-                <Menu.Item key="all">
-                  <Icon type="inbox" /> {this.msg('all')}
-                </Menu.Item>
-                <Menu.ItemGroup key="gTodo" title="制单申报">
+              <Menu mode="inline" selectedKeys={[this.state.currentFilter]} onClick={this.handleFilterChange}>
+                <Menu.Item key="all">{this.msg('all')}</Menu.Item>
+                <Menu.ItemGroup key="gTodo" title="复核申报">
                   {Object.keys(CMS_DECL_TODO).map(declkey =>
                   (<Menu.Item key={declkey}>
                     <Icon type={CMS_DECL_TODO[declkey].icon} /> {CMS_DECL_TODO[declkey].text}
@@ -657,16 +659,7 @@ export default class CustomsList extends Component {
                   (<Menu.Item key={declkey}>
                     <Icon type={CMS_DECL_TRACK[declkey].icon} /> {CMS_DECL_TRACK[declkey].text}
                   </Menu.Item>))}
-                  <Menu.Item key="inspect">
-                    <Icon type="warning" />{this.msg('customsCheck')}
-                  </Menu.Item>
                 </Menu.ItemGroup>
-                <Menu.SubMenu key="gType" title={<span><Icon type="folder" /><span>报关类型</span></span>}>
-                  {Object.keys(DECL_TYPE).map(declType =>
-                  (<Menu.Item key={DECL_TYPE[declType].key}>
-                    {DECL_TYPE[declType].value}
-                  </Menu.Item>))}
-                </Menu.SubMenu>
               </Menu>
             </Drawer>
             <Content className="page-content" key="main">

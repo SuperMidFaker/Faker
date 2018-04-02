@@ -138,7 +138,13 @@ export default class ImportDataPanel extends React.Component {
     }
     formData.skipMode = skipMode;
     return (
-      <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose} className="welo-import-data-panel">
+      <DockPanel
+        title={title || '导入'}
+        size="middle"
+        visible={visible}
+        onClose={this.handleClose}
+        className="welo-import-data-panel"
+      >
         <Steps direction="vertical" size="small">
           <Step title="设置选项" status="wait" description={this.renderOptions()} />
           {adaptor === '' &&
