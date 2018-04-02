@@ -219,6 +219,11 @@ export default class OwnerControlModal extends Component {
     }
     this.setState({ suBarcodeSetting });
   }
+  handleSubarFieldChange = (field, changedVal) => {
+    const suBarcodeSetting = { ...this.state.suBarcodeSetting };
+    suBarcodeSetting[field] = changedVal;
+    this.setState({ suBarcodeSetting });
+  }
   handleSuSettingCancel = () => {
     const suBarcodeSetting = { ...this.state.suBarcodeBackup };
     this.setState({
@@ -441,6 +446,12 @@ export default class OwnerControlModal extends Component {
               onChange={this.handleChangeSuField}
               field="attrib_4_string"
             />
+            <FormItem {...formItemLayout} label="保存键">
+              <Input value={suBarcodeSetting.submit_key} onChange={ev => this.handleSubarFieldChange('submit_key', ev.target.value)} />
+            </FormItem>
+            <FormItem {...formItemLayout} label="切换库位扫码键">
+              <Input value={suBarcodeSetting.location_focus_key} onChange={ev => this.handleSubarFieldChange('location_focus_key', ev.target.value)} />
+            </FormItem>
           </Form>
         </Modal>}
       </Modal>

@@ -138,6 +138,15 @@ export default class SuBarPutawayModal extends Component {
     if (ev.key === 'Enter') {
       const barcode = ev.target.value;
       const suSetting = this.props.inboundHead.su_setting;
+      if (barcode === suSetting.submit_key) {
+        this.handleSubmit();
+        this.emptySuInputElement();
+        return;
+      } else if (barcode === suSetting.location_focus_key && this.locationInputRef) {
+        this.emptySuInputElement();
+        this.locationInputRef.focus();
+        return;
+      }
       const suKeys = ['serial_no', 'product_no'];
       Object.keys(suSetting).forEach((suKey) => {
         if (suSetting[suKey].enabled === true || suSetting[suKey].enabled === 'subarcode') {
@@ -200,6 +209,11 @@ export default class SuBarPutawayModal extends Component {
     this.setState({
       location: ev.target.value,
     });
+  }
+  handleScanLocationKeyDown= (ev) => {
+    if (ev.key === 'Enter' && this.suInputRef) {
+      this.suInputRef.focus();
+    }
   }
   barColumns = [{
     title: '序号',
@@ -279,6 +293,7 @@ export default class SuBarPutawayModal extends Component {
                 ref={this.handleLocationInputRef}
                 value={location}
                 onChange={this.handleScanLocationChange}
+                onKeyDown={this.handleScanLocationKeyDown}
               />
             </FormItem>
           </Form>

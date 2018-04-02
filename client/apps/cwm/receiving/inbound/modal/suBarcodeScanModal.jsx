@@ -259,6 +259,11 @@ export default class SuBarcodeScanModal extends Component {
       const suScan = { ...this.state.scanRecv };
       suScan.su_barcode = ev.target.value;
       const suSetting = this.props.inboundHead.su_setting;
+      if (suScan.su_barcode === suSetting.submit_key) {
+        this.handleSubmit();
+        this.emptySuInputElement();
+        return;
+      }
       const suKeys = ['serial_no', 'product_no'];
       Object.keys(suSetting).forEach((suKey) => {
         if (suSetting[suKey].enabled === true || suSetting[suKey].enabled === 'subarcode') {
