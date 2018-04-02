@@ -9,22 +9,20 @@ import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid, getShipm
 import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
+import { createFilename } from 'client/util/dataTransform';
+import { format } from 'client/common/i18n/helpers';
 import ASNPane from './tabpane/asnPane';
 import FTZPane from './tabpane/ftzPane';
 import InboundPane from './tabpane/inboundPane';
-import { createFilename } from 'client/util/dataTransform';
-import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 @injectIntl
 @connect(
   state => ({
-    dock: state.cwmReceive.dock,
     visible: state.cwmReceive.dock.visible,
-    tabKey: state.cwmReceive.dock.tabKey,
     asn: state.cwmReceive.dock.asn,
     uuid: state.cwmReceive.dock.asn.uuid,
   }),
@@ -44,8 +42,6 @@ export default class ReceivingDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    tabKey: PropTypes.string,
-    dock: PropTypes.object.isRequired,
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
     cancelAsn: PropTypes.func.isRequired,
@@ -124,24 +120,6 @@ export default class ReceivingDockPanel extends React.Component {
   handleExportExcel = () => {
     window.open(`${API_ROOTS.default}v1/cwm/receiving/exportAsnExcel/${createFilename('asn')}.xlsx?asnNo=${this.props.asn.asn_no}`);
   }
-  renderStatus(status) {
-    switch (status) {
-      case CWM_ASN_STATUS.PENDING.value: return CWM_ASN_STATUS.PENDING.badge;
-      case CWM_ASN_STATUS.INBOUND.value: return CWM_ASN_STATUS.INBOUND.badge;
-      case CWM_ASN_STATUS.DISCREPANT.value: return CWM_ASN_STATUS.DISCREPANT.badge;
-      case CWM_ASN_STATUS.COMPLETED.value: return CWM_ASN_STATUS.COMPLETED.badge;
-      default: return 'default';
-    }
-  }
-  renderStatusMsg(status) {
-    switch (status) {
-      case CWM_ASN_STATUS.PENDING.value: return CWM_ASN_STATUS.PENDING.text;
-      case CWM_ASN_STATUS.INBOUND.value: return CWM_ASN_STATUS.INBOUND.text;
-      case CWM_ASN_STATUS.DISCREPANT.value: return CWM_ASN_STATUS.DISCREPANT.text;
-      case CWM_ASN_STATUS.COMPLETED.value: return CWM_ASN_STATUS.COMPLETED.text;
-      default: return '';
-    }
-  }
   renderTitle = () => {
     const { uuid, asn } = this.props;
     const button = uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
@@ -185,7 +163,7 @@ export default class ReceivingDockPanel extends React.Component {
           <InfoItem label="货主" field={asnHead.owner_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="采购订单号/海关备案号" field={asnHead.po_no} />
+          <InfoItem label="客户订单号" field={asnHead.cust_order_no} />
         </Col>
         <Col span="2">
           <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />
@@ -198,7 +176,8 @@ export default class ReceivingDockPanel extends React.Component {
   renderMenu() {
     const { asnHead } = this.state;
     const menuItems = [];
-    if (asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) {
+    if (asnHead.status === CWM_ASN_STATUS.PENDING.value
+      || asnHead.status === CWM_ASN_STATUS.INBOUND.value) {
       menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消ASN</Menu.Item>);
     } else if (asnHead.status === CWM_ASN_STATUS.DISCREPANT.value) {
       menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭ASN</Menu.Item>);
@@ -209,14 +188,22 @@ export default class ReceivingDockPanel extends React.Component {
   render() {
     const { visible } = this.props;
     const { asnHead } = this.state;
+    let asnStatusBadage = 'default';
+    let asnStatusMsg = '';
+    Object.keys(CWM_ASN_STATUS).forEach((statusKey) => {
+      if (CWM_ASN_STATUS[statusKey].value === asnHead.status) {
+        asnStatusBadage = CWM_ASN_STATUS[statusKey].badge;
+        asnStatusMsg = CWM_ASN_STATUS[statusKey].text;
+      }
+    });
     return (
       <DockPanel
         size="large"
         visible={visible}
         onClose={this.props.hideDock}
         title={this.renderTitle()}
-        status={this.renderStatus(asnHead.status)}
-        statusText={this.renderStatusMsg(asnHead.status)}
+        status={asnStatusBadage}
+        statusText={asnStatusMsg}
         overlay={this.renderMenu()}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}

@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 
@@ -50,8 +50,8 @@ export default class Print extends Component {
       text: '入库单', style: 'tableHeader', colSpan: 6, alignment: 'center',
     }, {}, {}, {}, {}, {});
     pdf.push(header);
-    pdf.push([{ text: '入库单号', style: 'table' }, { text: inboundNo, style: 'table' }, { text: '采购订单号', style: 'table' },
-      { text: inboundHead.po_no, style: 'table' }, { text: '入库日期', style: 'table' }, { text: '', style: 'table' }]);
+    pdf.push([{ text: '入库单号', style: 'table' }, { text: inboundNo, style: 'table' }, { text: '客户订单号', style: 'table' },
+      { text: inboundHead.cust_order_no, style: 'table' }, { text: '入库日期', style: 'table' }, { text: '', style: 'table' }]);
     pdf.push([{ text: '货物属性', style: 'table' }, { text: inboundHead.bonded ? '保税' : '非保税', style: 'table' }, { text: '客户', style: 'table' },
       { text: inboundHead.owner_name, style: 'table' }, { text: '仓库', style: 'table' }, { text: defaultWhse.name, style: 'table' }]);
     pdf.push([{ text: '件数', style: 'table' }, { text: inboundHead.total_expect_qty, style: 'table' }, { text: '提运单号', style: 'table' },
@@ -72,7 +72,8 @@ export default class Print extends Component {
       { text: '实际数量', style: 'table', alignment: 'center' }, { text: '建议库位', style: 'table', alignment: 'center' },
       { text: '实际库位', style: 'table', alignment: 'center' }, { text: '扩展属性1', style: 'table', alignment: 'center' }]);
     for (let i = 0; i < inboundProducts.length; i++) {
-      pdf.push([i + 1, inboundProducts[i].name, inboundProducts[i].product_no, inboundProducts[i].expect_qty,
+      pdf.push([i + 1, inboundProducts[i].name, inboundProducts[i].product_no,
+        inboundProducts[i].expect_qty,
         '', '', inboundProducts[i].location, '']);
     }
     pdf.push(['合计', '', '', inboundHead.total_expect_qty, '', '', '', '']);
@@ -125,7 +126,11 @@ export default class Print extends Component {
       },
       {
         style: 'table',
-        table: { widths: [40, 100, 60, 50, 50, 50, 50, 50], headerRows: 1, body: this.pdfInboundDetails() },
+        table: {
+          widths: [40, 100, 60, 50, 50, 50, 50, 50],
+          headerRows: 1,
+          body: this.pdfInboundDetails(),
+        },
       },
       {
         style: 'table',
@@ -146,9 +151,6 @@ export default class Print extends Component {
       },
     };
     window.pdfMake.createPdf(docDefinition).open();
-    this.setState({
-      printed: true,
-    });
   }
   render() {
     return (

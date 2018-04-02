@@ -29,9 +29,17 @@ exports.commonTraceColumns = (intl) => {
     width: 160,
     sorter: true,
   }, {
+    title: msg('inCustOrderNo'),
+    width: 150,
+    dataIndex: 'cust_order_no',
+  }, {
     title: msg('poNo'),
     width: 150,
     dataIndex: 'po_no',
+  }, {
+    title: msg('invoiceNo'),
+    width: 150,
+    dataIndex: 'invoice_no',
   }, {
     title: msg('asnNo'),
     width: 150,
@@ -54,7 +62,8 @@ exports.commonTraceColumns = (intl) => {
     title: msg('damageLevel'),
     width: 120,
     dataIndex: 'damage_level',
-    render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
+    render: dl => (dl || dl === 0) &&
+    <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
     title: msg('expiryDate'),
     width: 120,

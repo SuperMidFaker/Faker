@@ -262,7 +262,7 @@ export default class OrderDetailsPane extends React.Component {
       out['分配数量'] = dv.alloc_qty;
       out['计量单位'] = units.length > 0 && dv.unit ? units.find(unit => unit.code === dv.unit).name : '';
       out['库别'] = dv.virtual_whse;
-      out['入库单号'] = dv.po_no;
+      out['采购订单号'] = dv.po_no;
       out['批次号'] = dv.external_lot_no;
       out['产品序列号'] = dv.serial_no;
       out['供应商'] = dv.supplier;

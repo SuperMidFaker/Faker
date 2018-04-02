@@ -10,14 +10,14 @@ import { loadWhse } from 'common/reducers/cwmContext';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import ExcelUploader from 'client/components/ExcelUploader';
+import { createFilename } from 'client/util/dataTransform';
+import { WHSE_OPERATION_MODES } from 'common/constants';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
-import { createFilename } from 'client/util/dataTransform';
-import ExcelUploader from 'client/components/ExcelUploader';
-import { WHSE_OPERATION_MODES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
-const confirm = Modal.confirm;
+const { confirm } = Modal;
 
 @injectIntl
 @connect(
@@ -30,7 +30,12 @@ const confirm = Modal.confirm;
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   {
-    showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition,
+    showWhseOwnersModal,
+    loadwhseOwners,
+    showOwnerControlModal,
+    changeOwnerStatus,
+    loadWhse,
+    clearTransition,
   }
 )
 export default class OwnersPane extends Component {
@@ -46,15 +51,14 @@ export default class OwnersPane extends Component {
     })),
   }
   state = {
-    selectedRowKeys: [],
     importPanelVisible: false,
-    selectedOwner: {},
   }
   componentWillMount() {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.whseCode !== this.props.whseCode || nextProps.warehouse.whse_mode !== this.props.warehouse.whse_mode) {
+    if (nextProps.whseCode !== this.props.whseCode ||
+      nextProps.warehouse.whse_mode !== this.props.warehouse.whse_mode) {
       this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
@@ -228,7 +232,7 @@ export default class OwnersPane extends Component {
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}
-          template={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}
+          template={`${XLSX_CDN}/ASN库存导入模板201804.xlsx`}
         />
       </DataPane>
     );

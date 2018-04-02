@@ -572,7 +572,6 @@ export default class FlowDesigner extends React.Component {
       }
     });
     const nodes = Object.keys(nodeMap).map(nodeid => nodeMap[nodeid]);
-    console.log(nodes, edges);
     // todo graph node edge disconnected
     this.props.saveFlowGraph(
       this.props.currentFlow.id, nodes, edges, trackingId,
