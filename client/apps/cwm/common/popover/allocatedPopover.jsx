@@ -44,9 +44,9 @@ export default class allocatedPopover extends Component {
     dataIndex: 'picked_qty',
     align: 'right',
   }, {
-    title: '采购订单号',
+    title: '入库订单号',
     width: 120,
-    dataIndex: 'po_no',
+    dataIndex: 'asn_cust_order_no',
   }]
   msg = key => formatMsg(this.props.intl, key);
   handleVisibleChange = (visible) => {
