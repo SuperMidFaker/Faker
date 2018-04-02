@@ -118,9 +118,17 @@ const messages = defineMessages({
     id: 'cwm.stock.trace.id',
     defaultMessage: '追踪ID',
   },
+  inCustOrderNo: {
+    id: 'cwm.stock.in.custorderno',
+    defaultMessage: '入库单号',
+  },
   poNo: {
     id: 'cwm.stock.po.no',
     defaultMessage: '采购订单号',
+  },
+  invoiceNo: {
+    id: 'cwm.stock.invoice.no',
+    defaultMessage: '发票号',
   },
   asnNo: {
     id: 'cwm.stock.asn.no',

@@ -259,6 +259,11 @@ export default class AllocatingModal extends Component {
     width: 100,
     render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
+    title: '入库客户单号',
+    dataIndex: 'cust_order_no',
+    width: 100,
+    render: o => <TrimSpan text={o} maxLen={15} />,
+  }, {
     title: 'ASN编号',
     dataIndex: 'asn_no',
     width: 100,
@@ -516,6 +521,7 @@ export default class AllocatingModal extends Component {
         external_lot_no: false,
         serial_no: false,
         po_no: false,
+        cust_order_no: false,
         asn_no: false,
         ftz_ent_no: false,
         in_cus_decl_no: false,
@@ -550,7 +556,7 @@ export default class AllocatingModal extends Component {
       filters = { ...this.state.filters, startTime: dataString[0], endTime: dataString[1] };
     }
     if (filters.searchContent) {
-      if (['external_lot_no', 'serial_no', 'asn_no', 'po_no', 'ftz_ent_no', 'in_cus_decl_no'].indexOf(filters.searchType) > 0) {
+      if (['external_lot_no', 'serial_no', 'asn_no', 'po_no', 'cust_order_no', 'ftz_ent_no', 'in_cus_decl_no'].indexOf(filters.searchType) > 0) {
         const reg = new RegExp(filters.searchContent);
         inventoryData = inventoryData.filter(data => reg.test(data[filters.searchType]));
       }
@@ -602,6 +608,7 @@ export default class AllocatingModal extends Component {
         <Option value="serial_no">序列号</Option>
         <Option value="po_no">采购订单号</Option>
         <Option value="asn_no">ASN编号</Option>
+        <Option value="cust_order_no">入库客户单号</Option>
         <Option value="ftz_ent_no">进区凭单号</Option>
         <Option value="in_cus_decl_no">报关单号</Option>
       </Select>

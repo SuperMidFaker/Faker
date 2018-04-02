@@ -867,9 +867,9 @@ export function getSuppliers(whseCode, ownerPartnerId) {
         actionTypes.GET_SUPPLIERS_SUCCEED,
         actionTypes.GET_SUPPLIERS_FAIL,
       ],
-      endpoint: 'v1/cwm/get/suppliers',
+      endpoint: 'v1/cwm/whse/owner/suppliers',
       method: 'get',
-      params: { whseCode, ownerPartnerId },
+      params: { whseCode, ownerPid: ownerPartnerId },
     },
   };
 }

@@ -186,7 +186,7 @@ export default class ReceiveDetailsPane extends React.Component {
     render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>
       {CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
-    title: '客户单号',
+    title: '采购订单号',
     dataIndex: 'po_no',
     width: 150,
   }, {

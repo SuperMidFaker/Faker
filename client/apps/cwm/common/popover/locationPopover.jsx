@@ -99,9 +99,10 @@ export default class LocationPopover extends Component {
         </Tabs>
       </div>
     );
+    const { loadAdviceLocations: _, loadLimitLocations: __, ...restProps } = this.props;
     return (
       <Popover content={content} trigger="click" placement="bottom" visible={this.state.visible} onVisibleChange={this.handleVisibleChange} overlayStyle={{ width: 248 }}>
-        <Input {...this.props} value={this.props.value} placeHolder="请选择库位" />
+        <Input {...restProps} value={this.props.value} placeholder="请选择库位" />
       </Popover>
     );
   }

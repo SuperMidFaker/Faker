@@ -33,7 +33,7 @@ export default class ShippingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
-    shipMode: PropTypes.oneOf(['single', 'batch', 'batchSo']).isRequired,
+    shipMode: PropTypes.oneOf(['single', 'batch', 'batchSo']),
     selectedRows: PropTypes.arrayOf(PropTypes.oneOfType([
       PropTypes.shape({ picked_qty: PropTypes.number }),
       PropTypes.string])),
@@ -115,7 +115,7 @@ export default class ShippingModal extends Component {
     const { shippingMode } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
-      wrapperCol: { span: 14 },
+      wrapperCol: { span: 18 },
     };
     return (
       <Modal maskClosable={false} title="发货确认" onOk={this.handleSubmit} onCancel={this.handleCancel} confirmLoading={submitting} visible={this.props.visible}>
@@ -124,12 +124,13 @@ export default class ShippingModal extends Component {
             <Radio.Group value={shippingMode} onChange={this.handleChange}>
               <Radio.Button value={0}>配送单发货</Radio.Button>
               <Radio.Button value={1}>装车单发货</Radio.Button>
+              <Radio.Button value={2}>客户自提</Radio.Button>
             </Radio.Group>
           </FormItem>
           <FormItem {...formItemLayout} label="配送面单号">
             {
               getFieldDecorator('waybill', {
-                rules: [{ required: true, messages: '面单号必填' }],
+                rules: [{ required: shippingMode !== 2, messages: '面单号必填' }],
               })(<Input />)
             }
           </FormItem>

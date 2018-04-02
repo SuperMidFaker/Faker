@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -14,7 +13,7 @@ import { formatMsg } from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -30,7 +29,7 @@ const RadioGroup = Radio.Group;
 export default class HeadCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     handleOwnerChange: PropTypes.func,
   }
   componentWillReceiveProps(nextProps) {
@@ -85,20 +84,20 @@ export default class HeadCard extends Component {
           <Col sm={24} lg={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
-                rules: [{ required: true, message: 'Please select customer!' }],
+                rules: [{ required: true, message: '请选择货主' }],
                 initialValue: asnHead && asnHead.owner_partner_id,
               })(<Select placeholder="选择货主" onSelect={this.handleSelect}>
-                {
-                    owners.map(owner => <Option value={owner.id} key={owner.id}>{owner.name}</Option>)
-                  }
+                {owners.map(owner => (<Option value={owner.id} key={owner.id}>
+                  {owner.name}</Option>))}
               </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
             <FormItem label="预期到货日期" >
               {getFieldDecorator('expect_receive_date', {
- rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-                initialValue: (asnHead && asnHead.expect_receive_date) ? moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
+ rules: [{ type: 'object', required: true, message: '收货日期必填' }],
+                initialValue: (asnHead && asnHead.expect_receive_date) ?
+                moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
@@ -112,16 +111,17 @@ export default class HeadCard extends Component {
                 showArrow
                 optionFilterProp="searchText"
                 disabled={this.props.form.getFieldValue('owner_partner_id') === null || this.props.form.getFieldValue('owner_partner_id') === undefined}
-                notFoundContent={<a onClick={() => this.props.toggleSupplierModal(true)}>+ 添加供货商</a>}
+                notFoundContent={<a onClick={() => this.props.toggleSupplierModal(true)}>
+                    + 添加供货商</a>}
               >
                 {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}
               </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
-            <FormItem label="采购订单号">
-              {getFieldDecorator('po_no', {
-                initialValue: asnHead && asnHead.po_no,
+            <FormItem label="客户订单号">
+              {getFieldDecorator('cust_order_no', {
+                initialValue: asnHead && asnHead.cust_order_no,
               })(<Input />)}
             </FormItem>
           </Col>
@@ -132,7 +132,8 @@ export default class HeadCard extends Component {
               {getFieldDecorator('asn_type', {
                 initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
               })(<Select placeholder="ASN类型">
-                {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+                {CWM_ASN_TYPES.map(cat => (<Option value={cat.value} key={cat.value}>
+                  {cat.text}</Option>))}
               </Select>)}
             </FormItem>
           </Col>
@@ -153,7 +154,8 @@ export default class HeadCard extends Component {
                   rules: [{ required: true, message: 'Please select reg_type!' }],
                   initialValue: asnHead && asnHead.bonded_intype,
                 })(<RadioGroup>
-                  {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                  {CWM_ASN_BONDED_REGTYPES.map(cabr => (
+                    <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>))}
                 </RadioGroup>)}
               </FormItem>
             </Col>

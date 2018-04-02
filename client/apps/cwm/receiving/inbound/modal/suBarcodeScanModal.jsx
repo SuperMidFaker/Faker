@@ -108,10 +108,10 @@ export default class SuBarcodeScanModal extends Component {
       alertMsg: null,
       manualInput: {},
     });
+    this.emptySuInputElement();
     if (window.localStorage) {
       window.localStorage.removeItem('subarcode-data');
     }
-    document.getElementById('su-input-elem').value = '';
   }
   handleDeleteDetail = (index) => {
     const dataSource = [...this.state.dataSource];
@@ -161,6 +161,13 @@ export default class SuBarcodeScanModal extends Component {
         message.error('操作失败');
       }
     });
+  }
+  emptySuInputElement = () => {
+    if (this.suInputRef) {
+      this.suInputRef.focus();
+    // this.suInputRef.input.value = '';
+    }
+    document.getElementById('su-input-elem').value = '';
   }
   handleScanReceive = () => {
     const suScan = { ...this.state.scanRecv };
@@ -227,9 +234,7 @@ export default class SuBarcodeScanModal extends Component {
       inboundProductSeqMap,
       alertMsg: remainQty > 0 ? `${suScan.product_no}收货数量大于订单数量` : null,
     });
-    this.suInputRef.focus();
-    document.getElementById('su-input-elem').value = '';
-    // this.suInputRef.input.value = '';
+    this.emptySuInputElement();
   }
   handleSuInputRef = (input) => {
     this.suInputRef = input;
@@ -254,6 +259,11 @@ export default class SuBarcodeScanModal extends Component {
       const suScan = { ...this.state.scanRecv };
       suScan.su_barcode = ev.target.value;
       const suSetting = this.props.inboundHead.su_setting;
+      if (suScan.su_barcode === suSetting.submit_key) {
+        this.handleSubmit();
+        this.emptySuInputElement();
+        return;
+      }
       const suKeys = ['serial_no', 'product_no'];
       Object.keys(suSetting).forEach((suKey) => {
         if (suSetting[suKey].enabled === true || suSetting[suKey].enabled === 'subarcode') {
@@ -267,6 +277,7 @@ export default class SuBarcodeScanModal extends Component {
         suScan[suKey] = barcode.slice(suConf.start, suConf.end);
         if (!suScan[suKey]) {
           this.setState({ scanRecv: NullSuScan });
+          this.emptySuInputElement();
           return;
         } else if (suConf.time_format) {
           const yearIndex = suConf.time_format.indexOf('YYYY');
@@ -287,6 +298,7 @@ export default class SuBarcodeScanModal extends Component {
           scanRecv: suScan,
           alertMsg: `订单明细无此货号:${suScan.product_no}`,
         });
+        this.emptySuInputElement();
         return;
       }
       if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
@@ -294,6 +306,7 @@ export default class SuBarcodeScanModal extends Component {
           scanRecv: NullSuScan,
           alertMsg: `序列号${suScan.serial_no}已经扫描`,
         });
+        this.emptySuInputElement();
         return;
       }
       if (suScan.qty) {
@@ -357,7 +370,7 @@ export default class SuBarcodeScanModal extends Component {
       title: '序号',
       dataIndex: 'id',
       width: 50,
-      render: (id, row, index) => index + 1,
+      render: (id, row, index) => dataSource.length - index,
     }, {
       title: '货号',
       dataIndex: 'product_no',
