@@ -27,7 +27,7 @@ function getFieldInits(aspect, formData) {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
   }
-  init.claim_do_awb = formData.claim_do_awb === undefined ? 1 : formData.claim_do_awb;
+  init.exchanged_doc = formData.exchanged_doc === undefined ? 1 : formData.exchanged_doc;
   return init;
 }
 @injectIntl
@@ -45,10 +45,7 @@ function getFieldInits(aspect, formData) {
 export default class MainForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    fieldInits: PropTypes.object.isRequired,
-    clients: PropTypes.array.isRequired,
-    customs: PropTypes.array.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
     setClientForm: PropTypes.func.isRequired,
   }
   msg = formatMsg(this.props.intl)
@@ -60,7 +57,10 @@ export default class MainForm extends Component {
     const clients = this.props.clients.filter(cl => cl.partner_id === selPartnerId);
     if (clients.length === 1) {
       const client = clients[0];
-      this.props.setClientForm({ customer_tenant_id: client.tid, customer_partner_id: selPartnerId });
+      this.props.setClientForm({
+        customer_tenant_id: client.tid,
+        customer_partner_id: selPartnerId,
+      });
       return client.name;
     }
     return value;

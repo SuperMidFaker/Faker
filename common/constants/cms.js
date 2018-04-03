@@ -380,14 +380,17 @@ export const CMS_DELG_TODO = {
   accepting: {
     value: 0, text: '接单', icon: 'select', badge: 'default',
   },
+  exchange: {
+    value: 1, text: '换/抽单', icon: 'swap', badge: 'processing',
+  },
   undeclared: {
     value: 1, text: '制单', icon: 'file-text', badge: 'processing',
   },
   declared: {
-    value: 1, text: '申报', icon: 'export', badge: 'processing',
+    value: 1, text: '跟踪', icon: 'export', badge: 'processing',
   },
   finished: {
-    value: 1, text: '完成', icon: 'check-square-o', badge: 'success',
+    value: 1, text: '归档', icon: 'check-square-o', badge: 'success',
   },
 };
 

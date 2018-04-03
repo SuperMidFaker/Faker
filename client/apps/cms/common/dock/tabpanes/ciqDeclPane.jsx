@@ -19,7 +19,6 @@ import CiqDeclCard from '../card/ciqDeclCard';
 export default class CiqDeclPane extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
-    delegation: PropTypes.object,
     ciqPanel: PropTypes.shape({
       ciq_name: PropTypes.string,
       acpt_time: PropTypes.date,
