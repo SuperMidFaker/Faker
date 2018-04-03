@@ -42,7 +42,8 @@ export default class TrackingDetail extends React.Component {
   componentDidMount() {
     let script;
     if (!document.getElementById('baidumap-1')) {
-      window.HOST_TYPE = '2'; window.BMap_loadScriptTime = (new Date()).getTime();
+      window.HOST_TYPE = '2';
+      window.BMap_loadScriptTime = new Date().getTime();
       script = document.createElement('script');
       script.id = 'baidumap-1';
       script.src = 'https://api.map.baidu.com/getscript?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&services=&t=20170628183224';
@@ -215,7 +216,7 @@ export default class TrackingDetail extends React.Component {
     // } else {
     this.setState({ stepsDirection: 'horizontal' });
     // }
-    // $('#map').height($(window).height() - 50);
+    document.getElementById('map').style.height = `${window.innerHeight - 100}px`;
   }
   loadExceptions = () => {
     const { params } = this.props;
@@ -399,7 +400,7 @@ export default class TrackingDetail extends React.Component {
             </Content>
           </Col>
           <Col lg={9} sm={24}>
-            <div id="map" />
+            <div id="map" style={{ marginTop: 50 }} />
           </Col>
         </Row>
         {/* <script type="text/javascript" src="https://sapi.map.baidu.com/api?v=2.0&ak=A4749739227af1618f7b0d1b588c0e85&s=1" />
