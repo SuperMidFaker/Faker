@@ -191,12 +191,12 @@ export const INVOICE_TYPE = [
 ];
 
 export const CMS_DELEGATION_STATUS = {
-  unaccepted: 0,
-  accepted: 1,
-  processing: 2,
-  declaring: 3,
-  released: 4,
-  completed: 5,
+  unaccepted: 0, // 未接单
+  accepted: 1, // 已接单
+  processing: 2, // 制单中
+  declaring: 3, // 申报中
+  released: 4, // 已放行
+  completed: 5, // 已完成
 };
 
 export const CMS_DELEGATION_MANIFEST = {

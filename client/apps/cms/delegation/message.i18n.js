@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   delgManifest: {
     id: 'cms.delegation.manifest',
-    defaultMessage: '委托制单',
+    defaultMessage: '委托管理',
   },
   createDelegation: {
     id: 'cms.delegation.create',
@@ -245,6 +245,14 @@ const messages = defineMessages({
   declareMake: {
     id: 'cms.delegation.make',
     defaultMessage: '制单',
+  },
+  exchangeSeaDoc: {
+    id: 'cms.delegation.exchange.sea.doc',
+    defaultMessage: '换单',
+  },
+  exchangeAirDoc: {
+    id: 'cms.delegation.exchange.air.doc',
+    defaultMessage: '抽单',
   },
   createManifest: {
     id: 'cms.delegation.manifest.create',

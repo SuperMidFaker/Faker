@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   delegation: {
     id: 'cms.module.delegation',
-    defaultMessage: '委托制单',
+    defaultMessage: '委托管理',
   },
   customsDecl: {
     id: 'cms.module.customs.decl',
