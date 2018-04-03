@@ -372,7 +372,7 @@ export default class OrderList extends React.Component {
       title: '跟单人员',
       dataIndex: 'exec_login_id',
       width: 80,
-      render: lid => <UserAvatar size="small" loginId={lid} />,
+      render: lid => <UserAvatar showName size="small" loginId={lid} />,
     }, {
       title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,

@@ -203,7 +203,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('status'),
-    width: 100,
+    width: 150,
     dataIndex: 'status',
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
@@ -211,11 +211,11 @@ export default class DelegationList extends Component {
       } else if (record.status === CMS_DELEGATION_STATUS.accepted
         || record.status === CMS_DELEGATION_STATUS.processing) {
         if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
-          return <span><Badge status="warning" text="未制单" /> <Icon type="exclamation-circle-o" /></span>;
+          return <span><Badge status="default" text="未录入" /></span>;
         } else if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
-          return <span><Badge status="warning" text="制单中" /> <Icon type="clock-circle-o" /></span>;
+          return <span><Badge status="warning" text="未生成CDF" /></span>;
         } else if (record.manifested === CMS_DELEGATION_MANIFEST.manifested) {
-          return <span><Badge status="warning" text="制单完成" /> <Icon type="check-circle-o" /></span>;
+          return <span><Badge status="processing" text="已生成CDF" /></span>;
         }
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
         if (record.sub_status === 1) {
@@ -526,6 +526,12 @@ export default class DelegationList extends Component {
       fixed: 'right',
       render: (o, record) => {
         const clearType = record.i_e_type === 0 ? 'import' : 'export';
+        let exchangeDoc = '';
+        if (record.trans_mode === '2') {
+          exchangeDoc = 'exchangeSeaDoc';
+        } else if (record.trans_mode === '5') {
+          exchangeDoc = 'exchangeAirDoc';
+        }
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) { // 1.当前租户未接单
           let editOverlay = null;
           if (record.source === DELG_SOURCE.consigned) {
@@ -557,6 +563,9 @@ export default class DelegationList extends Component {
             </span>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) { // 2.当前租户已接单
+          if (this.state.currentFilter === 'exchange') {
+            return <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+          }
           let extraOp = null;
           if (record.customs_tenant_id === tenantId) { // 2.1 报关单位为当前租户(未作分配)
             extraOp = (
@@ -579,10 +588,15 @@ export default class DelegationList extends Component {
           }
           return (
             <span>
-              <RowAction primary onClick={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
+              {this.state.currentFilter === 'exchange' &&
+              <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg('exchangeDoc')} row={record} />}
+              <RowAction onClick={this.handleManifestCreate} icon="file-add" label={this.msg('createManifest')} row={record} />
               {extraOp}
             </span>);
         } else if (record.status === CMS_DELEGATION_STATUS.processing) { // 3.
+          if (this.state.currentFilter === 'exchange') {
+            return <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+          }
           let dispatchOverlay = null;
           if (record.customs_tenant_id === tenantId) { // 3.1 报关单位为当前租户(未作分配)
             dispatchOverlay = (
@@ -605,10 +619,10 @@ export default class DelegationList extends Component {
           let manifestOp = null;
           switch (record.manifested) {
             case CMS_DELEGATION_MANIFEST.created: // 制单中
-              manifestOp = <RowAction onClick={this.handleManifestMake} label={<span><Icon type="form" /> {this.msg('editManifest')}</span>} row={record} />;
+              manifestOp = <RowAction onClick={this.handleManifestMake} icon="form" label={this.msg('editManifest')} row={record} />;
               break;
             case CMS_DELEGATION_MANIFEST.manifested: // 制单完成(已生成报关清单)
-              manifestOp = <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
+              manifestOp = <RowAction onClick={this.handleManifestView} icon="eye-o" label={this.msg('viewManifest')} row={record} />;
               break;
             default:
               break;
@@ -624,7 +638,7 @@ export default class DelegationList extends Component {
                       record.status === CMS_DELEGATION_STATUS.released) { // 5. 放行
           return (
             <PrivilegeCover module="clearance" feature="delegation" action="create">
-              <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
+              <RowAction onClick={this.handleManifestView} icon="eye-o" label={this.msg('viewManifest')} row={record} />
             </PrivilegeCover>);
         }
         return <span />;
@@ -649,7 +663,7 @@ export default class DelegationList extends Component {
               <Menu.Item key="all">{this.msg('all')}</Menu.Item>
               <Menu.Item key="import">{this.msg('filterImport')}</Menu.Item>
               <Menu.Item key="export">{this.msg('filterExport')}</Menu.Item>
-              <Menu.ItemGroup key="gTodo" title="状态">
+              <Menu.ItemGroup key="gTodo" title="待办">
                 {Object.keys(CMS_DELG_TODO).map(declkey =>
                   (<Menu.Item key={declkey}>
                     <Icon type={CMS_DELG_TODO[declkey].icon} /> {CMS_DELG_TODO[declkey].text}

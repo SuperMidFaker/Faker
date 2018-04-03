@@ -19,19 +19,18 @@ function getFieldInits(aspect, formData) {
       init[fd] = formData[fd] === undefined ? '' : formData[fd];
     });
   }
-  init.claim_do_awb = formData.claim_do_awb === undefined ? 1 : formData.claim_do_awb;
+  init.exchanged_doc = formData.exchanged_doc === undefined ? 1 : formData.exchanged_doc;
   return init;
 }
 @injectIntl
 @connect(state => ({
   clients: state.cmsDelegation.formRequire.clients,
   fieldInits: getFieldInits(state.account.aspect, state.cmsDelegation.formData),
-}), )
+}))
 export default class SiderForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    fieldInits: PropTypes.object.isRequired,
+    form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   render() {

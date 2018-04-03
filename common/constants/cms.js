@@ -191,12 +191,12 @@ export const INVOICE_TYPE = [
 ];
 
 export const CMS_DELEGATION_STATUS = {
-  unaccepted: 0,
-  accepted: 1,
-  processing: 2,
-  declaring: 3,
-  released: 4,
-  completed: 5,
+  unaccepted: 0, // 未接单
+  accepted: 1, // 已接单
+  processing: 2, // 制单中
+  declaring: 3, // 申报中
+  released: 4, // 已放行
+  completed: 5, // 已完成
 };
 
 export const CMS_DELEGATION_MANIFEST = {
@@ -380,14 +380,17 @@ export const CMS_DELG_TODO = {
   accepting: {
     value: 0, text: '接单', icon: 'select', badge: 'default',
   },
+  exchange: {
+    value: 1, text: '换/抽单', icon: 'swap', badge: 'processing',
+  },
   undeclared: {
     value: 1, text: '制单', icon: 'file-text', badge: 'processing',
   },
   declared: {
-    value: 1, text: '申报', icon: 'export', badge: 'processing',
+    value: 1, text: '跟踪', icon: 'export', badge: 'processing',
   },
   finished: {
-    value: 1, text: '完成', icon: 'check-square-o', badge: 'success',
+    value: 1, text: '归档', icon: 'check-square-o', badge: 'success',
   },
 };
 
