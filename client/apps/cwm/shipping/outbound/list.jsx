@@ -195,6 +195,7 @@ export default class OutboundList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 100,
     fixed: 'right',
     render: (o, record) => {

@@ -78,6 +78,7 @@ export default class AttachmentPane extends React.Component {
       render: date => (date ? moment(date).format('YYYY.MM.DD HH:mm') : '-'),
     }, {
       dataIndex: 'OPS_COL',
+      className: 'table-col-ops',
       width: 100,
       render: (_, row) => (<span>
         <RowAction shape="circle" onClick={this.handlePreview} icon="eye-o" tooltip={this.msg('preview')} row={row} />

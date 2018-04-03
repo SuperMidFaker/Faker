@@ -83,6 +83,7 @@ export default class ItemManageModal extends Component {
     dataIndex: 'inspection_quarantine',
   }, {
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 60,
     render: (o, record) => <RowAction danger confirm={this.msg('ensureDelete')} onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />,
   }]

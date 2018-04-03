@@ -96,6 +96,7 @@ export default class EmergeItemTable extends React.Component {
   }).concat({
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 140,
     fixed: 'right',
     render: (_, record) => (<span>

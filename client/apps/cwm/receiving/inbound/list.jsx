@@ -181,6 +181,7 @@ export default class ReceivingInboundList extends React.Component {
     width: 140,
     fixed: 'right',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     render: (o, record) => {
       if (record.status === 0) {
         return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;

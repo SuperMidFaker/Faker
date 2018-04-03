@@ -196,7 +196,7 @@ export default class InvoiceList extends React.Component {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
     width: 60,
-    align: 'right',
+    className: 'table-col-ops',
     fixed: 'right',
     render: (o, record) => (<span>
       <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />

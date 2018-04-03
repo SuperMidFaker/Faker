@@ -24,9 +24,6 @@ export default class TasksPane extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-    selectedRowKeys: [],
-  }
   componentWillReceiveProps(nextProps) {
     if ((nextProps.collapsed !== this.props.collapsed && !nextProps.collapsed)
       || nextProps.ftzTaskList.reload) {
@@ -52,6 +49,8 @@ export default class TasksPane extends React.Component {
     width: 100,
   }, {
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
+    width: 100,
     render: (o, record) => {
       if (record.progress === 100) {
         return (<span>
@@ -59,8 +58,8 @@ export default class TasksPane extends React.Component {
           {record.progress === -1 && <span className="ant-divider" />}
         </span>);
       }
+      return null;
     },
-    width: 100,
   }]
   handleDetail = (row) => {
     const link = `/cwm/supervision/shftz/stock/task/${row.id}`;
