@@ -205,6 +205,7 @@ export default class TemplateFees extends Component {
       }, {
         title: this.gmsg('actions'),
         dataIndex: 'OPS_COL',
+        className: 'table-col-ops',
         width: 100,
         render: (o, record) => {
           if (onEdit && editItem.fee_uid === record.fee_uid) {

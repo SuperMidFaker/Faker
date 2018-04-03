@@ -522,6 +522,7 @@ export default class DelegationList extends Component {
     columns.push({
       title: this.msg('opColumn'),
       dataIndex: 'OPS_COL',
+      className: 'table-col-ops',
       width: 150,
       fixed: 'right',
       render: (o, record) => {

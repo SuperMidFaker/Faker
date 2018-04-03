@@ -623,6 +623,7 @@ export default class ManifestBodyPane extends React.Component {
       render: freight => (freight > 0 ? freight : null),
     }, {
       dataIndex: 'OPS_COL',
+      className: 'table-col-ops',
       width: 100,
       fixed: 'right',
       render: (o, record, index) => (

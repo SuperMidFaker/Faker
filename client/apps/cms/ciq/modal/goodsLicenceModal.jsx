@@ -153,6 +153,7 @@ export default class GoodsLicenceModal extends Component {
       align: 'right',
     }, {
       dataIndex: 'OPS_COL',
+      className: 'table-col-ops',
       width: 45,
       render: (o, record) => <RowAction danger confirm={this.msg('ensureDelete')} onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />,
     }];

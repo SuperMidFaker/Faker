@@ -108,6 +108,7 @@ export default class WaveList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 150,
     render: (o, record) => {
       if (record.status === 0) {
