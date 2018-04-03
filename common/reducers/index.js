@@ -56,6 +56,7 @@ import cwmContext from './cwmContext';
 import cwmTransaction from './cwmTransaction';
 import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
+import cwmAllocRule from './cwmAllocRule';
 import hubDataAdapter from './hubDataAdapter';
 import hubDevApp from './hubDevApp';
 import hubIntegration from './hubIntegration';
@@ -144,6 +145,7 @@ export default combineReducers({
   cwmContext,
   cwmTransaction,
   cwmSku,
+  cwmAllocRule,
   cwmShFtz,
   cwmShFtzDecl,
   cwmShippingOrder,

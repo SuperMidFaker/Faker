@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { message, Alert, Modal, Form } from 'antd';
-import TransitForm from '../pane/transitAttribForm';
 import { closeBatchTransitModal, moveTransit, splitTransit } from 'common/reducers/cwmTransition';
 import { format } from 'client/common/i18n/helpers';
+import TransitForm from '../pane/transitAttribForm';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
@@ -69,12 +69,23 @@ export default class BatchTransitModal extends Component {
   render() {
     const { form, batchTransitModal } = this.props;
     return (
-      <Modal maskClosable={false} title="批量转移" width={960} onCancel={this.handleCancel} visible={batchTransitModal.visible}
-        onOk={this.handleSubmit} okText="确认转移"
+      <Modal
+        maskClosable={false}
+        title="批量转移"
+        width={960}
+        onCancel={this.handleCancel}
+        visible={batchTransitModal.visible}
+        onOk={this.handleSubmit}
+        okText="确认转移"
       >
         <Alert message={`已选择${batchTransitModal.traceIds.length}项库存数量`} type="info" />
         <Form>
-          <TransitForm detail={batchTransitModal.detail} form={form} batched onChange={this.handleValueChange} />
+          <TransitForm
+            detail={batchTransitModal.detail}
+            form={form}
+            batched
+            onChange={this.handleValueChange}
+          />
         </Form>
       </Modal>
     );

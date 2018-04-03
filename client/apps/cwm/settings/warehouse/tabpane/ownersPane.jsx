@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
+import { showAllocRuleModal } from 'common/reducers/cwmAllocRule';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowAction from 'client/components/RowAction';
@@ -15,6 +16,7 @@ import { createFilename } from 'client/util/dataTransform';
 import { WHSE_OPERATION_MODES } from 'common/constants';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
+import AllocRuleModal from '../modal/allocationRuleModal';
 import { formatMsg } from '../message.i18n';
 
 const { confirm } = Modal;
@@ -31,6 +33,7 @@ const { confirm } = Modal;
   }),
   {
     showWhseOwnersModal,
+    showAllocRuleModal,
     loadwhseOwners,
     showOwnerControlModal,
     changeOwnerStatus,
@@ -103,6 +106,11 @@ export default class OwnersPane extends Component {
     align: 'center',
     render: o => (o ? `${WHSE_OPERATION_MODES[o].text}发货` : ''),
   }, {
+    title: '配货规则',
+    dataIndex: 'alloc_rule',
+    width: 80,
+    render: (arule, row) => <Button icon="setting" onClick={() => this.handleAllocRule(row)} />,
+  }, {
     title: '库存初始化',
     dataIndex: 'init',
     width: 100,
@@ -170,6 +178,13 @@ export default class OwnersPane extends Component {
       this.props.loadWhse(this.props.whseCode);
     }
   }
+  handleAllocRule = (row) => {
+    const rule = {
+      id: row.id,
+      alloc_rule: row.alloc_rule ? JSON.parse(row.alloc_rule) : [],
+    };
+    this.props.showAllocRuleModal({ visible: true, rule });
+  }
   handleInitData = (record) => {
     this.setState({
       seletedOwner: {
@@ -218,6 +233,7 @@ export default class OwnersPane extends Component {
         </DataPane.Toolbar>
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
+        <AllocRuleModal reload={this.handleOwnerLoad} />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
