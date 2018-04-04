@@ -174,6 +174,10 @@ const messages = defineMessages({
     id: 'cwm.stock.movement.create',
     defaultMessage: '创建库存移动单',
   },
+  transitUploadUpdate: {
+    id: 'cwm.stock.transit.upload.update',
+    defaultMessage: '批量导入调整',
+  },
 });
 
 export default messages;

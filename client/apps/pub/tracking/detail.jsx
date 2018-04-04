@@ -181,6 +181,8 @@ export default class TrackingDetail extends React.Component {
           if (cur !== pts.length - 1) {
             bdPoints.pop();
           }
+          // http://lbsyun.baidu.com/jsdemo.htm#c1_13
+          // https://api 即可
           const curve = new BMapLib.CurveLine(bdPoints, { strokeColor: '#0096da', strokeWeight: 3, strokeOpacity: 0.5 }); // 创建弧线对象
           map.addOverlay(curve); // 添加到地图中
           map.setViewport(viewPoints);

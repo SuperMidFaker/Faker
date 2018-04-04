@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import superAgent from 'superagent';
+import superagent from 'superagent';
 import { Modal } from 'antd';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
@@ -30,7 +30,7 @@ export default class DeclMsgModal extends Component {
       } else {
         url = `${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${nextProps.fileName}`;
       }
-      superAgent
+      superagent
         .get(url)
         .withCredentials()
         .type('text/xml')

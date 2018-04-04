@@ -21,7 +21,7 @@ const formItemLayout = {
   }),
   { loadOwnerUndoneMovements }
 )
-export default class TransitForm extends React.Component {
+export default class TransitAttribForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     batched: PropTypes.bool.isRequired,

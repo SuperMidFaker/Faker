@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Input, Button, Layout, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openTransitionModal, loadTransitions, loadTransitionStat, splitTransit, unfreezeTransit, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
+import { openTransitionModal, loadTransitions, loadTransitionStat, splitTransit, unfreezeTransit, openBatchTransitModal, showUploadTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
@@ -18,6 +18,7 @@ import WhseSelect from '../../common/whseSelect';
 import QueryForm from './queryForm';
 import { commonTraceColumns } from '../commonColumns';
 import BatchTransitModal from './modal/batchTransitModal';
+import BatchUploadTransitModal from './modal/batchUploadTransitModal';
 import TransitionModal from './modal/transitionModal';
 import BatchFreezeModal from './modal/batchFreezeModal';
 import TraceIdPopover from '../../common/popover/traceIdPopover';
@@ -53,6 +54,7 @@ const { Content } = Layout;
     unfreezeTransit,
     switchDefaultWhse,
     openBatchTransitModal,
+    showUploadTransitModal,
     openBatchMoveModal,
     openBatchFreezeModal,
   }
@@ -352,6 +354,9 @@ export default class StockTransitionList extends React.Component {
     window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?filters=${
       JSON.stringify(listFilter)}&sorter=${JSON.stringify(sortFilter)}`);
   }
+  handleBatchUploadUpdate = () => {
+    this.props.showUploadTransitModal({ visible: true, needReload: null });
+  }
   handleCollapseChange = (collapsed) => {
     const scrollOffset = collapsed ? 368 : 280;
     this.setState({ scrollOffset });
@@ -478,6 +483,9 @@ export default class StockTransitionList extends React.Component {
             <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
+            <Button icon="upload" onClick={this.handleBatchUploadUpdate}>
+              {this.msg('transitUploadUpdate')}
+            </Button>
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
@@ -500,6 +508,7 @@ export default class StockTransitionList extends React.Component {
             />
             <TransitionModal />
             <BatchTransitModal />
+            <BatchUploadTransitModal />
             {/* <BatchMoveModal /> */}
             <BatchFreezeModal />
           </Content>
