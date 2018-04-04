@@ -92,6 +92,9 @@ export default class OrderDetailsPane extends React.Component {
     width: 100,
     align: 'right',
     render: (o, record) => {
+      if (!record.order_qty && record.alloc_qty) {
+        return (<span className="text-success">{o}</span>);
+      }
       if (record.alloc_qty === record.order_qty) {
         return (<span className="text-success">{o}</span>);
       } else if (record.alloc_qty < record.order_qty) {
@@ -138,11 +141,12 @@ export default class OrderDetailsPane extends React.Component {
       if (record.alloc_qty < record.order_qty) {
         return (<span>
           <RowAction onClick={this.handleSKUAutoAllocate} icon="rocket" label="自动分配" row={record} disabled={this.props.submitting} />
-          <RowAction onClick={this.handleManualAlloc} icon="select" tooltip="手动分配" row={record} />
+          {record.product_no && <RowAction onClick={this.handleManualAlloc} icon="select" tooltip="手动分配" row={record} />}
         </span>);
       }
       return (<span>
-        <RowAction onClick={this.handleAllocDetails} icon="eye-o" label="分配明细" row={record} />
+        {record.product_no && <RowAction onClick={this.handleAllocDetails} icon="eye-o" label="分配明细" row={record} />}
+        {record.alloc_qty === 0 && <RowAction onClick={this.handleSKUAutoAllocate} icon="rocket" label="自动分配" row={record} disabled={this.props.submitting} />}
         {record.picked_qty < record.alloc_qty &&
         <RowAction onClick={this.handleSKUCancelAllocate} icon="close-circle-o" tooltip="取消分配" row={record} disabled={this.props.submitting} />}
       </span>);
@@ -302,8 +306,10 @@ export default class OrderDetailsPane extends React.Component {
     let alertMsg;
     if (outboundHead.total_alloc_qty > 0 &&
       outboundHead.total_alloc_qty !== outboundHead.total_qty) {
-      const seqNos = outboundProducts.filter(op => op.alloc_qty < op.order_qty).map(op => op.seq_no).join(',');
-      alertMsg = `未完成配货行号: ${seqNos}`;
+      const seqNos = outboundProducts.filter(op => !op.alloc_qty || op.alloc_qty < op.order_qty).map(op => op.seq_no).join(',');
+      if (seqNos.length > 0) {
+        alertMsg = `未完成配货行号: ${seqNos}`;
+      }
     }
     const rowKey = 'seq_no';
     const rowSelection = {
@@ -329,9 +335,11 @@ export default class OrderDetailsPane extends React.Component {
         onSelect: () => {
           const selectedRowKeys = dataSource.map(item => item[rowKey]);
           let status = null;
-          const unallocated = dataSource.find(item => item.alloc_qty < item.order_qty);
+          const unallocated = dataSource.find(item =>
+            (!item.alloc_qty || item.alloc_qty < item.order_qty));
           const allocated = dataSource.find(item =>
-            item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
+            ((!item.order_qty && item.alloc_qty) ||
+            item.alloc_qty === item.order_qty) && item.alloc_qty > item.picked_qty);
           if (unallocated && !allocated) {
             status = 'alloc';
           } else if (!unallocated && allocated) {

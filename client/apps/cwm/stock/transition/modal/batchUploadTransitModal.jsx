@@ -135,7 +135,7 @@ export default class BatchUploadTransitModal extends Component {
               </Select>
             </Col>
             <Col span={15} offset={1}>
-              <Upload accept=".xlsx,.csv" beforeUpload={this.handleUploadIntercept} fileList={transitKeyFile ? [transitKeyFile] : []}>
+              <Upload accept=".xls,.xlsx,.csv" beforeUpload={this.handleUploadIntercept} fileList={transitKeyFile ? [transitKeyFile] : []}>
                 <Button icon="cloud-upload-o">上传字段值文件 </Button>
               </Upload>
             </Col>

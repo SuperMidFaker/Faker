@@ -302,17 +302,17 @@ export default class OwnerControlModal extends Component {
               <RadioButton value="manual">手动</RadioButton>
             </RadioGroup>
           </FormItem>
-          {ownerAuth.receiving_mode === 'manual' &&
-          <FormItem {...formItemLayout} label="SU条码收货">
-            <Tooltip title="SU条码启用配置"><Button icon="setting" style={{ marginLeft: '20px' }} onClick={this.handleSubarcodeSetting} /></Tooltip>
-          </FormItem>
-          }
           <FormItem {...formItemLayout} label="默认发货模式">
             <RadioGroup value={ownerAuth.shipping_mode} onChange={this.handleShipModeChange}>
               <RadioButton value="scan">扫码</RadioButton>
               <RadioButton value="manual">手动</RadioButton>
             </RadioGroup>
           </FormItem>
+          {ownerAuth.receiving_mode === 'manual' &&
+          <FormItem {...formItemLayout} label="SU条码收发货">
+            <Tooltip title="SU条码启用配置"><Button icon="setting" style={{ marginLeft: '20px' }} onClick={this.handleSubarcodeSetting} /></Tooltip>
+          </FormItem>
+          }
           <FormItem {...formItemLayout} label="出库启用分拨">
             <Switch checked={!!ownerAuth.portion_enabled} onChange={this.handlePortionEnable} />
           </FormItem>
