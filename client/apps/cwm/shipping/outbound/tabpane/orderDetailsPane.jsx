@@ -92,8 +92,11 @@ export default class OrderDetailsPane extends React.Component {
     width: 100,
     align: 'right',
     render: (o, record) => {
-      if (!record.order_qty && record.alloc_qty) {
-        return (<span className="text-success">{o}</span>);
+      if (!record.order_qty) {
+        if (record.alloc_qty) {
+          return (<span className="text-success">{o}</span>);
+        }
+        return <span />;
       }
       if (record.alloc_qty === record.order_qty) {
         return (<span className="text-success">{o}</span>);
@@ -286,6 +289,23 @@ export default class OrderDetailsPane extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleSelRowsChange = (selectedRowKeys, selectedRows) => {
+    let status = null;
+    const unallocated = selectedRows.find(item =>
+      (!item.alloc_qty || item.alloc_qty < item.order_qty));
+    const allocated = selectedRows.find(item =>
+      ((!item.order_qty && item.alloc_qty) ||
+            item.alloc_qty === item.order_qty) && item.alloc_qty > item.picked_qty);
+    if (unallocated && !allocated) {
+      status = 'alloc';
+    } else if (!unallocated && allocated) {
+      status = 'unalloc';
+    }
+    this.setState({
+      selectedRowKeys,
+      ButtonStatus: status,
+    });
+  }
   render() {
     const { outboundHead, outboundProducts, submitting } = this.props;
     const { ButtonStatus } = this.state;
@@ -296,12 +316,19 @@ export default class OrderDetailsPane extends React.Component {
       }
       return true;
     }).sort((pa, pb) => {
+      if (!pa.order_qty && !pb.order_qty) {
+        return pa.seq_no - pb.seq_no;
+      }
       if (pa.alloc_qty === 0 && pb.alloc_qty === 0) {
-        return 0;
+        return pa.seq_no - pb.seq_no;
       }
       const diffa = pa.order_qty - pa.alloc_qty;
       const diffb = pb.order_qty - pb.alloc_qty;
-      return -(diffa - diffb); // 分配差异越大放前面
+      const diff = -(diffa - diffb); // 分配差异越大放前面
+      if (diff === 0) {
+        return pa.seq_no - pb.seq_no;
+      }
+      return diff;
     });
     let alertMsg;
     if (outboundHead.total_alloc_qty > 0 &&
@@ -314,62 +341,23 @@ export default class OrderDetailsPane extends React.Component {
     const rowKey = 'seq_no';
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys, selectedRows) => {
-        let status = null;
-        const unallocated = selectedRows.find(item => item.alloc_qty < item.order_qty);
-        const allocated = selectedRows.find(item =>
-          item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
-        if (unallocated && !allocated) {
-          status = 'alloc';
-        } else if (!unallocated && allocated) {
-          status = 'unalloc';
-        }
-        this.setState({
-          selectedRowKeys,
-          ButtonStatus: status,
-        });
-      },
+      onChange: this.handleSelRowsChange,
       selections: [{
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
+          const selRows = dataSource;
           const selectedRowKeys = dataSource.map(item => item[rowKey]);
-          let status = null;
-          const unallocated = dataSource.find(item =>
-            (!item.alloc_qty || item.alloc_qty < item.order_qty));
-          const allocated = dataSource.find(item =>
-            ((!item.order_qty && item.alloc_qty) ||
-            item.alloc_qty === item.order_qty) && item.alloc_qty > item.picked_qty);
-          if (unallocated && !allocated) {
-            status = 'alloc';
-          } else if (!unallocated && allocated) {
-            status = 'unalloc';
-          }
-          this.setState({
-            selectedRowKeys,
-            ButtonStatus: status,
-          });
+          this.handleSelRowsChange(selectedRowKeys, selRows);
         },
       }, {
         key: 'opposite-data',
         text: '反选全部项',
         onSelect: () => {
-          const fDataSource = dataSource.filter(item =>
-            !this.state.selectedRowKeys.find(item1 => item1 === item.id));
-          const selectedRowKeys = fDataSource.map(item => item.id);
-          let status = null;
-          const unallocated = fDataSource.find(item => item.alloc_qty < item.order_qty);
-          const allocated = fDataSource.find(item =>
-            item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
-          if (unallocated && !allocated) {
-            status = 'alloc';
-          } else if (!unallocated && allocated) {
-            status = 'unalloc';
-          }
-          this.setState({
-            selectedRowKeys,
-            ButtonStatus: status,
-          });
+          const selRows = dataSource.filter(item =>
+            !this.state.selectedRowKeys.find(item1 => item1 === item[rowKey]));
+          const selectedRowKeys = selRows.map(item => item[rowKey]);
+          this.handleSelRowsChange(selectedRowKeys, selRows);
         },
       }],
     };

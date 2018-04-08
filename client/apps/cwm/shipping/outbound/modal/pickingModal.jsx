@@ -5,10 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { DatePicker, Form, Modal, Input, InputNumber } from 'antd';
 import { closePickingModal, pickConfirm, loadOutboundHead } from 'common/reducers/cwmOutbound';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 
 @injectIntl
@@ -20,7 +18,6 @@ const FormItem = Form.Item;
     allocQty: state.cwmOutbound.pickingModal.allocQty,
     skuPackQty: state.cwmOutbound.pickingModal.skuPackQty,
     id: state.cwmOutbound.pickingModal.id,
-    loginId: state.account.loginId,
     username: state.account.username,
     submitting: state.cwmOutbound.submitting,
   }),
@@ -41,13 +38,13 @@ export default class PickingModal extends Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.closePickingModal();
   }
   handleSubmit = () => {
     const {
-      outboundNo, allocQty, skuPackQty, loginId, pickMode, selectedRows, id,
+      outboundNo, allocQty, skuPackQty, pickMode, selectedRows, id,
     } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -72,14 +69,12 @@ export default class PickingModal extends Component {
             list.push(data);
           }
         }
-        this.props.pickConfirm(
-          outboundNo, list, loginId,
-          values.pickedBy, values.pickedDate
-        ).then((result) => {
-          if (!result.error) {
-            this.props.closePickingModal();
-          }
-        });
+        this.props.pickConfirm(outboundNo, list, values.pickedBy, values.pickedDate)
+          .then((result) => {
+            if (!result.error) {
+              this.props.closePickingModal();
+            }
+          });
       }
     });
   }

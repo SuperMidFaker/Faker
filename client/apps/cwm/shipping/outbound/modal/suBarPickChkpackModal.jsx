@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Alert, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
-import { viewSuBarPutawayModal, batchPutaways } from 'common/reducers/cwmReceive';
+import { showSubarPickChkModal, pickConfirm } from 'common/reducers/cwmOutbound';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -12,56 +12,51 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    username: state.account.username,
-    visible: state.cwmReceive.suBarPutawayModal.visible,
-    inboundHead: state.cwmReceive.inboundFormHead,
-    inboundNo: state.cwmReceive.suBarPutawayModal.inboundNo,
-    putawayList: state.cwmReceive.inboundPutaways.list,
-    saveLoading: state.cwmReceive.submitting,
+    visible: state.cwmOutbound.subarPickChkModal.visible,
+    pickDetails: state.cwmOutbound.pickDetails,
+    saveLoading: state.cwmOutbound.submitting,
   }),
-  { viewSuBarPutawayModal, batchPutaways }
+  { showSubarPickChkModal, pickConfirm }
 )
-export default class SuBarPutawayModal extends Component {
+export default class SuBarPickChkpackModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    putawayList: PropTypes.arrayOf(PropTypes.shape({
+    outboundNo: PropTypes.string.isRequired,
+    pickDetails: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
       product_no: PropTypes.string.isRequired,
       trace_id: PropTypes.string.isRequired,
       serial_no: PropTypes.string.isRequired,
-      inbound_qty: PropTypes.number.isRequired,
-      result: PropTypes.oneOf([0, 1]),
+      alloc_qty: PropTypes.number.isRequired,
+      picked_qty: PropTypes.number.isRequired,
+      pack_no: PropTypes.string,
     })).isRequired,
   }
   state = {
     serialDetailMap: null,
     alertMsg: null,
     dataSource: [],
-    location: null,
+    packedNo: null,
+    pickSubmit: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
       const serialDetailMap = new Map();
-      nextProps.putawayList.forEach((putaway) => {
+      nextProps.pickDetails.forEach((pick) => {
         let details = [{
-          trace_id: putaway.trace_id,
-          qty: putaway.inbound_qty,
-          result: putaway.result,
+          id: pick.id,
+          trace_id: pick.trace_id,
+          qty: pick.alloc_qty - pick.picked_qty,
+          pack_no: pick.pack_no,
         }];
-        if (putaway.children) {
-          details = details.concat(putaway.children.map(putad => ({
-            trace_id: putad.trace_id,
-            qty: putad.inbound_qty,
-            result: putad.result,
-          })));
+        if (serialDetailMap.has(pick.serial_no)) {
+          details = details.concat(serialDetailMap.get(pick.serial_no));
         }
-        if (serialDetailMap.has(putaway.serial_no)) {
-          details = details.concat(serialDetailMap.get(putaway.serial_no));
-        }
-        serialDetailMap.set(putaway.serial_no, details);
+        serialDetailMap.set(pick.serial_no, details);
       });
       let dataSource = [];
       if (window.localStorage) {
-        const subarDataSource = window.localStorage.getItem('subarcode-putaway');
+        const subarDataSource = window.localStorage.getItem('subarcode-pickchkpack');
         if (subarDataSource) {
           const suDataSource = JSON.parse(subarDataSource);
           if (suDataSource && suDataSource.length > 0) {
@@ -79,39 +74,41 @@ export default class SuBarPutawayModal extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.props.viewSuBarPutawayModal({ visible: false });
+    this.handleSuCancel();
     this.setState({
       serialDetailMap: null,
-      dataSource: [],
-      location: null,
-      alertMsg: null,
+      packedNo: null,
+      pickSubmit: false,
     });
-    this.emptySuInputElement();
-    if (window.localStorage) {
-      window.localStorage.removeItem('subarcode-putaway');
-    }
+    this.props.showSubarPickChkModal({ visible: false });
   }
   handleDeleteDetail = (row) => {
     const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== row.serial_no);
     this.setState({ dataSource });
   }
+  handleSuCancel = () => {
+    this.setState({
+      dataSource: [],
+      alertMsg: null,
+    });
+    this.emptySuInputElement();
+    if (window.localStorage) {
+      window.localStorage.removeItem('subarcode-pickchkpack');
+    }
+  }
   handleSubmit = () => {
-    const {
-      username, inboundNo,
-    } = this.props;
-    const traceIds = this.state.dataSource.map(ds => ds.trace_id);
-    this.props.batchPutaways(
-      traceIds, this.state.location, username,
-      new Date(), username, inboundNo
-    ).then((result) => {
+    const { outboundNo } = this.props;
+    const picklist = this.state.dataSource.map(ds => ({
+      id: ds.id,
+      picked_qty: ds.qty,
+    }));
+    const { packedNo } = this.state;
+    this.props.pickConfirm(outboundNo, picklist, null, new Date(), packedNo).then((result) => {
       if (!result.error) {
-        message.success('条码上架成功');
-        this.handleCancel();
+        message.success(`箱号${packedNo}条码拣货成功`);
+        this.handleSuCancel();
+        this.setState({ pickSubmit: true });
       } else {
-        if (result.error.message === 'location_not_found') {
-          message.error(`库位${this.state.location}不存在`);
-          return;
-        }
         message.error('操作失败');
       }
     });
@@ -124,24 +121,19 @@ export default class SuBarPutawayModal extends Component {
       }, 100);
     }
   }
-  handleLocationInputRef = (input) => { this.locationInputRef = input; }
   emptySuInputElement = () => {
     if (this.suInputRef) {
       this.suInputRef.focus();
     }
-    document.getElementById('su-putaway-input-elem').value = '';
+    document.getElementById('su-pcp-input-elem').value = '';
   }
   handleSuBarKeyDown = (ev) => {
     if (ev.key === 'Enter') {
       const barcode = ev.target.value;
-      const suSetting = this.props.inboundHead.su_setting;
+      const { suSetting } = this.props;
       if (barcode === suSetting.submit_key) {
         this.handleSubmit();
         this.emptySuInputElement();
-        return;
-      } else if (barcode === suSetting.location_focus_key && this.locationInputRef) {
-        this.emptySuInputElement();
-        this.locationInputRef.focus();
         return;
       }
       const suKeys = ['serial_no', 'product_no'];
@@ -165,7 +157,7 @@ export default class SuBarPutawayModal extends Component {
       }
       if (!this.state.serialDetailMap.has(suScan.serial_no)) {
         this.setState({
-          alertMsg: `收货明细无此序列号:${suScan.serial_no}`,
+          alertMsg: `拣货明细无此序列号:${suScan.serial_no}`,
         });
         this.emptySuInputElement();
         return;
@@ -178,15 +170,16 @@ export default class SuBarPutawayModal extends Component {
         return;
       }
       const serialDetails = this.state.serialDetailMap.get(suScan.serial_no);
-      const unputawayDetails = serialDetails.filter(srd => srd.result === 0);
-      if (unputawayDetails.length === 0) {
+      const unpickDetails = serialDetails.filter(srd => !srd.pack_no);
+      if (unpickDetails.length === 0) {
         this.setState({
-          alertMsg: `序列号${suScan.serial_no}已上架`,
+          alertMsg: `序列号${suScan.serial_no}已装箱`,
         });
         this.emptySuInputElement();
         return;
       }
-      const dataSource = unputawayDetails.map(pd => ({
+      const dataSource = unpickDetails.map(pd => ({
+        id: pd.id,
         trace_id: pd.trace_id,
         serial_no: suScan.serial_no,
         product_no: suScan.product_no,
@@ -198,19 +191,14 @@ export default class SuBarPutawayModal extends Component {
       });
       this.emptySuInputElement();
       if (window.localStorage) {
-        window.localStorage.setItem('subarcode-putaway', JSON.stringify(dataSource));
+        window.localStorage.setItem('subarcode-pickchkpack', JSON.stringify(dataSource));
       }
     }
   }
-  handleScanLocationChange = (ev) => {
+  handlePackChange = (ev) => {
     this.setState({
-      location: ev.target.value,
+      packedNo: ev.target.value,
     });
-  }
-  handleScanLocationKeyDown= (ev) => {
-    if (ev.key === 'Enter' && this.suInputRef) {
-      this.suInputRef.focus();
-    }
   }
   barColumns = [{
     title: '序号',
@@ -244,13 +232,14 @@ export default class SuBarPutawayModal extends Component {
       return null;
     }
     const {
-      alertMsg, dataSource, location,
+      alertMsg, dataSource, packedNo, pickSubmit,
     } = this.state;
     const title = (<div>
-      <span>条码扫描上架</span>
+      <span>条码拣货集箱</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button disabled={dataSource.length === 0 || !location} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
+        <Button disabled={dataSource.length === 0 || !packedNo} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
+        <Button disabled={!pickSubmit} loading={saveLoading} type="primary" onClick={this.handleSubmit}>打印箱单</Button>
       </div>
     </div>);
     const formItemLayout = {
@@ -276,21 +265,18 @@ export default class SuBarPutawayModal extends Component {
         <Card bodyStyle={{ paddingBottom: 16 }} >
           <Form>
             {alertMsg && <Alert message={alertMsg} type="error" showIcon /> }
+            <FormItem label="箱号" {...formItemLayout}>
+              <Input
+                value={packedNo}
+                onChange={this.handlePackChange}
+              />
+            </FormItem>
             <FormItem label="商品条码" {...formItemLayout}>
               <Input
-                id="su-putaway-input-elem"
+                id="su-pcp-input-elem"
                 addonBefore={<Icon type="barcode" />}
                 ref={this.handleSuInputRef}
                 onKeyDown={this.handleSuBarKeyDown}
-              />
-            </FormItem>
-            <FormItem label="库位" {...formItemLayout}>
-              <Input
-                addonBefore={<Icon type="barcode" />}
-                ref={this.handleLocationInputRef}
-                value={location}
-                onChange={this.handleScanLocationChange}
-                onKeyDown={this.handleScanLocationKeyDown}
               />
             </FormItem>
           </Form>
@@ -300,7 +286,7 @@ export default class SuBarPutawayModal extends Component {
             size="middle"
             columns={this.barColumns}
             dataSource={dataSource}
-            rowKey="trace_id"
+            rowKey="id"
             scroll={{
               x: this.barColumns.reduce((acc, cur) =>
               acc + (cur.width ? cur.width : 240), 0),

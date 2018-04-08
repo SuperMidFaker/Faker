@@ -8,10 +8,11 @@ import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
-import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
+import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, showSubarPickChkModal, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS, ALLOC_ERROR_MESSAGE_DESC } from 'common/constants';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
+import SuBarPickChkpackModal from '../modal/suBarPickChkpackModal';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import { formatMsg } from '../../message.i18n';
@@ -32,6 +33,7 @@ import { formatMsg } from '../../message.i18n';
     cancelPicked,
     loadOutboundHead,
     cancelTraceAlloc,
+    showSubarPickChkModal,
   }
 )
 export default class PickingDetailsPane extends React.Component {
@@ -292,6 +294,9 @@ export default class PickingDetailsPane extends React.Component {
       }
     });
   }
+  handleSuPickChk = () => {
+    this.props.showSubarPickChkModal({ visible: true });
+  }
   handleDeselectRows = () => {
     this.setState({
       selectedRows: [],
@@ -371,16 +376,22 @@ export default class PickingDetailsPane extends React.Component {
               批量取消分配
             </Button>}
             {outboundHead.shipping_mode === 'manual'
-                && outboundHead.so_type !== CWM_SO_TYPES[3].value
-                && batchPickedUnShipped && <Button onClick={this.handleBatchConfirmShipped}>
-                  <MdIcon type="check-all" />批量发货确认
-                </Button>}
+            && outboundHead.so_type !== CWM_SO_TYPES[3].value
+            && batchPickedUnShipped && <Button onClick={this.handleBatchConfirmShipped}>
+              <MdIcon type="check-all" />批量发货确认
+            </Button>}
             {outboundHead.shipping_mode === 'manual'
-                    && outboundHead.so_type !== CWM_SO_TYPES[3].value
-                    && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
-                      批量取消拣货
-                    </Button>}
+            && outboundHead.so_type !== CWM_SO_TYPES[3].value
+            && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
+              批量取消拣货
+            </Button>}
           </DataPane.BulkActions>
+          <DataPane.Actions>
+            {outboundHead.shipping_mode === 'manual' && outboundHead.su_setting.enabled &&
+            <Button onClick={this.handleSuPickChk}>
+            条码拣货装箱
+            </Button>}
+          </DataPane.Actions>
         </DataPane.Toolbar>
         <PickingModal
           pickMode={this.state.operationMode}
@@ -391,6 +402,10 @@ export default class PickingDetailsPane extends React.Component {
           shipMode={this.state.operationMode}
           selectedRows={this.state.selectedRows}
           outboundNo={this.props.outboundNo}
+        />
+        <SuBarPickChkpackModal
+          outboundNo={this.props.outboundNo}
+          suSetting={outboundHead.su_setting}
         />
       </DataPane>
     );

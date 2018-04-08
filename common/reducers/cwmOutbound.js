@@ -5,7 +5,7 @@ import { CANCEL_OUTBOUND_SUCCEED, CLOSE_OUTBOUND_SUCCEED } from './cwmShippingOr
 const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'OPEN_ALLOCATING_MODAL', 'CLOSE_ALLOCATING_MODAL',
   'OPEN_PICKING_MODAL', 'CLOSE_PICKING_MODAL',
-  'OPEN_SHIPPING_MODAL', 'CLOSE_SHIPPING_MODAL',
+  'OPEN_SHIPPING_MODAL', 'CLOSE_SHIPPING_MODAL', 'SHOW_SPCPMODAL',
   'LOAD_OUTBOUNDS', 'LOAD_OUTBOUNDS_SUCCEED', 'LOAD_OUTBOUNDS_FAIL',
   'LOAD_OUTBOUND_HEAD', 'LOAD_OUTBOUND_HEAD_SUCCEED', 'LOAD_OUTBOUND_HEAD_FAIL',
   'LOAD_OUTBOUND_PRODUCTS', 'LOAD_OUTBOUND_PRODUCTS_SUCCEED', 'LOAD_OUTBOUND_PRODUCTS_FAIL',
@@ -71,6 +71,9 @@ const initialState = {
     pickedQty: '',
     skuPackQty: '',
   },
+  subarPickChkModal: {
+    visible: false,
+  },
   outbound: {
     totalCount: 0,
     pageSize: 20,
@@ -127,6 +130,8 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.CLOSE_SHIPPING_MODAL:
       return { ...state, shippingModal: { visible: false } };
+    case actionTypes.SHOW_SPCPMODAL:
+      return { ...state, subarPickChkModal: action.data };
     case actionTypes.LOAD_OUTBOUNDS:
       return {
         ...state,
@@ -243,6 +248,13 @@ export function openShippingModal(id, pickedQty, skuPackQty) {
 export function closeShippingModal() {
   return {
     type: actionTypes.CLOSE_SHIPPING_MODAL,
+  };
+}
+
+export function showSubarPickChkModal(data) {
+  return {
+    type: actionTypes.SHOW_SPCPMODAL,
+    data,
   };
 }
 
@@ -436,7 +448,7 @@ export function loadPrintPickDetails(outboundNo) {
   };
 }
 
-export function pickConfirm(outboundNo, skulist, loginId, pickedBy, pickedDate) {
+export function pickConfirm(outboundNo, skulist, pickedBy, pickedDate, packedNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -447,7 +459,7 @@ export function pickConfirm(outboundNo, skulist, loginId, pickedBy, pickedDate) 
       endpoint: 'v1/cwm/outbounds/pick',
       method: 'post',
       data: {
-        outboundNo, skulist, loginId, pickedBy, pickedDate,
+        outboundNo, skulist, pickedBy, pickedDate, packedNo,
       },
     },
   };

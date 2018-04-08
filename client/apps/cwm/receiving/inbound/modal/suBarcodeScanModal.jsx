@@ -113,14 +113,12 @@ export default class SuBarcodeScanModal extends Component {
       window.localStorage.removeItem('subarcode-data');
     }
   }
-  handleDeleteDetail = (index) => {
-    const dataSource = [...this.state.dataSource];
-    const data = dataSource[index];
+  handleDeleteDetail = (data) => {
     const inboundProductSeqMap = new Map(this.state.inboundProductSeqMap);
     const productSeqMap = inboundProductSeqMap.get(data.product_no);
     const seqQty = productSeqMap.get(data.asn_seq_no);
     seqQty.received_qty -= data.qty;
-    dataSource.splice(index, 1);
+    const dataSource = this.state.dataSource.filter(ds => ds.serial_no === data.serial_no);
     inboundProductSeqMap.set(data.product_no, productSeqMap);
     this.setState({ dataSource, inboundProductSeqMap });
   }
@@ -247,7 +245,7 @@ export default class SuBarcodeScanModal extends Component {
   handleQtyInputRef = (input) => { this.qtyInputRef = input; }
   handleScanSuChange = (ev) => {
     /* SUD1107973470|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01004|14D2019.12.12|
-     * SUD1107973469|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
+     * SUDS100000000|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
     if (!ev.target.value) {
       this.setState({
         scanRecv: NullSuScan,
@@ -401,7 +399,7 @@ export default class SuBarcodeScanModal extends Component {
       title: '操作',
       width: 100,
       fixed: 'right',
-      render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
+      render: (o, record) => (<RowAction onClick={this.handleDeleteDetail} label={<Icon type="delete" />} row={record} />),
     });
     const title = (<div>
       <span>条码扫描数量确认</span>
