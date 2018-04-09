@@ -63,7 +63,7 @@ export default class AllocRuleModal extends Component {
     intl: intlShape.isRequired,
     ownerAuth: PropTypes.shape({
       id: PropTypes.number.isRequired,
-      alloc_rule: PropTypes.shape({ virtual_whse: PropTypes.shape({ enabled: PropTypes.bool }) }),
+      alloc_rule: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
     }),
     reload: PropTypes.func.isRequired,
   }

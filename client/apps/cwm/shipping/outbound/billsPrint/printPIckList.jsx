@@ -15,6 +15,16 @@ function textToBase64Barcode(text) {
   return canvas.toDataURL('image/png');
 }
 
+const PICK_PRINT_FIELD_PDFTABLE = {
+  product_no: 100,
+  name: 120,
+  external_lot_no: 100,
+  attrib_1_string: '*',
+  location: 60,
+  serial_no: 120,
+  virtual_whse: 100,
+};
+
 @injectIntl
 @connect(
   state => ({
@@ -63,31 +73,62 @@ export default class OutboundPickPrint extends Component {
     ];
     return headContent;
   }
-  pdfPickDetails = (pickDetails) => {
+  pdfPickDetails = (pickDetails, pdfBodyTable, printRule) => {
+    const bodyHeader = [];
+    const pdfBody = pdfBodyTable.body;
+    pdfBodyTable.widths.push(25);
+    bodyHeader.push({ text: '项', style: 'tableHeader' });
+    printRule.print.forEach((rule) => {
+      pdfBodyTable.widths.push(PICK_PRINT_FIELD_PDFTABLE[rule.key]);
+      bodyHeader.push({ text: rule.text, style: 'tableHeader' });
+    });
+    pdfBodyTable.widths.push('*');
+    bodyHeader.push({ text: '待拣数', style: 'tableHeader' });
+    if (printRule.print_remain) {
+      pdfBodyTable.widths.push('*');
+      bodyHeader.push({ text: '余量数', style: 'tableHeader' });
+    }
+    pdfBodyTable.widths.push('*');
+    bodyHeader.push({ text: '实拣数', style: 'tableHeader' });
     const { outboundHead } = this.props;
-    const pdf = [];
-    pdf.push([
-      { text: '项', style: 'tableHeader' },
-      { text: '货号', style: 'tableHeader' },
-      { text: '产品名称', style: 'tableHeader' },
-      { text: '批次号', style: 'tableHeader' },
-      { text: '客户属性', style: 'tableHeader' },
-      { text: '库位', style: 'tableHeader' },
-      { text: '待拣数', style: 'tableHeader' },
-      { text: '余量数', style: 'tableHeader' },
-      { text: '实拣数', style: 'tableHeader' }]);
+    pdfBody.push(bodyHeader);
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
-      const remQty = (data.stock_qty - data.alloc_qty) + data.shipped_qty;
+      const pickBody = [i + 1];
+      printRule.print.forEach((rule) => {
+        pickBody.push(data[rule.key] || '');
+      });
+      pickBody.push(data.alloc_qty);
+      if (printRule.print_remain) {
+        const remQty = (data.stock_qty - data.alloc_qty) + data.shipped_qty;
+        pickBody.push(remQty);
+      }
       const pickedQty = data.picked_qty === 0 ? '' : data.picked_qty;
-      pdf.push([i + 1, data.product_no || '', data.name || '', data.external_lot_no || '', data.attrib_1_string || '',
-        data.location || '', data.alloc_qty, remQty, pickedQty]);
+      pickBody.push(pickedQty);
+      pdfBody.push(pickBody);
     }
     if (pickDetails.length !== 16) {
-      pdf.push(['', '', '', '', '', '', '', '', '']);
+      const pickBody = [''];
+      printRule.print.forEach(() => {
+        pickBody.push('');
+      });
+      pickBody.push('');
+      if (printRule.print_remain) {
+        pickBody.push('');
+      }
+      pickBody.push('');
+      pdfBody.push(pickBody);
     }
-    pdf.push(['合计', '', '', '', '', '', outboundHead.total_alloc_qty, '', '']);
-    return pdf;
+    const totalBody = ['合计'];
+    printRule.print.forEach(() => {
+      totalBody.push('');
+    });
+    totalBody.push(outboundHead.total_alloc_qty);
+    if (printRule.print_remain) {
+      totalBody.push('');
+    }
+    totalBody.push('');
+    pdfBody.push(totalBody);
   }
   pdfSign = () => {
     const foot = [
@@ -107,7 +148,7 @@ export default class OutboundPickPrint extends Component {
     ];
     return foot;
   }
-  handleDocDef = (pickDetails) => {
+  handleDocDef = (pickDetails, printRule) => {
     const docDefinition = {
       content: [],
       pageOrientation: 'landscape',
@@ -152,14 +193,16 @@ export default class OutboundPickPrint extends Component {
     } else {
       num = 23 - pickDetails.length;
     }
+    const pdfBodyTable = {
+      widths: [],
+      body: [],
+    };
+    this.pdfPickDetails(pickDetails, pdfBodyTable, printRule);
     docDefinition.content = [
       this.pdfPickHead(),
       {
         style: 'table',
-        table: {
-          widths: [25, 100, 120, 100, '*', 60, '*', '*', '*'],
-          body: this.pdfPickDetails(pickDetails),
-        },
+        table: pdfBodyTable,
         layout: {
           vLineWidth(i, node) {
             return (i === 0 || i === node.table.widths.length - 1
@@ -180,8 +223,9 @@ export default class OutboundPickPrint extends Component {
   handlePrint = () => {
     this.props.loadPrintPickDetails(this.props.outboundNo).then((result) => {
       if (!result.error) {
-        const pickDetails = result.data;
-        const docDefinition = this.handleDocDef(pickDetails);
+        const pickDetails = result.data.details;
+        const printRule = result.data.print;
+        const docDefinition = this.handleDocDef(pickDetails, printRule);
         window.pdfMake.fonts = {
           yahei: {
             normal: 'msyh.ttf',

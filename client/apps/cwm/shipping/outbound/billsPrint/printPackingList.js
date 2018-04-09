@@ -1,23 +1,28 @@
-function packDetailPdfBody(packDetails) {
-  const pdf = [];
-  pdf.push([
-    { text: 'SU号', style: 'tableHeader' },
-    { text: '商品货号', style: 'tableHeader' },
-    { text: '产品名称', style: 'tableHeader' },
-    { text: '数量', style: 'tableHeader' },
-    { text: '集箱号', style: 'tableHeader' }]);
+function packDetailPdfBody(packDetails, pdfBodyTable) {
+  pdfBodyTable.body.push([{ text: '货物明细', style: 'title', colSpan: 5 }, '', '', '', '']);
+  const bodyHeader = [];
+  pdfBodyTable.widths.push(100);
+  bodyHeader.push({ text: 'SU号', style: 'tableHeader' });
+  pdfBodyTable.widths.push(100);
+  bodyHeader.push({ text: '商品货号', style: 'tableHeader' });
+  pdfBodyTable.widths.push(120);
+  bodyHeader.push({ text: '产品名称', style: 'tableHeader' });
+  pdfBodyTable.widths.push('*');
+  bodyHeader.push({ text: '数量', style: 'tableHeader' });
+  pdfBodyTable.widths.push(120);
+  bodyHeader.push({ text: '集箱号', style: 'tableHeader' });
+  pdfBodyTable.body.push(bodyHeader);
   let totalQty = 0;
   for (let i = 0; i < packDetails.length; i++) {
     const data = packDetails[i];
-    pdf.push([data.serial_no || '', data.product_no || '', data.name || '', data.chkpacked_qty,
+    pdfBodyTable.body.push([data.serial_no || '', data.product_no || '', data.name || '', data.chkpacked_qty,
       data.packed_no || '']);
     totalQty += data.chkpacked_qty;
   }
   if (packDetails.length !== 16) {
-    pdf.push(['', '', '', '', '']);
+    pdfBodyTable.body.push(['', '', '', '', '']);
   }
-  pdf.push(['合计', '', '', totalQty, '']);
-  return pdf;
+  pdfBodyTable.body.push(['合计', '', '', totalQty, '']);
 }
 export default function printPackListPdf(packDetails) {
   const docDefinition = {
@@ -64,13 +69,12 @@ export default function printPackListPdf(packDetails) {
   } else {
     num = 23 - packDetails.length;
   }
+  const pdfBodyTable = { widths: [], body: [] };
+  packDetailPdfBody(packDetails, pdfBodyTable);
   docDefinition.content = [
     {
       style: 'table',
-      table: {
-        widths: ['*', '*', '*', 100, '*'],
-        body: [[{ text: '货物明细', style: 'title', colSpan: 5 }, '', '', '', '']].concat(packDetailPdfBody(packDetails)),
-      },
+      table: pdfBodyTable,
       layout: {
         vLineWidth(i, node) {
           return (i === 0 || i === node.table.widths.length - 1

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Modal, Form, Input, Switch, Radio, message } from 'antd';
-import { hideOwnerControlModal, updateWhOwnerControl } from 'common/reducers/cwmWarehouse';
+import { hideOwnerControlModal, updateWhOwnerControl, showPickPrintModal } from 'common/reducers/cwmWarehouse';
+import OwnerPickPrintModal from './ownerPickPrintSettingModal';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -106,7 +107,7 @@ const initialSuBarcodeSetting = {
     visible: state.cwmWarehouse.ownerControlModal.visible,
     ownerAuth: state.cwmWarehouse.ownerControlModal.whOwnerAuth,
   }),
-  { hideOwnerControlModal, updateWhOwnerControl }
+  { hideOwnerControlModal, updateWhOwnerControl, showPickPrintModal }
 )
 @Form.create()
 export default class OwnerControlModal extends Component {
@@ -172,6 +173,30 @@ export default class OwnerControlModal extends Component {
       ownerAuth: { ...this.state.ownerAuth, portion_enabled: checked },
       control: { ...this.state.control, portion_enabled: checked },
     });
+  }
+  handlePickPrintSetting = () => {
+    let printSetting = {
+      print: [{ key: 'product_no', text: '货号', column: 1 },
+        { key: 'name', text: '产品名称', column: 2 },
+        { key: 'external_lot_no', text: '批次号', column: 3 },
+        { key: 'attrib_1_string', text: '客户属性', column: 4 },
+        { key: 'location', text: '库位', column: 5 },
+      ],
+      print_remain: true,
+      pick_order: ['location'],
+    };
+    if (this.props.ownerAuth.pick_print) {
+      printSetting = JSON.parse(this.props.ownerAuth.pick_print);
+    }
+    this.props.showPickPrintModal({
+      visible: true,
+      printSetting,
+    });
+  }
+  handlePickPrintChange = (newPickPrint) => {
+    const control = { ...this.state.control };
+    control.pick_print = JSON.stringify(newPickPrint);
+    this.setState({ control });
   }
   handleSubarcodeSetting = () => {
     const { suBarcodeSetting } = this.state;
@@ -316,6 +341,9 @@ export default class OwnerControlModal extends Component {
           <FormItem {...formItemLayout} label="出库启用分拨">
             <Switch checked={!!ownerAuth.portion_enabled} onChange={this.handlePortionEnable} />
           </FormItem>
+          <FormItem {...formItemLayout} label="拣货单打印">
+            <Button icon="setting" style={{ marginLeft: '20px' }} onClick={this.handlePickPrintSetting} />
+          </FormItem>
         </Form>
         {suBarcodeSettingVisible === true && <Modal
           maskClosable={false}
@@ -454,6 +482,7 @@ export default class OwnerControlModal extends Component {
             </FormItem>
           </Form>
         </Modal>}
+        <OwnerPickPrintModal setPickPrint={this.handlePickPrintChange} />
       </Modal>
     );
   }
