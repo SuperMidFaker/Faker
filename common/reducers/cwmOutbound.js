@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'CANCEL_TRACE_ALLOC', 'CANCEL_TRACE_ALLOC_SUCCEED', 'CANCEL_TRACE_ALLOC_FAIL',
   'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
   'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
+  'LOAD_PACKNO_DETAILS', 'LOAD_PACKNO_DETAILS_SUCCEED', 'LOAD_PACKNO_DETAILS_FAIL',
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
   'ORDER_EXPRESS', 'ORDER_EXPRESS_SUCCEED', 'ORDER_EXPRESS_FAIL',
@@ -538,6 +539,21 @@ export function loadPackDetails(outboundNo) {
       endpoint: 'v1/cwm/pack/details/load',
       method: 'get',
       params: { outboundNo },
+    },
+  };
+}
+
+export function loadPackedNoDetails(outboundNo, packedNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PACKNO_DETAILS,
+        actionTypes.LOAD_PACKNO_DETAILS_SUCCEED,
+        actionTypes.LOAD_PACKNO_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/pack/details/load',
+      method: 'get',
+      params: { outboundNo, packedNo },
     },
   };
 }

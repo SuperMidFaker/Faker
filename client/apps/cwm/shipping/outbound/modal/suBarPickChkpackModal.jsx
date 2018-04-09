@@ -4,7 +4,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Alert, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
-import { showSubarPickChkModal, pickConfirm } from 'common/reducers/cwmOutbound';
+import { showSubarPickChkModal, pickConfirm, loadPackedNoDetails } from 'common/reducers/cwmOutbound';
+import printPackListPdf from '../billsPrint/printPackingList';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -16,7 +17,7 @@ const FormItem = Form.Item;
     pickDetails: state.cwmOutbound.pickDetails,
     saveLoading: state.cwmOutbound.submitting,
   }),
-  { showSubarPickChkModal, pickConfirm }
+  { showSubarPickChkModal, pickConfirm, loadPackedNoDetails }
 )
 export default class SuBarPickChkpackModal extends Component {
   static propTypes = {
@@ -37,7 +38,6 @@ export default class SuBarPickChkpackModal extends Component {
     alertMsg: null,
     dataSource: [],
     packedNo: null,
-    pickSubmit: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -77,8 +77,6 @@ export default class SuBarPickChkpackModal extends Component {
     this.handleSuCancel();
     this.setState({
       serialDetailMap: null,
-      packedNo: null,
-      pickSubmit: false,
     });
     this.props.showSubarPickChkModal({ visible: false });
   }
@@ -107,7 +105,6 @@ export default class SuBarPickChkpackModal extends Component {
       if (!result.error) {
         message.success(`箱号${packedNo}条码拣货成功`);
         this.handleSuCancel();
-        this.setState({ pickSubmit: true });
       } else {
         message.error('操作失败');
       }
@@ -200,6 +197,20 @@ export default class SuBarPickChkpackModal extends Component {
       packedNo: ev.target.value,
     });
   }
+  handlePackListPrint = () => {
+    this.props.loadPackedNoDetails(this.props.outboundNo, this.state.packedNo).then((result) => {
+      if (!result.error) {
+        const packDetails = result.data;
+        if (packDetails.length === 0) {
+          message.warn(`${this.state.packedNo}箱单明细为空`);
+          return;
+        }
+        printPackListPdf(packDetails);
+      } else {
+        message.error(result.error.message);
+      }
+    });
+  }
   barColumns = [{
     title: '序号',
     dataIndex: 'seqno',
@@ -232,14 +243,14 @@ export default class SuBarPickChkpackModal extends Component {
       return null;
     }
     const {
-      alertMsg, dataSource, packedNo, pickSubmit,
+      alertMsg, dataSource, packedNo,
     } = this.state;
     const title = (<div>
       <span>条码拣货集箱</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button disabled={dataSource.length === 0 || !packedNo} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
-        <Button disabled={!pickSubmit} loading={saveLoading} type="primary" onClick={this.handleSubmit}>打印箱单</Button>
+        <Button disabled={!packedNo} loading={saveLoading} type="primary" onClick={this.handlePackListPrint}>打印箱单</Button>
       </div>
     </div>);
     const formItemLayout = {

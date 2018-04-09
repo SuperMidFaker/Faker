@@ -7,10 +7,7 @@ import JsBarcode from 'jsbarcode';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPrintPickDetails } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../../message.i18n';
 
 function textToBase64Barcode(text) {
   const canvas = document.createElement('canvas');
@@ -32,7 +29,7 @@ export default class OutboundPickPrint extends Component {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl);
   pdfPickHead = () => {
     const { outboundHead, defaultWhse, outboundNo } = this.props;
     const barcode = textToBase64Barcode(outboundNo);
@@ -81,7 +78,7 @@ export default class OutboundPickPrint extends Component {
       { text: '实拣数', style: 'tableHeader' }]);
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
-      const remQty = data.stock_qty - data.alloc_qty + data.shipped_qty;
+      const remQty = (data.stock_qty - data.alloc_qty) + data.shipped_qty;
       const pickedQty = data.picked_qty === 0 ? '' : data.picked_qty;
       pdf.push([i + 1, data.product_no || '', data.name || '', data.external_lot_no || '', data.attrib_1_string || '',
         data.location || '', data.alloc_qty, remQty, pickedQty]);
@@ -151,7 +148,7 @@ export default class OutboundPickPrint extends Component {
     };
     let num = 0;
     if (pickDetails.length > 23) {
-      num = 30 - (pickDetails.length - 23) % 30;
+      num = 30 - ((pickDetails.length - 23) % 30);
     } else {
       num = 23 - pickDetails.length;
     }
@@ -165,10 +162,12 @@ export default class OutboundPickPrint extends Component {
         },
         layout: {
           vLineWidth(i, node) {
-            return (i === 0 || i === node.table.widths.length - 1 || i === node.table.widths.length) ? 1.2 : 0.5;
+            return (i === 0 || i === node.table.widths.length - 1
+              || i === node.table.widths.length) ? 1.2 : 0.5;
           },
           hLineWidth(i, node) {
-            return (i === 0 || i === 1 || i === node.table.body.length - 1 || i === node.table.body.length) ? 1.2 : 0.5;
+            return (i === 0 || i === 1 || i === node.table.body.length - 1
+              || i === node.table.body.length) ? 1.2 : 0.5;
           },
           paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
         },

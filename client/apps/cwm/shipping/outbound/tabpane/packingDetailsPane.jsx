@@ -2,14 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-// import { intlShape, injectIntl } from 'react-intl';
+import { intlShape, injectIntl } from 'react-intl';
 import { Tag, Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { loadPackDetails } from 'common/reducers/cwmOutbound';
+import { formatMsg } from '../../message.i18n';
 
-
-// @injectIntl
+@injectIntl
 @connect(
   state => ({
     reload: state.cwmOutbound.outboundReload,
@@ -19,7 +19,7 @@ import { loadPackDetails } from 'common/reducers/cwmOutbound';
 )
 export default class PackingDetailsPane extends React.Component {
   static propTypes = {
-    // intl: intlShape.isRequired,
+    intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
   }
   state = {
@@ -34,6 +34,7 @@ export default class PackingDetailsPane extends React.Component {
       this.handleLoad();
     }
   }
+  msg = formatMsg(this.props.intl)
   handleLoad = () => {
     this.setState({ loading: true });
     this.props.loadPackDetails(this.props.outboundNo).then(() => {
@@ -60,6 +61,10 @@ export default class PackingDetailsPane extends React.Component {
     dataIndex: 'name',
     width: 150,
   }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+    width: 150,
+  }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
     width: 150,
@@ -76,8 +81,8 @@ export default class PackingDetailsPane extends React.Component {
   }, {
     title: '复核装箱时间',
     width: 100,
-    dataIndex: 'created_date',
-    render: o => o && <div>{moment(o).format('MM.DD HH:mm')}</div>,
+    dataIndex: 'chkpacked_date',
+    render: o => o && moment(o).format('MM.DD HH:mm'),
   }]
   render() {
     const { packDetails } = this.props;
@@ -96,7 +101,6 @@ export default class PackingDetailsPane extends React.Component {
     };
     return (
       <DataPane
-
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
