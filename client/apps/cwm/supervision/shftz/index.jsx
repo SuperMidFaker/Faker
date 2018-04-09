@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import Ellipsis from 'client/components/Ellipsis';
 import ListContentLayout from 'client/components/ListContentLayout';
 import { format } from 'client/common/i18n/helpers';
 import { selectCargoOwner } from 'common/reducers/cwmShFtz';
@@ -164,7 +165,10 @@ export default class SHFTZWrapper extends React.Component {
                     dataIndex: 'name',
                     key: 'code',
                     render: (o, record) =>
-                      <span><div>{record.customs_code}</div><div>{record.name}</div></span>,
+                      (<span>
+                        <div>{record.customs_code}</div>
+                        <Ellipsis length={14}>{record.name}</Ellipsis>
+                      </span>),
                   }],
                   dataSource: this.state.owners,
                   onRowClick: row => this.handleRowClick(row),

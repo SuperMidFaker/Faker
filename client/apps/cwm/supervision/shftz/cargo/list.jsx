@@ -331,7 +331,6 @@ export default class SHFTZCargoList extends React.Component {
               rowSelection={rowSelection}
               rowKey="id"
               toolbarActions={toolbarActions}
-              scroll={{ x: 1400 }}
               loading={loading}
             />
           </Content>
