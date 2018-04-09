@@ -36,7 +36,7 @@ export default class OrderNoColumn extends React.Component {
           <a onClick={() => this.props.loadOrderDetail(order.shipmt_order_no, this.props.tenantId)}>
             {order.shipmt_order_no}
           </a>
-          <div><Ellipsis length={16}>{order.customer_name}</Ellipsis></div>
+          <div><Ellipsis length={14}>{order.customer_name}</Ellipsis></div>
           <div className="mdc-text-grey">{order.cust_order_no} {order.cust_invoice_no && <Popover placement="right" content={content}><Icon type="caret-right" /></Popover>}</div>
         </div>
       );

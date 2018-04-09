@@ -371,7 +371,7 @@ export default class OrderList extends React.Component {
     }, {
       title: '跟单人员',
       dataIndex: 'exec_login_id',
-      width: 80,
+      width: 100,
       render: lid => <UserAvatar showName size="small" loginId={lid} />,
     }, {
       title: '进度状态',
