@@ -191,6 +191,7 @@ export default class SuBarPutawayModal extends Component {
         serial_no: suScan.serial_no,
         product_no: suScan.product_no,
         qty: pd.qty,
+        seqno: this.state.dataSource.length + 1,
       })).concat(this.state.dataSource);
       this.setState({
         alertMsg: null,
@@ -216,7 +217,6 @@ export default class SuBarPutawayModal extends Component {
     title: '序号',
     dataIndex: 'seqno',
     width: 100,
-    render: (id, row, index) => this.state.dataSource.length - index,
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',

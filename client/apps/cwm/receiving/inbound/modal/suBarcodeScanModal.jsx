@@ -192,7 +192,6 @@ export default class SuBarcodeScanModal extends Component {
       const seqQty = productSeqMap.get(seqNo);
       if (seqQty.received_qty < seqQty.expect_qty) {
         const suData = {
-          id: `${suScan.serial_no}${seqNo}`,
           product_no: suScan.product_no,
           serial_no: suScan.serial_no,
           expiry_date: suScan.expiry_date,
@@ -201,6 +200,7 @@ export default class SuBarcodeScanModal extends Component {
           attrib_3_string: suScan.attrib_3_string,
           attrib_4_string: suScan.attrib_4_string,
           asn_seq_no: seqNo,
+          seqno: dataSource.length + 1,
         };
         Object.keys(this.state.manualInput).forEach((mipKey) => {
           suData[mipKey] = this.state.manualInput[mipKey];
@@ -366,9 +366,8 @@ export default class SuBarcodeScanModal extends Component {
     } = this.state;
     const barColumns = [{
       title: '序号',
-      dataIndex: 'id',
+      dataIndex: 'seqno',
       width: 50,
-      render: (id, row, index) => dataSource.length - index,
     }, {
       title: '货号',
       dataIndex: 'product_no',
@@ -505,7 +504,7 @@ export default class SuBarcodeScanModal extends Component {
             size="middle"
             columns={barColumns}
             dataSource={dataSource}
-            rowKey="id"
+            rowKey="seqno"
             scroll={{
               x: barColumns.reduce((acc, cur) =>
               acc + (cur.width ? cur.width : 240), 0),

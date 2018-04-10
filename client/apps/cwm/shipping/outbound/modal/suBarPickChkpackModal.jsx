@@ -30,7 +30,7 @@ export default class SuBarPickChkpackModal extends Component {
       serial_no: PropTypes.string.isRequired,
       alloc_qty: PropTypes.number.isRequired,
       picked_qty: PropTypes.number.isRequired,
-      pack_no: PropTypes.string,
+      packed_no: PropTypes.string,
     })).isRequired,
   }
   state = {
@@ -47,7 +47,7 @@ export default class SuBarPickChkpackModal extends Component {
           id: pick.id,
           trace_id: pick.trace_id,
           qty: pick.alloc_qty - pick.picked_qty,
-          pack_no: pick.pack_no,
+          packed_no: pick.packed_no,
         }];
         if (serialDetailMap.has(pick.serial_no)) {
           details = details.concat(serialDetailMap.get(pick.serial_no));
@@ -167,7 +167,7 @@ export default class SuBarPickChkpackModal extends Component {
         return;
       }
       const serialDetails = this.state.serialDetailMap.get(suScan.serial_no);
-      const unpickDetails = serialDetails.filter(srd => !srd.pack_no);
+      const unpickDetails = serialDetails.filter(srd => !srd.packed_no);
       if (unpickDetails.length === 0) {
         this.setState({
           alertMsg: `序列号${suScan.serial_no}已装箱`,
@@ -181,6 +181,7 @@ export default class SuBarPickChkpackModal extends Component {
         serial_no: suScan.serial_no,
         product_no: suScan.product_no,
         qty: pd.qty,
+        seqno: this.state.dataSource.length + 1,
       })).concat(this.state.dataSource);
       this.setState({
         alertMsg: null,
@@ -215,7 +216,6 @@ export default class SuBarPickChkpackModal extends Component {
     title: '序号',
     dataIndex: 'seqno',
     width: 100,
-    render: (id, row, index) => this.state.dataSource.length - index,
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',

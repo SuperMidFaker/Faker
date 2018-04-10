@@ -54,6 +54,11 @@ export default class PutawayDetailsPane extends React.Component {
     this.props.loadInboundPutaways(this.props.inboundNo);
   }
   columns = [{
+    title: '序号',
+    dataIndex: 'seqno',
+    width: 50,
+    fixed: 'left',
+  }, {
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 150,
@@ -102,6 +107,7 @@ export default class PutawayDetailsPane extends React.Component {
     render: allocateDt => allocateDt && moment(allocateDt).format('MM.DD HH:mm'),
   }, {
     title: '操作',
+    dataIndex: '_OPS_',
     width: 150,
     fixed: 'right',
     render: (o, record) => {
@@ -180,6 +186,11 @@ export default class PutawayDetailsPane extends React.Component {
         return reg.test(item.product_no) || reg.test(item.product_sku);
       }
       return true;
+    }).map((ds, idx) => ({ ...ds, seqno: idx + 1 })).sort((pa, pb) => {
+      if (pa.result === pb.result) {
+        return pa.id - pb.id;
+      }
+      return pa.result - pb.result;
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -216,13 +227,10 @@ export default class PutawayDetailsPane extends React.Component {
     };
     let { columns } = this;
     if (inboundHead.rec_mode === 'scan') {
-      columns = [...columns];
-      columns.splice(9, 10);
+      columns = columns.filter(col => col.dataIndex !== '_OPS_');
     }
-
     return (
       <DataPane
-
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}

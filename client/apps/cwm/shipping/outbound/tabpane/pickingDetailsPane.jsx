@@ -17,6 +17,17 @@ import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import { formatMsg } from '../../message.i18n';
 
+function calcPickSortSort(det) {
+  if (det.picked_qty > 0) {
+    if (det.picked_qty !== det.alloc_qty) {
+      return 3;
+    }
+    return 1;
+  }
+  return 2;
+}
+
+
 @injectIntl
 @connect(
   state => ({
@@ -329,6 +340,13 @@ export default class PickingDetailsPane extends React.Component {
         return reg.test(item.product_no) || reg.test(item.product_sku);
       }
       return true;
+    }).sort((pa, pb) => {
+      const paScore = calcPickSortSort(pa);
+      const pbScore = calcPickSortSort(pb);
+      if (paScore === pbScore) {
+        return pa.id - pb.id;
+      }
+      return -(paScore - pbScore);
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

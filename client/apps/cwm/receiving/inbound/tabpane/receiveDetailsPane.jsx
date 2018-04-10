@@ -19,6 +19,15 @@ import BatchReceivingModal from '../modal/batchReceivingModal';
 import SuBarcodeScanModal from '../modal/suBarcodeScanModal';
 import { formatMsg } from '../../message.i18n';
 
+function calcProductSortScore(inboundPrd) {
+  if (inboundPrd.received_qty > 0) {
+    if (inboundPrd.received_qty !== inboundPrd.expect_qty) {
+      return 3;
+    }
+    return 1;
+  }
+  return 2;
+}
 
 @injectIntl
 @connect(
@@ -228,6 +237,13 @@ export default class ReceiveDetailsPane extends React.Component {
         return reg.test(item.product_no) || reg.test(item.product_sku);
       }
       return true;
+    }).sort((ia, ib) => {
+      const iaScore = calcProductSortScore(ia);
+      const ibScore = calcProductSortScore(ib);
+      if (iaScore === ibScore) {
+        return ia.asn_seq_no - ib.asn_seq_no;
+      }
+      return -(iaScore - ibScore);
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
