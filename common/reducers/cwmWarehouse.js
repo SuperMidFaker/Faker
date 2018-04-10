@@ -75,7 +75,7 @@ const initialState = {
   },
   ownerPickPrintModal: {
     visible: false,
-    printSetting: {},
+    printRule: {},
   },
   warehouseList: [],
   zoneList: [],

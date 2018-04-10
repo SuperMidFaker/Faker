@@ -45,7 +45,7 @@ export default class FlowCwmShippingPanel extends Component {
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="cwmShipping">
                 <TabPane tab={this.msg('cwmShippingOrder')} key="cwmShipping">
-                  <ShippingPane form={form} model={model} />
+                  <ShippingPane form={form} model={model} graph={graph} node={node} />
                 </TabPane>
               </Tabs>
             </Card>

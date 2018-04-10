@@ -34,77 +34,78 @@ const PICK_PRINT_FIELDS = [{
 @injectIntl
 @connect(
   state => ({
-    printSettingModal: state.cwmWarehouse.ownerPickPrintModal,
+    pickPrintControlModal: state.cwmWarehouse.ownerPickPrintModal,
   }),
   { showPickPrintModal }
 )
-export default class OwnerPickPrintModal extends Component {
+export default class OwnerPickPrintControlModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    printSettingModal: PropTypes.shape({
+    pickPrintControlModal: PropTypes.shape({
       visible: PropTypes.bool.isRequired,
-      printSetting: PropTypes.shape({
-        print: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
-        order: PropTypes.string,
+      printRule: PropTypes.shape({
+        columns: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
+        pick_order: PropTypes.string,
         print_remain: PropTypes.bool,
       }),
     }),
     setPickPrint: PropTypes.func.isRequired,
   }
   state = {
-    pickPrint: {},
+    pickColumnRule: {},
     pickOrder: null,
     printRemain: false,
   }
   componentDidMount() {
-    if (this.props.printSettingModal.visible) {
-      this.handlePrintSetting(this.props.printSettingModal.printSetting);
+    if (this.props.pickPrintControlModal.visible) {
+      this.handlePrintSetting(this.props.pickPrintControlModal.printRule);
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.printSettingModal.visible && !this.props.printSettingModal.visible) {
-      this.handlePrintSetting(nextProps.printSettingModal.printSetting);
+    if (nextProps.pickPrintControlModal.visible && !this.props.pickPrintControlModal.visible) {
+      this.handlePrintSetting(nextProps.pickPrintControlModal.printRule);
     }
   }
   msg = formatMsg(this.props.intl)
   handlePrintSetting = (printRule) => {
-    const printRuleState = {};
-    printRule.print.forEach((rule) => {
-      printRuleState[rule.key] = { enabled: true, text: rule.text, column: rule.column };
+    const columnRule = {};
+    const columns = (printRule.columns || []);
+    columns.forEach((rule) => {
+      columnRule[rule.key] = { enabled: true, text: rule.text, column: rule.column };
     });
-    let disableFieldColumn = printRule.print.length + 1;
+    let disableFieldColumn = columns.length + 1;
     PICK_PRINT_FIELDS.forEach((amf) => {
-      if (!printRuleState[amf.field]) {
-        printRuleState[amf.field] = { enabled: false, text: amf.text, column: disableFieldColumn };
+      if (!columnRule[amf.field]) {
+        columnRule[amf.field] = { enabled: false, text: amf.text, column: disableFieldColumn };
         disableFieldColumn += 1;
       }
     });
     this.setState({
-      pickPrint: printRuleState,
+      pickColumnRule: columnRule,
       pickOrder: printRule.pick_order,
       printRemain: printRule.print_remain,
     });
   }
   handleSettingChange = (field, key, newValue) => {
-    const printRuleState = { ...this.state.pickPrint };
-    printRuleState[field][key] = newValue;
-    this.setState({ pickPrint: printRuleState });
+    const columnRule = { ...this.state.pickColumnRule };
+    columnRule[field][key] = newValue;
+    this.setState({ pickColumnRule: columnRule });
   }
   handlePrintColumnChange = (field, newColumn) => {
     const columnValue = parseInt(newColumn, 10);
     if (!Number.isNaN(columnValue)) {
-      const printRuleState = { ...this.state.pickPrint };
+      const columnRule = { ...this.state.pickColumnRule };
       let switchField;
-      Object.keys(printRuleState).forEach((rulekey) => {
-        if (printRuleState[rulekey].column === columnValue) {
-          switchField = printRuleState[rulekey];
+      Object.keys(columnRule).forEach((rulekey) => {
+        if (Number(columnRule[rulekey].column) === columnValue) {
+          switchField = columnRule[rulekey];
         }
       });
       if (switchField) {
-        switchField.column = printRuleState[field].column;
-        printRuleState[field].column = newColumn;
+        switchField.column = Number(columnRule[field].column);
+        columnRule[field].column = columnValue;
       }
-      this.setState({ pickPrint: printRuleState });
+      this.setState({ pickColumnRule: columnRule });
     }
   }
   handlePrintRemainCheck = (checked) => {
@@ -116,25 +117,25 @@ export default class OwnerPickPrintModal extends Component {
   handleCancel = () => {
     this.props.showPickPrintModal({
       visible: false,
-      printSetting: {},
+      printRule: {},
     });
-    this.setState({ pickPrint: {}, printRemain: false, pickOrder: null });
+    this.setState({ pickColumnRule: {}, printRemain: false, pickOrder: null });
   }
 
   handleSubmit = () => {
-    const { pickPrint, pickOrder, printRemain } = this.state;
-    const rules = [];
-    Object.keys(pickPrint).forEach((rulekey) => {
-      const rule = pickPrint[rulekey];
+    const { pickColumnRule, pickOrder, printRemain } = this.state;
+    const columns = [];
+    Object.keys(pickColumnRule).forEach((rulekey) => {
+      const rule = pickColumnRule[rulekey];
       if (rule.enabled) {
-        rules.push({ key: rulekey, text: rule.text, column: rule.column });
+        columns.push({ key: rulekey, text: rule.text, column: rule.column });
       }
     });
-    rules.sort((ra, rb) => ra.column - rb.column);
-    for (let i = 0; i < rules.length; i++) {
-      const rule = rules[i];
-      if (rule.column < 1 || rule.column > rules.length) {
-        message.error(`列序号必须在1与${rules.length}之间`);
+    columns.sort((ra, rb) => ra.column - rb.column);
+    for (let i = 0; i < columns.length; i++) {
+      const rule = columns[i];
+      if (rule.column < 1 || rule.column > columns.length) {
+        message.error(`列序号必须在1与${columns.length}之间`);
         return;
       }
     }
@@ -143,16 +144,16 @@ export default class OwnerPickPrintModal extends Component {
       return;
     }
     this.props.setPickPrint({
-      print: rules,
+      columns,
       pick_order: pickOrder,
       print_remain: printRemain,
     });
     this.handleCancel();
   }
   render() {
-    const { pickPrint, pickOrder, printRemain } = this.state;
-    const { printSettingModal } = this.props;
-    if (!printSettingModal.visible) {
+    const { pickColumnRule, pickOrder, printRemain } = this.state;
+    const { pickPrintControlModal } = this.props;
+    if (!pickPrintControlModal.visible) {
       return null;
     }
     const formItemLayout = {
@@ -160,11 +161,11 @@ export default class OwnerPickPrintModal extends Component {
       wrapperCol: { span: 18 },
     };
     return (
-      <Modal maskClosable={false} title="拣货单打印属性" width={840} onCancel={this.handleCancel} visible={printSettingModal.visible} onOk={this.handleSubmit}>
+      <Modal maskClosable={false} title="拣货单打印属性" width={840} onCancel={this.handleCancel} visible={pickPrintControlModal.visible} onOk={this.handleSubmit}>
         <Form>
           <FormItem {...formItemLayout} label="打印显示列">
             {PICK_PRINT_FIELDS.map((amf) => {
-              const setting = pickPrint[amf.field];
+              const setting = pickColumnRule[amf.field];
               if (!setting) {
                 return null;
               }

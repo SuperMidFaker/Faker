@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Modal, Form, Input, Switch, Radio, message } from 'antd';
 import { hideOwnerControlModal, updateWhOwnerControl, showPickPrintModal } from 'common/reducers/cwmWarehouse';
-import OwnerPickPrintModal from './ownerPickPrintSettingModal';
+import OwnerPickPrintModal from './ownerPickPrintControlModal';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -175,8 +175,8 @@ export default class OwnerControlModal extends Component {
     });
   }
   handlePickPrintSetting = () => {
-    let printSetting = {
-      print: [{ key: 'product_no', text: '货号', column: 1 },
+    let printRule = {
+      columns: [{ key: 'product_no', text: '货号', column: 1 },
         { key: 'name', text: '产品名称', column: 2 },
         { key: 'external_lot_no', text: '批次号', column: 3 },
         { key: 'attrib_1_string', text: '客户属性', column: 4 },
@@ -186,11 +186,11 @@ export default class OwnerControlModal extends Component {
       pick_order: ['location'],
     };
     if (this.props.ownerAuth.pick_print) {
-      printSetting = JSON.parse(this.props.ownerAuth.pick_print);
+      printRule = JSON.parse(this.props.ownerAuth.pick_print);
     }
     this.props.showPickPrintModal({
       visible: true,
-      printSetting,
+      printRule,
     });
   }
   handlePickPrintChange = (newPickPrint) => {

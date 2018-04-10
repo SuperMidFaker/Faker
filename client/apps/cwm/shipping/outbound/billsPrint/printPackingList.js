@@ -19,9 +19,6 @@ function packDetailPdfBody(packDetails, pdfBodyTable) {
       data.packed_no || '']);
     totalQty += data.chkpacked_qty;
   }
-  if (packDetails.length !== 16) {
-    pdfBodyTable.body.push(['', '', '', '', '']);
-  }
   pdfBodyTable.body.push(['合计', '', '', totalQty, '']);
 }
 export default function printPackListPdf(packDetails) {
@@ -63,12 +60,6 @@ export default function printPackListPdf(packDetails) {
       font: 'yahei',
     },
   };
-  let num = 0;
-  if (packDetails.length > 23) {
-    num = 30 - ((packDetails.length - 23) % 30);
-  } else {
-    num = 23 - packDetails.length;
-  }
   const pdfBodyTable = { widths: [], body: [] };
   packDetailPdfBody(packDetails, pdfBodyTable);
   docDefinition.content = [
@@ -84,7 +75,7 @@ export default function printPackListPdf(packDetails) {
           return (i === 0 || i === 1 || i === node.table.body.length - 1 ||
             i === node.table.body.length) ? 1.2 : 0.5;
         },
-        paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
+        paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 : 1; },
       },
     },
   ];

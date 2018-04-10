@@ -78,13 +78,13 @@ export default class OutboundPickPrint extends Component {
     const pdfBody = pdfBodyTable.body;
     pdfBodyTable.widths.push(25);
     bodyHeader.push({ text: '项', style: 'tableHeader' });
-    printRule.print.forEach((rule) => {
+    printRule.columns.forEach((rule) => {
       pdfBodyTable.widths.push(PICK_PRINT_FIELD_PDFTABLE[rule.key]);
       bodyHeader.push({ text: rule.text, style: 'tableHeader' });
     });
     pdfBodyTable.widths.push('*');
     bodyHeader.push({ text: '待拣数', style: 'tableHeader' });
-    if (printRule.print_remain) {
+    if (printRule.remain) {
       pdfBodyTable.widths.push('*');
       bodyHeader.push({ text: '余量数', style: 'tableHeader' });
     }
@@ -95,11 +95,11 @@ export default class OutboundPickPrint extends Component {
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
       const pickBody = [i + 1];
-      printRule.print.forEach((rule) => {
+      printRule.columns.forEach((rule) => {
         pickBody.push(data[rule.key] || '');
       });
       pickBody.push(data.alloc_qty);
-      if (printRule.print_remain) {
+      if (printRule.remain) {
         const remQty = (data.stock_qty - data.alloc_qty) + data.shipped_qty;
         pickBody.push(remQty);
       }
@@ -107,27 +107,11 @@ export default class OutboundPickPrint extends Component {
       pickBody.push(pickedQty);
       pdfBody.push(pickBody);
     }
-    if (pickDetails.length !== 16) {
-      const pickBody = [''];
-      printRule.print.forEach(() => {
-        pickBody.push('');
-      });
-      pickBody.push('');
-      if (printRule.print_remain) {
-        pickBody.push('');
-      }
-      pickBody.push('');
-      pdfBody.push(pickBody);
-    }
-    const totalBody = ['合计'];
-    printRule.print.forEach(() => {
-      totalBody.push('');
-    });
-    totalBody.push(outboundHead.total_alloc_qty);
-    if (printRule.print_remain) {
+    const totalBody = ['合计'].concat(printRule.columns.map(() => ''))
+      .concat(outboundHead.total_alloc_qty, '');
+    if (printRule.remain) {
       totalBody.push('');
     }
-    totalBody.push('');
     pdfBody.push(totalBody);
   }
   pdfSign = () => {
@@ -187,12 +171,6 @@ export default class OutboundPickPrint extends Component {
         font: 'yahei',
       },
     };
-    let num = 0;
-    if (pickDetails.length > 23) {
-      num = 30 - ((pickDetails.length - 23) % 30);
-    } else {
-      num = 23 - pickDetails.length;
-    }
     const pdfBodyTable = {
       widths: [],
       body: [],
@@ -212,7 +190,7 @@ export default class OutboundPickPrint extends Component {
             return (i === 0 || i === 1 || i === node.table.body.length - 1
               || i === node.table.body.length) ? 1.2 : 0.5;
           },
-          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
+          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 : 1; },
         },
       },
       this.pdfSign(),
