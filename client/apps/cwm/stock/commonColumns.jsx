@@ -159,7 +159,7 @@ exports.transactionColumns = (/* intl */) => [{
   width: 100,
   dataIndex: 'trxn_login_name',
 }, {
-  title: '关联单号',
+  title: '指令单号',
   width: 180,
   dataIndex: 'transaction_no',
 }, {

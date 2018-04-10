@@ -25,6 +25,7 @@ export default class BatchUploadTransitModal extends Component {
     uploadTransitModal: PropTypes.shape({ visible: PropTypes.bool }),
   }
   state = {
+    transactionNo: null,
     transitKey: null,
     transitKeyFile: null,
     transitBodyList: [{ key: null, value: null }],
@@ -32,6 +33,9 @@ export default class BatchUploadTransitModal extends Component {
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.showUploadTransitModal({ visible: false });
+  }
+  handleTransactNoChange = (ev) => {
+    this.setState({ transactionNo: ev.target.value });
   }
   handleTransitKeyChange = (tkey) => {
     this.setState({ transitKey: tkey });
@@ -56,7 +60,9 @@ export default class BatchUploadTransitModal extends Component {
     return false;
   }
   handleSubmit = () => {
-    const { transitKeyFile, transitKey, transitBodyList } = this.state;
+    const {
+      transactionNo, transitKeyFile, transitKey, transitBodyList,
+    } = this.state;
     if (!transitKey) {
       message.error('导入字段未选');
       return;
@@ -71,6 +77,7 @@ export default class BatchUploadTransitModal extends Component {
       return;
     }
     const metaData = JSON.stringify({
+      transaction_no: transactionNo,
       key: transitKey,
       bodyList: transitBodyList,
       whseCode: this.props.defaultWhse.code,
@@ -95,7 +102,9 @@ export default class BatchUploadTransitModal extends Component {
   }
   render() {
     const { uploadTransitModal, intl } = this.props;
-    const { transitKey, transitKeyFile, transitBodyList } = this.state;
+    const {
+      transitKey, transitKeyFile, transactionNo, transitBodyList,
+    } = this.state;
     const formItemLayout = {
       labelCol: { span: 4 },
       wrapperCol: { span: 20 },
@@ -127,6 +136,9 @@ export default class BatchUploadTransitModal extends Component {
         okText="确认调整"
       >
         <Form>
+          <FormItem {...formItemLayout} label="指令单号">
+            <Input value={transactionNo} onChange={this.handleTransactNoChange} />
+          </FormItem>
           <FormItem {...formItemLayout} label="导入字段">
             <Col span={8}>
               <Select onChange={this.handleTransitKeyChange} showSearch value={transitKey} optionFilterProp="children">

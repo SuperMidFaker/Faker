@@ -3,16 +3,14 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Card, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmMovement';
-import { CWM_MOVEMENT_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
+import { CWM_MOVEMENT_TYPE } from 'common/constants';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -38,6 +36,8 @@ export default class MovementModal extends Component {
     stocks: [],
     movements: [],
     moveType: 1,
+    reason: '',
+    transactionNo: '',
     owner: {},
   }
   componentWillMount() {
@@ -47,16 +47,15 @@ export default class MovementModal extends Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl);
   stocksColumns = [{
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
+    render: o =>
+      o && <Button>{o}</Button>
+
+    ,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -73,11 +72,9 @@ export default class MovementModal extends Component {
     title: '当前库位',
     dataIndex: 'location',
     width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
+    render: o =>
+      o && <Tag>{o}</Tag>
+    ,
   }, {
     title: '入库日期',
     dataIndex: 'inbound_timestamp',
@@ -95,7 +92,12 @@ export default class MovementModal extends Component {
     title: '目标库位',
     width: 150,
     dataIndex: 'target_location',
-    render: (o, record, index) => (<LocationSelect style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)} showSearch />),
+    render: (o, record, index) => (<LocationSelect
+      style={{ width: 100 }}
+      value={o}
+      onSelect={value => this.handleSelect(value, index)}
+      showSearch
+    />),
   }, {
     title: '移动数量',
     width: 200,
@@ -116,11 +118,10 @@ export default class MovementModal extends Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
+    render: o =>
+      o &&
+        <Button>{o}</Button>
+    ,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -144,11 +145,10 @@ export default class MovementModal extends Component {
     title: '目标库位',
     dataIndex: 'target_location',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
+    render: o =>
+      o && <Tag>{o}</Tag>
+
+    ,
   }, {
     title: '移动数量',
     width: 200,
@@ -157,7 +157,7 @@ export default class MovementModal extends Component {
   }, {
     title: '删除',
     width: 80,
-    render: (o, record, index) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteMovement(index)} /></span>),
+    render: (o, record, index) => (<Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteMovement(index)} />),
   }]
 
   handleCancel = () => {
@@ -175,7 +175,10 @@ export default class MovementModal extends Component {
       message.info('请填写货品或库位');
       return;
     }
-    this.props.inventorySearch(JSON.stringify(filter), this.props.defaultWhse.code, this.state.owner.id).then((result) => {
+    this.props.inventorySearch(
+      JSON.stringify(filter), this.props.defaultWhse.code,
+      this.state.owner.id
+    ).then((result) => {
       if (!result.err) {
         this.setState({
           stocks: result.data.map(item => ({ ...item, moving_qty: 0 })),
@@ -211,7 +214,7 @@ export default class MovementModal extends Component {
     }
     if (movementOne.trace_pack_qty !== -1) {
       movementOne.movement_qty = movementOne.avail_qty;
-    } else if (isNaN(parseFloat(movementOne.movement_qty))) {
+    } else if (Number.isNaN(parseFloat(movementOne.movement_qty))) {
       message.info('请输入移动数量');
       return;
     }
@@ -250,9 +253,20 @@ export default class MovementModal extends Component {
     });
   }
   handleCreateMovement = () => {
+    const {
+      owner, moveType, transactionNo, reason,
+    } = this.state;
     this.props.createMovement(
-      this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code,
-      this.props.loginName, this.state.movements
+      {
+        owner_id: owner.id,
+        owner_name: owner.name,
+        move_type: moveType,
+        reason,
+        transaction_no: transactionNo,
+        whse_code: this.props.defaultWhse.code,
+        login_name: this.props.loginName,
+      },
+      this.state.movements
     ).then((result) => {
       if (!result.err) {
         this.props.closeMovementModal();
@@ -276,7 +290,7 @@ export default class MovementModal extends Component {
   handleMoveQtyChange = (value, index) => {
     const stocks = [...this.state.stocks];
     const qty = parseFloat(value);
-    if (isNaN(qty) || qty > stocks[index].avail_qty || qty < 0) {
+    if (Number.isNaN(qty) || qty > stocks[index].avail_qty || qty < 0) {
       message.info('请输入正确的数量');
       return;
     }
@@ -290,15 +304,32 @@ export default class MovementModal extends Component {
       moveType: value,
     });
   }
+  handleTransactNoChange = (ev) => {
+    this.setState({
+      transactionNo: ev.target.value,
+    });
+  }
+  handleReasonChange= (ev) => {
+    this.setState({
+      reason: ev.target.value,
+    });
+  }
   render() {
     const { owners } = this.props;
-    const { stocks, movements, owner } = this.state;
+    const {
+      stocks, movements, owner, transactionNo, reason,
+    } = this.state;
     const inventoryQueryForm = (<Form layout="inline">
       <FormItem label="货品">
         <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!owner.id} />
       </FormItem>
       <FormItem label="库位">
-        <LocationSelect style={{ width: 160 }} value={this.props.filter.location} onSelect={this.handleLocationChange} disabled={!owner.id} />
+        <LocationSelect
+          style={{ width: 160 }}
+          value={this.props.filter.location}
+          onSelect={this.handleLocationChange}
+          disabled={!owner.id}
+        />
       </FormItem>
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
@@ -332,12 +363,20 @@ export default class MovementModal extends Component {
               </Select>
             </FormItem>
             <FormItem label="库存移动类型">
-              <Select style={{ width: 320 }} onSelect={this.handleSelectMoveType} value={this.state.moveType}>
-                {CWM_MOVEMENT_TYPE.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+              <Select
+                style={{ width: 320 }}
+                onSelect={this.handleSelectMoveType}
+                value={this.state.moveType}
+              >
+                {CWM_MOVEMENT_TYPE.map(item => (<Option value={item.value} key={item.value}>
+                  {item.text}</Option>))}
               </Select>
             </FormItem>
+            <FormItem label="指令单号">
+              <Input value={transactionNo} onChange={this.handleTransactNoChange} />
+            </FormItem>
             <FormItem label="原因">
-              <Input />
+              <Input value={reason} onChange={this.handleReasonChange} />
             </FormItem>
           </Form>
         </Card>
@@ -348,7 +387,11 @@ export default class MovementModal extends Component {
               columns={this.stocksColumns}
               dataSource={stocks}
               rowKey="id"
-              scroll={{ x: this.stocksColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+              scroll={{
+                x: this.stocksColumns.reduce((acc, cur) =>
+                acc + (cur.width ? cur.width : 240), 0),
+                y: this.state.scrollY,
+}}
             />
           </div>
         </Card>
@@ -359,7 +402,11 @@ export default class MovementModal extends Component {
               columns={this.movementColumns}
               dataSource={movements.map((movement, index) => ({ ...movement, index }))}
               rowKey="index"
-              scroll={{ x: this.movementColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+              scroll={{
+ x: this.movementColumns.reduce((acc, cur) =>
+                acc + (cur.width ? cur.width : 240), 0),
+y: this.state.scrollY,
+}}
             />
           </div>
         </Card>

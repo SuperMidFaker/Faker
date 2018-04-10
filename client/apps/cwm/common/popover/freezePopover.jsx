@@ -26,7 +26,6 @@ export default class FreezePopover extends Component {
   }
   state = {
     visible: false,
-    sku: {},
     qty: '',
     reason: '',
   }

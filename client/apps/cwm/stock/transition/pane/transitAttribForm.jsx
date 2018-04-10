@@ -90,6 +90,11 @@ export default class TransitAttribForm extends React.Component {
         </Row>}
         <Row gutter={16} className="form-row">
           <Col span={8}>
+            <FormItem {...formItemLayout} label="指令单号">
+              {getFieldDecorator('transaction_no')(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={8}>
             <FormItem {...formItemLayout} label="品名">
               {getFieldDecorator('name', {
                 initialValue: detail.name,
