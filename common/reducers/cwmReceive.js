@@ -713,7 +713,7 @@ export function expressReceive(inboundNo, loginId, loginName, receivedDate) {
 
 export function batchReceive(
   seqNos, location, damageLevel, asnNo,
-  inboundNo, loginName, receivedDate, priority
+  inboundNo, loginName, receivedDate
 ) {
   return {
     [CLIENT_API]: {
@@ -725,7 +725,13 @@ export function batchReceive(
       endpoint: 'v1/cwm/inbound/product/receipt/batch',
       method: 'post',
       data: {
-        seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate, priority,
+        seqNos,
+        location,
+        damageLevel,
+        asnNo,
+        inboundNo,
+        loginName,
+        receivedDate,
       },
     },
   };
