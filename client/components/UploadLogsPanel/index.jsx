@@ -78,7 +78,7 @@ export default class UploadLogsPanel extends React.Component {
     render: (o, record) => {
       if (o && o > 0) {
         return (<span>
-          <span className={record.success_qty > 0 && 'text-success'}>{record.success_qty}</span> / <span className={record.ignore_qty > 0 && 'text-warning'}>{record.ignore_qty}</span> / <span className="text-emphasis">{o}</span>
+          <span className={record.success_qty > 0 ? 'text-success' : ''}>{record.success_qty}</span> / <span className={record.ignore_qty > 0 ? 'text-warning' : ''}>{record.ignore_qty}</span> / <span className="text-emphasis">{o}</span>
         </span>);
       }
       return o;
@@ -152,7 +152,7 @@ export default class UploadLogsPanel extends React.Component {
           columns={this.columns}
           dataSource={dataSource}
           scrollOffset={240}
-          rowkey="upload_no"
+          rowKey="upload_no"
           toolbarActions={<SearchBox onSearch={this.handleSearch} />}
           noSetting
           bordered
