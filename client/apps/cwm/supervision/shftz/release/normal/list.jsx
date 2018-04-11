@@ -13,16 +13,14 @@ import { openNormalRelRegModal, loadReleaseRegDatas } from 'common/reducers/cwmS
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { showDock } from 'common/reducers/cwmShippingOrder';
-import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
-import messages from '../../message.i18n';
 import NormalRelRegModal from './modal/normalRelRegModal';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
@@ -87,7 +85,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
     const filters = { ...this.props.listFilter, startDate: dataString[0], endDate: dataString[1] };
     this.handleReleaseListLoad(1, this.props.whse.code, filters);
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: '出区提货单号/备案编号',
     dataIndex: 'ftz_rel_no',

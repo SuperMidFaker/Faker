@@ -230,7 +230,16 @@ export default class SHFTZNormalRelRegDetail extends Component {
     });
   }
   handleNormalCustomDecl = (preRegNo, cusDeclNo) => {
-    this.props.clearNormalRel(preRegNo, cusDeclNo);
+    this.props.clearNormalRel(preRegNo, cusDeclNo)
+      .then((result) => {
+        if (result.error) {
+          if (result.error.message === 'cus_decl_no_empty') {
+            message.error('报关单号不能为空');
+            return;
+          }
+          message.error(result.error.message);
+        }
+      });
   }
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
