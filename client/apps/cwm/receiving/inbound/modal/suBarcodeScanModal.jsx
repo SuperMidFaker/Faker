@@ -505,6 +505,7 @@ export default class SuBarcodeScanModal extends Component {
             columns={barColumns}
             dataSource={dataSource}
             rowKey="seqno"
+            pagination={{ showTotal: total => `共 ${total} 条`, showSizeChanger: true, defaultPageSize: 20 }}
             scroll={{
               x: barColumns.reduce((acc, cur) =>
               acc + (cur.width ? cur.width : 240), 0),

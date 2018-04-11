@@ -298,6 +298,7 @@ export default class SuBarPickChkpackModal extends Component {
             columns={this.barColumns}
             dataSource={dataSource}
             rowKey="id"
+            pagination={{ showTotal: total => `共 ${total} 条`, showSizeChanger: true, defaultPageSize: 20 }}
             scroll={{
               x: this.barColumns.reduce((acc, cur) =>
               acc + (cur.width ? cur.width : 240), 0),

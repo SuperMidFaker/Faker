@@ -125,6 +125,7 @@ export default class StockTransitionList extends React.Component {
     width: 180,
     sorter: true,
     fixed: 'left',
+    render: pn => <TrimSpan maxLen={15} text={pn} />,
   }, {
     title: this.msg('descCN'),
     dataIndex: 'name',

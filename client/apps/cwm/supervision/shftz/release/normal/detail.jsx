@@ -598,7 +598,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 <EditableCell
                   value={reg.cus_decl_no}
                   onSave={value => this.handleNormalCustomDecl(reg.pre_entry_seq_no, value)}
-                  editable={regStatus === CWM_SHFTZ_APIREG_STATUS.completed}
+                  editable={regStatus <= 6}
                 />
               </Description>
               <Description term="发票号">

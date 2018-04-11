@@ -106,19 +106,20 @@ export default class MovementDetailsPane extends React.Component {
     });
   }
   handleExecuteMovement = () => {
+    const { props } = this;
     const {
       movementDetails, movementNo, username, defaultWhse,
-    } = this.props;
+    } = props;
     const toTraceIds = movementDetails.map(md => md.to_trace_id);
     Modal.confirm({
       title: '是否确认库存移动已完成?',
       onOk() {
-        this.props.executeMovement(
+        props.executeMovement(
           movementNo, toTraceIds,
           username, defaultWhse.code
         ).then((result) => {
           if (!result.err) {
-            this.props.loadMovementHead(movementNo);
+            props.loadMovementHead(movementNo);
           }
         });
       },

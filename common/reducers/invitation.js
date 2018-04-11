@@ -38,12 +38,20 @@ export default function reducer(state = initialState, action) {
       return { ...state, toInvitesLoaded: false };
     }
     case actionTypes.LOAD_SEND_INVITATIONS_SUCCEED:
-      return { ...state, sendInvitations: action.result.data.sendInvitations, sendInvitationsLoaded: true };
+      return {
+        ...state,
+        sendInvitations: action.result.data.sendInvitations,
+        sendInvitationsLoaded: true,
+      };
     case actionTypes.CANCEL_INVITE_SUCCEED: {
       return { ...state, sendInvitationsLoaded: false };
     }
     case actionTypes.LOAD_RECEIVE_INVITATIONS_SUCCEED:
-      return { ...state, receiveInvitations: action.result.data.receiveInvitations, receiveInvitationsLoaded: true };
+      return {
+        ...state,
+        receiveInvitations: action.result.data.receiveInvitations,
+        receiveInvitationsLoaded: true,
+      };
     case actionTypes.ACCEPT_INVITATION_SUCCEED:
     case actionTypes.REJECT_INVITATION_SUCCEED: {
       return { ...state, receiveInvitationsLoaded: false };

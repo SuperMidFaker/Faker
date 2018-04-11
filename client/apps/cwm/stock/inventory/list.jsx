@@ -91,7 +91,7 @@ export default class StockInventoryList extends React.Component {
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: (text, row) => getNormalCol(text, row),
+    render: (text, row) => getNormalCol(<TrimSpan maxLen={15} text={text} />, row),
   }, {
     title: this.msg('SKU'),
     dataIndex: 'product_sku',
