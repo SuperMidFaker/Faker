@@ -37,7 +37,7 @@ export default class LocationSelect extends React.Component {
     status: '1',
     zones: [],
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadLimitLocations(this.props.defaultWhse.code, '').then((result) => {
       if (!result.error) {
         this.setState({
@@ -74,8 +74,7 @@ export default class LocationSelect extends React.Component {
     } else {
       this.setState({ location: value });
       if (this.props.onChange) {
-        const location = this.state.options.filter(loc => loc.location === value)[0];
-        this.props.onChange(value, location);
+        this.props.onChange(value);
       }
     }
   }
@@ -88,8 +87,7 @@ export default class LocationSelect extends React.Component {
     } else {
       this.setState({ location: value });
       if (this.props.onSelect) {
-        const location = this.state.options.filter(loc => loc.location === value)[0];
-        this.props.onSelect(value, location);
+        this.props.onSelect(value);
       }
     }
   }
@@ -111,24 +109,23 @@ export default class LocationSelect extends React.Component {
   }
   handleOk = () => {
     this.props.form.validateFieldsAndScroll((err, values) => {
-      const { type, status } = this.state;
+      const { type, status, options } = this.state;
       if (!err) {
         this.props.addLocation(
           this.props.defaultWhse.code, values.zone, values.location,
           type, status, this.props.loginId
         ).then((result) => {
           if (!result.error) {
-            this.setState({ location: values.location });
-            // new location not add in state options
+            const newoptions = [...options];
+            newoptions.unshift({
+              location: values.location,
+            });
+            this.setState({ location: values.location, options: newoptions });
             if (this.props.onChange) {
-              const location = this.state.options.filter(loc =>
-                loc.location === values.location)[0];
-              this.props.onChange(values.location, location);
+              this.props.onChange(values.location);
             }
             if (this.props.onSelect) {
-              const location = this.state.options.filter(loc =>
-                loc.location === values.location)[0];
-              this.props.onSelect(values.location, location);
+              this.props.onSelect(values.location);
             }
           }
           this.handleCancel();
@@ -138,7 +135,7 @@ export default class LocationSelect extends React.Component {
   }
   render() {
     const {
-      visible, type, status, zones,
+      visible, type, status, zones, options,
     } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     const formItemLayout = {
@@ -159,7 +156,7 @@ export default class LocationSelect extends React.Component {
           optionFilterProp="children"
           style={this.props.style || {}}
         >
-          {this.state.options.map(opt => (<Option value={opt.location} key={opt.location}>
+          {options.map(opt => (<Option value={opt.location} key={opt.location}>
             {opt.location}</Option>))}
           <Option value="add" key="add">添加库区库位</Option>
         </Select>

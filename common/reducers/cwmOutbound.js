@@ -84,7 +84,7 @@ const initialState = {
     loaded: true,
   },
   outboundFilters: { status: 'all', ownerCode: 'all' },
-  outboundFormHead: {},
+  outboundFormHead: { alloc_rules: [] },
   outboundProducts: [],
   outboundReload: false,
   pickDetails: [],
@@ -308,7 +308,7 @@ export function loadOutboundProductDetails(outboundNo) {
   };
 }
 
-export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId, filters) {
+export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -316,10 +316,10 @@ export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId, fi
         actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED,
         actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cwm/product/inbound/details',
+      endpoint: 'v1/cwm/inbound/details/byproduct',
       method: 'get',
       params: {
-        productNo, whseCode, ownerPartnerId, filters: JSON.stringify(filters),
+        productNo, whseCode, ownerPartnerId,
       },
     },
   };

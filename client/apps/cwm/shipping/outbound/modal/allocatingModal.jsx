@@ -9,16 +9,26 @@ import TrimSpan from 'client/components/trimSpan';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import UnfreezePopover from '../../../common/popover/unfreezePopover';
-import messages from '../../message.i18n';
 import AllocatedPopover from '../../../common/popover/allocatedPopover';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+
+const ALLOC_RULE_OPTIONS = {
+  serial_no: '序列号',
+  virtual_whse: '库别',
+  external_lot_no: '批次号',
+  po_no: '采购订单号',
+  supplier: '供货商',
+  attrib_1_string: '扩展属性1',
+  attrib_2_string: '扩展属性2',
+  attrib_3_string: '扩展属性3',
+  attrib_4_string: '扩展属性4',
+};
 
 @injectIntl
 @connect(
@@ -64,16 +74,12 @@ export default class AllocatingModal extends Component {
       location: '', startTime: '', endTime: '', searchType: 'external_lot_no',
     },
   }
-  componentWillMount() {
+  componentDidMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: (window.innerHeight - 460) / 2,
       });
     }
-    this.setState({
-      filterInventoryColumns: this.inventoryColumns,
-      filterAllocatedColumns: this.allocatedColumns,
-    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
@@ -88,13 +94,22 @@ export default class AllocatingModal extends Component {
       this.setState({
         outboundProduct: nextProps.outboundProduct,
       });
+      const phIdx = this.inventoryColumns.findIndex(invc => invc.dataIndex === 'ALLOC_PLACEHOLDER');
+      const allocOptions = nextProps.outboundHead.alloc_rules.map(arp => ({
+        ...this.inventoryColumns[phIdx],
+        title: ALLOC_RULE_OPTIONS[arp.key],
+        dataIndex: arp.key,
+      }));
+      let filterInventoryColumns = [...this.inventoryColumns];
+      filterInventoryColumns.splice(phIdx, 1, ...allocOptions);
+      let filterAllocatedColumns = this.allocatedColumns;
       if (nextProps.outboundHead.bonded === 0) {
-        const filterInventoryColumns = this.inventoryColumns.filter(col =>
+        filterInventoryColumns = filterInventoryColumns.filter(col =>
           !this.bondedColumns[col.dataIndex]);
-        const filterAllocatedColumns = this.allocatedColumns.filter(col =>
+        filterAllocatedColumns = filterAllocatedColumns.filter(col =>
           !this.bondedColumns[col.dataIndex]);
-        this.setState({ filterInventoryColumns, filterAllocatedColumns });
       }
+      this.setState({ filterInventoryColumns, filterAllocatedColumns });
     }
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
@@ -124,34 +139,49 @@ export default class AllocatingModal extends Component {
       inventoryData,
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   inventoryColumns = [{
     title: '加入',
     width: 60,
     fixed: 'left',
     render: (o, record) => {
-      let disabled = !this.props.editable || !record.inbound_timestamp; // 不可编辑 或 未入库时disable
+      let disabled = !this.props.editable; // 不可编辑时disable
       let reason = '';
       if (!disabled) {
         const { outboundHead } = this.props;
-        if (outboundHead.bonded === 0) {
+        const priority = parseFloat(record.priority);
+        if (!record.inbound_timestamp) {
+          disabled = true;
+          reason = '入库日期为空';
+        } else if (outboundHead.bonded === 0) {
           disabled = record.bonded;
           reason = disabled ? '保税库存' : '';
-        }
-        if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'normal') {
+        } else if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'normal') {
           disabled = !record.ftz_ent_filed_id; // 没有明细ID时disable
           reason = disabled ? '海关入库明细ID为空' : '';
-        }
-        if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'portion') {
+        } else if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'portion') {
           disabled = !(record.ftz_ent_filed_id && record.portion); // 有明细ID 且 是分拨库存时不disable
           reason = disabled ? '货物不可分拨' : '';
-        }
-        if (record.priority === 0) {
+        } else if (Number.isNaN(priority) || priority === 0) {
+          disabled = true;
           reason = '库位封存';
-        }
-        if (!record.avail_qty || record.avail_qty === 0) { // 可用库存为空或等于0时disable
+        } else if (!record.avail_qty || record.avail_qty === 0) { // 可用库存为空或等于0时disable
           disabled = true;
           reason = '库存数量不足';
+        } else {
+          const { outboundProduct } = this.state;
+          for (let i = 0; i < outboundHead.alloc_rules.length; i++) {
+            const ar = outboundHead.alloc_rules[i];
+            if (ar.eigen && record[ar.key] !== ar.eigen) {
+              disabled = true;
+              reason = `${ALLOC_RULE_OPTIONS[ar.key]}值不等于${ar.eigen}`;
+              break;
+            } else if (outboundProduct[ar.key] && outboundProduct[ar.key] !== record[ar.key]) {
+              disabled = true;
+              reason = `${ALLOC_RULE_OPTIONS[ar.key]}值不等于${outboundProduct[ar.key]}`;
+              break;
+            }
+          }
         }
       }
       if (reason) {
@@ -176,9 +206,14 @@ export default class AllocatingModal extends Component {
     width: 100,
     render: o => o && <Tag>{o}</Tag>,
   }, {
-    title: '库别',
+    title: '入库日期',
+    dataIndex: 'inbound_timestamp',
     width: 100,
-    dataIndex: 'virtual_whse',
+    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
+  }, {
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 200,
   }, {
     title: '库存数量',
     dataIndex: 'stock_qty',
@@ -218,14 +253,15 @@ export default class AllocatingModal extends Component {
       return <UnfreezePopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
     },
   }, {
-    title: '入库日期',
-    dataIndex: 'inbound_timestamp',
+    title: '',
+    dataIndex: 'ALLOC_PLACEHOLDER',
     width: 100,
-    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
-    title: '追踪ID',
-    dataIndex: 'trace_id',
-    width: 200,
+    title: '入库客户单号',
+    dataIndex: 'cust_order_no',
+    width: 100,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '货物属性',
     dataIndex: 'bonded',
@@ -243,31 +279,6 @@ export default class AllocatingModal extends Component {
     dataIndex: 'ftz_ent_filed_id',
     width: 120,
     render: o => (o ? <span className="text-info">{o}</span> : <span className="text-error">无备案信息</span>),
-  }, {
-    title: '批次号',
-    dataIndex: 'external_lot_no',
-    width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
-  }, {
-    title: '产品序列号',
-    dataIndex: 'serial_no',
-    width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
-  }, {
-    title: '采购订单号',
-    dataIndex: 'po_no',
-    width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
-  }, {
-    title: '入库客户单号',
-    dataIndex: 'cust_order_no',
-    width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
-  }, {
-    title: 'ASN编号',
-    dataIndex: 'asn_no',
-    width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '进区凭单号',
     dataIndex: 'ftz_ent_no',
@@ -311,6 +322,7 @@ export default class AllocatingModal extends Component {
     title: 'ASN编号',
     dataIndex: 'asn_no',
     width: 125,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
@@ -319,7 +331,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '序列号',
     dataIndex: 'serial_no',
-    width: 100,
+    width: 120,
   }, {
     title: '入库日期',
     dataIndex: 'inbound_timestamp',
@@ -443,12 +455,10 @@ export default class AllocatingModal extends Component {
         const reg = new RegExp(filters.searchContent);
         if (reg.test(deleteOne[filters.searchType])) {
           inventoryData.push(deleteOne);
-          return;
         }
       }
       if (filters.location && deleteOne.location === filters.location) {
         inventoryData.push(deleteOne);
-        return;
       }
       if (filters.virtualWhse) {
         const reg = new RegExp(filters.virtualWhse);
@@ -530,7 +540,15 @@ export default class AllocatingModal extends Component {
     }
     const filters = { ...this.props.filters, searchType: value || 'external_lot_no' };
     const { bonded } = this.props.outboundHead;
-    const filterInventoryColumns = this.inventoryColumns.filter((col) => {
+    const phIdx = this.inventoryColumns.findIndex(invc => invc.dataIndex === 'ALLOC_PLACEHOLDER');
+    const allocOptions = this.props.outboundHead.alloc_rules.map(arp => ({
+      ...this.inventoryColumns[phIdx],
+      title: ALLOC_RULE_OPTIONS[arp.key],
+      dataIndex: arp.key,
+    }));
+    let filterInventoryColumns = [...this.inventoryColumns];
+    filterInventoryColumns.splice(phIdx, 1, ...allocOptions);
+    filterInventoryColumns = filterInventoryColumns.filter((col) => {
       let filter = true;
       if (bonded === 0) {
         filter = filter && !this.bondedColumns[col.dataIndex];
@@ -568,9 +586,13 @@ export default class AllocatingModal extends Component {
       const reg = new RegExp(filters.virtualWhse);
       inventoryData = inventoryData.filter(data => reg.test(data.virtual_whse));
     }
-    if (filters.endTime) {
-      inventoryData = inventoryData.filter(data => data.inbound_timestamp >= new Date(`${dataString[0]} 00:00:00`).getTime() &&
-        new Date(`${dataString[1]} 00:00:00`).getTime() > data.inbound_timestamp);
+    if (filters.startTime && filters.endTime) {
+      const startTs = new Date(dataString[0]).setHours(0, 0, 0, 0);
+      const endDate = new Date(dataString[1]);
+      endDate.setDate(endDate.getDate() + 1);
+      endDate.setHours(0, 0, 0, 0);
+      inventoryData = inventoryData.filter(data => data.inbound_timestamp >= startTs &&
+        data.inbound_timestamp < endDate.getTime());
     }
     this.setState({
       inventoryData,
@@ -592,7 +614,12 @@ export default class AllocatingModal extends Component {
     });
   }
   render() {
-    const { outboundHead, editable, outboundProducts } = this.props;
+    const {
+      outboundHead, editable, outboundProducts, submitting, visible,
+    } = this.props;
+    if (!visible) {
+      return null;
+    }
     const {
       outboundProduct, filterInventoryColumns, filterAllocatedColumns, filters,
     } = this.state;
@@ -647,11 +674,10 @@ export default class AllocatingModal extends Component {
       </Form>);
 
     const title = (<div>
-      <span>{outboundHead.so_no} 第{outboundProduct.seq_no}行 出库分配</span>
+      <span>{outboundHead.so_no} 第{outboundProduct.seq_no}行 出库分配{editable ? '' : '查看'}</span>
       <div className="toolbar-right">
-        {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
-        {editable && <Button onClick={this.handleCancel}>取消</Button>}
-        {editable && <Button type="primary" onClick={this.handleManualAllocSave} loading={this.props.submitting}>保存</Button>}
+        <Button onClick={this.handleCancel}>{editable ? '取消' : '关闭'}</Button>
+        {editable && <Button type="primary" onClick={this.handleManualAllocSave} loading={submitting}>保存</Button>}
       </div>
     </div>);
     return (
@@ -661,7 +687,7 @@ export default class AllocatingModal extends Component {
         width="100%"
         wrapClassName="fullscreen-modal"
         closable={false}
-        visible={this.props.visible}
+        visible={visible}
         footer={null}
       >
         <Card bodyStyle={{ paddingBottom: 16 }} >
@@ -693,6 +719,15 @@ export default class AllocatingModal extends Component {
                 />}
               />
             </Col>
+            {outboundHead.alloc_rules.map((ar) => {
+              if (!ar.eigen && outboundProduct[ar.key]) {
+                return (
+                  <Col sm={12} md={8} lg={6} key={ar.key}>
+                    <InfoItem label={ALLOC_RULE_OPTIONS[ar.key]} field={outboundProduct[ar.key]} />
+                  </Col>);
+              }
+              return null;
+            })}
             {outboundHead.bonded === 1 && <Col sm={12} md={8} lg={2}>
               <InfoItem label="监管方式" field={CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0].ftztext} />
             </Col>}
@@ -703,7 +738,7 @@ export default class AllocatingModal extends Component {
             <Table
               size="middle"
               columns={filterInventoryColumns}
-              dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))}
+              dataSource={this.state.inventoryData}
               scroll={{
  x: filterInventoryColumns.reduce((acc, cur) =>
                 acc + (cur.width ? cur.width : 240), 0),
@@ -719,7 +754,7 @@ y: this.state.scrollY,
             <Table
               size="middle"
               columns={filterAllocatedColumns}
-              dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))}
+              dataSource={this.state.allocatedData}
               scroll={{
  x: filterAllocatedColumns.reduce((acc, cur) =>
                 acc + (cur.width ? cur.width : 240), 0),
