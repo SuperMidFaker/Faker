@@ -42,6 +42,10 @@ const messages = defineMessages({
     id: 'cwm.stock.desc.cn',
     defaultMessage: '中文品名',
   },
+  SKUCategory: {
+    id: 'cwm.stock.sku.category',
+    defaultMessage: '商品分类',
+  },
   location: {
     id: 'cwm.stock.location',
     defaultMessage: '库位',

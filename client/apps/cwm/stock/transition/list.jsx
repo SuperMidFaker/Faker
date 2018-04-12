@@ -132,6 +132,11 @@ export default class StockTransitionList extends React.Component {
     width: 150,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
+    title: this.msg('SKUCategory'),
+    dataIndex: 'sku_category',
+    width: 120,
+    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
+  }, {
     title: this.msg('location'),
     width: 120,
     dataIndex: 'location',
