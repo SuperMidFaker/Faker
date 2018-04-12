@@ -2,19 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { notification, Card, Table, Icon, Modal, Input, Row, Col, Select, Button, DatePicker, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import RowAction from 'client/components/RowAction';
-import { format } from 'client/common/i18n/helpers';
-import QuantityInput from '../../../common/quantityInput';
-import LocationPopover from '../../../common/popover/locationPopover';
-import messages from '../../message.i18n';
 import { hideReceiveModal, loadProductDetails, receiveProduct } from 'common/reducers/cwmReceive';
 import { CWM_DAMAGE_LEVEL } from 'common/constants';
-import moment from 'moment';
+import QuantityInput from '../../../common/quantityInput';
+import LocationPopover from '../../../common/popover/locationPopover';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -48,7 +46,10 @@ export default class ReceivingModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
       this.setState({ loading: true });
-      this.props.loadProductDetails(nextProps.inboundNo, nextProps.inboundProduct.asn_seq_no).then((result) => {
+      this.props.loadProductDetails(
+        nextProps.inboundNo,
+        nextProps.inboundProduct.asn_seq_no
+      ).then((result) => {
         if (!result.error) {
           let dataSource = [];
           if (result.data.length === 0 && nextProps.inboundHead.rec_mode === 'manual') {
@@ -71,7 +72,7 @@ export default class ReceivingModal extends Component {
               inbound_qty: Number(data.inbound_qty),
               inbound_pack_qty: Number(data.inbound_pack_qty),
               convey_no: data.convey_no,
-              avail: data.avail_qty > 0,
+              avail: !(data.frozen_qty > 0),
               received_by: data.received_by,
               serial_no: data.serial_no,
               attrib_1_string: data.attrib_1_string,
@@ -85,7 +86,8 @@ export default class ReceivingModal extends Component {
             receivedQty: nextProps.inboundProduct.received_qty,
             receivedPackQty: nextProps.inboundProduct.received_pack_qty,
             loading: false,
-            receivedDate: nextProps.inboundProduct.received_date ? nextProps.inboundProduct.received_date : new Date(),
+            receivedDate: nextProps.inboundProduct.received_date ?
+              nextProps.inboundProduct.received_date : new Date(),
           });
         }
       });
@@ -115,13 +117,13 @@ export default class ReceivingModal extends Component {
   }
   handleProductReceive = (index, value) => {
     const receivePack = Number(parseFloat(value));
-    if (!isNaN(receivePack)) {
-      const inboundProduct = this.props.inboundProduct;
+    if (!Number.isNaN(receivePack)) {
+      const { inboundProduct } = this.props;
       let { receivedQty, receivedPackQty } = this.state;
       const dataSource = [...this.state.dataSource];
       const remainQty = inboundProduct.expect_qty - receivedQty;
       const remainPackQty = inboundProduct.expect_pack_qty - receivedPackQty;
-      const changeQty = receivePack * inboundProduct.sku_pack_qty - dataSource[index].inbound_qty;
+      const changeQty = (receivePack * inboundProduct.sku_pack_qty) - dataSource[index].inbound_qty;
       const changePackQty = receivePack - dataSource[index].inbound_pack_qty;
       dataSource[index].avail = remainQty >= 0;
       if (remainQty < 0 && changeQty < 0 && changeQty <= remainQty) {
@@ -240,21 +242,24 @@ export default class ReceivingModal extends Component {
     const {
       loginId, inboundNo, inboundProduct, inboundHead,
     } = this.props;
-    this.props.receiveProduct(this.state.dataSource.filter(data => !data.trace_id).map(data => ({
-      location: data.location,
-      damage_level: data.damage_level,
-      inbound_qty: data.inbound_qty,
-      inbound_pack_qty: data.inbound_pack_qty,
-      convey_no: data.convey_no,
-      avail: data.avail,
-      received_by: data.received_by,
-      serial_no: data.serial_no,
-      attrib_1_string: data.attrib_1_string,
-      attrib_2_string: data.attrib_2_string,
-      attrib_3_string: data.attrib_3_string,
-      attrib_4_string: data.attrib_4_string,
-      priority: data.priority,
-    })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId, this.state.receivedDate).then((result) => {
+    this.props.receiveProduct(
+      this.state.dataSource.filter(data => !data.trace_id).map(data => ({
+        location: data.location,
+        damage_level: data.damage_level,
+        inbound_qty: data.inbound_qty,
+        inbound_pack_qty: data.inbound_pack_qty,
+        convey_no: data.convey_no,
+        avail: data.avail,
+        received_by: data.received_by,
+        serial_no: data.serial_no,
+        attrib_1_string: data.attrib_1_string,
+        attrib_2_string: data.attrib_2_string,
+        attrib_3_string: data.attrib_3_string,
+        attrib_4_string: data.attrib_4_string,
+        priority: data.priority,
+      })), inboundNo,
+      inboundProduct.asn_seq_no, inboundHead.asn_no, loginId, this.state.receivedDate
+    ).then((result) => {
       if (!result.error) {
         message.success('收货确认成功');
         this.props.hideReceiveModal();
@@ -292,7 +297,10 @@ export default class ReceivingModal extends Component {
     title: '收货数量',
     width: 200,
     dataIndex: 'inbound_qty',
-    render: (o, record) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} />),
+    render: (o, record) => (<QuantityInput
+      packQty={record.inbound_pack_qty}
+      pcsQty={record.inbound_qty}
+    />),
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
@@ -371,7 +379,7 @@ export default class ReceivingModal extends Component {
     render: (o, record) => (
       <LocationPopover
         value={o}
-        style={{ width: 140 }}
+        style={{ width: '95%' }}
         productNo={this.props.inboundProduct.product_no}
         whseCode={this.props.defaultWhse.code}
         disabled={!!record.trace_id}
@@ -381,13 +389,13 @@ export default class ReceivingModal extends Component {
   }, {
     title: '库存状态',
     dataIndex: 'avail',
-    width: 70,
+    width: 80,
     render: (avail, row) => {
       const availStatus = avail ? 'avail' : 'frozen';
       return (<Select
         value={availStatus}
         onChange={value => this.handleAvailChange(row.index, value)}
-        style={{ width: 60 }}
+        style={{ width: '100%' }}
         disabled={!!row.trace_id}
       >
         <Option value="avail">可用</Option>
