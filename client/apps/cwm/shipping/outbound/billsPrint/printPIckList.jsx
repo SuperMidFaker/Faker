@@ -6,7 +6,7 @@ import { Icon, message } from 'antd';
 import JsBarcode from 'jsbarcode';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPrintPickDetails } from 'common/reducers/cwmOutbound';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { CWM_OUTBOUND_STATUS, PICK_PRINT_FIELDS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 function textToBase64Barcode(text) {
@@ -15,15 +15,8 @@ function textToBase64Barcode(text) {
   return canvas.toDataURL('image/png');
 }
 
-const PICK_PRINT_FIELD_PDFTABLE = {
-  product_no: 100,
-  name: 120,
-  external_lot_no: 100,
-  attrib_1_string: '*',
-  location: 60,
-  serial_no: 120,
-  virtual_whse: 100,
-};
+const PICK_PRINT_FIELD_PDFTABLE = {};
+PICK_PRINT_FIELDS.forEach((ppf) => { PICK_PRINT_FIELD_PDFTABLE[ppf.field] = ppf.width; });
 
 @injectIntl
 @connect(

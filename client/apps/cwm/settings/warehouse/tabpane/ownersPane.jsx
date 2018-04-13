@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Tag, Modal } from 'antd';
-import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
+import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, showSkuRuleModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { showAllocRuleModal } from 'common/reducers/cwmAllocRule';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
@@ -17,6 +17,7 @@ import { WHSE_OPERATION_MODES } from 'common/constants';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
 import AllocRuleModal from '../modal/allocationRuleModal';
+import SkuRuleModal from '../modal/skuRuleModal';
 import { formatMsg } from '../message.i18n';
 
 const { confirm } = Modal;
@@ -36,6 +37,7 @@ const { confirm } = Modal;
     showAllocRuleModal,
     loadwhseOwners,
     showOwnerControlModal,
+    showSkuRuleModal,
     changeOwnerStatus,
     loadWhse,
     clearTransition,
@@ -111,6 +113,11 @@ export default class OwnersPane extends Component {
     width: 80,
     render: (arule, row) => <Button icon="setting" onClick={() => this.handleAllocRule(row)} />,
   }, {
+    title: 'SKU规则',
+    dataIndex: 'sku_rule',
+    width: 80,
+    render: (srule, row) => <Button icon="setting" onClick={() => this.handleSkuRule(row)} />,
+  }, {
     title: '库存初始化',
     dataIndex: 'init',
     width: 100,
@@ -185,6 +192,13 @@ export default class OwnersPane extends Component {
     };
     this.props.showAllocRuleModal({ visible: true, rule });
   }
+  handleSkuRule = (row) => {
+    const rule = {
+      ownerAuthId: row.id,
+      sku_rule: row.sku_rule ? JSON.parse(row.sku_rule) : { required_props: [] },
+    };
+    this.props.showSkuRuleModal({ visible: true, rule });
+  }
   handleInitData = (record) => {
     this.setState({
       seletedOwner: {
@@ -234,6 +248,7 @@ export default class OwnersPane extends Component {
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
         <AllocRuleModal reload={this.handleOwnerLoad} />
+        <SkuRuleModal reload={this.handleOwnerLoad} />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}

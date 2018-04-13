@@ -496,3 +496,55 @@ exports.ALLOC_ERROR_MESSAGE_DESC = {
   shftz_portion_detail_queried: '分拨出库单已提交,无法取消分配',
   shftz_normal_reg_detail_in_decl: '出库明细处于清关中,无法取消分配',
 };
+
+exports.ALLOC_MATCH_FIELDS = [{
+  field: 'serial_no', label: '序列号',
+}, {
+  field: 'virtual_whse', label: '库别',
+}, {
+  field: 'external_lot_no', label: '批次号',
+}, {
+  field: 'po_no', label: '采购订单号',
+}, {
+  field: 'supplier', label: '供货商',
+}, {
+  field: 'attrib_1_string', label: '扩展属性1',
+}, {
+  field: 'attrib_2_string', label: '扩展属性2',
+}, {
+  field: 'attrib_3_string', label: '扩展属性3',
+}, {
+  field: 'attrib_4_string', label: '扩展属性4',
+}];
+
+exports.SKU_REQUIRED_PROPS = [{
+  value: 'category', label: '商品分类',
+}, {
+  value: 'cbm', label: '体积',
+}, {
+  value: 'currency', label: '币制',
+}];
+
+exports.PICK_PRINT_FIELDS = [{
+  field: 'product_no', text: '货号', width: 100,
+}, {
+  field: 'name', text: '产品名称', width: 120,
+}, {
+  field: 'sku_category', text: '商品分类', width: 100,
+}, {
+  field: 'location', text: '库位', width: 60,
+}, {
+  field: 'serial_no', text: '序列号', width: 120,
+}, {
+  field: 'virtual_whse', text: '库别', width: 100,
+}, {
+  field: 'external_lot_no', text: '批次号', width: 100,
+}, {
+  field: 'attrib_1_string', text: '客户属性1', width: '*',
+}, {
+  field: 'attrib_2_string', text: '客户属性2', width: '*',
+}, {
+  field: 'attrib_3_string', text: '客户属性3', width: '*',
+}, {
+  field: 'attrib_4_string', text: '客户属性4', width: '*',
+}];

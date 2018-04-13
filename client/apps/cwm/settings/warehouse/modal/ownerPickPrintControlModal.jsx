@@ -4,32 +4,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Row, Col, Form, Tooltip, Icon, Select, Input, Switch, message } from 'antd';
 import { showPickPrintModal } from 'common/reducers/cwmWarehouse';
+import { PICK_PRINT_FIELDS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-
-const PICK_PRINT_FIELDS = [{
-  field: 'product_no', text: '货号',
-}, {
-  field: 'name', text: '产品名称',
-}, {
-  field: 'location', text: '库位',
-}, {
-  field: 'serial_no', text: '序列号',
-}, {
-  field: 'virtual_whse', text: '库别',
-}, {
-  field: 'external_lot_no', text: '批次号',
-}, {
-  field: 'attrib_1_string', text: '客户属性1',
-}, {
-  field: 'attrib_2_string', text: '客户属性2',
-}, {
-  field: 'attrib_3_string', text: '客户属性3',
-}, {
-  field: 'attrib_4_string', text: '客户属性4',
-}];
 
 @injectIntl
 @connect(

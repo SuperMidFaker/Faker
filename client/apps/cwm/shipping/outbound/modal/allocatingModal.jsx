@@ -8,7 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
-import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SO_BONDED_REGTYPES, ALLOC_MATCH_FIELDS } from 'common/constants';
 import QuantityInput from '../../../common/quantityInput';
 import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import AllocatedPopover from '../../../common/popover/allocatedPopover';
@@ -18,17 +18,8 @@ const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const ALLOC_RULE_OPTIONS = {
-  serial_no: '序列号',
-  virtual_whse: '库别',
-  external_lot_no: '批次号',
-  po_no: '采购订单号',
-  supplier: '供货商',
-  attrib_1_string: '扩展属性1',
-  attrib_2_string: '扩展属性2',
-  attrib_3_string: '扩展属性3',
-  attrib_4_string: '扩展属性4',
-};
+const ALLOC_RULE_OPTIONS = {};
+ALLOC_MATCH_FIELDS.forEach((amf) => { ALLOC_RULE_OPTIONS[amf.field] = amf.label; });
 
 @injectIntl
 @connect(

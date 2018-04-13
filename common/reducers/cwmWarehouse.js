@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'LOAD_WHSE_OWNERS', 'LOAD_WHSE_OWNERS_SUCCEED', 'LOAD_WHSE_OWNERS_FAIL',
   'ADD_WHSE_OWNERS', 'ADD_WHSE_OWNERS_SUCCEED', 'ADD_WHSE_OWNERS_FAIL',
   'SHOW_OWNER_CONTROL_MODAL', 'HIDE_OWNER_CONTROL_MODAL', 'SHOW_PICKPRINTSET_MODAL',
+  'SHOW_SKURUL_MODAL',
   'SAVE_OWNER_CODE', 'SAVE_OWNER_CODE_SUCCEED', 'SAVE_OWNER_CODE_FAIL',
   'SHOW_ZONE_MODAL', 'HIDE_ZONE_MODAL', 'CLEAR_LOCATIONS',
   'CHNAGE_OWNER_STATUS', 'CHNAGE_OWNER_STATUS_SUCCEED', 'CHNAGE_OWNER_STATUS_FAIL',
@@ -76,6 +77,11 @@ const initialState = {
   ownerPickPrintModal: {
     visible: false,
     printRule: {},
+  },
+  skuRuleModalVisible: false,
+  skuRuleModal: {
+    ownerAuthId: 0,
+    sku_rule: {},
   },
   warehouseList: [],
   zoneList: [],
@@ -158,6 +164,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: false } };
     case actionTypes.SHOW_PICKPRINTSET_MODAL:
       return { ...state, ownerPickPrintModal: action.data };
+    case actionTypes.SHOW_SKURUL_MODAL:
+      return { ...state, skuRuleModalVisible: action.data.visible, skuRuleModal: action.data.rule };
     case actionTypes.LOAD_WHSE_OWNERS_SUCCEED:
       return { ...state, whseOwners: action.result.data };
     case actionTypes.SHOW_ZONE_MODAL:
@@ -434,6 +442,13 @@ export function hideOwnerControlModal() {
 export function showPickPrintModal(data) {
   return {
     type: actionTypes.SHOW_PICKPRINTSET_MODAL,
+    data,
+  };
+}
+
+export function showSkuRuleModal(data) {
+  return {
+    type: actionTypes.SHOW_SKURUL_MODAL,
     data,
   };
 }

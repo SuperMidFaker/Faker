@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Tag, Tooltip } from 'antd';
+import { Alert, Modal, Button, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
@@ -12,7 +12,7 @@ import { createFilename } from 'client/util/dataTransform';
 import ExcelUploader from 'client/components/ExcelUploader';
 import EditableCell from 'client/components/EditableCell';
 import { openReceiveModal, viewSuBarcodeScanModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
-import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
+import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL, SKU_REQUIRED_PROPS } from 'common/constants';
 import SKUPopover from '../../../common/popover/skuPopover';
 import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
@@ -28,6 +28,9 @@ function calcProductSortScore(inboundPrd) {
   }
   return 2;
 }
+
+const SKU_PROPS_MAP = {};
+SKU_REQUIRED_PROPS.forEach((amf) => { SKU_PROPS_MAP[amf.value] = amf.label; });
 
 @injectIntl
 @connect(
@@ -162,6 +165,10 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 150,
     dataIndex: 'name',
   }, {
+    title: '类别',
+    width: 100,
+    dataIndex: 'category',
+  }, {
     title: '预期数量',
     width: 100,
     dataIndex: 'expect_qty',
@@ -222,6 +229,7 @@ export default class ReceiveDetailsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (this.props.inboundHead.rec_mode === 'scan' ||
+        record.sku_incomplete ||
         this.props.inboundHead.status === CWM_INBOUND_STATUS.COMPLETED.value ||
         record.received_qty >= record.expect_qty) {
         return (<RowAction onClick={this.handleReceiveDetails} icon="eye-o" label="收货记录" row={record} />);
@@ -275,9 +283,23 @@ export default class ReceiveDetailsPane extends React.Component {
         },
       }],
       getCheckboxProps: record => ({
-        disabled: record.trace_id.length >= 1,
+        disabled: record.trace_id.length >= 1 || record.sku_incomplete,
       }),
     };
+    let alertMsg;
+    const unRecvablePrds = [];
+    inboundProducts.forEach((inbP) => {
+      if (inbP.sku_incomplete && unRecvablePrds.indexOf(inbP.product_no) === -1) {
+        unRecvablePrds.push(inbP.product_no);
+      }
+    });
+    if (unRecvablePrds.length > 0) {
+      let prdnos = `${unRecvablePrds.join(',')}`;
+      if (prdnos.length > 130) {
+        prdnos = `${prdnos.slice(0, 130)}...`;
+      }
+      alertMsg = <div>存在必填属性不完整货号:<br />{prdnos}</div>;
+    }
     return (
       <DataPane
         columns={this.columns}
@@ -300,9 +322,10 @@ export default class ReceiveDetailsPane extends React.Component {
           </DataPane.BulkActions>
           <DataPane.Actions>
             {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
-            <Button onClick={this.handleSuBarcodeScanReceive}>
+                unRecvablePrds.length === 0 &&
+                <Button onClick={this.handleSuBarcodeScanReceive}>
             条码收货确认
-            </Button>}
+                </Button>}
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Tooltip title="导出收货明细" placement="bottom"><Button icon="download" onClick={this.handleDownloadReceiving}>导出</Button></Tooltip>
             }
@@ -324,6 +347,7 @@ export default class ReceiveDetailsPane extends React.Component {
               </ExcelUploader>
             </Tooltip>}
           </DataPane.Actions>
+          {alertMsg && <Alert message={alertMsg} type="warning" showIcon />}
         </DataPane.Toolbar>
         <ReceivingModal />
         <BatchReceivingModal inboundNo={this.props.inboundNo} data={this.state.selectedRows} />

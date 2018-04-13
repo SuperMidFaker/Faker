@@ -5,29 +5,10 @@ import { connect } from 'react-redux';
 import { Modal, Form, Input, Switch, message } from 'antd';
 import { updateWhOwnerControl } from 'common/reducers/cwmWarehouse';
 import { showAllocRuleModal } from 'common/reducers/cwmAllocRule';
+import { ALLOC_MATCH_FIELDS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-
-const ALLOC_MATCH_FIELDS = [{
-  field: 'serial_no', label: '序列号',
-}, {
-  field: 'virtual_whse', label: '库别',
-}, {
-  field: 'external_lot_no', label: '批次号',
-}, {
-  field: 'po_no', label: '采购订单号',
-}, {
-  field: 'supplier', label: '供货商',
-}, {
-  field: 'attrib_1_string', label: '扩展属性1',
-}, {
-  field: 'attrib_2_string', label: '扩展属性2',
-}, {
-  field: 'attrib_3_string', label: '扩展属性3',
-}, {
-  field: 'attrib_4_string', label: '扩展属性4',
-}];
 
 function AllocMatchFieldForm(props) {
   const {
