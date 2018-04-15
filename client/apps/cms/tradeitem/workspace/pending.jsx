@@ -189,7 +189,6 @@ export default class PendingItemsList extends React.Component {
         showSearch
         placeholder="所属归类库"
         allowClear
-        style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}

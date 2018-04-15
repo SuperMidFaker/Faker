@@ -39,7 +39,6 @@ export default class ActivitiesDockPanel extends React.Component {
     } = this.props;
     return (
       <DockPanel
-        size="small"
         visible={visible}
         onClose={this.props.hideActivitiesDock}
         title={<span>{this.msg('activities')}</span>}

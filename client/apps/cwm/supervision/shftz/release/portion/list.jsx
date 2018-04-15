@@ -276,7 +276,6 @@ export default class SHFTZReleaseList extends React.Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange}
         defaultValue="all"

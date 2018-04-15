@@ -484,7 +484,6 @@ export default class DelegationList extends Component {
     }].concat(this.props.clients);
     const toolbarActions = (<span>
       <SearchBox
-        width={250}
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
       />
@@ -512,7 +511,6 @@ export default class DelegationList extends Component {
         value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-        style={{ width: 216 }}
       />
     </span>);
 

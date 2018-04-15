@@ -234,7 +234,6 @@ export default class FlowList extends React.Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 200 }}
         onChange={this.handleClientSelectChange}
         value={listFilter.ownerPartnerId}
         dropdownMatchSelectWidth={false}

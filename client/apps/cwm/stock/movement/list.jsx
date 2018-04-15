@@ -226,7 +226,6 @@ export default class MovementList extends React.Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleOwnerChange}
         defaultValue="all"
         dropdownMatchSelectWidth={false}

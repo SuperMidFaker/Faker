@@ -37,7 +37,7 @@ export default class NotificationDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
-    messages: PropTypes.object.isRequired,
+    messages: PropTypes.shape({ status: PropTypes.number }).isRequired,
     loadMessages: PropTypes.func.isRequired,
     markMessages: PropTypes.func.isRequired,
     markMessage: PropTypes.func.isRequired,
@@ -132,25 +132,32 @@ export default class NotificationDockPanel extends React.Component {
       },
       remotes: this.props.messages,
     });
+    const toolbarActions = (<span>
+      <Tooltip title={this.msg('markAllRead')}>
+        <Button shape="circle" icon="check" onClick={this.markAllRead} />
+      </Tooltip>
+      <Popconfirm placement="bottomRight" title={this.msg('confirmDeleteAllRead')} onConfirm={this.deleteAllRead}>
+        <Tooltip title={this.msg('deleteAllRead')}>
+          <Button shape="circle" icon="delete" />
+        </Tooltip>
+      </Popconfirm>
+    </span>);
     return (
       <DockPanel
         visible={visible}
         onClose={this.props.hideNotificationDock}
         title={<span>{this.msg('notification')}</span>}
       >
-        <div className="toolbar">
-          <div className="toolbar-right">
-            <Tooltip title={this.msg('markAllRead')}>
-              <Button shape="circle" icon="check" onClick={this.markAllRead} />
-            </Tooltip>
-            <Popconfirm placement="bottomRight" title={this.msg('confirmDeleteAllRead')} onConfirm={this.deleteAllRead}>
-              <Tooltip title={this.msg('deleteAllRead')}>
-                <Button shape="circle" icon="delete" />
-              </Tooltip>
-            </Popconfirm>
-          </div>
-        </div>
-        <DataTable columns={columns} dataSource={dataSource} rowKey="id" locale={{ emptyText: this.msg('emptyNew') }} showHeader={false} scrollOffset={170} />
+        <DataTable
+          noSetting
+          toolbarActions={toolbarActions}
+          columns={columns}
+          dataSource={dataSource}
+          rowKey="id"
+          locale={{ emptyText: this.msg('emptyNew') }}
+          showHeader={false}
+          scrollOffset={170}
+        />
       </DockPanel>
     );
   }
