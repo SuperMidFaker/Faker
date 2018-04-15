@@ -60,7 +60,6 @@ export default class CreatorSelect extends React.Component {
       <Select
         value={fieldsValue.creator ? fieldsValue.creator : ''}
         onChange={this.handleChange}
-        style={{ width: 160 }}
         size={this.props.size}
       >
         <Option value="all"><Avatar size="small" icon="team" /> {this.msg('allOperators')}</Option>

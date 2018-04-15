@@ -162,7 +162,6 @@ export default class TradeItemTaskList extends React.Component {
         showSearch
         placeholder="所属归类库"
         allowClear
-        style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}

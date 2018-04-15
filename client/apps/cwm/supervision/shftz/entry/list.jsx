@@ -298,11 +298,9 @@ export default class SHFTZEntryList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('entrySearchPlaceholder')} onSearch={this.handleSearch} />
-      <span />
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange}
         defaultValue="all"

@@ -316,7 +316,6 @@ export default class InvoiceList extends React.Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onSelect={this.handleSelect}

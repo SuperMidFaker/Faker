@@ -351,7 +351,6 @@ export default class ReceivableExpenseList extends Component {
         showSearch
         allowClear
         optionFilterProp="children"
-        style={{ width: 160 }}
         value={this.props.listFilter.partnerId}
         onChange={this.handleClientSelectChange}
         dropdownMatchSelectWidth={false}
@@ -363,7 +362,6 @@ export default class ReceivableExpenseList extends Component {
       <RangePicker
         ranges={{ 当天: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
         onChange={this.handleDateChange}
-        style={{ width: 216 }}
       />
     </span>);
     const bulkActions = (<span>

@@ -469,7 +469,6 @@ export default class OrderList extends React.Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
         value={filters.partnerId ? filters.partnerId : 'all'}
         dropdownMatchSelectWidth={false}

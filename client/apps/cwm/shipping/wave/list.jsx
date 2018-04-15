@@ -213,11 +213,9 @@ export default class WaveList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('wavePlaceholder')} onSearch={this.handleSearch} />
-      <span />
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         value={filters.ownerCode}
         onChange={this.handleOwnerChange}
         defaultValue="all"

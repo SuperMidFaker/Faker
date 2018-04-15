@@ -366,7 +366,6 @@ export default class PayableExpenseList extends Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
         value={this.props.listFilter.partnerId}
         dropdownMatchSelectWidth={false}
@@ -378,7 +377,6 @@ export default class PayableExpenseList extends Component {
       <RangePicker
         ranges={{ 当天: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
         onChange={this.handleDateChange}
-        style={{ width: 216 }}
       />
     </span>);
     const bulkActions = (<span>
