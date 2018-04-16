@@ -57,59 +57,59 @@ export default class UploadLogsPanel extends React.Component {
     const filter = { ...this.props.filter, searchText: value };
     this.handleReload(filter);
   }
-  columns = [
-    {
-      title: '上传文件',
-      dataIndex: 'filename',
-    }, {
-      title: this.msg('status'),
-      dataIndex: 'status',
-      width: 60,
-      render: (o) => {
-        if (o && o === 1) {
-          return <Tag color="#87d068">{this.gmsg('completed')}</Tag>;
-        }
-        return <Tag color="#f50">{this.gmsg('error')}</Tag>;
-      },
-    }, {
-      title: this.msg('totalQty'),
-      dataIndex: 'total_qty',
-      width: 250,
-      render: (o, record) => {
-        if (o && o > 0) {
-          return (<span>
-            <span className={record.success_qty > 0 && 'text-success'}>{record.success_qty}</span> / <span className={record.ignore_qty > 0 && 'text-warning'}>{record.ignore_qty}</span> / <span className="text-emphasis">{o}</span>
-          </span>);
-        }
-        return o;
-      },
-    }, {
-      title: this.msg('fileSize'),
-      dataIndex: 'file_size',
-      align: 'right',
-      width: 80,
-      render: size => size && `${(size / 1000).toFixed(1)}K`,
-    }, {
-      title: this.msg('fileType'),
-      dataIndex: 'file_type',
-      width: 80,
-    }, {
-      title: this.msg('uploadedDate'),
-      dataIndex: 'upload_date',
-      width: 130,
-      render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-    }, {
-      title: this.gmsg('actions'),
-      dataIndex: 'OPS_COL',
-      fixed: 'right',
-      className: 'table-col-ops',
-      width: 88,
-      render: (o, record) => (<span>
-        <RowAction icon="download" onClick={this.handleDownload} tooltip={this.gmsg('download')} row={record} />
-        {this.props.onUploadBatchDelete &&
-        <RowAction danger icon="delete" confirm={this.gmsg('confirmOp')} onConfirm={this.onUploadBatchDelete} tooltip={this.gmsg('empty')} row={record} />}
-      </span>),
+  columns = [{
+    title: '上传文件',
+    dataIndex: 'filename',
+    render: filename => filename && decodeURI(filename),
+  }, {
+    title: this.msg('status'),
+    dataIndex: 'status',
+    width: 60,
+    render: (o) => {
+      if (o && o === 1) {
+        return <Tag color="#87d068">{this.gmsg('completed')}</Tag>;
+      }
+      return <Tag color="#f50">{this.gmsg('error')}</Tag>;
     },
+  }, {
+    title: this.msg('totalQty'),
+    dataIndex: 'total_qty',
+    width: 250,
+    render: (o, record) => {
+      if (o && o > 0) {
+        return (<span>
+          <span className={record.success_qty > 0 ? 'text-success' : ''}>{record.success_qty}</span> / <span className={record.ignore_qty > 0 ? 'text-warning' : ''}>{record.ignore_qty}</span> / <span className="text-emphasis">{o}</span>
+        </span>);
+      }
+      return o;
+    },
+  }, {
+    title: this.msg('fileSize'),
+    dataIndex: 'file_size',
+    align: 'right',
+    width: 80,
+    render: size => size && `${(size / 1000).toFixed(1)}K`,
+  }, {
+    title: this.msg('fileType'),
+    dataIndex: 'file_type',
+    width: 80,
+  }, {
+    title: this.msg('uploadedDate'),
+    dataIndex: 'upload_date',
+    width: 130,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
+    title: this.gmsg('actions'),
+    dataIndex: 'OPS_COL',
+    fixed: 'right',
+    className: 'table-col-ops',
+    width: 88,
+    render: (o, record) => (<span>
+      <RowAction icon="download" onClick={this.handleDownload} tooltip={this.gmsg('download')} row={record} />
+      {this.props.onUploadBatchDelete &&
+        <RowAction danger icon="delete" confirm={this.gmsg('confirmOp')} onConfirm={this.onUploadBatchDelete} tooltip={this.gmsg('empty')} row={record} />}
+    </span>),
+  },
   ];
   handleClose = () => {
     const { pageSize } = this.props.uploadRecords;
@@ -152,7 +152,7 @@ export default class UploadLogsPanel extends React.Component {
           columns={this.columns}
           dataSource={dataSource}
           scrollOffset={240}
-          rowkey="upload_no"
+          rowKey="upload_no"
           toolbarActions={<SearchBox onSearch={this.handleSearch} />}
           noSetting
           bordered

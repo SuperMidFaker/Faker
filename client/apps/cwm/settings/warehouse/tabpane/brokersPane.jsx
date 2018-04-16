@@ -26,10 +26,6 @@ export default class BrokersPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
-    whseTenantId: PropTypes.number.isRequired,
-  }
-  state = {
-    selectedRowKeys: [],
   }
   componentWillMount() {
     this.props.loadBrokers(this.props.whseCode);
@@ -57,9 +53,8 @@ export default class BrokersPane extends Component {
     render: (o) => {
       if (o) {
         return <Tag color="green">正常</Tag>;
-      } else {
-        return <Tag color="red">停用</Tag>;
       }
+      return <Tag color="red">停用</Tag>;
     },
   }, {
     title: '最后修改时间',
@@ -75,6 +70,7 @@ export default class BrokersPane extends Component {
     title: '操作',
     width: 200,
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     fixed: 'right',
     render: (o, record) => (
       <span>
@@ -116,7 +112,9 @@ export default class BrokersPane extends Component {
     const { whseCode, brokers } = this.props;
     return (
       <DataPane
-        columns={this.columns} dataSource={brokers} rowKey="id"
+        columns={this.columns}
+        dataSource={brokers}
+        rowKey="id"
       >
         <DataPane.Toolbar>
           <Button type="primary" icon="plus-circle" onClick={() => this.props.toggleBrokerModal(true)}>添加报关代理</Button>

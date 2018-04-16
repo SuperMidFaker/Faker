@@ -43,7 +43,8 @@ export default class CWMReceivingPane extends Component {
   }
   handleBondedChange = (ev) => {
     if (!ev.target.value) {
-      this.props.form.setFieldsValue({
+      const { graph, node } = this.props;
+      graph.update(node, {
         bonded_reg_type: null,
         rec_after_decl_days: '',
       });

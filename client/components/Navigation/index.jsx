@@ -235,6 +235,7 @@ export default class Navigation extends PureComponent {
           collapsed={this.state.collapsed}
           onCollapse={this.onCollapse}
           width={176}
+          breakpoint="xl"
           className="left-sider"
         >
           {this.renderNavMenu()}

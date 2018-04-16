@@ -12,7 +12,6 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
     username: state.account.username,
     visible: state.cwmReceive.suBarPutawayModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,
@@ -92,10 +91,8 @@ export default class SuBarPutawayModal extends Component {
       window.localStorage.removeItem('subarcode-putaway');
     }
   }
-  handleDeleteDetail = (index) => {
-    let dataSource = [...this.state.dataSource];
-    const data = dataSource[index];
-    dataSource = dataSource.filter(ds => ds.serial_no !== data.serial_no);
+  handleDeleteDetail = (row) => {
+    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== row.serial_no);
     this.setState({ dataSource });
   }
   handleSubmit = () => {
@@ -138,6 +135,15 @@ export default class SuBarPutawayModal extends Component {
     if (ev.key === 'Enter') {
       const barcode = ev.target.value;
       const suSetting = this.props.inboundHead.su_setting;
+      if (barcode === suSetting.submit_key) {
+        this.handleSubmit();
+        this.emptySuInputElement();
+        return;
+      } else if (barcode === suSetting.location_focus_key && this.locationInputRef) {
+        this.emptySuInputElement();
+        this.locationInputRef.focus();
+        return;
+      }
       const suKeys = ['serial_no', 'product_no'];
       Object.keys(suSetting).forEach((suKey) => {
         if (suSetting[suKey].enabled === true || suSetting[suKey].enabled === 'subarcode') {
@@ -185,6 +191,7 @@ export default class SuBarPutawayModal extends Component {
         serial_no: suScan.serial_no,
         product_no: suScan.product_no,
         qty: pd.qty,
+        seqno: this.state.dataSource.length + 1,
       })).concat(this.state.dataSource);
       this.setState({
         alertMsg: null,
@@ -201,11 +208,15 @@ export default class SuBarPutawayModal extends Component {
       location: ev.target.value,
     });
   }
+  handleScanLocationKeyDown= (ev) => {
+    if (ev.key === 'Enter' && this.suInputRef) {
+      this.suInputRef.focus();
+    }
+  }
   barColumns = [{
     title: '序号',
     dataIndex: 'seqno',
     width: 100,
-    render: (id, row, index) => this.state.dataSource.length - index,
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
@@ -225,7 +236,7 @@ export default class SuBarPutawayModal extends Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
+    render: (o, record) => (<RowAction onClick={this.handleDeleteDetail} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
     const { saveLoading, visible } = this.props;
@@ -259,7 +270,7 @@ export default class SuBarPutawayModal extends Component {
         width="100%"
         wrapClassName="fullscreen-modal"
         closable={false}
-        visible={this.props.visible}
+        visible={visible}
         footer={null}
       >
         <Card bodyStyle={{ paddingBottom: 16 }} >
@@ -279,6 +290,7 @@ export default class SuBarPutawayModal extends Component {
                 ref={this.handleLocationInputRef}
                 value={location}
                 onChange={this.handleScanLocationChange}
+                onKeyDown={this.handleScanLocationKeyDown}
               />
             </FormItem>
           </Form>
@@ -289,6 +301,7 @@ export default class SuBarPutawayModal extends Component {
             columns={this.barColumns}
             dataSource={dataSource}
             rowKey="trace_id"
+            pagination={{ showTotal: total => `共 ${total} 条`, showSizeChanger: true, defaultPageSize: 20 }}
             scroll={{
               x: this.barColumns.reduce((acc, cur) =>
               acc + (cur.width ? cur.width : 240), 0),

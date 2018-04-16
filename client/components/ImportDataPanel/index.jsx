@@ -24,6 +24,7 @@ export default class ImportDataPanel extends React.Component {
     onUploaded: PropTypes.func,
     onClose: PropTypes.func,
     adaptors: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string })),
+    onAdaptorChange: PropTypes.func,
   }
   state = {
     importInfo: {},
@@ -37,7 +38,7 @@ export default class ImportDataPanel extends React.Component {
       });
     }
   }
-  onChange = (e) => {
+  handleSkipModeChange= (e) => {
     this.setState({
       skipMode: e.target.value,
     });
@@ -62,6 +63,9 @@ export default class ImportDataPanel extends React.Component {
   }
   handleAdaptorChange = (value) => {
     this.setState({ adaptor: value });
+    if (this.props.onAdaptorChange) {
+      this.props.onAdaptorChange(value);
+    }
   }
   handleBeforeUpload = () => {
     if (this.props.onBeforeUpload) {
@@ -98,7 +102,7 @@ export default class ImportDataPanel extends React.Component {
         </Form.Item>
         }
       <Form.Item label="重复数据处理">
-        <Radio.Group onChange={this.onChange} value={skipMode}>
+        <Radio.Group onChange={this.handleSkipModeChange} value={skipMode}>
           <Radio value={1}>覆盖原数据</Radio>
           <Radio value={2}>忽略重复数据</Radio>
         </Radio.Group>
@@ -138,7 +142,13 @@ export default class ImportDataPanel extends React.Component {
     }
     formData.skipMode = skipMode;
     return (
-      <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose} className="welo-import-data-panel">
+      <DockPanel
+        title={title || '导入'}
+        size="middle"
+        visible={visible}
+        onClose={this.handleClose}
+        className="welo-import-data-panel"
+      >
         <Steps direction="vertical" size="small">
           <Step title="设置选项" status="wait" description={this.renderOptions()} />
           {adaptor === '' &&

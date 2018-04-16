@@ -134,6 +134,7 @@ export default class SHFTZTransferSelfList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 100,
     fixed: 'right',
     render: (o, record) =>
@@ -240,7 +241,6 @@ export default class SHFTZTransferSelfList extends React.Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange}
         defaultValue="all"

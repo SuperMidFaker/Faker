@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Avatar, Badge, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
+import { Avatar, Badge, Button, DatePicker, Layout, Icon, Popconfirm, Select, Tag, message, Menu, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
+import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import UserAvatar from 'client/components/UserAvatar';
 import SearchBox from 'client/components/SearchBox';
 import {
-  CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE,
+  CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE, CMS_DELG_TODO,
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -32,8 +33,6 @@ import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
 
 const { Content } = Layout;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -100,6 +99,7 @@ export default class DelegationList extends Component {
   state = {
     selectedRowKeys: [],
     // filterName: null,
+    currentFilter: 'all',
   }
   componentDidMount() {
     const filters = this.initializeFilters();
@@ -203,7 +203,7 @@ export default class DelegationList extends Component {
     },
   }, {
     title: this.msg('status'),
-    width: 100,
+    width: 150,
     dataIndex: 'status',
     render: (o, record) => {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted) {
@@ -211,11 +211,11 @@ export default class DelegationList extends Component {
       } else if (record.status === CMS_DELEGATION_STATUS.accepted
         || record.status === CMS_DELEGATION_STATUS.processing) {
         if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
-          return <span><Badge status="warning" text="未制单" /> <Icon type="exclamation-circle-o" /></span>;
+          return <span><Badge status="default" text="未录入" /></span>;
         } else if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
-          return <span><Badge status="warning" text="制单中" /> <Icon type="clock-circle-o" /></span>;
+          return <span><Badge status="warning" text="未生成CDF" /></span>;
         } else if (record.manifested === CMS_DELEGATION_MANIFEST.manifested) {
-          return <span><Badge status="warning" text="制单完成" /> <Icon type="check-circle-o" /></span>;
+          return <span><Badge status="processing" text="已生成CDF" /></span>;
         }
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
         if (record.sub_status === 1) {
@@ -298,22 +298,21 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleStatusFilter = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
+  handleFilterChange = (ev) => {
+    if (ev.key === this.state.currentFilter) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.setState({ currentFilter: ev.key });
+    let filter;
+    if (ev.key === 'import' || ev.key === 'export') {
+      filter = { ...this.props.listFilter, ietype: ev.key, status: 'all' };
+      this.saveFilters({ ietype: ev.key, status: 'all' });
+    } else {
+      filter = { ...this.props.listFilter, status: ev.key, ietype: 'all' };
+      this.saveFilters({ status: ev.key, ietype: 'all' });
+    }
     this.setState({ selectedRowKeys: [] });
     this.handleDelgListLoad(1, filter);
-    this.saveFilters({ status: ev.target.value });
-  }
-  handleIEFilter = (ev) => {
-    if (ev.target.value === this.props.listFilter.ietype) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, ietype: ev.target.value };
-    this.handleDelgListLoad(1, filter);
-    this.saveFilters({ ietype: ev.target.value });
   }
   handleManifestCreate = (row) => {
     const { loginId, loginName } = this.props;
@@ -485,7 +484,6 @@ export default class DelegationList extends Component {
     }].concat(this.props.clients);
     const toolbarActions = (<span>
       <SearchBox
-        width={250}
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
       />
@@ -513,7 +511,6 @@ export default class DelegationList extends Component {
         value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-        style={{ width: 216 }}
       />
     </span>);
 
@@ -523,10 +520,17 @@ export default class DelegationList extends Component {
     columns.push({
       title: this.msg('opColumn'),
       dataIndex: 'OPS_COL',
+      className: 'table-col-ops',
       width: 150,
       fixed: 'right',
       render: (o, record) => {
         const clearType = record.i_e_type === 0 ? 'import' : 'export';
+        let exchangeDoc = '';
+        if (record.trans_mode === '2') {
+          exchangeDoc = 'exchangeSeaDoc';
+        } else if (record.trans_mode === '5') {
+          exchangeDoc = 'exchangeAirDoc';
+        }
         if (record.status === CMS_DELEGATION_STATUS.unaccepted) { // 1.当前租户未接单
           let editOverlay = null;
           if (record.source === DELG_SOURCE.consigned) {
@@ -558,6 +562,9 @@ export default class DelegationList extends Component {
             </span>
           );
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) { // 2.当前租户已接单
+          if (this.state.currentFilter === 'exchange') {
+            return <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+          }
           let extraOp = null;
           if (record.customs_tenant_id === tenantId) { // 2.1 报关单位为当前租户(未作分配)
             extraOp = (
@@ -580,10 +587,15 @@ export default class DelegationList extends Component {
           }
           return (
             <span>
-              <RowAction primary onClick={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
+              {this.state.currentFilter === 'exchange' &&
+              <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg('exchangeDoc')} row={record} />}
+              <RowAction onClick={this.handleManifestCreate} icon="file-add" label={this.msg('createManifest')} row={record} />
               {extraOp}
             </span>);
         } else if (record.status === CMS_DELEGATION_STATUS.processing) { // 3.
+          if (this.state.currentFilter === 'exchange') {
+            return <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+          }
           let dispatchOverlay = null;
           if (record.customs_tenant_id === tenantId) { // 3.1 报关单位为当前租户(未作分配)
             dispatchOverlay = (
@@ -606,10 +618,10 @@ export default class DelegationList extends Component {
           let manifestOp = null;
           switch (record.manifested) {
             case CMS_DELEGATION_MANIFEST.created: // 制单中
-              manifestOp = <RowAction onClick={this.handleManifestMake} label={<span><Icon type="form" /> {this.msg('editManifest')}</span>} row={record} />;
+              manifestOp = <RowAction onClick={this.handleManifestMake} icon="form" label={this.msg('editManifest')} row={record} />;
               break;
             case CMS_DELEGATION_MANIFEST.manifested: // 制单完成(已生成报关清单)
-              manifestOp = <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
+              manifestOp = <RowAction onClick={this.handleManifestView} icon="eye-o" label={this.msg('viewManifest')} row={record} />;
               break;
             default:
               break;
@@ -625,7 +637,7 @@ export default class DelegationList extends Component {
                       record.status === CMS_DELEGATION_STATUS.released) { // 5. 放行
           return (
             <PrivilegeCover module="clearance" feature="delegation" action="create">
-              <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
+              <RowAction onClick={this.handleManifestView} icon="eye-o" label={this.msg('viewManifest')} row={record} />
             </PrivilegeCover>);
         }
         return <span />;
@@ -635,21 +647,6 @@ export default class DelegationList extends Component {
     return (
       <Layout>
         <PageHeader title={this.msg('delgManifest')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter}>
-              <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="import">{this.msg('filterImport')}</RadioButton>
-              <RadioButton value="export">{this.msg('filterExport')}</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
-              <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
-              <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
-              <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
-              <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" onClick={this.handleCreate} icon="plus" disabled>
               {this.msg('createDelegation')}
@@ -659,25 +656,40 @@ export default class DelegationList extends Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable
-            toolbarActions={toolbarActions}
-            rowSelection={rowSelection}
-            selectedRowKeys={this.state.selectedRowKeys}
-            onDeselectRows={this.handleDeselectRows}
-            columns={columns}
-            dataSource={dataSource}
-            rowKey="delg_no"
-            loading={delegationlist.loading}
-            onRow={record => ({
-              onClick: () => {},
-              onDoubleClick: () => { this.handleManifestDetail(record); },
-              onContextMenu: () => {},
-              onMouseEnter: () => {},
-              onMouseLeave: () => {},
-            })}
-          />
-        </Content>
+        <Layout>
+          <Drawer width={160}>
+            <Menu mode="inline" selectedKeys={[this.state.currentFilter]} onClick={this.handleFilterChange}>
+              <Menu.Item key="all">{this.msg('all')}</Menu.Item>
+              <Menu.Item key="import">{this.msg('filterImport')}</Menu.Item>
+              <Menu.Item key="export">{this.msg('filterExport')}</Menu.Item>
+              <Menu.ItemGroup key="gTodo" title="待办">
+                {Object.keys(CMS_DELG_TODO).map(declkey =>
+                  (<Menu.Item key={declkey}>
+                    <Icon type={CMS_DELG_TODO[declkey].icon} /> {CMS_DELG_TODO[declkey].text}
+                  </Menu.Item>))}
+              </Menu.ItemGroup>
+            </Menu>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <DataTable
+              toolbarActions={toolbarActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              onDeselectRows={this.handleDeselectRows}
+              columns={columns}
+              dataSource={dataSource}
+              rowKey="delg_no"
+              loading={delegationlist.loading}
+              onRow={record => ({
+                onClick: () => {},
+                onDoubleClick: () => { this.handleManifestDetail(record); },
+                onContextMenu: () => {},
+                onMouseEnter: () => {},
+                onMouseLeave: () => {},
+              })}
+            />
+          </Content>
+        </Layout>
         <DelegationDockPanel />
         <OrderDockPanel />
         <ShipmentDockPanel />

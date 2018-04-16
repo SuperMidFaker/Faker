@@ -155,7 +155,7 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '客户代码',
     }, {
       field: 'cust_order_no',
-      label: '客户单号(必填)',
+      label: '客户单号',
     }, {
       field: 'cust_shipmt_transfer',
       label: '进出口标识',

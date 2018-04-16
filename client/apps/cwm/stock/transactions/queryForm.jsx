@@ -116,10 +116,10 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="单证号">
+            <FormItem {...formItemLayout} label="指令单号">
               {getFieldDecorator('transaction_no', {
                 initialValue: filter.transaction_no,
-              })(<Input placeholder="入库/出库/库存移动单号" />)}
+              })(<Input placeholder="入库/出库/库存移动/批量属性修改关联单号" />)}
             </FormItem>
           </Col>
           <Col span={5}>

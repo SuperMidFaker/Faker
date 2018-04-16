@@ -33,12 +33,14 @@ export default class CWMShippingPane extends Component {
   }
   handleBondedChange = (ev) => {
     if (ev.target.value !== 1) {
+      const { graph, node } = this.props;
       const regType = this.props.form.getFieldValue('bonded_reg_type');
       if (regType) {
         this.props.form.setFieldsValue({
           bonded_reg_type: null,
         });
       }
+      graph.update(node, { bonded_reg_type: null });
     }
   }
   handleWhseSelect = (tWhseCode) => {

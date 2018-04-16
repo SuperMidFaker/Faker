@@ -1,28 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Row, Col, Card, Table, Icon } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
-// import Strip from 'client/components/Strip';
-// import { MdIcon } from 'client/components/FontIcon';
+import { formatMsg } from '../../message.i18n';
 
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 
 @injectIntl
-@connect(() => ({
-}), { })
 export default class ASNPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    asnHead: PropTypes.object.isRequired,
-    asnBody: PropTypes.array.isRequired,
+    asnHead: PropTypes.shape({ asn_no: PropTypes.string }).isRequired,
+    asnBody: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   }
-  state = {
-    tabKey: '',
-  }
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: '行号',
     dataIndex: 'asn_seq_no',
@@ -66,7 +60,7 @@ export default class ASNPane extends React.Component {
                   <InfoItem label="ASN类型" field={asnHead.asn_type && CWM_ASN_TYPES.find(item => item.value === asnHead.asn_type).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="采购订单号" field={asnHead.po_no} />
+                  <InfoItem label="客户订单号" field={asnHead.cust_order_no} />
                 </Col>
                 <Col span="8">
                   <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />

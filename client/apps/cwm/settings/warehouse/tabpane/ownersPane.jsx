@@ -4,20 +4,23 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Tag, Modal } from 'antd';
-import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
+import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, showSkuRuleModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
+import { showAllocRuleModal } from 'common/reducers/cwmAllocRule';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import ExcelUploader from 'client/components/ExcelUploader';
+import { createFilename } from 'client/util/dataTransform';
+import { WHSE_OPERATION_MODES } from 'common/constants';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
-import { createFilename } from 'client/util/dataTransform';
-import ExcelUploader from 'client/components/ExcelUploader';
-import { WHSE_OPERATION_MODES } from 'common/constants';
+import AllocRuleModal from '../modal/allocationRuleModal';
+import SkuRuleModal from '../modal/skuRuleModal';
 import { formatMsg } from '../message.i18n';
 
-const confirm = Modal.confirm;
+const { confirm } = Modal;
 
 @injectIntl
 @connect(
@@ -30,7 +33,14 @@ const confirm = Modal.confirm;
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   {
-    showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition,
+    showWhseOwnersModal,
+    showAllocRuleModal,
+    loadwhseOwners,
+    showOwnerControlModal,
+    showSkuRuleModal,
+    changeOwnerStatus,
+    loadWhse,
+    clearTransition,
   }
 )
 export default class OwnersPane extends Component {
@@ -46,15 +56,14 @@ export default class OwnersPane extends Component {
     })),
   }
   state = {
-    selectedRowKeys: [],
     importPanelVisible: false,
-    selectedOwner: {},
   }
   componentWillMount() {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.whseCode !== this.props.whseCode || nextProps.warehouse.whse_mode !== this.props.warehouse.whse_mode) {
+    if (nextProps.whseCode !== this.props.whseCode ||
+      nextProps.warehouse.whse_mode !== this.props.warehouse.whse_mode) {
       this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
@@ -99,6 +108,16 @@ export default class OwnersPane extends Component {
     align: 'center',
     render: o => (o ? `${WHSE_OPERATION_MODES[o].text}发货` : ''),
   }, {
+    title: '配货规则',
+    dataIndex: 'alloc_rule',
+    width: 80,
+    render: (arule, row) => <Button icon="setting" onClick={() => this.handleAllocRule(row)} />,
+  }, {
+    title: 'SKU规则',
+    dataIndex: 'sku_rule',
+    width: 80,
+    render: (srule, row) => <Button icon="setting" onClick={() => this.handleSkuRule(row)} />,
+  }, {
     title: '库存初始化',
     dataIndex: 'init',
     width: 100,
@@ -142,7 +161,7 @@ export default class OwnersPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        <RowAction onClick={this.handleOwnerControl} icon="tool" label="控制属性" row={record} />
+        <RowAction onClick={this.handleOwnerControl} icon="tool" tooltip="控制属性" row={record} />
         {record.active === 0 ?
           <RowAction onClick={() => this.changeOwnerStatus(record.id, true)} icon="play-circle" tooltip="启用" row={record} /> :
           <RowAction onClick={() => this.changeOwnerStatus(record.id, false)} icon="pause-circle" tooltip="停用" row={record} />}
@@ -165,6 +184,20 @@ export default class OwnersPane extends Component {
     if (this.props.whseCode === this.props.defaultWhse.code) {
       this.props.loadWhse(this.props.whseCode);
     }
+  }
+  handleAllocRule = (row) => {
+    const rule = {
+      id: row.id,
+      alloc_rule: row.alloc_rule ? JSON.parse(row.alloc_rule) : [],
+    };
+    this.props.showAllocRuleModal({ visible: true, rule });
+  }
+  handleSkuRule = (row) => {
+    const rule = {
+      ownerAuthId: row.id,
+      sku_rule: row.sku_rule ? JSON.parse(row.sku_rule) : { required_props: [] },
+    };
+    this.props.showSkuRuleModal({ visible: true, rule });
   }
   handleInitData = (record) => {
     this.setState({
@@ -214,6 +247,8 @@ export default class OwnersPane extends Component {
         </DataPane.Toolbar>
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
+        <AllocRuleModal reload={this.handleOwnerLoad} />
+        <SkuRuleModal reload={this.handleOwnerLoad} />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
@@ -228,7 +263,7 @@ export default class OwnersPane extends Component {
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}
-          template={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}
+          template={`${XLSX_CDN}/ASN库存导入模板201804.xlsx`}
         />
       </DataPane>
     );

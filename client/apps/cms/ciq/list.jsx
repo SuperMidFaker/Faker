@@ -192,6 +192,7 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 100,
     fixed: 'right',
     render: (o, record) => (
@@ -308,7 +309,6 @@ export default class CiqDeclList extends Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
         value={listFilter.clientPid}
         dropdownMatchSelectWidth={false}
@@ -322,7 +322,6 @@ export default class CiqDeclList extends Component {
         defaultValue={[listFilter.startTime, listFilter.endTime]}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-        style={{ width: 216 }}
       />
     </span>);
     return (

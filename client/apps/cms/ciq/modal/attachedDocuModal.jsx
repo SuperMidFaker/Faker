@@ -138,6 +138,7 @@ export default class AttachedDocuModal extends Component {
       width: 120,
     }, {
       dataIndex: 'OPS_COL',
+      className: 'table-col-ops',
       width: 60,
       render: (o, record, index) => <RowAction onClick={() => this.handleAdd(record.att_doc_type_code, index)} icon="plus" />,
     }];

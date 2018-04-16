@@ -109,7 +109,7 @@ export default class ReceivingInboundList extends React.Component {
   }, {
     title: '客户单号',
     width: 240,
-    dataIndex: 'po_no',
+    dataIndex: 'cust_order_no',
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
@@ -181,6 +181,7 @@ export default class ReceivingInboundList extends React.Component {
     width: 140,
     fixed: 'right',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     render: (o, record) => {
       if (record.status === 0) {
         return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;

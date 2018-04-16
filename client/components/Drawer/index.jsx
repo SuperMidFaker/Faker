@@ -50,6 +50,7 @@ export default class Drawer extends React.Component {
           collapsible
           collapsedWidth={0}
           collapsed={this.state.collapsed}
+          breakpoint="xl"
           className="welo-side-drawer"
         >
           <div className="welo-side-drawer-inner">

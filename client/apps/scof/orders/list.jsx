@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
+import { Button, Form, Input, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo, batchStart, batchDelete } from 'common/reducers/sofOrders';
+import { loadOrders, loadOrderAdaptor, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail, batchDeleteByUploadNo, batchStart, batchDelete } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
@@ -54,6 +54,7 @@ const { RangePicker } = DatePicker;
 }), {
   loadOrders,
   loadPartners,
+  loadOrderAdaptor,
   removeOrder,
   setClientForm,
   acceptOrder,
@@ -98,6 +99,8 @@ export default class OrderList extends React.Component {
       visible: false,
       customer_partner_id: undefined,
       flow_id: undefined,
+      cust_order_no: null,
+      cust_order_no_input: false,
     },
   }
   componentDidMount() {
@@ -292,7 +295,13 @@ export default class OrderList extends React.Component {
   }
   handleImportClientChange = (customerPartnerId) => {
     this.props.loadPartnerFlowList({ partnerId: customerPartnerId });
-    this.setState({ importPanel: { ...this.state.importPanel, partner_id: customerPartnerId } });
+    this.setState({
+      importPanel: {
+        ...this.state.importPanel,
+        partner_id: customerPartnerId,
+        flow_id: null,
+      },
+    });
   }
   handleImportFlowChange = (flowId) => {
     this.props.loadModelAdaptors(
@@ -300,6 +309,9 @@ export default class OrderList extends React.Component {
       [LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key], flowId
     );
     this.setState({ importPanel: { ...this.state.importPanel, flow_id: flowId } });
+  }
+  handleImportCustNoChange = (ev) => {
+    this.setState({ importPanel: { ...this.state.importPanel, cust_order_no: ev.target.value } });
   }
   handleCheckUpload = (msg) => {
     if (!this.state.importPanel.flow_id) {
@@ -309,6 +321,28 @@ export default class OrderList extends React.Component {
       return false;
     }
     return true;
+  }
+  handleAdaptorChange = (adaptorCode) => {
+    this.props.loadOrderAdaptor(adaptorCode).then((result) => {
+      if (!result.error) {
+        const adaptor = result.data;
+        const noCustOrderNoField = adaptor.columns.filter(col => col.field === 'cust_order_no').length === 0;
+        const noCustOrderNoDefault = adaptor.columnDefaults.filter(col => col.field === 'cust_order_no').length === 0;
+        this.setState({
+          importPanel: {
+            ...this.state.importPanel,
+            cust_order_no_input: noCustOrderNoField && noCustOrderNoDefault,
+          },
+        });
+      }
+    });
+  }
+  handleImportClose = () => {
+    this.setState({
+      importPanel: {
+        visible: false,
+      },
+    });
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -371,8 +405,8 @@ export default class OrderList extends React.Component {
     }, {
       title: '跟单人员',
       dataIndex: 'exec_login_id',
-      width: 80,
-      render: lid => <UserAvatar size="small" loginId={lid} />,
+      width: 100,
+      render: lid => <UserAvatar showName size="small" loginId={lid} />,
     }, {
       title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,
@@ -435,7 +469,6 @@ export default class OrderList extends React.Component {
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         onChange={this.handleClientSelectChange}
         value={filters.partnerId ? filters.partnerId : 'all'}
         dropdownMatchSelectWidth={false}
@@ -444,7 +477,6 @@ export default class OrderList extends React.Component {
         <Option value="all">全部客户</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
-      <span />
       <CreatorSelect onChange={this.handleCreatorChange} />
       <RangePicker
         onChange={this.onDateChange}
@@ -515,29 +547,20 @@ export default class OrderList extends React.Component {
         <ReceiveDockPanel />
         <ShippingDockPanel />
         <ImportDataPanel
-          adaptors={this.props.adaptors}
           title="订单导入"
           visible={importPanel.visible}
+          adaptors={this.props.adaptors}
+          onAdaptorChange={this.handleAdaptorChange}
           endpoint={`${API_ROOTS.default}v1/sof/order/import`}
-          formData={{ customer_partner_id: importPanel.partner_id, flow_id: importPanel.flow_id }}
-          onClose={() => {
-            this.setState({
-              importPanel: {
-                visible: false,
-                customer_tenant_id: null,
-                flow_id: null,
-              },
-            });
+          formData={{
+            customer_partner_id: importPanel.partner_id,
+            flow_id: importPanel.flow_id,
+            cust_order_no: importPanel.cust_order_no,
           }}
+          onClose={this.handleImportClose}
           onBeforeUpload={this.handleCheckUpload}
           onUploaded={() => {
-            this.setState({
-              importPanel: {
-                visible: false,
-                customer_tenant_id: null,
-                flow_id: null,
-              },
-            });
+            this.handleImportClose();
             this.handleTableLoad();
             this.props.setUploadRecordsReload(true);
           }}
@@ -568,6 +591,10 @@ export default class OrderList extends React.Component {
               {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}
             </Select>
           </Form.Item>
+          {importPanel.cust_order_no_input &&
+          <Form.Item label="客户订单号">
+            <Input value={importPanel.cust_order_no} onChange={this.handleImportCustNoChange} />
+          </Form.Item>}
         </ImportDataPanel>
         <UploadLogsPanel
           onUploadBatchDelete={this.removeOrdersByBatchUpload}

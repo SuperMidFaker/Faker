@@ -175,7 +175,7 @@ export default class OutboundDetail extends Component {
       if (result.error) {
         const key = `open${Date.now()}`;
         const btnClick = () => {
-          this.context.router.push('/hub/integration/sfexpress/install');
+          this.context.router.push('/hub/integration/apps');
           notification.close(key);
         };
         const btn = (

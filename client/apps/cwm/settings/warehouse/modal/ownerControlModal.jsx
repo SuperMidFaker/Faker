@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Modal, Form, Input, Switch, Radio, message } from 'antd';
-import { hideOwnerControlModal, updateWhOwnerControl } from 'common/reducers/cwmWarehouse';
+import { hideOwnerControlModal, updateWhOwnerControl, showPickPrintModal } from 'common/reducers/cwmWarehouse';
+import OwnerPickPrintModal from './ownerPickPrintControlModal';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -106,7 +107,7 @@ const initialSuBarcodeSetting = {
     visible: state.cwmWarehouse.ownerControlModal.visible,
     ownerAuth: state.cwmWarehouse.ownerControlModal.whOwnerAuth,
   }),
-  { hideOwnerControlModal, updateWhOwnerControl }
+  { hideOwnerControlModal, updateWhOwnerControl, showPickPrintModal }
 )
 @Form.create()
 export default class OwnerControlModal extends Component {
@@ -173,6 +174,30 @@ export default class OwnerControlModal extends Component {
       control: { ...this.state.control, portion_enabled: checked },
     });
   }
+  handlePickPrintSetting = () => {
+    let printRule = {
+      columns: [{ key: 'product_no', text: '货号', column: 1 },
+        { key: 'name', text: '产品名称', column: 2 },
+        { key: 'external_lot_no', text: '批次号', column: 3 },
+        { key: 'attrib_1_string', text: '客户属性', column: 4 },
+        { key: 'location', text: '库位', column: 5 },
+      ],
+      print_remain: true,
+      pick_order: ['location'],
+    };
+    if (this.props.ownerAuth.pick_print) {
+      printRule = JSON.parse(this.props.ownerAuth.pick_print);
+    }
+    this.props.showPickPrintModal({
+      visible: true,
+      printRule,
+    });
+  }
+  handlePickPrintChange = (newPickPrint) => {
+    const control = { ...this.state.control };
+    control.pick_print = JSON.stringify(newPickPrint);
+    this.setState({ control });
+  }
   handleSubarcodeSetting = () => {
     const { suBarcodeSetting } = this.state;
     const suBarcodeBackup = { // deep copy
@@ -217,6 +242,11 @@ export default class OwnerControlModal extends Component {
     } else {
       suBarcodeSetting[field][key] = value;
     }
+    this.setState({ suBarcodeSetting });
+  }
+  handleSubarFieldChange = (field, changedVal) => {
+    const suBarcodeSetting = { ...this.state.suBarcodeSetting };
+    suBarcodeSetting[field] = changedVal;
     this.setState({ suBarcodeSetting });
   }
   handleSuSettingCancel = () => {
@@ -297,19 +327,22 @@ export default class OwnerControlModal extends Component {
               <RadioButton value="manual">手动</RadioButton>
             </RadioGroup>
           </FormItem>
-          {ownerAuth.receiving_mode === 'manual' &&
-          <FormItem {...formItemLayout} label="SU条码收货">
-            <Tooltip title="SU条码启用配置"><Button icon="setting" style={{ marginLeft: '20px' }} onClick={this.handleSubarcodeSetting} /></Tooltip>
-          </FormItem>
-          }
           <FormItem {...formItemLayout} label="默认发货模式">
             <RadioGroup value={ownerAuth.shipping_mode} onChange={this.handleShipModeChange}>
               <RadioButton value="scan">扫码</RadioButton>
               <RadioButton value="manual">手动</RadioButton>
             </RadioGroup>
           </FormItem>
+          {ownerAuth.receiving_mode === 'manual' &&
+          <FormItem {...formItemLayout} label="SU条码收发货">
+            <Tooltip title="SU条码启用配置"><Button icon="setting" style={{ marginLeft: '20px' }} onClick={this.handleSubarcodeSetting} /></Tooltip>
+          </FormItem>
+          }
           <FormItem {...formItemLayout} label="出库启用分拨">
             <Switch checked={!!ownerAuth.portion_enabled} onChange={this.handlePortionEnable} />
+          </FormItem>
+          <FormItem {...formItemLayout} label="拣货单打印">
+            <Button icon="setting" style={{ marginLeft: '20px' }} onClick={this.handlePickPrintSetting} />
           </FormItem>
         </Form>
         {suBarcodeSettingVisible === true && <Modal
@@ -441,8 +474,15 @@ export default class OwnerControlModal extends Component {
               onChange={this.handleChangeSuField}
               field="attrib_4_string"
             />
+            <FormItem {...formItemLayout} label="保存键">
+              <Input value={suBarcodeSetting.submit_key} onChange={ev => this.handleSubarFieldChange('submit_key', ev.target.value)} />
+            </FormItem>
+            <FormItem {...formItemLayout} label="切换库位扫码键">
+              <Input value={suBarcodeSetting.location_focus_key} onChange={ev => this.handleSubarFieldChange('location_focus_key', ev.target.value)} />
+            </FormItem>
           </Form>
         </Modal>}
+        <OwnerPickPrintModal setPickPrint={this.handlePickPrintChange} />
       </Modal>
     );
   }

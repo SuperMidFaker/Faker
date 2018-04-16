@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { message, Input, Modal, Alert, Form } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import { closeBatchFreezeModal, freezeTransit, unfreezeTransit } from 'common/reducers/cwmTransition';
+import { formatMsg } from '../../message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const formItemLayout = {
   labelCol: { span: 8 },
@@ -31,14 +29,18 @@ export default class BatchFreezeModal extends Component {
     }),
   }
   state = {
+    transactionNo: '',
     reason: '',
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.closeBatchFreezeModal({ needReload: false });
     this.setState({
       reason: '',
     });
+  }
+  handleTransactionChange = (ev) => {
+    this.setState({ transactionNo: ev.target.value });
   }
   handleReasonChange = (ev) => {
     this.setState({ reason: ev.target.value });
@@ -46,10 +48,15 @@ export default class BatchFreezeModal extends Component {
   handleSubmit = () => {
     let transitOp;
     const { batchFreezeModal, loginName } = this.props;
+    const { reason, transactionNo } = this.state;
+    const transit = {
+      reason,
+      transaction_no: transactionNo,
+    };
     if (batchFreezeModal.freezed) {
-      transitOp = this.props.freezeTransit(batchFreezeModal.traceIds, this.state, loginName);
+      transitOp = this.props.freezeTransit(batchFreezeModal.traceIds, transit, loginName);
     } else {
-      transitOp = this.props.unfreezeTransit(batchFreezeModal.traceIds, this.state, loginName);
+      transitOp = this.props.unfreezeTransit(batchFreezeModal.traceIds, transit, loginName);
     }
     transitOp.then((result) => {
       if (!result.error) {
@@ -60,14 +67,22 @@ export default class BatchFreezeModal extends Component {
     });
   }
   render() {
-    const { reason } = this.state;
+    const { reason, transactionNo } = this.state;
     const { batchFreezeModal } = this.props;
     const actionTxt = batchFreezeModal.freezed ? '冻结' : '解冻';
     return (
-      <Modal maskClosable={false} title={`批量${actionTxt}`} onCancel={this.handleCancel} visible={batchFreezeModal.visible}
-        onOk={this.handleSubmit} okText={`确认${actionTxt}`}
+      <Modal
+        maskClosable={false}
+        title={`批量${actionTxt}`}
+        onCancel={this.handleCancel}
+        visible={batchFreezeModal.visible}
+        onOk={this.handleSubmit}
+        okText={`确认${actionTxt}`}
       >
         <Alert message={`已选择${batchFreezeModal.traceIds.length}项库存数量`} type="info" />
+        <FormItem {...formItemLayout} label="指令单号">
+          <Input value={transactionNo} onChange={this.handleTransactionChange} />
+        </FormItem>
         <FormItem {...formItemLayout} label={`${actionTxt}原因`}>
           <Input value={reason} onChange={this.handleReasonChange} />
         </FormItem>

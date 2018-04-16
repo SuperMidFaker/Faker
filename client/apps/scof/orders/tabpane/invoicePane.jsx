@@ -123,6 +123,7 @@ export default class InvoicePane extends Component {
     dataIndex: 'total_net_wt',
   }, {
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 45,
     fixed: 'right',
     render: (o, record) => <RowAction confirm={this.msg('确认移除？')} onConfirm={this.handleRemove} icon="minus-circle-o" tooltip="移出" row={record} />,

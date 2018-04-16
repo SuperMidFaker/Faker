@@ -108,6 +108,7 @@ export default class WaveList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 150,
     render: (o, record) => {
       if (record.status === 0) {
@@ -212,11 +213,9 @@ export default class WaveList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('wavePlaceholder')} onSearch={this.handleSearch} />
-      <span />
       <Select
         showSearch
         optionFilterProp="children"
-        style={{ width: 160 }}
         value={filters.ownerCode}
         onChange={this.handleOwnerChange}
         defaultValue="all"

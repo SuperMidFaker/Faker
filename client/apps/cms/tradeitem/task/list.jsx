@@ -88,6 +88,7 @@ export default class TradeItemTaskList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 140,
     fixed: 'right',
     render: (_, record) => (
@@ -161,7 +162,6 @@ export default class TradeItemTaskList extends React.Component {
         showSearch
         placeholder="所属归类库"
         allowClear
-        style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}

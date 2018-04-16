@@ -1,24 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Icon, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button,
-  Table, Select, message } from 'antd';
+import { Icon, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button, Table, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleSFExpressModal,
-  loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
-import { format } from 'client/common/i18n/helpers';
+import { loadOutboundHead, readWaybillLogo, orderExpress, toggleSFExpressModal, loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
 import Cascader from 'client/components/RegionCascader';
-import messages from '../../message.i18n';
-
-
 import { WaybillDef, TrigeminyListDef } from '../billsPrint/docDef';
+import { formatMsg } from '../../message.i18n';
 
-
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 },
@@ -56,7 +50,6 @@ const ADDED_SERVICES = [
   }),
   {
     loadOutboundHead,
-    updateOutboundMode,
     readWaybillLogo,
     orderExpress,
     toggleSFExpressModal,
@@ -68,11 +61,10 @@ export default class SFExpressModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    updateOutboundMode: PropTypes.func.isRequired,
     toggleSFExpressModal: PropTypes.func.isRequired,
     loadExpressInfo: PropTypes.func.isRequired,
     addZD: PropTypes.func.isRequired,
-    config: PropTypes.object.isRequired,
+    config: PropTypes.shape({ order_no: PropTypes.string }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -168,7 +160,7 @@ export default class SFExpressModal extends Component {
       this.loadExpressInfo(this.props);
     });
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   handleWaybillPrint = (courierNo, courierNoSon, seq, type) => {
     const expressType = EXPRESS_TYPES.find(item => item.value === this.state.express_type).text;
     const payMethod = PAY_METHODS.find(item => item.value === this.state.pay_method).text;

@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_FORM_REQUIRES', 'LOAD_FORM_REQUIRES_SUCCEED', 'LOAD_FORM_REQUIRES_FAIL',
   'LOAD_ORDERS', 'LOAD_ORDERS_SUCCEED', 'LOAD_ORDERS_FAIL',
+  'LOAD_OADAPTOR', 'LOAD_OADAPTOR_SUCCEED', 'LOAD_OADAPTOR_FAIL',
   'LOAD_ORDER', 'LOAD_ORDER_SUCCEED', 'LOAD_ORDER_FAIL',
   'VALIDATE_ORDER', 'VALIDATE_ORDER_SUCCEED', 'VALIDATE_ORDER_FAIL',
   'SUBMIT_ORDER', 'SUBMIT_ORDER_SUCCEED', 'SUBMIT_ORDER_FAIL',
@@ -250,6 +251,21 @@ export function loadOrders({
       params: {
         tenantId, pageSize, current, filters: JSON.stringify(filters),
       },
+    },
+  };
+}
+
+export function loadOrderAdaptor(code) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_OADAPTOR,
+        actionTypes.LOAD_OADAPTOR_SUCCEED,
+        actionTypes.LOAD_OADAPTOR_FAIL,
+      ],
+      endpoint: 'v1/saas/linefile/adaptor',
+      method: 'get',
+      params: { code },
     },
   };
 }

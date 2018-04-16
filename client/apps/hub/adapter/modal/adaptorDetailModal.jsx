@@ -45,9 +45,6 @@ export default class AdaptorDetailModal extends Component {
     },
     contentHeight: 0,
   }
-  componentDidMount() {
-    this.props.loadPartnerFlowList({ partnerId: this.props.adaptor.owner_partner_id });
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && this.props.adaptor.columns !== nextProps.adaptor.columns) {
       const lineData = [{
@@ -78,6 +75,12 @@ export default class AdaptorDetailModal extends Component {
       });
       this.setState({
         lineData, scrollX, columnDefaults: nextProps.adaptor.columnDefaults,
+      });
+      this.props.loadPartnerFlowList({ partnerId: nextProps.adaptor.owner_partner_id });
+    }
+    if (nextProps.visible && !this.props.visible) {
+      this.setState({
+        contentHeight: window.innerHeight - 150,
       });
     }
     if (nextProps.visible && !this.props.visible) {

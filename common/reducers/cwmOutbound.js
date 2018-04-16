@@ -5,7 +5,7 @@ import { CANCEL_OUTBOUND_SUCCEED, CLOSE_OUTBOUND_SUCCEED } from './cwmShippingOr
 const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'OPEN_ALLOCATING_MODAL', 'CLOSE_ALLOCATING_MODAL',
   'OPEN_PICKING_MODAL', 'CLOSE_PICKING_MODAL',
-  'OPEN_SHIPPING_MODAL', 'CLOSE_SHIPPING_MODAL',
+  'OPEN_SHIPPING_MODAL', 'CLOSE_SHIPPING_MODAL', 'SHOW_SPCPMODAL',
   'LOAD_OUTBOUNDS', 'LOAD_OUTBOUNDS_SUCCEED', 'LOAD_OUTBOUNDS_FAIL',
   'LOAD_OUTBOUND_HEAD', 'LOAD_OUTBOUND_HEAD_SUCCEED', 'LOAD_OUTBOUND_HEAD_FAIL',
   'LOAD_OUTBOUND_PRODUCTS', 'LOAD_OUTBOUND_PRODUCTS_SUCCEED', 'LOAD_OUTBOUND_PRODUCTS_FAIL',
@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'CANCEL_TRACE_ALLOC', 'CANCEL_TRACE_ALLOC_SUCCEED', 'CANCEL_TRACE_ALLOC_FAIL',
   'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
   'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
+  'LOAD_PACKNO_DETAILS', 'LOAD_PACKNO_DETAILS_SUCCEED', 'LOAD_PACKNO_DETAILS_FAIL',
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
   'ORDER_EXPRESS', 'ORDER_EXPRESS_SUCCEED', 'ORDER_EXPRESS_FAIL',
@@ -71,6 +72,9 @@ const initialState = {
     pickedQty: '',
     skuPackQty: '',
   },
+  subarPickChkModal: {
+    visible: false,
+  },
   outbound: {
     totalCount: 0,
     pageSize: 20,
@@ -80,7 +84,7 @@ const initialState = {
     loaded: true,
   },
   outboundFilters: { status: 'all', ownerCode: 'all' },
-  outboundFormHead: {},
+  outboundFormHead: { alloc_rules: [] },
   outboundProducts: [],
   outboundReload: false,
   pickDetails: [],
@@ -127,6 +131,8 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.CLOSE_SHIPPING_MODAL:
       return { ...state, shippingModal: { visible: false } };
+    case actionTypes.SHOW_SPCPMODAL:
+      return { ...state, subarPickChkModal: action.data };
     case actionTypes.LOAD_OUTBOUNDS:
       return {
         ...state,
@@ -246,6 +252,13 @@ export function closeShippingModal() {
   };
 }
 
+export function showSubarPickChkModal(data) {
+  return {
+    type: actionTypes.SHOW_SPCPMODAL,
+    data,
+  };
+}
+
 export function loadOutbounds({
   whseCode, pageSize, current, filters,
 }) {
@@ -295,7 +308,7 @@ export function loadOutboundProductDetails(outboundNo) {
   };
 }
 
-export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId, filters) {
+export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -303,10 +316,10 @@ export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId, fi
         actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED,
         actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_FAIL,
       ],
-      endpoint: 'v1/cwm/product/inbound/details',
+      endpoint: 'v1/cwm/inbound/details/byproduct',
       method: 'get',
       params: {
-        productNo, whseCode, ownerPartnerId, filters: JSON.stringify(filters),
+        productNo, whseCode, ownerPartnerId,
       },
     },
   };
@@ -436,7 +449,7 @@ export function loadPrintPickDetails(outboundNo) {
   };
 }
 
-export function pickConfirm(outboundNo, skulist, loginId, pickedBy, pickedDate) {
+export function pickConfirm(outboundNo, skulist, pickedBy, pickedDate, packedNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -447,7 +460,7 @@ export function pickConfirm(outboundNo, skulist, loginId, pickedBy, pickedDate) 
       endpoint: 'v1/cwm/outbounds/pick',
       method: 'post',
       data: {
-        outboundNo, skulist, loginId, pickedBy, pickedDate,
+        outboundNo, skulist, pickedBy, pickedDate, packedNo,
       },
     },
   };
@@ -526,6 +539,21 @@ export function loadPackDetails(outboundNo) {
       endpoint: 'v1/cwm/pack/details/load',
       method: 'get',
       params: { outboundNo },
+    },
+  };
+}
+
+export function loadPackedNoDetails(outboundNo, packedNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PACKNO_DETAILS,
+        actionTypes.LOAD_PACKNO_DETAILS_SUCCEED,
+        actionTypes.LOAD_PACKNO_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/pack/details/load',
+      method: 'get',
+      params: { outboundNo, packedNo },
     },
   };
 }

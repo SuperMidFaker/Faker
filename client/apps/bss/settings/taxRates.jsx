@@ -53,6 +53,7 @@ export default class TaxRates extends Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 90,
     render: (o, record) => <RowAction onClick={this.handleEdit} icon="edit" row={record} />,
   }]

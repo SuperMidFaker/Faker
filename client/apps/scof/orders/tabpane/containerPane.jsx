@@ -48,6 +48,7 @@ export default class ContainerForm extends Component {
     render: o => (o ? '是' : '否'),
   }, {
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 45,
     render: (o, record) => <RowAction danger confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" tooltip="删除" row={record} />,
   }];

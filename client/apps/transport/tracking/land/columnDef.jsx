@@ -4,8 +4,7 @@ import { Badge, Icon, Tooltip } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { Logixon } from 'client/components/FontIcon';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES, TRANS_MODE_INDICATOR } from
-  'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES, TRANS_MODE_INDICATOR } from 'common/constants';
 import RowAction from 'client/components/RowAction';
 import AddressColumn from '../../common/addressColumn';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
@@ -24,15 +23,13 @@ function renderActDate(recordActDate, recordEstDate) {
         <span className="mdc-text-red">
           {moment(recordActDate).format('YYYY.MM.DD')}
         </span>);
-    } else {
-      return (
-        <span className="mdc-text-green">
-          {moment(recordActDate).format('YYYY.MM.DD')}
-        </span>);
     }
-  } else {
-    return <span />;
+    return (
+      <span className="mdc-text-green">
+        {moment(recordActDate).format('YYYY.MM.DD')}
+      </span>);
   }
+  return <span />;
 }
 export default function makeColumns(type, handlers, msg) {
   const columns = [{
@@ -41,8 +38,10 @@ export default function makeColumns(type, handlers, msg) {
     fixed: 'left',
     width: 160,
     render: (o, record) => (
-      <ShipmtnoColumn shipmtNo={record.shipmt_no}
-        shipment={record} onClick={handlers.onShipmtPreview}
+      <ShipmtnoColumn
+        shipmtNo={record.shipmt_no}
+        shipment={record}
+        onClick={handlers.onShipmtPreview}
       />),
   }, {
     title: '',
@@ -123,9 +122,8 @@ export default function makeColumns(type, handlers, msg) {
         } else {
           return renderActDate(record.pickup_act_date, record.pickup_est_date);
         }
-      } else {
-        return renderActDate(record.pickup_act_date, record.pickup_est_date);
       }
+      return renderActDate(record.pickup_act_date, record.pickup_est_date);
     },
   }, {
     title: msg('arrivalPlace'),
@@ -140,7 +138,7 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipmtPrmDeliveryDate'),
     dataIndex: 'deliver_prm_date',
     width: 100,
-    render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+    render: o => (o ? moment(o).format('YYYY.MM.DD') : ''),
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
@@ -200,9 +198,8 @@ export default function makeColumns(type, handlers, msg) {
         } else {
           return renderActDate(record.deliver_act_date, record.deliver_est_date);
         }
-      } else {
-        return renderActDate(record.deliver_act_date, record.deliver_est_date);
       }
+      return renderActDate(record.deliver_act_date, record.deliver_est_date);
     },
   }, {
     title: msg('shipmtStatus'),
@@ -221,9 +218,8 @@ export default function makeColumns(type, handlers, msg) {
         return <Badge status="success" text={msg('deliveredShipmt')} />;
       } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
         return <Badge status="success" text={msg('proofOfDelivery')} />;
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     title: msg('overtime'),
@@ -275,12 +271,10 @@ export default function makeColumns(type, handlers, msg) {
               <Icon type="info-circle-o" /> {spSpan}
             </span>
           );
-        } else {
-          return spSpan;
         }
-      } else {
-        return msg('ownFleet');
+        return spSpan;
       }
+      return msg('ownFleet');
     },
     filters: handlers.carriers.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
   }, {
@@ -292,15 +286,16 @@ export default function makeColumns(type, handlers, msg) {
         if (record.sp_tenant_id === -1) { // 线下客户手动更新
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <RowAction label={msg('updateVehicleDriver')}
-                onClick={handlers.onShowVehicleModal} row={record}
+              <RowAction
+                label={msg('updateVehicleDriver')}
+                onClick={handlers.onShowVehicleModal}
+                row={record}
               />
             </PrivilegeCover>
           );
         }
-      } else {
-        return (<TrimSpan text={o} maxLen={14} />);
       }
+      return (<TrimSpan text={o} maxLen={14} />);
     },
   }, {
     title: msg('packageNum'),
@@ -325,7 +320,8 @@ export default function makeColumns(type, handlers, msg) {
     width: 100,
     render: (o, record) => {
       const mode = TRANS_MODE_INDICATOR.filter(ts => ts.value === o)[0];
-      return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span> : <span>{record.transport_mode}</span>;
+      return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span>
+        : <span>{record.transport_mode}</span>;
     },
   });
 
@@ -344,9 +340,8 @@ export default function makeColumns(type, handlers, msg) {
           return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
         } else if (record.pod_type === 'ePOD') {
           return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
-        } else {
-          return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
         }
+        return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
       },
     }, {
       title: msg('podTime'),
@@ -357,6 +352,7 @@ export default function makeColumns(type, handlers, msg) {
           return `${msg('podUploadAction')}
             ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
         }
+        return null;
       },
     }, {
       title: msg('podStatus'),
@@ -376,6 +372,7 @@ export default function makeColumns(type, handlers, msg) {
         } else if (record.pod_status === SHIPMENT_POD_STATUS.acceptByClient) {
           return '客户接受';
         }
+        return '';
       },
     }, {
       title: msg('shipmtNextUpdate'),
@@ -388,26 +385,28 @@ export default function makeColumns(type, handlers, msg) {
           } else if (record.sp_tenant_id === 0) {
             if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               return '';
-            } else {
-              // 司机上传
-              return (
-                <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <RowAction label={msg('notifyPOD')} row={record}
-                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: record }); }}
-                  />
-                </PrivilegeCover>
-              );
             }
-          } else {
-            // 承运商上传
+            // 司机上传
             return (
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowAction label={msg('notifyPOD')} row={record}
-                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: record }); }}
+                <RowAction
+                  label={msg('notifyPOD')}
+                  row={record}
+                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: record }); }}
                 />
               </PrivilegeCover>
             );
           }
+          // 承运商上传
+          return (
+            <PrivilegeCover module="transport" feature="tracking" action="create">
+              <RowAction
+                label={msg('notifyPOD')}
+                row={record}
+                onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: record }); }}
+              />
+            </PrivilegeCover>
+          );
         } else if (record.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
           return '';
@@ -416,7 +415,9 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowAction label={msg('auditPod')} onClick={handlers.onShowAuditModal}
+                <RowAction
+                  label={msg('auditPod')}
+                  onClick={handlers.onShowAuditModal}
                   row={record}
                 />
               </PrivilegeCover>
@@ -433,7 +434,9 @@ export default function makeColumns(type, handlers, msg) {
               return (
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
                   <div>
-                    <RowAction label={msg('deliverConfirm')} row={record}
+                    <RowAction
+                      label={msg('deliverConfirm')}
+                      row={record}
                       onClick={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                     />
                   </div>
@@ -449,6 +452,7 @@ export default function makeColumns(type, handlers, msg) {
             <span><Icon type="clock-circle-o" /> {msg('submitToUpper')}</span>
           );
         }
+        return null;
       },
     });
   } else if (type === 'status') {
@@ -461,9 +465,8 @@ export default function makeColumns(type, handlers, msg) {
           return (<Tooltip title="扫码签收回单"><Icon type="qrcode" /></Tooltip>);
         } else if (record.pod_type === 'ePOD') {
           return (<Tooltip title="拍摄上传回单"><Icon type="scan" /></Tooltip>);
-        } else {
-          return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
         }
+        return (<Tooltip title="无须上传回单"><Icon type="file-excel" /></Tooltip>);
       },
     }, {
       title: msg('shipmtPrevTrack'),
@@ -488,6 +491,7 @@ export default function makeColumns(type, handlers, msg) {
           return `${msg('podUploadAction')}
             ${moment(record.pod_recv_date).format('MM.DD HH:mm')}`;
         }
+        return null;
       },
     }, {
       title: msg('spDispLoginName'),
@@ -503,7 +507,9 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowAction label={msg('notifyAccept')} row={record}
+                <RowAction
+                  label={msg('notifyAccept')}
+                  row={record}
                   onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptAccept, shipment: record }); }}
                 />
               </PrivilegeCover>
@@ -515,23 +521,26 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
-                  <RowAction label={msg('updateVehicleDriver')} row={record}
+                  <RowAction
+                    label={msg('updateVehicleDriver')}
+                    row={record}
                     onClick={handlers.onShowVehicleModal}
                   />
                 </PrivilegeCover>
               </div>
             );
-          } else {
-            return (
-              <div>
-                <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <RowAction label={msg('notifyDispatch')} row={record}
-                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: record }); }}
-                  />
-                </PrivilegeCover>
-              </div>
-            );
           }
+          return (
+            <div>
+              <PrivilegeCover module="transport" feature="tracking" action="create">
+                <RowAction
+                  label={msg('notifyDispatch')}
+                  row={record}
+                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: record }); }}
+                />
+              </PrivilegeCover>
+            </div>
+          );
         } else if (record.status === SHIPMENT_TRACK_STATUS.dispatched) { // 待提货
           if (record.sp_tenant_id === -1) {
             return (<div />);
@@ -540,30 +549,32 @@ export default function makeColumns(type, handlers, msg) {
             if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               // 线下司机
               return (<div />);
-            } else {
-              // 催促司机提货
-              return (
-                <div>
-                  <PrivilegeCover module="transport" feature="tracking" action="create">
-                    <RowAction label={msg('notifyPickup')} row={record}
-                      onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: record }); }}
-                    />
-                  </PrivilegeCover>
-                </div>
-              );
             }
-          } else {
-            // 催促承运商提货
+            // 催促司机提货
             return (
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <RowAction label={msg('notifyPickup')} row={record}
-                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: record }); }}
+                  <RowAction
+                    label={msg('notifyPickup')}
+                    row={record}
+                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
             );
           }
+          // 催促承运商提货
+          return (
+            <div>
+              <PrivilegeCover module="transport" feature="tracking" action="create">
+                <RowAction
+                  label={msg('notifyPickup')}
+                  row={record}
+                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: record }); }}
+                />
+              </PrivilegeCover>
+            </div>
+          );
         } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) { // 运输中
           if (record.sp_tenant_id === -1) {
             return handlers.renderIntransitUpdater(record);
@@ -574,20 +585,22 @@ export default function makeColumns(type, handlers, msg) {
           } else {
             return (<div />);
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) { // 已送货
+        } else if (record.status >= SHIPMENT_TRACK_STATUS.delivered) { // 已送货
           if (record.deliver_confirmed === 0 && handlers.tenantId === record.tenant_id) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <div>
-                  <RowAction label={msg('deliverConfirm')} row={record}
+                  <RowAction
+                    label={msg('deliverConfirm')}
+                    row={record}
                     onClick={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                   />
                 </div>
               </PrivilegeCover>
             );
           }
-          return '';
         }
+        return '';
       },
     });
   }

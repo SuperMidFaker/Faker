@@ -230,7 +230,16 @@ export default class SHFTZNormalRelRegDetail extends Component {
     });
   }
   handleNormalCustomDecl = (preRegNo, cusDeclNo) => {
-    this.props.clearNormalRel(preRegNo, cusDeclNo);
+    this.props.clearNormalRel(preRegNo, cusDeclNo)
+      .then((result) => {
+        if (result.error) {
+          if (result.error.message === 'cus_decl_no_empty') {
+            message.error('报关单号不能为空');
+            return;
+          }
+          message.error(result.error.message);
+        }
+      });
   }
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
@@ -598,7 +607,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 <EditableCell
                   value={reg.cus_decl_no}
                   onSave={value => this.handleNormalCustomDecl(reg.pre_entry_seq_no, value)}
-                  editable={regStatus === CWM_SHFTZ_APIREG_STATUS.completed}
+                  editable={regStatus <= 6}
                 />
               </Description>
               <Description term="发票号">

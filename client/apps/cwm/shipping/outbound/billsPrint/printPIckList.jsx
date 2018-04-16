@@ -6,17 +6,17 @@ import { Icon, message } from 'antd';
 import JsBarcode from 'jsbarcode';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPrintPickDetails } from 'common/reducers/cwmOutbound';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-
-const formatMsg = format(messages);
+import { CWM_OUTBOUND_STATUS, PICK_PRINT_FIELDS } from 'common/constants';
+import { formatMsg } from '../../message.i18n';
 
 function textToBase64Barcode(text) {
   const canvas = document.createElement('canvas');
   JsBarcode(canvas, text, { text, fontSize: 24 });
   return canvas.toDataURL('image/png');
 }
+
+const PICK_PRINT_FIELD_PDFTABLE = {};
+PICK_PRINT_FIELDS.forEach((ppf) => { PICK_PRINT_FIELD_PDFTABLE[ppf.field] = ppf.width; });
 
 @injectIntl
 @connect(
@@ -32,7 +32,7 @@ export default class OutboundPickPrint extends Component {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl);
   pdfPickHead = () => {
     const { outboundHead, defaultWhse, outboundNo } = this.props;
     const barcode = textToBase64Barcode(outboundNo);
@@ -66,31 +66,46 @@ export default class OutboundPickPrint extends Component {
     ];
     return headContent;
   }
-  pdfPickDetails = (pickDetails) => {
+  pdfPickDetails = (pickDetails, pdfBodyTable, printRule) => {
+    const bodyHeader = [];
+    const pdfBody = pdfBodyTable.body;
+    pdfBodyTable.widths.push(25);
+    bodyHeader.push({ text: '项', style: 'tableHeader' });
+    printRule.columns.forEach((rule) => {
+      pdfBodyTable.widths.push(PICK_PRINT_FIELD_PDFTABLE[rule.key]);
+      bodyHeader.push({ text: rule.text, style: 'tableHeader' });
+    });
+    pdfBodyTable.widths.push('*');
+    bodyHeader.push({ text: '待拣数', style: 'tableHeader' });
+    if (printRule.remain) {
+      pdfBodyTable.widths.push('*');
+      bodyHeader.push({ text: '余量数', style: 'tableHeader' });
+    }
+    pdfBodyTable.widths.push('*');
+    bodyHeader.push({ text: '实拣数', style: 'tableHeader' });
     const { outboundHead } = this.props;
-    const pdf = [];
-    pdf.push([
-      { text: '项', style: 'tableHeader' },
-      { text: '货号', style: 'tableHeader' },
-      { text: '产品名称', style: 'tableHeader' },
-      { text: '批次号', style: 'tableHeader' },
-      { text: '客户属性', style: 'tableHeader' },
-      { text: '库位', style: 'tableHeader' },
-      { text: '待拣数', style: 'tableHeader' },
-      { text: '余量数', style: 'tableHeader' },
-      { text: '实拣数', style: 'tableHeader' }]);
+    pdfBody.push(bodyHeader);
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
-      const remQty = data.stock_qty - data.alloc_qty + data.shipped_qty;
+      const pickBody = [i + 1];
+      printRule.columns.forEach((rule) => {
+        pickBody.push(data[rule.key] || '');
+      });
+      pickBody.push(data.alloc_qty);
+      if (printRule.remain) {
+        const remQty = (data.stock_qty - data.alloc_qty) + data.shipped_qty;
+        pickBody.push(remQty);
+      }
       const pickedQty = data.picked_qty === 0 ? '' : data.picked_qty;
-      pdf.push([i + 1, data.product_no || '', data.name || '', data.external_lot_no || '', data.attrib_1_string || '',
-        data.location || '', data.alloc_qty, remQty, pickedQty]);
+      pickBody.push(pickedQty);
+      pdfBody.push(pickBody);
     }
-    if (pickDetails.length !== 16) {
-      pdf.push(['', '', '', '', '', '', '', '', '']);
+    const totalBody = ['合计'].concat(printRule.columns.map(() => ''))
+      .concat(outboundHead.total_alloc_qty, '');
+    if (printRule.remain) {
+      totalBody.push('');
     }
-    pdf.push(['合计', '', '', '', '', '', outboundHead.total_alloc_qty, '', '']);
-    return pdf;
+    pdfBody.push(totalBody);
   }
   pdfSign = () => {
     const foot = [
@@ -110,7 +125,7 @@ export default class OutboundPickPrint extends Component {
     ];
     return foot;
   }
-  handleDocDef = (pickDetails) => {
+  handleDocDef = (pickDetails, printRule) => {
     const docDefinition = {
       content: [],
       pageOrientation: 'landscape',
@@ -149,28 +164,26 @@ export default class OutboundPickPrint extends Component {
         font: 'yahei',
       },
     };
-    let num = 0;
-    if (pickDetails.length > 23) {
-      num = 30 - (pickDetails.length - 23) % 30;
-    } else {
-      num = 23 - pickDetails.length;
-    }
+    const pdfBodyTable = {
+      widths: [],
+      body: [],
+    };
+    this.pdfPickDetails(pickDetails, pdfBodyTable, printRule);
     docDefinition.content = [
       this.pdfPickHead(),
       {
         style: 'table',
-        table: {
-          widths: [25, 100, 120, 100, '*', 60, '*', '*', '*'],
-          body: this.pdfPickDetails(pickDetails),
-        },
+        table: pdfBodyTable,
         layout: {
           vLineWidth(i, node) {
-            return (i === 0 || i === node.table.widths.length - 1 || i === node.table.widths.length) ? 1.2 : 0.5;
+            return (i === 0 || i === node.table.widths.length - 1
+              || i === node.table.widths.length) ? 1.2 : 0.5;
           },
           hLineWidth(i, node) {
-            return (i === 0 || i === 1 || i === node.table.body.length - 1 || i === node.table.body.length) ? 1.2 : 0.5;
+            return (i === 0 || i === 1 || i === node.table.body.length - 1
+              || i === node.table.body.length) ? 1.2 : 0.5;
           },
-          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
+          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 : 1; },
         },
       },
       this.pdfSign(),
@@ -181,8 +194,9 @@ export default class OutboundPickPrint extends Component {
   handlePrint = () => {
     this.props.loadPrintPickDetails(this.props.outboundNo).then((result) => {
       if (!result.error) {
-        const pickDetails = result.data;
-        const docDefinition = this.handleDocDef(pickDetails);
+        const pickDetails = result.data.details;
+        const printRule = result.data.print;
+        const docDefinition = this.handleDocDef(pickDetails, printRule);
         window.pdfMake.fonts = {
           yahei: {
             normal: 'msyh.ttf',

@@ -162,6 +162,7 @@ export default class InvalidItemsList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 140,
     fixed: 'right',
     render: (_, record) => (<span>
@@ -281,7 +282,6 @@ export default class InvalidItemsList extends React.Component {
       <Select
         showSearch
         placeholder="所属归类库"
-        style={{ width: 200 }}
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}

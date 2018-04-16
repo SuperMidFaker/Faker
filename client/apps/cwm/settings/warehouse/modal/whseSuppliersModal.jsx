@@ -29,7 +29,7 @@ export default class SuppliersModal extends Component {
     whseCode: PropTypes.string.isRequired,
     ownerPartnerId: PropTypes.number,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadwhseOwners(this.props.whseCode);
   }
   msg = formatMsg(this.props.intl)

@@ -34,9 +34,6 @@ function renderAsHtml(pageCss, pageJs, content) {
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/logixon/iconfont.css" />
   <link rel="stylesheet" type="text/css" href="${__CDN__}/assets/lib/md-iconic-font/css/material-design-iconic-font.min.css">
   ${pageCss}
-  <!--[if lt IE 10]>
-    <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.1.14/es5-shim.min.js,es5-shim/4.1.14/es5-sham.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
-  <![endif]-->
   ${trackJs}
 </head>
 <body>

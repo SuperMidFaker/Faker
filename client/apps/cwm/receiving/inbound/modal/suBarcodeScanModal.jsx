@@ -113,14 +113,12 @@ export default class SuBarcodeScanModal extends Component {
       window.localStorage.removeItem('subarcode-data');
     }
   }
-  handleDeleteDetail = (index) => {
-    const dataSource = [...this.state.dataSource];
-    const data = dataSource[index];
+  handleDeleteDetail = (data) => {
     const inboundProductSeqMap = new Map(this.state.inboundProductSeqMap);
     const productSeqMap = inboundProductSeqMap.get(data.product_no);
     const seqQty = productSeqMap.get(data.asn_seq_no);
     seqQty.received_qty -= data.qty;
-    dataSource.splice(index, 1);
+    const dataSource = this.state.dataSource.filter(ds => ds.serial_no === data.serial_no);
     inboundProductSeqMap.set(data.product_no, productSeqMap);
     this.setState({ dataSource, inboundProductSeqMap });
   }
@@ -194,7 +192,6 @@ export default class SuBarcodeScanModal extends Component {
       const seqQty = productSeqMap.get(seqNo);
       if (seqQty.received_qty < seqQty.expect_qty) {
         const suData = {
-          id: `${suScan.serial_no}${seqNo}`,
           product_no: suScan.product_no,
           serial_no: suScan.serial_no,
           expiry_date: suScan.expiry_date,
@@ -203,6 +200,7 @@ export default class SuBarcodeScanModal extends Component {
           attrib_3_string: suScan.attrib_3_string,
           attrib_4_string: suScan.attrib_4_string,
           asn_seq_no: seqNo,
+          seqno: dataSource.length + 1,
         };
         Object.keys(this.state.manualInput).forEach((mipKey) => {
           suData[mipKey] = this.state.manualInput[mipKey];
@@ -247,7 +245,7 @@ export default class SuBarcodeScanModal extends Component {
   handleQtyInputRef = (input) => { this.qtyInputRef = input; }
   handleScanSuChange = (ev) => {
     /* SUD1107973470|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01004|14D2019.12.12|
-     * SUD1107973469|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
+     * SUDS100000000|MNOA2C0002929500|GRD28.12.2017|GRS53687924|GRP01003|14D2019.12.12| */
     if (!ev.target.value) {
       this.setState({
         scanRecv: NullSuScan,
@@ -259,6 +257,11 @@ export default class SuBarcodeScanModal extends Component {
       const suScan = { ...this.state.scanRecv };
       suScan.su_barcode = ev.target.value;
       const suSetting = this.props.inboundHead.su_setting;
+      if (suScan.su_barcode === suSetting.submit_key) {
+        this.handleSubmit();
+        this.emptySuInputElement();
+        return;
+      }
       const suKeys = ['serial_no', 'product_no'];
       Object.keys(suSetting).forEach((suKey) => {
         if (suSetting[suKey].enabled === true || suSetting[suKey].enabled === 'subarcode') {
@@ -363,9 +366,8 @@ export default class SuBarcodeScanModal extends Component {
     } = this.state;
     const barColumns = [{
       title: '序号',
-      dataIndex: 'id',
+      dataIndex: 'seqno',
       width: 50,
-      render: (id, row, index) => dataSource.length - index,
     }, {
       title: '货号',
       dataIndex: 'product_no',
@@ -396,7 +398,7 @@ export default class SuBarcodeScanModal extends Component {
       title: '操作',
       width: 100,
       fixed: 'right',
-      render: (o, record, index) => (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
+      render: (o, record) => (<RowAction onClick={this.handleDeleteDetail} label={<Icon type="delete" />} row={record} />),
     });
     const title = (<div>
       <span>条码扫描数量确认</span>
@@ -502,7 +504,8 @@ export default class SuBarcodeScanModal extends Component {
             size="middle"
             columns={barColumns}
             dataSource={dataSource}
-            rowKey="id"
+            rowKey="seqno"
+            pagination={{ showTotal: total => `共 ${total} 条`, showSizeChanger: true, defaultPageSize: 20 }}
             scroll={{
               x: barColumns.reduce((acc, cur) =>
               acc + (cur.width ? cur.width : 240), 0),

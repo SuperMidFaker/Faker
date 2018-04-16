@@ -13,7 +13,7 @@ import DockPanel from 'client/components/DockPanel';
 import { Logixon } from 'client/components/FontIcon';
 import ShipmentPane from './tabpanes/shipmentPane';
 import DutyTaxPane from './tabpanes/dutyTaxPane';
-import ExpensePane from './tabpanes/expensePane';
+// import ExpensePane from './tabpanes/expensePane';
 import FilesPane from './tabpanes/filesPane';
 import DelgDispModal from './delgDispModal';
 import { formatMsg } from './message.i18n';
@@ -114,9 +114,11 @@ export default class DelegationDockPanel extends React.Component {
       delgDispatch.status > CMS_DELEGATION_STATUS.processing)) {
       tabs.push(<TabPane tab="税金" key="taxes"><DutyTaxPane /></TabPane>);
     }
+    /*
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
       tabs.push(<TabPane tab="费用" key="expenses"><ExpensePane /></TabPane>);
     }
+    */
     tabs.push(<TabPane tab="文件" key="files"><FilesPane /></TabPane>);
     return (
       <Tabs activeKey={tabKey} onChange={this.handleTabChange}>

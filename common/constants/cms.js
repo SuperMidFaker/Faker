@@ -191,12 +191,12 @@ export const INVOICE_TYPE = [
 ];
 
 export const CMS_DELEGATION_STATUS = {
-  unaccepted: 0,
-  accepted: 1,
-  processing: 2,
-  declaring: 3,
-  released: 4,
-  completed: 5,
+  unaccepted: 0, // 未接单
+  accepted: 1, // 已接单
+  processing: 2, // 制单中
+  declaring: 3, // 申报中
+  released: 4, // 已放行
+  completed: 5, // 已完成
 };
 
 export const CMS_DELEGATION_MANIFEST = {
@@ -376,6 +376,24 @@ export const DELG_STATUS = {
   finished: 4,
 };
 
+export const CMS_DELG_TODO = {
+  accepting: {
+    value: 0, text: '接单', icon: 'select', badge: 'default',
+  },
+  exchange: {
+    value: 1, text: '换/抽单', icon: 'swap', badge: 'processing',
+  },
+  undeclared: {
+    value: 1, text: '制单', icon: 'file-text', badge: 'processing',
+  },
+  declared: {
+    value: 1, text: '跟踪', icon: 'export', badge: 'processing',
+  },
+  finished: {
+    value: 1, text: '归档', icon: 'check-square-o', badge: 'success',
+  },
+};
+
 export const CMS_DECL_STATUS = {
   proposed: {
     value: 0, text: '建议书', icon: 'file-text', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date',
@@ -414,6 +432,9 @@ export const CMS_DECL_TRACK = {
   },
   entered: {
     value: 3, text: '已回执', icon: 'mail', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
+  },
+  inspect: {
+    value: 5, text: '海关查验', icon: 'warning', badge: 'error', step: 4, stepDesc: '查验', date: 'clear_date',
   },
   released: {
     value: 4, text: '已放行', icon: 'flag', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',

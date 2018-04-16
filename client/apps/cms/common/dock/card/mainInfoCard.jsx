@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Row, Menu, Col, Card } from 'antd';
@@ -20,7 +19,6 @@ import { formatMsg } from '../message.i18n';
 export default class MainInfoCard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    delegation: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl)
   handleFill = (val, field) => {
@@ -37,16 +35,16 @@ export default class MainInfoCard extends React.Component {
     const transMode = TRANS_MODE.filter(tm => tm.value === delegation.trans_mode)[0];
     let doAwbText = '';
     if (delegation.trans_mode === '2') {
-      if (CLAIM_DO_AWB.notClaimDO.key === delegation.claim_do_awb) {
+      if (CLAIM_DO_AWB.notClaimDO.key === delegation.exchanged_doc) {
         doAwbText = CLAIM_DO_AWB.notClaimDO.value;
-      } else if (CLAIM_DO_AWB.claimDO.key === delegation.claim_do_awb) {
+      } else if (CLAIM_DO_AWB.claimDO.key === delegation.exchanged_doc) {
         doAwbText = CLAIM_DO_AWB.claimDO.value;
       }
     }
     if (delegation.trans_mode === '5') {
-      if (CLAIM_DO_AWB.notClaimAWB.key === delegation.claim_do_awb) {
+      if (CLAIM_DO_AWB.notClaimAWB.key === delegation.exchanged_doc) {
         doAwbText = CLAIM_DO_AWB.notClaimAWB.value;
-      } else if (CLAIM_DO_AWB.claimAWB.key === delegation.claim_do_awb) {
+      } else if (CLAIM_DO_AWB.claimAWB.key === delegation.exchanged_doc) {
         doAwbText = CLAIM_DO_AWB.claimAWB.value;
       }
     }

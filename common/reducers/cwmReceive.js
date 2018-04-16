@@ -713,7 +713,7 @@ export function expressReceive(inboundNo, loginId, loginName, receivedDate) {
 
 export function batchReceive(
   seqNos, location, damageLevel, asnNo,
-  inboundNo, loginName, receivedDate, priority
+  inboundNo, loginName, receivedDate
 ) {
   return {
     [CLIENT_API]: {
@@ -725,7 +725,13 @@ export function batchReceive(
       endpoint: 'v1/cwm/inbound/product/receipt/batch',
       method: 'post',
       data: {
-        seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate, priority,
+        seqNos,
+        location,
+        damageLevel,
+        asnNo,
+        inboundNo,
+        loginName,
+        receivedDate,
       },
     },
   };
@@ -867,9 +873,9 @@ export function getSuppliers(whseCode, ownerPartnerId) {
         actionTypes.GET_SUPPLIERS_SUCCEED,
         actionTypes.GET_SUPPLIERS_FAIL,
       ],
-      endpoint: 'v1/cwm/get/suppliers',
+      endpoint: 'v1/cwm/whse/owner/suppliers',
       method: 'get',
-      params: { whseCode, ownerPartnerId },
+      params: { whseCode, ownerPid: ownerPartnerId },
     },
   };
 }

@@ -48,7 +48,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_MOVEMENT_MODAL:
       return { ...state, movementModal: { ...state.movementModal, visible: false } };
     case actionTypes.INVENTORY_SEARCH:
-      return { ...state, movementModal: { ...state.movementModal, filter: JSON.parse(action.params.filter) } };
+      return {
+        ...state,
+        movementModal: {
+          ...state.movementModal,
+          filter: JSON.parse(action.params.filter),
+        },
+      };
     case actionTypes.LOAD_MOVEMENTS:
       return { ...state, movements: { ...state.movements, loading: true } };
     case actionTypes.LOAD_MOVEMENTS_SUCCESS:
@@ -93,7 +99,7 @@ export function inventorySearch(filter, whseCode, ownerCode) {
   };
 }
 
-export function createMovement(ownerCode, ownerName, moveType, reason, whseCode, loginName, details) {
+export function createMovement(moveInfo, details) {
   return {
     [CLIENT_API]: {
       types: [
@@ -104,7 +110,7 @@ export function createMovement(ownerCode, ownerName, moveType, reason, whseCode,
       endpoint: 'v1/cwm/create/movement',
       method: 'post',
       data: {
-        ownerCode, ownerName, moveType, reason, whseCode, loginName, details,
+        moveInfo, details,
       },
     },
   };

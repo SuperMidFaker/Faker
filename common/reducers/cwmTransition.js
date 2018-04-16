@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'CLOSE_TRANSITION_MODAL', 'OPEN_TRANSITION_MODAL',
+  'SHOW_UPLOADTRANSIT_MODAL',
   'CLOSE_BATCH_TRANSIT_MODAL', 'OPEN_BATCH_TRANSIT_MODAL',
   'CLOSE_BATCH_MOVE_MODAL', 'OPEN_BATCH_MOVE_MODAL',
   'CLOSE_BATCH_FREEZE_MODAL', 'OPEN_BATCH_FREEZE_MODAL',
@@ -22,6 +23,9 @@ const initialState = {
     visible: false,
     traceIds: [],
     detail: {},
+  },
+  batchUploadTransitModal: {
+    visible: false,
   },
   batchMoveModal: {
     visible: false,
@@ -80,6 +84,15 @@ export default function reducer(state = initialState, action) {
         transitionModal: {
           ...state.transitionModal, visible: true, trace_id: action.data, needReload: true,
         },
+      };
+    case actionTypes.SHOW_UPLOADTRANSIT_MODAL:
+      return {
+        ...state,
+        batchUploadTransitModal: {
+          ...state.batchUploadTransitModal,
+          ...action.data,
+        },
+        reloadTransitions: action.data.needReload,
       };
     case actionTypes.SPLIT_TRANSIT_SUCCEED:
     case actionTypes.MOVE_TRANSIT_SUCCEED:
@@ -180,6 +193,13 @@ export function openTransitionModal(traceId) {
   return {
     type: actionTypes.OPEN_TRANSITION_MODAL,
     data: traceId,
+  };
+}
+
+export function showUploadTransitModal(data) {
+  return {
+    type: actionTypes.SHOW_UPLOADTRANSIT_MODAL,
+    data,
   };
 }
 

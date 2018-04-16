@@ -33,7 +33,10 @@ export default class ReceivedInvitationList extends Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     receiveInvitationsLoaded: PropTypes.bool.isRequired,
-    receiveInvitations: PropTypes.array.isRequired, // 收到的邀请
+    receiveInvitations: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      partner_id: PropTypes.number.isRequired,
+    })).isRequired, // 收到的邀请
     rejectInvitation: PropTypes.func.isRequired, // 拒绝邀请的action creator
     acceptInvitation: PropTypes.func.isRequired, // 接受邀请的action creator
     loadReceiveInvitations: PropTypes.func.isRequired,
@@ -147,7 +150,7 @@ export default class ReceivedInvitationList extends Component {
     }
     this.props.acceptInvitation(
       partner.id,
-      partner.partnerId,
+      partner.partner_id,
       reversePartnerships,
       partner.customsCode
     ).then(() => {
@@ -155,7 +158,7 @@ export default class ReceivedInvitationList extends Component {
     });
   }
   handleReject = (partner) => {
-    this.props.rejectInvitation(partner.id, partner.partnerId).then(() => {
+    this.props.rejectInvitation(partner.id, partner.partner_id).then(() => {
       this.handleTableLoad();
     });
   }

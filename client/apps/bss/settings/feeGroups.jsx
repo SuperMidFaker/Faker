@@ -50,7 +50,7 @@ export default class FeeGroups extends Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    align: 'right',
+    className: 'table-col-ops',
     fixed: 'right',
     width: 90,
     render: (o, record) => <RowAction danger confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleDeleteFeeGroup} icon="delete" row={record} />,

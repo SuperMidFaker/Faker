@@ -143,6 +143,7 @@ export default class SHFTZCargoList extends React.Component {
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
+    className: 'table-col-ops',
     width: 160,
   }]
   dataSource = new DataTable.DataSource({
@@ -330,7 +331,6 @@ export default class SHFTZCargoList extends React.Component {
               rowSelection={rowSelection}
               rowKey="id"
               toolbarActions={toolbarActions}
-              scroll={{ x: 1400 }}
               loading={loading}
             />
           </Content>

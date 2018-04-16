@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Popover, Form, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { freezeTransit, adjustTransit } from 'common/reducers/cwmTransition';
+import { adjustTransit } from 'common/reducers/cwmTransition';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -15,7 +15,7 @@ const FormItem = Form.Item;
   state => ({
     loginName: state.account.loginName,
   }),
-  { freezeTransit, adjustTransit }
+  { adjustTransit }
 )
 export default class frozonPopover extends Component {
   static propTypes = {
@@ -36,7 +36,7 @@ export default class frozonPopover extends Component {
   }
   handleAdjustChange = (value) => {
     const adjust = parseFloat(value);
-    if (!isNaN(adjust) && adjust !== 0) {
+    if (!Number.isNaN(adjust) && adjust !== 0) {
       const { text } = this.props;
       if (text + adjust > 0) {
         this.setState({ adjustQty: adjust, finalQty: text + adjust });
@@ -50,7 +50,7 @@ export default class frozonPopover extends Component {
   }
   handleFinalChange = (value) => {
     const final = parseFloat(value);
-    if (!isNaN(final) && final > 0) {
+    if (!Number.isNaN(final) && final > 0) {
       const { text } = this.props;
       this.setState({ adjustQty: final - text, finalQty: final });
     } else {

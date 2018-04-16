@@ -42,6 +42,10 @@ const messages = defineMessages({
     id: 'cwm.stock.desc.cn',
     defaultMessage: '中文品名',
   },
+  SKUCategory: {
+    id: 'cwm.stock.sku.category',
+    defaultMessage: '商品分类',
+  },
   location: {
     id: 'cwm.stock.location',
     defaultMessage: '库位',
@@ -118,9 +122,17 @@ const messages = defineMessages({
     id: 'cwm.stock.trace.id',
     defaultMessage: '追踪ID',
   },
+  inCustOrderNo: {
+    id: 'cwm.stock.in.custorderno',
+    defaultMessage: '入库单号',
+  },
   poNo: {
     id: 'cwm.stock.po.no',
     defaultMessage: '采购订单号',
+  },
+  invoiceNo: {
+    id: 'cwm.stock.invoice.no',
+    defaultMessage: '发票号',
   },
   asnNo: {
     id: 'cwm.stock.asn.no',
@@ -165,6 +177,10 @@ const messages = defineMessages({
   createMovement: {
     id: 'cwm.stock.movement.create',
     defaultMessage: '创建库存移动单',
+  },
+  transitUploadUpdate: {
+    id: 'cwm.stock.transit.upload.update',
+    defaultMessage: '批量导入调整',
   },
 });
 

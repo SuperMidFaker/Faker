@@ -88,7 +88,7 @@ export default class AsnSelectModal extends Component {
     const { dataSource, searchVal } = this.state;
     const columns = [{
       title: '客户单号',
-      dataIndex: 'po_no',
+      dataIndex: 'cust_order_no',
     }, {
       title: 'ASN',
       dataIndex: 'asn_no',
