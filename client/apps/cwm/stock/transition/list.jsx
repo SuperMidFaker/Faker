@@ -205,7 +205,7 @@ export default class StockTransitionList extends React.Component {
     title: '操作',
     dataIndex: 'OPS_COL',
     className: 'table-col-ops',
-    width: 100,
+    width: 110,
     fixed: 'right',
     render: (o, record) => {
       if (record.avail_qty === 0 && record.frozen_qty > 0) {

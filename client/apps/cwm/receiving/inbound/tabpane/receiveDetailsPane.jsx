@@ -193,7 +193,13 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 130,
     dataIndex: 'received_vol',
     render: (vol, record) =>
-      <EditableCell size="small" value={vol} onSave={value => this.handlePrdtVolChange(record.id, Number(value))} style={{ width: '100%' }} />,
+      (<EditableCell
+        size="small"
+        editable={record.received_qty > 0}
+        value={vol}
+        onSave={value => this.handlePrdtVolChange(record.id, Number(value))}
+        style={{ width: '100%' }}
+      />),
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
@@ -298,7 +304,8 @@ export default class ReceiveDetailsPane extends React.Component {
       if (prdnos.length > 130) {
         prdnos = `${prdnos.slice(0, 130)}...`;
       }
-      alertMsg = <div>存在必填属性不完整货号:<br />{prdnos}</div>;
+      const props = inboundHead.sku_rule.required_props.map(rp => SKU_PROPS_MAP[rp]).join('/');
+      alertMsg = <div>以下货号属性({props})需要补充完整:<br />{prdnos}</div>;
     }
     return (
       <DataPane

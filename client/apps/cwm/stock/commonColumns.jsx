@@ -121,7 +121,7 @@ exports.commonTraceColumns = (intl) => {
     width: 120,
   }, {
     title: msg('cbm'),
-    dataIndex: 'cbm',
+    dataIndex: 'volume',
     align: 'right',
     width: 120,
   }];
