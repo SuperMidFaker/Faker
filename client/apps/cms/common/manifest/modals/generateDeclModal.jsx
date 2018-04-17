@@ -65,7 +65,7 @@ export default class MergeSplitModal extends React.Component {
     manualDecl: PropTypes.bool.isRequired,
     billSeqNo: PropTypes.string,
     hscodeCategories: PropTypes.arrayOf(PropTypes.shape({ type: PropTypes.oneOf(['split', 'merge']) })).isRequired,
-    invTemplates: PropTypes.array.isRequired,
+    invTemplates: PropTypes.arrayOf(PropTypes.shape({ docu_type: PropTypes.string })).isRequired,
   }
   state = {
     mergeOpt: {
@@ -75,6 +75,7 @@ export default class MergeSplitModal extends React.Component {
       byCurr: false,
       byCountry: false,
       byCopGNo: false,
+      byGUnit: false,
       byEmGNo: false,
       bySplHscode: false,
       bySplCopNo: false,
@@ -133,6 +134,9 @@ export default class MergeSplitModal extends React.Component {
       if (rule.merge_bycountry) {
         mergeOptArr.push('byCountry');
       }
+      if (rule.merge_bygunit) {
+        mergeOptArr.push('byGUnit');
+      }
       if (rule.merge_bycopgno) {
         mergeOptArr.push('byCopGNo');
       }
@@ -164,6 +168,7 @@ export default class MergeSplitModal extends React.Component {
           byCurr: rule.merge_bycurr,
           byCountry: rule.merge_bycountry,
           byCopGNo: rule.merge_bycopgno,
+          byGUnit: rule.merge_bygunit,
           byEmGNo: rule.merge_byengno,
           bySplHscode: rule.merge_bysplhs,
           bySplCopNo: rule.merge_bysplno,
@@ -217,6 +222,9 @@ export default class MergeSplitModal extends React.Component {
   }, {
     label: this.msg('productCode'),
     value: 'byCopGNo',
+  }, {
+    label: this.msg('unit'),
+    value: 'byGUnit',
   }]
   handleCancel = () => {
     this.props.closeMergeSplitModal();
@@ -236,6 +244,7 @@ export default class MergeSplitModal extends React.Component {
       byCurr: false,
       byCountry: false,
       byCopGNo: false,
+      byGUnit: false,
       byEmGNo: false,
     };
     checkeds.forEach((chk) => {
@@ -272,10 +281,12 @@ export default class MergeSplitModal extends React.Component {
   }
   handleOk = () => {
     const { billSeqNo } = this.props;
-    const { splitOpt, mergeOpt, sortOpt, invGen } = this.state;
+    const {
+      splitOpt, mergeOpt, sortOpt, invGen,
+    } = this.state;
     if (mergeOpt.checked) {
       if (!(mergeOpt.byHsCode || mergeOpt.byGName || mergeOpt.byCurr ||
-        mergeOpt.byCountry || mergeOpt.byCopGNo || mergeOpt.byEmGNo)) {
+        mergeOpt.byCountry || mergeOpt.byCopGNo || mergeOpt.byEmGNo || mergeOpt.byGUnit)) {
         message.error('请选择归并项');
       }
     }
@@ -298,7 +309,7 @@ export default class MergeSplitModal extends React.Component {
       invGen.contract_template_id = this.props.form.getFieldValue('contract_template_id');
     }
     this.props.submitBillMegeSplit({
-      billSeqNo, splitOpt, mergeOpt, sortOpt, invGen
+      billSeqNo, splitOpt, mergeOpt, sortOpt, invGen,
     }).then((result) => {
       if (result.error) {
         if (result.error.message.key === 'ftz-detail-splited') {
@@ -336,7 +347,7 @@ export default class MergeSplitModal extends React.Component {
       alertMsg, alertTitle, mergeOpt, splitOpt, invGen, splitCategories, mergeCategories,
       invoiceTemplates, packingListTemplates, contractTemplates,
     } = this.state;
-    const { form: { getFieldDecorator, getFieldValue } } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
     let { mergeConditions } = this;
     if (this.props.manualDecl) {
       mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
@@ -542,11 +553,10 @@ export default class MergeSplitModal extends React.Component {
                     />
                     {invGen.gen_invoice &&
                     <div>
-                      {getFieldDecorator('invoice_template_id', { initialValue: invGen.invoice_template_id
-                  })(<Select placeholder={this.msg('选择发票模板')}>
-                    {invoiceTemplates && invoiceTemplates.map(ct =>
-                      <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
-                  </Select>)}
+                      {getFieldDecorator('invoice_template_id', { initialValue: invGen.invoice_template_id })(<Select placeholder={this.msg('选择发票模板')}>
+                        {invoiceTemplates && invoiceTemplates.map(ct =>
+                          <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
+                      </Select>)}
                     </div>}
                   </FormItem>
                 </Col>
@@ -561,11 +571,10 @@ export default class MergeSplitModal extends React.Component {
                     />
                     {invGen.gen_packing_list &&
                     <div>
-                      {getFieldDecorator('packing_list_template_id', { initialValue: invGen.packing_list_template_id
-                  })(<Select placeholder={this.msg('选择箱单模板')}>
-                    {packingListTemplates && packingListTemplates.map(ct =>
-                      <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
-                  </Select>)}
+                      {getFieldDecorator('packing_list_template_id', { initialValue: invGen.packing_list_template_id })(<Select placeholder={this.msg('选择箱单模板')}>
+                        {packingListTemplates && packingListTemplates.map(ct =>
+                          <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
+                      </Select>)}
                     </div>}
                   </FormItem>
                 </Col>
@@ -580,11 +589,10 @@ export default class MergeSplitModal extends React.Component {
                     />
                     {invGen.gen_contract &&
                     <div>
-                      {getFieldDecorator('contract_template_id', { initialValue: invGen.contract_template_id
-                  })(<Select placeholder={this.msg('选择合同模板')}>
-                    {contractTemplates && contractTemplates.map(ct =>
-                      <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
-                  </Select>)}
+                      {getFieldDecorator('contract_template_id', { initialValue: invGen.contract_template_id })(<Select placeholder={this.msg('选择合同模板')}>
+                        {contractTemplates && contractTemplates.map(ct =>
+                          <Option value={ct.id} key={ct.id}>{ct.template_name}</Option>)}
+                      </Select>)}
                     </div>}
                   </FormItem>
                 </Col>

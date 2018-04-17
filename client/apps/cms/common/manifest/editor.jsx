@@ -286,6 +286,7 @@ export default class ManifestEditor extends React.Component {
             merge_bycurr: formData.merge_bycurr,
             merge_bycountry: formData.merge_bycountry,
             merge_bycopgno: formData.merge_bycopgno,
+            merge_bygunit: formData.merge_bygunit,
             merge_byengno: formData.merge_byengno,
             merge_bysplhs: formData.merge_bysplhs,
             merge_bysplno: formData.merge_bysplno,

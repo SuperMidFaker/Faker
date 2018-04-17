@@ -51,6 +51,9 @@ function getFieldInits(formData) {
     if (formData.merge_bycopgno) {
       init.mergeOpt_arr.push('byCopGNo');
     }
+    if (formData.merge_bygunit) {
+      init.mergeOpt_arr.push('byGUnit');
+    }
     if (formData.merge_byengno) {
       init.mergeOpt_arr.push('byEmGNo');
     }
@@ -159,6 +162,7 @@ export default class ManifestTemplate extends Component {
       merge_bycurr: 0,
       merge_bycountry: 0,
       merge_bycopgno: 0,
+      merge_bygunit: 0,
       merge_byengno: 0,
     };
     mergeOptArr.forEach((mergeOpt) => {
@@ -172,6 +176,8 @@ export default class ManifestTemplate extends Component {
         mergeObj.merge_bycountry = 1;
       } else if (mergeOpt === 'byCopGNo') {
         mergeObj.merge_bycopgno = 1;
+      } else if (mergeOpt === 'byGUnit') {
+        mergeObj.merge_bygunit = 1;
       } else if (mergeOpt === 'byEmGNo') {
         mergeObj.merge_byengno = 1;
       }
