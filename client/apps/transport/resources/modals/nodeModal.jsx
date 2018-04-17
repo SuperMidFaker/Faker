@@ -23,11 +23,11 @@ import NodeForm from '../components/NodeForm';
 export default class NodeModal extends Component {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
-    form: PropTypes.object.isRequired, // 对应于antd中的form对象
+    form: PropTypes.shape({ getFieldsValue: PropTypes.func.isRequired }).isRequired,
     addNode: PropTypes.func.isRequired,
     toggleNodeModal: PropTypes.func.isRequired,
     nodeType: PropTypes.number.isRequired,
-    partners: PropTypes.array.isRequired,
+    partners: PropTypes.arrayOf(PropTypes.shape({ partner_id: PropTypes.number })).isRequired,
   }
   state = {
     region: {
@@ -43,11 +43,12 @@ export default class NodeModal extends Component {
     const { region } = this.state;
     const nodeInfoInForm = form.getFieldsValue();
     if (!region.province && !region.city && !region.district && !region.street) {
-      message.warn('区域必填');
+      message.warn('省市区必填');
     } else if (nodeInfoInForm.ref_partner_id === undefined) {
       message.warn('关联方必填');
     } else {
-      const refPartner = this.props.partners.find(item => item.partner_id === nodeInfoInForm.ref_partner_id);
+      const refPartner = this.props.partners.find(item =>
+        item.partner_id === nodeInfoInForm.ref_partner_id);
       const nodeInfo = Object.assign({}, nodeInfoInForm, {
         ...region, type: nodeType, tenant_id: tenantId, ref_partner_name: refPartner ? refPartner.name : '',
       });
@@ -74,8 +75,14 @@ export default class NodeModal extends Component {
   render() {
     const { form, visible } = this.props;
     return (
-      <Modal maskClosable={false} visible={visible} onOk={this.handleAddNode} onCancel={this.handleCancel}>
-        <NodeForm mode="add"
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        onOk={this.handleAddNode}
+        onCancel={this.handleCancel}
+      >
+        <NodeForm
+          mode="add"
           form={form}
           onRegionChange={this.handleRegionChange}
           onSubmitBtnClick={this.handleAddNode}
