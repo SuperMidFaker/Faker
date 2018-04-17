@@ -283,6 +283,7 @@ export default class InvalidItemsList extends React.Component {
         showSearch
         placeholder="所属归类库"
         dropdownMatchSelectWidth={false}
+        style={{ width: '100%' }}
         dropdownStyle={{ width: 360 }}
         onChange={this.handleRepoSelect}
         allowClear

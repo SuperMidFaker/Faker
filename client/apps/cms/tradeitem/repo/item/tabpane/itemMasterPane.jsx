@@ -98,16 +98,19 @@ export default class ItemMasterPane extends React.Component {
         const unit1 = firstUnit ? firstUnit.value : '';
         const secondUnit = this.props.units.filter(unit => unit.text === hscode.second_unit)[0];
         const unit2 = secondUnit ? secondUnit.value : '';
-        this.props.form.setFieldsValue({
-          g_name: hscode.product_name,
+        const hsField = {
           unit_1: unit1,
           unit_2: unit2,
           customs_control: hscode.customs,
           inspection_quarantine: hscode.inspection,
-        });
+        };
+        const gname = this.props.form.getFieldValue('g_name');
+        if (!gname) {
+          hsField.g_name = hscode.product_name;
+        }
+        this.props.form.setFieldsValue(hsField);
       } else {
         this.props.form.setFieldsValue({
-          g_name: '',
           unit_1: '',
           unit_2: '',
           customs_control: '',

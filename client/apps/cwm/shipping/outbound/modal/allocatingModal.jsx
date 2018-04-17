@@ -144,15 +144,6 @@ export default class AllocatingModal extends Component {
         if (!record.inbound_timestamp) {
           disabled = true;
           reason = '入库日期为空';
-        } else if (outboundHead.bonded === 0) {
-          disabled = record.bonded;
-          reason = disabled ? '保税库存' : '';
-        } else if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'normal') {
-          disabled = !record.ftz_ent_filed_id; // 没有明细ID时disable
-          reason = disabled ? '海关入库明细ID为空' : '';
-        } else if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'portion') {
-          disabled = !(record.ftz_ent_filed_id && record.portion); // 有明细ID 且 是分拨库存时不disable
-          reason = disabled ? '货物不可分拨' : '';
         } else if (Number.isNaN(priority) || priority === 0) {
           disabled = true;
           reason = '库位封存';
@@ -171,6 +162,23 @@ export default class AllocatingModal extends Component {
               disabled = true;
               reason = `${ALLOC_RULE_OPTIONS[ar.key]}值不等于${outboundProduct[ar.key]}`;
               break;
+            }
+          }
+        }
+        if (!disabled) {
+          if (outboundHead.bonded === 0) {
+            disabled = !!record.bonded;
+            reason = disabled ? '保税库存' : '';
+          } else if (outboundHead.bonded === 1) {
+            if (!record.bonded) {
+              disabled = true;
+              reason = '非保库存';
+            } else if (outboundHead.bonded_outtype === 'normal') {
+              disabled = !record.ftz_ent_filed_id; // 没有明细ID时disable
+              reason = disabled ? '入库单监管ID未获取' : '';
+            } else if (outboundHead.bonded_outtype === 'portion') {
+              disabled = !(record.ftz_ent_filed_id && record.portion); // 有明细ID 且 是分拨库存时不disable
+              reason = disabled ? '入库单监管ID未获取或货物不可分拨' : '';
             }
           }
         }

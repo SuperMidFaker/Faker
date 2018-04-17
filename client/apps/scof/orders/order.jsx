@@ -98,18 +98,25 @@ export default class OrderForm extends Component {
     }
   }
   handleFlowChange = (value) => {
-    this.props.loadFlowGraph(value).then((result) => {
+    const flow = this.props.flows.filter(flw => flw.id === value)[0];
+    this.props.loadFlowGraph(value, flow.main_flow_id).then((result) => {
       if (!result.error) {
         const subOrders = [];
-        const { nodes, edges } = result.data;
+        let { nodes } = result.data;
+        if (flow.main_flow_id) {
+          nodes = nodes.filter(nd => nd.provider_tenant_id === this.props.tenantId);
+        }
+        const { edges } = result.data;
         const nodeEndMap = {};
         for (let i = 0; i < edges.length; i++) {
           const edge = edges[i];
           const targetNode = nodes.filter(node => node.id === edge.target)[0];
-          if (nodeEndMap[edge.source]) {
-            nodeEndMap[edge.source].push(targetNode);
-          } else {
-            nodeEndMap[edge.source] = [targetNode];
+          if (targetNode) {
+            if (nodeEndMap[edge.source]) {
+              nodeEndMap[edge.source].push(targetNode);
+            } else {
+              nodeEndMap[edge.source] = [targetNode];
+            }
           }
         }
         const levelNodes = [nodes.filter(node => node.in_degree === 0)];

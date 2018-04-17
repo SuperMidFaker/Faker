@@ -55,14 +55,17 @@ export default class NodeForm extends Component {
     const regionValues = region || [];
     return (
       <Form layout="horizontal" onSubmit={onSubmitBtnClick} className={mode === 'edit' ? 'form-edit-content offset-right-col' : ''} style={this.props.style}>
-        <FormItem label="名称:" required {...formItemLayout}>
-          {getFieldDecorator('name', { initialValue: node.name })(<Input required />)}
+        <FormItem label="名称:" {...formItemLayout}>
+          {getFieldDecorator('name', { initialValue: node.name, rules: [{ required: true, message: '名称必填' }] })(<Input required />)}
         </FormItem>
-        <FormItem label="别名:" required {...formItemLayout}>
+        <FormItem label="别名:" {...formItemLayout}>
           {getFieldDecorator('byname', { initialValue: node.byname })(<Input />)}
         </FormItem>
-        <FormItem label="关联客户:" required {...formItemLayout}>
-          {getFieldDecorator('ref_partner_id', { initialValue: node.ref_partner_id })(<Select
+        <FormItem label="关联客户:" {...formItemLayout}>
+          {getFieldDecorator('ref_partner_id', {
+            initialValue: node.ref_partner_id,
+            rules: [{ required: true, message: '关联客户必填' }],
+          })(<Select
             id="select"
             showSearch
             placeholder=""

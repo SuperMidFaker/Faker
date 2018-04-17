@@ -160,6 +160,7 @@ export default class EmergeItemTable extends React.Component {
         placeholder="所属归类库"
         optionFilterProp="children"
         dropdownMatchSelectWidth={false}
+        style={{ width: '100%' }}
         dropdownStyle={{ width: 360 }}
         allowClear
         onChange={this.handleRepoSelect}

@@ -61,6 +61,9 @@ export default class MergeSplitForm extends React.Component {
   }, {
     label: this.msg('productCode'),
     value: 'byCopGNo',
+  }, {
+    label: this.msg('unit'),
+    value: 'byGUnit',
   }]
   handleMergeCheck = (checkeds) => {
     const opt = {
@@ -69,6 +72,7 @@ export default class MergeSplitForm extends React.Component {
       byCurr: false,
       byCountry: false,
       byCopGNo: false,
+      byGUnit: false,
       byEmGNo: false,
     };
     checkeds.forEach((chk) => {
