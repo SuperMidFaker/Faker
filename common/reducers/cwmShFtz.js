@@ -61,7 +61,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'VIRTUAL_TRANS_SAVE', 'VIRTUAL_TRANS_SAVE_SUCCEED', 'VIRTUAL_TRANS_SAVE_FAIL',
   'VIRTUAL_TRANS_DELETE', 'VIRTUAL_TRANS_DELETE_SUCCEED', 'VIRTUAL_TRANS_DELETE_FAIL',
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
-  'REL_DETAILS_SPLIT', 'REL_DETAILS_SPLIT_SUCCEED', 'REL_DETAILS_SPLIT_FAIL',
   'CANCEL_BD', 'CANCEL_BD_SUCCEED', 'CANCEL_BD_FAIL',
   'CANCEL_NC', 'CANCEL_NC_SUCCEED', 'CANCEL_NC_FAIL',
   'LOAD_MANIFTEMP', 'LOAD_MANIFTEMP_SUCCEED', 'LOAD_MANIFTEMP_FAIL',
@@ -1348,21 +1347,6 @@ export function loadFtzStocks(params) {
       endpoint: 'v1/cwm/shftz/stock/details/get',
       method: 'get',
       params,
-    },
-  };
-}
-
-export function splitRelDetails(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.REL_DETAILS_SPLIT,
-        actionTypes.REL_DETAILS_SPLIT_SUCCEED,
-        actionTypes.REL_DETAILS_SPLIT_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/rel/details/split',
-      method: 'post',
-      data,
     },
   };
 }

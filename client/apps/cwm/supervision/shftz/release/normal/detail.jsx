@@ -16,7 +16,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, exportNormalExitByRel, fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails, clearNormalRel } from 'common/reducers/cwmShFtz';
+import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, exportNormalExitByRel, fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, clearNormalRel } from 'common/reducers/cwmShFtz';
 import { showNormalRegSplitModal, undoNormalRegSplit } from 'common/reducers/cwmShFtzDecl';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import NormalRegMergeSplitModal from './modal/normalRegMergeSplitModal';
@@ -70,7 +70,6 @@ function fetchData({ dispatch, params }) {
     queryPortionoutInfos,
     cancelRelReg,
     editReleaseWt,
-    splitRelDetails,
     clearNormalRel,
     showNormalRegSplitModal,
     undoNormalRegSplit,
@@ -90,8 +89,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   state = {
     reg: {},
-    groupVals: ['supplier', 'trxn_mode', 'currency'],
-
     view: 'splitted',
     filingDetails: [],
     exitDetails: [],
@@ -260,18 +257,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
     this.props.undoNormalRegSplit(soNo).then((result) => {
       if (!result.error) {
         this.handleRelAndDetailsReload();
-      }
-    });
-  }
-  handleCheckChange = (checkedValues) => {
-    this.setState({ groupVals: checkedValues });
-  }
-  handleDetailSplit = () => {
-    const { soNo } = this.props.params;
-    this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals }).then((result) => {
-      if (!result.error) {
-        message.success('明细已拆分');
-        this.props.loadRelDetails(soNo, 'normal');
       }
     });
   }
