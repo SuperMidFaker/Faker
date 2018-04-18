@@ -30,9 +30,9 @@ const messages = defineMessages({
     id: 'cms.delegation.filter.export',
     defaultMessage: '出口',
   },
-  all: {
-    id: 'cms.delegation.stage.all',
-    defaultMessage: '全部',
+  allDelegation: {
+    id: 'cms.delegation.all',
+    defaultMessage: '全部委托',
   },
   accepting: {
     id: 'cms.delegation.stage.accepting',
