@@ -8,6 +8,7 @@ import { Badge, Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { string2Bytes } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
@@ -231,18 +232,6 @@ export default class SHFTZStockList extends React.Component {
     const filter = { ...this.state.filter, ...searchForm };
     this.handleStockQuery(filter);
   }
-  s2ab = (s) => { // todo
-    if (typeof ArrayBuffer !== 'undefined') {
-      const buf = new ArrayBuffer(s.length);
-      const view = new Uint8Array(buf);
-      /* eslint no-bitwise:0 */
-      for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
-    }
-    const buf = new Array(s.length);
-    for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
-    return buf;
-  }
 
   handleExportExcel = () => {
     const csvData = [];
@@ -254,7 +243,7 @@ export default class SHFTZStockList extends React.Component {
     const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
     const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
     wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
-    FileSaver.saveAs(new window.Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'shftzStocks.xlsx');
+    FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'shftzStocks.xlsx');
   }
   handleCollapseChange = (collapsed) => {
     const scrollOffset = collapsed ? 368 : 280;
