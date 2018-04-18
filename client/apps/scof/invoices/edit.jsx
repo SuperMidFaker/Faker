@@ -36,6 +36,9 @@ export default class EditInvoice extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    packageType: '',
+  }
   componentWillMount() {
     this.props.getInvoice(this.props.params.invoiceNo).then((result) => {
       if (!result.error) {

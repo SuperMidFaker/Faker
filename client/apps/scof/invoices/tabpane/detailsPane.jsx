@@ -137,9 +137,9 @@ export default class DetailsPane extends Component {
     }), { amount: 0, net_wt: 0, qty: 0 });
     const totCol = (
       <Summary>
-        <Summary.Item label="总数量" addonAfter="KG">{statWt.qty.toFixed(5)}</Summary.Item>
-        <Summary.Item label="总净重" addonAfter="KG">{statWt.net_wt.toFixed(5)}</Summary.Item>
-        <Summary.Item label="总金额" addonAfter="KG">{statWt.amount.toFixed(5)}</Summary.Item>
+        <Summary.Item label="总数量" addonAfter="KG">{Number(statWt.qty).toFixed(5)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{Number(statWt.net_wt).toFixed(5)}</Summary.Item>
+        <Summary.Item label="总金额" addonAfter="KG">{Number(statWt.amount).toFixed(5)}</Summary.Item>
       </Summary>
     );
     const rowSelection = {
