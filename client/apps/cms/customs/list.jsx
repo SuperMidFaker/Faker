@@ -14,17 +14,17 @@ import Drawer from 'client/components/Drawer';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
-  openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
+  toggleCusInspectModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import { Logixon } from 'client/components/FontIcon';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
+import CusInspectModal from './modals/cusInspectModal';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import DeclMsgPanel from './panel/declMsgPanel';
@@ -62,6 +62,7 @@ const { RangePicker } = DatePicker;
     showPreviewer,
     openDeclReleasedModal,
     showBatchSendModal,
+    toggleCusInspectModal,
     showDeclMsgDock,
     toggleDeclMsgModal,
   }
@@ -225,15 +226,17 @@ export default class CustomsList extends Component {
     title: '海关查验',
     dataIndex: 'customs_inspect',
     align: 'center',
-    width: 80,
+    width: 120,
     render: (o, record) => {
-      if (record.status > CMS_DECL_STATUS.sent.value) {
+      if (record.status > CMS_DECL_STATUS.reviewed.value) {
         if (record.customs_inspect === 1) {
-          return <Tooltip title="报关单查验"><span><Logixon type="circle" color="red" /></span></Tooltip>;
+          return <Button onClick={this.handleCusInspect}><Badge status="error" text="查验下达" /></Button>;
         } else if (record.customs_inspect === 2) {
-          return <Tooltip title="查验放行"><span><Logixon type="circle" color="green" /></span></Tooltip>;
+          return <Button onClick={this.handleCusInspect}><Badge status="success" text="查验完成" /></Button>;
         }
-        return <Tooltip title="未查验"><span><Logixon type="circle" color="gray" /></span></Tooltip>;
+        if (record.status < CMS_DECL_STATUS.released.value) {
+          return <Button icon="warning" onClick={this.handleCusInspect} />;
+        }
       }
       return null;
     },
@@ -418,6 +421,9 @@ export default class CustomsList extends Component {
       billSeqNo: row.bill_seq_no,
       delgNo: row.delg_no,
     });
+  }
+  handleCusInspect = () => {
+    this.props.toggleCusInspectModal(true);
   }
   handleDetail = (record) => {
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
@@ -684,6 +690,7 @@ export default class CustomsList extends Component {
               <DeclReleasedModal reload={this.handleTableLoad} />
               <SendDeclMsgModal reload={this.handleTableLoad} />
               <BatchSendModal reload={this.handleTableLoad} />
+              <CusInspectModal reload={this.handleTableLoad} />
             </Content>
           </Layout>
         </Layout>

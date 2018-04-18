@@ -381,7 +381,7 @@ export const CMS_DELG_TODO = {
     value: 0, text: '接单', icon: 'select', badge: 'default',
   },
   exchange: {
-    value: 1, text: '换/抽单', icon: 'swap', badge: 'processing',
+    value: 1, text: '换单', icon: 'swap', badge: 'processing',
   },
   undeclared: {
     value: 1, text: '制单', icon: 'file-text', badge: 'processing',
