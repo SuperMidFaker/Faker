@@ -14,7 +14,7 @@ import Drawer from 'client/components/Drawer';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
-  toggleCusInspectModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
+  toggleInspectModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
@@ -24,7 +24,7 @@ import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
-import CusInspectModal from './modals/cusInspectModal';
+import InspectModal from './modals/inspectModal';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import DeclMsgPanel from './panel/declMsgPanel';
@@ -62,7 +62,7 @@ const { RangePicker } = DatePicker;
     showPreviewer,
     openDeclReleasedModal,
     showBatchSendModal,
-    toggleCusInspectModal,
+    toggleInspectModal,
     showDeclMsgDock,
     toggleDeclMsgModal,
   }
@@ -223,7 +223,7 @@ export default class CustomsList extends Component {
       return null;
     },
   }, {
-    title: '海关查验',
+    title: '查验',
     dataIndex: 'customs_inspect',
     align: 'center',
     width: 120,
@@ -423,7 +423,7 @@ export default class CustomsList extends Component {
     });
   }
   handleCusInspect = () => {
-    this.props.toggleCusInspectModal(true);
+    this.props.toggleInspectModal(true);
   }
   handleDetail = (record) => {
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
@@ -690,7 +690,7 @@ export default class CustomsList extends Component {
               <DeclReleasedModal reload={this.handleTableLoad} />
               <SendDeclMsgModal reload={this.handleTableLoad} />
               <BatchSendModal reload={this.handleTableLoad} />
-              <CusInspectModal reload={this.handleTableLoad} />
+              <InspectModal reload={this.handleTableLoad} />
             </Content>
           </Layout>
         </Layout>
