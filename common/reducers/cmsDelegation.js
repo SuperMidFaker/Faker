@@ -27,7 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
   'RECALL_DELG_ASSIGN', 'RECALL_DELG_ASSIGN_SUCCEED', 'RECALL_DELG_ASSIGN_FAILED',
-  'TOGGLE_EXCHANGE_DOC_MODAL',
+  'TOGGLE_EXCHANGE_DOC_MODAL', 'TOGGLE_QUARANTINE_MODAL',
 ]);
 
 const initialState = {
@@ -96,6 +96,9 @@ const initialState = {
   },
   suppliers: [],
   exchangeDocModal: {
+    visible: false,
+  },
+  quarantineModal: {
     visible: false,
   },
 };
@@ -194,6 +197,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
     case actionTypes.TOGGLE_EXCHANGE_DOC_MODAL:
       return { ...state, exchangeDocModal: { ...state.exchangeDocModal, visible: action.data } };
+    case actionTypes.TOGGLE_QUARANTINE_MODAL:
+      return { ...state, quarantineModal: { ...state.quarantineModal, visible: action.data } };
     default:
       return state;
   }
@@ -202,6 +207,13 @@ export default function reducer(state = initialState, action) {
 export function toggleExchangeDocModal(visible) {
   return {
     type: actionTypes.TOGGLE_EXCHANGE_DOC_MODAL,
+    data: visible,
+  };
+}
+
+export function toggleQuarantineModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_QUARANTINE_MODAL,
     data: visible,
   };
 }
