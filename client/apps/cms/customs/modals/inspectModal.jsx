@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { DatePicker, Form, Modal, Input } from 'antd';
-import { toggleCusInspectModal } from 'common/reducers/cmsCustomsDeclare';
+import { Checkbox, Col, DatePicker, Form, Modal, Input } from 'antd';
+import { toggleInspectModal } from 'common/reducers/cmsCustomsDeclare';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -13,9 +13,9 @@ const FormItem = Form.Item;
   state => ({
     visible: state.cmsCustomsDeclare.cusInspectModal.visible,
   }),
-  { toggleCusInspectModal }
+  { toggleInspectModal }
 )
-export default class CusInspectModal extends React.Component {
+export default class InspectModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -24,7 +24,7 @@ export default class CusInspectModal extends React.Component {
     entryNo: '',
   }
   handleCancel = () => {
-    this.props.toggleCusInspectModal(false);
+    this.props.toggleInspectModal(false);
   }
   handleOk = () => {
   }
@@ -39,7 +39,7 @@ export default class CusInspectModal extends React.Component {
     return (
       <Modal
         maskClosable={false}
-        title={this.msg('cusInspect')}
+        title={this.msg('查验')}
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
@@ -48,24 +48,35 @@ export default class CusInspectModal extends React.Component {
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} hasFeedback={entryNo.length === 18} {...validate}>
             <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} />
           </FormItem>
-          <FormItem label="下达时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="查验下达日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker
               onChange={this.handleStartDateChange}
-              style={{ width: '100%' }}
               format="YYYY-MM-DD"
-              showTime
+              style={{ width: '100%' }}
             />
           </FormItem>
-          <FormItem label="完成时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="查验完成日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker
               onChange={this.handleFinishDateChange}
-              style={{ width: '100%' }}
               format="YYYY-MM-DD"
-              showTime
+              style={{ width: '100%' }}
             />
           </FormItem>
-          <FormItem label="查验收费金额" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <Input onChange={this.handleEntryNoChange} />
+          <FormItem label="海关查验" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+            <Col span={6}>
+              <Checkbox />
+            </Col>
+            <Col span={18}>
+              <Input placeholder="收费金额" onChange={this.handleEntryNoChange} addonAfter="元" />
+            </Col>
+          </FormItem>
+          <FormItem label="质检查验" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+            <Col span={6}>
+              <Checkbox />
+            </Col>
+            <Col span={18}>
+              <Input placeholder="收费金额" onChange={this.handleEntryNoChange} addonAfter="元" />
+            </Col>
           </FormItem>
         </Form>
       </Modal>

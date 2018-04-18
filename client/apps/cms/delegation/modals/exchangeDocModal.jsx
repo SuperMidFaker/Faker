@@ -39,7 +39,7 @@ export default class ExchangeDocModal extends React.Component {
     return (
       <Modal
         maskClosable={false}
-        title={this.msg('exchangeDoc')}
+        title={this.msg('换单')}
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}

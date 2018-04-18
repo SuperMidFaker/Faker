@@ -434,7 +434,7 @@ export const CMS_DECL_TRACK = {
     value: 3, text: '已回执', icon: 'mail', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
   },
   inspect: {
-    value: 5, text: '海关查验', icon: 'warning', badge: 'error', step: 4, stepDesc: '查验', date: 'clear_date',
+    value: 5, text: '查验', icon: 'warning', badge: 'error', step: 4, stepDesc: '查验', date: 'clear_date',
   },
   released: {
     value: 4, text: '已放行', icon: 'flag', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',

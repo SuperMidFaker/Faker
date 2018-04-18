@@ -21,11 +21,12 @@ import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, toggleExchangeDocModal, loadFormRequire } from 'common/reducers/cmsDelegation';
+  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import ExchangeDocModal from './modals/exchangeDocModal';
+import QuarantineModal from './modals/quarantineModal';
 import { formatMsg } from './message.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
@@ -70,6 +71,7 @@ const { RangePicker } = DatePicker;
     loadCiqTable,
     showDispModal,
     toggleExchangeDocModal,
+    toggleQuarantineModal,
     loadPartnersByTypes,
     loadBasicInfo,
     loadCustPanel,
@@ -192,16 +194,45 @@ export default class DelegationList extends Component {
       return mode ? <span><MdIcon type={mode.icon} /> {mode.text}</span> : <span />;
     },
   }, {
-    title: this.msg('declareCustoms'),
-    width: 120,
-    dataIndex: 'decl_port',
+    title: this.msg('declareWay'),
+    width: 100,
+    dataIndex: 'decl_way_code',
     render: (o) => {
-      const cust = this.props.customs.filter(ct => ct.value === o)[0];
-      let port = '';
-      if (cust) {
-        port = cust.text;
+      // const DECL_TYPE = record.i_e_type === 0 ? DECL_I_TYPE : DECL_E_TYPE;
+      const type = DECL_TYPE.filter(dl => dl.key === o)[0];
+      if (type) {
+        if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.IBND) {
+          return (<Tag color="blue">{type.value}</Tag>);
+        } else if (o === CMS_DECL_WAY_TYPE.EXPT || o === CMS_DECL_WAY_TYPE.EBND) {
+          return (<Tag color="green">{type.value}</Tag>);
+        } else if (o === CMS_DECL_WAY_TYPE.IMTR || o === CMS_DECL_WAY_TYPE.IBTR) {
+          return (<Tag color="geekblue">{type.value}</Tag>);
+        } else if (o === CMS_DECL_WAY_TYPE.EXTR || o === CMS_DECL_WAY_TYPE.EBTR) {
+          return (<Tag color="lime">{type.value}</Tag>);
+        }
       }
-      return <TrimSpan text={port} maxLen={14} />;
+      return <span />;
+    },
+  }, {
+    title: this.msg('ciqType'),
+    width: 100,
+    dataIndex: 'ciq_inspect',
+    render: (o) => {
+      if (o === 'NL') {
+        return <Tag color="cyan">包装检疫</Tag>;
+      } else if (o === 'LA' || o === 'LB') {
+        return <Tag color="orange">法定检验</Tag>;
+      }
+      return <span />;
+    },
+  }, {
+    title: this.msg('检疫查验'),
+    width: 120,
+    render: (o, record) => {
+      if (record.ciq_inspect === 'NL') {
+        return <Button size="small" icon="warning" onClick={this.handleQuarantine} />;
+      }
+      return null;
     },
   }, {
     title: this.msg('status'),
@@ -233,46 +264,31 @@ export default class DelegationList extends Component {
       return <span />;
     },
   }, {
-    title: this.msg('declareWay'),
-    width: 100,
-    dataIndex: 'decl_way_code',
-    render: (o) => {
-      // const DECL_TYPE = record.i_e_type === 0 ? DECL_I_TYPE : DECL_E_TYPE;
-      const type = DECL_TYPE.filter(dl => dl.key === o)[0];
-      if (type) {
-        if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.IBND) {
-          return (<Tag color="blue">{type.value}</Tag>);
-        } else if (o === CMS_DECL_WAY_TYPE.EXPT || o === CMS_DECL_WAY_TYPE.EBND) {
-          return (<Tag color="green">{type.value}</Tag>);
-        } else if (o === CMS_DECL_WAY_TYPE.IMTR || o === CMS_DECL_WAY_TYPE.IBTR) {
-          return (<Tag color="geekblue">{type.value}</Tag>);
-        } else if (o === CMS_DECL_WAY_TYPE.EXTR || o === CMS_DECL_WAY_TYPE.EBTR) {
-          return (<Tag color="lime">{type.value}</Tag>);
-        }
+    title: this.msg('实际到港日期'),
+    width: 150,
+    dataIndex: 'ata',
+    render: (o, record) => {
+      if (record.i_e_type === 0 && (record.trans_mode === '2' || record.trans_mode === '5')) {
+        return (<DatePicker
+          size="small"
+          defaultValue={o && moment(o)}
+          onChange={this.handleATADateChange}
+          style={{ width: '100%' }}
+          format="YYYY-MM-DD"
+        />);
       }
-      return <span />;
+      return null;
     },
+  }, {
+    title: this.msg('报关日期'),
+    width: 120,
+  }, {
+    title: this.msg('放行日期'),
+    width: 120,
   }, {
     title: this.msg('customsBroker'),
     width: 180,
     dataIndex: 'customs_name',
-    render: o => <TrimSpan text={o} maxLen={10} />,
-  }, {
-    title: this.msg('ciqType'),
-    width: 100,
-    dataIndex: 'ciq_inspect',
-    render: (o) => {
-      if (o === 'NL') {
-        return <Tag color="cyan">包装检疫</Tag>;
-      } else if (o === 'LA' || o === 'LB') {
-        return <Tag color="orange">法定检验</Tag>;
-      }
-      return <span />;
-    },
-  }, {
-    title: this.msg('ciqBroker'),
-    width: 180,
-    dataIndex: 'ciq_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('operatedBy'),
@@ -398,6 +414,9 @@ export default class DelegationList extends Component {
   }
   handleExchangeDoc = () => {
     this.props.toggleExchangeDocModal(true);
+  }
+  handleQuarantine = () => {
+    this.props.toggleQuarantineModal(true);
   }
   /*
   handleSearchChange = (ev) => {
@@ -695,6 +714,7 @@ export default class DelegationList extends Component {
             />
           </Content>
           <ExchangeDocModal />
+          <QuarantineModal />
         </Layout>
         <DelegationDockPanel />
         <OrderDockPanel />
