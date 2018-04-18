@@ -130,16 +130,27 @@ export default class DetailsPane extends Component {
     const {
       temporaryDetails, currencies, countries,
     } = this.props;
-    const statWt = temporaryDetails.reduce((acc, det) => ({
-      amount: acc.amount + det.amount,
-      net_wt: acc.net_wt + det.net_wt,
-      qty: acc.qty + det.qty,
-    }), { amount: 0, net_wt: 0, qty: 0 });
+    const statWt = temporaryDetails.reduce((acc, det) => {
+      const data = { ...acc };
+      const amount = parseFloat(det.amount);
+      if (!Number.isNaN(amount)) {
+        data.amount += amount;
+      }
+      const netWt = parseFloat(det.net_wt);
+      if (!Number.isNaN(netWt)) {
+        data.net_wt += netWt;
+      }
+      const qty = parseFloat(det.qty);
+      if (!Number.isNaN(qty)) {
+        data.qty += qty;
+      }
+      return data;
+    }, { amount: 0, net_wt: 0, qty: 0 });
     const totCol = (
       <Summary>
-        <Summary.Item label="总数量" addonAfter="KG">{Number(statWt.qty).toFixed(5)}</Summary.Item>
-        <Summary.Item label="总净重" addonAfter="KG">{Number(statWt.net_wt).toFixed(5)}</Summary.Item>
-        <Summary.Item label="总金额" addonAfter="KG">{Number(statWt.amount).toFixed(5)}</Summary.Item>
+        <Summary.Item label="总数量" addonAfter="KG">{statWt.qty.toFixed(5)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{statWt.net_wt.toFixed(5)}</Summary.Item>
+        <Summary.Item label="总金额" addonAfter="KG">{statWt.amount.toFixed(5)}</Summary.Item>
       </Summary>
     );
     const rowSelection = {
