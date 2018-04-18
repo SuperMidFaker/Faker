@@ -683,14 +683,16 @@ export default class DelegationList extends Component {
         <Layout>
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[this.state.currentFilter]} onClick={this.handleFilterChange}>
-              <Menu.Item key="all">{this.msg('all')}</Menu.Item>
-              <Menu.Item key="import">{this.msg('filterImport')}</Menu.Item>
-              <Menu.Item key="export">{this.msg('filterExport')}</Menu.Item>
+              <Menu.Item key="all">{this.msg('allDelegation')}</Menu.Item>
               <Menu.ItemGroup key="gTodo" title="待办">
                 {Object.keys(CMS_DELG_TODO).map(declkey =>
                   (<Menu.Item key={declkey}>
                     <Icon type={CMS_DELG_TODO[declkey].icon} /> {CMS_DELG_TODO[declkey].text}
                   </Menu.Item>))}
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="gIE" title="进/出口">
+                <Menu.Item key="import"><Icon type="login" /> {this.msg('filterImport')}</Menu.Item>
+                <Menu.Item key="export"><Icon type="logout" /> {this.msg('filterExport')}</Menu.Item>
               </Menu.ItemGroup>
             </Menu>
           </Drawer>

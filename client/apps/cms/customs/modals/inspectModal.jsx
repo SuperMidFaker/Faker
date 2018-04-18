@@ -11,7 +11,7 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    visible: state.cmsCustomsDeclare.cusInspectModal.visible,
+    visible: state.cmsCustomsDeclare.inspectModal.visible,
   }),
   { toggleInspectModal }
 )

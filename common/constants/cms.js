@@ -386,12 +386,6 @@ export const CMS_DELG_TODO = {
   undeclared: {
     value: 1, text: '制单', icon: 'file-text', badge: 'processing',
   },
-  declared: {
-    value: 1, text: '跟踪', icon: 'export', badge: 'processing',
-  },
-  finished: {
-    value: 1, text: '归档', icon: 'check-square-o', badge: 'success',
-  },
 };
 
 export const CMS_DECL_STATUS = {
@@ -451,6 +445,13 @@ export const CMS_DECL_CHANNEL = {
   EP: { value: 'ep', text: '亿通EDI', disabled: false },
   SW: { value: 'sw', text: '单一窗口', disabled: false },
 };
+
+export const CMS_DECL_MOD_TYPE = [
+  { value: 1, text: '申请修改报关单' },
+  { value: 2, text: '申请撤销报关单' },
+  { value: 3, text: '海关发起修改' },
+  { value: 4, text: '海关发起撤销' },
+];
 
 export const ITEMS_STATUS = [
   { value: 0, text: '未归类' },

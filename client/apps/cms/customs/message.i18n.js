@@ -350,6 +350,10 @@ const messages = defineMessages({
     id: 'cms.customs.decl.estimate',
     defaultMessage: '估算',
   },
+  declMod: {
+    id: 'cms.customs.decl.mod',
+    defaultMessage: '修撤单',
+  },
 });
 
 export default messages;

@@ -28,7 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_DECL_LOGS', 'LOAD_DECL_LOGS_SUCCEED', 'LOAD_DECL_LOGS_FAIL',
   'UPLOAD_DECL', 'UPLOAD_DECL_SUCCEED', 'UPLOAD_DECL_FAIL',
   'GET_DECL_TAX', 'GET_DECL_TAX_SUCCEED', 'GET_DECL_TAX_FAIL',
-  'TOGGLE_INSPECT_MODAL',
+  'TOGGLE_INSPECT_MODAL', 'TOGGLE_DECL_MOD_MODAL',
 ]);
 
 const initialState = {
@@ -95,7 +95,10 @@ const initialState = {
   declLogPanel: {
     visible: false,
   },
-  cusInspectModal: {
+  inspectModal: {
+    visible: false,
+  },
+  declModModal: {
     visible: false,
   },
 };
@@ -161,7 +164,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DECL_LOG:
       return { ...state, declLogPanel: { ...state.declLogPanel, visible: false } };
     case actionTypes.TOGGLE_INSPECT_MODAL:
-      return { ...state, cusInspectModal: { ...state.cusInspectModal, visible: action.data } };
+      return { ...state, inspectModal: { ...state.inspectModal, visible: action.data } };
+    case actionTypes.TOGGLE_DECL_MOD_MODAL:
+      return { ...state, declModModal: { ...state.declModModal, visible: action.data } };
     default:
       return state;
   }
@@ -484,6 +489,13 @@ export function hideDeclMsgModal() {
 export function toggleInspectModal(visible) {
   return {
     type: actionTypes.TOGGLE_INSPECT_MODAL,
+    data: visible,
+  };
+}
+
+export function toggleDeclModModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_DECL_MOD_MODAL,
     data: visible,
   };
 }
