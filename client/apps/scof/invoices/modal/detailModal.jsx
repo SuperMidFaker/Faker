@@ -184,6 +184,7 @@ export default class DetailModal extends Component {
               allowClear
               optionFilterProp="children"
               placeholder="原产国"
+              showSearch
             >
               {countries.map(coun =>
                 (<Option value={coun.cntry_co} key={coun.cntry_co}>
