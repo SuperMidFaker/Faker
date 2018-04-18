@@ -21,10 +21,11 @@ import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, loadFormRequire } from 'common/reducers/cmsDelegation';
+  ensureManifestMeta, showDispModal, toggleExchangeDocModal, loadFormRequire } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
+import ExchangeDocModal from './modals/exchangeDocModal';
 import { formatMsg } from './message.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
@@ -68,6 +69,7 @@ const { RangePicker } = DatePicker;
     ensureManifestMeta,
     loadCiqTable,
     showDispModal,
+    toggleExchangeDocModal,
     loadPartnersByTypes,
     loadBasicInfo,
     loadCustPanel,
@@ -394,6 +396,9 @@ export default class DelegationList extends Component {
       }
     });
   }
+  handleExchangeDoc = () => {
+    this.props.toggleExchangeDocModal(true);
+  }
   /*
   handleSearchChange = (ev) => {
     this.setState({ filterName: ev.target.value });
@@ -689,6 +694,7 @@ export default class DelegationList extends Component {
               })}
             />
           </Content>
+          <ExchangeDocModal />
         </Layout>
         <DelegationDockPanel />
         <OrderDockPanel />

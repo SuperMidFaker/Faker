@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'SHOW_DISPMODAL', 'SHOW_DISPMODAL_SUCCEED', 'SHOW_DISPMODAL_FAILED',
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
   'RECALL_DELG_ASSIGN', 'RECALL_DELG_ASSIGN_SUCCEED', 'RECALL_DELG_ASSIGN_FAILED',
+  'TOGGLE_EXCHANGE_DOC_MODAL',
 ]);
 
 const initialState = {
@@ -94,6 +95,9 @@ const initialState = {
     ciqDispShow: false,
   },
   suppliers: [],
+  exchangeDocModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -188,9 +192,18 @@ export default function reducer(state = initialState, action) {
     //   return { ...state, brokers: action.result.data.brokers };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
+    case actionTypes.TOGGLE_EXCHANGE_DOC_MODAL:
+      return { ...state, exchangeDocModal: { ...state.exchangeDocModal, visible: action.data } };
     default:
       return state;
   }
+}
+
+export function toggleExchangeDocModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_EXCHANGE_DOC_MODAL,
+    data: visible,
+  };
 }
 
 export function delgAssignRecall(delgNo, tenantId) {
@@ -241,7 +254,9 @@ export function loadciqSups(tenantId, type) {
 export function setCiqFinish(delgNo) {
   return {
     [CLIENT_API]: {
-      types: [actionTypes.CIQ_FINISH_SET, actionTypes.CIQ_FINISH_SET_SUCCEED, actionTypes.CIQ_FINISH_SET_FAIL],
+      types: [actionTypes.CIQ_FINISH_SET,
+        actionTypes.CIQ_FINISH_SET_SUCCEED,
+        actionTypes.CIQ_FINISH_SET_FAIL],
       endpoint: 'v1/cms/set/ciq/finish',
       method: 'get',
       params: { delgNo },
@@ -249,16 +264,6 @@ export function setCiqFinish(delgNo) {
   };
 }
 
-// export function loadCertBrokers(tenantId) {
-//   return {
-//     [CLIENT_API]: {
-//       types: [actionTypes.BROKERS_LOAD, actionTypes.BROKERS_LOAD_SUCCEED, actionTypes.BROKERS_LOAD_FAIL],
-//       endpoint: 'v1/cms/cert/brokers',
-//       method: 'get',
-//       params: { tenantId },
-//     },
-//   };
-// }
 
 export function loadDelegationList(params) {
   return {
@@ -471,10 +476,10 @@ export function editDelegation(data) {
   };
 }
 
-export function setClientForm({ customer_tenant_id, customer_partner_id }) {
+export function setClientForm({ customerTid, customerPid }) {
   return {
     type: actionTypes.SET_CLIENT_FORM,
-    data: { customer_tenant_id, customer_partner_id },
+    data: { customerTid, customerPid },
   };
 }
 
