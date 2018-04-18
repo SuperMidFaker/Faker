@@ -21,14 +21,13 @@ export function string2Bytes(str) {
     const buf = new ArrayBuffer(str.length);
     const view = new Uint8Array(buf);
     for (let i = 0; i !== str.length; ++i) {
-      view[i] = str.charCodeAt(i) & 0xFF;
-    }
-    return buf;
-  } else {
-    const buf = new Array(str.length);
-    for (let i = 0; i !== str.length; ++i) {
-      buf[i] = str.charCodeAt(i) & 0xFF;
+      view[i] = str.charCodeAt(i) & 0xFF;// eslint-disable-line no-bitwise
     }
     return buf;
   }
+  const buf = new Array(str.length);
+  for (let i = 0; i !== str.length; ++i) {
+    buf[i] = str.charCodeAt(i) & 0xFF;// eslint-disable-line no-bitwise
+  }
+  return buf;
 }
