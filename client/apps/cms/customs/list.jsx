@@ -14,7 +14,7 @@ import Drawer from 'client/components/Drawer';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
-  toggleInspectModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
+  toggleInspectModal, toggleDeclModModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
@@ -29,6 +29,7 @@ import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import DeclMsgPanel from './panel/declMsgPanel';
 import DeclMsgModal from './modals/declMsgModal';
+import DeclModModal from './modals/declModModal';
 import DeclStatusPopover from '../common/popover/declStatusPopover';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import { formatMsg } from './message.i18n';
@@ -63,6 +64,7 @@ const { RangePicker } = DatePicker;
     openDeclReleasedModal,
     showBatchSendModal,
     toggleInspectModal,
+    toggleDeclModModal,
     showDeclMsgDock,
     toggleDeclMsgModal,
   }
@@ -230,12 +232,12 @@ export default class CustomsList extends Component {
     render: (o, record) => {
       if (record.status > CMS_DECL_STATUS.reviewed.value) {
         if (record.customs_inspect === 1) {
-          return <Button onClick={this.handleCusInspect}><Badge status="error" text="查验下达" /></Button>;
+          return <Button size="small" onClick={this.handleCusInspect}><Badge status="error" text="查验下达" /></Button>;
         } else if (record.customs_inspect === 2) {
-          return <Button onClick={this.handleCusInspect}><Badge status="success" text="查验完成" /></Button>;
+          return <Button size="small" onClick={this.handleCusInspect}><Badge status="success" text="查验完成" /></Button>;
         }
         if (record.status < CMS_DECL_STATUS.released.value) {
-          return <Button icon="warning" onClick={this.handleCusInspect} />;
+          return <Button size="small" icon="warning" onClick={this.handleCusInspect} />;
         }
       }
       return null;
@@ -365,6 +367,8 @@ export default class CustomsList extends Component {
           overlay={<Menu onClick={this.showDeclMsgModal}>
             {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
             {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
+            <Menu.Divider />
+            <Menu.Item key="declMod">{this.msg('declMod')}</Menu.Item>
           </Menu>}
           row={record}
         />);
@@ -545,6 +549,10 @@ export default class CustomsList extends Component {
     this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no, row.i_e_type);
   }
   showDeclMsgModal = ({ key }) => {
+    if (key === 'declMod') {
+      this.props.toggleDeclModModal(true);
+      return;
+    }
     const [fileName, fileType] = key.split('|');
     this.props.toggleDeclMsgModal(true, fileName, fileType);
   }
@@ -691,6 +699,7 @@ export default class CustomsList extends Component {
               <SendDeclMsgModal reload={this.handleTableLoad} />
               <BatchSendModal reload={this.handleTableLoad} />
               <InspectModal reload={this.handleTableLoad} />
+              <DeclModModal reload={this.handleTableLoad} />
             </Content>
           </Layout>
         </Layout>
