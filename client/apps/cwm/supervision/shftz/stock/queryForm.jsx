@@ -194,7 +194,7 @@ export default class QueryForm extends React.Component {
           </Col>
         </Row>
         <DockPanel
-          title="库位库存监管库存导入匹配"
+          title="导入匹配任务栏"
           size="middle"
           visible={importPanel.visible}
           className="welo-import-data-panel"
@@ -221,7 +221,7 @@ export default class QueryForm extends React.Component {
               <p className="ant-upload-drag-icon">
                 <Icon type="inbox" />
               </p>
-              <p className="ant-upload-text">点击或拖拽文件至此区域上传</p>
+              <p className="ant-upload-text">可选择库位库存和监管库存多个文件, 监控库存文件名以shftzStocks开头</p>
             </Dragger>
           </div>
         </DockPanel>

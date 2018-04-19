@@ -16,6 +16,7 @@ const { TabPane } = Tabs;
 @connect(
   state => ({
     providerQuotes: state.scofFlow.cmsParams.providerQuotes,
+    customerPartnerId: state.scofFlow.currentFlow.partner_id,
   }),
   { loadCmsBizParams, loadCmsProviderQuotes }
 )
@@ -28,7 +29,7 @@ export default class FlowCmsNodePanel extends Component {
   }
   componentWillMount() {
     const model = this.props.node.get('model');
-    this.handleParamsLoad(model);
+    this.handleParamsLoad(model, this.props.customerPartnerId);
   }
   componentDidMount() {
     this.props.onFormInit(this.props.form);
@@ -36,14 +37,14 @@ export default class FlowCmsNodePanel extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.node !== this.props.node) {
       const model = nextProps.node.get('model');
-      this.handleParamsLoad(model);
+      this.handleParamsLoad(model, nextProps.customerPartnerId);
     }
   }
-  handleParamsLoad = (model) => {
-    this.props.loadCmsBizParams(model.demander_partner_id, model.kind);
+  handleParamsLoad = (model, customerPartnerId) => {
+    this.props.loadCmsBizParams(customerPartnerId, model.kind);
     if (model.provider_tenant_id !== model.demander_tenant_id) {
       this.props.loadCmsProviderQuotes({
-        partner_id: model.demander_partner_id,
+        partner_id: customerPartnerId,
         tenant_id: model.demander_tenant_id,
       }, { tenant_id: model.provider_tenant_id });
     }
@@ -51,7 +52,7 @@ export default class FlowCmsNodePanel extends Component {
   handleProviderChange = (providerTenantId) => {
     const model = this.props.node.get('model');
     this.props.loadCmsProviderQuotes({
-      partner_id: model.demander_partner_id,
+      partner_id: this.props.customerPartnerId,
       tenant_id: model.demander_tenant_id,
     }, { tenant_id: providerTenantId });
   }
