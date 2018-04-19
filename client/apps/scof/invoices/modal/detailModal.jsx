@@ -62,6 +62,7 @@ export default class DetailModal extends Component {
             ...values,
             splitQty: values.qty,
             disabled: true,
+            index: new Date(),
           });
           this.props.headForm.setFieldsValue({
             total_qty: totalQty + Number(values.qty),
@@ -71,11 +72,14 @@ export default class DetailModal extends Component {
         } else {
           const details = [...this.props.temporaryDetails];
           const { index } = record;
-          const origRecord = details[index];
+          const arrIndex = details.findIndex(detail => detail.index === index);
+          const origRecord = details[arrIndex];
           const data = {
             unit,
             amount,
             currency,
+            disabled: true,
+            splitQty: values.qty,
             ...values,
           };
           this.props.headForm.setFieldsValue({
@@ -83,7 +87,7 @@ export default class DetailModal extends Component {
             total_amount: totalAmount + (Number(amount) - Number(origRecord.amount)),
             total_net_wt: totalNetWt + (Number(data.net_wt) - Number(origRecord.net_wt)),
           });
-          details.splice(index, 1, data);
+          details.splice(arrIndex, 1, data);
           this.props.setTemporary(details);
         }
         this.handleCancel();
