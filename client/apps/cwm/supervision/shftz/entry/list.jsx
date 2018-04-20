@@ -298,6 +298,12 @@ export default class SHFTZEntryList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('entrySearchPlaceholder')} onSearch={this.handleSearch} />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="pending">待进区</RadioButton>
+        <RadioButton value="processing">已备案</RadioButton>
+        <RadioButton value="completed">已进区</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -323,16 +329,7 @@ export default class SHFTZEntryList extends React.Component {
     </span>);
     return (
       <Layout>
-        <PageHeader title={this.msg('ftzBondedEntryReg')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待进区</RadioButton>
-              <RadioButton value="processing">已备案</RadioButton>
-              <RadioButton value="completed">已进区</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-        </PageHeader>
+        <PageHeader title={this.msg('ftzBondedEntryReg')} />
         <Content className="page-content" key="main">
           <DataTable
             defaultExpandAllRows

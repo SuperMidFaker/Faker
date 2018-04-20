@@ -453,7 +453,13 @@ export default class StockTransitionList extends React.Component {
       },
       remotes: this.props.transitionlist,
     });
-    const toolbarActions = (<span />);
+    const toolbarActions = (<span>
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="normal">正常库存</RadioButton>
+        <RadioButton value="frozen">冻结库存</RadioButton>
+      </RadioGroup>
+    </span>);
     const bulkActions = (<span>
       <span>选中项库存数量共计 {selTotalStockQty} </span>
       {listFilter.status === 'normal' && this.state.enableBatchTransit && <Button onClick={this.handleBatchTransit}>批量属性调整</Button>}
@@ -478,13 +484,6 @@ export default class StockTransitionList extends React.Component {
             this.msg('stockTransition'),
           ]}
         >
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="normal">正常库存</RadioButton>
-              <RadioButton value="frozen">冻结库存</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}

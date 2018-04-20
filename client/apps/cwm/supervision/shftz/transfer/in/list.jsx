@@ -234,7 +234,12 @@ export default class SHFTZTransferInList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('entrySearchPlaceholder')} onSearch={this.handleSearch} />
-      <span />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部状态</RadioButton>
+        <RadioButton value="pending">待转入</RadioButton>
+        <RadioButton value="processing">已接收</RadioButton>
+        <RadioButton value="completed">已核对</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -252,16 +257,7 @@ export default class SHFTZTransferInList extends React.Component {
     </span>);
     return (
       <Layout>
-        <PageHeader title={this.msg('ftzTransferIn')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部状态</RadioButton>
-              <RadioButton value="pending">待转入</RadioButton>
-              <RadioButton value="processing">已接收</RadioButton>
-              <RadioButton value="completed">已核对</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-        </PageHeader>
+        <PageHeader title={this.msg('ftzTransferIn')} />
         <Content className="page-content" key="main">
           <DataTable
             columns={this.columns}

@@ -279,7 +279,12 @@ export default class BatchDeclList extends React.Component {
     this.dataSource.remotes = batchlist;
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('batchSearchPlaceholder')} onSearch={this.handleSearch} />
-      <span />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="manifesting">委托制单</RadioButton>
+        <RadioButton value="applying">报关申请</RadioButton>
+        <RadioButton value="cleared">已清关</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -301,14 +306,6 @@ export default class BatchDeclList extends React.Component {
     return (
       <Layout>
         <PageHeader title={this.msg('ftzBatchDecl')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="manifesting">委托制单</RadioButton>
-              <RadioButton value="applying">报关申请</RadioButton>
-              <RadioButton value="cleared">已清关</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateBatchDecl}>
               {this.msg('create')}
