@@ -20,6 +20,9 @@ function apiRequestPromise(initialReq) {
         const request = superagent[method](furl);
         // cross domain ajax request
         request.withCredentials();
+        if (option && option.field) {
+          request.field(option.field.key, option.field.value);
+        }
         if (option && option.files) {
           option.files.forEach((file) => {
             request.attach(file.name, file);

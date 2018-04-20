@@ -50,6 +50,7 @@ import cwmWarehouse from './cwmWarehouse';
 import cwmWhseLocation from './cwmWhseLocation';
 import cwmShFtz from './cwmShFtz';
 import cwmShFtzDecl from './cwmShFtzDecl';
+import cwmShFtzStock from './cwmShFtzStock';
 import cwmShippingOrder from './cwmShippingOrder';
 import cwmDashboard from './cwmDashboard';
 import cwmContext from './cwmContext';
@@ -148,6 +149,7 @@ export default combineReducers({
   cwmAllocRule,
   cwmShFtz,
   cwmShFtzDecl,
+  cwmShFtzStock,
   cwmShippingOrder,
   cwmDashboard,
   cwmInventoryStock,

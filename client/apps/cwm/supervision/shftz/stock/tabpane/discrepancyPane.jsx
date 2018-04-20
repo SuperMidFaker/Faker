@@ -11,10 +11,10 @@ import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(state => ({
-  diffviews: state.cwmShFtz.compareTask.views.filter(vw =>
+  diffviews: state.cwmShFtzStock.compareTask.views.filter(vw =>
     vw.diff_qty !== 0 || vw.diff_net_wt !== 0),
-  entrydiffs: state.cwmShFtz.compareTask.entrydiffs,
-  inbounddiffs: state.cwmShFtz.compareTask.inbounddiffs,
+  entrydiffs: state.cwmShFtzStock.compareTask.entrydiffs,
+  inbounddiffs: state.cwmShFtzStock.compareTask.inbounddiffs,
 }))
 export default class FTZDiscrepancyPane extends React.Component {
   static propTypes = {

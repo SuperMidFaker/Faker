@@ -64,12 +64,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'CANCEL_BD', 'CANCEL_BD_SUCCEED', 'CANCEL_BD_FAIL',
   'CANCEL_NC', 'CANCEL_NC_SUCCEED', 'CANCEL_NC_FAIL',
   'LOAD_MANIFTEMP', 'LOAD_MANIFTEMP_SUCCEED', 'LOAD_MANIFTEMP_FAIL',
-  'COMPARE_FTZST', 'COMPARE_FTZST_SUCCEED', 'COMPARE_FTZST_FAIL',
-  'LOAD_STOTASKS', 'LOAD_STOTASKS_SUCCEED', 'LOAD_STOTASKS_FAIL',
-  'LOAD_STOCMPTASK', 'LOAD_STOCMPTASK_SUCCEED', 'LOAD_STOCMPTASK_FAIL',
-  'LOAD_CUSSTOSS', 'LOAD_CUSSTOSS_SUCCEED', 'LOAD_CUSSTOSS_FAIL',
-  'LOAD_BATCH_DECL', 'LOAD_BATCH_DECL_SUCCEED', 'LOAD_BATCH_DECL_FAIL',
-  'LOAD_NONBONDED_STOCKS', 'LOAD_NONBONDED_STOCKS_SUCCEED', 'LOAD_NONBONDED_STOCKS_FAIL',
   'LOAD_ASNENT', 'LOAD_ASNENT_SUCCEED', 'LOAD_ASNENT_FAIL',
   'EXPORT_NEBREL', 'EXPORT_NEBREL_SUCCEED', 'EXPORT_NEBREL_FAIL',
   'CLEAR_NMREL', 'CLEAR_NMREL_SUCCEED', 'CLEAR_NMREL_FAIL',
@@ -150,20 +144,7 @@ const initialState = {
     trxModes: [],
   },
   transRegs: [],
-  stockDatas: [],
   billTemplates: [],
-  ftzTaskList: {
-    loading: false,
-    reload: false,
-    data: [],
-  },
-  compareTask: {
-    task: {},
-    views: [],
-    entrydiffs: [],
-    inbounddiffs: [],
-  },
-  cusStockSnapshot: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -309,7 +290,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TRANSFER_TO_OWN:
     case actionTypes.QUERY_OWNTRANF:
     case actionTypes.VIRTUAL_TRANS_SAVE:
-    case actionTypes.COMPARE_FTZST:
     case actionTypes.NEW_NRER:
     case actionTypes.NEW_NRSO:
     case actionTypes.NEW_TRSO:
@@ -347,7 +327,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUERY_OWNTRANF_FAIL:
     case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
     case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
-    case actionTypes.COMPARE_FTZST_FAIL:
     case actionTypes.NEW_NRER_SUCCEED:
     case actionTypes.NEW_NRER_FAIL:
     case actionTypes.NEW_NRSO_SUCCEED:
@@ -422,35 +401,8 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
-    case actionTypes.LOAD_STOCKS:
-    case actionTypes.LOAD_NONBONDED_STOCKS:
-      return { ...state, loading: true };
-    case actionTypes.LOAD_STOCKS_SUCCEED:
-    case actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED:
-      return { ...state, stockDatas: action.result.data, loading: false };
-    case actionTypes.LOAD_STOCKS_FAIL:
-      return { ...state, loading: false };
     case actionTypes.LOAD_MANIFTEMP_SUCCEED:
       return { ...state, billTemplates: action.result.data };
-    case actionTypes.COMPARE_FTZST_SUCCEED:
-      return { ...state, ftzTaskList: { ...state.ftzTaskList, reload: true }, submitting: false };
-    case actionTypes.LOAD_STOTASKS:
-      return { ...state, ftzTaskList: { ...state.ftzTaskList, loading: true, reload: false } };
-    case actionTypes.LOAD_STOTASKS_SUCCEED:
-      return {
-        ...state,
-        ftzTaskList: {
-          ...state.ftzTaskList,
-          loading: false,
-          data: action.result.data,
-        },
-      };
-    case actionTypes.LOAD_STOTASKS_FAIL:
-      return { ...state, ftzTaskList: { ...state.ftzTaskList, loading: false } };
-    case actionTypes.LOAD_STOCMPTASK_SUCCEED:
-      return { ...state, compareTask: action.result.data };
-    case actionTypes.LOAD_CUSSTOSS_SUCCEED:
-      return { ...state, cusStockSnapshot: action.result.data };
     default:
       return state;
   }
@@ -1336,21 +1288,6 @@ export function queryOwnTransferOutIn(query) {
   };
 }
 
-export function loadFtzStocks(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_STOCKS,
-        actionTypes.LOAD_STOCKS_SUCCEED,
-        actionTypes.LOAD_STOCKS_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/stock/details/get',
-      method: 'get',
-      params,
-    },
-  };
-}
-
 export function loadManifestTemplates(params) {
   return {
     [CLIENT_API]: {
@@ -1366,66 +1303,6 @@ export function loadManifestTemplates(params) {
   };
 }
 
-export function compareFtzStocks(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.COMPARE_FTZST,
-        actionTypes.COMPARE_FTZST_SUCCEED,
-        actionTypes.COMPARE_FTZST_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/stock/compare',
-      method: 'post',
-      data,
-    },
-  };
-}
-
-export function loadStockTasks(whseCode) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_STOTASKS,
-        actionTypes.LOAD_STOTASKS_SUCCEED,
-        actionTypes.LOAD_STOTASKS_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/stock/tasks',
-      method: 'get',
-      params: { whseCode },
-    },
-  };
-}
-
-export function loadStockCompareTask(taskId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_STOCMPTASK,
-        actionTypes.LOAD_STOCMPTASK_SUCCEED,
-        actionTypes.LOAD_STOCMPTASK_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/stock/compare/task',
-      method: 'get',
-      params: { taskId },
-    },
-  };
-}
-
-export function loadCusStockSnapshot(taskId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_CUSSTOSS,
-        actionTypes.LOAD_CUSSTOSS_SUCCEED,
-        actionTypes.LOAD_CUSSTOSS_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/stock/task/cus',
-      method: 'get',
-      params: { taskId },
-    },
-  };
-}
-
 export function loadBatchDecl(ftzRelNo) {
   return {
     [CLIENT_API]: {
@@ -1437,21 +1314,6 @@ export function loadBatchDecl(ftzRelNo) {
       endpoint: 'v1/cwm/shftz/batch/decl/load',
       method: 'get',
       params: { ftzRelNo },
-    },
-  };
-}
-
-export function loadNonbondedStocks(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_NONBONDED_STOCKS,
-        actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED,
-        actionTypes.LOAD_NONBONDED_STOCKS_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/nonbonded/stock/load',
-      method: 'get',
-      params,
     },
   };
 }
@@ -1500,4 +1362,3 @@ export function clearNormalRel(preEntrySeqNo, cusDeclNo) {
     },
   };
 }
-

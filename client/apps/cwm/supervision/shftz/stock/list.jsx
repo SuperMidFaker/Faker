@@ -6,7 +6,8 @@ import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
 import { Badge, Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
+import { loadParams } from 'common/reducers/cwmShFtz';
+import { loadFtzStocks } from 'common/reducers/cwmShFtzStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { string2Bytes } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
@@ -26,7 +27,7 @@ const { Sider, Content } = Layout;
   state => ({
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    stockDatas: state.cwmShFtz.stockDatas,
+    stockDatas: state.cwmShFtzStock.stockDatas,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
