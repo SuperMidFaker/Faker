@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Badge, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
+import { Badge, Layout, message, Icon, Switch, Tag, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -22,9 +22,6 @@ import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
-
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -255,9 +252,9 @@ export default class CiqDeclList extends Component {
     }
     this.handleTableLoad(1, newFilters);
   }
-  handleIEFilter = (e) => {
+  handleIEFilter = (value) => {
     const { listFilter, ciqDeclList } = this.props;
-    const newFilters = { ...listFilter, ieType: e.target.value };
+    const newFilters = { ...listFilter, ieType: value };
     this.handleTableLoad(ciqDeclList.current, newFilters);
   }
   handleExportNinetown = (row) => {
@@ -295,8 +292,14 @@ export default class CiqDeclList extends Component {
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('ciqSearchPlaceholder')} onSearch={this.handleSearch} />
       <Select
-        showSearch
-        optionFilterProp="children"
+        value={listFilter.ieType}
+        onChange={this.handleIEFilter}
+      >
+        <Option key="all" value="all">{this.msg('all')}</Option>
+        <Option key="import" value="import">{this.msg('import')}</Option>
+        <Option key="export" value="export">{this.msg('export')}</Option>
+      </Select>
+      <Select
         value={listFilter.status}
         onChange={this.handleStatusChange}
       >
@@ -326,15 +329,7 @@ export default class CiqDeclList extends Component {
     </span>);
     return (
       <Layout>
-        <PageHeader title={this.msg('ciqDecl')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.ieType} onChange={this.handleIEFilter} >
-              <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="import">{this.msg('import')}</RadioButton>
-              <RadioButton value="export">{this.msg('export')}</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-        </PageHeader>
+        <PageHeader title={this.msg('ciqDecl')} />
         <Content className="page-content" key="main">
           <DataTable
             toolbarActions={toolbarActions}

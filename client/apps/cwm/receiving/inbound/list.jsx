@@ -278,6 +278,13 @@ export default class ReceivingInboundList extends React.Component {
     });
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('inboundPlaceholder')} onSearch={this.handleSearch} />
+      <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="create">待入库</RadioButton>
+        <RadioButton value="receive">收货</RadioButton>
+        <RadioButton value="putaway">上架</RadioButton>
+        <RadioButton value="completed">已入库</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -305,17 +312,7 @@ export default class ReceivingInboundList extends React.Component {
             <WhseSelect />,
             this.msg('receivingInound'),
           ]}
-        >
-          <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="create">待入库</RadioButton>
-              <RadioButton value="receive">收货</RadioButton>
-              <RadioButton value="putaway">上架</RadioButton>
-              <RadioButton value="completed">已入库</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-        </PageHeader>
+        />
         <Content className="page-content" key="main">
           <DataTable
             toolbarActions={toolbarActions}

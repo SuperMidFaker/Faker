@@ -557,10 +557,17 @@ export default class RepoContent extends Component {
       }
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = [<SearchBox placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} key="searchbar" />];
-    if (listFilter.status === 'versioned') {
-      toolbarActions.push(<Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>);
-    }
+    const toolbarActions = (<span>
+      <SearchBox placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} key="searchbar" />
+      <RadioGroup
+        value={listFilter.status}
+        onChange={this.handleFilterChange}
+      >
+        <RadioButton value="master"><Icon type="check-circle-o" /> {this.msg('tradeItemMaster')}</RadioButton>
+        <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
+        <RadioButton value="versioned"><Icon type="clock-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
+      </RadioGroup>
+    </span>);
     let { columns } = this;
     if (listFilter.status !== 'master') {
       columns = columns.filter(col => !(col.dataIndex === 'branch_count' || col.dataIndex === 'versioned_count'));
@@ -572,23 +579,9 @@ export default class RepoContent extends Component {
     return (
       <Layout>
         <PageHeader title={repoName}>
-          <PageHeader.Nav>
-            <RadioGroup
-              value={listFilter.status}
-              onChange={this.handleFilterChange}
-            >
-              <RadioButton value="master"><Icon type="check-circle-o" /> {this.msg('tradeItemMaster')}</RadioButton>
-            </RadioGroup>
-            <RadioGroup
-              value={listFilter.status}
-              onChange={this.handleFilterChange}
-              style={{ marginLeft: 8 }}
-            >
-              <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
-              <RadioButton value="versioned"><Icon type="clock-circle-o" /> {this.msg('tradeItemHistory')}</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
+            {listFilter.status === 'versioned' &&
+            <Button key="version" icon="pause-circle-o" onClick={() => this.handleHistoryToggle(null, 'disable')}>全部禁用</Button>}
             <Button icon="export" onClick={this.handleTradeItemExport}>
               {this.msg('exportAllClassify')}
             </Button>

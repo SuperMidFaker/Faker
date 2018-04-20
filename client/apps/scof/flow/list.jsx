@@ -242,16 +242,14 @@ export default class FlowList extends React.Component {
         <Option value="all" key="all">全部</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
+      <RadioGroup value={listFilter.status ? 'enabled' : 'disabled'} onChange={this.handleStatusChange}>
+        <RadioButton value="enabled">已启用</RadioButton>
+        <RadioButton value="disabled">已停用</RadioButton>
+      </RadioGroup>
     </span>);
     return (
       <Layout>
         <PageHeader title={this.msg('flow')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status ? 'enabled' : 'disabled'} onChange={this.handleStatusChange}>
-              <RadioButton value="enabled">已启用</RadioButton>
-              <RadioButton value="disabled">已停用</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateFlow} >{this.msg('createFlow')}</Button>
           </PageHeader.Actions>
