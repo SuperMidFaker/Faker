@@ -27,6 +27,7 @@
     "test-build": "NODE_ENV=test webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",
     "test-prod": "NODE_ENV=test node . --port=3022",
     "test-deploy": "npm run clean && npm run test-build && npm run test-prod",
+    "docker-build": "npm run build-i18n & webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",
     "build": "npm run build-i18n & NODE_ENV=production webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",
     "build-staging": "npm run build-i18n & NODE_ENV=staging webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",
     "build-i18n": "BABEL_ENV=i18n babel client common -d public/dist/messages && babel-node scripts/translation/extract",

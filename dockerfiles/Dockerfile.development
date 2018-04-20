@@ -1,0 +1,15 @@
+FROM welogix-web-base:1.0
+
+WORKDIR /opt/apps/welogix-web
+
+COPY .  /opt/apps/welogix-web
+
+EXPOSE 3022
+
+CMD [ "npm", "run", "dev" ]
+
+
+# $ docker build -f dockerfiles/Dockerfile.development ./ -t welogix-web-dev:1.0 --no-cache
+# $ docker rm -f welogix-web-dev
+# $ docker run --name=welogix-web-dev -p 3022:3022 -d welogix-web-dev:1.0
+# $ docker logs -f welogix-web-dev
