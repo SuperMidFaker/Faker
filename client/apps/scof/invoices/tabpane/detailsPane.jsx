@@ -41,7 +41,9 @@ export default class DetailsPane extends Component {
     if (this.props.temporaryDetails.length === 0 && nextProps.temporaryDetails.length !== 0) {
       const temporaryDetails = [...nextProps.temporaryDetails];
       const newTemporary =
-      temporaryDetails.map(td => ({ ...td, splitQty: td.qty, disabled: true }));
+      temporaryDetails.map((td, index) => ({
+        ...td, splitQty: td.qty, disabled: true, index,
+      }));
       this.props.setTemporary(newTemporary);
     }
   }
@@ -53,11 +55,12 @@ export default class DetailsPane extends Component {
   handleDelete = (index) => {
     const temporaryDetails = [...this.props.temporaryDetails];
     temporaryDetails.splice(index, 1);
+    const newTemporaryDetails = temporaryDetails.map((td, idx) => ({ ...td, index: idx }));
     this.setState({
       selectedRowKeys: [],
     });
-    this.handleCalculate(temporaryDetails);
-    this.props.setTemporary(temporaryDetails);
+    this.handleCalculate(newTemporaryDetails);
+    this.props.setTemporary(newTemporaryDetails);
   }
   handleEdit = (row) => {
     this.props.toggleDetailModal(true, row);
@@ -72,7 +75,8 @@ export default class DetailsPane extends Component {
     const { selectedRowKeys } = this.state;
     const { temporaryDetails } = this.props;
     const newTemporary = temporaryDetails.filter((temporary, index) =>
-      selectedRowKeys.findIndex(key => key === index) === -1);
+      selectedRowKeys.findIndex(key => key === index) === -1)
+      .map((td, index) => ({ ...td, index }));
     this.setState({
       selectedRowKeys: [],
     });
@@ -170,12 +174,11 @@ export default class DetailsPane extends Component {
         this.props.setTemporary(tempDetails);
       },
       onSelectAll: (selected) => {
-        const tempDetails = [...this.props.temporaryDetails];
-        tempDetails.forEach(td => td.disabled = !selected); // eslint-disable-line
-        const { length } = tempDetails;
+        const tempDetails =
+        [...this.props.temporaryDetails].map(td => ({ ...td, disabled: !selected }));
         let selectedRowKeys = [];
         if (selected) {
-          selectedRowKeys = Array.from(new Array(length).keys());
+          selectedRowKeys = tempDetails.map(td => td.index);
         }
         this.setState({ selectedRowKeys });
         this.props.setTemporary(tempDetails);
@@ -283,7 +286,7 @@ export default class DetailsPane extends Component {
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        dataSource={temporaryDetails}
         rowKey="index"
         loading={this.state.loading}
       >
