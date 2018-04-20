@@ -130,16 +130,16 @@ export default class DelegationDockPanel extends React.Component {
     const { delegation, delgDispatch } = this.props.previewer;
     return (
       <Row>
-        <Col span="8">
-          <InfoItem label={this.msg('client')} field={delgDispatch.send_name} />
+        <Col span="6">
+          <InfoItem label={this.msg('client')} field={delegation.customer_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="提运单号" field={delegation.bl_wb_no} />
+          <InfoItem label={this.msg('forwarder')} field={delegation.forwarder_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="客户单号" field={delegation.order_no} />
+          <InfoItem label={this.msg('broker')} field={delegation.ccb_name} />
         </Col>
-        <Col span="4">
+        <Col span="6">
           <InfoItem
             label="委托日期"
             addonBefore={<Icon type="calendar" />}

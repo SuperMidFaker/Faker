@@ -4,7 +4,15 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   client: {
     id: 'cms.dock.client',
-    defaultMessage: '委托单位',
+    defaultMessage: '货主',
+  },
+  forwarder: {
+    id: 'cms.dock.forwarder',
+    defaultMessage: '货代',
+  },
+  broker: {
+    id: 'cms.dock.broker',
+    defaultMessage: '报关行',
   },
   revenue: {
     id: 'cms.dock.tabpanes.billing.revenue',

@@ -32,7 +32,7 @@ import DeclMsgModal from './modals/declMsgModal';
 import DeclModModal from './modals/declModModal';
 import DeclStatusPopover from '../common/popover/declStatusPopover';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import { formatMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -105,6 +105,7 @@ export default class CustomsList extends Component {
     this.handleTableLoad(this.props.customslist.current, filters);
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
@@ -316,6 +317,10 @@ export default class CustomsList extends Component {
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
+    title: '修撤单',
+    dataIndex: 'decl_mod_type',
+    width: 100,
+  }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
     className: 'table-col-ops',
@@ -367,14 +372,14 @@ export default class CustomsList extends Component {
           overlay={<Menu onClick={this.showDeclMsgModal}>
             {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
             {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
-            <Menu.Divider />
-            <Menu.Item key="declMod">{this.msg('declMod')}</Menu.Item>
+            {record.status < CMS_DECL_STATUS.released.value && <Menu.Divider />}
+            {record.status < CMS_DECL_STATUS.released.value && <Menu.Item key="declMod">{this.msg('declMod')}</Menu.Item>}
           </Menu>}
           row={record}
         />);
       }
       return (<span>
-        <RowAction onClick={this.handleDetail} icon="eye-o" tooltip={this.msg('viewCCD')} row={record} />
+        <RowAction onClick={this.handleDetail} icon="eye-o" tooltip={this.gmsg('view')} row={record} />
         {spanElems}
       </span>);
     },

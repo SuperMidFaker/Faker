@@ -294,6 +294,7 @@ export default class TariffPane extends Component {
         dataSource={fees}
         rowKey="fee_code"
         loading={quoteFeesLoading}
+        scrollOffset={186}
       >
         <DataPane.Toolbar>
           {!readOnly && <Button type="primary" icon="plus-circle-o" onClick={this.toggleAddFeeModal}>{this.gmsg('add')}</Button>}

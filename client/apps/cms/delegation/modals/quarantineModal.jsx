@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { DatePicker, Form, Modal, Input } from 'antd';
+import { Switch, DatePicker, Form, Modal, Input } from 'antd';
 import { toggleQuarantineModal } from 'common/reducers/cmsDelegation';
 import { formatMsg } from '../message.i18n';
 
@@ -37,14 +37,17 @@ export default class QuarantineModal extends React.Component {
         onCancel={this.handleCancel}
       >
         <Form>
-          <FormItem label="查验下达日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="检疫查验" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+            <Switch checkedChildren="是" unCheckedChildren="否" />
+          </FormItem>
+          <FormItem label="下达日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker
               onChange={this.handleStartDateChange}
               format="YYYY-MM-DD"
               style={{ width: '100%' }}
             />
           </FormItem>
-          <FormItem label="查验完成日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+          <FormItem label="完成日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker
               onChange={this.handleFinishDateChange}
               format="YYYY-MM-DD"
