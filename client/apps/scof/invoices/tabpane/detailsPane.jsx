@@ -131,10 +131,10 @@ export default class DetailsPane extends Component {
       temporaryDetails, currencies, countries,
     } = this.props;
     const sortTemporaryDetails = temporaryDetails.sort((a, b) => {
-      if (a.status === 0 || (a.status === 1 && b.status === 1)) {
-        return false;
+      if (a.status !== b.status) {
+        return a.status - b.status;
       }
-      return true;
+      return a.index - b.index;
     });
     const statWt = temporaryDetails.reduce((acc, det) => {
       const data = { ...acc };

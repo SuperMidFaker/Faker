@@ -55,6 +55,8 @@ export default class DetailModal extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (!record.index && record.index !== 0) {
+          const indexs = temporaryDetails.map(td => td.index);
+          const maxIndex = Math.max(...indexs);
           this.props.addTemporary({
             unit,
             amount,
@@ -62,7 +64,7 @@ export default class DetailModal extends Component {
             ...values,
             splitQty: values.qty,
             disabled: true,
-            index: new Date(),
+            index: maxIndex + 1,
           });
           this.props.headForm.setFieldsValue({
             total_qty: totalQty + Number(values.qty),
@@ -75,12 +77,12 @@ export default class DetailModal extends Component {
           const arrIndex = details.findIndex(detail => detail.index === index);
           const origRecord = details[arrIndex];
           const data = {
+            ...record,
+            ...values,
             unit,
             amount,
             currency,
-            disabled: true,
             splitQty: values.qty,
-            ...values,
           };
           this.props.headForm.setFieldsValue({
             total_qty: totalQty + (Number(data.qty) - Number(origRecord.qty)),
