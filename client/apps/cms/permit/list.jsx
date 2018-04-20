@@ -180,6 +180,11 @@ export default class PermitList extends Component {
         placeholder={this.msg('permitNo')}
         onSearch={this.handleSearch}
       />
+      <RadioGroup onChange={this.handleStatusFilter}>
+        <RadioButton value="valid">{this.msg('filterValid')}</RadioButton>
+        <RadioButton value="expiring">{this.msg('filterExpiring')}</RadioButton>
+        <RadioButton value="expired">{this.msg('filterExpired')}</RadioButton>
+      </RadioGroup>
     </span>);
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadPermits(params),
@@ -205,13 +210,6 @@ export default class PermitList extends Component {
     return (
       <Layout>
         <PageHeader title={this.msg('permit')}>
-          <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusFilter}>
-              <RadioButton value="valid">{this.msg('filterValid')}</RadioButton>
-              <RadioButton value="expiring">{this.msg('filterExpiring')}</RadioButton>
-              <RadioButton value="expired">{this.msg('filterExpired')}</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" onClick={this.handleAdd} icon="plus">
               {this.msg('addPermit')}

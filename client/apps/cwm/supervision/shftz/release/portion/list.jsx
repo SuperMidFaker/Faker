@@ -272,7 +272,14 @@ export default class SHFTZReleaseList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('releaseSearchPlaceholder')} onSearch={this.handleSearch} />
-      <span />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="pending">待备案</RadioButton>
+        <RadioButton value="processing">终端处理</RadioButton>
+        <RadioButton value="completed">已备案</RadioButton>
+        <RadioButton value="applied">已集中申请</RadioButton>
+        <RadioButton value="cleared">已清关</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -296,18 +303,7 @@ export default class SHFTZReleaseList extends React.Component {
     </span>);
     return (
       <Layout>
-        <PageHeader title={this.msg('ftzRelPortionReg')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待备案</RadioButton>
-              <RadioButton value="processing">终端处理</RadioButton>
-              <RadioButton value="completed">已备案</RadioButton>
-              <RadioButton value="applied">已集中申请</RadioButton>
-              <RadioButton value="cleared">已清关</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-        </PageHeader>
+        <PageHeader title={this.msg('ftzRelPortionReg')} />
         <Content className="page-content" key="main">
           <DataTable
             toolbarActions={toolbarActions}

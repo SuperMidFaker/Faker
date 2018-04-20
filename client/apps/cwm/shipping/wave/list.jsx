@@ -213,6 +213,12 @@ export default class WaveList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('wavePlaceholder')} onSearch={this.handleSearch} />
+      <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="pending">计划</RadioButton>
+        <RadioButton value="outbound">已释放</RadioButton>
+        <RadioButton value="completed">完成</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -233,16 +239,7 @@ export default class WaveList extends React.Component {
             <WhseSelect onChange={this.handleWhseChange} />,
             this.msg('shippingWave'),
           ]}
-        >
-          <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">计划</RadioButton>
-              <RadioButton value="outbound">已释放</RadioButton>
-              <RadioButton value="completed">完成</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-        </PageHeader>
+        />
         <Content className="page-content" key="main">
           <DataTable
             columns={this.columns}

@@ -286,6 +286,14 @@ export default class OutboundList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('outboundPlaceholder')} onSearch={this.handleSearch} />
+      <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="created">待出库</RadioButton>
+        <RadioButton value="allocating">分配</RadioButton>
+        <RadioButton value="picking">拣货</RadioButton>
+        <RadioButton value="shipping">发货</RadioButton>
+        <RadioButton value="completed">已出库</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -311,18 +319,7 @@ export default class OutboundList extends React.Component {
             <WhseSelect />,
             this.msg('shippingOutbound'),
           ]}
-        >
-          <PageHeader.Nav>
-            <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="created">待出库</RadioButton>
-              <RadioButton value="allocating">分配</RadioButton>
-              <RadioButton value="picking">拣货</RadioButton>
-              <RadioButton value="shipping">发货</RadioButton>
-              <RadioButton value="completed">已出库</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-        </PageHeader>
+        />
         <Content className="page-content" key="main">
           <DataTable
             columns={this.columns}

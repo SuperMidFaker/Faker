@@ -316,7 +316,14 @@ export default class SHFTZNormalRelRegList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('releaseSearchPlaceholder')} onSearch={this.handleSearch} />
-      <span />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="pending">待备案</RadioButton>
+        <RadioButton value="completed">已备案</RadioButton>
+        <RadioButton value="delegated">已委托</RadioButton>
+        <RadioButton value="cleared">已清关</RadioButton>
+        <RadioButton value="exited">已出区</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -345,16 +352,6 @@ export default class SHFTZNormalRelRegList extends React.Component {
     return (
       <Layout>
         <PageHeader title={this.msg('ftzRelNormalReg')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待备案</RadioButton>
-              <RadioButton value="completed">已备案</RadioButton>
-              <RadioButton value="delegated">已委托</RadioButton>
-              <RadioButton value="cleared">已清关</RadioButton>
-              <RadioButton value="exited">已出区</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateNormalRelReg}>
               {this.msg('create')}

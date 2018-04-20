@@ -247,7 +247,12 @@ export default class NormalDeclList extends React.Component {
     this.dataSource.remotes = delglist;
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('normalSearchPlaceholder')} onSearch={this.handleSearch} />
-      <span />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部</RadioButton>
+        <RadioButton value="manifesting">委托制单</RadioButton>
+        <RadioButton value="sent">已申报</RadioButton>
+        <RadioButton value="cleared">已清关</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -265,14 +270,6 @@ export default class NormalDeclList extends React.Component {
     return (
       <Layout>
         <PageHeader title={this.msg('ftzNormalDecl')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="manifesting">委托制单</RadioButton>
-              <RadioButton value="sent">已申报</RadioButton>
-              <RadioButton value="cleared">已清关</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateNormalDecl}>
               {this.msg('create')}

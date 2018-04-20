@@ -271,6 +271,11 @@ export default class SHFTZCargoList extends React.Component {
     }
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('productSearchPlaceholder')} onSearch={this.handleSearch} value={listFilter.filterNo} />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="pending">待备案</RadioButton>
+        <RadioButton value="sent">已发送</RadioButton>
+        <RadioButton value="completed">已备案</RadioButton>
+      </RadioGroup>
     </span>);
     return (
       <Layout>
@@ -280,15 +285,6 @@ export default class SHFTZCargoList extends React.Component {
               owner.name,
             ]}
           >
-            <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="sent">已发送</RadioButton>
-              </RadioGroup>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="completed">备案料号库</RadioButton>
-              </RadioGroup>
-            </PageHeader.Nav>
             <PageHeader.Actions>
               {listFilter.status === 'pending' &&
               <Button icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >

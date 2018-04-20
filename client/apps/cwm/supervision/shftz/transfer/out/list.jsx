@@ -234,7 +234,12 @@ export default class SHFTZTransferOutList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('releaseSearchPlaceholder')} onSearch={this.handleSearch} />
-      <span />
+      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+        <RadioButton value="all">全部状态</RadioButton>
+        <RadioButton value="pending">待转出</RadioButton>
+        <RadioButton value="sent">已发送</RadioButton>
+        <RadioButton value="completed">已转出</RadioButton>
+      </RadioGroup>
       <Select
         showSearch
         optionFilterProp="children"
@@ -252,14 +257,6 @@ export default class SHFTZTransferOutList extends React.Component {
     return (
       <Layout>
         <PageHeader title={this.msg('ftzTransferOut')}>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部状态</RadioButton>
-              <RadioButton value="pending">待转出</RadioButton>
-              <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">已转出</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateTransfOut}>
               {this.msg('create')}
