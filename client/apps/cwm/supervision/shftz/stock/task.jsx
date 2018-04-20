@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Badge, Layout, Tabs, Row, Col, Card } from 'antd';
-import { loadStockCompareTask, loadParams } from 'common/reducers/cwmShFtz';
+import { loadParams } from 'common/reducers/cwmShFtz';
+import { loadStockCompareTask } from 'common/reducers/cwmShFtzStock';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -30,7 +31,7 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     whse: state.cwmContext.defaultWhse,
-    task: state.cwmShFtz.compareTask.task,
+    task: state.cwmShFtzStock.compareTask.task,
   }),
   { }
 )

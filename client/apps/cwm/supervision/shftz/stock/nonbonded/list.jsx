@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadNonbondedStocks, loadParams } from 'common/reducers/cwmShFtz';
+import { loadParams } from 'common/reducers/cwmShFtz';
+import { loadNonbondedStocks } from 'common/reducers/cwmShFtzStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
@@ -21,7 +22,7 @@ const { Content } = Layout;
   state => ({
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    stockDatas: state.cwmShFtz.stockDatas,
+    stockDatas: state.cwmShFtzStock.stockDatas,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -34,7 +35,7 @@ const { Content } = Layout;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    loading: state.cwmShFtz.loading,
+    loading: state.cwmShFtzStock.loading,
   }),
   { loadNonbondedStocks, loadParams, switchDefaultWhse }
 )

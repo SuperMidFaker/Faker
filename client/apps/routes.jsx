@@ -437,6 +437,7 @@ export default(store) => {
                 <Route path="stock" >
                   <IndexRoute component={CWMSupSHFTZStock.List} />
                   <Route path="task/:taskId" component={CWMSupSHFTZStock.Task} />
+                  <Route path="matchtask/:taskId" component={CWMSupSHFTZStock.MatchTask} />
                   <Route path="nonbonded" component={CWMSupSHFTZNonBondedStock.List} />
                 </Route>
                 <Route path="cargo" >

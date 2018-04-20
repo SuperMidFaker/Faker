@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Icon, Button, Upload, Form, Input, Select, Row, Col, notification } from 'antd';
-import superagent from 'superagent';
 import DockPanel from 'client/components/DockPanel';
-import { compareFtzStocks } from 'common/reducers/cwmShFtz';
+import { compareFtzStocks, matchImportFtzStocks } from 'common/reducers/cwmShFtzStock';
 import { loadNormalRegMSRepos } from 'common/reducers/cwmShFtzDecl';
 import { formatMsg } from './message.i18n';
 
@@ -19,8 +18,9 @@ const { Dragger } = Upload;
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
     repos: state.cwmShFtzDecl.normalRegMSRepos,
+    submitting: state.cwmShFtzStock.submitting,
   }),
-  { compareFtzStocks, loadNormalRegMSRepos }
+  { compareFtzStocks, matchImportFtzStocks, loadNormalRegMSRepos }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -132,33 +132,32 @@ export default class QueryForm extends React.Component {
       whse_code: importPanel.whse_code,
       repo_id: importPanel.repo_id,
     });
-    const request = superagent.post(`${API_ROOTS.default}v1/cwm/shftz/stock/import/matchcompare`)
-      .field('data', metaData);
-    importPanel.fileList.forEach((file) => {
-      request.attach(file.name, file);
-    });
-    request.withCredentials()
-      .end((err, res) => {
-        if (err) {
-          if (err.crossDomain) {
-            notification.error({ description: '网络断开/服务异常' });
-            return;
-          }
-          notification.error({ message: '错误', description: err.message });
-        } else if (res.body.status !== 200) {
-          notification.error({ message: '错误', description: res.body.msg });
+    this.props.matchImportFtzStocks({ key: 'data', value: metaData }, importPanel.fileList).then((result) => {
+      if (result.error) {
+        if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+          notification.error({
+            message: '操作失败',
+            description: '仓库监管系统未配置',
+          });
         } else {
-          this.handleImportClose();
-          notification.success({
-            message: '添加任务成功',
-            description: '请至侧边栏查看任务进度',
+          notification.error({
+            message: '操作失败',
+            description: result.error.message,
+            duration: 15,
           });
         }
-      });
+      } else {
+        this.handleImportClose();
+        notification.success({
+          message: '添加任务成功',
+          description: '请至侧边栏查看任务对比进度',
+        });
+      }
+    });
   }
   render() {
     const {
-      form: { getFieldDecorator }, owners, repos, filter,
+      form: { getFieldDecorator }, owners, repos, filter, submitting,
     } = this.props;
     const { importPanel } = this.state;
     const formItemLayout = {
@@ -188,7 +187,7 @@ export default class QueryForm extends React.Component {
             <FormItem>
               <Button type="primary" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>{this.msg('reset')}</Button>
-              <Button type="primary" ghost icon="plus" style={{ marginLeft: 8 }} onClick={this.handleCompareTask}>发起库存对比</Button>
+              <Button type="primary" ghost icon="plus" loading={submitting} style={{ marginLeft: 8 }} onClick={this.handleCompareTask}>发起库存对比</Button>
               <Button type="primary" ghost icon="plus" style={{ marginLeft: 8 }} onClick={this.handleImportMatchTask}>库存导入匹配</Button>
             </FormItem>
           </Col>
@@ -200,7 +199,7 @@ export default class QueryForm extends React.Component {
           className="welo-import-data-panel"
           onClose={this.handleImportClose}
         >
-          <Button type="primary" onClick={this.handleMatchTaskAction}>发起匹配</Button>
+          <Button type="primary" loading={submitting} onClick={this.handleMatchTaskAction}>发起匹配</Button>
           <Select
             showSearch
             allowClear
@@ -211,9 +210,9 @@ export default class QueryForm extends React.Component {
             {repos.map(rep =>
               <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
           </Select>
-          <div style={{ height: 200, marginBottom: 16, marginTop: 20 }}>
+          <div style={{ height: 250, marginBottom: 100, marginTop: 20 }}>
             <Dragger
-              accept=".xls,.xlsx,.csv"
+              accept=".xls,.xlsx"
               beforeUpload={this.handleStockBeforeUpload}
               fileList={importPanel.fileList}
               multiple
@@ -221,7 +220,7 @@ export default class QueryForm extends React.Component {
               <p className="ant-upload-drag-icon">
                 <Icon type="inbox" />
               </p>
-              <p className="ant-upload-text">可选择库位库存和监管库存多个文件, 监控库存文件名以shftzStocks开头</p>
+              <p className="ant-upload-text">可选择库位库存和监管库存多个文件导入, 监控库存文件名以shftzStocks开头</p>
             </Dragger>
           </div>
         </DockPanel>
