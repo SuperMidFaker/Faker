@@ -62,6 +62,7 @@ export default class DetailModal extends Component {
             ...values,
             splitQty: values.qty,
             disabled: true,
+            index: temporaryDetails.length,
           });
           this.props.headForm.setFieldsValue({
             total_qty: totalQty + Number(values.qty),
@@ -73,10 +74,12 @@ export default class DetailModal extends Component {
           const { index } = record;
           const origRecord = details[index];
           const data = {
+            ...record,
+            ...values,
             unit,
             amount,
             currency,
-            ...values,
+            splitQty: values.qty,
           };
           this.props.headForm.setFieldsValue({
             total_qty: totalQty + (Number(data.qty) - Number(origRecord.qty)),
