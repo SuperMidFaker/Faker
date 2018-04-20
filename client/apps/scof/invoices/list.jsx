@@ -295,12 +295,6 @@ export default class InvoiceList extends React.Component {
     if (filter.endDate) {
       dateVal = [moment(filter.startDate, 'YYYY-MM-DD'), moment(filter.endDate, 'YYYY-MM-DD')];
     }
-    invoiceList.data = invoiceList.data.sort((a, b) => {
-      if (a.invoice_status === b.invoice_status) {
-        return -1;
-      }
-      return a.invoice_status - b.invoice_status;
-    });
     this.dataSource.remotes = invoiceList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

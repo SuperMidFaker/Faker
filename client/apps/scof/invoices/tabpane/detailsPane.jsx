@@ -41,9 +41,7 @@ export default class DetailsPane extends Component {
     if (this.props.temporaryDetails.length === 0 && nextProps.temporaryDetails.length !== 0) {
       const temporaryDetails = [...nextProps.temporaryDetails];
       const newTemporary =
-      temporaryDetails.map((td, index) => ({
-        ...td, splitQty: td.qty, disabled: true, index,
-      }));
+      temporaryDetails.map(td => ({ ...td, splitQty: td.qty, disabled: true }));
       this.props.setTemporary(newTemporary);
     }
   }
@@ -54,8 +52,10 @@ export default class DetailsPane extends Component {
   gmsg = formatGlobalMsg(this.props.intl)
   handleDelete = (index) => {
     const temporaryDetails = [...this.props.temporaryDetails];
-    const arrIndex = temporaryDetails.findIndex(td => td.index === index);
-    temporaryDetails.splice(arrIndex, 1);
+    temporaryDetails.splice(index, 1);
+    this.setState({
+      selectedRowKeys: [],
+    });
     this.handleCalculate(temporaryDetails);
     this.props.setTemporary(temporaryDetails);
   }
@@ -71,8 +71,8 @@ export default class DetailsPane extends Component {
   handleBatchDelete = () => {
     const { selectedRowKeys } = this.state;
     const { temporaryDetails } = this.props;
-    const newTemporary = temporaryDetails.filter(temporary =>
-      selectedRowKeys.findIndex(key => key === temporary.index) === -1);
+    const newTemporary = temporaryDetails.filter((temporary, index) =>
+      selectedRowKeys.findIndex(key => key === index) === -1);
     this.setState({
       selectedRowKeys: [],
     });
@@ -130,12 +130,6 @@ export default class DetailsPane extends Component {
     const {
       temporaryDetails, currencies, countries,
     } = this.props;
-    const sortTemporaryDetails = temporaryDetails.sort((a, b) => {
-      if (a.status !== b.status) {
-        return a.status - b.status;
-      }
-      return a.index - b.index;
-    });
     const statWt = temporaryDetails.reduce((acc, det) => {
       const data = { ...acc };
       const amount = parseFloat(det.amount);
@@ -166,7 +160,7 @@ export default class DetailsPane extends Component {
       },
       onSelect: (record, selected) => {
         const tempDetails = [...this.props.temporaryDetails];
-        const selectOne = tempDetails.find(td => td.index === record.index);
+        const selectOne = tempDetails.find(td => td.id === record.id);
         if (selected) {
           selectOne.disabled = false;
         } else {
@@ -193,7 +187,7 @@ export default class DetailsPane extends Component {
       width: 45,
       align: 'center',
       className: 'table-col-seq',
-      render: (col, row, index) => index + 1,
+      render: (col, row) => row.index + 1,
     }, {
       title: '采购订单号',
       dataIndex: 'po_no',
@@ -289,7 +283,7 @@ export default class DetailsPane extends Component {
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
-        dataSource={sortTemporaryDetails}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
         rowKey="index"
         loading={this.state.loading}
       >
