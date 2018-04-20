@@ -319,6 +319,7 @@ export default class InvoiceList extends React.Component {
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onSelect={this.handleSelect}
+        style={{ width: '100%' }}
       >
         <Option value="all" key="all">全部</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}

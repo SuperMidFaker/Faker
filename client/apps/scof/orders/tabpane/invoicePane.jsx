@@ -119,6 +119,9 @@ export default class InvoicePane extends Component {
       return o;
     },
   }, {
+    title: '总数量',
+    dataIndex: 'total_qty',
+  }, {
     title: '总净重',
     dataIndex: 'total_net_wt',
   }, {
