@@ -196,6 +196,7 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('declareWay'),
     width: 100,
+    align: 'center',
     dataIndex: 'decl_way_code',
     render: (o) => {
       // const DECL_TYPE = record.i_e_type === 0 ? DECL_I_TYPE : DECL_E_TYPE;
@@ -216,6 +217,7 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('ciqType'),
     width: 100,
+    align: 'center',
     dataIndex: 'ciq_inspect',
     render: (o) => {
       if (o === 'NL') {
@@ -228,6 +230,7 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('检疫查验'),
     width: 120,
+    align: 'center',
     render: (o, record) => {
       if (record.ciq_inspect === 'NL') {
         return <Button size="small" icon="warning" onClick={this.handleQuarantine} />;
@@ -246,9 +249,9 @@ export default class DelegationList extends Component {
         if (record.manifested === CMS_DELEGATION_MANIFEST.uncreated) {
           return <span><Badge status="default" text="未录入" /></span>;
         } else if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
-          return <span><Badge status="warning" text="未生成CDF" /></span>;
+          return <span><Badge status="warning" text="未生成建议书" /></span>;
         } else if (record.manifested === CMS_DELEGATION_MANIFEST.manifested) {
-          return <span><Badge status="processing" text="已生成CDF" /></span>;
+          return <span><Badge status="processing" text="已生成建议书" /></span>;
         }
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
         if (record.sub_status === 1) {

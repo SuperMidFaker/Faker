@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Checkbox, Col, DatePicker, Form, Modal, Input } from 'antd';
+import { Switch, Col, DatePicker, Form, Modal, Input } from 'antd';
 import { toggleInspectModal } from 'common/reducers/cmsCustomsDeclare';
 import { formatMsg } from '../message.i18n';
 
@@ -64,7 +64,7 @@ export default class InspectModal extends React.Component {
           </FormItem>
           <FormItem label="海关查验" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <Col span={6}>
-              <Checkbox />
+              <Switch checkedChildren="是" unCheckedChildren="否" />
             </Col>
             <Col span={18}>
               <Input placeholder="收费金额" onChange={this.handleEntryNoChange} addonAfter="元" />
@@ -72,7 +72,7 @@ export default class InspectModal extends React.Component {
           </FormItem>
           <FormItem label="质检查验" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <Col span={6}>
-              <Checkbox />
+              <Switch checkedChildren="是" unCheckedChildren="否" />
             </Col>
             <Col span={18}>
               <Input placeholder="收费金额" onChange={this.handleEntryNoChange} addonAfter="元" />
