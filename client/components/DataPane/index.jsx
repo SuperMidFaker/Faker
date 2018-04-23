@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Table, Tooltip } from 'antd';
-import './style.less';
 import toolbar from './toolbar';
 import actions from './actions';
 import extra from './extra';
 import BulkActions from './bulkActions';
-
+import './style.less';
 
 export default class DataPane extends React.Component {
   static defaultProps = {

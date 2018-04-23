@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Tag } from 'antd';
-import { loadCusStockSnapshot } from 'common/reducers/cwmShFtz';
+import { loadCusStockSnapshot } from 'common/reducers/cwmShFtzStock';
 import DataPane from 'client/components/DataPane';
 import { formatMsg } from '../message.i18n';
 
@@ -22,7 +22,7 @@ import { formatMsg } from '../message.i18n';
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    cusStockSnapshot: state.cwmShFtz.cusStockSnapshot,
+    cusStockSnapshot: state.cwmShFtzStock.cusStockSnapshot,
   }),
   { loadCusStockSnapshot }
 )

@@ -7,7 +7,7 @@ import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(state => ({
-  views: state.cwmShFtz.compareTask.views,
+  views: state.cwmShFtzStock.compareTask.views,
 }))
 export default class FTZComparisonPane extends React.Component {
   static propTypes = {
