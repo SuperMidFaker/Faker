@@ -88,7 +88,7 @@ export default class ReceivingInboundList extends React.Component {
     this.props.loadInbounds({
       whseCode,
       pageSize: this.props.inbound.pageSize,
-      current: this.props.inbound.current,
+      current: 1,
       filters,
     });
   }
@@ -206,7 +206,7 @@ export default class ReceivingInboundList extends React.Component {
     this.props.loadInbounds({
       whseCode,
       pageSize: this.props.inbound.pageSize,
-      current: this.props.inbound.current,
+      current: 1,
       filters,
     });
   }
@@ -223,7 +223,7 @@ export default class ReceivingInboundList extends React.Component {
     this.props.loadInbounds({
       whseCode,
       pageSize: this.props.inbound.pageSize,
-      current: this.props.inbound.current,
+      current: 1,
       filters,
     });
   }

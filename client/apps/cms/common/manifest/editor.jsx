@@ -174,14 +174,12 @@ export default class ManifestEditor extends React.Component {
       }
     });
   }
-  validateCode = (code, customsCode) => {
+  validateCode = (code) => {
     let info = null;
-    if (code === '' && customsCode === '') {
-      info = '请填写社会信用代码或者海关编码';
+    if (code === '') {
+      info = '请填写社会信用代码';
     } else if (code && code.length !== 18) {
       info = `社会信用代码必须为18位, 当前${code.length}位`;
-    } else if (customsCode && customsCode.length !== 10) {
-      info = `海关10位编码必须为10位, 当前${customsCode.length}位`;
     }
     return info;
   }
@@ -194,17 +192,17 @@ export default class ManifestEditor extends React.Component {
       templateId = null;
     }
     const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: templateId };
-    const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
+    const tradeInfo = this.validateCode(head.trade_co);
     if (tradeInfo) {
       message.error(`${tradeInfo}`);
       return;
     }
-    const ownInfo = this.validateCode(head.owner_code, head.owner_custco);
+    const ownInfo = this.validateCode(head.owner_code);
     if (ownInfo) {
       message.error(`${ownInfo}`);
       return;
     }
-    const agentInfo = this.validateCode(head.agent_code, head.agent_custco);
+    const agentInfo = this.validateCode(head.agent_code);
     if (agentInfo) {
       message.error(`${agentInfo}`);
       return;

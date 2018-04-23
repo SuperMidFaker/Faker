@@ -302,7 +302,7 @@ export default class ReceivingASNList extends React.Component {
     this.props.loadAsnLists({
       whseCode,
       pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
+      current: 1,
       filters,
     });
     this.setState({
@@ -315,7 +315,7 @@ export default class ReceivingASNList extends React.Component {
     this.props.loadAsnLists({
       whseCode,
       pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
+      current: 1,
       filters,
     });
   }
@@ -325,7 +325,7 @@ export default class ReceivingASNList extends React.Component {
     this.props.loadAsnLists({
       whseCode,
       pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
+      current: 1,
       filters,
     });
   }
@@ -335,7 +335,7 @@ export default class ReceivingASNList extends React.Component {
     this.props.loadAsnLists({
       whseCode,
       pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
+      current: 1,
       filters,
     });
   }
