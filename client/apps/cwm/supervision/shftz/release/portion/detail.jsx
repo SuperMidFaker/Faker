@@ -14,8 +14,7 @@ import DescriptionList from 'client/components/DescriptionList';
 import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, loadBatchDecl } from 'common/reducers/cwmShFtz';
+import { loadRelDetails, loadParams, updateRelReg, fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, loadBatchDecl } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
@@ -132,7 +131,7 @@ export default class SHFTZRelDetail extends Component {
         ));
       } else {
         detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, detail, {
-          seq_no: null,
+          seq_no: detailMap.size + 1,
           product_no: null,
         }));
       }

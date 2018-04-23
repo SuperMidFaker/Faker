@@ -15,7 +15,10 @@ import { formatMsg } from '../../message.i18n';
 const { Content } = Layout;
 
 function fetchData({ dispatch, state }) {
-  return dispatch(loadBusinessUnits({ tenantId: state.account.tenantId, customerPartnerId: state.cmsResources.customer.id }));
+  return dispatch(loadBusinessUnits({
+    tenantId: state.account.tenantId,
+    customerPartnerId: state.cmsResources.customer.id,
+  }));
 }
 
 @connectFetch()(fetchData)
@@ -26,7 +29,11 @@ function fetchData({ dispatch, state }) {
   tenantId: state.account.tenantId,
   customer: state.cmsResources.customer,
 }), {
-  loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers,
+  loadBusinessUnits,
+  deleteBusinessUnit,
+  toggleBusinessUnitModal,
+  toggleUnitRuleSetModal,
+  loadBusinessUnitUsers,
 })
 export default class TraderList extends Component {
   static propTyps = {
@@ -44,7 +51,10 @@ export default class TraderList extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded || this.props.customer !== nextProps.customer) {
-      this.props.loadBusinessUnits({ tenantId: nextProps.tenantId, customerPartnerId: nextProps.customer.id });
+      this.props.loadBusinessUnits({
+        tenantId: nextProps.tenantId,
+        customerPartnerId: nextProps.customer.id,
+      });
     }
   }
   msg = formatMsg(this.props.intl)

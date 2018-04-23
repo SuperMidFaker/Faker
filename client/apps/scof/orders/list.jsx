@@ -158,7 +158,7 @@ export default class OrderList extends React.Component {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: 1,
       filters,
     });
   }
@@ -240,7 +240,7 @@ export default class OrderList extends React.Component {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: 1,
       filters,
     });
   }
@@ -251,7 +251,7 @@ export default class OrderList extends React.Component {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: 1,
       filters,
     });
     this.setState({ selectedRowKeys: [], status: ev.key });
@@ -261,7 +261,7 @@ export default class OrderList extends React.Component {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: 1,
       filters,
     });
     this.setState({ selectedRowKeys: [] });
@@ -271,7 +271,7 @@ export default class OrderList extends React.Component {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: 1,
       filters,
     });
   }
@@ -280,7 +280,7 @@ export default class OrderList extends React.Component {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: 1,
       filters,
     });
   }
@@ -289,7 +289,7 @@ export default class OrderList extends React.Component {
     this.props.loadOrders({
       tenantId: this.props.tenantId,
       pageSize: this.props.orders.pageSize,
-      current: this.props.orders.current,
+      current: 1,
       filters,
     });
   }
@@ -450,6 +450,7 @@ export default class OrderList extends React.Component {
         showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize,
+        pageSizeOptions: ['10', '20', '30', '40', '100'],
         showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, tblfilters) => {
