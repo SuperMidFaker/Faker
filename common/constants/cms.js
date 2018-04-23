@@ -89,19 +89,20 @@ export const FORMULA_PARAMS = [
 ];
 
 export const BILLING_METHODS = [
-  { key: '$formula', label: '自动计费' },
+  { key: '$formula', label: '自动按公式计费' },
   { key: 'shipmt_qty', label: '按货运数量' },
   { key: 'decl_qty', label: '按报关单数量' },
   { key: 'decl_sheet_qty', label: '按联单数量' },
   { key: 'decl_item_qty', label: '按品名数量' },
   { key: 'trade_item_qty', label: '按料件数量' },
-  { key: '$manual', label: '手动计费' },
+  { key: '$input', label: '输入数量' },
+  { key: '$manual', label: '手动录入/导入' },
   { key: '$nonsettle', label: '计费不结算' },
 ];
 
 export const BILLING_METHOD = [
   {
-    label: '自动计费',
+    label: '自动按公式计费',
     key: '$formula',
     value: '$formula',
     children: [
@@ -112,7 +113,8 @@ export const BILLING_METHOD = [
       { key: 'trade_item_qty', value: 'trade_item_qty', label: '按料件数量' },
     ],
   },
-  { key: '$manual', value: '$manual', label: '手动计费' },
+  { key: '$input', value: '$input', label: '输入数量' },
+  { key: '$manual', value: '$manual', label: '手动录入/导入' },
   { key: '$nonsettle', value: '$nonsettle', label: '计费不结算' },
 ];
 

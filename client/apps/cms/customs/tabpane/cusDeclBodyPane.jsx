@@ -403,10 +403,8 @@ export default class CusDeclBodyPane extends React.Component {
     const { totGrossWt, totWetWt, totTrade } = this.state;
     return (
       <DataPane
-
         columns={this.columns}
         bordered
-        scrollOffset={312}
         dataSource={this.state.bodies}
         rowKey="id"
         loading={this.state.loading}

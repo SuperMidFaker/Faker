@@ -237,7 +237,7 @@ export default class TariffPane extends Component {
                 placeholder="$公式"
                 onChange={editorState => this.handleFormulaChange(editorState)}
                 multiLines
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '100%' }}
               />);
             }
             if (editItem.billing_way === '$manual') {
@@ -294,7 +294,7 @@ export default class TariffPane extends Component {
         dataSource={fees}
         rowKey="fee_code"
         loading={quoteFeesLoading}
-        scrollOffset={186}
+        scrollOffset={312}
       >
         <DataPane.Toolbar>
           {!readOnly && <Button type="primary" icon="plus-circle-o" onClick={this.toggleAddFeeModal}>{this.gmsg('add')}</Button>}

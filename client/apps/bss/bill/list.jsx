@@ -126,7 +126,7 @@ export default class BillList extends React.Component {
         >
           <PageHeader.Actions>
             {primaryAction}
-            <ButtonToggle icon="ellipsis" onClick={this.toggleExtra} state={this.state.extraVisible} />
+            <ButtonToggle icon="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
