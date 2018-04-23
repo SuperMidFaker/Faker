@@ -9,7 +9,7 @@ COPY .  /opt/apps/welogix-web
 EXPOSE 3022
 
 # ENV NODE_ENV=test
-# RUN npm run docker-build
+# RUN npm run test-build
 
 CMD [ "sh", "dockerCmd.sh" ]
 

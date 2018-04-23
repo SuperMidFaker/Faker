@@ -9,6 +9,6 @@ COPY .  /opt/apps/welogix-web
 
 EXPOSE 3022
 ENV NODE_ENV=production
-RUN npm run docker-build
+RUN npm run build
 
 CMD [ "pm2-docker", "pm2/prod.json" ]
