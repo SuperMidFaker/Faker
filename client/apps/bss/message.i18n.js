@@ -14,6 +14,14 @@ const messages = defineMessages({
     id: 'bss.module.bill',
     defaultMessage: '账单管理',
   },
+  invoice: {
+    id: 'bss.module.invoice',
+    defaultMessage: '发票管理',
+  },
+  voucher: {
+    id: 'bss.module.voucher',
+    defaultMessage: '凭证管理',
+  },
   settings: {
     id: 'bss.module.settings',
     defaultMessage: '设置',

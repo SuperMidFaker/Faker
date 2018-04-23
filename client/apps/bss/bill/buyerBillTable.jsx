@@ -161,12 +161,12 @@ export default class BuyerBills extends React.Component {
         } else if (record.bill_status === 2) {
           return (<span>
             <RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />
-            <RowAction icon="share-alt" onClick={this.handleSendEmail} label="重新发送" row={record} />
+            <RowAction icon="share-alt" onClick={this.handleSendEmail} tooltip="重新发送" row={record} />
           </span>);
         } else if (record.bill_status === 4) {
           return (<span>
-            <RowAction icon="swap" onClick={this.handleDetail} label="查看" row={record} />
-            <RowAction icon="swap" onClick={this.handleWriteOff} label="确认核销" row={record} />
+            <RowAction icon="check" onClick={this.handleWriteOff} label="确认核销" row={record} />
+            <RowAction icon="eye-o" onClick={this.handleDetail} tooltip="查看" row={record} />
           </span>);
         }
       } else if (record.bill_status === 1) {
@@ -178,11 +178,11 @@ export default class BuyerBills extends React.Component {
       } else if (record.bill_status === 2) {
         return (<RowAction icon="swap" onClick={this.handleCheck} label="对账" row={record} />);
       } else if (record.bill_status === 3) {
-        return (<RowAction icon="swap" onClick={this.handleRecall} label="撤销" row={record} />);
+        return (<RowAction icon="close" onClick={this.handleRecall} label="撤销" row={record} />);
       } else if (record.bill_status === 4 && record.tenant_id === this.props.tenantId) {
         return (<span>
-          <RowAction icon="swap" onClick={this.handleDetail} label="查看" row={record} />
-          <RowAction icon="swap" onClick={this.handleWriteOff} label="确认核销" row={record} />
+          <RowAction icon="check" onClick={this.handleWriteOff} label="确认核销" row={record} />
+          <RowAction icon="eye-o" onClick={this.handleDetail} tooltip="查看" row={record} />
         </span>);
       }
       return null;

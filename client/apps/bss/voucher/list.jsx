@@ -233,7 +233,7 @@ export default class AuditList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/audit/${row.sof_order_no}`;
+    const link = `/bss/voucher/${row.sof_order_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -330,7 +330,7 @@ export default class AuditList extends React.Component {
     ];
     return (
       <Layout>
-        <PageHeader title={this.msg('audit')}>
+        <PageHeader title={this.msg('voucher')}>
           <PageHeader.Actions>
             <ToolbarAction
               icon="check"
@@ -345,15 +345,22 @@ export default class AuditList extends React.Component {
         <Layout>
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
-              <Menu.Item key="all">
-                {this.gmsg('all')}
-              </Menu.Item>
-              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
-                <Menu.Item key="submitted">
-                  <Icon type="upload" /> {this.msg('statusSubmitted')}
+              <Menu.ItemGroup key="receipt" title={this.msg('receipt')}>
+                <Menu.Item key="receivedPayment">
+                  <Icon type="select" /> {this.msg('receivedPayment')}
                 </Menu.Item>
-                <Menu.Item key="confirmed">
-                  <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
+                <Menu.Item key="receiptVoucher">
+                  <Icon type="download" /> {this.msg('receiptVoucher')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="payment" title={this.msg('payment')}>
+                <Menu.Item key="paymentVoucher">
+                  <Icon type="upload" /> {this.msg('paymentVoucher')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="transfer" title={this.msg('transfer')}>
+                <Menu.Item key="transferVoucher">
+                  <Icon type="swap" /> {this.msg('transferVoucher')}
                 </Menu.Item>
               </Menu.ItemGroup>
             </Menu>

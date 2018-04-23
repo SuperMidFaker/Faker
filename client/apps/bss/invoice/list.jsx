@@ -233,7 +233,7 @@ export default class AuditList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/audit/${row.sof_order_no}`;
+    const link = `/bss/invoice/${row.sof_order_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -330,7 +330,7 @@ export default class AuditList extends React.Component {
     ];
     return (
       <Layout>
-        <PageHeader title={this.msg('audit')}>
+        <PageHeader title={this.msg('invoice')}>
           <PageHeader.Actions>
             <ToolbarAction
               icon="check"
@@ -345,15 +345,26 @@ export default class AuditList extends React.Component {
         <Layout>
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
-              <Menu.Item key="all">
-                {this.gmsg('all')}
-              </Menu.Item>
-              <Menu.ItemGroup key="status" title={this.gmsg('status')}>
-                <Menu.Item key="submitted">
-                  <Icon type="upload" /> {this.msg('statusSubmitted')}
+              <Menu.ItemGroup key="invoicing" title={this.msg('invoicing')}>
+                <Menu.Item key="applied">
+                  <Icon type="upload" /> {this.msg('statusApplied')}
+                </Menu.Item>
+                <Menu.Item key="invoiced">
+                  <Icon type="file" /> {this.msg('statusInvoiced')}
+                </Menu.Item>
+                <Menu.Item key="paymentReceived">
+                  <Icon type="check-square-o" /> {this.msg('statusPaymentReceived')}
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="payableInvoice" title={this.msg('payableInvoice')}>
+                <Menu.Item key="pending">
+                  <Icon type="file-unknown" /> {this.msg('statusPending')}
                 </Menu.Item>
                 <Menu.Item key="confirmed">
-                  <Icon type="check-square-o" /> {this.msg('statusConfirmed')}
+                  <Icon type="file" /> {this.msg('statusConfirmed')}
+                </Menu.Item>
+                <Menu.Item key="paymentMade">
+                  <Icon type="check-square-o" /> {this.msg('statusPaymentMade')}
                 </Menu.Item>
               </Menu.ItemGroup>
             </Menu>

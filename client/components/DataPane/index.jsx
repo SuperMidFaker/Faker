@@ -10,7 +10,7 @@ import './style.less';
 export default class DataPane extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-pane',
-    scrollOffset: 480,
+    scrollOffset: 356,
   }
   static propTypes = {
     baseCls: PropTypes.string,

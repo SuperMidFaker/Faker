@@ -53,7 +53,7 @@ export default class ModuleSCOF extends React.Component {
       single: true,
       key: 'scof-invoice',
       path: '/scof/invoices',
-      icon: 'logixon icon-invoice',
+      icon: 'logixon icon-comerecial-invoice',
       text: formatMsg(intl, 'invoices'),
     });
     linkMenus.push({
