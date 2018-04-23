@@ -171,7 +171,6 @@ export default class CiqDetailsPane extends React.Component {
     }];
     return (
       <DataPane
-
         columns={columns}
         bordered
         scrollOffset={312}

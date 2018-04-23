@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Layout, message } from 'antd';
+import { Button, Divider, Layout, message } from 'antd';
+import ButtonToggle from 'client/components/ButtonToggle';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
+import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
@@ -58,6 +60,7 @@ export default class RatesList extends Component {
   }
   state = {
     selectedRowKeys: [],
+    extraVisible: false,
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -128,6 +131,9 @@ export default class RatesList extends Component {
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, searchText: value };
     this.handleQuoteTableLoad(1, filter);
+  }
+  toggleExtra = () => {
+    this.setState({ extraVisible: !this.state.extraVisible });
   }
   render() {
     const { quotesList, tenantId } = this.props;
@@ -207,6 +213,22 @@ export default class RatesList extends Component {
     const bulkActions = (<span>
       <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />
     </span>);
+    const menuStack = [
+      [
+        {
+          key: 'g_setting',
+          title: this.gmsg('setting'),
+          type: 'group',
+          children: [
+            {
+              key: 'rules',
+              icon: 'tool',
+              title: this.msg('事件绑定'),
+            },
+          ],
+        },
+      ],
+    ];
     return (
       <Layout>
         <PageHeader title={this.msg('quote')} menus={menus} currentKey={this.props.listFilter.viewStatus} onTabChange={this.handleTabChange}>
@@ -214,6 +236,7 @@ export default class RatesList extends Component {
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
               新建报价
             </Button>
+            <ButtonToggle icon="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
@@ -228,6 +251,15 @@ export default class RatesList extends Component {
             loading={quotesList.loading}
             rowKey="quote_no"
           />
+          <NestedMenuPanel
+            title={this.gmsg('extraMenu')}
+            visible={this.state.extraVisible}
+            onClose={this.toggleExtra}
+            stack={menuStack}
+            onMenuClick={this.handleExtraMenuClick}
+          >
+            <Divider />
+          </NestedMenuPanel>
         </Content>
         <CreateQuoteModal />
       </Layout>
