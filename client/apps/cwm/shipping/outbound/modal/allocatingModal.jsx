@@ -136,6 +136,7 @@ export default class AllocatingModal extends Component {
     title: '加入',
     width: 60,
     fixed: 'left',
+    key: 'in',
     render: (o, record) => {
       let disabled = !this.props.editable; // 不可编辑时disable
       let reason = '';
@@ -302,6 +303,7 @@ export default class AllocatingModal extends Component {
     title: '移出',
     width: 60,
     fixed: 'left',
+    key: 'out',
     render: (o, record) => (record.alloced ? null :
     <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.trace_id)} disabled={!this.props.editable} />),
   }, {
