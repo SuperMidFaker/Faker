@@ -11,6 +11,7 @@ EXPOSE 3022
 # ENV NODE_ENV=test
 # RUN npm run test-build
 
+# test环境下，docker run 的时候配置参数，所以用脚本跑build，将参数传入
 CMD [ "sh", "dockerCmd.sh" ]
 
 # $ docker build -f dockerfiles/Dockerfile.test ./ -t welogix-web:1.0 --no-cache
