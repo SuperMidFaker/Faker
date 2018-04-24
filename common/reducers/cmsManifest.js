@@ -211,7 +211,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_MANIFEST_BODY_SUCCEED:
       return { ...state, billBodies: action.result.data };
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
-      return { ...state, billHead: action.result.data }; // gross_wt float is string TODO
+      return { ...state, billHead: { ...state.billHead, net_wt: action.data.netWt } };
     case actionTypes.LOAD_CUSTOMS_DECL:
       return {
         ...state,
@@ -263,7 +263,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         billHead: action.data.head,
         billHeadFieldsChangeTimes: 0,
-      }; // float become string
+      };
     case actionTypes.SAVE_ENTRY_HEAD_SUCCEED:
       return { ...state, billHeadFieldsChangeTimes: 0 };
     case actionTypes.OPEN_MS_MODAL:

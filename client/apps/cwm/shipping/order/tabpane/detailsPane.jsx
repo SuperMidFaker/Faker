@@ -151,7 +151,7 @@ export default class DetailsPane extends Component {
       render: o => (o ? (<SKUPopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>请设置sku</span>),
     }, {
       title: '入库单号',
-      dataIndex: 'asn_no',
+      dataIndex: 'asn_cust_order_no',
       width: 150,
     }, {
       title: '批次号',
@@ -203,7 +203,6 @@ export default class DetailsPane extends Component {
     }
     return (
       <DataPane
-
         columns={columns}
         rowSelection={rowSelection}
         indentSize={0}
