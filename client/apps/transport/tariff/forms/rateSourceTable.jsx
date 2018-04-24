@@ -94,8 +94,7 @@ export default class RateSourceTable extends React.Component {
     currentPage: current,
     filters: JSON.stringify(this.props.filters),
   })
-  handleEdit = (row, ev) => {
-    ev.stopPropagation();
+  handleEdit = (row) => {
     const {
       code, province, city, district, street, name,
     } = row.source;
@@ -225,9 +224,10 @@ export default class RateSourceTable extends React.Component {
         title: '操作',
         width: 80,
         dataIndex: 'OPS_COL',
+        fixed: 'right',
         render: (o, record) => (
           <span>
-            <RowAction onClick={this.handleEdit} icon="form" label="编辑" row={record} />
+            <RowAction onClick={this.handleEdit} icon="form" tooltip="编辑" row={record} />
             <RowAction confirm="确认删除?" onConfirm={this.handleDel} icon="delete" tooltip="删除" row={record} />
           </span>
         ),
