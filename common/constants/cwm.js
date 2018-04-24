@@ -504,6 +504,8 @@ exports.ALLOC_MATCH_FIELDS = [{
 }, {
   field: 'external_lot_no', label: '批次号',
 }, {
+  field: 'asn_cust_order_no', label: '入库客户单号',
+}, {
   field: 'po_no', label: '采购订单号',
 }, {
   field: 'supplier', label: '供货商',
