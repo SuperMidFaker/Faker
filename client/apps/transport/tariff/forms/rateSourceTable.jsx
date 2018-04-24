@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Form, Modal, Input, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import RegionCascader from 'client/components/RegionCascader';
-import { submitRateSource, loadRatesSources, updateRateSource,
-  delRateSource, loadRateEnds } from 'common/reducers/transportTariff';
-import { getRowKey, renderRegion, RowClick, ConfirmDel } from './commodity';
+import RowAction from 'client/components/RowAction';
+import { submitRateSource, loadRatesSources, updateRateSource, delRateSource, loadRateEnds } from 'common/reducers/transportTariff';
+import { renderRegion } from './commodity';
 
 const FormItem = Form.Item;
 
@@ -30,9 +30,8 @@ export default class RateSourceTable extends React.Component {
   static propTypes = {
     visibleModal: PropTypes.bool.isRequired,
     tariffId: PropTypes.string.isRequired,
-    ratesSourceList: PropTypes.object.isRequired,
+    ratesSourceList: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
     loading: PropTypes.bool.isRequired,
-    form: PropTypes.object.isRequired,
     onChangeVisible: PropTypes.func.isRequired,
     submitRateSource: PropTypes.func.isRequired,
     loadRatesSources: PropTypes.func.isRequired,
@@ -113,7 +112,7 @@ export default class RateSourceTable extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        let current = this.props.ratesSourceList.current;
+        let { current } = this.props.ratesSourceList;
         if (current > 1 &&
             this.props.ratesSourceList.pageSize * (current - 1)
             === this.props.ratesSourceList.totalCount - 1) {
@@ -126,7 +125,7 @@ export default class RateSourceTable extends React.Component {
   handleSourceSave = () => {
     if (this.state.regionCode) {
       let prom;
-      const rateId = this.state.rateId;
+      const { rateId } = this.state;
       if (rateId) {
         prom = this.props.updateRateSource(
           this.state.rateId,
@@ -147,7 +146,7 @@ export default class RateSourceTable extends React.Component {
           message.error(result.error.message, 10);
         } else {
           message.success('保存成功');
-          let current = this.props.ratesSourceList.current;
+          let { current } = this.props.ratesSourceList;
           if (this.props.ratesSourceList.pageSize * current
               < this.props.ratesSourceList.totalCount + 1) {
             current += 1;
@@ -228,22 +227,30 @@ export default class RateSourceTable extends React.Component {
         dataIndex: 'OPS_COL',
         render: (o, record) => (
           <span>
-            <RowClick text="编辑" onClick={this.handleEdit} row={record} />
-            <span className="ant-divider" />
-            <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
+            <RowAction onClick={this.handleEdit} icon="form" label="编辑" row={record} />
+            <RowAction confirm="确认删除?" onConfirm={this.handleDel} icon="delete" tooltip="删除" row={record} />
           </span>
         ),
       });
     }
     return (
       <div>
-        <DataTable size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} rowKey={getRowKey}
+        <DataTable
+          size="middle"
+          rowSelection={rowSelection}
+          columns={columns}
+          loading={loading}
+          dataSource={this.dataSource}
+          rowKey="_id"
           onRow={record => ({
             onClick: () => { this.handleRowClick(record); },
           })}
         />
-        <Modal maskClosable={false} visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
+        <Modal
+          maskClosable={false}
+          visible={visibleModal}
+          onOk={this.handleSourceSave}
+          onCancel={this.handleCancel}
           closable={false}
         >
           <Form layout="horizontal">

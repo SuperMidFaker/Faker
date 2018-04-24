@@ -325,6 +325,9 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       field: 'trxn_mode',
       label: '成交方式',
     }, {
+      field: 'asn_cust_order_no',
+      label: '入库订单号',
+    }, {
       field: 'virtual_whse',
       label: '库别',
     }, {
