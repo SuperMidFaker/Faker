@@ -1,3 +1,7 @@
+/**
+ * TODO
+ * 分支测试率待提高
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { mount, shallow } from 'enzyme';
@@ -50,6 +54,7 @@ describe('AllocatingModal', () => {
         // },
       }
     ).dive();
+    // mockApi 方法目前还没用
     superagent.mockApi([{
       url: 'v1/cwm/whse/limit/locations',
       resp: [{

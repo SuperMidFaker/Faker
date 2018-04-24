@@ -36,22 +36,30 @@ if (typeof window !== 'undefined') {
     send: () => {},
     end(fn) { fn(this.err, this.resp); },
     get(url) {
-      this.resp = this.mockApiMap[url];
+      const data = this.mockApiMap[url];
+      if (data.err) {
+        this.err = data.err;
+      } else {
+        this.resp = data.resp;
+      }
       return this;
     },
     post(url) {
-      this.resp = this.mockApiMap[url];
+      const data = this.mockApiMap[url];
+      if (data.err) {
+        this.err = data.err;
+      } else {
+        this.resp = data.resp;
+      }
       return this;
     },
     mockApi(mockData, endpoint) {
       for (let i = 0; i < mockData.length; i++) {
         const data = mockData[i];
-        if (data.err) {
-          this.err = data.err;
-        } else if (!data.endpoint) {
-          this.mockApiMap[`${global.API_ROOTS.default}${data.url}`] = data.resp;
+        if (!endpoint) {
+          this.mockApiMap[`${global.API_ROOTS.default}${data.url}`] = { resp: data.resp, err: data.err };
         } else {
-          this.mockApiMap[`${endpoint}${data.url}`] = data.resp;
+          this.mockApiMap[`${endpoint}${data.url}`] = { resp: data.resp, err: data.err };
         }
       }
     },

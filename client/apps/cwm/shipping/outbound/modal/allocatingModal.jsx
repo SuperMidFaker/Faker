@@ -86,12 +86,11 @@ export default class AllocatingModal extends Component {
         outboundProduct: nextProps.outboundProduct,
       });
       const phIdx = this.inventoryColumns.findIndex(invc => invc.dataIndex === 'ALLOC_PLACEHOLDER');
-      const allocOptions = nextProps.outboundHead.alloc_rules.filter(ar => ar.key !== 'asn_cust_order_no')
-        .map(arp => ({
-          ...this.inventoryColumns[phIdx],
-          title: ALLOC_RULE_OPTIONS[arp.key],
-          dataIndex: arp.key,
-        }));
+      const allocOptions = nextProps.outboundHead.alloc_rules.map(arp => ({
+        ...this.inventoryColumns[phIdx],
+        title: ALLOC_RULE_OPTIONS[arp.key],
+        dataIndex: arp.key,
+      }));
       let filterInventoryColumns = [...this.inventoryColumns];
       filterInventoryColumns.splice(phIdx, 1, ...allocOptions);
       let filterAllocatedColumns = this.allocatedColumns;
@@ -156,15 +155,11 @@ export default class AllocatingModal extends Component {
           const { outboundProduct } = this.state;
           for (let i = 0; i < outboundHead.alloc_rules.length; i++) {
             const ar = outboundHead.alloc_rules[i];
-            let inbKey = ar.key;
-            if (inbKey === 'asn_cust_order_no') {
-              inbKey = 'cust_order_no';
-            }
-            if (ar.eigen && record[inbKey] !== ar.eigen) {
+            if (ar.eigen && record[ar.key] !== ar.eigen) {
               disabled = true;
               reason = `${ALLOC_RULE_OPTIONS[ar.key]}值不等于${ar.eigen}`;
               break;
-            } else if (outboundProduct[ar.key] && outboundProduct[ar.key] !== record[inbKey]) {
+            } else if (outboundProduct[ar.key] && outboundProduct[ar.key] !== record[ar.key]) {
               disabled = true;
               reason = `${ALLOC_RULE_OPTIONS[ar.key]}值不等于${outboundProduct[ar.key]}`;
               break;
@@ -552,7 +547,7 @@ export default class AllocatingModal extends Component {
     const filters = { ...this.props.filters, searchType: value || 'external_lot_no' };
     const { bonded } = this.props.outboundHead;
     const phIdx = this.inventoryColumns.findIndex(invc => invc.dataIndex === 'ALLOC_PLACEHOLDER');
-    const allocOptions = this.props.outboundHead.alloc_rules.filter(ar => ar.key !== 'asn_cust_order_no').map(arp => ({
+    const allocOptions = this.props.outboundHead.alloc_rules.map(arp => ({
       ...this.inventoryColumns[phIdx],
       title: ALLOC_RULE_OPTIONS[arp.key],
       dataIndex: arp.key,
@@ -772,7 +767,7 @@ y: this.state.scrollY,
 y: this.state.scrollY,
 }}
               loading={this.props.allocatedDataLoading}
-              rowKey="trace_id"
+              rowKey="id"
             />
           </div>
         </Card>
