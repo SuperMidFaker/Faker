@@ -105,7 +105,7 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
   }
@@ -310,7 +310,7 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
     this.setState({
@@ -324,7 +324,7 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
   }
@@ -334,7 +334,7 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
   }
@@ -344,7 +344,7 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
   }
@@ -363,7 +363,7 @@ export default class ShippingOrderList extends React.Component {
     this.props.loadSos({
       whseCode: value,
       pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
+      current: 1,
       filters,
     });
   }

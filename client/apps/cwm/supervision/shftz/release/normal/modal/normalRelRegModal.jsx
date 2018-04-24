@@ -49,16 +49,19 @@ export default class NormalRelRegModal extends Component {
   }
   state = {
     ownerCusCode: '',
-    srcType: '',
+    srcType: 'so_no',
     srcFilter: { bill_no: '' },
     normalSources: [],
     relDetails: [],
     selRelDetailKeys: [],
     relDetailFilter: '',
-    normalRegColumns: null,
+    normalRegColumns: this.soNormalSrcColumns,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadParams();
+    this.setState({
+      normalRegColumns: this.soNormalSrcColumns,
+    });
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: (window.innerHeight - 460),
@@ -146,6 +149,10 @@ export default class NormalRelRegModal extends Component {
     && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSrcDetail(record)} />,
   }]
   relDetailColumns = [{
+    title: '客户单号',
+    dataIndex: 'so_cust_order_no',
+    width: 180,
+  }, {
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',
     width: 180,
@@ -205,7 +212,10 @@ export default class NormalRelRegModal extends Component {
     this.props.loadSoRelDetails(row.pre_entry_seq_no, true).then((result) => {
       if (!result.error) {
         const relDetails = this.state.relDetails
-          .filter(reg => reg.so_no !== row.so_no).concat(result.data);
+          .filter(reg => reg.so_no !== row.so_no).concat(result.data.map(dt => ({
+            ...dt,
+            so_cust_order_no: row.cust_order_no,
+          })));
         this.soNormalSrcAddedMap[row.so_no] = true;
         this.setState({ relDetails });
       }
@@ -261,7 +271,7 @@ export default class NormalRelRegModal extends Component {
   handleCancel = () => {
     this.setState({
       ownerCusCode: '',
-      srcType: '',
+      srcType: 'so_no',
       normalSources: [],
       relDetails: [],
       srcFilter: {},
@@ -277,8 +287,8 @@ export default class NormalRelRegModal extends Component {
     srcFilter[field] = value;
     this.setState({ srcFilter });
   }
-  handleDetailFilterChange = (ev) => {
-    this.setState({ relDetailFilter: ev.target.value });
+  handleDetailFilterChange = (value) => {
+    this.setState({ relDetailFilter: value });
   }
   handleNormalRegSave = () => {
     const detailIds = [];
@@ -319,11 +329,15 @@ export default class NormalRelRegModal extends Component {
   handleOwnerChange = (ownerCusCode) => {
     this.setState({
       ownerCusCode,
-      srcType: '',
+      srcType: 'so_no',
       normalSources: [],
       srcFilter: {},
       relDetails: [],
       relDetailFilter: '',
+    });
+    this.handleLoadNormalSrc('so_no', {
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
     });
   }
   handleSrcTypeChange = (value) => {
@@ -416,7 +430,7 @@ export default class NormalRelRegModal extends Component {
     const dataSource = relDetails.filter((item) => {
       if (relDetailFilter) {
         const reg = new RegExp(relDetailFilter);
-        return reg.test(item.ftz_ent_no);
+        return reg.test(item.so_no) || reg.test(item.so_cust_order_no);
       }
       return true;
     });
@@ -500,12 +514,13 @@ export default class NormalRelRegModal extends Component {
                     value={srcType}
                     placeholder="业务单据类型"
                     style={{ width: 160, fontSize: 16, marginLeft: 16 }}
-                    onSelect={this.handleSrcTypeChange}
+                    onChange={this.handleSrcTypeChange}
                   >
                     <Option key="so_no">出货订单</Option>
-                    <Option key="ftz_ent_no">海关入库单</Option>
-                    <Option key="ftz_ent_stock">保税库存</Option>
+                    {/* <Option key="ftz_ent_no">海关入库单</Option>
+                    <Option key="ftz_ent_stock">保税库存</Option> */}
                   </Select>
+
                 </div>}
                 bodyStyle={{ padding: 0 }}
               >
@@ -530,7 +545,7 @@ export default class NormalRelRegModal extends Component {
               <Card title="出库备案明细" bodyStyle={{ padding: 0 }}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <SearchBox placeholder="海关入库单号" onSearch={this.handleDetailFilterChange} />
+                    <SearchBox placeholder="客户单号/SO编号" onSearch={this.handleDetailFilterChange} />
                     <div className={`bulk-actions ${selRelDetailKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{selRelDetailKeys.length}项</h3>
                       {selRelDetailKeys.length !== 0 &&

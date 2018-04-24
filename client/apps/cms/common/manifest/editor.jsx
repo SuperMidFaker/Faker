@@ -5,7 +5,7 @@ import { Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
   notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
+import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead } from 'common/reducers/cmsManifest';
 import { loadDocuDatas, loadInvTemplates } from 'common/reducers/cmsInvoice';
@@ -50,7 +50,6 @@ const { confirm } = Modal;
     saveBillHead,
     openMergeSplitModal,
     resetBill,
-    updateHeadNetWt,
     loadBillBody,
     editBillBody,
     loadTemplateFormVals,
@@ -174,14 +173,12 @@ export default class ManifestEditor extends React.Component {
       }
     });
   }
-  validateCode = (code, customsCode) => {
+  validateCode = (code) => {
     let info = null;
-    if (code === '' && customsCode === '') {
-      info = '请填写社会信用代码或者海关编码';
+    if (code === '') {
+      info = '请填写社会信用代码';
     } else if (code && code.length !== 18) {
       info = `社会信用代码必须为18位, 当前${code.length}位`;
-    } else if (customsCode && customsCode.length !== 10) {
-      info = `海关10位编码必须为10位, 当前${customsCode.length}位`;
     }
     return info;
   }
@@ -193,18 +190,33 @@ export default class ManifestEditor extends React.Component {
     if (!this.props.form.getFieldValue('model')) {
       templateId = null;
     }
-    const head = { ...billHead, ...this.props.form.getFieldsValue(), template_id: templateId };
-    const tradeInfo = this.validateCode(head.trade_co, head.trade_custco);
+    const head = { ...billHead, template_id: templateId };
+    const formValues = this.props.form.getFieldsValue();
+    Object.keys(formValues).forEach((formkey) => {
+      if (formValues[formkey]) {
+        let formValue = formValues[formkey];
+        if (['gross_wt', 'net_wt', 'fee_rate', 'insur_rate', 'other_rate', 'pack_count'].indexOf(formkey) !== -1) {
+          formValue = parseFloat(formValue);
+          if (Number.isNaN(formValue)) {
+            formValue = null;
+          }
+        }
+        head[formkey] = formValue;
+      } else {
+        head[formkey] = null;
+      }
+    });
+    const tradeInfo = this.validateCode(head.trade_co);
     if (tradeInfo) {
       message.error(`${tradeInfo}`);
       return;
     }
-    const ownInfo = this.validateCode(head.owner_code, head.owner_custco);
+    const ownInfo = this.validateCode(head.owner_code);
     if (ownInfo) {
       message.error(`${ownInfo}`);
       return;
     }
-    const agentInfo = this.validateCode(head.agent_code, head.agent_custco);
+    const agentInfo = this.validateCode(head.agent_code);
     if (agentInfo) {
       message.error(`${agentInfo}`);
       return;

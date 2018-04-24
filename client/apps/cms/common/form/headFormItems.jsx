@@ -166,7 +166,6 @@ export class RelationAutoCompSelect extends React.Component {
               <Input disabled value={initialCustCodeValue} />
                   : getFieldDecorator(custCodeField, {
                     initialValue: initialCustCodeValue,
-                    rules: codeRules,
                     onChange: this.handleInputChange,
                   })(<Select
                     mode="combobox"
@@ -186,6 +185,7 @@ export class RelationAutoCompSelect extends React.Component {
               <Input disabled value={initialCodeValue} />
                   : getFieldDecorator(codeField, {
                     initialValue: initialCodeValue,
+                    rules: codeRules,
                     onChange: this.handleInputChange,
                   })(<Select
                     mode="combobox"

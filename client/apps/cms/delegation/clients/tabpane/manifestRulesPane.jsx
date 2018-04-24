@@ -25,7 +25,11 @@ const { Content } = Layout;
     customer: state.cmsResources.customer,
   }),
   {
-    loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal,
+    loadPartners,
+    loadBillemplates,
+    deleteTemplate,
+    toggleBillTempModal,
+    showManifestRulesCloneModal,
   }
 )
 
@@ -33,8 +37,8 @@ export default class ManifestRulesPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    billtemplates: PropTypes.array,
-    customer: PropTypes.object,
+    billtemplates: PropTypes.arrayOf(PropTypes.shape({ template_name: PropTypes.string })),
+    customer: PropTypes.shape({ id: PropTypes.number }),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -110,7 +114,7 @@ export default class ManifestRulesPane extends React.Component {
             return (
               <span>
                 <RowAction onClick={this.handleEdit} icon="edit" label={this.msg('modify')} row={record} />
-                <RowAction onClick={this.handleClone} icon="copy" tooltip={this.msg('copy')} row={record} />
+                <RowAction onClick={this.handleClone} icon="copy" tooltip={this.msg('clone')} row={record} />
                 <RowAction confirm="确定删除？" onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
@@ -120,7 +124,8 @@ export default class ManifestRulesPane extends React.Component {
         },
       },
     ];
-    const datas = this.props.billtemplates.filter(tp => tp.customer_partner_id === this.props.customer.id);
+    const datas = this.props.billtemplates.filter(tp => tp.customer_partner_id ===
+      this.props.customer.id);
     return (
       <Content>
         <div className="toolbar">

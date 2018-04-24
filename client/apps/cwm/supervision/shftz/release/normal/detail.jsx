@@ -126,7 +126,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
         ));
       } else {
         detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, detail, {
-          seq_no: null,
+          seq_no: detailMap.size + 1,
           product_no: null,
         }));
       }

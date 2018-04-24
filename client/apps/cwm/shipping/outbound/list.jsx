@@ -90,7 +90,7 @@ export default class OutboundList extends React.Component {
     this.props.loadOutbounds({
       whseCode,
       pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
+      current: 1,
       filters,
     });
   }
@@ -216,7 +216,7 @@ export default class OutboundList extends React.Component {
     this.props.loadOutbounds({
       whseCode,
       pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
+      current: 1,
       filters,
     });
   }
@@ -240,7 +240,7 @@ export default class OutboundList extends React.Component {
     this.props.loadOutbounds({
       whseCode,
       pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
+      current: 1,
       filters,
     });
   }
@@ -288,8 +288,9 @@ export default class OutboundList extends React.Component {
       <SearchBox placeholder={this.msg('outboundPlaceholder')} onSearch={this.handleSearch} />
       <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} >
         <RadioButton value="all">全部</RadioButton>
-        <RadioButton value="created">待出库</RadioButton>
-        <RadioButton value="allocating">分配</RadioButton>
+        <RadioButton value="created">待分配</RadioButton>
+        <RadioButton value="allocating">分配中</RadioButton>
+        <RadioButton value="allocated">已分配</RadioButton>
         <RadioButton value="picking">拣货</RadioButton>
         <RadioButton value="shipping">发货</RadioButton>
         <RadioButton value="completed">已出库</RadioButton>

@@ -226,6 +226,14 @@ const messages = defineMessages({
     id: 'cms.delegation.delete',
     defaultMessage: '删除',
   },
+  clone: {
+    id: 'cms.delegation.clone',
+    defaultMessage: '复制',
+  },
+  auth: {
+    id: 'cms.delegation.auth',
+    defaultMessage: '授权',
+  },
   deleteConfirm: {
     id: 'cms.delegation.delete.confirm',
     defaultMessage: '确定删除？',

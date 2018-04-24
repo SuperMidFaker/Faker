@@ -86,11 +86,12 @@ export default class AllocatingModal extends Component {
         outboundProduct: nextProps.outboundProduct,
       });
       const phIdx = this.inventoryColumns.findIndex(invc => invc.dataIndex === 'ALLOC_PLACEHOLDER');
-      const allocOptions = nextProps.outboundHead.alloc_rules.map(arp => ({
-        ...this.inventoryColumns[phIdx],
-        title: ALLOC_RULE_OPTIONS[arp.key],
-        dataIndex: arp.key,
-      }));
+      const allocOptions = nextProps.outboundHead.alloc_rules.filter(ar => ar.key !== 'asn_cust_order_no')
+        .map(arp => ({
+          ...this.inventoryColumns[phIdx],
+          title: ALLOC_RULE_OPTIONS[arp.key],
+          dataIndex: arp.key,
+        }));
       let filterInventoryColumns = [...this.inventoryColumns];
       filterInventoryColumns.splice(phIdx, 1, ...allocOptions);
       let filterAllocatedColumns = this.allocatedColumns;
@@ -135,6 +136,7 @@ export default class AllocatingModal extends Component {
     title: '加入',
     width: 60,
     fixed: 'left',
+    key: 'in',
     render: (o, record) => {
       let disabled = !this.props.editable; // 不可编辑时disable
       let reason = '';
@@ -154,11 +156,15 @@ export default class AllocatingModal extends Component {
           const { outboundProduct } = this.state;
           for (let i = 0; i < outboundHead.alloc_rules.length; i++) {
             const ar = outboundHead.alloc_rules[i];
-            if (ar.eigen && record[ar.key] !== ar.eigen) {
+            let inbKey = ar.key;
+            if (inbKey === 'asn_cust_order_no') {
+              inbKey = 'cust_order_no';
+            }
+            if (ar.eigen && record[inbKey] !== ar.eigen) {
               disabled = true;
               reason = `${ALLOC_RULE_OPTIONS[ar.key]}值不等于${ar.eigen}`;
               break;
-            } else if (outboundProduct[ar.key] && outboundProduct[ar.key] !== record[ar.key]) {
+            } else if (outboundProduct[ar.key] && outboundProduct[ar.key] !== record[inbKey]) {
               disabled = true;
               reason = `${ALLOC_RULE_OPTIONS[ar.key]}值不等于${outboundProduct[ar.key]}`;
               break;
@@ -297,6 +303,7 @@ export default class AllocatingModal extends Component {
     title: '移出',
     width: 60,
     fixed: 'left',
+    key: 'out',
     render: (o, record) => (record.alloced ? null :
     <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.trace_id)} disabled={!this.props.editable} />),
   }, {
@@ -545,7 +552,7 @@ export default class AllocatingModal extends Component {
     const filters = { ...this.props.filters, searchType: value || 'external_lot_no' };
     const { bonded } = this.props.outboundHead;
     const phIdx = this.inventoryColumns.findIndex(invc => invc.dataIndex === 'ALLOC_PLACEHOLDER');
-    const allocOptions = this.props.outboundHead.alloc_rules.map(arp => ({
+    const allocOptions = this.props.outboundHead.alloc_rules.filter(ar => ar.key !== 'asn_cust_order_no').map(arp => ({
       ...this.inventoryColumns[phIdx],
       title: ALLOC_RULE_OPTIONS[arp.key],
       dataIndex: arp.key,
