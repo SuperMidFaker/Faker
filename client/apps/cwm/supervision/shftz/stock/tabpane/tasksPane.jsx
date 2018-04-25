@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Table } from 'antd';
+import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
-import { loadStockTasks, delStockTask } from 'common/reducers/cwmShFtzStock';
+import { delStockTask } from 'common/reducers/cwmShFtzStock';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
@@ -14,21 +14,14 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     defaultWhse: state.cwmContext.defaultWhse,
     ftzTaskList: state.cwmShFtzStock.ftzTaskList,
   }),
-  { loadStockTasks, delStockTask }
+  { delStockTask }
 )
 export default class TasksPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    collapsed: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
-  }
-  componentWillReceiveProps(nextProps) {
-    if ((nextProps.collapsed !== this.props.collapsed && !nextProps.collapsed)
-      || nextProps.ftzTaskList.reload) {
-      this.props.loadStockTasks(nextProps.defaultWhse.code);
-    }
   }
   msg = formatMsg(this.props.intl)
   gmsg=formatGlobalMsg(this.props.intl)
@@ -81,9 +74,13 @@ export default class TasksPane extends React.Component {
   render() {
     const { ftzTaskList } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
-        <Table loading={ftzTaskList.loading} columns={this.columns} dataSource={ftzTaskList.data} rowKey="id" />
-      </div>
+      <DataTable
+        loading={ftzTaskList.loading}
+        columns={this.columns}
+        dataSource={ftzTaskList.data}
+        rowKey="id"
+        showToolbar={false}
+      />
     );
   }
 }

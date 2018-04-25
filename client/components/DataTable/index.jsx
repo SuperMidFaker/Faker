@@ -43,6 +43,7 @@ class DataTable extends React.Component {
     baseCls: 'welo-data-table',
     fixedBody: true,
     showToolbar: true,
+    withBorder: true,
     scrollOffset: 280,
     paginationSize: 'small',
   }
@@ -61,7 +62,7 @@ class DataTable extends React.Component {
     onFilterSelected: PropTypes.func,
     onSearch: PropTypes.func,
     searchTips: PropTypes.string,
-    noBorder: PropTypes.bool,
+    withBorder: PropTypes.bool,
     fixedBody: PropTypes.bool,
     noSetting: PropTypes.bool,
     total: PropTypes.node,
@@ -294,7 +295,7 @@ class DataTable extends React.Component {
   }
   render() {
     const {
-      baseCls, noBorder, fixedBody, noSetting, paginationSize, minWidth,
+      baseCls, withBorder, fixedBody, noSetting, paginationSize, minWidth,
       selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
       showToolbar, toolbarActions, onSearch, searchTips,
     } = this.props;
@@ -337,7 +338,7 @@ class DataTable extends React.Component {
       <Button onClick={this.handleReset}>重置</Button>
     </div>);
     const classes = classNames(baseCls, {
-      [`${baseCls}-no-border`]: noBorder,
+      [`${baseCls}-no-border`]: !withBorder,
     });
     const bodyClasses = classNames(`${baseCls}-body`, {
       [`${baseCls}-body-fixed`]: fixedBody,

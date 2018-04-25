@@ -146,7 +146,7 @@ export default class TaskDetail extends React.Component {
                     loadEmergeItems={this.props.loadTaskEmergeItems}
                     emergeList={emergeList}
                     listFilter={emergeFilter}
-                    noBorder
+                    withBorder={false}
                   />
                 </TabPane>
                 <TabPane tab="冲突区" key="conflict">
@@ -154,7 +154,7 @@ export default class TaskDetail extends React.Component {
                     loadConflictItems={this.props.loadTaskConflictItems}
                     conflictList={conflictList}
                     listFilter={conflictFilter}
-                    noBorder
+                    withBorder={false}
                   />
                 </TabPane>
               </Tabs>

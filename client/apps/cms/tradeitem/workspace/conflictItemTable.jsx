@@ -46,7 +46,7 @@ export default class ConflictItemTable extends React.Component {
       repoId: PropTypes.number,
       name: PropTypes.string,
     }),
-    noBorder: PropTypes.bool,
+    withBorder: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -213,7 +213,7 @@ export default class ConflictItemTable extends React.Component {
   }
   render() {
     const {
-      loading, withRepo, repos, conflictList, noBorder,
+      loading, withRepo, repos, conflictList, withBorder,
     } = this.props;
     const { conflictSelRowKeys } = this.state;
     this.conflictDataSource.remotes = conflictList;
@@ -277,7 +277,7 @@ export default class ConflictItemTable extends React.Component {
           locale={{ emptyText: '当前没有冲突的商品归类' }}
           toolbarActions={toolbarActions}
           bulkActions={bulkActions}
-          noBorder={noBorder}
+          withBorder={withBorder}
         />
         <ItemDiffModal />
       </div>

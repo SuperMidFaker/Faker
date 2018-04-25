@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Button, Layout, Tag, notification } from 'antd';
+import { Button, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadParams } from 'common/reducers/cwmShFtz';
-import { loadFtzStocks } from 'common/reducers/cwmShFtzStock';
+import { loadFtzStocks, loadStockTasks } from 'common/reducers/cwmShFtzStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { string2Bytes } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
+import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -20,7 +21,7 @@ import QueryForm from './queryForm';
 import TasksPane from './tabpane/tasksPane';
 import { formatMsg } from './message.i18n';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -42,7 +43,12 @@ const { Sider, Content } = Layout;
     })),
     loading: state.cwmShFtz.loading,
   }),
-  { loadFtzStocks, loadParams, switchDefaultWhse }
+  {
+    loadFtzStocks,
+    loadStockTasks,
+    loadParams,
+    switchDefaultWhse,
+  }
 )
 @connectNav({
   depth: 2,
@@ -56,7 +62,7 @@ export default class SHFTZStockList extends React.Component {
   state = {
     filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
-    rightSiderCollapsed: true,
+    extraVisible: false,
     scrollOffset: 368,
   }
   componentWillMount() {
@@ -250,10 +256,13 @@ export default class SHFTZStockList extends React.Component {
     const scrollOffset = collapsed ? 368 : 280;
     this.setState({ scrollOffset });
   }
-  toggleRightSider = () => {
+  toggleExtra = () => {
     this.setState({
-      rightSiderCollapsed: !this.state.rightSiderCollapsed,
+      extraVisible: !this.state.extraVisible,
     });
+    if (!this.state.extraVisible) {
+      this.props.loadStockTasks(this.props.defaultWhse.code);
+    }
   }
   render() {
     const { columns } = this;
@@ -274,13 +283,10 @@ export default class SHFTZStockList extends React.Component {
               <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
                 {this.msg('export')}
               </Button>
-              <Badge dot style={{ backgroundColor: '#87d068' }}>
-                <ButtonToggle
-                  iconOn="hourglass"
-                  iconOff="hourglass"
-                  onClick={this.toggleRightSider}
-                />
-              </Badge>
+              <ButtonToggle
+                icon="bars"
+                onClick={this.toggleExtra}
+              />
             </PageHeader.Actions>
           </PageHeader>
           <Layout>
@@ -300,23 +306,15 @@ export default class SHFTZStockList extends React.Component {
               />
             </Content>
           </Layout>
+          <DockPanel
+            title="库存对比任务"
+            mode="inner"
+            visible={this.state.extraVisible}
+            onClose={this.toggleExtra}
+          >
+            <TasksPane />
+          </DockPanel>
         </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSiderCollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="welo-page-header">
-              <h3>库存对比任务</h3>
-            </div>
-            <TasksPane collapsed={this.state.rightSiderCollapsed} />
-          </div>
-        </Sider>
       </Layout>
     );
   }
