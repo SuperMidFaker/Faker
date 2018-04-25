@@ -381,7 +381,7 @@ export default class MemberDepartmentView extends React.Component {
                 </Sider>
                 <Content className="nav-content">
                   <DataTable
-                    noBorder
+                    withBorder={false}
                     toolbarActions={contentHeadAction}
                     rowSelection={this.rowSelection}
                     columns={this.columns}

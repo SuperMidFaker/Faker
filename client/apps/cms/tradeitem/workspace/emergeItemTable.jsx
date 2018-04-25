@@ -45,7 +45,7 @@ export default class EmergeItemTable extends React.Component {
       repoId: PropTypes.number,
       name: PropTypes.string,
     }),
-    noBorder: PropTypes.bool,
+    withBorder: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -144,7 +144,7 @@ export default class EmergeItemTable extends React.Component {
   }
   render() {
     const {
-      loading, emergeList, withRepo, repos, noBorder,
+      loading, emergeList, withRepo, repos, withBorder,
     } = this.props;
     const { emergeSelRowKeys } = this.state;
     this.emergeDataSource.remotes = emergeList;
@@ -181,7 +181,7 @@ export default class EmergeItemTable extends React.Component {
         rowKey="id"
         locale={{ emptyText: '当前没有新的商品货号' }}
         toolbarActions={toolbarActions}
-        noBorder={noBorder}
+        withBorder={withBorder}
       />
     );
   }

@@ -61,65 +61,52 @@ export default class AuditList extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
-    title: '业务编号',
-    dataIndex: 'sof_order_no',
+    title: '发票号',
+    dataIndex: 'invoice_no',
     width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '客户',
+    title: '购买方',
     width: 180,
-    dataIndex: 'owner_name',
+    dataIndex: 'buyer_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
-    title: '客户单号',
+    title: '销售方',
+    width: 180,
+    dataIndex: 'seller_name',
+    render: o => <TrimSpan text={o} maxLen={16} />,
+  }, {
+    title: '账单号/业务编号',
     width: 150,
     dataIndex: 'cust_order_no',
   }, {
-    title: '应收金额',
-    dataIndex: 'receivable_amount',
-    align: 'right',
-    width: 150,
-  }, {
-    title: '应付金额',
-    dataIndex: 'payable_amount',
-    align: 'right',
-    width: 150,
-  }, {
-    title: '差异金额',
-    dataIndex: 'profit_amount',
-    align: 'right',
-    width: 150,
-    render: o => ((o < 0) ? <span className="text-error">{o}</span> : o),
-  }, {
-    title: '毛利率%',
-    dataIndex: 'gross_profit_ratio',
-    align: 'right',
+    title: '发票种类',
     width: 100,
-    render: (o) => {
-      if (o) {
-        return o < 0 ? <span className="text-error">{o.toFixed(1)}</span> : o.toFixed(1);
-      }
-      return null;
-    },
+    dataIndex: 'invoice_type',
   }, {
-    title: '订单日期',
-    dataIndex: 'order_date',
+    title: '发票金额',
+    dataIndex: 'invoice_amount',
+    align: 'right',
+    width: 150,
+  }, {
+    title: '税额',
+    dataIndex: 'tax_amount',
+    align: 'right',
+    width: 150,
+  }, {
+    title: '开票日期',
+    dataIndex: 'invoiced_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
-    title: '结单日期',
-    dataIndex: 'settled_date',
+    title: '申请日期',
+    dataIndex: 'applied_date',
     width: 120,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
   }, {
-    title: '审核时间',
-    dataIndex: 'confirmed_date',
-    width: 120,
-    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
-  }, {
-    title: '审核人员',
-    dataIndex: 'confirmed_by',
+    title: '创建人员',
+    dataIndex: 'created_by',
     width: 120,
     render: lid => lid && <UserAvatar size="small" loginId={lid} showName />,
   }, {
@@ -255,6 +242,7 @@ export default class AuditList extends React.Component {
       },
     };
     this.dataSource.remotes = auditslist;
+    const primaryAction = <ToolbarAction primary icon="plus" label={this.msg('createInvoice')} onClick={this.handleCreate} />;
     const toolbarActions = (<span>
       <Select
         showSearch
@@ -332,13 +320,7 @@ export default class AuditList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('invoice')}>
           <PageHeader.Actions>
-            <ToolbarAction
-              icon="check"
-              confirm={this.gmsg('confirmOp')}
-              onConfirm={this.handleAllConfirm}
-              label={this.msg('confirmAll')}
-              disabled={status === 'confirmed'}
-            />
+            {primaryAction}
             <ButtonToggle icon="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>

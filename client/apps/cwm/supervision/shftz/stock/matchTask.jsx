@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Button, Layout, Tabs, Row, Col, Card } from 'antd';
+import { Button, Layout, Tabs } from 'antd';
 import { loadStockMatchTask, loadMatchTaskMatched, loadMatchTaskNonmatched, loadMatchTaskLocStock } from 'common/reducers/cwmShFtzStock';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
+import Drawer from 'client/components/Drawer';
 import MagicCard from 'client/components/MagicCard';
-import InfoItem from 'client/components/InfoItem';
+import DescriptionList from 'client/components/DescriptionList';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import FTZStockPane from './tabpane/ftzStockPane';
@@ -16,6 +17,7 @@ import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
+const { Description } = DescriptionList;
 
 @injectIntl
 @connect(
@@ -36,6 +38,9 @@ export default class SHFTZStockMatchTask extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     task: PropTypes.shape({ task: PropTypes.shape({ owner_name: PropTypes.string }) }),
+  }
+  state = {
+    scrollOffset: 368,
   }
   componentDidMount() {
     const { task: { matchedlist, nonmatchlist, locationStock } } = this.props;
@@ -236,66 +241,84 @@ export default class SHFTZStockMatchTask extends Component {
     const { params, task } = this.props;
     window.open(`${API_ROOTS.default}v1/cwm/shftz/stock/matchtask/excel/${task.task.owner_name}_匹配核对${params.taskId}.xlsx?taskId=${params.taskId}`);
   }
+  handleCollapseChange = (collapsed) => {
+    const scrollOffset = collapsed ? 368 : 280;
+    this.setState({ scrollOffset });
+  }
   render() {
     const { whse, task, loading } = this.props;
     this.matchedDataSource.remotes = task.matchedlist;
     this.nonmatchedDataSource.remotes = task.nonmatchlist;
     this.locDataSource.remotes = task.locationStock;
     return (
-      <div>
+      <Layout>
         <PageHeader
           breadcrumb={[
             whse.name,
             '匹配结果',
             this.props.params.taskId,
           ]}
-        />
-        <Content className="page-content" key="main">
-          <Card bodyStyle={{ paddingBottom: 8 }}>
-            <Row gutter={16} className="info-group-underline">
-              <Col sm={12} lg={12}>
-                <InfoItem label="货主单位" field={`${task.task.owner_cus_code} | ${task.task.owner_name}`} />
-              </Col>
-              <Col sm={12} lg={12}>
-                <Button type="primary" onClick={this.handleExport}>导出</Button>
-              </Col>
-            </Row>
-          </Card>
-          <MagicCard bodyStyle={{ padding: 0 }}>
-            <Tabs defaultActiveKey="comparison">
-              <TabPane tab="匹配视图" key="comparison">
-                <DataTable
-                  columns={this.columns}
-                  dataSource={this.matchedDataSource}
-                  rowKey="id"
-                  loading={loading}
-                />
-              </TabPane>
-              <TabPane tab="未匹配视图" key="discrepancy">
-                <DataTable
-                  columns={this.columns}
-                  dataSource={this.nonmatchedDataSource}
-                  rowKey="id"
-                  loading={loading}
-                />
-              </TabPane>
-              <TabPane tab="导入库位库存" key="location">
-                <DataTable
-                  columns={this.columns}
-                  dataSource={this.locDataSource}
-                  rowKey="id"
-                  loading={loading}
-                />
-              </TabPane>
-              <TabPane tab="海关库存数据" key="ftz">
-                <FTZStockPane
-                  taskId={this.props.params.taskId}
-                />
-              </TabPane>
-            </Tabs>
-          </MagicCard>
-        </Content>
-      </div>
+        >
+          <PageHeader.Actions>
+            <Button type="primary" onClick={this.handleExport}>导出</Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={3}>
+              <Description term="货主单位">
+                {`${task.task.owner_cus_code} | ${task.task.owner_name}`}
+              </Description>
+
+            </DescriptionList>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <MagicCard bodyStyle={{ padding: 0 }}>
+              <Tabs defaultActiveKey="comparison">
+                <TabPane tab="匹配视图" key="comparison">
+                  <DataTable
+                    columns={this.columns}
+                    dataSource={this.matchedDataSource}
+                    rowKey="id"
+                    loading={loading}
+                    withBorder={false}
+                    showToolbar={false}
+                    scrollOffset={this.state.scrollOffset}
+                  />
+                </TabPane>
+                <TabPane tab="未匹配视图" key="discrepancy">
+                  <DataTable
+                    columns={this.columns}
+                    dataSource={this.nonmatchedDataSource}
+                    rowKey="id"
+                    loading={loading}
+                    withBorder={false}
+                    showToolbar={false}
+                    scrollOffset={this.state.scrollOffset}
+                  />
+                </TabPane>
+                <TabPane tab="导入库位库存" key="location">
+                  <DataTable
+                    columns={this.columns}
+                    dataSource={this.locDataSource}
+                    rowKey="id"
+                    loading={loading}
+                    withBorder={false}
+                    showToolbar={false}
+                    scrollOffset={this.state.scrollOffset}
+                  />
+                </TabPane>
+                <TabPane tab="海关库存数据" key="ftz">
+                  <FTZStockPane
+                    taskId={this.props.params.taskId}
+                    scrollOffset={this.state.scrollOffset}
+                  />
+                </TabPane>
+              </Tabs>
+            </MagicCard>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

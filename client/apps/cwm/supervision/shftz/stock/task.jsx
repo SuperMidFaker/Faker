@@ -3,21 +3,22 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Layout, Tabs, Row, Col, Card } from 'antd';
+import { Badge, Layout, Tabs } from 'antd';
 import { loadParams } from 'common/reducers/cwmShFtz';
 import { loadStockCompareTask } from 'common/reducers/cwmShFtzStock';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
+import Drawer from 'client/components/Drawer';
 import MagicCard from 'client/components/MagicCard';
-import InfoItem from 'client/components/InfoItem';
+import DescriptionList from 'client/components/DescriptionList';
 import FTZStockPane from './tabpane/ftzStockPane';
 import ComaprisonPane from './tabpane/comparisonPane';
 import DiscrepancyPane from './tabpane/discrepancyPane';
-
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
+const { Description } = DescriptionList;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -46,11 +47,18 @@ export default class SHFTZStockTask extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    scrollOffset: 368,
+  }
   msg = formatMsg(this.props.intl)
+  handleCollapseChange = (collapsed) => {
+    const scrollOffset = collapsed ? 368 : 280;
+    this.setState({ scrollOffset });
+  }
   render() {
     const { whse, task } = this.props;
     return (
-      <div>
+      <Layout>
         <PageHeader
           breadcrumb={[
             whse.name,
@@ -58,35 +66,37 @@ export default class SHFTZStockTask extends Component {
             this.props.params.taskId,
           ]}
         />
-        <Content className="page-content" key="main">
-          <Card bodyStyle={{ paddingBottom: 8 }}>
-            <Row gutter={16} className="info-group-underline">
-              <Col sm={12} lg={8}>
-                <InfoItem label="货主单位" field={`${task.owner_cus_code} | ${task.owner_name}`} />
-              </Col>
-              <Col sm={12} lg={4}>
-                <InfoItem label="海关入库单" field={task.ftz_ent_no} />
-              </Col>
-            </Row>
-          </Card>
-          <MagicCard bodyStyle={{ padding: 0 }}>
-            <Tabs defaultActiveKey="comparison">
-              <TabPane tab="对比视图" key="comparison">
-                <ComaprisonPane />
-              </TabPane>
-              <TabPane tab={<Badge count={task.diff_count}>差异视图</Badge>} key="discrepancy">
-                <DiscrepancyPane />
-              </TabPane>
-              <TabPane tab="海关库存数据" key="ftz">
-                <FTZStockPane
-                  taskId={this.props.params.taskId}
-
-                />
-              </TabPane>
-            </Tabs>
-          </MagicCard>
-        </Content>
-      </div>
+        <Layout>
+          <Drawer top onCollapseChange={this.handleCollapseChange}>
+            <DescriptionList col={3}>
+              <Description term="货主单位">
+                {`${task.owner_cus_code} | ${task.owner_name}`}
+              </Description>
+              <Description term="海关入库单">
+                {task.ftz_ent_no}
+              </Description>
+            </DescriptionList>
+          </Drawer>
+          <Content className="page-content" key="main">
+            <MagicCard bodyStyle={{ padding: 0 }}>
+              <Tabs defaultActiveKey="comparison">
+                <TabPane tab="对比视图" key="comparison">
+                  <ComaprisonPane scrollOffset={this.state.scrollOffset} />
+                </TabPane>
+                <TabPane tab={<Badge count={task.diff_count}>差异视图</Badge>} key="discrepancy">
+                  <DiscrepancyPane scrollOffset={this.state.scrollOffset} />
+                </TabPane>
+                <TabPane tab="海关库存数据" key="ftz">
+                  <FTZStockPane
+                    taskId={this.props.params.taskId}
+                    scrollOffset={this.state.scrollOffset}
+                  />
+                </TabPane>
+              </Tabs>
+            </MagicCard>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }
