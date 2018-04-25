@@ -17,7 +17,6 @@ const { Panel } = Collapse;
 @injectIntl
 @connect(
   state => ({
-    detail: state.cwmTransition.transitionModal.detail,
     trace_id: state.cwmTransition.transitionModal.trace_id,
     visible: state.cwmTransition.transitionModal.visible,
     needReload: state.cwmTransition.transitionModal.needReload,
@@ -81,7 +80,7 @@ export default class TransitionModal extends React.Component {
                 </Card>
               </Col>
               <Col span={12}>
-                <LogsPane traceId={this.props.detail.trace_id} />
+                <LogsPane traceId={this.props.trace_id} />
               </Col>
             </Row>
           </Form>
