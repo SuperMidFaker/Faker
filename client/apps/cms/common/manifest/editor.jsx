@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
-  notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
+import { Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, editBillBody,
@@ -135,8 +134,7 @@ export default class ManifestEditor extends React.Component {
     const { billHead, tenantId, billMeta } = this.props;
     this.setState({ generating: true });
     this.props.validateBillDatas({
-      billSeqNo: this.props.billHead.bill_seq_no,
-      delgNo: billHead.delg_no,
+      billSeqNo: billHead.bill_seq_no,
     }).then((result) => {
       if (result.error) {
         this.setState({ generating: false });
@@ -192,7 +190,7 @@ export default class ManifestEditor extends React.Component {
     }
     const head = { ...billHead, template_id: templateId };
     const formValues = this.props.form.getFieldsValue();
-    Object.keys(formValues).forEach((formkey) => {
+    Object.keys(formValues).filter(key => key !== 'model').forEach((formkey) => {
       if (formValues[formkey]) {
         let formValue = formValues[formkey];
         if (['gross_wt', 'net_wt', 'fee_rate', 'insur_rate', 'other_rate', 'pack_count'].indexOf(formkey) !== -1) {
