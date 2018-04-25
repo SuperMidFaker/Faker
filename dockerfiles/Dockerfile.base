@@ -1,5 +1,5 @@
 FROM daocloud.io/node:8.9.4-alpine
-
+MAINTAINER developer@welogix.cn
 RUN mkdir -p /opt/apps/welogix-web
 WORKDIR /opt/apps/welogix-web
 RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
