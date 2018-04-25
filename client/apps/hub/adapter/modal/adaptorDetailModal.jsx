@@ -83,6 +83,11 @@ export default class AdaptorDetailModal extends Component {
         contentHeight: window.innerHeight - 150,
       });
     }
+    if (nextProps.visible && !this.props.visible) {
+      this.setState({
+        contentHeight: window.innerHeight - 150,
+      });
+    }
   }
   msg = formatMsg(this.props.intl)
   toggleRightSider = () => {

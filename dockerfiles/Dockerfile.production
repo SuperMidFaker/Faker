@@ -1,0 +1,14 @@
+FROM daocloud.io/welogix_tech/welogix-web-base-master:latest
+
+RUN mkdir -p /data/deploy/logs
+
+WORKDIR /opt/apps/welogix-web
+#ENV TOOL_NODE_FLAGS="--max-old-space-size=4096"
+
+COPY .  /opt/apps/welogix-web
+
+EXPOSE 3022
+ENV NODE_ENV=production
+RUN npm run build
+
+CMD [ "pm2-docker", "pm2/prod.json" ]

@@ -1,0 +1,19 @@
+FROM daocloud.io/welogix_tech/welogix-web-base-dev:latest
+
+RUN mkdir -p /data/deploy/logs
+
+WORKDIR /opt/apps/welogix-web
+
+COPY .  /opt/apps/welogix-web
+
+EXPOSE 3022
+
+ENV NODE_ENV=staging
+RUN npm run build
+
+CMD [ "pm2-docker", "pm2/staging.json" ]
+
+# $ docker build -f dockerfiles/Dockerfile.staging ./ -t welogix-web:1.0 --no-cache
+# $ docker rm -f welogix-web
+# $ docker run --name=welogix-web -p 3022:3022 -d welogix-web:1.0
+# $ docker logs -f welogix-web

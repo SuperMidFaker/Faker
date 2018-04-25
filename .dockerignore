@@ -1,0 +1,16 @@
+.dockerignore
+.gitignore
+node_modules
+README.md
+CHANGELOG.md
+*.log
+log/*
+public/dist
+public/assets*.json
+public/assets/langs/zh.json
+.DS_Store
+tests/*
+.happypack/*
+.vscode
+.idea
+.tern-project

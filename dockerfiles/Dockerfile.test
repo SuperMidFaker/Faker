@@ -1,0 +1,20 @@
+FROM daocloud.io/welogix_tech/welogix-web-base:1.0
+
+RUN mkdir -p /data/deploy/logs
+
+WORKDIR /opt/apps/welogix-web
+
+COPY .  /opt/apps/welogix-web
+
+EXPOSE 3022
+
+# ENV NODE_ENV=test
+# RUN npm run test-build
+
+# test环境下，docker run 的时候配置参数，所以用脚本跑build，将参数传入
+CMD [ "sh", "dockerCmd.sh" ]
+
+# $ docker build -f dockerfiles/Dockerfile.test ./ -t welogix-web:1.0 --no-cache
+# $ docker rm -f welogix-web
+# $ docker run --name=welogix-web -e 'NODE_ENV=test' -e 'HOST_IP=192.168.0.114' -p 3022:3022 -d welogix-web:1.0
+# $ docker logs -f welogix-web
