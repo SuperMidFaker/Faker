@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Input } from 'antd';
+import './style.less';
 
 const { Search } = Input;
 
@@ -8,7 +9,6 @@ export default class SearchBox extends React.Component {
   static propTypes = {
     placeholder: PropTypes.string,
     onSearch: PropTypes.func.isRequired,
-    enterButton: PropTypes.bool,
   }
   handleFocus = (ev) => {
     ev.target.select();
@@ -20,14 +20,14 @@ export default class SearchBox extends React.Component {
     }
   }
   render() {
-    const { placeholder, onSearch, enterButton } = this.props;
+    const { placeholder, onSearch } = this.props;
     return (
       <Search
         placeholder={placeholder}
         onChange={this.handleChange}
         onSearch={onSearch}
         onFocus={this.handleFocus}
-        enterButton={enterButton}
+        enterButton
       />
     );
   }
