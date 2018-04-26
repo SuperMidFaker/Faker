@@ -1,5 +1,6 @@
-FROM daocloud.io/welogix_tech/welogix-web-base-dev:latest
+FROM daocloud.io/welogix_tech/welogix-web:base
 MAINTAINER developer@welogix.cn
+
 RUN mkdir -p /data/deploy/logs
 
 WORKDIR /opt/apps/welogix-web
