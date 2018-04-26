@@ -85,11 +85,12 @@ module.exports = (serverPort, dirName, appName) => {
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }
   if (__STAGING__) {
+    const domain = process.env.STAGING_DOMAIN || 'welogix.co';
     config.set('API_ROOTS', {
-      default: 'http://api.welogix.co/',
-      mongo: 'http://api1.welogix.co/',
-      openapi: 'https://openapi.welogix.co/',
-      notify: 'http://notify.welogix.co/',
+      default: `http://api.${domain}/`,
+      mongo: `http://api1.${domain}/`,
+      openapi: `https://openapi.${domain}/`,
+      notify: `http://notify.${domain}/`,
       self: '/',
     });
     config.set('CDN_URL', 'http://st-cdn.welogix.co');
