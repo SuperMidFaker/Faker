@@ -315,8 +315,8 @@ export default class ReceiveDetailsPane extends React.Component {
     }
     const moreMenu = (
       <Menu onClick={this.handleMoreMenuClick}>
-        <Menu.Item key="import"><Icon type="upload" /> 导入</Menu.Item>
         <Menu.Item key="export"><Icon type="download" /> 导出</Menu.Item>
+        <Menu.Item key="import"><Icon type="upload" /> 导入</Menu.Item>
       </Menu>
     );
     return (
@@ -347,7 +347,7 @@ export default class ReceiveDetailsPane extends React.Component {
                 </Button>}
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
               <Dropdown overlay={moreMenu}>
-                <Button icon="ellipsis" />
+                <Button>收货导入</Button>
               </Dropdown>}
             <ImportDataPanel
               adaptors={null}

@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Tag, Button, Modal, message } from 'antd';
+import { Tag, Button, Modal, message, Dropdown, Icon, Menu } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
+import ImportDataPanel from 'client/components/ImportDataPanel';
+import { createFilename } from 'client/util/dataTransform';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways, viewSuBarPutawayModal } from 'common/reducers/cwmReceive';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
@@ -24,6 +26,7 @@ import { formatMsg } from '../../message.i18n';
     loading: state.cwmReceive.inboundPutaways.loading,
     reload: state.cwmReceive.inboundReload,
     submitting: state.cwmReceive.submitting,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
   {
     loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways, viewSuBarPutawayModal,
@@ -39,6 +42,7 @@ export default class PutawayDetailsPane extends React.Component {
     selectedRowKeys: [],
     selectedRows: [],
     searchValue: '',
+    importPanelVisible: false,
   }
   componentWillMount() {
     this.handleLoad();
@@ -178,6 +182,15 @@ export default class PutawayDetailsPane extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleMoreMenuClick = (e) => {
+    if (e.key === 'import') {
+      this.setState({
+        importPanelVisible: true,
+      });
+    } else {
+      window.open(`${API_ROOTS.default}v1/cwm/export/putaway/details/${createFilename('putaway')}.xlsx?inboundNo=${this.props.inboundNo}`);
+    }
+  }
   render() {
     const { inboundHead, inboundPutaways, submitting } = this.props;
     const dataSource = inboundPutaways.filter((item) => {
@@ -229,6 +242,12 @@ export default class PutawayDetailsPane extends React.Component {
     if (inboundHead.rec_mode === 'scan') {
       columns = columns.filter(col => col.dataIndex !== '_OPS_');
     }
+    const moreMenu = (
+      <Menu onClick={this.handleMoreMenuClick}>
+        <Menu.Item key="export"><Icon type="download" /> 导出</Menu.Item>
+        <Menu.Item key="import"><Icon type="upload" /> 导入</Menu.Item>
+      </Menu>
+    );
     return (
       <DataPane
         columns={columns}
@@ -264,6 +283,22 @@ export default class PutawayDetailsPane extends React.Component {
               快捷上架
               </Button>
             }
+            {inboundHead.rec_mode === 'manual' && dataSource.filter(ds => ds.result === 0).length > 0 &&
+              <Dropdown overlay={moreMenu}>
+                <Button>上架导入</Button>
+              </Dropdown>}
+            <ImportDataPanel
+              adaptors={null}
+              title="上架导入"
+              visible={this.state.importPanelVisible}
+              endpoint={`${API_ROOTS.default}v1/cwm/putaway/details/import`}
+              formData={{
+                inboundNo: this.props.inboundNo,
+                whseCode: this.props.defaultWhse.code,
+              }}
+              onClose={() => { this.setState({ importPanelVisible: false }); }}
+              onUploaded={this.handleUploadPutaway}
+            />
           </DataPane.Actions>
         </DataPane.Toolbar>
         <PuttingAwayModal inboundNo={this.props.inboundNo} />
