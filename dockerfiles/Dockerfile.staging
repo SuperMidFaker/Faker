@@ -1,4 +1,4 @@
-FROM daocloud.io/welogix_tech/welogix-web-base-dev:latest
+FROM daocloud.io/welogix_tech/welogix-web-base:dev
 
 RUN mkdir -p /data/deploy/logs
 
