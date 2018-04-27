@@ -116,7 +116,7 @@ export default class QueryForm extends React.Component {
   }
   handleStockBeforeUpload = (file, fileList) => {
     const importPanel = { ...this.state.importPanel };
-    importPanel.fileList = fileList;
+    importPanel.fileList = importPanel.fileList.concat(fileList);
     this.setState({ importPanel });
     return false;
   }
@@ -171,7 +171,7 @@ export default class QueryForm extends React.Component {
             <FormItem {...formItemLayout} label={this.msg('owner')}>
               {getFieldDecorator('ownerCode', {
                 initialValue: filter.ownerCode,
-                rules: [{ required: true }],
+                rules: [{ required: true, message: '请选择货主' }],
               })(<Select showSearch optionFilterProp="children" allowClear>
                 {owners.map(owner => (<Option value={owner.customs_code} key={owner.id}>
                   {owner.name}</Option>))}
