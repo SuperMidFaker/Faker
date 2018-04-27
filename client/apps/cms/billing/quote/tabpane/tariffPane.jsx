@@ -8,10 +8,12 @@ import { loadAllFeeGroups, loadParentFeeElements } from 'common/reducers/bssFeeS
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS, BILLING_METHODS } from 'common/constants';
+import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
+const BILLING_METHODS = BILLING_METHOD.map(blm =>
+  ({ key: blm.key, label: blm.label }.concat(blm.children ? blm.children : [])));
 
 @injectIntl
 @connect(
