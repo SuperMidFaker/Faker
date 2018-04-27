@@ -122,7 +122,7 @@ export default class OrderDetailsPane extends React.Component {
     width: 120,
   }, {
     title: '入库单号',
-    dataIndex: 'po_no',
+    dataIndex: 'asn_cust_order_no',
     width: 120,
   }, {
     title: '批次号',

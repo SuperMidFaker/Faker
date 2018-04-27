@@ -14,7 +14,7 @@ import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 const { Nav } = Mention;
 let BILLING_METHODS = [];
 BILLING_METHOD.forEach((blm) => {
-  BILLING_METHODS.push({ key: blm.key, label: blm.label });
+  BILLING_METHODS.push({ key: blm.key, value: blm.value, label: blm.label });
   if (blm.children) {
     BILLING_METHODS = BILLING_METHODS.concat(blm.children);
   }

@@ -86,7 +86,7 @@ export const FORMULA_PARAMS = [
   { value: 'decl_sheet_qty', text: '联单数量' },
   { value: 'decl_item_qty', text: '品项数量' },
   { value: 'trade_item_qty', text: '料件数量' },
-  { value: 'trade_amount', text: '进出口金额' },
+  { value: 'trade_amount', text: '货值数量' },
 ];
 
 export const BILLING_METHOD = [
@@ -101,6 +101,7 @@ export const BILLING_METHOD = [
       { key: 'decl_sheet_qty', value: 'decl_sheet_qty', label: '按联单数量' },
       { key: 'decl_item_qty', value: 'decl_item_qty', label: '按品名数量' },
       { key: 'trade_item_qty', value: 'trade_item_qty', label: '按料件数量' },
+      { key: 'trade_amount', value: 'trade_amount', text: '按货值数量' },
     ],
   },
   { key: '$input', value: '$input', label: '输入数量' },

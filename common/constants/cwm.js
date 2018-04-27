@@ -520,6 +520,8 @@ exports.ALLOC_MATCH_FIELDS = [{
 }];
 
 exports.SKU_REQUIRED_PROPS = [{
+  value: 'desc_cn', label: '中文品名',
+}, {
   value: 'category', label: '商品分类',
 }, {
   value: 'cbm', label: '体积',
