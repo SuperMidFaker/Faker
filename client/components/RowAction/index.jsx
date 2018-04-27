@@ -60,7 +60,7 @@ export default class RowAction extends Component {
           size={size}
           className="welo-row-action"
         >
-          <Icon type="ellipsis" />
+          <Icon type="down" />
         </Button>
       </Dropdown>)
       :

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Layout, Radio, Select, message, Button } from 'antd';
+import { Badge, Layout, Select, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -20,8 +20,6 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { OptGroup } = Select;
 
 @injectIntl
@@ -194,11 +192,11 @@ export default class SHFTZTransferSelfList extends React.Component {
       }
     });
   }
-  handleStatusChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
+  handleStatusChange = (value) => {
+    if (value === this.props.listFilter.status) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
+    const filter = { ...this.props.listFilter, status: value };
     this.handleEntryListLoad(1, this.props.whse.code, filter);
   }
   handleDetail = (row) => {
@@ -237,12 +235,15 @@ export default class SHFTZTransferSelfList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('entrySearchPlaceholder')} onSearch={this.handleSearch} />
-      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-        <RadioButton value="all">全部状态</RadioButton>
-        <RadioButton value="pending">待转出</RadioButton>
-        <RadioButton value="processing">终端处理</RadioButton>
-        <RadioButton value="completed">已转入</RadioButton>
-      </RadioGroup>
+      <Select
+        value={listFilter.status}
+        onChange={this.handleStatusChange}
+      >
+        <Option value="all">全部状态</Option>
+        <Option value="pending">待转出</Option>
+        <Option value="processing">终端处理</Option>
+        <Option value="completed">已转入</Option>
+      </Select>
       <Select
         showSearch
         optionFilterProp="children"

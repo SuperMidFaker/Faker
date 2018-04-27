@@ -20,6 +20,7 @@ import bssExRateSettings from './bssExRateSettings';
 import bssBillTemplate from './bssBillTemplate';
 import bssBill from './bssBill';
 import bssStatement from './bssStatement';
+import bssInvoice from './bssInvoice';
 import cmsDashboard from './cmsDashboard';
 import cmsDelegation from './cmsDelegation';
 import cmsDelegationDock from './cmsDelegationDock';
@@ -115,6 +116,7 @@ export default combineReducers({
   bssBill,
   bssBillTemplate,
   bssStatement,
+  bssInvoice,
   cmsDashboard,
   cmsDelegation,
   cmsDelegationDock,

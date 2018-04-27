@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Button, Layout, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
@@ -19,8 +19,6 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -224,11 +222,11 @@ export default class BatchDeclList extends React.Component {
   handleBatchDeclLoad = () => {
     this.handleBatchApplyLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
   }
-  handleStatusChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.status) {
+  handleStatusChange = (value) => {
+    if (value === this.props.listFilter.status) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
+    const filter = { ...this.props.listFilter, status: value };
     this.handleBatchApplyLoad(1, this.props.whse.code, filter);
   }
   handleCreateBatchDecl = () => {
@@ -279,12 +277,15 @@ export default class BatchDeclList extends React.Component {
     this.dataSource.remotes = batchlist;
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('batchSearchPlaceholder')} onSearch={this.handleSearch} />
-      <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-        <RadioButton value="all">全部</RadioButton>
-        <RadioButton value="manifesting">委托制单</RadioButton>
-        <RadioButton value="applying">报关申请</RadioButton>
-        <RadioButton value="cleared">已清关</RadioButton>
-      </RadioGroup>
+      <Select
+        value={listFilter.status}
+        onChange={this.handleStatusChange}
+      >
+        <Option value="all">全部状态</Option>
+        <Option value="manifesting">委托制单</Option>
+        <Option value="applying">报关申请</Option>
+        <Option value="cleared">已清关</Option>
+      </Select>
       <Select
         showSearch
         optionFilterProp="children"
