@@ -438,10 +438,10 @@ export const CMS_DECL_CHANNEL = {
 };
 
 export const CMS_DECL_MOD_TYPE = [
-  { value: 1, text: '申请修改报关单' },
-  { value: 2, text: '申请撤销报关单' },
-  { value: 3, text: '海关发起修改' },
-  { value: 4, text: '海关发起撤销' },
+  { value: '1', text: '申请修改报关单' },
+  { value: '2', text: '申请撤销报关单' },
+  { value: '3', text: '海关发起修改' },
+  { value: '4', text: '海关发起撤销' },
 ];
 
 export const ITEMS_STATUS = [

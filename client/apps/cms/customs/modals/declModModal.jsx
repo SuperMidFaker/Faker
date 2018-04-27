@@ -64,7 +64,7 @@ export default class DeclModModal extends React.Component {
           </FormItem>
           <FormItem label="修撤业务类型" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('revise_type', {
-              initialValue: Number(customs.reviseType),
+              initialValue: customs.reviseType,
               rules: [{ required: true, message: '业务类型必选' }],
             })(<Select
               allowClear

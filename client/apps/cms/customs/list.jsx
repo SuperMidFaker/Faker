@@ -324,7 +324,7 @@ export default class CustomsList extends Component {
     width: 120,
     render: (o) => {
       if (o) {
-        return CMS_DECL_MOD_TYPE.find(item => item.value === Number(o)).text;
+        return CMS_DECL_MOD_TYPE.find(item => item.value === o).text;
       }
       return null;
     },

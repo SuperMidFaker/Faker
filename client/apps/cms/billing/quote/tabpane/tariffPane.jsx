@@ -12,8 +12,13 @@ import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
-const BILLING_METHODS = BILLING_METHOD.map(blm =>
-  ({ key: blm.key, label: blm.label }.concat(blm.children ? blm.children : [])));
+let BILLING_METHODS = [];
+BILLING_METHOD.forEach((blm) => {
+  BILLING_METHODS.push({ key: blm.key, label: blm.label });
+  if (blm.children) {
+    BILLING_METHODS = BILLING_METHODS.concat(blm.children);
+  }
+});
 
 @injectIntl
 @connect(
