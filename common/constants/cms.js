@@ -985,3 +985,10 @@ export const CMS_DOC_TYPE = [
   { value: 'CCD', text: '报关单' },
   { value: 'CID', text: '报检单' },
 ];
+
+export const CMS_EVENTS = [
+  { key: 'exchange', text: '换单' },
+  { key: 'quarantine', text: '检疫查验' },
+  { key: 'quality', text: '品质查验' },
+  { key: 'customs', text: '海关查验' },
+];

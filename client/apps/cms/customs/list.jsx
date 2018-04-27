@@ -19,7 +19,7 @@ import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_DECL_MOD_TYPE } from 'common/constants';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
@@ -233,12 +233,12 @@ export default class CustomsList extends Component {
     render: (o, record) => {
       if (record.status > CMS_DECL_STATUS.reviewed.value) {
         if (record.customs_inspect === 1) {
-          return <Button size="small" onClick={this.handleCusInspect}><Badge status="error" text="查验下达" /></Button>;
+          return <Button size="small" onClick={() => this.handleCusInspect(record)}><Badge status="error" text="查验下达" /></Button>;
         } else if (record.customs_inspect === 2) {
-          return <Button size="small" onClick={this.handleCusInspect}><Badge status="success" text="查验完成" /></Button>;
+          return <Button size="small" onClick={() => this.handleCusInspect(record)}><Badge status="success" text="查验完成" /></Button>;
         }
         if (record.status < CMS_DECL_STATUS.released.value) {
-          return <Button size="small" icon="warning" onClick={this.handleCusInspect} />;
+          return <Button size="small" icon="warning" onClick={() => this.handleCusInspect(record)} />;
         }
       }
       return null;
@@ -318,8 +318,10 @@ export default class CustomsList extends Component {
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
   }, {
     title: '修撤单',
-    dataIndex: 'decl_mod_type',
-    width: 100,
+    dataIndex: 'revise_type',
+    width: 120,
+    render: o => o && CMS_DECL_MOD_TYPE.find(item => item.value === Number(o)) &&
+    CMS_DECL_MOD_TYPE.find(item => item.value === Number(o)).text,
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -350,7 +352,7 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.sent.value) {
         spanElems.push(<RowAction
           key="sent"
-          overlay={<Menu onClick={this.showDeclMsgModal}>
+          overlay={<Menu onClick={({ key }) => this.showDeclMsgModModal(key)}>
             <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>
           </Menu>}
           row={record}
@@ -369,7 +371,7 @@ export default class CustomsList extends Component {
       if (record.status >= CMS_DECL_STATUS.entered.value) {
         spanElems.push(<RowAction
           key="return"
-          overlay={<Menu onClick={this.showDeclMsgModal}>
+          overlay={<Menu onClick={({ key }) => this.showDeclMsgModModal(key, record)}>
             {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
             {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
             {record.status < CMS_DECL_STATUS.released.value && <Menu.Divider />}
@@ -431,8 +433,16 @@ export default class CustomsList extends Component {
       delgNo: row.delg_no,
     });
   }
-  handleCusInspect = () => {
-    this.props.toggleInspectModal(true);
+  handleCusInspect = (record) => {
+    this.props.toggleInspectModal(
+      true,
+      {
+        id: record.id,
+        entryId: record.entry_id,
+        customsInsDate: record.customs_inspect_date,
+        customsInspectEndDate: record.customs_inspect_end_date,
+      }
+    );
   }
   handleDetail = (record) => {
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
@@ -553,9 +563,13 @@ export default class CustomsList extends Component {
   showDeclReleasedModal = (row) => {
     this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no, row.i_e_type);
   }
-  showDeclMsgModal = ({ key }) => {
+  showDeclMsgModModal = (key, record) => {
     if (key === 'declMod') {
-      this.props.toggleDeclModModal(true);
+      this.props.toggleDeclModModal(true, {
+        entryId: record.entry_id,
+        reviseType: record.revise_type,
+        reviseDatetime: record.revise_datetime,
+      });
       return;
     }
     const [fileName, fileType] = key.split('|');
