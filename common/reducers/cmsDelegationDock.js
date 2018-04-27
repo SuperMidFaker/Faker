@@ -206,7 +206,7 @@ export function updateCertParam(delgNo, dispId, cert, qty) {
   };
 }
 
-export function exchangeBlNo(delgNo, blNo, deliveryOrderNo, exchangeBlDate, exchangeBlAmount) {
+export function exchangeBlNo(delgNo, changeInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -216,9 +216,7 @@ export function exchangeBlNo(delgNo, blNo, deliveryOrderNo, exchangeBlDate, exch
       ],
       endpoint: 'v1/cms/delegation/exchange',
       method: 'post',
-      data: {
-        delgNo, blNo, deliveryOrderNo, exchangeBlDate, exchangeBlAmount,
-      },
+      data: { delgNo, changeInfo },
     },
   };
 }

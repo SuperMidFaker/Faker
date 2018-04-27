@@ -100,9 +100,11 @@ const initialState = {
   exchangeDocModal: {
     visible: false,
     delgNo: '',
+    blWbNo: '',
   },
   quarantineModal: {
     visible: false,
+    delgNo: '',
   },
 };
 
@@ -205,26 +207,34 @@ export default function reducer(state = initialState, action) {
           ...state.exchangeDocModal,
           visible: action.data.visible,
           delgNo: action.data.delgNo,
+          blWbNo: action.data.blWbNo,
         },
       };
     case actionTypes.TOGGLE_QUARANTINE_MODAL:
-      return { ...state, quarantineModal: { ...state.quarantineModal, visible: action.data } };
+      return {
+        ...state,
+        quarantineModal: {
+          ...state.quarantineModal,
+          visible: action.data.visible,
+          delgNo: action.data.delgNo,
+        },
+      };
     default:
       return state;
   }
 }
 
-export function toggleExchangeDocModal(visible, delgNo) {
+export function toggleExchangeDocModal(visible, delgNo, blWbNo) {
   return {
     type: actionTypes.TOGGLE_EXCHANGE_DOC_MODAL,
-    data: { visible, delgNo },
+    data: { visible, delgNo, blWbNo },
   };
 }
 
-export function toggleQuarantineModal(visible) {
+export function toggleQuarantineModal(visible, delgNo) {
   return {
     type: actionTypes.TOGGLE_QUARANTINE_MODAL,
-    data: visible,
+    data: { visible, delgNo },
   };
 }
 
@@ -610,22 +620,7 @@ export function fillCustomsNo({ entryNo, entryHeadId, delgNo }) {
   };
 }
 
-export function updateArrDate(date, delgNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_ARR_DATE,
-        actionTypes.UPDATE_ARR_DATE_SUCCEED,
-        actionTypes.UPDATE_ARR_DATE_FAIL,
-      ],
-      endpoint: 'v1/cms/arr/date/update',
-      method: 'post',
-      data: { date, delgNo },
-    },
-  };
-}
-
-export function updateQuarantineAmount(amount, delgNo) {
+export function updateQuarantineInspect(amount, delgNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -633,7 +628,7 @@ export function updateQuarantineAmount(amount, delgNo) {
         actionTypes.UPDATE_QUARANTINE_AMOUNT_SUCCEED,
         actionTypes.UPDATE_QUARANTINE_AMOUNT_FAIL,
       ],
-      endpoint: 'v1/cms/quarantine/amount/update',
+      endpoint: 'v1/cms/quarantine/inspect',
       method: 'post',
       data: { amount, delgNo },
     },

@@ -14,6 +14,7 @@ const FormItem = Form.Item;
   state => ({
     visible: state.cmsDelegation.exchangeDocModal.visible,
     delgNo: state.cmsDelegation.exchangeDocModal.delgNo,
+    blWbNo: state.cmsDelegation.exchangeDocModal.blWbNo,
   }),
   { toggleExchangeDocModal, exchangeBlNo }
 )
@@ -22,7 +23,7 @@ export default class ExchangeDocModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    handleReload: PropTypes.func.isRequired,
+    reload: PropTypes.func.isRequired,
   }
   handleCancel = () => {
     this.props.toggleExchangeDocModal(false);
@@ -32,14 +33,15 @@ export default class ExchangeDocModal extends React.Component {
       if (!errors) {
         this.props.exchangeBlNo(
           this.props.delgNo,
-          values.bl_wb_no,
-          values.delivery_order_no,
-          values.exchange_bl_date,
-          values.exchange_bl_account,
+          {
+            delivery_order_no: values.delivery_order_no,
+            bl_date: values.exchange_bl_date,
+            amount: values.exchange_bl_account,
+          }
         ).then((result) => {
           if (!result.error) {
             this.handleCancel();
-            this.props.handleReload();
+            this.props.reload();
           }
         });
       }
@@ -48,7 +50,7 @@ export default class ExchangeDocModal extends React.Component {
   msg = formatMsg(this.props.intl)
   render() {
     const { visible } = this.props;
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, blWbNo } = this.props;
     return (
       <Modal
         maskClosable={false}
@@ -60,7 +62,9 @@ export default class ExchangeDocModal extends React.Component {
       >
         <Form>
           <FormItem label="提单号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            {getFieldDecorator('bl_wb_no')(<Input />)}
+            {getFieldDecorator('bl_wb_no', {
+              initialValue: blWbNo,
+            })(<Input disabled />)}
           </FormItem>
           <FormItem label="提货单号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('delivery_order_no')(<Input />)}

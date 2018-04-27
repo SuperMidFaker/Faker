@@ -5,7 +5,7 @@ import { Breadcrumb, Card, List, Layout, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_EVENTS } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
-import { toggleEventsModal } from 'common/reducers/cmsEvents';
+import { toggleEventsModal } from 'common/reducers/cmsPrefEvents';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import PageHeader from 'client/components/PageHeader';
 import SettingMenu from '../menu';

@@ -15,7 +15,7 @@ const { Option } = Select;
 @connect(
   state => ({
     visible: state.cmsCustomsDeclare.declModModal.visible,
-    record: state.cmsCustomsDeclare.declModModal.record,
+    customs: state.cmsCustomsDeclare.declModModal.customs,
   }),
   { toggleDeclModModal, modDecl }
 )
@@ -32,13 +32,9 @@ export default class DeclModModal extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        let reviseType = values.revise_type;
-        if (Number.isNaN(values.revise_type)) {
-          reviseType = CMS_DECL_MOD_TYPE.find(item => item.text === values.revise_type).value;
-        }
         this.props.modDecl(
-          this.props.record.entryId,
-          reviseType,
+          this.props.customs.entryId,
+          values.revise_type,
           values.revise_datetime,
         ).then((result) => {
           if (!result.error) {
@@ -51,7 +47,7 @@ export default class DeclModModal extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { visible, record, form: { getFieldDecorator } } = this.props;
+    const { visible, customs, form: { getFieldDecorator } } = this.props;
     return (
       <Modal
         maskClosable={false}
@@ -63,14 +59,12 @@ export default class DeclModModal extends React.Component {
         <Form>
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} >
             {getFieldDecorator('entry_id', {
-              initialValue: record.entryId,
+              initialValue: customs.entryId,
             })(<Input disabled />)}
           </FormItem>
           <FormItem label="修撤业务类型" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('revise_type', {
-              initialValue: record.reviseType &&
-              CMS_DECL_MOD_TYPE.find(item => item.value === Number(record.reviseType)) &&
-              CMS_DECL_MOD_TYPE.find(item => item.value === Number(record.reviseType)).text,
+              initialValue: Number(customs.reviseType),
               rules: [{ required: true, message: '业务类型必选' }],
             })(<Select
               allowClear
@@ -84,7 +78,7 @@ export default class DeclModModal extends React.Component {
           </FormItem>
           <FormItem label="操作日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('revise_datetime', {
-              initialValue: moment(record.reviseDatetime),
+              initialValue: moment(customs.reviseDatetime),
             })(<DatePicker
               format="YYYY-MM-DD"
               style={{ width: '100%' }}

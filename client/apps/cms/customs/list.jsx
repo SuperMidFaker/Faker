@@ -320,8 +320,12 @@ export default class CustomsList extends Component {
     title: '修撤单',
     dataIndex: 'revise_type',
     width: 120,
-    render: o => o && CMS_DECL_MOD_TYPE.find(item => item.value === Number(o)) &&
-    CMS_DECL_MOD_TYPE.find(item => item.value === Number(o)).text,
+    render: (o) => {
+      if (o) {
+        return CMS_DECL_MOD_TYPE.find(item => item.value === Number(o)).text;
+      }
+      return null;
+    },
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -441,6 +445,8 @@ export default class CustomsList extends Component {
         entryId: record.entry_id,
         customsInsDate: record.customs_inspect_date,
         customsInspectEndDate: record.customs_inspect_end_date,
+        customsInspect: record.customs_inspect,
+        ciqQualityInspect: record.ciq_quality_inspect,
       }
     );
   }

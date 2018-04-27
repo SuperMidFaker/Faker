@@ -98,11 +98,11 @@ const initialState = {
   },
   inspectModal: {
     visible: false,
-    record: {},
+    customs: {},
   },
   declModModal: {
     visible: false,
-    record: {},
+    customs: {},
   },
 };
 
@@ -170,14 +170,14 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         inspectModal: {
-          ...state.inspectModal, visible: action.data.visible, record: action.data.record,
+          ...state.inspectModal, visible: action.data.visible, customs: action.data.customs,
         },
       };
     case actionTypes.TOGGLE_DECL_MOD_MODAL:
       return {
         ...state,
         declModModal: {
-          ...state.declModModal, visible: action.data.visible, record: action.data.record,
+          ...state.declModModal, visible: action.data.visible, customs: action.data.customs,
         },
       };
     default:
@@ -185,9 +185,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function setInspect({
-  id, entryId, customsInsDate, customsInsEndDate, customsInsAmount, qualityInsAmount,
-}) {
+export function setInspect(id, inspectInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -197,9 +195,7 @@ export function setInspect({
       ],
       endpoint: 'v1/cms/declare/set/inspect',
       method: 'post',
-      data: {
-        id, entryId, customsInsDate, customsInsEndDate, customsInsAmount, qualityInsAmount,
-      },
+      data: { id, inspectInfo },
     },
   };
 }
@@ -499,17 +495,17 @@ export function hideDeclMsgModal() {
   };
 }
 
-export function toggleInspectModal(visible, record = {}) {
+export function toggleInspectModal(visible, customs = {}) {
   return {
     type: actionTypes.TOGGLE_INSPECT_MODAL,
-    data: { visible, record },
+    data: { visible, customs },
   };
 }
 
-export function toggleDeclModModal(visible, record = {}) {
+export function toggleDeclModModal(visible, customs = {}) {
   return {
     type: actionTypes.TOGGLE_DECL_MOD_MODAL,
-    data: { visible, record },
+    data: { visible, customs },
   };
 }
 
@@ -593,7 +589,7 @@ export function modDecl(entryId, revisetype, reviseDate) {
         actionTypes.MOD_DECL_SUCCEED,
         actionTypes.MOD_DECL_FAIL,
       ],
-      endpoint: 'v1/cms/mod/decl',
+      endpoint: 'v1/cms/del/mod',
       method: 'post',
       data: { entryId, revisetype, reviseDate },
     },

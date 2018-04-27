@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { toggleEventsModal, createPref, getPref } from 'common/reducers/cmsEvents';
+import { toggleEventsModal, createPref, getPrefEventFees } from 'common/reducers/cmsPrefEvents';
 import { loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import { Form, Modal, Select } from 'antd';
+import { CMS_EVENTS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -13,12 +14,13 @@ const { Option } = Select;
 @injectIntl
 @connect(
   state => ({
-    visible: state.cmsEvents.eventsModal.visible,
-    event: state.cmsEvents.eventsModal.event,
+    visible: state.cmsPrefEvents.eventsModal.visible,
+    event: state.cmsPrefEvents.eventsModal.event,
+    feeCodes: state.cmsPrefEvents.eventsModal.feeCodes,
     allFeeElements: state.bssFeeSettings.allFeeElements,
   }),
   {
-    toggleEventsModal, loadAllFeeElements, createPref, getPref,
+    toggleEventsModal, loadAllFeeElements, createPref, getPrefEventFees,
   }
 )
 @Form.create()
@@ -32,12 +34,10 @@ export default class InspectModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
-      this.props.getPref(nextProps.event).then((result) => {
-        if (!result.error) {
-          const data = result.data.map(item => item.fee_code);
-          this.props.form.setFieldsValue({ fee_codes: data });
-        }
-      });
+      this.props.getPrefEventFees(nextProps.event);
+    }
+    if (nextProps.feeCodes !== this.props.feeCodes) {
+      this.props.form.setFieldsValue({ fee_codes: nextProps.feeCodes });
     }
   }
   handleCancel = () => {
@@ -57,10 +57,12 @@ export default class InspectModal extends React.Component {
   msg = formatMsg(this.props.intl)
   render() {
     const { visible, form: { getFieldDecorator }, allFeeElements } = this.props;
+    const event = CMS_EVENTS.find(item => item.key === this.props.event) &&
+     CMS_EVENTS.find(item => item.key === this.props.event).text;
     return (
       <Modal
         maskClosable={false}
-        title={this.msg('查验')}
+        title={this.msg(`${event}费用配置`)}
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
@@ -72,7 +74,7 @@ export default class InspectModal extends React.Component {
             })(<Select
               mode="multiple"
               style={{ width: '100%' }}
-              placeholder="Please select"
+              placeholder="选择费用项"
             >
               {allFeeElements.map(fee =>
                 (<Option key={fee.fee_code} value={fee.fee_code}>

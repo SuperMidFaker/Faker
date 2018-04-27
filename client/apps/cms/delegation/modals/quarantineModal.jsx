@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Switch, Form, Modal, Input } from 'antd';
-import { toggleQuarantineModal, updateQuarantineAmount } from 'common/reducers/cmsDelegation';
+import { toggleQuarantineModal, updateQuarantineInspect } from 'common/reducers/cmsDelegation';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -12,14 +12,16 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     visible: state.cmsDelegation.quarantineModal.visible,
+    delgNo: state.cmsDelegation.quarantineModal.delgNo,
   }),
-  { toggleQuarantineModal, updateQuarantineAmount }
+  { toggleQuarantineModal, updateQuarantineInspect }
 )
 @Form.create()
 export default class QuarantineModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
+    reload: PropTypes.func.isRequired,
   }
   state = {
     checked: false,
@@ -33,13 +35,13 @@ export default class QuarantineModal extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        this.props.updateQuarantineAmount(
-          this.props.delgNo,
+        this.props.updateQuarantineInspect(
           values.quarantine_amount,
+          this.props.delgNo,
         ).then((result) => {
           if (!result.error) {
             this.handleCancel();
-            this.props.handleReload();
+            this.props.reload();
           }
         });
       }

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Switch, Col, DatePicker, Form, Modal, Input } from 'antd';
 import { toggleInspectModal, setInspect } from 'common/reducers/cmsCustomsDeclare';
+import { INSPECT_STATUS } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -13,7 +14,7 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     visible: state.cmsCustomsDeclare.inspectModal.visible,
-    record: state.cmsCustomsDeclare.inspectModal.record,
+    customs: state.cmsCustomsDeclare.inspectModal.customs,
   }),
   { toggleInspectModal, setInspect }
 )
@@ -28,6 +29,20 @@ export default class InspectModal extends React.Component {
     customsInspect: false,
     qualityInspect: false,
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && nextProps.visible !== this.props.visible) {
+      if (nextProps.customs.customsInspect === INSPECT_STATUS.inspecting) {
+        this.setState({
+          customsInspect: true,
+        });
+      }
+      if (nextProps.customs.ciqQualityInspect === INSPECT_STATUS.inspecting) {
+        this.setState({
+          qualityInspect: true,
+        });
+      }
+    }
+  }
   handleCancel = () => {
     this.props.toggleInspectModal(false);
     this.setState({
@@ -38,14 +53,18 @@ export default class InspectModal extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        this.props.setInspect({
-          id: this.props.record.id,
-          entryId: values.entry_id,
-          customsInsDate: values.customs_inspect_date,
-          customsInsEndDate: values.customs_inspect_end_date,
-          customsInsAmount: values.customs_inspect_amount,
-          qualityInsAmount: values.quality_inspect_amount,
-        }).then((result) => {
+        this.props.setInspect(
+          this.props.customs.id,
+          {
+            entryId: values.entry_id,
+            customsInsDate: values.customs_inspect_date,
+            customsInsEndDate: values.customs_inspect_end_date,
+            customsInsAmount: values.customs_inspect_amount,
+            qualityInsAmount: values.quality_inspect_amount,
+            customsInspect: this.state.customsInspect,
+            qualityInspect: this.state.qualityInspect,
+          }
+        ).then((result) => {
           if (!result.error) {
             this.props.reload();
             this.handleCancel();
@@ -66,7 +85,7 @@ export default class InspectModal extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { visible, form: { getFieldDecorator }, record } = this.props;
+    const { visible, form: { getFieldDecorator }, customs } = this.props;
     const { customsInspect, qualityInspect } = this.state;
     return (
       <Modal
@@ -80,28 +99,37 @@ export default class InspectModal extends React.Component {
         <Form>
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('entry_id', {
-              initialValue: record.entryId,
-            })(<Input />)}
+              initialValue: customs.entryId,
+            })(<Input disabled={!!customs.customsInspectEndDate} />)}
           </FormItem>
           <FormItem label="查验下达日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('customs_inspect_date', {
-              initialValue: record.customsInsDate && moment(record.customsInsDate),
+              initialValue: customs.customsInsDate && moment(customs.customsInsDate),
             })(<DatePicker
               format="YYYY-MM-DD"
               style={{ width: '100%' }}
+              disabled={!!customs.customsInspectEndDate}
             />)}
           </FormItem>
           <FormItem label="查验完成日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('customs_inspect_end_date', {
-              initialValue: record.customsInspectEndDate && moment(record.customsInspectEndDate),
+              initialValue: customs.customsInspectEndDate && moment(customs.customsInspectEndDate),
             })(<DatePicker
               format="YYYY-MM-DD"
               style={{ width: '100%' }}
+              disabled={!!customs.customsInspectEndDate}
             />)}
           </FormItem>
           <FormItem label="海关查验" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <Col span={6}>
-              <Switch checkedChildren="是" unCheckedChildren="否" checked={customsInspect} onChange={this.handleSwitchCustomsIns} />
+              <Switch
+                checkedChildren="是"
+                unCheckedChildren="否"
+                checked={customsInspect}
+                onChange={this.handleSwitchCustomsIns}
+                disabled={!!customs.customsInspectEndDate}
+              />
+
             </Col>
             <Col span={18}>
               {getFieldDecorator('customs_inspect_amount')(<Input placeholder="收费金额" addonAfter="元" disabled={!customsInspect} />)}
@@ -109,7 +137,13 @@ export default class InspectModal extends React.Component {
           </FormItem>
           <FormItem label="质检查验" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <Col span={6}>
-              <Switch checkedChildren="是" unCheckedChildren="否" checked={qualityInspect} onChange={this.handleSwitchQualityIns} />
+              <Switch
+                checkedChildren="是"
+                unCheckedChildren="否"
+                checked={qualityInspect}
+                onChange={this.handleSwitchQualityIns}
+                disabled={!!customs.customsInspectEndDate}
+              />
             </Col>
             <Col span={18}>
               {getFieldDecorator('quality_inspect_amount')(<Input placeholder="收费金额" addonAfter="元" disabled={!qualityInspect} />)}

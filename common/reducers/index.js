@@ -80,7 +80,7 @@ import template from './template';
 import sofDashboard from './sofDashboard';
 import sofInvoice from './sofInvoice';
 import uploadRecords from './uploadRecords';
-import cmsEvents from './cmsEvents';
+import cmsPrefEvents from './cmsPrefEvents';
 
 export default combineReducers({
   activities,
@@ -164,5 +164,5 @@ export default combineReducers({
   sofDashboard,
   sofInvoice,
   uploadRecords,
-  cmsEvents,
+  cmsPrefEvents,
 });

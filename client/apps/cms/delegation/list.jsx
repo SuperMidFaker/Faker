@@ -21,9 +21,8 @@ import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire,
-  updateArrDate } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
+  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire } from 'common/reducers/cmsDelegation';
+import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel, saveBaseInfo } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import ExchangeDocModal from './modals/exchangeDocModal';
@@ -78,7 +77,7 @@ const { RangePicker } = DatePicker;
     loadCustPanel,
     loadDeclCiqPanel,
     loadFormRequire,
-    updateArrDate,
+    saveBaseInfo,
   }
 )
 @connectNav({
@@ -222,7 +221,7 @@ export default class DelegationList extends Component {
     align: 'center',
     dataIndex: 'ciq_inspect',
     render: (o) => {
-      if (o === 'NL') {
+      if (o === 'NL' || o === 'NS') {
         return <Tag color="cyan">包装检疫</Tag>;
       } else if (o === 'LA' || o === 'LB') {
         return <Tag color="orange">法定检验</Tag>;
@@ -235,7 +234,9 @@ export default class DelegationList extends Component {
     align: 'center',
     render: (o, record) => {
       if (record.ciq_inspect === 'NL') {
-        return <Button size="small" icon="warning" onClick={this.handleQuarantine} />;
+        return <Button size="small" icon="warning" onClick={() => this.handleQuarantine(record.delg_no)} />;
+      } else if (record.ciq_inspect === 'NS') {
+        return <Button size="small"><Badge status="success" text="查验完成" /></Button>;
       }
       return null;
     },
@@ -307,7 +308,7 @@ export default class DelegationList extends Component {
     render: (o, record) => (record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-'),
   }]
   handleArrDateChange = (dataString, delgNo) => {
-    this.props.updateArrDate(dataString, delgNo).then((result) => {
+    this.props.saveBaseInfo({ intl_arrival_date: dataString }, delgNo).then((result) => {
       if (!result.error) {
         message.info('更新成功');
       }
@@ -425,11 +426,11 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleExchangeDoc = (delgNo) => {
-    this.props.toggleExchangeDocModal(true, delgNo);
+  handleExchangeDoc = (record) => {
+    this.props.toggleExchangeDocModal(true, record.delg_no, record.bl_wb_no);
   }
-  handleQuarantine = () => {
-    this.props.toggleQuarantineModal(true);
+  handleQuarantine = (delgNo) => {
+    this.props.toggleQuarantineModal(true, delgNo);
   }
   /*
   handleSearchChange = (ev) => {
@@ -600,7 +601,7 @@ export default class DelegationList extends Component {
           );
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) { // 2.当前租户已接单
           if (this.state.currentFilter === 'exchange') {
-            return <RowAction onClick={() => this.handleExchangeDoc(record.delg_no)} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+            return <RowAction onClick={() => this.handleExchangeDoc(record)} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
           }
           let extraOp = null;
           if (record.customs_tenant_id === tenantId) { // 2.1 报关单位为当前租户(未作分配)
@@ -625,13 +626,13 @@ export default class DelegationList extends Component {
           return (
             <span>
               {this.state.currentFilter === 'exchange' &&
-              <RowAction onClick={() => this.handleExchangeDoc(record.delg_no)} icon="swap" label={this.msg('exchangeDoc')} row={record} />}
+              <RowAction onClick={() => this.handleExchangeDoc(record)} icon="swap" label={this.msg('exchangeDoc')} row={record} />}
               <RowAction onClick={this.handleManifestCreate} icon="file-add" label={this.msg('createManifest')} row={record} />
               {extraOp}
             </span>);
         } else if (record.status === CMS_DELEGATION_STATUS.processing) { // 3.
           if (this.state.currentFilter === 'exchange') {
-            return <RowAction onClick={() => this.handleExchangeDoc(record.delg_no)} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+            return <RowAction onClick={() => this.handleExchangeDoc(record)} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
           }
           let dispatchOverlay = null;
           if (record.customs_tenant_id === tenantId) { // 3.1 报关单位为当前租户(未作分配)
@@ -728,8 +729,8 @@ export default class DelegationList extends Component {
               })}
             />
           </Content>
-          <ExchangeDocModal handleReload={this.handleDelgListLoad} />
-          <QuarantineModal />
+          <ExchangeDocModal reload={this.handleDelgListLoad} />
+          <QuarantineModal reload={this.handleDelgListLoad} />
         </Layout>
         <DelegationDockPanel />
         <OrderDockPanel />
