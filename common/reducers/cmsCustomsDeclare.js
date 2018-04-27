@@ -589,7 +589,7 @@ export function modDecl(entryId, revisetype, reviseDate) {
         actionTypes.MOD_DECL_SUCCEED,
         actionTypes.MOD_DECL_FAIL,
       ],
-      endpoint: 'v1/cms/decl/mod',
+      endpoint: 'v1/cms/customs/decl/mod',
       method: 'post',
       data: { entryId, revisetype, reviseDate },
     },
