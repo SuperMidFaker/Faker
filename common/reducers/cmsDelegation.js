@@ -628,7 +628,7 @@ export function updateQuarantineInspect(amount, delgNo) {
         actionTypes.UPDATE_QUARANTINE_AMOUNT_SUCCEED,
         actionTypes.UPDATE_QUARANTINE_AMOUNT_FAIL,
       ],
-      endpoint: 'v1/cms/delegation/quarantine',
+      endpoint: 'v1/cms/delegation/quarantine/inspect',
       method: 'post',
       data: { amount, delgNo },
     },

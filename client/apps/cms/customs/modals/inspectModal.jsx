@@ -28,16 +28,18 @@ export default class InspectModal extends React.Component {
   state = {}
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
+      let customsInspect = false;
+      let qualityInspect = false;
       if (nextProps.customs.customsInspect !== INSPECT_STATUS.uninspect) {
-        this.setState({
-          customsInspect: true,
-        });
+        customsInspect = true;
       }
       if (nextProps.customs.ciqQualityInspect !== INSPECT_STATUS.uninspect) {
-        this.setState({
-          qualityInspect: true,
-        });
+        qualityInspect = true;
       }
+      this.setState({
+        customsInspect,
+        qualityInspect,
+      });
     }
   }
   handleCancel = () => {

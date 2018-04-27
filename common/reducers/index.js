@@ -39,6 +39,7 @@ import cmsExpense from './cmsExpense';
 import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
 import cmsParams from './cmsParams';
+import cmsPrefEvents from './cmsPrefEvents';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
 import crmBilling from './crmBilling';
@@ -58,7 +59,6 @@ import cwmTransaction from './cwmTransaction';
 import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
 import cwmAllocRule from './cwmAllocRule';
-import cmsPrefEvents from './cmsPrefEvents';
 import hubDataAdapter from './hubDataAdapter';
 import hubDevApp from './hubDevApp';
 import hubIntegration from './hubIntegration';
@@ -133,6 +133,7 @@ export default combineReducers({
   cmsTradeManual,
   cmsAnalytics,
   cmsParams,
+  cmsPrefEvents,
   scofFlow,
   sofOrderPref,
   sofVendors,
@@ -156,7 +157,6 @@ export default combineReducers({
   cwmInventoryStock,
   cwmTransition,
   cwmMovement,
-  cmsPrefEvents,
   hubDataAdapter,
   cmsCiqDeclare,
   cmsPermit,
