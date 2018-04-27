@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { toggleEventsModal, createPref, getPrefEventFees } from 'common/reducers/cmsPrefEvents';
+import { toggleEventsModal, createPrefEventFee, getPrefEventFees } from 'common/reducers/cmsPrefEvents';
 import { loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import { Form, Modal, Select } from 'antd';
 import { CMS_EVENTS } from 'common/constants';
@@ -20,7 +20,7 @@ const { Option } = Select;
     allFeeElements: state.bssFeeSettings.allFeeElements,
   }),
   {
-    toggleEventsModal, loadAllFeeElements, createPref, getPrefEventFees,
+    toggleEventsModal, loadAllFeeElements, createPrefEventFee, getPrefEventFees,
   }
 )
 @Form.create()
@@ -46,7 +46,7 @@ export default class InspectModal extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        this.props.createPref(this.props.event, values.fee_codes).then((result) => {
+        this.props.createPrefEventFee(this.props.event, values.fee_codes).then((result) => {
           if (!result.error) {
             this.handleCancel();
           }

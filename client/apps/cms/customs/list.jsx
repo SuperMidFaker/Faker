@@ -19,7 +19,7 @@ import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_DECL_MOD_TYPE } from 'common/constants';
+import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_DECL_MOD_TYPE, INSPECT_STATUS } from 'common/constants';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
@@ -232,9 +232,11 @@ export default class CustomsList extends Component {
     width: 120,
     render: (o, record) => {
       if (record.status > CMS_DECL_STATUS.reviewed.value) {
-        if (record.customs_inspect === 1) {
+        if (record.customs_inspect === INSPECT_STATUS.inspecting ||
+          record.ciq_quality_inspect === INSPECT_STATUS.inspecting) {
           return <Button size="small" onClick={() => this.handleCusInspect(record)}><Badge status="error" text="查验下达" /></Button>;
-        } else if (record.customs_inspect === 2) {
+        } else if (record.customs_inspect === INSPECT_STATUS.finish ||
+          record.ciq_quality_inspect === INSPECT_STATUS.finish) {
           return <Button size="small" onClick={() => this.handleCusInspect(record)}><Badge status="success" text="查验完成" /></Button>;
         }
         if (record.status < CMS_DECL_STATUS.released.value) {

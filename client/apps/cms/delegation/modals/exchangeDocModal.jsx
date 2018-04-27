@@ -67,17 +67,23 @@ export default class ExchangeDocModal extends React.Component {
             })(<Input disabled />)}
           </FormItem>
           <FormItem label="提货单号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            {getFieldDecorator('delivery_order_no')(<Input />)}
+            {getFieldDecorator('delivery_order_no', {
+               rules: [{ required: true, message: '提货单号必填' }],
+            })(<Input />)}
           </FormItem>
           <FormItem label="换单日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            {getFieldDecorator('exchange_bl_date')(<DatePicker
+            {getFieldDecorator('exchange_bl_date', {
+              rules: [{ required: true, message: '换单日期必填' }],
+            })(<DatePicker
               style={{ width: '100%' }}
               format="YYYY-MM-DD"
               showTime
             />)}
           </FormItem>
           <FormItem label="换单费金额" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            {getFieldDecorator('exchange_bl_account')(<Input />)}
+            {getFieldDecorator('exchange_bl_account', {
+              rules: [{ required: true, message: '换单费金额必填' }],
+            })(<Input />)}
           </FormItem>
         </Form>
       </Modal>

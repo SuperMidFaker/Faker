@@ -46,7 +46,7 @@ export function toggleEventsModal(visible, event) {
   };
 }
 
-export function createPref(event, feeCodes) {
+export function createPrefEventFee(event, feeCodes) {
   return {
     [CLIENT_API]: {
       types: [

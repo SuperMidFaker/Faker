@@ -58,6 +58,7 @@ import cwmTransaction from './cwmTransaction';
 import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
 import cwmAllocRule from './cwmAllocRule';
+import cmsPrefEvents from './cmsPrefEvents';
 import hubDataAdapter from './hubDataAdapter';
 import hubDevApp from './hubDevApp';
 import hubIntegration from './hubIntegration';
@@ -80,7 +81,6 @@ import template from './template';
 import sofDashboard from './sofDashboard';
 import sofInvoice from './sofInvoice';
 import uploadRecords from './uploadRecords';
-import cmsPrefEvents from './cmsPrefEvents';
 
 export default combineReducers({
   activities,
@@ -156,6 +156,7 @@ export default combineReducers({
   cwmInventoryStock,
   cwmTransition,
   cwmMovement,
+  cmsPrefEvents,
   hubDataAdapter,
   cmsCiqDeclare,
   cmsPermit,
@@ -164,5 +165,4 @@ export default combineReducers({
   sofDashboard,
   sofInvoice,
   uploadRecords,
-  cmsPrefEvents,
 });

@@ -25,18 +25,15 @@ export default class InspectModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     reload: PropTypes.func.isRequired,
   }
-  state = {
-    customsInspect: false,
-    qualityInspect: false,
-  }
+  state = {}
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      if (nextProps.customs.customsInspect === INSPECT_STATUS.inspecting) {
+      if (nextProps.customs.customsInspect !== INSPECT_STATUS.uninspect) {
         this.setState({
           customsInspect: true,
         });
       }
-      if (nextProps.customs.ciqQualityInspect === INSPECT_STATUS.inspecting) {
+      if (nextProps.customs.ciqQualityInspect !== INSPECT_STATUS.uninspect) {
         this.setState({
           qualityInspect: true,
         });
@@ -53,18 +50,18 @@ export default class InspectModal extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        this.props.setInspect(
-          this.props.customs.id,
-          {
-            entryId: values.entry_id,
-            customsInsDate: values.customs_inspect_date,
-            customsInsEndDate: values.customs_inspect_end_date,
-            customsInsAmount: values.customs_inspect_amount,
-            qualityInsAmount: values.quality_inspect_amount,
-            customsInspect: this.state.customsInspect,
-            qualityInspect: this.state.qualityInspect,
-          }
-        ).then((result) => {
+        const inspectInfo = {
+          customsInsDate: values.customs_inspect_date,
+          customsInsEndDate: values.customs_inspect_end_date,
+          customsInsAmount: values.customs_inspect_amount,
+          qualityInsAmount: values.quality_inspect_amount,
+          customsInspect: this.state.customsInspect,
+          qualityInspect: this.state.qualityInspect,
+        };
+        if (!this.props.customs.entryId) {
+          inspectInfo.entryId = values.entry_id;
+        }
+        this.props.setInspect(this.props.customs.id, inspectInfo).then((result) => {
           if (!result.error) {
             this.props.reload();
             this.handleCancel();
@@ -100,7 +97,7 @@ export default class InspectModal extends React.Component {
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('entry_id', {
               initialValue: customs.entryId,
-            })(<Input disabled={!!customs.customsInspectEndDate} />)}
+            })(<Input disabled={!!customs.customsInspectEndDate || !!customs.entryId} />)}
           </FormItem>
           <FormItem label="查验下达日期" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             {getFieldDecorator('customs_inspect_date', {
