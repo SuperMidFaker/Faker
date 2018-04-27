@@ -17,7 +17,10 @@ import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
-import { loadAudits, confirmAudits, redoAudits } from 'common/reducers/bssAudit';
+import { loadAudits } from 'common/reducers/bssAudit';
+import { toggleApplyInvoiceModal, toggleCollectInvoiceModal, loadInvoices } from 'common/reducers/bssInvoice';
+import ApplyInvoiceModal from './modal/applyInvoiceModal';
+import CollectInvoiceModal from './modal/collectInvoiceModal';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -36,7 +39,7 @@ const RadioGroup = Radio.Group;
     loading: state.bssAudit.loading,
   }),
   {
-    loadPartners, loadAudits, confirmAudits, redoAudits,
+    loadPartners, loadAudits, toggleApplyInvoiceModal, toggleCollectInvoiceModal, loadInvoices,
   }
 )
 @connectNav({
@@ -81,9 +84,13 @@ export default class AuditList extends React.Component {
     width: 150,
     dataIndex: 'cust_order_no',
   }, {
-    title: '发票种类',
+    title: '发票类型',
     width: 100,
     dataIndex: 'invoice_type',
+  }, {
+    title: '发票种类',
+    width: 100,
+    dataIndex: 'invoice_category',
   }, {
     title: '发票金额',
     dataIndex: 'invoice_amount',
@@ -154,7 +161,12 @@ export default class AuditList extends React.Component {
     },
     remotes: this.props.auditslist,
   })
-
+  handleApply = () => {
+    this.props.toggleApplyInvoiceModal(true);
+  }
+  handleCollect = () => {
+    this.props.toggleCollectInvoiceModal(true);
+  }
   handleAuditsLoad = (currentPage, filter) => {
     const { listFilter, auditslist: { pageSize, current } } = this.props;
     this.props.loadAudits({
@@ -242,7 +254,8 @@ export default class AuditList extends React.Component {
       },
     };
     this.dataSource.remotes = auditslist;
-    const primaryAction = <ToolbarAction primary icon="plus" label={this.msg('createInvoice')} onClick={this.handleCreate} />;
+    const primaryAction = <ToolbarAction primary icon="plus" label={this.msg('applyInvoice')} onClick={this.handleApply} />;
+    const secondaryAction = <ToolbarAction secondary icon="plus" label={this.msg('collectInvoice')} onClick={this.handleCollect} />;
     const toolbarActions = (<span>
       <Select
         showSearch
@@ -320,6 +333,7 @@ export default class AuditList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('invoice')}>
           <PageHeader.Actions>
+            {secondaryAction}
             {primaryAction}
             <ButtonToggle icon="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
@@ -327,7 +341,7 @@ export default class AuditList extends React.Component {
         <Layout>
           <Drawer width={160}>
             <Menu mode="inline" selectedKeys={[status]} onClick={this.handleFilterMenuClick}>
-              <Menu.ItemGroup key="invoicing" title={this.msg('invoicing')}>
+              <Menu.ItemGroup key="applyInvoice" title={this.msg('applyInvoice')}>
                 <Menu.Item key="applied">
                   <Icon type="upload" /> {this.msg('statusApplied')}
                 </Menu.Item>
@@ -338,7 +352,7 @@ export default class AuditList extends React.Component {
                   <Icon type="check-square-o" /> {this.msg('statusPaymentReceived')}
                 </Menu.Item>
               </Menu.ItemGroup>
-              <Menu.ItemGroup key="payableInvoice" title={this.msg('payableInvoice')}>
+              <Menu.ItemGroup key="collectInvoice" title={this.msg('collectInvoice')}>
                 <Menu.Item key="pending">
                   <Icon type="file-unknown" /> {this.msg('statusPending')}
                 </Menu.Item>
@@ -376,6 +390,8 @@ export default class AuditList extends React.Component {
             </NestedMenuPanel>
           </Content>
         </Layout>
+        <ApplyInvoiceModal />
+        <CollectInvoiceModal />
       </Layout>
     );
   }

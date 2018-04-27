@@ -146,6 +146,9 @@ export default class BillList extends React.Component {
                 <Menu.Item key="reconciling">
                   <Icon type="swap" /> {this.msg('statusReconciling')}
                 </Menu.Item>
+                <Menu.Item key="invoicing">
+                  <Icon type="file" /> {this.msg('statusInvoicing')}
+                </Menu.Item>
                 <Menu.Item key="writeOff">
                   <Icon type="check-square-o" /> {this.msg('statusWriteOff')}
                 </Menu.Item>

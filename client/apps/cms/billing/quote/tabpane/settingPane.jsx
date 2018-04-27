@@ -41,26 +41,11 @@ export default class SettingPane extends Component {
         <Card>
           <Row>
             <Col span={6}>
-              <FormItem label="报价编号" {...formItemLayout}>
-                <Input value={formData.quote_no} disabled />
-              </FormItem>
-            </Col>
-            <Col span={6}>
               <FormItem label="报价名称" {...formItemLayout} required>
                 {getFieldDecorator('quote_name', {
                   rules: [{ required: true }],
                   initialValue: formData.quote_name,
                 })(<Input disabled={readOnly} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="服务需求方" {...formItemLayout}>
-                <Input value={formData.buyer_name} disabled />
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="报价提供方" {...formItemLayout}>
-                <Input value={formData.seller_name} disabled />
               </FormItem>
             </Col>
           </Row>

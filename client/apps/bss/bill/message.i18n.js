@@ -55,6 +55,10 @@ const messages = defineMessages({
     id: 'bss.bill.status.reconciling',
     defaultMessage: '对账',
   },
+  statusInvoicing: {
+    id: 'bss.bill.status.invoicing',
+    defaultMessage: '开票',
+  },
   statusWriteOff: {
     id: 'bss.bill.status.write.off',
     defaultMessage: '核销',
