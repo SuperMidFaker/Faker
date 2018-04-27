@@ -39,6 +39,7 @@ import cmsExpense from './cmsExpense';
 import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
 import cmsParams from './cmsParams';
+import cmsPrefEvents from './cmsPrefEvents';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
 import crmBilling from './crmBilling';
@@ -132,6 +133,7 @@ export default combineReducers({
   cmsTradeManual,
   cmsAnalytics,
   cmsParams,
+  cmsPrefEvents,
   scofFlow,
   sofOrderPref,
   sofVendors,

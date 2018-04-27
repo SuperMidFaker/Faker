@@ -438,10 +438,10 @@ export const CMS_DECL_CHANNEL = {
 };
 
 export const CMS_DECL_MOD_TYPE = [
-  { value: 1, text: '申请修改报关单' },
-  { value: 2, text: '申请撤销报关单' },
-  { value: 3, text: '海关发起修改' },
-  { value: 4, text: '海关发起撤销' },
+  { value: '1', text: '申请修改报关单' },
+  { value: '2', text: '申请撤销报关单' },
+  { value: '3', text: '海关发起修改' },
+  { value: '4', text: '海关发起撤销' },
 ];
 
 export const ITEMS_STATUS = [
@@ -984,4 +984,11 @@ export const CMS_DOC_TYPE = [
   { value: 'CIQ_DOCU', text: '国检随附单据' },
   { value: 'CCD', text: '报关单' },
   { value: 'CID', text: '报检单' },
+];
+
+export const CMS_EVENTS = [
+  { key: 'exchange', text: '换单' },
+  { key: 'quarantine', text: '检疫查验' },
+  { key: 'quality', text: '品质查验' },
+  { key: 'customs', text: '海关查验' },
 ];
