@@ -235,7 +235,7 @@ export default class CustomsList extends Component {
         if (record.customs_inspect === INSPECT_STATUS.inspecting ||
           record.ciq_quality_inspect === INSPECT_STATUS.inspecting) {
           return <Button size="small" onClick={() => this.handleCusInspect(record)}><Badge status="error" text="查验下达" /></Button>;
-        } else if (record.customs_inspect === INSPECT_STATUS.finish ||
+        } else if (record.customs_inspect === INSPECT_STATUS.finish &&
           record.ciq_quality_inspect === INSPECT_STATUS.finish) {
           return <Button size="small" onClick={() => this.handleCusInspect(record)}><Badge status="success" text="查验完成" /></Button>;
         }

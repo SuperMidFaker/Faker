@@ -97,11 +97,11 @@ export const BILLING_METHOD = [
     children: [
       { key: 'shipmt_qty', value: 'shipmt_qty', label: '按货运数量' },
       { key: 'decl_qty', value: 'decl_qty', label: '按报关单数量' },
-      { key: 'ciq_qty', label: '按报检单数量' },
+      { key: 'ciq_qty', value: 'ciq_qty', label: '按报检单数量' },
       { key: 'decl_sheet_qty', value: 'decl_sheet_qty', label: '按联单数量' },
       { key: 'decl_item_qty', value: 'decl_item_qty', label: '按品名数量' },
       { key: 'trade_item_qty', value: 'trade_item_qty', label: '按料件数量' },
-      { key: 'trade_amount', value: 'trade_amount', text: '按货值数量' },
+      { key: 'trade_amount', value: 'trade_amount', label: '按货值数量' },
     ],
   },
   { key: '$input', value: '$input', label: '输入数量' },

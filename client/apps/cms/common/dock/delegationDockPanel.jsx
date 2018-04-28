@@ -5,7 +5,7 @@ import { Col, Icon, Menu, Row, Tabs, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants';
-import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
+import { acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelegationDock';
 import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
@@ -15,7 +15,6 @@ import ShipmentPane from './tabpanes/shipmentPane';
 import DutyTaxPane from './tabpanes/dutyTaxPane';
 // import ExpensePane from './tabpanes/expensePane';
 import FilesPane from './tabpanes/filesPane';
-import DelgDispModal from './delgDispModal';
 import { formatMsg } from './message.i18n';
 
 const { TabPane } = Tabs;
@@ -37,7 +36,6 @@ const { TabPane } = Tabs;
     hideDock,
     setPreviewStatus,
     setPreviewTabkey,
-    showDispModal,
     loadBasicInfo,
     loadOrderDetail,
     getShipmtOrderNo,
@@ -65,9 +63,6 @@ export default class DelegationDockPanel extends React.Component {
   msg = formatMsg(this.props.intl)
   handleTabChange = (tabKey) => {
     this.props.setPreviewTabkey(tabKey);
-  }
-  handleAssign = () => {
-    this.props.showDispModal(this.props.previewer.delegation.delg_no, this.props.tenantId);
   }
   handleDispCancel = () => {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });
@@ -175,7 +170,6 @@ export default class DelegationDockPanel extends React.Component {
         overlay={this.renderMenu()}
       >
         {this.renderTabs()}
-        <DelgDispModal />
       </DockPanel>
     );
   }

@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
-import { delStockTask } from 'common/reducers/cwmShFtzStock';
+import { loadStockTasks, delStockTask } from 'common/reducers/cwmShFtzStock';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 @injectIntl
@@ -14,7 +14,7 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     defaultWhse: state.cwmContext.defaultWhse,
     ftzTaskList: state.cwmShFtzStock.ftzTaskList,
   }),
-  { delStockTask }
+  { loadStockTasks, delStockTask }
 )
 export default class TasksPane extends React.Component {
   static propTypes = {
@@ -22,6 +22,11 @@ export default class TasksPane extends React.Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  compontentWillReceiveProps(nextProps) {
+    if (nextProps.ftzTaskList.reload) {
+      this.props.loadStockTasks(this.props.defaultWhse.code);
+    }
   }
   msg = formatMsg(this.props.intl)
   gmsg=formatGlobalMsg(this.props.intl)

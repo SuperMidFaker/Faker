@@ -21,11 +21,7 @@ const FormItem = Form.Item;
 export default class ZoneEditModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    zone: PropTypes.object.isRequired,
-  }
-  state = {
-    popoverVisible: false,
-    dropdownVisible: false,
+    zone: PropTypes.shape({ zone_code: PropTypes.string }).isRequired,
   }
   msg = formatMsg(this.props.intl)
   editZone = (e) => {
@@ -59,7 +55,7 @@ export default class ZoneEditModal extends Component {
         <FormItem label="库区代码">
           {
             getFieldDecorator('zoneCode', {
-              rules: [{ required: true, messages: 'please input zoneCode' }],
+              rules: [{ required: true, message: 'please input zoneCode' }],
               initialValue: zone.zone_code,
             })(<Input placeholder="库区编号" />)
           }
@@ -67,7 +63,7 @@ export default class ZoneEditModal extends Component {
         <FormItem label="库区名称">
           {
             getFieldDecorator('zoneName', {
-              rules: [{ required: true, messages: 'please input zoneName' }],
+              rules: [{ required: true, message: 'please input zoneName' }],
               initialValue: zone.zone_name,
             })(<Input placeholder="库区描述" />)
           }

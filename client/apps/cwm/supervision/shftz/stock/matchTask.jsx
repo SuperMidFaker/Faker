@@ -48,17 +48,17 @@ export default class SHFTZStockMatchTask extends Component {
     this.props.loadMatchTaskMatched({
       taskId: this.props.params.taskId,
       pageSize: matchedlist.pageSize,
-      current: matchedlist.current,
+      current: 1,
     });
     this.props.loadMatchTaskNonmatched({
       taskId: this.props.params.taskId,
       pageSize: nonmatchlist.pageSize,
-      current: nonmatchlist.current,
+      current: 1,
     });
     this.props.loadMatchTaskLocStock({
       taskId: this.props.params.taskId,
       pageSize: locationStock.pageSize,
-      current: locationStock.current,
+      current: 1,
     });
   }
   msg = formatMsg(this.props.intl)
@@ -77,7 +77,15 @@ export default class SHFTZStockMatchTask extends Component {
     width: 120,
     dataIndex: 'category',
   }, {
-    title: this.msg('qty'),
+    title: '总数量',
+    width: 120,
+    dataIndex: 'total_qty',
+  }, {
+    title: '待出库数量',
+    width: 120,
+    dataIndex: 'locked_qty',
+  }, {
+    title: '剩余数量',
     width: 120,
     dataIndex: 'qty',
   }, {

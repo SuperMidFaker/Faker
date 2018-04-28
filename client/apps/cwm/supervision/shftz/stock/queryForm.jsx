@@ -165,7 +165,7 @@ export default class QueryForm extends React.Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Form className="form-layout-compact">
+      <Form>
         <Row gutter={16}>
           <Col span={6}>
             <FormItem {...formItemLayout} label={this.msg('owner')}>
