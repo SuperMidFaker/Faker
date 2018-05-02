@@ -28,6 +28,9 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CIQ_DISP_SAVE', 'CIQ_DISP_SAVE_SUCCEED', 'CIQ_DISP_SAVE_FAIL',
   'RECALL_DELG_ASSIGN', 'RECALL_DELG_ASSIGN_SUCCEED', 'RECALL_DELG_ASSIGN_FAILED',
   'TOGGLE_EXCHANGE_DOC_MODAL', 'TOGGLE_QUARANTINE_MODAL',
+  'UPDATE_ARR_DATE', 'UPDATE_ARR_DATE_SUCCEED', 'UPDATE_ARR_DATE_FAIL',
+  'UPDATE_QUARANTINE_AMOUNT', 'UPDATE_QUARANTINE_AMOUNT_SUCCEED', 'UPDATE_QUARANTINE_AMOUNT_FAIL',
+  'UPDATE_DELEGATION', 'UPDATE_DELEGATION_SUCCEED', 'UPDATE_DELEGATION_FAIL',
 ]);
 
 const initialState = {
@@ -97,9 +100,12 @@ const initialState = {
   suppliers: [],
   exchangeDocModal: {
     visible: false,
+    delgNo: '',
+    blWbNo: '',
   },
   quarantineModal: {
     visible: false,
+    delgNo: '',
   },
 };
 
@@ -196,25 +202,48 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, assign: { ...state.assign, ciqSups: action.result.data } };
     case actionTypes.TOGGLE_EXCHANGE_DOC_MODAL:
-      return { ...state, exchangeDocModal: { ...state.exchangeDocModal, visible: action.data } };
+      return {
+        ...state,
+        exchangeDocModal: {
+          ...state.exchangeDocModal,
+          visible: action.data.visible,
+          delgNo: action.data.delgNo,
+          blWbNo: action.data.blWbNo,
+        },
+      };
     case actionTypes.TOGGLE_QUARANTINE_MODAL:
-      return { ...state, quarantineModal: { ...state.quarantineModal, visible: action.data } };
+      return {
+        ...state,
+        quarantineModal: {
+          ...state.quarantineModal,
+          visible: action.data.visible,
+          delgNo: action.data.delgNo,
+        },
+      };
+    case actionTypes.UPDATE_DELEGATION_SUCCEED: {
+      const list = [...state.delegationlist.data];
+      const index = list.findIndex(item => item.delg_no === action.data.delgNo);
+      if (index !== -1) {
+        list[index] = { ...list[index], ...action.data.change };
+      }
+      return { ...state, delegationlist: { ...state.delegationlist, data: list } };
+    }
     default:
       return state;
   }
 }
 
-export function toggleExchangeDocModal(visible) {
+export function toggleExchangeDocModal(visible, delgNo, blWbNo) {
   return {
     type: actionTypes.TOGGLE_EXCHANGE_DOC_MODAL,
-    data: visible,
+    data: { visible, delgNo, blWbNo },
   };
 }
 
-export function toggleQuarantineModal(visible) {
+export function toggleQuarantineModal(visible, delgNo) {
   return {
     type: actionTypes.TOGGLE_QUARANTINE_MODAL,
-    data: visible,
+    data: { visible, delgNo },
   };
 }
 
@@ -596,6 +625,36 @@ export function fillCustomsNo({ entryNo, entryHeadId, delgNo }) {
       endpoint: 'v1/cms/fill/customsno',
       method: 'post',
       data: { entryNo, entryHeadId, delgNo },
+    },
+  };
+}
+
+export function updateQuarantineInspect(amount, delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_QUARANTINE_AMOUNT,
+        actionTypes.UPDATE_QUARANTINE_AMOUNT_SUCCEED,
+        actionTypes.UPDATE_QUARANTINE_AMOUNT_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/quarantine/inspect',
+      method: 'post',
+      data: { amount, delgNo },
+    },
+  };
+}
+
+export function updateDelegation(change, delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_DELEGATION,
+        actionTypes.UPDATE_DELEGATION_SUCCEED,
+        actionTypes.UPDATE_DELEGATION_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/base/info/save',
+      method: 'post',
+      data: { change, delgNo },
     },
   };
 }

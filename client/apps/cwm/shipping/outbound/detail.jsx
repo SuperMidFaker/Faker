@@ -92,9 +92,10 @@ export default class OutboundDetail extends Component {
       tabKey,
     });
   }
-  handleRegPage = (type) => {
-    const link = type === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${this.props.outboundHead.so_no}`
-      : `/cwm/supervision/shftz/release/${type}/${this.props.outboundHead.so_no}`;
+  handleRegPage = (type, soNo) => {
+    const regSoNo = soNo || this.props.outboundHead.so_no;
+    const link = type === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${regSoNo}`
+      : `/cwm/supervision/shftz/release/${type}/${regSoNo}`;
     this.context.router.push(link);
   }
   handleExportPickingListXLS = () => {
@@ -225,7 +226,18 @@ export default class OutboundDetail extends Component {
       CWM_OUTBOUND_STATUS[cis].value === outboundHead.status)[0];
     let regTag;
     let regTypes = [];
-    if (outboundHead.bonded === 1) {
+    // TODO merge to regs
+    if (outboundHead.regs) {
+      regTypes = outboundHead.regs.map((reg) => {
+        const sreg = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reg.bonded_outtype)[0];
+        return {
+          tooltip: sreg && sreg.ftztext,
+          type: reg.bonded_outtype,
+          status: reg.reg_status,
+          so_no: reg.so_no,
+        };
+      });
+    } else if (outboundHead.bonded === 1) {
       [regTag] = CWM_SO_BONDED_REGTYPES.filter(sbr =>
         sbr.value === outboundHead.bonded_outtype && sbr.tagcolor);
       if (regTag) {
@@ -276,7 +288,7 @@ export default class OutboundDetail extends Component {
                   status.value === reg.status)[0];
               if (regStatus) {
                 return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
-                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 8 }}>
+                  <Button icon="link" onClick={() => this.handleRegPage(reg.type, reg.so_no)} style={{ marginLeft: 8 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>
                 </Tooltip>);
@@ -335,11 +347,7 @@ export default class OutboundDetail extends Component {
             </Steps>
           </Drawer>
           <Content className="page-content">
-            <MagicCard
-              bodyStyle={{ padding: 0 }}
-
-
-            >
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
                   <OrderDetailsPane

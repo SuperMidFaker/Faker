@@ -25,3 +25,8 @@ export const SETTLE_TYPE = {
   owner: 1,
   vendor: 2,
 };
+
+export const INVOICE_OP = [
+  { key: 'applyInvoice', text: '开票' },
+  { key: 'collectInvoice', text: '收票' },
+];

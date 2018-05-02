@@ -2,16 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Input, message, Mention, Modal, Tag, Transfer, TreeSelect } from 'antd';
+import { Button, Input, message, Mention, Modal, Tag, Transfer, TreeSelect, Switch } from 'antd';
 import { updateFee, addFees, deleteFees, saveQuoteBatchEdit, loadQuoteFees } from 'common/reducers/cmsQuote';
 import { loadAllFeeGroups, loadParentFeeElements } from 'common/reducers/bssFeeSettings';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS, BILLING_METHODS } from 'common/constants';
+import { FEE_TYPE, BILLING_METHOD, FORMULA_PARAMS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../../message.i18n';
 
 const { Nav } = Mention;
+let BILLING_METHODS = [];
+BILLING_METHOD.forEach((blm) => {
+  BILLING_METHODS.push({ key: blm.key, value: blm.value, label: blm.label });
+  if (blm.children) {
+    BILLING_METHODS = BILLING_METHODS.concat(blm.children);
+  }
+});
 
 @injectIntl
 @connect(
@@ -55,7 +62,7 @@ export default class TariffPane extends Component {
       this.handleElementLoad(result.data);
     });
   }
-  compontentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.quoteFeesReload) {
       this.handleElementLoad(nextProps.parentFeeElements);
     }
@@ -154,6 +161,7 @@ export default class TariffPane extends Component {
       id: item.id,
       billing_way: item.billing_way,
       formula_factor: item.formula_factor,
+      need_settle: item.need_settle,
     });
     const fees = [...this.state.fees];
     const feeIndex = fees.findIndex(fe => fe.id === item.id);
@@ -223,6 +231,16 @@ export default class TariffPane extends Component {
           return method ? method.label : '';
         },
       }, {
+        title: this.msg('settle'),
+        dataIndex: 'need_settle',
+        width: 120,
+        render: (o, record) => {
+          if (onEdit && editItem.id === record.id) {
+            return <Switch checked={!!editItem.need_settle} onChange={checked => this.handleEditChange('need_settle', checked)} />;
+          }
+          return <Switch checked={!!o} disabled />;
+        },
+      }, {
         title: this.msg('formulaFactor'),
         dataIndex: 'formula_factor',
         render: (o, record) => {
@@ -239,6 +257,18 @@ export default class TariffPane extends Component {
                 multiLines
                 style={{ width: '100%' }}
               />);
+            }
+            if (editItem.billing_way === '$input') {
+              return (
+                <Mention
+                  size="small"
+                  prefix="$"
+                  style={{ width: '100%' }}
+                  defaultValue={o ? Mention.toContentState(o) : null}
+                  suggestions={['input']}
+                  onChange={editorState => this.handleFormulaChange(editorState)}
+                />
+              );
             }
             if (editItem.billing_way === '$manual') {
               return (

@@ -38,6 +38,10 @@ const messages = defineMessages({
     id: 'cms.settings.billTemplate.tenantName',
     defaultMessage: '企业名称',
   },
+  events: {
+    id: 'cms.setting.event',
+    defaultMessage: '清关事件',
+  },
 });
 export default messages;
 export const formatMsg = formati18n(messages);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Icon, Layout, Radio, Select, Tooltip, DatePicker } from 'antd';
+import { Badge, Icon, Layout, Select, Tooltip, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
@@ -26,8 +26,6 @@ import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPane
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { RangePicker } = DatePicker;
 
 @injectIntl
@@ -200,8 +198,8 @@ export default class ReceivingInboundList extends React.Component {
       filters,
     });
   }
-  handleStatusChange = (e) => {
-    const filters = { ...this.props.filters, status: e.target.value };
+  handleStatusChange = (value) => {
+    const filters = { ...this.props.filters, status: value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadInbounds({
       whseCode,
@@ -278,13 +276,16 @@ export default class ReceivingInboundList extends React.Component {
     });
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('inboundPlaceholder')} onSearch={this.handleSearch} />
-      <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
-        <RadioButton value="all">全部</RadioButton>
-        <RadioButton value="create">待入库</RadioButton>
-        <RadioButton value="receive">收货</RadioButton>
-        <RadioButton value="putaway">上架</RadioButton>
-        <RadioButton value="completed">已入库</RadioButton>
-      </RadioGroup>
+      <Select
+        value={filters.status}
+        onChange={this.handleStatusChange}
+      >
+        <Option value="all">全部状态</Option>
+        <Option value="create">待入库</Option>
+        <Option value="receive">收货</Option>
+        <Option value="putaway">上架</Option>
+        <Option value="completed">已入库</Option>
+      </Select>
       <Select
         showSearch
         optionFilterProp="children"

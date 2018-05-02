@@ -95,10 +95,20 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, delegation: delg } };
     }
     case actionTypes.SET_OPERATOR_SUCCEED:
-      return { ...state, customsPanel: { ...state.customsPanel, bill: { ...state.customsPanel.bill, preparer_name: action.payload.loginName } } };
+      return {
+        ...state,
+        customsPanel:
+        {
+          ...state.customsPanel,
+          bill: { ...state.customsPanel.bill, preparer_name: action.payload.loginName },
+        },
+      };
     case actionTypes.TAX_PANE_LOAD_SUCCEED:
       return {
-        ...state, taxTots: action.result.data.taxTots, taxMaps: action.result.data.taxG, params: action.result.data.params,
+        ...state,
+        taxTots: action.result.data.taxTots,
+        taxMaps: action.result.data.taxG,
+        params: action.result.data.params,
       };
     default:
       return state;
@@ -196,7 +206,7 @@ export function updateCertParam(delgNo, dispId, cert, qty) {
   };
 }
 
-export function exchangeBlNo(delgNo, blNo) {
+export function exchangeBlNo(delgNo, changeInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -206,7 +216,7 @@ export function exchangeBlNo(delgNo, blNo) {
       ],
       endpoint: 'v1/cms/delegation/exchange',
       method: 'post',
-      data: { delgNo, blNo },
+      data: { delgNo, changeInfo },
     },
   };
 }

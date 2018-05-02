@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
 import { hideWarehouseModal, addWarehouse } from 'common/reducers/cwmWarehouse';
 import { loadWhseContext } from 'common/reducers/cwmContext';
-import { formatMsg } from '../message.i18n';
 import Cascader from 'client/components/RegionCascader';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 @injectIntl
@@ -117,14 +117,14 @@ export default class WareHouseModal extends Component {
           <FormItem {...formItemLayout} label="仓库代码" >
             {
               getFieldDecorator('whseCode', {
-                rules: [{ required: true, messages: 'please input whseCode' }],
+                rules: [{ required: true, message: 'please input whseCode' }],
               })(<Input />)
             }
           </FormItem>
           <FormItem {...formItemLayout} label="仓库名称" >
             {
               getFieldDecorator('whseName', {
-                rules: [{ required: true, messages: 'please input whseName' }],
+                rules: [{ required: true, message: 'please input whseName' }],
               })(<Input />)
             }
           </FormItem>

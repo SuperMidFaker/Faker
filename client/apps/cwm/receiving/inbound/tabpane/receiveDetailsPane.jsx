@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Modal, Button, Tag, Tooltip } from 'antd';
+import { Alert, Modal, Button, Tag, Dropdown, Icon, Menu } from 'antd';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
@@ -9,8 +9,8 @@ import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { createFilename } from 'client/util/dataTransform';
-import ExcelUploader from 'client/components/ExcelUploader';
 import EditableCell from 'client/components/EditableCell';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import { openReceiveModal, viewSuBarcodeScanModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL, SKU_REQUIRED_PROPS } from 'common/constants';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -74,6 +74,7 @@ export default class ReceiveDetailsPane extends React.Component {
     selectedRows: [],
     searchValue: '',
     loading: false,
+    importPanelVisible: false,
   }
   componentWillMount() {
     this.handleReload();
@@ -132,10 +133,6 @@ export default class ReceiveDetailsPane extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleDownloadReceiving = () => {
-    const { inboundNo } = this.props;
-    window.open(`${API_ROOTS.default}v1/cwm/export/receiving/details/${createFilename('receiving')}.xlsx?inboundNo=${inboundNo}`);
-  }
   handleUploadPutaway = () => {
     this.props.markReloadInbound();
   }
@@ -147,6 +144,15 @@ export default class ReceiveDetailsPane extends React.Component {
       visible: true,
       inboundNo: this.props.inboundNo,
     });
+  }
+  handleMoreMenuClick = (e) => {
+    if (e.key === 'import') {
+      this.setState({
+        importPanelVisible: true,
+      });
+    } else {
+      window.open(`${API_ROOTS.default}v1/cwm/export/receiving/details/${createFilename('receiving')}.xlsx?inboundNo=${this.props.inboundNo}`);
+    }
   }
   columns = [{
     title: '行号',
@@ -307,6 +313,12 @@ export default class ReceiveDetailsPane extends React.Component {
       const props = inboundHead.sku_rule.required_props.map(rp => SKU_PROPS_MAP[rp]).join('/');
       alertMsg = <div>以下货号属性({props})需要补充完整:<br />{prdnos}</div>;
     }
+    const moreMenu = (
+      <Menu onClick={this.handleMoreMenuClick}>
+        <Menu.Item key="export"><Icon type="download" /> 导出</Menu.Item>
+        <Menu.Item key="import"><Icon type="upload" /> 导入</Menu.Item>
+      </Menu>
+    );
     return (
       <DataPane
         columns={this.columns}
@@ -334,25 +346,23 @@ export default class ReceiveDetailsPane extends React.Component {
             条码收货确认
                 </Button>}
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
-            <Tooltip title="导出收货明细" placement="bottom"><Button icon="download" onClick={this.handleDownloadReceiving}>导出</Button></Tooltip>
-            }
-            {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
-            <Tooltip title="导入收货确认" placement="bottom">
-              <ExcelUploader
-                endpoint={`${API_ROOTS.default}v1/cwm/receiving/details/import`}
-                formData={{
-                  data: JSON.stringify({
-                    loginId: this.props.loginId,
-                    loginName: this.props.username,
-                    inboundNo: this.props.inboundNo,
-                    whseCode: this.props.defaultWhse.code,
-                  }),
-                }}
-                onUploaded={this.handleUploadPutaway}
-              >
-                <Button icon="upload">导入</Button>
-              </ExcelUploader>
-            </Tooltip>}
+              <Dropdown overlay={moreMenu}>
+                <Button>收货导入</Button>
+              </Dropdown>}
+            <ImportDataPanel
+              adaptors={null}
+              title="收货确认导入"
+              visible={this.state.importPanelVisible}
+              endpoint={`${API_ROOTS.default}v1/cwm/receiving/details/import`}
+              formData={{
+              loginId: this.props.loginId,
+              loginName: this.props.username,
+              inboundNo: this.props.inboundNo,
+              whseCode: this.props.defaultWhse.code,
+            }}
+              onClose={() => { this.setState({ importPanelVisible: false }); }}
+              onUploaded={this.handleUploadPutaway}
+            />
           </DataPane.Actions>
           {alertMsg && <Alert message={alertMsg} type="warning" showIcon />}
         </DataPane.Toolbar>

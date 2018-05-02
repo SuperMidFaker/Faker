@@ -149,7 +149,7 @@ export default class HSCodeList extends Component {
         <Menu.Item key="model"><Icon type="download" /> 下载模板(申报单位)</Menu.Item>
       </Menu>
     );
-    const toolbarActions = (<SearchBox placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} width={400} enterButton />);
+    const toolbarActions = (<SearchBox placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} width={400} />);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">

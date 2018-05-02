@@ -7,9 +7,9 @@ const messages = defineMessages({
     id: 'bss.invoice',
     defaultMessage: '发票管理',
   },
-  invoicing: {
-    id: 'bss.invoice.invoicing',
-    defaultMessage: '开具发票',
+  applyInvoice: {
+    id: 'bss.invoice.applyInvoice',
+    defaultMessage: '开票',
   },
   statusApplied: {
     id: 'bss.invoice.status.applied',
@@ -23,9 +23,9 @@ const messages = defineMessages({
     id: 'bss.invoice.status.payment.received',
     defaultMessage: '已收款',
   },
-  payableInvoice: {
+  collectInvoice: {
     id: 'bss.invoice.payable',
-    defaultMessage: '应付发票',
+    defaultMessage: '收票',
   },
   statusPending: {
     id: 'bss.invoice.status.pending',
@@ -39,9 +39,9 @@ const messages = defineMessages({
     id: 'bss.invoice.status.payment.made',
     defaultMessage: '已付款',
   },
-  confirmAll: {
-    id: 'bss.invoice.confirm.all',
-    defaultMessage: '全部确认',
+  createInvoice: {
+    id: 'bss.invoice.create',
+    defaultMessage: '新建发票',
   },
   searchTips: {
     id: 'bss.invoice.search.tips',

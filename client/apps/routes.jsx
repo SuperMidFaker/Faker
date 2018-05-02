@@ -331,6 +331,7 @@ export default(store) => {
               <IndexRedirect to="/clearance/settings/preferences" />
               <Route path="preferences" component={CMSSettings.Preferences} />
               <Route path="brokers" component={CMSBrokers.List} />
+              <Route path="events" component={CMSSettings.Events} />
             </Route>
             <Route path="tradeitem">
               <IndexRedirect to="/clearance/tradeitem/repo" />

@@ -216,7 +216,7 @@ export default class RolePrivilegesForm extends React.Component {
                     options={{
                         getFieldDecorator,
                         rules: [{
-                          required: true, min: 2, messages: this.msg('nameMessage'),
+                          required: true, min: 2, message: this.msg('nameMessage'),
                         }, {
                           validator(rule, value, callback) {
                             if (Object.keys(PRESET_ROLE_NAME_KEYS).filter(nk =>

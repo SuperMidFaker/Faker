@@ -21,13 +21,14 @@ import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire } from 'common/reducers/cmsDelegation';
+  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire, updateDelegation } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import ExchangeDocModal from './modals/exchangeDocModal';
 import QuarantineModal from './modals/quarantineModal';
 import { formatMsg } from './message.i18n';
+import DelgDispModal from '../common/dock/delgDispModal';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
@@ -77,6 +78,7 @@ const { RangePicker } = DatePicker;
     loadCustPanel,
     loadDeclCiqPanel,
     loadFormRequire,
+    updateDelegation,
   }
 )
 @connectNav({
@@ -220,7 +222,7 @@ export default class DelegationList extends Component {
     align: 'center',
     dataIndex: 'ciq_inspect',
     render: (o) => {
-      if (o === 'NL') {
+      if (o === 'NL' || o === 'NS') {
         return <Tag color="cyan">包装检疫</Tag>;
       } else if (o === 'LA' || o === 'LB') {
         return <Tag color="orange">法定检验</Tag>;
@@ -233,7 +235,9 @@ export default class DelegationList extends Component {
     align: 'center',
     render: (o, record) => {
       if (record.ciq_inspect === 'NL') {
-        return <Button size="small" icon="warning" onClick={this.handleQuarantine} />;
+        return <Button size="small" icon="warning" onClick={() => this.handleQuarantine(record.delg_no)} />;
+      } else if (record.ciq_inspect === 'NS') {
+        return <Button size="small"><Badge status="success" text="查验完成" /></Button>;
       }
       return null;
     },
@@ -269,15 +273,16 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('实际到港日期'),
     width: 150,
-    dataIndex: 'ata',
+    dataIndex: 'intl_arrival_date',
     render: (o, record) => {
       if (record.i_e_type === 0 && (record.trans_mode === '2' || record.trans_mode === '5')) {
         return (<DatePicker
           size="small"
           defaultValue={o && moment(o)}
-          onChange={this.handleATADateChange}
+          onChange={(date, dataString) => this.handleArrDateChange(dataString, record.delg_no)}
           style={{ width: '100%' }}
           format="YYYY-MM-DD"
+          disabled={record.manifested === CMS_DELEGATION_MANIFEST.manifested}
         />);
       }
       return null;
@@ -303,6 +308,15 @@ export default class DelegationList extends Component {
     dataIndex: 'last_act_time',
     render: (o, record) => (record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-'),
   }]
+  handleArrDateChange = (dataString, delgNo) => {
+    this.props.updateDelegation({ intl_arrival_date: dataString }, delgNo).then((result) => {
+      if (!result.error) {
+        message.info('更新成功');
+      } else {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
   handleCreate = () => {
     this.context.router.push('/clearance/delegation/create');
   }
@@ -415,11 +429,11 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleExchangeDoc = () => {
-    this.props.toggleExchangeDocModal(true);
+  handleExchangeDoc = (record) => {
+    this.props.toggleExchangeDocModal(true, record.delg_no, record.bl_wb_no);
   }
-  handleQuarantine = () => {
-    this.props.toggleQuarantineModal(true);
+  handleQuarantine = (delgNo) => {
+    this.props.toggleQuarantineModal(true, delgNo);
   }
   /*
   handleSearchChange = (ev) => {
@@ -590,7 +604,7 @@ export default class DelegationList extends Component {
           );
         } else if (record.status === CMS_DELEGATION_STATUS.accepted) { // 2.当前租户已接单
           if (this.state.currentFilter === 'exchange') {
-            return <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+            return <RowAction onClick={() => this.handleExchangeDoc(record)} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
           }
           let extraOp = null;
           if (record.customs_tenant_id === tenantId) { // 2.1 报关单位为当前租户(未作分配)
@@ -615,13 +629,13 @@ export default class DelegationList extends Component {
           return (
             <span>
               {this.state.currentFilter === 'exchange' &&
-              <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg('exchangeDoc')} row={record} />}
+              <RowAction onClick={() => this.handleExchangeDoc(record)} icon="swap" label={this.msg('exchangeDoc')} row={record} />}
               <RowAction onClick={this.handleManifestCreate} icon="file-add" label={this.msg('createManifest')} row={record} />
               {extraOp}
             </span>);
         } else if (record.status === CMS_DELEGATION_STATUS.processing) { // 3.
           if (this.state.currentFilter === 'exchange') {
-            return <RowAction onClick={this.handleExchangeDoc} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
+            return <RowAction onClick={() => this.handleExchangeDoc(record)} icon="swap" label={this.msg(exchangeDoc)} row={record} />;
           }
           let dispatchOverlay = null;
           if (record.customs_tenant_id === tenantId) { // 3.1 报关单位为当前租户(未作分配)
@@ -718,8 +732,9 @@ export default class DelegationList extends Component {
               })}
             />
           </Content>
-          <ExchangeDocModal />
-          <QuarantineModal />
+          <ExchangeDocModal reload={this.handleDelgListLoad} />
+          <QuarantineModal reload={this.handleDelgListLoad} />
+          <DelgDispModal />
         </Layout>
         <DelegationDockPanel />
         <OrderDockPanel />

@@ -20,6 +20,7 @@ import bssExRateSettings from './bssExRateSettings';
 import bssBillTemplate from './bssBillTemplate';
 import bssBill from './bssBill';
 import bssStatement from './bssStatement';
+import bssInvoice from './bssInvoice';
 import cmsDashboard from './cmsDashboard';
 import cmsDelegation from './cmsDelegation';
 import cmsDelegationDock from './cmsDelegationDock';
@@ -39,6 +40,7 @@ import cmsExpense from './cmsExpense';
 import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
 import cmsParams from './cmsParams';
+import cmsPrefEvents from './cmsPrefEvents';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
 import crmBilling from './crmBilling';
@@ -115,6 +117,7 @@ export default combineReducers({
   bssBill,
   bssBillTemplate,
   bssStatement,
+  bssInvoice,
   cmsDashboard,
   cmsDelegation,
   cmsDelegationDock,
@@ -132,6 +135,7 @@ export default combineReducers({
   cmsTradeManual,
   cmsAnalytics,
   cmsParams,
+  cmsPrefEvents,
   scofFlow,
   sofOrderPref,
   sofVendors,

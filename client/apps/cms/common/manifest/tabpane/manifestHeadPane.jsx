@@ -132,7 +132,7 @@ export default class ManifestHeadPane extends React.Component {
             {ietype === 'import' && (formData.traf_mode === '2' || formData.traf_mode === '5') &&
             <Col span="6">
               <FormDatePicker
-                field="act_arrival_date"
+                field="intl_arrival_date"
                 outercol={24}
                 col={8}
                 label={this.msg('实际到港日')}
@@ -152,7 +152,7 @@ export default class ManifestHeadPane extends React.Component {
             {ietype === 'import' && formData.traf_mode === '2' &&
             <Col span="6">
               <FormInput
-                field="delivery_order"
+                field="delivery_order_no"
                 outercol={24}
                 col={8}
                 label={this.msg('提货单号')}

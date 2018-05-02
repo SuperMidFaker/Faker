@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Layout, Radio, Select, Tooltip, DatePicker } from 'antd';
+import { Icon, Layout, Select, Tooltip, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
@@ -27,8 +27,6 @@ import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPane
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 const { RangePicker } = DatePicker;
 
 @injectIntl
@@ -196,7 +194,7 @@ export default class OutboundList extends React.Component {
     title: '操作',
     dataIndex: 'OPS_COL',
     className: 'table-col-ops',
-    width: 100,
+    width: 120,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
@@ -210,8 +208,8 @@ export default class OutboundList extends React.Component {
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
   }
-  handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
+  handleStatusChange = (value) => {
+    const filters = { ...this.props.filters, status: value };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadOutbounds({
       whseCode,
@@ -286,15 +284,18 @@ export default class OutboundList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBox placeholder={this.msg('outboundPlaceholder')} onSearch={this.handleSearch} />
-      <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} >
-        <RadioButton value="all">全部</RadioButton>
-        <RadioButton value="created">待分配</RadioButton>
-        <RadioButton value="allocating">分配中</RadioButton>
-        <RadioButton value="allocated">已分配</RadioButton>
-        <RadioButton value="picking">拣货</RadioButton>
-        <RadioButton value="shipping">发货</RadioButton>
-        <RadioButton value="completed">已出库</RadioButton>
-      </RadioGroup>
+      <Select
+        value={filters.status}
+        onChange={this.handleStatusChange}
+      >
+        <Option value="all">全部状态</Option>
+        <Option value="created">待分配</Option>
+        <Option value="allocating">分配中</Option>
+        <Option value="allocated">已分配</Option>
+        <Option value="picking">拣货</Option>
+        <Option value="shipping">发货</Option>
+        <Option value="completed">已出库</Option>
+      </Select>
       <Select
         showSearch
         optionFilterProp="children"

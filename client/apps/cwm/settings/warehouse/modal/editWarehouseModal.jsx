@@ -3,10 +3,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
+import Cascader from 'client/components/RegionCascader';
 import { hideEditWhseModal, editWarehouse } from 'common/reducers/cwmWarehouse';
 import { loadWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from '../message.i18n';
-import Cascader from 'client/components/RegionCascader';
 
 const FormItem = Form.Item;
 @injectIntl
@@ -26,7 +26,7 @@ const FormItem = Form.Item;
 export default class WareHouseModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    warehouse: PropType.object.isRequired,
+    warehouse: PropType.shape({ code: PropType.string }).isRequired,
   }
   state = {
     bonded: 0,
@@ -155,7 +155,7 @@ export default class WareHouseModal extends Component {
           <FormItem {...formItemLayout} label="仓库名称" >
             {
               getFieldDecorator('whseName', {
-                rules: [{ required: true, messages: 'please input whseName' }],
+                rules: [{ required: true, message: 'please input whseName' }],
                 initialValue: warehouse.name,
               })(<Input />)
             }

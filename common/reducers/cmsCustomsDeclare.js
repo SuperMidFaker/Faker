@@ -29,6 +29,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'UPLOAD_DECL', 'UPLOAD_DECL_SUCCEED', 'UPLOAD_DECL_FAIL',
   'GET_DECL_TAX', 'GET_DECL_TAX_SUCCEED', 'GET_DECL_TAX_FAIL',
   'TOGGLE_INSPECT_MODAL', 'TOGGLE_DECL_MOD_MODAL',
+  'MOD_DECL', 'MOD_DECL_SUCCEED', 'MOD_DECL_FAIL',
 ]);
 
 const initialState = {
@@ -97,9 +98,11 @@ const initialState = {
   },
   inspectModal: {
     visible: false,
+    customs: {},
   },
   declModModal: {
     visible: false,
+    customs: {},
   },
 };
 
@@ -164,17 +167,25 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DECL_LOG:
       return { ...state, declLogPanel: { ...state.declLogPanel, visible: false } };
     case actionTypes.TOGGLE_INSPECT_MODAL:
-      return { ...state, inspectModal: { ...state.inspectModal, visible: action.data } };
+      return {
+        ...state,
+        inspectModal: {
+          ...state.inspectModal, visible: action.data.visible, customs: action.data.customs,
+        },
+      };
     case actionTypes.TOGGLE_DECL_MOD_MODAL:
-      return { ...state, declModModal: { ...state.declModModal, visible: action.data } };
+      return {
+        ...state,
+        declModModal: {
+          ...state.declModModal, visible: action.data.visible, customs: action.data.customs,
+        },
+      };
     default:
       return state;
   }
 }
 
-export function setInspect({
-  preEntrySeqNo, delgNo, field, enabled,
-}) {
+export function setInspect(id, inspectInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -184,9 +195,7 @@ export function setInspect({
       ],
       endpoint: 'v1/cms/declare/set/inspect',
       method: 'post',
-      data: {
-        preEntrySeqNo, delgNo, field, enabled,
-      },
+      data: { id, inspectInfo },
     },
   };
 }
@@ -486,17 +495,17 @@ export function hideDeclMsgModal() {
   };
 }
 
-export function toggleInspectModal(visible) {
+export function toggleInspectModal(visible, customs = {}) {
   return {
     type: actionTypes.TOGGLE_INSPECT_MODAL,
-    data: visible,
+    data: { visible, customs },
   };
 }
 
-export function toggleDeclModModal(visible) {
+export function toggleDeclModModal(visible, customs = {}) {
   return {
     type: actionTypes.TOGGLE_DECL_MOD_MODAL,
-    data: visible,
+    data: { visible, customs },
   };
 }
 
@@ -568,6 +577,21 @@ export function getDeclTax(preEntrySeqNo) {
       endpoint: 'v1/cms/decl/tax/get',
       method: 'get',
       params: { preEntrySeqNo },
+    },
+  };
+}
+
+export function modDecl(entryId, revisetype, reviseDate) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MOD_DECL,
+        actionTypes.MOD_DECL_SUCCEED,
+        actionTypes.MOD_DECL_FAIL,
+      ],
+      endpoint: 'v1/cms/customs/decl/mod',
+      method: 'post',
+      data: { entryId, revisetype, reviseDate },
     },
   };
 }

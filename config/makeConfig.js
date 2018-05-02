@@ -1,23 +1,23 @@
 const path = require('path');
-const os = require('os');
+// const os = require('os');
 
 process.env.NODE_ENV = (process.env.NODE_ENV || 'development').trim();
 const env = process.env.NODE_ENV;
 
-function getIp() {
-  let ip = '';
-  const ins = os.networkInterfaces();
-  Object.keys(ins).forEach((key) => {
-    const arr = ins[key];
-    arr.forEach((nin) => {
-      if (!nin.internal &&
-        nin.family.toLowerCase() === 'ipv4') {
-        ip = nin.address;
-      }
-    });
-  });
-  return ip;
-}
+// function getIp() {
+//   let ip = '';
+//   const ins = os.networkInterfaces();
+//   Object.keys(ins).forEach((key) => {
+//     const arr = ins[key];
+//     arr.forEach((nin) => {
+//       if (!nin.internal &&
+//         nin.family.toLowerCase() === 'ipv4') {
+//         ip = nin.address;
+//       }
+//     });
+//   });
+//   return ip;
+// }
 
 module.exports = (serverPort, dirName, appName) => {
   const config = new Map();
@@ -40,7 +40,8 @@ module.exports = (serverPort, dirName, appName) => {
   // ------------------------------------
   let host = 'localhost';
   if (__TEST_PROD__) {
-    host = getIp();
+    // host = getIp();
+    host = (process.env.HOST_IP || '127.0.0.1').trim();
   }
   config.set('server_port', serverPort);
   config.set('API_ROOTS', {// todo how to make the port configurable
@@ -62,6 +63,13 @@ module.exports = (serverPort, dirName, appName) => {
     config.set('webpack_public_path', `http://${host}:${config.get('webpack_port')}/${config.get('webpack_dist')}/`);
   }
   if (__TEST_PROD__) {
+    config.set('API_ROOTS', {// todo how to make the port configurable
+      default: `http://${host}:3030/`,
+      mongo: `http://${host}:3032/`,
+      notify: `http://${host}:3100/`,
+      self: '/',
+      openapi: `http://${host}:3031/`,
+    });
     config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }
   if (__PROD__) {
@@ -77,14 +85,17 @@ module.exports = (serverPort, dirName, appName) => {
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }
   if (__STAGING__) {
+    const domain = process.env.STAGING_DOMAIN || 'welogix.co';
     config.set('API_ROOTS', {
-      default: 'http://api.welogix.co/',
-      mongo: 'http://api1.welogix.co/',
-      openapi: 'https://openapi.welogix.co/',
-      notify: 'http://notify.welogix.co/',
+      default: `http://api.${domain}/`,
+      mongo: `http://api1.${domain}/`,
+      openapi: `https://openapi.${domain}/`,
+      notify: `http://notify.${domain}/`,
       self: '/',
     });
-    config.set('CDN_URL', 'http://st-cdn.welogix.co');
+    if (domain === 'welogix.co') {
+      config.set('CDN_URL', 'http://st-cdn.welogix.co');
+    }
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }

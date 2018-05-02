@@ -14,6 +14,7 @@ export default class ToolbarAction extends Component {
     tooltip: PropTypes.string,
     confirm: PropTypes.string,
     primary: PropTypes.bool,
+    secondary: PropTypes.bool,
     danger: PropTypes.bool,
     popover: PropTypes.node,
     dropdown: PropTypes.node,
@@ -32,10 +33,10 @@ export default class ToolbarAction extends Component {
   }
   renderButton = () => {
     const {
-      label, primary, danger, icon, shape, disabled, dropdown,
+      label, primary, secondary, danger, icon, shape, disabled, dropdown,
     } = this.props;
     let type = 'default';
-    if (primary) {
+    if (primary || secondary) {
       type = 'primary';
     } else if (danger) {
       type = 'danger';
@@ -43,7 +44,7 @@ export default class ToolbarAction extends Component {
     return (<Button
       type={type}
       shape={shape}
-      ghost={primary}
+      ghost={secondary}
       disabled={disabled}
       icon={icon}
       onClick={this.handleClick}

@@ -130,7 +130,7 @@ export default class ShippingModal extends Component {
           <FormItem {...formItemLayout} label="配送面单号">
             {
               getFieldDecorator('waybill', {
-                rules: [{ required: shippingMode !== 2, messages: '面单号必填' }],
+                rules: [{ required: shippingMode !== 2, message: '面单号必填' }],
               })(<Input />)
             }
           </FormItem>

@@ -82,22 +82,11 @@ export const FEE_CATEGORY = [
 export const FORMULA_PARAMS = [
   { value: 'shipmt_qty', text: '货运数量' },
   { value: 'decl_qty', text: '报关单数量' },
+  { value: 'ciq_qty', text: '报检单数量' },
   { value: 'decl_sheet_qty', text: '联单数量' },
   { value: 'decl_item_qty', text: '品项数量' },
   { value: 'trade_item_qty', text: '料件数量' },
-  { value: 'trade_amount', text: '进出口金额' },
-];
-
-export const BILLING_METHODS = [
-  { key: '$formula', label: '自动按公式计费' },
-  { key: 'shipmt_qty', label: '按货运数量' },
-  { key: 'decl_qty', label: '按报关单数量' },
-  { key: 'decl_sheet_qty', label: '按联单数量' },
-  { key: 'decl_item_qty', label: '按品名数量' },
-  { key: 'trade_item_qty', label: '按料件数量' },
-  { key: '$input', label: '输入数量' },
-  { key: '$manual', label: '手动录入/导入' },
-  { key: '$nonsettle', label: '计费不结算' },
+  { value: 'trade_amount', text: '货值数量' },
 ];
 
 export const BILLING_METHOD = [
@@ -108,14 +97,15 @@ export const BILLING_METHOD = [
     children: [
       { key: 'shipmt_qty', value: 'shipmt_qty', label: '按货运数量' },
       { key: 'decl_qty', value: 'decl_qty', label: '按报关单数量' },
+      { key: 'ciq_qty', value: 'ciq_qty', label: '按报检单数量' },
       { key: 'decl_sheet_qty', value: 'decl_sheet_qty', label: '按联单数量' },
       { key: 'decl_item_qty', value: 'decl_item_qty', label: '按品名数量' },
       { key: 'trade_item_qty', value: 'trade_item_qty', label: '按料件数量' },
+      { key: 'trade_amount', value: 'trade_amount', label: '按货值数量' },
     ],
   },
   { key: '$input', value: '$input', label: '输入数量' },
   { key: '$manual', value: '$manual', label: '手动录入/导入' },
-  { key: '$nonsettle', value: '$nonsettle', label: '计费不结算' },
 ];
 
 export const CMS_EXPENSE_STATUS = { // '1计费中 2 已计费未提交 3 已提交 4 已确认'
@@ -449,10 +439,10 @@ export const CMS_DECL_CHANNEL = {
 };
 
 export const CMS_DECL_MOD_TYPE = [
-  { value: 1, text: '申请修改报关单' },
-  { value: 2, text: '申请撤销报关单' },
-  { value: 3, text: '海关发起修改' },
-  { value: 4, text: '海关发起撤销' },
+  { value: '1', text: '申请修改报关单' },
+  { value: '2', text: '申请撤销报关单' },
+  { value: '3', text: '海关发起修改' },
+  { value: '4', text: '海关发起撤销' },
 ];
 
 export const ITEMS_STATUS = [
@@ -995,4 +985,11 @@ export const CMS_DOC_TYPE = [
   { value: 'CIQ_DOCU', text: '国检随附单据' },
   { value: 'CCD', text: '报关单' },
   { value: 'CID', text: '报检单' },
+];
+
+export const CMS_EVENTS = [
+  { key: 'exchange', text: '换单' },
+  { key: 'quarantine', text: '检疫查验' },
+  { key: 'quality', text: '品质查验' },
+  { key: 'customs', text: '海关查验' },
 ];
