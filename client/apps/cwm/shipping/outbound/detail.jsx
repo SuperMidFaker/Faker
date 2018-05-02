@@ -226,28 +226,26 @@ export default class OutboundDetail extends Component {
       CWM_OUTBOUND_STATUS[cis].value === outboundHead.status)[0];
     let regTag;
     let regTypes = [];
-    if (outboundHead.bonded === 1) {
-      if (outboundHead.regs) {
-        // TODO merge
-        regTypes = outboundHead.regs.map((reg) => {
-          const sreg = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reg.bonded_outtype)[0];
-          return {
-            tooltip: sreg && sreg.ftztext,
-            type: reg.bonded_outtype,
-            status: reg.reg_status,
-            so_no: reg.so_no,
-          };
-        });
-      } else {
-        [regTag] = CWM_SO_BONDED_REGTYPES.filter(sbr =>
-          sbr.value === outboundHead.bonded_outtype && sbr.tagcolor);
-        if (regTag) {
-          regTypes = [{
-            tooltip: '关联监管备案',
-            type: outboundHead.bonded_outtype,
-            status: outboundHead.reg_status,
-          }];
-        }
+    // TODO merge to regs
+    if (outboundHead.regs) {
+      regTypes = outboundHead.regs.map((reg) => {
+        const sreg = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reg.bonded_outtype)[0];
+        return {
+          tooltip: sreg && sreg.ftztext,
+          type: reg.bonded_outtype,
+          status: reg.reg_status,
+          so_no: reg.so_no,
+        };
+      });
+    } else if (outboundHead.bonded === 1) {
+      [regTag] = CWM_SO_BONDED_REGTYPES.filter(sbr =>
+        sbr.value === outboundHead.bonded_outtype && sbr.tagcolor);
+      if (regTag) {
+        regTypes = [{
+          tooltip: '关联监管备案',
+          type: outboundHead.bonded_outtype,
+          status: outboundHead.reg_status,
+        }];
       }
     } else if (outboundHead.bonded === -1 && outboundHead.bonded_outtype.length > 0) {
       regTypes = outboundHead.bonded_outtype.map((type, index) => {
