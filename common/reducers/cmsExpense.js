@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'ADD_SPECIAL', 'ADD_SPECIAL_SUCCESS', 'ADD_SPECIAL_FAIL',
   'LOAD_EXP_DETAILS', 'LOAD_EXP_DETAILS_SUCCEED', 'LOAD_EXP_DETAILS_FAIL',
   'UNBIILING_BY_BATCHUPLOAD', 'UNBIILING_BY_BATCHUPLOAD_SUCCEED', 'UNBIILING_BY_BATCHUPLOAD_FAIL',
+  'INPUTQTY_CALC', 'INPUTQTY_CALC_SUCCEED', 'INPUTQTY_CALC_FAIL',
 ]);
 
 const initialState = {
@@ -741,6 +742,21 @@ export function unbillingByBatchupload(uploadNo) {
       endpoint: 'v1/cms/expense/unbilling/by/batchupload',
       method: 'post',
       data: { uploadNo },
+    },
+  };
+}
+
+export function updateFeeByInputQty(id, value) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INPUTQTY_CALC,
+        actionTypes.INPUTQTY_CALC_SUCCEED,
+        actionTypes.INPUTQTY_CALC_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/fee/calc/inputqty',
+      method: 'post',
+      data: { id, value },
     },
   };
 }
