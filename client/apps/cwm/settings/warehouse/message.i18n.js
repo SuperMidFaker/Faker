@@ -34,7 +34,7 @@ const messages = defineMessages({
     id: 'cwm.settings.warehouse.auth',
     defaultMessage: '授权',
   },
-  warehousePlaceHolder: {
+  warehousePlaceholder: {
     id: 'cwm.settings.warehouse.wh.placeholder',
     defaultMessage: '仓库查找',
   },

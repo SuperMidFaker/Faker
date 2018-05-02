@@ -92,9 +92,10 @@ export default class OutboundDetail extends Component {
       tabKey,
     });
   }
-  handleRegPage = (type) => {
-    const link = type === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${this.props.outboundHead.so_no}`
-      : `/cwm/supervision/shftz/release/${type}/${this.props.outboundHead.so_no}`;
+  handleRegPage = (type, soNo) => {
+    const regSoNo = soNo || this.props.outboundHead.so_no;
+    const link = type === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${regSoNo}`
+      : `/cwm/supervision/shftz/release/${type}/${regSoNo}`;
     this.context.router.push(link);
   }
   handleExportPickingListXLS = () => {
@@ -226,14 +227,27 @@ export default class OutboundDetail extends Component {
     let regTag;
     let regTypes = [];
     if (outboundHead.bonded === 1) {
-      [regTag] = CWM_SO_BONDED_REGTYPES.filter(sbr =>
-        sbr.value === outboundHead.bonded_outtype && sbr.tagcolor);
-      if (regTag) {
-        regTypes = [{
-          tooltip: '关联监管备案',
-          type: outboundHead.bonded_outtype,
-          status: outboundHead.reg_status,
-        }];
+      if (outboundHead.regs) {
+        // TODO merge
+        regTypes = outboundHead.regs.map((reg) => {
+          const sreg = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reg.bonded_outtype)[0];
+          return {
+            tooltip: sreg && sreg.ftztext,
+            type: reg.bonded_outtype,
+            status: reg.reg_status,
+            so_no: reg.so_no,
+          };
+        });
+      } else {
+        [regTag] = CWM_SO_BONDED_REGTYPES.filter(sbr =>
+          sbr.value === outboundHead.bonded_outtype && sbr.tagcolor);
+        if (regTag) {
+          regTypes = [{
+            tooltip: '关联监管备案',
+            type: outboundHead.bonded_outtype,
+            status: outboundHead.reg_status,
+          }];
+        }
       }
     } else if (outboundHead.bonded === -1 && outboundHead.bonded_outtype.length > 0) {
       regTypes = outboundHead.bonded_outtype.map((type, index) => {
@@ -276,7 +290,7 @@ export default class OutboundDetail extends Component {
                   status.value === reg.status)[0];
               if (regStatus) {
                 return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
-                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 8 }}>
+                  <Button icon="link" onClick={() => this.handleRegPage(reg.type, reg.so_no)} style={{ marginLeft: 8 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>
                 </Tooltip>);
