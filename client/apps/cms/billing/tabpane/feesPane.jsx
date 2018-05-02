@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
-import { updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails, updateParam } from 'common/reducers/cmsExpense';
+import { updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails, updateFeeByInputQty } from 'common/reducers/cmsExpense';
 import { FEE_TYPE } from 'common/constants';
 import AddSpeModal from '../modals/addSpeModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -19,7 +19,7 @@ const { Option } = Select;
     currencies: state.cmsExpense.currencies,
   }),
   {
-    updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails, updateParam,
+    updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails, updateFeeByInputQty,
   }
 )
 export default class ExpenseDetailTabPane extends Component {
@@ -83,14 +83,15 @@ export default class ExpenseDetailTabPane extends Component {
       return type ? <Tag color={type.tag}>{type.text}</Tag> : <span />;
     },
   }, {
-    title: this.msg('param'),
-    dataIndex: 'param',
+    title: this.msg('inputQty'),
+    dataIndex: 'input_qty',
+    width: 150,
     render: (o, record) => {
       if (record.billing_way === 'manusemi') {
         return (<EditableCell
           value={o}
-          onChange={e => this.handleColumnChange(e.target.value, 'param')}
-          onSave={value => this.handleSaveParam(record.id, value)}
+          onChange={e => this.handleColumnChange(e.target.value, 'input_qty')}
+          onSave={value => this.handleUpdateFeeByInputQty(record.id, value)}
           style={{ width: '100%' }}
         />);
       }
@@ -322,12 +323,13 @@ export default class ExpenseDetailTabPane extends Component {
   handleAddSpecial = () => {
     this.props.toggleAddSpecialModal(true);
   }
-  handleSaveParam = (id, value) => {
+  handleUpdateFeeByInputQty = (id, value) => {
     const dataSource = [...this.state.dataSource];
-    this.props.updateParam(id, value).then((result) => {
+    this.props.updateFeeByInputQty(id, value).then((result) => {
       if (!result.error) {
         const index = dataSource.findIndex(data => data.id === id);
-        dataSource[index].orig_amount = result.data;
+        dataSource[index].orig_amount = result.data.origAmount;
+        dataSource[index].remark = result.data.remark;
         this.setState({
           dataSource,
         });

@@ -233,6 +233,7 @@ export default class TariffPane extends Component {
       }, {
         title: this.msg('settle'),
         dataIndex: 'need_settle',
+        width: 120,
         render: (o, record) => {
           if (onEdit && editItem.id === record.id) {
             return <Switch checked={!!editItem.need_settle} onChange={checked => this.handleEditChange('need_settle', checked)} />;

@@ -256,9 +256,9 @@ const messages = defineMessages({
     id: 'cms.billing.expense.fee.exchangeRate',
     defaultMessage: '汇率',
   },
-  param: {
-    id: 'cms.billing.expense.fee.param',
-    defaultMessage: '参数列',
+  inputQty: {
+    id: 'cms.billing.expense.fee.inputQty',
+    defaultMessage: '数量',
   },
   invoiceEn: {
     id: 'cms.modals.expense.invoiceEn',

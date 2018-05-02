@@ -37,7 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'ADD_SPECIAL', 'ADD_SPECIAL_SUCCESS', 'ADD_SPECIAL_FAIL',
   'LOAD_EXP_DETAILS', 'LOAD_EXP_DETAILS_SUCCEED', 'LOAD_EXP_DETAILS_FAIL',
   'UNBIILING_BY_BATCHUPLOAD', 'UNBIILING_BY_BATCHUPLOAD_SUCCEED', 'UNBIILING_BY_BATCHUPLOAD_FAIL',
-  'UPDATE_PARAM', 'UPDATE_PARAM_SUCCEED', 'UPDATE_PARAM_FAIL',
+  'INPUTQTY_CALC', 'INPUTQTY_CALC_SUCCEED', 'INPUTQTY_CALC_FAIL',
 ]);
 
 const initialState = {
@@ -746,15 +746,15 @@ export function unbillingByBatchupload(uploadNo) {
   };
 }
 
-export function updateParam(id, value) {
+export function updateFeeByInputQty(id, value) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_PARAM,
-        actionTypes.UPDATE_PARAM_SUCCEED,
-        actionTypes.UPDATE_PARAM_FAIL,
+        actionTypes.INPUTQTY_CALC,
+        actionTypes.INPUTQTY_CALC_SUCCEED,
+        actionTypes.INPUTQTY_CALC_FAIL,
       ],
-      endpoint: 'v1/cms/expense/fee/param/update',
+      endpoint: 'v1/cms/expense/fee/calc/inputqty',
       method: 'post',
       data: { id, value },
     },
