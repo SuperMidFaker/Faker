@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'ADD_SPECIAL', 'ADD_SPECIAL_SUCCESS', 'ADD_SPECIAL_FAIL',
   'LOAD_EXP_DETAILS', 'LOAD_EXP_DETAILS_SUCCEED', 'LOAD_EXP_DETAILS_FAIL',
   'UNBIILING_BY_BATCHUPLOAD', 'UNBIILING_BY_BATCHUPLOAD_SUCCEED', 'UNBIILING_BY_BATCHUPLOAD_FAIL',
+  'UPDATE_PARAM', 'UPDATE_PARAM_SUCCEED', 'UPDATE_PARAM_FAIL',
 ]);
 
 const initialState = {
@@ -741,6 +742,21 @@ export function unbillingByBatchupload(uploadNo) {
       endpoint: 'v1/cms/expense/unbilling/by/batchupload',
       method: 'post',
       data: { uploadNo },
+    },
+  };
+}
+
+export function updateParam(id, value) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_PARAM,
+        actionTypes.UPDATE_PARAM_SUCCEED,
+        actionTypes.UPDATE_PARAM_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/fee/param/update',
+      method: 'post',
+      data: { id, value },
     },
   };
 }

@@ -5,7 +5,8 @@ import { Input, Select, Button, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DataPane from 'client/components/DataPane';
 import RowAction from 'client/components/RowAction';
-import { updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails } from 'common/reducers/cmsExpense';
+import EditableCell from 'client/components/EditableCell';
+import { updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails, updateParam } from 'common/reducers/cmsExpense';
 import { FEE_TYPE } from 'common/constants';
 import AddSpeModal from '../modals/addSpeModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -18,7 +19,7 @@ const { Option } = Select;
     currencies: state.cmsExpense.currencies,
   }),
   {
-    updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails,
+    updateFee, deleteFee, toggleAddSpecialModal, getExpenseDetails, updateParam,
   }
 )
 export default class ExpenseDetailTabPane extends Component {
@@ -80,6 +81,20 @@ export default class ExpenseDetailTabPane extends Component {
     render: (o) => {
       const type = FEE_TYPE.filter(fe => fe.key === o)[0];
       return type ? <Tag color={type.tag}>{type.text}</Tag> : <span />;
+    },
+  }, {
+    title: this.msg('param'),
+    dataIndex: 'param',
+    render: (o, record) => {
+      if (record.billing_way === 'manusemi') {
+        return (<EditableCell
+          value={o}
+          onChange={e => this.handleColumnChange(e.target.value, 'param')}
+          onSave={value => this.handleSaveParam(record.id, value)}
+          style={{ width: '100%' }}
+        />);
+      }
+      return '';
     },
   }, {
     title: this.msg('origAmount'),
@@ -306,6 +321,18 @@ export default class ExpenseDetailTabPane extends Component {
   }
   handleAddSpecial = () => {
     this.props.toggleAddSpecialModal(true);
+  }
+  handleSaveParam = (id, value) => {
+    const dataSource = [...this.state.dataSource];
+    this.props.updateParam(id, value).then((result) => {
+      if (!result.error) {
+        const index = dataSource.findIndex(data => data.id === id);
+        dataSource[index].orig_amount = result.data;
+        this.setState({
+          dataSource,
+        });
+      }
+    });
   }
   render() {
     const {

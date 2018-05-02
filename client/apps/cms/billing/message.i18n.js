@@ -256,6 +256,10 @@ const messages = defineMessages({
     id: 'cms.billing.expense.fee.exchangeRate',
     defaultMessage: '汇率',
   },
+  param: {
+    id: 'cms.billing.expense.fee.param',
+    defaultMessage: '参数列',
+  },
   invoiceEn: {
     id: 'cms.modals.expense.invoiceEn',
     defaultMessage: '是否计税',
@@ -327,6 +331,10 @@ const messages = defineMessages({
   formulaFactor: {
     id: 'cms.billing.quote.formula.factor',
     defaultMessage: '单价/公式',
+  },
+  settle: {
+    id: 'cms.billing.quote.settle',
+    defaultMessage: '是否结算',
   },
   newSpecialFee: {
     id: 'cms.billing.spe.new',
