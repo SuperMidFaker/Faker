@@ -23,7 +23,7 @@ export default class TasksPane extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  compontentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.ftzTaskList.reload) {
       this.props.loadStockTasks(this.props.defaultWhse.code);
     }

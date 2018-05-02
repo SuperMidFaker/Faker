@@ -62,7 +62,7 @@ export default class TariffPane extends Component {
       this.handleElementLoad(result.data);
     });
   }
-  compontentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.quoteFeesReload) {
       this.handleElementLoad(nextProps.parentFeeElements);
     }

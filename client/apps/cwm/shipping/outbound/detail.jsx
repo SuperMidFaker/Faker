@@ -335,11 +335,7 @@ export default class OutboundDetail extends Component {
             </Steps>
           </Drawer>
           <Content className="page-content">
-            <MagicCard
-              bodyStyle={{ padding: 0 }}
-
-
-            >
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
                   <OrderDetailsPane

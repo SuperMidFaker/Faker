@@ -246,11 +246,8 @@ export default class ReceivingASNList extends React.Component {
           description: `${row.asn_no} 已释放`,
         });
         this.handleListReload();
-      } else if (result.error.message === 'release_null_supplier') {
-        notification.error({
-          message: '释放失败',
-          description: `${row.asn_no} 供货商为空`,
-        });
+      } else {
+        this.handleReleaseError(result.error.message);
       }
     });
   }
@@ -268,13 +265,28 @@ export default class ReceivingASNList extends React.Component {
         this.setState({
           selectedRowKeys: [],
         });
-      } else if (result.error.message === 'release_null_supplier') {
-        notification.error({
-          message: '释放失败',
-          description: 'ASN存在供货商为空',
-        });
+      } else {
+        this.handleReleaseError(result.error.message);
       }
     });
+  }
+  handleReleaseError = (errorKey) => {
+    if (errorKey === 'release_null_supplier') {
+      notification.error({
+        message: '释放失败',
+        description: 'ASN存在供货商为空',
+      });
+    } else if (errorKey === 'release_detail_null_qty_no') {
+      notification.error({
+        message: '释放失败',
+        description: 'ASN明细存在数量或货号为空',
+      });
+    } else {
+      notification.error({
+        message: '释放失败',
+        description: errorKey,
+      });
+    }
   }
   handleInbound = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
