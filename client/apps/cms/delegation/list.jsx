@@ -311,6 +311,7 @@ export default class DelegationList extends Component {
   handleArrDateChange = (dataString, delgNo) => {
     this.props.saveBaseInfo({ intl_arrival_date: dataString }, delgNo).then((result) => {
       if (!result.error) {
+        this.handleDelgListLoad();
         message.info('更新成功');
       } else {
         message.error(result.error.message, 10);
