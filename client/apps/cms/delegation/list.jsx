@@ -21,8 +21,8 @@ import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire } from 'common/reducers/cmsDelegation';
-import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel, saveBaseInfo } from 'common/reducers/cmsDelegationDock';
+  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire, updateDelegation } from 'common/reducers/cmsDelegation';
+import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import ExchangeDocModal from './modals/exchangeDocModal';
@@ -78,7 +78,7 @@ const { RangePicker } = DatePicker;
     loadCustPanel,
     loadDeclCiqPanel,
     loadFormRequire,
-    saveBaseInfo,
+    updateDelegation,
   }
 )
 @connectNav({
@@ -309,9 +309,8 @@ export default class DelegationList extends Component {
     render: (o, record) => (record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-'),
   }]
   handleArrDateChange = (dataString, delgNo) => {
-    this.props.saveBaseInfo({ intl_arrival_date: dataString }, delgNo).then((result) => {
+    this.props.updateDelegation({ intl_arrival_date: dataString }, delgNo).then((result) => {
       if (!result.error) {
-        this.handleDelgListLoad();
         message.info('更新成功');
       } else {
         message.error(result.error.message, 10);
