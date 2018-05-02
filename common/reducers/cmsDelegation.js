@@ -222,9 +222,9 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.UPDATE_DELEGATION_SUCCEED: {
       const list = [...state.delegationlist.data];
-      const record = list.find(item => item.delg_no === action.data.delgNo);
-      if (record) {
-        record.intl_arrival_date = action.data.change.intl_arrival_date;
+      const index = list.findIndex(item => item.delg_no === action.data.delgNo);
+      if (index !== -1) {
+        list[index] = { ...list[index], ...action.data.change };
       }
       return { ...state, delegationlist: { ...state.delegationlist, data: list } };
     }
@@ -655,7 +655,6 @@ export function updateDelegation(change, delgNo) {
       endpoint: 'v1/cms/delegation/base/info/save',
       method: 'post',
       data: { change, delgNo },
-      payload: { change },
     },
   };
 }
