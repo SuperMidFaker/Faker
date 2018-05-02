@@ -30,6 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'TOGGLE_EXCHANGE_DOC_MODAL', 'TOGGLE_QUARANTINE_MODAL',
   'UPDATE_ARR_DATE', 'UPDATE_ARR_DATE_SUCCEED', 'UPDATE_ARR_DATE_FAIL',
   'UPDATE_QUARANTINE_AMOUNT', 'UPDATE_QUARANTINE_AMOUNT_SUCCEED', 'UPDATE_QUARANTINE_AMOUNT_FAIL',
+  'UPDATE_DELEGATION', 'UPDATE_DELEGATION_SUCCEED', 'UPDATE_DELEGATION_FAIL',
 ]);
 
 const initialState = {
@@ -219,6 +220,14 @@ export default function reducer(state = initialState, action) {
           delgNo: action.data.delgNo,
         },
       };
+    case actionTypes.UPDATE_DELEGATION_SUCCEED: {
+      const list = [...state.delegationlist.data];
+      const index = list.findIndex(item => item.delg_no === action.data.delgNo);
+      if (index !== -1) {
+        list[index] = { ...list[index], ...action.data.change };
+      }
+      return { ...state, delegationlist: { ...state.delegationlist, data: list } };
+    }
     default:
       return state;
   }
@@ -631,6 +640,21 @@ export function updateQuarantineInspect(amount, delgNo) {
       endpoint: 'v1/cms/delegation/quarantine/inspect',
       method: 'post',
       data: { amount, delgNo },
+    },
+  };
+}
+
+export function updateDelegation(change, delgNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_DELEGATION,
+        actionTypes.UPDATE_DELEGATION_SUCCEED,
+        actionTypes.UPDATE_DELEGATION_FAIL,
+      ],
+      endpoint: 'v1/cms/delegation/base/info/save',
+      method: 'post',
+      data: { change, delgNo },
     },
   };
 }
