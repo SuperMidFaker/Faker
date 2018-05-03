@@ -81,7 +81,6 @@ export default class BatchDeclDetail extends Component {
   }
   state = {
     tabKey: 'details',
-    batchApplies: this.props.batchApplies,
     regsSearchText: '',
     detailsSearchText: '',
     applySearchText: {},
@@ -91,7 +90,6 @@ export default class BatchDeclDetail extends Component {
       if (this.state.tabKey === 'details') {
         this.setState({
           tabKey: nextProps.batchApplies[0].pre_entry_seq_no,
-          batchApplies: nextProps.batchApplies,
         });
       }
     }
@@ -334,7 +332,7 @@ export default class BatchDeclDetail extends Component {
     } = this.props;
     const { regsSearchText, detailsSearchText } = this.state;
     const applySearchText = { ...this.state.applySearchText };
-    let batchApplies = [...this.state.batchApplies];
+    let batchApplies = [...this.props.batchApplies];
     let filterRegs = regs;
     let filterDetails = details;
     if (regsSearchText) {

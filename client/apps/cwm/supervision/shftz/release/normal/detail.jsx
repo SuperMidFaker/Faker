@@ -469,7 +469,8 @@ export default class SHFTZNormalRelRegDetail extends Component {
     this.setState({ exitDetails });
   }
   handleExport = () => {
-    window.open(`${API_ROOTS.default}v1/cwm/shftz/release/details/export/${createFilename(`${this.props.params.soNo}`)}.xlsx?pre_entry_seq_no=${this.state.reg.pre_entry_seq_no}`);
+    const { reg } = this.state;
+    window.open(`${API_ROOTS.default}v1/cwm/shftz/release/details/export/${createFilename(`${reg.pre_entry_seq_no}`)}.xlsx?pre_entry_seq_no=${reg.pre_entry_seq_no}`);
   }
   render() {
     const {
