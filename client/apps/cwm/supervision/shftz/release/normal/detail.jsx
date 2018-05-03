@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
+import { createFilename } from 'client/util/dataTransform';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Alert, Badge, Tabs, Layout, Steps, Button, Radio, Tag, notification, message } from 'antd';
@@ -393,6 +394,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
     title: '报关单号',
     width: 150,
     dataIndex: 'out_cus_decl_no',
+  }, {
+    title: 'so编号',
+    width: 120,
+    dataIndex: 'so_no',
   }]
   exitColumns = [{
     title: '出区编号',
@@ -462,6 +467,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
       });
     }
     this.setState({ exitDetails });
+  }
+  handleExport = () => {
+    const { reg } = this.state;
+    window.open(`${API_ROOTS.default}v1/cwm/shftz/release/details/export/${createFilename(`${reg.pre_entry_seq_no}`)}.xlsx?pre_entry_seq_no=${reg.pre_entry_seq_no}`);
   }
   render() {
     const {
@@ -670,6 +679,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                         <RadioButton value="splitted">拆分明细</RadioButton>
                         <RadioButton value="merged">合并明细</RadioButton>
                       </RadioGroup>
+                      {this.state.view === 'splitted' && <Button icon="download" onClick={this.handleExport} style={{ marginLeft: 8 }}>导出</Button>}
                       <DataPane.Extra>
                         <Summary>
                           <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>
