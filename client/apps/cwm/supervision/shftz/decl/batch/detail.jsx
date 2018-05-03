@@ -81,7 +81,7 @@ export default class BatchDeclDetail extends Component {
   }
   state = {
     tabKey: 'details',
-    batchApplies: [],
+    batchApplies: this.props.batchApplies,
     regsSearchText: '',
     detailsSearchText: '',
     applySearchText: {},
@@ -335,8 +335,8 @@ export default class BatchDeclDetail extends Component {
     const { regsSearchText, detailsSearchText } = this.state;
     const applySearchText = { ...this.state.applySearchText };
     let batchApplies = [...this.state.batchApplies];
-    let filterRegs = [...regs];
-    let filterDetails = [...details];
+    let filterRegs = regs;
+    let filterDetails = details;
     if (regsSearchText) {
       filterRegs = regs.filter((item) => {
         const reg = new RegExp(regsSearchText);
