@@ -94,6 +94,7 @@ import * as SCOFOrders from './scof/orders';
 import * as SCOFInvoices from './scof/invoices';
 import * as SCOFTracking from './scof/tracking';
 import * as SCOFCustomers from './scof/customers';
+import * as SCOFSuppliers from './scof/suppliers';
 import * as SCOFVendors from './scof/vendors';
 import * as SCOFFlow from './scof/flow';
 import * as SCOFSettings from './scof/settings';
@@ -480,6 +481,7 @@ export default(store) => {
               <Route path=":trackingId" component={SCOFTracking.Instance} />
             </Route>
             <Route path="customers" component={SCOFCustomers.List} />
+            <Route path="suppliers" component={SCOFSuppliers.List} />
             <Route path="vendors" component={SCOFVendors.List} />
             <Route path="flow" component={SCOFFlow.List} />
             <Route path="settings">

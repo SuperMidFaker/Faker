@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dropdown, Icon, Popconfirm, Popover, Tooltip } from 'antd';
+import { Button, Dropdown, Popconfirm, Popover, Tooltip } from 'antd';
 import './style.less';
 
 export default class ToolbarAction extends Component {
@@ -41,7 +41,7 @@ export default class ToolbarAction extends Component {
     } else if (danger) {
       type = 'danger';
     }
-    return (<Button
+    return dropdown ? (<Dropdown.Button
       type={type}
       shape={shape}
       ghost={secondary}
@@ -49,12 +49,26 @@ export default class ToolbarAction extends Component {
       icon={icon}
       onClick={this.handleClick}
       className="welo-toolbar-action"
+      overlay={dropdown}
     >
-      {label}{dropdown && <span> <Icon type="down" /></span>}
-    </Button>);
+      {label}
+    </Dropdown.Button>) :
+      (<Button
+        type={type}
+        shape={shape}
+        ghost={secondary}
+        disabled={disabled}
+        icon={icon}
+        onClick={this.handleClick}
+        className="welo-toolbar-action"
+      >
+        {label}
+      </Button>);
   }
   renderButtonWrapper = () => {
-    const { confirm, popover, dropdown } = this.props;
+    const {
+      confirm, popover,
+    } = this.props;
     if (confirm) {
       return (<Popconfirm title={confirm} placement="bottom" onConfirm={this.handleConfirm} okText="是" cancelText="否">
         {this.renderButton()}
@@ -63,11 +77,6 @@ export default class ToolbarAction extends Component {
       return (<Popover trigger="click" content={popover} placement="bottom">
         {this.renderButton()}
       </Popover>);
-    } else if (dropdown) {
-      return (<Dropdown overlay={dropdown} placement="bottom">
-        {this.renderButton()}
-      </Dropdown>
-      );
     }
     return this.renderButton();
   }

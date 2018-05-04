@@ -146,7 +146,7 @@ export default class RepoList extends React.Component {
           </Menu.Item>);
         }
         menuItems.push(<Menu.Item key="repodel">
-          <a onClick={() => this.handleRepoDel(repo)}><Tag color="red">删除</Tag></a>
+          <a onClick={() => this.handleRepoDel(repo)}>删除</a>
         </Menu.Item>);
       } else if (repo.owner_tenant_id === this.props.tenantId) {
         menuItems.push(<Menu.Item key="remslave">
