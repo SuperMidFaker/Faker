@@ -92,6 +92,7 @@ import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
 import * as SCOFInvoices from './scof/invoices';
+import * as SCOFPurchaseOrders from './scof/purchaseorders';
 import * as SCOFTracking from './scof/tracking';
 import * as SCOFCustomers from './scof/customers';
 import * as SCOFSuppliers from './scof/suppliers';
@@ -473,6 +474,11 @@ export default(store) => {
               <IndexRoute component={SCOFInvoices.List} />
               <Route path="create" component={SCOFInvoices.Create} />
               <Route path="edit/:invoiceNo" component={SCOFInvoices.Edit} />
+            </Route>
+            <Route path="purchaseorders">
+              <IndexRoute component={SCOFPurchaseOrders.List} />
+              <Route path="create" component={SCOFPurchaseOrders.Create} />
+              <Route path="edit/:poNo" component={SCOFPurchaseOrders.Edit} />
             </Route>
             <Route path="tracking">
               <Route path="customize">

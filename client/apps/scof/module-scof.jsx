@@ -43,14 +43,14 @@ export default class ModuleSCOF extends React.Component {
       icon: 'logixon icon-dashboard-o',
       text: formatMsg(intl, 'dashboard'),
     });
-    linkMenus.push({
-      single: true,
-      key: 'scof-order',
-      path: '/scof/orders',
-      icon: 'logixon icon-control-tower',
-      text: formatMsg(intl, 'orders'),
-    });
     if (aspect === 0) {
+      linkMenus.push({
+        single: true,
+        key: 'scof-purchaseorders',
+        path: '/scof/purchaseorders',
+        icon: 'logixon icon-order-mng',
+        text: formatMsg(intl, 'purchaseOrders'),
+      });
       linkMenus.push({
         single: true,
         key: 'scof-invoice',
@@ -58,14 +58,14 @@ export default class ModuleSCOF extends React.Component {
         icon: 'logixon icon-commercial-invoice',
         text: formatMsg(intl, 'invoices'),
       });
-      linkMenus.push({
-        single: true,
-        key: 'scof-po',
-        path: '/scof/po',
-        icon: 'logixon icon-order-mng',
-        text: formatMsg(intl, 'purchaseOrders'),
-      });
     }
+    linkMenus.push({
+      single: true,
+      key: 'scof-order',
+      path: '/scof/orders',
+      icon: 'logixon icon-control-tower',
+      text: formatMsg(intl, 'orders'),
+    });
     linkMenus.push({
       single: false,
       key: 'scof-tracking',
