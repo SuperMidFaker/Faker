@@ -125,8 +125,9 @@ export default class AllocatingModal extends Component {
   }
   handleReLoad = (traceId, qty) => {
     const inventoryData = [...this.state.inventoryData];
-    inventoryData.find(data => data.trace_id === traceId).frozen_qty -= qty;
-    inventoryData.find(data => data.trace_id === traceId).avail_qty += qty;
+    const unfreezeTrace = inventoryData.find(data => data.trace_id === traceId);
+    unfreezeTrace.frozen_qty -= qty;
+    unfreezeTrace.avail_qty += qty;
     this.setState({
       inventoryData,
     });
