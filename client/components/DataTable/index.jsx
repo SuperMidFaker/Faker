@@ -32,6 +32,7 @@ export function ResizeableTitle(props) {
     <Resizable
       width={width}
       height={0}
+      axis="x"
       onResize={onResize}
       minConstraints={[60, 0]}
       maxConstraints={[500, 0]}
