@@ -191,6 +191,10 @@ export default class PutawayDetailsPane extends React.Component {
       window.open(`${API_ROOTS.default}v1/cwm/export/putaway/details/${createFilename('putaway')}.xlsx?inboundNo=${this.props.inboundNo}`);
     }
   }
+  handleUploadPutaway = () => {
+    this.setState({ importPanelVisible: false });
+    this.handleLoad();
+  }
   render() {
     const { inboundHead, inboundPutaways, submitting } = this.props;
     const dataSource = inboundPutaways.filter((item) => {
@@ -295,6 +299,7 @@ export default class PutawayDetailsPane extends React.Component {
               formData={{
                 inboundNo: this.props.inboundNo,
                 whseCode: this.props.defaultWhse.code,
+                loginName: this.props.loginName,
               }}
               onClose={() => { this.setState({ importPanelVisible: false }); }}
               onUploaded={this.handleUploadPutaway}

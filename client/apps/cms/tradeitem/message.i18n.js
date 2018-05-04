@@ -150,17 +150,37 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.item.type',
     defaultMessage: '类型',
   },
+  itemGroup: {
+    id: 'cms.tradeitem.col.item.group',
+    defaultMessage: '物料分组',
+  },
+  copCode: {
+    id: 'cms.tradeitem.col.cop.code',
+    defaultMessage: '内部代码',
+  },
+  copBU: {
+    id: 'cms.tradeitem.col.cop.bu',
+    defaultMessage: '所属BU',
+  },
   copUOM: {
     id: 'cms.tradeitem.col.cop.uom',
     defaultMessage: '企业计量单位',
   },
+  copBrand: {
+    id: 'cms.tradeitem.col.cop.brand',
+    defaultMessage: '品牌',
+  },
   processingMethod: {
     id: 'cms.tradeitem.col.processing.method',
-    defaultMessage: '工艺',
+    defaultMessage: '工艺/原理',
   },
   materialIngredient: {
     id: 'cms.tradeitem.col.material.ingredient',
     defaultMessage: '材质/成分',
+  },
+  function: {
+    id: 'cms.tradeitem.col.cop.function',
+    defaultMessage: '功能',
   },
   use: {
     id: 'cms.tradeitem.col.cop.use',

@@ -134,6 +134,7 @@ export default class ReceiveDetailsPane extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleUploadPutaway = () => {
+    this.setState({ importPanelVisible: false });
     this.props.markReloadInbound();
   }
   handlePrdtVolChange = (inbPrdId, vol) => {

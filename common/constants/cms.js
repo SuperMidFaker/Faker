@@ -560,6 +560,10 @@ export const CMS_DOCU_TYPE = {
 export const CMS_TRADE_ITEM_TYPE = [
   { value: 'RM', text: '料件' },
   { value: 'FP', text: '成品' },
+  { value: '5', text: '设备' },
+  { value: '6', text: '半成品' },
+  { value: '7', text: '备件' },
+  { value: '8', text: '贸易件' },
 ];
 
 export const SPECIAL_COPNO_TERM = [

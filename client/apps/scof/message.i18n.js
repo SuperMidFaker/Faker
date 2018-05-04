@@ -7,11 +7,15 @@ const messages = defineMessages({
   },
   orders: {
     id: 'sof.module.orders',
-    defaultMessage: '订单管理',
+    defaultMessage: '货运订单',
   },
   invoices: {
     id: 'sof.module.invoices',
     defaultMessage: '商业发票',
+  },
+  purchaseOrders: {
+    id: 'sof.module.purchase.orders',
+    defaultMessage: '采购订单',
   },
   tracking: {
     id: 'sof.module.tracking',
@@ -24,6 +28,10 @@ const messages = defineMessages({
   customers: {
     id: 'sof.module.partner.customers',
     defaultMessage: '客户',
+  },
+  suppliers: {
+    id: 'sof.module.partner.suppliers',
+    defaultMessage: '供应商',
   },
   vendors: {
     id: 'sof.module.partner.vendors',
