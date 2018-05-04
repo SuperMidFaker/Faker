@@ -211,7 +211,7 @@ export default class ItemMasterPane extends React.Component {
     };
 
     return (
-      <FormPane >
+      <FormPane>
         <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
           <Row>
             <Col span={6}>
@@ -240,18 +240,6 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('copUOM')}>
-                {getFieldDecorator('cop_uom', {
-                  initialValue: fieldInits.cop_uom,
-                })(<Select showSearch showArrow optionFilterProp="search">
-                  {
-                    units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
-                  }
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('processingMethod')}>
                 {getFieldDecorator('proc_method', {
                   initialValue: fieldInits.proc_method,
@@ -266,10 +254,50 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('function')}>
+                {getFieldDecorator('function', {
+                  initialValue: fieldInits.function,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('use')}>
                 {getFieldDecorator('use', {
                   initialValue: fieldInits.use,
                 })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('copCode')}>
+                {getFieldDecorator('cop_code', {
+                  initialValue: fieldInits.cop_code,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('copBU')}>
+                {getFieldDecorator('cop_bu', {
+                  initialValue: fieldInits.cop_bu,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('copBrand')}>
+                {getFieldDecorator('cop_brand', {
+                  initialValue: fieldInits.cop_brand,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('copUOM')}>
+                {getFieldDecorator('cop_uom', {
+                  initialValue: fieldInits.cop_uom,
+                })(<Select showSearch showArrow optionFilterProp="search">
+                  {
+                    units.map(gt =>
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
+                  }
+                </Select>)}
               </FormItem>
             </Col>
           </Row>
@@ -462,6 +490,20 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemSpan2Layout} label={this.msg('applCertCode')}>
                 {getFieldDecorator('appl_cert_name', {
                   initialValue: fieldInits.appl_cert_name,
+                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('importPermit')}>
+                {getFieldDecorator('import_permit', {
+                  initialValue: fieldInits.import_permit,
+                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('exportPermit')}>
+                {getFieldDecorator('export_permit', {
+                  initialValue: fieldInits.export_permit,
                 })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
               </FormItem>
             </Col>
