@@ -33,6 +33,7 @@ export const PARTNER_ROLES = {
   DCUS: 'DCUS',
   CUS: 'CUS',
   SUP: 'SUP',
+  VEN: 'VEN',
 };
 
 export const PARTNER_BUSINESSES = {

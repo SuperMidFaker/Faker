@@ -26,7 +26,6 @@ export default class UnfreezePopover extends Component {
   }
   state = {
     visible: false,
-    sku: {},
     qty: '',
     reason: '',
   }
@@ -45,11 +44,12 @@ export default class UnfreezePopover extends Component {
     });
   }
   handleConfirm = () => {
-    const { loginName, traceId } = this.props;
+    const { loginName, traceId, text } = this.props;
     const { qty, reason } = this.state;
-    this.props.unfreezeTransit([traceId], { reason }, loginName, Number(qty)).then((result) => {
+    const unfreezeQty = Number.isNaN(parseFloat(qty)) ? null : parseFloat(qty);
+    this.props.unfreezeTransit([traceId], { reason }, loginName, unfreezeQty).then((result) => {
       if (!result.error) {
-        this.props.reload(traceId, Number(qty));
+        this.props.reload(traceId, unfreezeQty || text);
         this.setState({
           visible: false,
           qty: '',
@@ -65,7 +65,7 @@ export default class UnfreezePopover extends Component {
       <div style={{ width: 200 }}>
         <Form layout="vertical" className="form-layout-compact">
           <FormItem label="解冻数量">
-            <Input type="number" value={qty} onChange={this.handleQtyChange} />
+            <Input type="number" value={qty || text} onChange={this.handleQtyChange} />
           </FormItem>
           <FormItem label="解冻原因">
             <Input value={reason} onChange={this.handleReasonChange} />
