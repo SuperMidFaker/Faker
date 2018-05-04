@@ -4,8 +4,8 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   shipmentOrders: {
-    id: 'scof.orders',
-    defaultMessage: '订单管理',
+    id: 'scof.orders.shipment',
+    defaultMessage: '货运订单',
   },
   orderImport: {
     id: 'scof.orders.import.order',
