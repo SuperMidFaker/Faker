@@ -374,6 +374,9 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       field: 'invoice_no',
       label: '发票号',
     }, {
+      field: 'invoice_category',
+      label: '发票类别',
+    }, {
       field: 'invoice_date',
       label: '发票日期',
       datatype: 'date',
@@ -418,7 +421,10 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '总价',
     }, {
       field: 'currency',
-      label: '币制',
+      label: '发票币制',
+    }, {
+      field: 'real_currency',
+      label: '导入币制',
     }, {
       field: 'orig_country',
       label: '原产国',

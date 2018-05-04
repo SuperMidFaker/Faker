@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Icon, Layout, Tabs, Steps, Button, Tooltip, Radio,
-  Tag, Dropdown, Menu, notification, message } from 'antd';
+import { Badge, Icon, Layout, Tabs, Steps, Button, Tooltip, Radio, Tag, Dropdown, Menu, notification, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -103,7 +102,7 @@ export default class OutboundDetail extends Component {
     this.setState({ expLoad: true });
     this.props.loadPrintPickDetails(params.outboundNo).then((result) => {
       if (!result.error) {
-        const pickDetails = result.data;
+        const pickDetails = result.data.details;
         const csvData = pickDetails.map((dv, index) => {
           const out = {};
           out['项'] = index + 1;
@@ -123,7 +122,7 @@ export default class OutboundDetail extends Component {
           .reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
         const data = csvData.map((v, i) => _headers.map((k, j) =>
           Object.assign({}, { v: v[k], position: String.fromCharCode(65 + j) + (i + 6) })))
-          .reduce((prev, next) => prev.concat(next))
+          .reduce((prev, next) => prev.concat(next), [])
           .reduce((prev, next) => Object.assign({}, prev, { [next.position]: { v: next.v } }), {});
         const ref = `A1:I${csvData.length + 8}`;
         const ws = Object.assign({}, headers, data, { '!ref': ref });
@@ -302,9 +301,10 @@ export default class OutboundDetail extends Component {
               <Button icon="printer" />
             </Dropdown>}
             {this.state.tabKey === 'pickingDetails' &&
-              <Tooltip title="导出拣货单Excel" placement="bottom">
-                <Button icon="export" onClick={this.handleExportPickingListXLS} loading={this.state.expLoad} />
-              </Tooltip>
+                outboundHead.status >= CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value &&
+                <Tooltip title="导出拣货单Excel" placement="bottom">
+                  <Button icon="export" onClick={this.handleExportPickingListXLS} loading={this.state.expLoad} />
+                </Tooltip>
             }
             <Tooltip title="打印顺丰速运面单" placement="bottom">
               <Button onClick={this.showExpressModal} >
