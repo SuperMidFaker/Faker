@@ -132,13 +132,13 @@ export default class InvoiceList extends React.Component {
   }, {
     title: '购买方',
     dataIndex: 'buyer',
-    width: 200,
+    width: 180,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
     title: '销售方',
     dataIndex: 'seller',
-    width: 200,
+    width: 180,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {

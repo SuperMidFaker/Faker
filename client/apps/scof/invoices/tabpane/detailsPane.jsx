@@ -282,12 +282,10 @@ export default class DetailsPane extends Component {
     }];
     return (
       <DataPane
-
         columns={columns}
         rowSelection={rowSelection}
-        indentSize={0}
         dataSource={temporaryDetails}
-        rowKey="index"
+        rowKey="seq_no"
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
