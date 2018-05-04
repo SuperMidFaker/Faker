@@ -6,7 +6,6 @@ import moment from 'moment';
 import { Avatar, DatePicker, Icon, Layout, Menu, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import SearchBox from 'client/components/SearchBox';
@@ -193,7 +192,6 @@ export default class CustomsList extends Component {
     title: this.msg('orderNo'),
     width: 180,
     dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('packCount'),
     width: 60,
@@ -249,7 +247,6 @@ export default class CustomsList extends Component {
     title: '收发货人',
     dataIndex: 'trade_name',
     width: 180,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '进/出口口岸',
     dataIndex: 'i_e_port',
@@ -259,7 +256,7 @@ export default class CustomsList extends Component {
       if (cust) {
         port = cust.text;
       }
-      return <TrimSpan text={port} maxLen={14} />;
+      return port;
     },
   }, {
     title: '监管方式',
@@ -271,7 +268,7 @@ export default class CustomsList extends Component {
       if (tradeMd) {
         trade = tradeMd.text;
       }
-      return <TrimSpan text={trade} maxLen={14} />;
+      return trade;
     },
   }, {
     title: '提运单号',
@@ -307,7 +304,6 @@ export default class CustomsList extends Component {
     title: '申报单位',
     dataIndex: 'agent_name',
     width: 180,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '审核人员',
     dataIndex: 'reviewed_by',

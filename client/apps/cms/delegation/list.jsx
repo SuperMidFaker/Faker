@@ -7,7 +7,6 @@ import { Avatar, Badge, Button, DatePicker, Layout, Icon, Popconfirm, Select, Ta
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
-import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import UserAvatar from 'client/components/UserAvatar';
 import SearchBox from 'client/components/SearchBox';
@@ -176,17 +175,14 @@ export default class DelegationList extends Component {
     title: this.msg('client'),
     width: 180,
     dataIndex: 'send_name',
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('waybillLadingNo'),
     width: 200,
     dataIndex: 'bl_wb_no',
-    render: o => <TrimSpan text={o} maxLen={25} />,
   }, {
     title: this.msg('orderNo'),
     width: 180,
     dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('transMode'),
     width: 100,
@@ -297,7 +293,6 @@ export default class DelegationList extends Component {
     title: this.msg('customsBroker'),
     width: 180,
     dataIndex: 'customs_name',
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('operatedBy'),
     width: 120,

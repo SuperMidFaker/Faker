@@ -42,7 +42,7 @@ export function ResizeableTitle(props) {
 }
 
 ResizeableTitle.propTypes = {
-  onResize: PropTypes.func.isRequired,
+  onResize: PropTypes.func,
   width: PropTypes.number,
 };
 
@@ -382,10 +382,15 @@ class DataTable extends React.Component {
     // const animateBody = props => <AnimTableBody {...props} />;
     const columns = this.state.tableColumns.map((col, index) => ({
       ...col,
-      onHeaderCell: column => ({
-        width: column.width,
-        onResize: this.handleColumnResize(index),
-      }),
+      onHeaderCell: (column) => {
+        if (!column.fixed) {
+          return ({
+            width: column.width,
+            onResize: this.handleColumnResize(index),
+          });
+        }
+        return null;
+      },
     }));
     return (
       <div className={classes}>
