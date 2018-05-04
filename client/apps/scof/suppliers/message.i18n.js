@@ -1,14 +1,19 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   vendor: {
     id: 'sof.suppliers.vendor',
     defaultMessage: '供应商',
   },
-  add: {
-    id: 'sof.suppliers.add',
-    defaultMessage: '新增',
+  createSupplier: {
+    id: 'sof.suppliers.create',
+    defaultMessage: '新增供应商',
+  },
+  importSuppliers: {
+    id: 'sof.suppliers.import',
+    defaultMessage: '导入供应商',
   },
   save: {
     id: 'sof.suppliers.save',
@@ -43,3 +48,4 @@ const messages = defineMessages({
 
 export default messages;
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);

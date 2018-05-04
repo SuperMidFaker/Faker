@@ -13,6 +13,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    aspect: state.account.aspect,
     privileges: state.account.privileges,
     trackings: state.sofTracking.trackings,
     sofApps: state.account.apps.sof,
@@ -32,7 +33,7 @@ export default class ModuleSCOF extends React.Component {
   }
   componentWillMount() {
     this.props.loadTrackings(this.props.tenantId);
-    const { intl, sofApps } = this.props;
+    const { intl, sofApps, aspect } = this.props;
     const linkMenus = [];
     const appMenus = [];
     linkMenus.push({
@@ -49,20 +50,22 @@ export default class ModuleSCOF extends React.Component {
       icon: 'logixon icon-control-tower',
       text: formatMsg(intl, 'orders'),
     });
-    linkMenus.push({
-      single: true,
-      key: 'scof-invoice',
-      path: '/scof/invoices',
-      icon: 'logixon icon-commercial-invoice',
-      text: formatMsg(intl, 'invoices'),
-    });
-    linkMenus.push({
-      single: true,
-      key: 'scof-po',
-      path: '/scof/po',
-      icon: 'logixon icon-order-mng',
-      text: formatMsg(intl, 'purchaseOrders'),
-    });
+    if (aspect === 0) {
+      linkMenus.push({
+        single: true,
+        key: 'scof-invoice',
+        path: '/scof/invoices',
+        icon: 'logixon icon-commercial-invoice',
+        text: formatMsg(intl, 'invoices'),
+      });
+      linkMenus.push({
+        single: true,
+        key: 'scof-po',
+        path: '/scof/po',
+        icon: 'logixon icon-order-mng',
+        text: formatMsg(intl, 'purchaseOrders'),
+      });
+    }
     linkMenus.push({
       single: false,
       key: 'scof-tracking',
@@ -89,13 +92,15 @@ export default class ModuleSCOF extends React.Component {
       icon: 'logixon icon-customer-mng',
       text: formatMsg(intl, 'customers'),
     });
-    linkMenus.push({
-      single: true,
-      key: 'scof-supplier',
-      path: '/scof/suppliers',
-      icon: 'logixon icon-supplier',
-      text: formatMsg(intl, 'suppliers'),
-    });
+    if (aspect === 0) {
+      linkMenus.push({
+        single: true,
+        key: 'scof-supplier',
+        path: '/scof/suppliers',
+        icon: 'logixon icon-supplier',
+        text: formatMsg(intl, 'suppliers'),
+      });
+    }
     linkMenus.push({
       single: true,
       key: 'scof-vendor',

@@ -9,14 +9,13 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { format } from 'client/common/i18n/helpers';
 import { loadVendors, showVendorModal, deleteVendor } from 'common/reducers/sofVendors';
 import { PARTNER_ROLES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
-import messages from './message.i18n';
-import VendorModal from './modals/vendorModal';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
+import SupplierModal from './modals/supplierModal';
 
-const formatMsg = format(messages);
+
 const { Content } = Layout;
 
 function fetchData({ state, dispatch }) {
@@ -58,7 +57,8 @@ export default class SupplierList extends React.Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadVendors(this.props.tenantId, params),
     resolve: result => result.data,
@@ -84,11 +84,37 @@ export default class SupplierList extends React.Component {
   columns = [{
     title: this.msg('supplierCode'),
     dataIndex: 'code',
-    render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
   }, {
     title: this.msg('supplierName'),
     dataIndex: 'name',
     render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
+  }, {
+    title: this.msg('displayName'),
+    dataIndex: 'display_name',
+  }, {
+    title: this.msg('contact'),
+    dataIndex: 'contact',
+  }, {
+    title: this.msg('phone'),
+    dataIndex: 'phone',
+  }, {
+    title: this.msg('email'),
+    dataIndex: 'email',
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+  }, {
+    title: this.msg('uscCode'),
+    dataIndex: 'usc_code',
+  }, {
+    title: this.msg('customsCode'),
+    dataIndex: 'customs_code',
+  }, {
+    title: this.msg('internalId'),
+    dataIndex: 'customs_code',
+  }, {
+    title: this.msg('createdDate'),
+    dataIndex: 'created_date',
   }];
 
   handleTableLoad = () => {
@@ -110,15 +136,15 @@ export default class SupplierList extends React.Component {
     </span>);
     const dropdown = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="1">{this.msg('import')}</Menu.Item>
+        <Menu.Item key="1">{this.msg('importSuppliers')}</Menu.Item>
       </Menu>
     );
     return (
       <Layout>
         <PageHeader title={this.msg('vendor')}>
           <PageHeader.Actions>
-            <ToolbarAction icon="export" label={this.msg('export')} />
-            <ToolbarAction primary icon="plus" label={this.msg('create')} dropdown={dropdown} onClick={() => this.props.showVendorModal('add')} />
+            <ToolbarAction icon="export" label={this.gmsg('export')} />
+            <ToolbarAction primary icon="plus" label={this.msg('createSupplier')} dropdown={dropdown} onClick={() => this.props.showVendorModal('add')} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
@@ -130,7 +156,7 @@ export default class SupplierList extends React.Component {
             loading={this.props.loading}
           />
         </Content>
-        <VendorModal onOk={this.handleTableLoad} />
+        <SupplierModal onOk={this.handleTableLoad} />
       </Layout>
     );
   }

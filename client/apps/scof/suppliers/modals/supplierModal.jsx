@@ -28,7 +28,7 @@ const formatMsg = format(messages);
   }
 )
 
-export default class VendorModal extends React.Component {
+export default class SupplierModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
