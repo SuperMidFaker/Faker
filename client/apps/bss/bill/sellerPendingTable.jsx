@@ -153,7 +153,7 @@ export default class SellerPendingTable extends React.Component {
     const {
       loading, orderStatementlist, statementStat, listFilter,
     } = this.props;
-    const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
+    const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.VEN);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {

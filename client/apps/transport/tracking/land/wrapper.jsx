@@ -17,13 +17,14 @@ import ExportExcel from './modals/export-excel';
 import { loadPartners } from 'common/reducers/shipment';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import messages from './message.i18n';
+
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadPartners(state.account.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]));
+  return dispatch(loadPartners(state.account.tenantId, [PARTNER_ROLES.VEN], [PARTNER_BUSINESSE_TYPES.transport]));
 }
 @connectFetch()(fetchData)
 @injectIntl

@@ -9,7 +9,7 @@ import { loadPartners } from 'common/reducers/partner';
 import RowAction from 'client/components/RowAction';
 import { formatMsg } from '../../message.i18n';
 
-const role = PARTNER_ROLES.SUP;
+const role = PARTNER_ROLES.VEN;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 
 const { Option } = Select;

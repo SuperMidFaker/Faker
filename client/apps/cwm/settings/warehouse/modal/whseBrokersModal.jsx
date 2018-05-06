@@ -12,7 +12,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 function fetchData({ dispatch }) {
-  return dispatch(loadBrokerPartners(PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance));
+  return dispatch(loadBrokerPartners(PARTNER_ROLES.VEN, PARTNER_BUSINESSE_TYPES.clearance));
 }
 
 @connectFetch()(fetchData)

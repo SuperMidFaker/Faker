@@ -31,7 +31,7 @@ export default class TraderUserModal extends React.Component {
   componentDidMount() {
     this.props.loadBrokers({
       tenantId: this.props.tenantId,
-      role: PARTNER_ROLES.SUP,
+      role: PARTNER_ROLES.VEN,
       businessType: PARTNER_BUSINESSE_TYPES.clearance,
     }).then((result) => {
       if (result.data && result.data.length > 0) {

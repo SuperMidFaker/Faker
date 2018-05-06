@@ -39,8 +39,8 @@ export const PARTNER_ROLES = {
 export const PARTNER_BUSINESSES = {
   CCB: 'CCB',
   TRS: 'TRS',
-  CIB: 'CIB',
-  ICB: 'ICB',
+  FWD: 'FWD',
+  WHS: 'WHS',
 };
 
 export const PARTNER_BUSINESSE_TYPES = {

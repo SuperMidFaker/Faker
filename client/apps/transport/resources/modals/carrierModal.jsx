@@ -38,7 +38,7 @@ export default class CarrierModal extends React.Component {
     partnerName: '',
     partnerCode: '',
     partnerUniqueCode: '',
-    role: PARTNER_ROLES.SUP,
+    role: PARTNER_ROLES.VEN,
     business: PARTNER_BUSINESSES.TRS,
     businessType: PARTNER_BUSINESSE_TYPES.transport,
   }

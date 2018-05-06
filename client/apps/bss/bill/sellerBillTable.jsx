@@ -260,7 +260,7 @@ export default class SellerBills extends React.Component {
       loading, billlist, billStat,
     } = this.props;
     this.dataSource.remotes = billlist;
-    const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
+    const partners = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.VEN);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {

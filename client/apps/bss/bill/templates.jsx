@@ -50,7 +50,7 @@ export default class BillTemplates extends React.Component {
   handleCreateTemplate = () => {
     this.props.toggleNewTemplateModal(true);
     this.props.loadPartners({
-      role: [PARTNER_ROLES.SUP, PARTNER_ROLES.CUS],
+      role: [PARTNER_ROLES.VEN, PARTNER_ROLES.CUS],
     });
   }
   handleTemplatesLoad = (currentPage, filter) => {

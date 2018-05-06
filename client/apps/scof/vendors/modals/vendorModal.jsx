@@ -108,13 +108,13 @@ export default class VendorModal extends React.Component {
     const { tenantId, operation } = this.props;
     let business;
     if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
-      business = 'CCB,TRS,CIB,ICB';
+      business = 'CCB,TRS,FWD';
     } else if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') === -1) {
-      business = 'CCB,CIB,ICB';
+      business = 'CCB,FWD';
     } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
       business = 'TRS';
     } else {
-      business = '';
+      business = 'WHS';
     }
     if (!name || name === '') {
       message.error('企业名称必填');
@@ -127,7 +127,7 @@ export default class VendorModal extends React.Component {
     } else if (businessType === '') {
       message.error('请选择服务商业务类型');
     } else if (this.props.operation === 'edit') {
-      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'SUP', business, customsCode, businessType, contact, phone, email).then((result) => {
+      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'VEN', business, customsCode, businessType, contact, phone, email).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -162,13 +162,13 @@ export default class VendorModal extends React.Component {
     const { tenantId } = this.props;
     let business;
     if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
-      business = 'CCB,TRS,CIB,ICB';
+      business = 'CCB,TRS,FWD';
     } else if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') === -1) {
-      business = 'CCB,CIB,ICB';
+      business = 'CCB,FWD';
     } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
       business = 'TRS';
     } else {
-      business = '';
+      business = 'WHS';
     }
     this.props.addPartner({
       tenantId,
@@ -176,7 +176,7 @@ export default class VendorModal extends React.Component {
         partnerName: name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email,
       },
       businessType,
-      role: 'SUP',
+      role: 'VEN',
       business,
     }).then((result1) => {
       if (result1.error) {

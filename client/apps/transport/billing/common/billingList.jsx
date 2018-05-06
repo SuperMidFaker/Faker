@@ -66,7 +66,7 @@ export default class BillingList extends React.Component {
     this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
       this.setState({ customers: result.data });
     });
-    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
+    this.props.loadPartners(this.props.tenantId, [PARTNER_ROLES.VEN], [PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
       this.setState({ carriers: result.data });
     });
   }

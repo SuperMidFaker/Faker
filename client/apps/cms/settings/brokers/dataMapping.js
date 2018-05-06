@@ -1,13 +1,12 @@
 export const partnerTypes = {
   CUS: '客户',
   SUP: '供应商',
+  VEN: '服务商',
   TRS: '承运商',
   WHS: '仓储提供商',
   CCB: '报关行',
   FWD: '货代',
   ALL: '物流提供商',
-  CIB: '报检提供商',
-  ICB: '鉴定办证',
 };
 
 export const providerShorthandTypes = {
@@ -15,8 +14,6 @@ export const providerShorthandTypes = {
   WHS: '仓储',
   CCB: '报关',
   FWD: '货代',
-  CIB: '报检',
-  ICB: '鉴定办证',
 };
 
 export function mapPartnerships(partnerships) {

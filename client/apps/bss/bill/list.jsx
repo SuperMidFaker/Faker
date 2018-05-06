@@ -48,9 +48,9 @@ export default class BillList extends React.Component {
   componentDidMount() {
     if (this.props.aspect === 0) {
       this.handleTabChange('sellerBill');
-      this.props.loadPartners({ role: [PARTNER_ROLES.SUP] });
+      this.props.loadPartners({ role: [PARTNER_ROLES.VEN] });
     } else {
-      this.props.loadPartners({ role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP] });
+      this.props.loadPartners({ role: [PARTNER_ROLES.CUS, PARTNER_ROLES.VEN] });
     }
   }
   msg = formatMsg(this.props.intl)

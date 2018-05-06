@@ -266,8 +266,8 @@ const messages = defineMessages({
     id: 'root.partnership.customer',
     defaultMessage: '客户',
   },
-  SUP: {
-    id: 'root.partnership.supplier',
+  VEN: {
+    id: 'root.partnership.vendor',
     defaultMessage: '服务商',
   },
   CCB: {

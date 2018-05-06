@@ -124,11 +124,11 @@ export default class ReceivedInvitationList extends Component {
         if (partner.partnerships[i].role === PARTNER_ROLES.CUS) {
           // 一级承运商添加客户只区分bussiness_type
           reversePartnerships.push({
-            role: PARTNER_ROLES.SUP,
+            role: PARTNER_ROLES.VEN,
             business_type: partner.partnerships[i].business_type,
             business: null,
           });
-        } else if (partner.partnerships[i].role === PARTNER_ROLES.SUP) {
+        } else if (partner.partnerships[i].role === PARTNER_ROLES.VEN) {
           // 客户添加服务商没有business值/一级承运商添加供应商指定了business
           const businessType = partner.partnerships[i].business_type;
           const { business } = partner.partnerships[i];

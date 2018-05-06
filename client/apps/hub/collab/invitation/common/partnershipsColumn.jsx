@@ -19,7 +19,7 @@ export default class PartnershipsColumn extends React.Component {
     str = str.replace(/transport/g, '运输');
     str = str.replace(/warehousing/g, '仓储');
     str = str.replace(/CUS/g, '客户');
-    str = str.replace(/SUP/g, '供应商');
+    str = str.replace(/VEN/g, '供应商');
     return (
       <div>{str}</div>
     );

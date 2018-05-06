@@ -43,7 +43,7 @@ function fetchData({ state, dispatch }) {
     current: state.cmsExpense.expensesList.current,
   })));
   promises.push(dispatch(loadPartners({
-    role: PARTNER_ROLES.SUP,
+    role: PARTNER_ROLES.VEN,
   })));
   return Promise.all(promises);
 }

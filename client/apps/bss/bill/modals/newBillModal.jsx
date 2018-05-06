@@ -110,8 +110,8 @@ export default class CreateBillModal extends React.Component {
       const client = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
       this.setState({ partners: client, partnerLabel: this.gmsg('CUS') });
     } else if (billType === 'sellerBill') {
-      const service = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
-      this.setState({ partners: service, partnerLabel: this.gmsg('SUP') });
+      const service = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.VEN);
+      this.setState({ partners: service, partnerLabel: this.gmsg('VEN') });
     }
   }
   handlePartnerChange = (value) => {

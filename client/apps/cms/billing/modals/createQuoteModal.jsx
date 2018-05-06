@@ -47,7 +47,7 @@ export default class CreateQuoteModal extends React.Component {
   }
   componentDidMount() {
     this.props.loadPartners({
-      role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP],
+      role: [PARTNER_ROLES.CUS, PARTNER_ROLES.VEN],
       businessType: PARTNER_BUSINESSE_TYPES.clearance,
     });
   }
@@ -78,7 +78,7 @@ export default class CreateQuoteModal extends React.Component {
       const client = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.CUS);
       this.setState({ partners: client, partnerLabel: this.msg('client') });
     } else if (quoteType === 'cost') {
-      const service = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.SUP);
+      const service = this.props.partners.filter(pt => pt.role === PARTNER_ROLES.VEN);
       this.setState({ partners: service, partnerLabel: this.msg('provider') });
     }
   }
