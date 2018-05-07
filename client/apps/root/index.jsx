@@ -11,6 +11,7 @@ import { loadCorpByDomain } from 'common/reducers/corp-domain';
 import { loadTranslation } from 'common/reducers/preference';
 import { isLoaded } from 'client/common/redux-actions';
 import connectFetch from 'client/common/decorators/connect-fetch';
+import DeployNotification from './deployNotification';
 import './root.less';
 
 const MomentLocaleMap = {
@@ -26,9 +27,9 @@ const AntdLocaleMap = {
 function fetchData({ state, dispatch }) {
   const promises = [];
   if (!isLoaded(state, 'corpDomain')) {
-    let subdomain = state.corpDomain.subdomain;
+    let { subdomain } = state.corpDomain;
     if (__DEV__ && !subdomain) {
-      subdomain = state.account.subdomain; // development subdomain fallback on login
+      ({ subdomain } = state.account); // development subdomain fallback on login
     }
     const prom = dispatch(loadCorpByDomain(subdomain));
     promises.push(prom);
@@ -46,16 +47,18 @@ function fetchData({ state, dispatch }) {
   locale: state.preference.locale,
   messages: state.preference.messages,
   isAuthed: state.auth.isAuthed,
-}), )
+}))
 export default class Root extends React.Component {
   static defaultProps = {
     locale: 'zh',
   }
   static propTypes = {
-    children: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
+    location: PropTypes.shape({
+      query: PropTypes.shape({ subdomain: PropTypes.string }),
+    }).isRequired,
     locale: PropTypes.oneOf(['zh', 'en']),
-    messages: PropTypes.object.isRequired,
+    messages: PropTypes.shape({}).isRequired,
     isAuthed: PropTypes.bool.isRequired,
   }
   static contextTypes = {
@@ -77,11 +80,13 @@ export default class Root extends React.Component {
   }
   render() {
     const { locale, messages } = this.props;
-    return (
-      <LocaleProvider locale={AntdLocaleMap[locale]}>
+    return [
+      <LocaleProvider locale={AntdLocaleMap[locale]} key="node">
         <IntlProvider locale={locale} messages={messages} defaultLocale={Root.defaultProps.locale}>
           {this.props.children}
         </IntlProvider>
-      </LocaleProvider>);
+      </LocaleProvider>,
+      <DeployNotification key="deploy" />,
+    ];
   }
 }

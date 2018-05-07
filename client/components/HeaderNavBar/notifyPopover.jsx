@@ -1,20 +1,13 @@
-/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Button, Popover, Badge, Icon, notification, message } from 'antd';
+import { Alert, Button, Popover, Badge, Icon, notification } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-import NavLink from '../NavLink';
-import { countMessages, messageBadgeNum, showNotificationDock, loadMessages, markMessages, markMessage } from 'common/reducers/notification';
-import { prompt } from 'common/reducers/shipment';
-import { getDriver } from 'common/reducers/transportResources';
+import { countMessages, messageBadgeNum, showNotificationDock, loadMessages, markMessage } from 'common/reducers/notification';
 import io from 'socket.io-client';
-import { PROMPT_TYPES, MESSAGE_STATUS } from 'common/constants';
-
-const formatMsg = format(messages);
+import { MESSAGE_STATUS } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
 function fetchData({ state, dispatch, cookie }) {
   return dispatch(countMessages(cookie, {
@@ -26,30 +19,18 @@ function fetchData({ state, dispatch, cookie }) {
 @connectFetch()(fetchData)
 @injectIntl
 @connect(state => ({
-  tenantId: state.account.tenantId,
   loginId: state.account.loginId,
-  loginName: state.account.username,
-  tenantName: state.account.tenantName,
-  logo: state.account.logo,
   unreadMessagesNum: state.notification.unreadMessagesNum,
-  newMessage: state.notification.newMessage,
   messages: state.notification.messages,
 }), {
-  messageBadgeNum, prompt, showNotificationDock, loadMessages, markMessages, markMessage
+  messageBadgeNum, showNotificationDock, loadMessages, markMessage,
 })
 export default class NotifyPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    logo: PropTypes.string,
-    newMessage: PropTypes.object.isRequired,
-    prompt: PropTypes.func.isRequired,
     loadMessages: PropTypes.func.isRequired,
-    messages: PropTypes.object.isRequired,
-    markMessages: PropTypes.func.isRequired,
+    messages: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
     markMessage: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -60,18 +41,18 @@ export default class NotifyPopover extends React.Component {
     messages: [],
   }
   componentDidMount() {
-    const { tenantId, loginId, loginName } = this.props;
-    if (("Notification" in window) && Notification.permission !== 'granted') {
-      Notification.requestPermission(status => {
+    const { loginId } = this.props;
+    if (('Notification' in window) && Notification.permission !== 'granted') {
+      Notification.requestPermission((status) => {
         if (Notification.permission !== status) {
           Notification.permission = status;
         }
       });
     }
-    
+
     const socket = io(`${API_ROOTS.notify}notify`);
     socket.on('connect', () => {
-      socket.emit('login', {login_id: loginId});
+      socket.emit('login', { login_id: loginId });
     });
     socket.on('message', (data) => {
       this.notif({
@@ -83,11 +64,10 @@ export default class NotifyPopover extends React.Component {
       this.props.messageBadgeNum(this.props.unreadMessagesNum + 1);
     });
     if (__DEV__) {
-      socket.on('connect_error', (error) => {
+      socket.on('connect_error', () => {
         socket.close();
       });
     }
-    this.setState({ socket });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -99,8 +79,8 @@ export default class NotifyPopover extends React.Component {
     this.setState({ messages: tempMessages });
   }
   markAllRead = () => {
-    const { loginId } = this.props;
-    const promises = this.state.messages.map(item => this.props.markMessage({id: item.id, status: MESSAGE_STATUS.read.key}));
+    const promises = this.state.messages.map(item =>
+      this.props.markMessage({ id: item.id, status: MESSAGE_STATUS.read.key }));
     Promise.all(promises).then(this.handleLoad);
   }
   handleCloseMessage = (record) => {
@@ -116,12 +96,8 @@ export default class NotifyPopover extends React.Component {
     }).then(this.handleLoad);
     this.context.router.push(record.url);
   }
-  // handleSendMessage(data) {
-
-  // }
   notif(data) {
-    // console.log(data);
-    if (("Notification" in window) && Notification.permission === 'granted') {
+    if (('Notification' in window) && Notification.permission === 'granted') {
       const n = new Notification(data.content, data);
       n.onclick = () => {
         // this.handleNavigationTo(data.url);
@@ -158,17 +134,16 @@ export default class NotifyPopover extends React.Component {
     });
   }
   handleVisibleChange = (visible) => {
-    const { loginId } = this.props;
     if (visible) {
       this.handleLoad();
     }
     this.setState({ visible });
   }
   handleShowDock = () => {
-    this.setState({ visible: false, });
+    this.setState({ visible: false });
     this.props.showNotificationDock();
   }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  msg = formatMsg(this.props.intl)
   render() {
     const { unreadMessagesNum } = this.props;
     const notificationContent = (<div className="navbar-popover" style={{ width: 360 }}>
@@ -179,15 +154,15 @@ export default class NotifyPopover extends React.Component {
         <span>{this.msg('notification')}</span>
       </div>
       <div className="popover-body">
-      {this.state.messages.map(item => (
-        <Alert
-          message={<a onClick={() => this.handleReadMessage(item)} >{item.content}</a>}
-          type="info"
-          showIcon
-          closable
-          onClose={() => this.handleCloseMessage(item)}
-          key={item.id}
-        />
+        {this.state.messages.map(item => (
+          <Alert
+            message={<a onClick={() => this.handleReadMessage(item)} >{item.content}</a>}
+            type="info"
+            showIcon
+            closable
+            onClose={() => this.handleCloseMessage(item)}
+            key={item.id}
+          />
       ))}
       </div>
       <div className="popover-footer">
@@ -196,8 +171,13 @@ export default class NotifyPopover extends React.Component {
     </div>);
 
     return (
-      <Popover content={notificationContent} placement="bottomLeft" trigger="click"
-        visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+      <Popover
+        content={notificationContent}
+        placement="bottomLeft"
+        trigger="click"
+        visible={this.state.visible}
+        onVisibleChange={this.handleVisibleChange}
+      >
         <div>
           <Badge count={unreadMessagesNum} overflowCount={99}>
             <Icon type="bell" />
