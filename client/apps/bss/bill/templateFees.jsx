@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Input, message, Modal, Transfer, Form, Layout, Select } from 'antd';
-import { loadTemplateFees, addTemplateFee, deleteTemplateFees, updateTemplateFee } from 'common/reducers/bssBillTemplate';
+import { Button, Input, message, Modal, Transfer, Form, Layout, Select, Card, Row, Col } from 'antd';
+import { loadTemplateFees, addTemplateFee, deleteTemplateFees, updateTemplateFee, updateTemplateProps } from 'common/reducers/bssBillTemplate';
 import { loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
+import InfoItem from 'client/components/InfoItem';
 import ToolbarAction from 'client/components/ToolbarAction';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -42,6 +43,7 @@ function fetchData({ params, dispatch, state }) {
     deleteTemplateFees,
     updateTemplateFee,
     loadAllFeeElements,
+    updateTemplateProps,
   }
 )
 @Form.create()
@@ -59,9 +61,17 @@ export default class TemplateFees extends Component {
     fees: [],
     editItem: {},
     onEdit: false,
+    billProps: {},
   };
   componentDidMount() {
     this.props.loadAllFeeElements();
+    let billProps = { customs_entry_nos: '报关单号', decl_sheet_qty: '联单数', trade_amount: '货值' };
+    const template = this.props.billTemplatelist.data.filter(tp =>
+      String(tp.id) === this.props.params.templateId)[0];
+    if (template && template.bill_props) {
+      billProps = JSON.parse(template.bill_props);
+    }
+    this.setState({ billProps });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.templateFeelist !== this.props.templateFeelist) {
@@ -162,6 +172,11 @@ export default class TemplateFees extends Component {
       onEdit: false, editItem: {}, fees,
     });
   }
+  handleEdit = (field, value) => {
+    const billProps = { ...this.state.billProps, [field]: value };
+    this.setState({ billProps });
+    this.props.updateTemplateProps({ billProps, templateId: this.props.params.templateId });
+  }
   render() {
     const {
       loading,
@@ -171,7 +186,7 @@ export default class TemplateFees extends Component {
       billTemplatelist,
     } = this.props;
     const {
-      targetKeys, visible, fees, onEdit, editItem,
+      targetKeys, visible, fees, onEdit, editItem, billProps,
     } = this.state;
     let templateName = '';
     const template = billTemplatelist.data.filter(tp => String(tp.id) === templateId)[0];
@@ -240,6 +255,34 @@ export default class TemplateFees extends Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content layout-fixed-width" key="main">
+            <Card title={this.msg('feeParams')}>
+              <Row>
+                <Col sm={16}>
+                  <InfoItem
+                    field={billProps.customs_entry_nos}
+                    addonBefore="customs_entry_nos"
+                    editable
+                    onEdit={value => this.handleEdit('customs_entry_nos', value)}
+                  />
+                </Col>
+                <Col sm={16}>
+                  <InfoItem
+                    field={billProps.decl_sheet_qty}
+                    addonBefore="decl_sheet_qty"
+                    editable
+                    onEdit={value => this.handleEdit('decl_sheet_qty', value)}
+                  />
+                </Col>
+                <Col sm={16}>
+                  <InfoItem
+                    field={billProps.trade_amount}
+                    addonBefore="trade_amount"
+                    editable
+                    onEdit={value => this.handleEdit('trade_amount', value)}
+                  />
+                </Col>
+              </Row>
+            </Card>
             <DataTable
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
