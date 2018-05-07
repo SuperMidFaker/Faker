@@ -13,8 +13,9 @@ export default class DeployNotification extends React.Component {
       const { location } = this.context.router;
       socket.on('cihook', (data) => {
         if (data.message === 'new-web-version') {
+          message.destroy();
           message.warn(
-            <span>系统存在新版本更新, 请<a href={location.pathname}>点击刷新</a></span>,
+            <span>发现系统版本更新, 请<a href={location.pathname}>点击刷新</a></span>,
             0
           );
         }
