@@ -52,6 +52,7 @@ const initialState = {
   billHead: {},
   billStatements: [],
   billTemplateFees: [],
+  billTemplateProps: [],
   statementFees: [],
   reconcileStatementReload: false,
   billHeadReload: false,
@@ -118,6 +119,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         billTemplateFees: action.result.data.billTemplateFees,
+        billTemplateProps: action.result.data.billTemplateProps,
         statementFees: action.result.data.statements,
       };
     case actionTypes.UPDATE_RECONCILE_FEE_SUCCEED:
