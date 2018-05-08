@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/bss/bill/template', [
   'ADD_TEMPLATE_FEE', 'ADD_TEMPLATE_FEE_SUCCEED', 'ADD_TEMPLATE_FEE_FAIL',
   'UPDATE_TEMPLATE_FEE', 'UPDATE_TEMPLATE_FEE_SUCCEED', 'UPDATE_TEMPLATE_FEE_FAIL',
   'DELETE_TEMPLATE_FEES', 'DELETE_TEMPLATE_FEES_SUCCEED', 'DELETE_TEMPLATE_FEES_FAIL',
+  'UPDATE_TEMPLATE_PROPS', 'UPDATE_TEMPLATE_PROPS_SUCCEED', 'UPDATE_TEMPLATE_PROPS_FAIL',
 ]);
 
 const initialState = {
@@ -183,6 +184,21 @@ export function updateTemplateFee(data) {
         actionTypes.UPDATE_TEMPLATE_FEE_FAIL,
       ],
       endpoint: 'v1/bss/bill/template/fee/update',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function updateTemplateProps(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_TEMPLATE_PROPS,
+        actionTypes.UPDATE_TEMPLATE_PROPS_SUCCEED,
+        actionTypes.UPDATE_TEMPLATE_PROPS_FAIL,
+      ],
+      endpoint: 'v1/bss/bill/template/billprops/update',
       method: 'post',
       data,
     },

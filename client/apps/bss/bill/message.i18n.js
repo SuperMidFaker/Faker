@@ -115,6 +115,10 @@ const messages = defineMessages({
     id: 'bss.bill.billable.statement.search.tips',
     defaultMessage: '业务编号/客户单号',
   },
+  feeParams: {
+    id: 'bss.bill.template.fee.params',
+    defaultMessage: '费用参数',
+  },
 });
 
 export default messages;
