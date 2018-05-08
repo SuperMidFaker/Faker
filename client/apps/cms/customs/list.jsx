@@ -374,16 +374,16 @@ export default class CustomsList extends Component {
         spanElems.push(<RowAction
           key="return"
           overlay={<Menu onClick={({ key }) => this.showDeclMsgModModal(key, record)}>
-            {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
-            {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
-            {record.status < CMS_DECL_STATUS.released.value && <Menu.Divider />}
-            {record.status < CMS_DECL_STATUS.released.value && <Menu.Item key="declMod">{this.msg('declMod')}</Menu.Item>}
+            <Menu.Item key={`${record.sent_file}|sent`} disabled={!record.sent_file}>{this.msg('viewDeclMsg')}</Menu.Item>
+            <Menu.Item key={`${record.return_file}|return`} disabled={!record.return_file}>{this.msg('viewResultMsg')}</Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="declMod" disabled={record.status >= CMS_DECL_STATUS.released.value}>{this.msg('declMod')}</Menu.Item>
           </Menu>}
           row={record}
         />);
       }
       return (<span>
-        <RowAction onClick={this.handleDetail} icon="eye-o" tooltip={this.gmsg('view')} row={record} />
+        <RowAction onClick={this.handleDetail} icon="eye-o" label={this.gmsg('view')} row={record} />
         {spanElems}
       </span>);
     },
