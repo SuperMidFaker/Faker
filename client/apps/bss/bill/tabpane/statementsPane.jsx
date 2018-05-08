@@ -120,6 +120,14 @@ export default class StatementsPane extends Component {
       dataIndex: 'cust_order_no',
       width: 150,
     }];
+    if (billTemplateProps.length > 0) {
+      const propsColumns = billTemplateProps.map(data => ({
+        title: data.label,
+        dataIndex: data.key,
+        width: 100,
+      }));
+      columns = columns.concat(propsColumns);
+    }
     if (billTemplateFees.length > 0) {
       const billColumns = billTemplateFees.map(data => ({
         title: data.name,
@@ -127,14 +135,6 @@ export default class StatementsPane extends Component {
         width: 100,
       }));
       columns = columns.concat(billColumns);
-    }
-    if (billTemplateProps.length > 0) {
-      const propsColumns = billTemplateProps.map(data => ({
-        title: data.text,
-        dataIndex: data.key,
-        width: 100,
-      }));
-      columns = columns.concat(propsColumns);
     }
     columns.push({
       title: '结算金额',

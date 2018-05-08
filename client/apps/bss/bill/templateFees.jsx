@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Input, message, Modal, Transfer, Form, Layout, Select, Card, Row, Col } from 'antd';
+import { Button, Input, message, Modal, Transfer, Form, Layout, Select, Card, Row, Col, Checkbox } from 'antd';
 import { loadTemplateFees, addTemplateFee, deleteTemplateFees, updateTemplateFee, updateTemplateProps } from 'common/reducers/bssBillTemplate';
 import { loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import DataTable from 'client/components/DataTable';
@@ -61,17 +61,35 @@ export default class TemplateFees extends Component {
     fees: [],
     editItem: {},
     onEdit: false,
-    billProps: {},
+    billProps: [
+      { key: 'customs_entry_nos', label: '' },
+      { key: 'decl_sheet_qty', label: '' },
+      { key: 'trade_amount', label: '' }],
+    checkBillProps: {
+      customs_entry_nos: false,
+      decl_sheet_qty: false,
+      trade_amount: false,
+    },
   };
   componentDidMount() {
     this.props.loadAllFeeElements();
-    let billProps = { customs_entry_nos: '报关单号', decl_sheet_qty: '联单数', trade_amount: '货值' };
+    const { billProps, checkBillProps } = this.state;
     const template = this.props.billTemplatelist.data.filter(tp =>
       String(tp.id) === this.props.params.templateId)[0];
     if (template && template.bill_props) {
-      billProps = JSON.parse(template.bill_props);
+      const tpBillProps = template.bill_props.split(', ').map(tp => JSON.parse(tp));
+      const newProps = [];
+      billProps.forEach((bp) => {
+        const data = bp;
+        const tpBillProp = tpBillProps.filter(tp => tp.key === bp.key)[0];
+        if (tpBillProp) {
+          data.label = tpBillProp.label;
+          checkBillProps[tpBillProp.key] = true;
+        }
+        newProps.push(data);
+      });
+      this.setState({ billProps: newProps, checkBillProps });
     }
-    this.setState({ billProps });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.templateFeelist !== this.props.templateFeelist) {
@@ -172,10 +190,40 @@ export default class TemplateFees extends Component {
       onEdit: false, editItem: {}, fees,
     });
   }
-  handleEdit = (field, value) => {
-    const billProps = { ...this.state.billProps, [field]: value };
+  handleEdit = (key, value) => {
+    const { billProps, checkBillProps } = this.state;
+    const index = billProps.findIndex(bl => bl.key === key);
+    billProps[index] = { ...billProps[index], label: value };
     this.setState({ billProps });
-    this.props.updateTemplateProps({ billProps, templateId: this.props.params.templateId });
+    const newProps = [];
+    billProps.forEach((blp) => {
+      if (checkBillProps[blp.key]) {
+        newProps.push(JSON.stringify(blp));
+      }
+    });
+    this.props.updateTemplateProps({
+      billProps: newProps.join(', '),
+      templateId: this.props.params.templateId,
+    });
+  }
+  handleCheck = (key, checked) => {
+    const { billProps, checkBillProps } = this.state;
+    const index = billProps.findIndex(bl => bl.key === key);
+    checkBillProps[key] = checked;
+    if (!checked) {
+      billProps[index] = { ...billProps[index], label: '' };
+    }
+    this.setState({ billProps, checkBillProps });
+    const newProps = [];
+    billProps.forEach((blp) => {
+      if (checkBillProps[blp.key]) {
+        newProps.push(JSON.stringify(blp));
+      }
+    });
+    this.props.updateTemplateProps({
+      billProps: newProps.join(', '),
+      templateId: this.props.params.templateId,
+    });
   }
   render() {
     const {
@@ -186,7 +234,7 @@ export default class TemplateFees extends Component {
       billTemplatelist,
     } = this.props;
     const {
-      targetKeys, visible, fees, onEdit, editItem, billProps,
+      targetKeys, visible, fees, onEdit, editItem, billProps, checkBillProps,
     } = this.state;
     let templateName = '';
     const template = billTemplatelist.data.filter(tp => String(tp.id) === templateId)[0];
@@ -257,30 +305,46 @@ export default class TemplateFees extends Component {
           <Content className="page-content layout-fixed-width" key="main">
             <Card title={this.msg('feeParams')}>
               <Row>
-                <Col sm={16}>
+                <Col sm={8}>
+                  <Checkbox checked={checkBillProps.customs_entry_nos} onChange={ev => this.handleCheck('customs_entry_nos', ev.target.checked)}>
+                    customs_entry_nos
+                  </Checkbox>
+                </Col>
+                { checkBillProps.customs_entry_nos && <Col sm={16}>
                   <InfoItem
-                    field={billProps.customs_entry_nos}
-                    addonBefore="customs_entry_nos"
+                    field={billProps[0].label}
                     editable
                     onEdit={value => this.handleEdit('customs_entry_nos', value)}
                   />
+                </Col>}
+              </Row>
+              <Row>
+                <Col sm={8}>
+                  <Checkbox checked={checkBillProps.decl_sheet_qty} onChange={ev => this.handleCheck('decl_sheet_qty', ev.target.checked)}>
+                    decl_sheet_qty
+                  </Checkbox>
                 </Col>
-                <Col sm={16}>
+                { checkBillProps.decl_sheet_qty && <Col sm={16}>
                   <InfoItem
-                    field={billProps.decl_sheet_qty}
-                    addonBefore="decl_sheet_qty"
+                    field={billProps[1].label}
                     editable
                     onEdit={value => this.handleEdit('decl_sheet_qty', value)}
                   />
+                </Col>}
+              </Row>
+              <Row>
+                <Col sm={8}>
+                  <Checkbox checked={checkBillProps.trade_amount} onChange={ev => this.handleCheck('trade_amount', ev.target.checked)}>
+                    trade_amount
+                  </Checkbox>
                 </Col>
-                <Col sm={16}>
+                { checkBillProps.trade_amount && <Col sm={16}>
                   <InfoItem
-                    field={billProps.trade_amount}
-                    addonBefore="trade_amount"
+                    field={billProps[2].label}
                     editable
                     onEdit={value => this.handleEdit('trade_amount', value)}
                   />
-                </Col>
+                </Col>}
               </Row>
             </Card>
             <DataTable
