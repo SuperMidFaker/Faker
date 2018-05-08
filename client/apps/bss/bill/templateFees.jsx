@@ -12,6 +12,7 @@ import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import InfoItem from 'client/components/InfoItem';
 import ToolbarAction from 'client/components/ToolbarAction';
+import { TEMPLATE_BILL_PROPS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -61,34 +62,19 @@ export default class TemplateFees extends Component {
     fees: [],
     editItem: {},
     onEdit: false,
-    billProps: [
-      { key: 'customs_entry_nos', label: '' },
-      { key: 'decl_sheet_qty', label: '' },
-      { key: 'trade_amount', label: '' }],
-    checkBillProps: {
-      customs_entry_nos: false,
-      decl_sheet_qty: false,
-      trade_amount: false,
-    },
+    billProps: {},
   };
   componentDidMount() {
     this.props.loadAllFeeElements();
-    const { billProps, checkBillProps } = this.state;
     const template = this.props.billTemplatelist.data.filter(tp =>
       String(tp.id) === this.props.params.templateId)[0];
     if (template && template.bill_props) {
-      const tpBillProps = template.bill_props.split(', ').map(tp => JSON.parse(tp));
-      const newProps = [];
-      billProps.forEach((bp) => {
-        const data = bp;
-        const tpBillProp = tpBillProps.filter(tp => tp.key === bp.key)[0];
-        if (tpBillProp) {
-          data.label = tpBillProp.label;
-          checkBillProps[tpBillProp.key] = true;
-        }
-        newProps.push(data);
+      const tpBillProps = JSON.parse(template.bill_props);
+      const newProps = {};
+      tpBillProps.forEach((tp) => {
+        newProps[tp.key] = tp.label;
       });
-      this.setState({ billProps: newProps, checkBillProps });
+      this.setState({ billProps: newProps });
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -191,37 +177,32 @@ export default class TemplateFees extends Component {
     });
   }
   handleEdit = (key, value) => {
-    const { billProps, checkBillProps } = this.state;
-    const index = billProps.findIndex(bl => bl.key === key);
-    billProps[index] = { ...billProps[index], label: value };
+    const { billProps } = this.state;
+    billProps[key] = value;
     this.setState({ billProps });
-    const newProps = [];
-    billProps.forEach((blp) => {
-      if (checkBillProps[blp.key]) {
-        newProps.push(JSON.stringify(blp));
-      }
-    });
+    const newProps = Object.keys(billProps).map(pkey => ({
+      key: pkey,
+      label: billProps[pkey],
+    }));
     this.props.updateTemplateProps({
-      billProps: newProps.join(', '),
+      billProps: JSON.stringify(newProps),
       templateId: this.props.params.templateId,
     });
   }
   handleCheck = (key, checked) => {
-    const { billProps, checkBillProps } = this.state;
-    const index = billProps.findIndex(bl => bl.key === key);
-    checkBillProps[key] = checked;
-    if (!checked) {
-      billProps[index] = { ...billProps[index], label: '' };
+    const { billProps } = this.state;
+    if (checked) {
+      billProps[key] = TEMPLATE_BILL_PROPS.filter(tp => tp.key === key)[0].label;
+    } else {
+      delete billProps[key];
     }
-    this.setState({ billProps, checkBillProps });
-    const newProps = [];
-    billProps.forEach((blp) => {
-      if (checkBillProps[blp.key]) {
-        newProps.push(JSON.stringify(blp));
-      }
-    });
+    this.setState({ billProps });
+    const newProps = Object.keys(billProps).map(pkey => ({
+      key: pkey,
+      label: billProps[pkey],
+    }));
     this.props.updateTemplateProps({
-      billProps: newProps.join(', '),
+      billProps: JSON.stringify(newProps),
       templateId: this.props.params.templateId,
     });
   }
@@ -234,7 +215,7 @@ export default class TemplateFees extends Component {
       billTemplatelist,
     } = this.props;
     const {
-      targetKeys, visible, fees, onEdit, editItem, billProps, checkBillProps,
+      targetKeys, visible, fees, onEdit, editItem, billProps,
     } = this.state;
     let templateName = '';
     const template = billTemplatelist.data.filter(tp => String(tp.id) === templateId)[0];
@@ -304,48 +285,23 @@ export default class TemplateFees extends Component {
           </PageHeader>
           <Content className="page-content layout-fixed-width" key="main">
             <Card title={this.msg('feeParams')}>
-              <Row>
-                <Col sm={8}>
-                  <Checkbox checked={checkBillProps.customs_entry_nos} onChange={ev => this.handleCheck('customs_entry_nos', ev.target.checked)}>
-                    customs_entry_nos
-                  </Checkbox>
-                </Col>
-                { checkBillProps.customs_entry_nos && <Col sm={16}>
-                  <InfoItem
-                    field={billProps[0].label}
-                    editable
-                    onEdit={value => this.handleEdit('customs_entry_nos', value)}
-                  />
-                </Col>}
-              </Row>
-              <Row>
-                <Col sm={8}>
-                  <Checkbox checked={checkBillProps.decl_sheet_qty} onChange={ev => this.handleCheck('decl_sheet_qty', ev.target.checked)}>
-                    decl_sheet_qty
-                  </Checkbox>
-                </Col>
-                { checkBillProps.decl_sheet_qty && <Col sm={16}>
-                  <InfoItem
-                    field={billProps[1].label}
-                    editable
-                    onEdit={value => this.handleEdit('decl_sheet_qty', value)}
-                  />
-                </Col>}
-              </Row>
-              <Row>
-                <Col sm={8}>
-                  <Checkbox checked={checkBillProps.trade_amount} onChange={ev => this.handleCheck('trade_amount', ev.target.checked)}>
-                    trade_amount
-                  </Checkbox>
-                </Col>
-                { checkBillProps.trade_amount && <Col sm={16}>
-                  <InfoItem
-                    field={billProps[2].label}
-                    editable
-                    onEdit={value => this.handleEdit('trade_amount', value)}
-                  />
-                </Col>}
-              </Row>
+              {TEMPLATE_BILL_PROPS.map(data => (
+                <Row>
+                  <Col sm={4}>
+                    <Checkbox
+                      checked={billProps[data.key]}
+                      onChange={ev => this.handleCheck(data.key, ev.target.checked)}
+                    />
+                  </Col>
+                  <Col sm={20}>
+                    <InfoItem
+                      field={billProps[data.key] || data.label}
+                      editable={!!billProps[data.key]}
+                      onEdit={value => this.handleEdit(data.key, value)}
+                    />
+                  </Col>
+                </Row>
+              ))}
             </Card>
             <DataTable
               toolbarActions={toolbarActions}
