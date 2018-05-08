@@ -1,4 +1,4 @@
-FROM daocloud.io/welogix_tech/welogix-web-base:pv4
+FROM daocloud.io/welogix_tech/welogix-web-base:pv5
 MAINTAINER developer@welogix.cn
 
 RUN mkdir -p /data/deploy/logs
