@@ -15,9 +15,9 @@ import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease }
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import WhseSelect from '../../common/whseSelect';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -510,9 +510,9 @@ export default class ReceivingASNList extends React.Component {
           </Content>
         </Layout>
         <ReceivingDockPanel />
-        <OrderDockPanel />
-        <DelegationDockPanel />
         <ShipmentDockPanel />
+        <DelegationDockPanel />
+        <DeliveryDockPanel />
       </Layout>
     );
   }

@@ -22,12 +22,12 @@ import ToolbarAction from 'client/components/ToolbarAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
-import OrderDockPanel from './docks/orderDockPanel';
+import ShipmentDockPanel from './docks/shipmentDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 import CreatorSelect from './creatorSelect';
@@ -170,7 +170,7 @@ export default class OrderList extends React.Component {
   handleCreate = () => {
     this.props.setClientForm(-2, {});
     this.props.emptyFlows();
-    this.context.router.push('/scof/orders/create');
+    this.context.router.push('/scof/shipments/create');
   }
   handleRemove = (shipmtOrderNo) => {
     const { tenantId, loginId, username } = this.props;
@@ -381,7 +381,7 @@ export default class OrderList extends React.Component {
       </Menu>
     );
     const columns = [{
-      title: '订单',
+      title: '订单号/货主',
       width: 200,
       fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
@@ -400,6 +400,7 @@ export default class OrderList extends React.Component {
         </div>);
       },
     }, {
+      title: '货运信息',
       width: 250,
       render: (o, record) => <ShipmentColumn shipment={record} />,
     }, {
@@ -424,7 +425,7 @@ export default class OrderList extends React.Component {
               <RowAction overlay={(
                 <Menu onClick={this.handleMenuClick}>
                   <Menu.Item key="edit">
-                    <Link to={`/scof/orders/edit/${record.shipmt_order_no}`}><Icon type="edit" />修改</Link>
+                    <Link to={`/scof/shipments/edit/${record.shipmt_order_no}`}><Icon type="edit" />修改</Link>
                   </Menu.Item>
                   <Menu.Item key="delete">
                     <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(record.shipmt_order_no)}>
@@ -497,10 +498,10 @@ export default class OrderList extends React.Component {
         <PageHeader title={this.msg('shipmentOrders')}>
           <PageHeader.Actions>
             <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
-              {this.msg('orderImport')}
+              {this.gmsg('import')}
             </Dropdown.Button>
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
-              {this.msg('new')}
+              {this.msg('createShipment')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>
@@ -542,9 +543,9 @@ export default class OrderList extends React.Component {
             />
           </Content>
         </Layout>
-        <OrderDockPanel reload={this.handleTableLoad} />
+        <ShipmentDockPanel reload={this.handleTableLoad} />
         <DelegationDockPanel />
-        <ShipmentDockPanel />
+        <DeliveryDockPanel />
         <ReceiveDockPanel />
         <ShippingDockPanel />
         <ImportDataPanel

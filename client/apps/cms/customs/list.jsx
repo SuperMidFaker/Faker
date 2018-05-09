@@ -19,8 +19,8 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_DECL_MOD_TYPE, INSPECT_STATUS } from 'common/constants';
-import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
-import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
+import ShipmentDockPanel from 'client/apps/scof/shipments/docks/shipmentDockPanel';
+import DeliveryDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import InspectModal from './modals/inspectModal';
@@ -728,8 +728,8 @@ export default class CustomsList extends Component {
         </Layout>
         <DeclMsgPanel />
         <DelegationDockPanel />
-        <OrderDockPanel />
         <ShipmentDockPanel />
+        <DeliveryDockPanel />
         <DeclMsgModal />
       </Layout>
     );

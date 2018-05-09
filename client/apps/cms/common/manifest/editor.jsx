@@ -22,7 +22,7 @@ import { formatMsg } from '../message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import DeclTreePopover from '../popover/declTreePopover';
 import DelegationDockPanel from '../dock/delegationDockPanel';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 
 
 const { Content } = Layout;
@@ -564,7 +564,7 @@ export default class ManifestEditor extends React.Component {
           </Content>
         </Layout>
         <DelegationDockPanel ietype={ietype} />
-        <OrderDockPanel />
+        <ShipmentDockPanel />
         <GenerateDeclModal />
         <SaveAsTemplateModal ietype={ietype} />
         <SendDeclsModal ietype={ietype} entries={billMeta.entries} reload={this.handleMetaLoad} />

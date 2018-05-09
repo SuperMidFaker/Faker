@@ -58,10 +58,10 @@ export default class ModuleSCOF extends React.Component {
     }
     linkMenus.push({
       single: true,
-      key: 'scof-order',
-      path: '/scof/orders',
-      icon: 'logixon icon-control-tower',
-      text: this.msg('orders'),
+      key: 'scof-shipment',
+      path: '/scof/shipments',
+      icon: 'logixon icon-shipment',
+      text: this.msg('shipments'),
     });
     linkMenus.push({
       single: false,

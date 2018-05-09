@@ -23,12 +23,9 @@ export default class ServiceTeamModal extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
-    tenantUsers: PropTypes.array,
     hideServiceTeamModal: PropTypes.func.isRequired,
-    getTenantUsers: PropTypes.func.isRequired,
-    departments: PropTypes.array,
-    customer: PropTypes.object.isRequired,
-    selectedUserIds: PropTypes.array,
+    customer: PropTypes.shape({ id: PropTypes.number }).isRequired,
+    selectedUserIds: PropTypes.arrayOf(PropTypes.number),
   }
   state = {
     targetKeys: [],
@@ -55,7 +52,7 @@ export default class ServiceTeamModal extends React.Component {
   }
   handleAdd = () => {
     const partnerId = this.props.customer.id;
-    const targetKeys = this.state.targetKeys;
+    const { targetKeys } = this.state;
     this.props.addServiceTeamMembers(partnerId, targetKeys).then((result) => {
       if (!result.error) {
         this.props.hideServiceTeamModal();

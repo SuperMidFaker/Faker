@@ -16,9 +16,9 @@ import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
 import ReceivingDockPanel from '../../../../receiving/dock/receivingDockPanel';
-import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
@@ -273,9 +273,9 @@ export default class SHFTZTransferInList extends React.Component {
             loading={this.props.loading}
           />
           <ReceivingDockPanel />
-          <OrderDockPanel />
-          <DelegationDockPanel />
           <ShipmentDockPanel />
+          <DelegationDockPanel />
+          <DeliveryDockPanel />
         </Content>
       </Layout>
     );

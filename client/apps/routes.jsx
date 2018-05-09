@@ -90,7 +90,7 @@ import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbon
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
-import * as SCOFOrders from './scof/orders';
+import * as SCOFShipments from './scof/shipments';
 import * as SCOFInvoices from './scof/invoices';
 import * as SCOFPurchaseOrders from './scof/purchaseorders';
 import * as SCOFTracking from './scof/tracking';
@@ -465,10 +465,10 @@ export default(store) => {
           <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>
             <IndexRedirect to="/scof/dashboard" />
             <Route path="dashboard" component={SCOFDashboard.Index} />
-            <Route path="orders" >
-              <IndexRoute component={SCOFOrders.List} />
-              <Route path="create" component={SCOFOrders.Create} />
-              <Route path="edit/:orderNo" component={SCOFOrders.Edit} />
+            <Route path="shipments" >
+              <IndexRoute component={SCOFShipments.List} />
+              <Route path="create" component={SCOFShipments.Create} />
+              <Route path="edit/:orderNo" component={SCOFShipments.Edit} />
             </Route>
             <Route path="invoices">
               <IndexRoute component={SCOFInvoices.List} />

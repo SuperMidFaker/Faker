@@ -14,7 +14,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
-import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from 'client/apps/scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DeclTreePopover from '../common/popover/declTreePopover';
 import CusDeclHeadPane from './tabpane/cusDeclHeadPane';
@@ -422,7 +422,7 @@ export default class CustomsDeclEditor extends React.Component {
           </MagicCard>
         </Content>
         <DelegationDockPanel ietype={params.ietype} />
-        <OrderDockPanel />
+        <ShipmentDockPanel />
         <SendDeclMsgModal reload={this.reloadEntry} />
         <DeclReleasedModal reload={this.reloadEntry} />
         <DeclMsgModal />

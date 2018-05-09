@@ -28,8 +28,8 @@ import ExchangeDocModal from './modals/exchangeDocModal';
 import QuarantineModal from './modals/quarantineModal';
 import { formatMsg } from './message.i18n';
 import DelgDispModal from '../common/dock/delgDispModal';
-import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
-import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
+import ShipmentDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
+import DeliveryDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
@@ -732,8 +732,8 @@ export default class DelegationList extends Component {
           <DelgDispModal />
         </Layout>
         <DelegationDockPanel />
-        <OrderDockPanel />
         <ShipmentDockPanel />
+        <DeliveryDockPanel />
         <ReceiveDockPanel />
         <ShippingDockPanel />
       </Layout>

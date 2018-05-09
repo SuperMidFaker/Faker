@@ -19,9 +19,9 @@ import Strip from 'client/components/Strip';
 import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -327,9 +327,9 @@ export default class ReceivingInboundList extends React.Component {
           />
         </Content>
         <ReceivingDockPanel />
-        <OrderDockPanel />
-        <DelegationDockPanel />
         <ShipmentDockPanel />
+        <DelegationDockPanel />
+        <DeliveryDockPanel />
       </QueueAnim>
     );
   }

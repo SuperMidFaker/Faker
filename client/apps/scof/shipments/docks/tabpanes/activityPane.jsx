@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 // import { Timeline, Card } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+
 const formatMsg = format(messages);
 
 // const timeFormat = 'YYYY-MM-DD HH:mm';

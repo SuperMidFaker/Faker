@@ -7,13 +7,9 @@ const messages = defineMessages({
     id: 'scof.orders.shipment',
     defaultMessage: '货运订单',
   },
-  orderImport: {
-    id: 'scof.orders.import.order',
-    defaultMessage: '订单导入',
-  },
-  createOrder: {
-    id: 'scof.orders.create.order',
-    defaultMessage: '新建订单',
+  createShipment: {
+    id: 'scof.orders.create.shipment',
+    defaultMessage: '新建货运订单',
   },
   editOrder: {
     id: 'scof.orders.edit.order',
