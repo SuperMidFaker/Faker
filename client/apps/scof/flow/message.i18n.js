@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   flow: {
@@ -454,7 +455,16 @@ const messages = defineMessages({
     id: 'scof.flow.list.action.design',
     defaultMessage: '设计',
   },
+  authorizedVendor: {
+    id: 'scof.flow.authorized.vendor',
+    defaultMessage: '已授权提供方',
+  },
+  errorMessage: {
+    id: 'scof.flow..error.message',
+    defaultMessage: '提供方未与本租户建立客户关系',
+  },
 });
 
 export default messages;
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);

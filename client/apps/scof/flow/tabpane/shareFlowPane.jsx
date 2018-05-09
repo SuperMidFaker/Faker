@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Button, Table, Select, message } from 'antd';
 import { closeSubFlowAuthModal, createProviderFlow, deleteProviderFlow } from 'common/reducers/scofFlow';
 import RowAction from 'client/components/RowAction';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -39,6 +39,7 @@ export default class ShareFlowPane extends React.Component {
     pendingProvider: { tenant_id: null },
   };
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handlePendingProviderSelect = (vendorTenantId) => {
     const pendingProvider = {
       tenant_id: vendorTenantId,
@@ -51,13 +52,13 @@ export default class ShareFlowPane extends React.Component {
     this.props.createProviderFlow(flow.id, pendingProvider.tenant_id).then((result) => {
       if (result.error) {
         if (result.error.message === 'provider_customer_norel') {
-          message.error('提供方未与本租户建立客户关系', 10);
+          message.error(this.msg('errorMessage'), 10);
         } else {
           message.error(result.error.message, 10);
         }
       } else {
         this.setState({ pendingProvider: { tenant_id: null } });
-        message.info('保存成功', 5);
+        message.info(this.gmsg('savedSuccess'), 5);
       }
     });
   }
@@ -66,7 +67,7 @@ export default class ShareFlowPane extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.info('删除成功', 5);
+        message.info(this.gmsg('deletedSuccess'), 5);
       }
     });
   }
@@ -74,7 +75,7 @@ export default class ShareFlowPane extends React.Component {
     this.props.closeSubFlowAuthModal();
   }
   columns = [{
-    title: '已授权提供方',
+    title: this.msg('authorizedVendor'),
     dataIndex: 'tenant_id',
     render: (provider) => {
       const vendor = this.props.vendorTenants.filter(vtopt =>
@@ -84,7 +85,7 @@ export default class ShareFlowPane extends React.Component {
   }, {
     width: 40,
     render: (o, record) =>
-      <RowAction shape="circle" confirm="确定删除?" onConfirm={() => this.handleDelete(record.id)} icon="delete" />,
+      <RowAction shape="circle" confirm={this.gmsg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id)} icon="delete" />,
   }];
   render() {
     const { pendingProvider } = this.state;
@@ -111,7 +112,7 @@ export default class ShareFlowPane extends React.Component {
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary" disabled={!pendingProvider.tenant_id} loading={submitting} onClick={this.handleSaveProvider} icon="plus-circle-o">添加</Button>
+            <Button type="primary" disabled={!pendingProvider.tenant_id} loading={submitting} onClick={this.handleSaveProvider} icon="plus-circle-o">{this.gmsg('add')}</Button>
           </FormItem>
         </Form>
         <Table
