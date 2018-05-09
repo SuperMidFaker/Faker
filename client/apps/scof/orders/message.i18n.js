@@ -757,7 +757,7 @@ const messages = defineMessages({
   },
   coefficient: {
     id: 'scof.orders.invoice.coefficient',
-    defaultMessage: '调整系数',
+    defaultMessage: '金额调整系数',
   },
   poNo: {
     id: 'scof.orders.invoice.poNo',
