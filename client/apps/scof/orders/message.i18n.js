@@ -719,6 +719,66 @@ const messages = defineMessages({
     id: 'scof.orders.dock.tab.attachment',
     defaultMessage: '附件',
   },
+  invoiceNo: {
+    id: 'scof.orders.invoice.no',
+    defaultMessage: '发票号',
+  },
+  invoiceDate: {
+    id: 'scof.orders.invoice.date',
+    defaultMessage: '发票日期',
+  },
+  buyer: {
+    id: 'scof.orders.invoice.buyer',
+    defaultMessage: '购买方',
+  },
+  seller: {
+    id: 'scof.orders.invoice.seller',
+    defaultMessage: '销售方',
+  },
+  'select invoices': {
+    id: 'scof.orders.invoice.select',
+    defaultMessage: '选择商业发票',
+  },
+  invoiceStatus: {
+    id: 'scof.orders.invoice.status',
+    defaultMessage: '发票状态',
+  },
+  shipped: {
+    id: 'scof.orders.invoice.shipped',
+    defaultMessage: '已发货',
+  },
+  unshipped: {
+    id: 'scof.orders.invoice.unshipped',
+    defaultMessage: '未发货',
+  },
+  category: {
+    id: 'scof.orders.invoice.category',
+    defaultMessage: '发票类别',
+  },
+  coefficient: {
+    id: 'scof.orders.invoice.coefficient',
+    defaultMessage: '调整系数',
+  },
+  poNo: {
+    id: 'scof.orders.invoice.poNo',
+    defaultMessage: '订单号',
+  },
+  totalAmount: {
+    id: 'scof.orders.invoice.totalAmount',
+    defaultMessage: '总价',
+  },
+  currency: {
+    id: 'scof.orders.invoice.currency',
+    defaultMessage: '币制',
+  },
+  totalQty: {
+    id: 'scof.orders.invoice.totalQty',
+    defaultMessage: '总数量',
+  },
+  totalNetWt: {
+    id: 'scof.orders.invoice.totalNetWt',
+    defaultMessage: '总净重',
+  },
 });
 
 export default messages;

@@ -16,7 +16,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo } from 'common/reducers/sofInvoice';
+import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo, loadInvoiceCategories } from 'common/reducers/sofInvoice';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
@@ -42,6 +42,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     role: PARTNER_ROLES.CUS,
   })));
+  promises.push(dispatch(loadInvoiceCategories()));
   return Promise.all(promises);
 }
 
@@ -56,6 +57,7 @@ function fetchData({ state, dispatch }) {
     loading: state.sofInvoice.loading,
     adaptors: state.hubDataAdapter.modelAdaptors,
     uploadRecords: state.uploadRecords.uploadRecords,
+    invoiceCategories: state.sofInvoice.invoiceCategories,
   }),
   {
     loadInvoices,
@@ -82,6 +84,8 @@ export default class InvoiceList extends React.Component {
     importPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
+    buyer: '',
+    seller: '',
   }
   componentDidMount() {
     this.props.loadModelAdaptors('', [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
@@ -118,90 +122,6 @@ export default class InvoiceList extends React.Component {
     },
     remotes: this.props.invoiceList,
   })
-
-  columns = [{
-    title: '发票号',
-    dataIndex: 'invoice_no',
-    width: 150,
-    fixed: 'left',
-  }, {
-    title: '发票日期',
-    dataIndex: 'invoice_date',
-    render: o => o && moment(o).format('YYYY-MM-DD'),
-    width: 100,
-  }, {
-    title: '购买方',
-    dataIndex: 'buyer',
-    width: 180,
-    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
-    this.props.partners.find(partner => partner.id === Number(o)).name,
-  }, {
-    title: '销售方',
-    dataIndex: 'seller',
-    width: 180,
-    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
-    this.props.partners.find(partner => partner.id === Number(o)).name,
-  }, {
-    title: '采购订单号',
-    dataIndex: 'po_no',
-  }, {
-    title: '总数量',
-    dataIndex: 'total_qty',
-    align: 'right',
-    width: 120,
-  }, {
-    title: '总净重',
-    dataIndex: 'total_net_wt',
-    align: 'right',
-    width: 120,
-  }, {
-    title: '总金额',
-    dataIndex: 'total_amount',
-    align: 'right',
-    width: 120,
-  }, {
-    title: '币制',
-    dataIndex: 'currency',
-    width: 100,
-    render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
-    this.props.currencies.find(curr => curr.curr_code === o).curr_name,
-  }, {
-    title: '状态',
-    dataIndex: 'invoice_status',
-    width: 100,
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <Tag>{this.msg('toShip')}</Tag>;
-        case 1:
-          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
-        case 2:
-          return <Tag color="green">{this.msg('shipped')}</Tag>;
-        default:
-          return null;
-      }
-    },
-  }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
-    width: 140,
-    render: createdate => createdate && moment(createdate).format('YYYY.MM.DD HH:mm'),
-    sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
-  }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 120,
-    render: lid => <UserAvatar size="small" loginId={lid} showName />,
-  }, {
-    title: this.gmsg('actions'),
-    dataIndex: 'OPS_COL',
-    width: 60,
-    className: 'table-col-ops',
-    fixed: 'right',
-    render: (o, record) => (<span>
-      <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />
-    </span>),
-  }]
   handleCreate = () => {
     this.context.router.push('/scof/invoices/create');
   }
@@ -266,8 +186,15 @@ export default class InvoiceList extends React.Component {
       }
     });
   }
-  handlePartnerChange = (partnerId) => {
-    this.props.loadModelAdaptors(partnerId, [LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key]);
+  handleBuyerChange = (buyer) => {
+    this.setState({
+      buyer,
+    });
+  }
+  handleSellerChange = (seller) => {
+    this.setState({
+      seller,
+    });
   }
   handleMenuClick = (ev) => {
     if (ev.key === 'logs') {
@@ -288,6 +215,98 @@ export default class InvoiceList extends React.Component {
     window.open(`${API_ROOTS.default}v1/scof/invoices/${createFilename('invoices')}.xlsx?invoiceNos=${selectedRowKeys}`);
   }
   render() {
+    const columns = [{
+      title: this.msg('invoiceNo'),
+      dataIndex: 'invoice_no',
+      width: 150,
+      fixed: 'left',
+    }, {
+      title: this.msg('invoiceDate'),
+      dataIndex: 'invoice_date',
+      render: o => o && moment(o).format('YYYY-MM-DD'),
+      width: 100,
+    }, {
+      title: this.msg('category'),
+      dataIndex: 'invoice_category',
+      width: 120,
+      filters: this.props.invoiceCategories && this.props.invoiceCategories.map(cate => ({
+        text: cate.category, value: cate.category,
+      })),
+      onFilter: (value, record) =>
+        record.invoice_category && record.invoice_category.indexOf(value) !== -1,
+    }, {
+      title: this.msg('buyer'),
+      dataIndex: 'buyer',
+      width: 180,
+      render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
+      this.props.partners.find(partner => partner.id === Number(o)).name,
+    }, {
+      title: this.msg('seller'),
+      dataIndex: 'seller',
+      width: 180,
+      render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
+      this.props.partners.find(partner => partner.id === Number(o)).name,
+    }, {
+      title: this.msg('poNo'),
+      dataIndex: 'po_no',
+    }, {
+      title: this.msg('totalQty'),
+      dataIndex: 'total_qty',
+      align: 'right',
+      width: 120,
+    }, {
+      title: this.msg('totalNetWt'),
+      dataIndex: 'total_net_wt',
+      align: 'right',
+      width: 120,
+    }, {
+      title: this.msg('totalAmount'),
+      dataIndex: 'total_amount',
+      align: 'right',
+      width: 120,
+    }, {
+      title: this.msg('currency'),
+      dataIndex: 'currency',
+      width: 100,
+      render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
+      this.props.currencies.find(curr => curr.curr_code === o).curr_name,
+    }, {
+      title: this.msg('status'),
+      dataIndex: 'invoice_status',
+      width: 100,
+      render: (o) => {
+        switch (o) {
+          case 0:
+            return <Tag>{this.msg('toShip')}</Tag>;
+          case 1:
+            return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
+          case 2:
+            return <Tag color="green">{this.msg('shipped')}</Tag>;
+          default:
+            return null;
+        }
+      },
+    }, {
+      title: this.gmsg('createdDate'),
+      dataIndex: 'created_date',
+      width: 140,
+      render: createdate => createdate && moment(createdate).format('YYYY.MM.DD HH:mm'),
+      sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
+    }, {
+      title: this.gmsg('createdBy'),
+      dataIndex: 'created_by',
+      width: 120,
+      render: lid => <UserAvatar size="small" loginId={lid} showName />,
+    }, {
+      title: this.gmsg('actions'),
+      dataIndex: 'OPS_COL',
+      width: 60,
+      className: 'table-col-ops',
+      fixed: 'right',
+      render: (o, record) => (<span>
+        <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />
+      </span>),
+    }];
     const {
       invoiceList, partners, loading, filter,
     } = this.props;
@@ -321,7 +340,7 @@ export default class InvoiceList extends React.Component {
         onSelect={this.handleSelect}
         style={{ width: '100%' }}
       >
-        <Option value="all" key="all">全部</Option>
+        <Option value="all" key="all">{this.gmsg('all')}</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
       </Select>
       <RangePicker
@@ -352,7 +371,7 @@ export default class InvoiceList extends React.Component {
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}
-            columns={this.columns}
+            columns={columns}
             loading={loading}
             rowKey="invoice_no"
           />
@@ -361,18 +380,31 @@ export default class InvoiceList extends React.Component {
             visible={this.state.importPanelVisible}
             adaptors={this.props.adaptors}
             endpoint={`${API_ROOTS.default}v1/scof/invoices/import`}
-            formData={{}}
+            formData={{ buyer: this.state.buyer, seller: this.state.seller }}
             onClose={() => { this.setState({ importPanelVisible: false }); }}
             onUploaded={this.invoicesUploaded}
             template={`${XLSX_CDN}/发票导入模板.xlsx`}
           >
-            <Form.Item label="客户">
+            <Form.Item label={this.msg('buyer')}>
               <Select
-                placeholder="请选择客户"
+                placeholder={this.msg('selectBuyer')}
                 showSearch
                 allowClear
                 optionFilterProp="children"
-                onChange={this.handlePartnerChange}
+                onChange={this.handleBuyerChange}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 360 }}
+              >
+                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+              </Select>
+            </Form.Item>
+            <Form.Item label={this.msg('seller')}>
+              <Select
+                placeholder={this.msg('selectSeller')}
+                showSearch
+                allowClear
+                optionFilterProp="children"
+                onChange={this.handleSellerChange}
                 dropdownMatchSelectWidth={false}
                 dropdownStyle={{ width: 360 }}
               >
