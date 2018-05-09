@@ -634,7 +634,7 @@ export function loadOrderAttachments(orderNo) {
   };
 }
 
-export function loadInvoices(pageSize, current, filter) {
+export function loadInvoices({ pageSize, current, filter }) {
   return {
     [CLIENT_API]: {
       types: [

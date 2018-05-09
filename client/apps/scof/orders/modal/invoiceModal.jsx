@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Radio, Form, Col, Row, Select, Input } from 'antd';
 import { loadInvoices, loadOrderInvoices, addOrderInvoices, toggleInvoiceModal } from 'common/reducers/sofOrders';
-import { loadInvoiceCategories, loadCusSupPartners } from 'common/reducers/sofInvoice';
+import { loadInvoiceCategories, loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import DataTable from 'client/components/DataTable';
 import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -24,8 +24,8 @@ const { Option } = Select;
     pageSize: state.sofOrders.invoicesModal.pageSize,
     current: state.sofOrders.invoicesModal.current,
     totalCount: state.sofOrders.invoicesModal.totalCount,
-    cus: state.sofInvoice.cus,
-    sup: state.sofInvoice.sup,
+    buyers: state.sofInvoice.buyers,
+    sellers: state.sofInvoice.sellers,
   }),
   {
     loadInvoices,
@@ -33,7 +33,7 @@ const { Option } = Select;
     addOrderInvoices,
     loadInvoiceCategories,
     toggleInvoiceModal,
-    loadCusSupPartners,
+    loadInvoiceBuyerSellers,
   }
 )
 export default class InvoiceModal extends Component {
@@ -45,7 +45,7 @@ export default class InvoiceModal extends Component {
     selectedRowKeys: [],
   }
   componentDidMount() {
-    this.props.loadCusSupPartners('', [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null);
+    this.props.loadInvoiceBuyerSellers('', [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
@@ -65,7 +65,7 @@ export default class InvoiceModal extends Component {
     width: 220,
     render: (o) => {
       if (o) {
-        const partner = this.props.cus.find(pa => pa.partner_id === Number(o));
+        const partner = this.props.buyers.find(pa => pa.partner_id === Number(o));
         if (partner) {
           return partner.name;
         }
@@ -78,7 +78,7 @@ export default class InvoiceModal extends Component {
     width: 220,
     render: (o) => {
       if (o) {
-        const partner = this.props.sup.find(pa => pa.partner_id === Number(o));
+        const partner = this.props.sellers.find(pa => pa.partner_id === Number(o));
         if (partner) {
           return partner.name;
         }
@@ -94,7 +94,7 @@ export default class InvoiceModal extends Component {
       newFilter = this.props.filter;
     }
     const { pageSize, current } = this.props;
-    this.props.loadInvoices(pageSize, current, newFilter).then((result) => {
+    this.props.loadInvoices({ pageSize, current, filter: newFilter }).then((result) => {
       if (!result.error) {
         this.setState({
           selectedRowKeys: [],
@@ -141,10 +141,34 @@ export default class InvoiceModal extends Component {
       coefficient: e.target.value,
     });
   }
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadInvoices(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        filter: this.props.filter,
+      };
+      return params;
+    },
+    remotes: this.props.list,
+  })
   render() {
     const {
-      invoiceCategories, visible, pageSize, current, totalCount, cus, sup,
+      invoiceCategories, visible, pageSize, current, totalCount, buyers, sellers,
     } = this.props;
+    this.dataSource.remotes = {
+      data: this.props.list, pageSize, current, totalCount,
+    };
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
@@ -153,15 +177,6 @@ export default class InvoiceModal extends Component {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
-      },
-    };
-    const pagination = {
-      pageSize: Number(pageSize),
-      current: Number(current),
-      total: totalCount,
-      showTotal: total => `共 ${total} 条`,
-      onChange: (cur, page) => {
-        this.props.loadInvoices(page, cur, this.props.filter);
       },
     };
     return (
@@ -212,7 +227,7 @@ export default class InvoiceModal extends Component {
                   allowClear
                   style={{ width: '100% ' }}
                 >
-                  {sup.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                  {sellers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
                 </Select>
               </FormItem>
             </Col>
@@ -227,7 +242,7 @@ export default class InvoiceModal extends Component {
                   allowClear
                   style={{ width: '100% ' }}
                 >
-                  {cus.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                  {buyers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
                 </Select>
               </FormItem>
             </Col>
@@ -242,10 +257,9 @@ export default class InvoiceModal extends Component {
         </div>
         <DataTable
           columns={this.columns}
-          dataSource={this.props.list}
+          dataSource={this.dataSource}
           rowSelection={rowSelection}
           rowKey="invoice_no"
-          pagination={pagination}
         />
       </Modal>
     );

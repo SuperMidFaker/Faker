@@ -227,9 +227,7 @@ export default class InvoiceList extends React.Component {
     title: this.msg('category'),
     dataIndex: 'invoice_category',
     width: 120,
-    filters: this.props.invoiceCategories.map(cate => ({
-      text: cate.category, value: cate.category,
-    })),
+    filters: [],
     onFilter: (value, record) =>
       record.invoice_category && record.invoice_category.indexOf(value) !== -1,
   }, {
@@ -309,7 +307,8 @@ export default class InvoiceList extends React.Component {
     const {
       invoiceList, partners, loading, filter,
     } = this.props;
-    this.columns[2].filters = this.props.invoiceCategories.map(cate => ({
+    const column = this.columns.filter(col => col.dataIndex === 'invoice_category')[0];
+    column.filters = this.props.invoiceCategories.map(cate => ({
       text: cate.category, value: cate.category,
     }));
     let dateVal = [];

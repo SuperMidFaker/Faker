@@ -13,7 +13,7 @@ const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'BATCH_DELETE_INVOICES', 'BATCH_DELETE_INVOICES_SUCCEED', 'BATCH_DELETE_INVOICES_FAIL',
   'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
   'LOAD_INVOICE_CATEGORIES', 'LOAD_INVOICE_CATEGORIES_SUCCEED', 'LOAD_INVOICE_CATEGORIES_FAIL',
-  'LOAD_CUS_SUP_PARTNERS', 'LOAD_CUS_SUP_PARTNERS_SUCCEED', 'LOAD_CUS_SUP_PARTNERS_FAIL',
+  'LOAD_INVOICE_BUYER_SELLERS', 'LOAD_INVOICE_BUYER_SELLERS_SUCCEED', 'LOAD_INVOICE_BUYER_SELLERS_FAIL',
 ]);
 
 const initialState = {
@@ -31,8 +31,8 @@ const initialState = {
     record: {},
   },
   invoiceCategories: [],
-  sup: [],
-  cus: [],
+  sellers: [],
+  buyers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -66,11 +66,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, temporaryDetails: [], invoiceHead: {} };
     case actionTypes.LOAD_INVOICE_CATEGORIES_SUCCEED:
       return { ...state, invoiceCategories: action.result.data };
-    case actionTypes.LOAD_CUS_SUP_PARTNERS_SUCCEED:
+    case actionTypes.LOAD_INVOICE_BUYER_SELLERS_SUCCEED:
       return {
         ...state,
-        cus: action.result.data.filter(item => item.role === 'CUS'),
-        sup: action.result.data.filter(item => item.role === 'SUP'),
+        buyers: action.result.data.filter(item => item.role === 'CUS'),
+        sellers: action.result.data.filter(item => item.role === 'SUP'),
       };
     default:
       return state;
@@ -239,13 +239,13 @@ export function loadInvoiceCategories() {
   };
 }
 
-export function loadCusSupPartners(tenantId, roles, businessTypes) {
+export function loadInvoiceBuyerSellers(tenantId, roles, businessTypes) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_CUS_SUP_PARTNERS,
-        actionTypes.LOAD_CUS_SUP_PARTNERS_SUCCEED,
-        actionTypes.LOAD_CUS_SUP_PARTNERS_FAIL,
+        actionTypes.LOAD_INVOICE_BUYER_SELLERS,
+        actionTypes.LOAD_INVOICE_BUYER_SELLERS_SUCCEED,
+        actionTypes.LOAD_INVOICE_BUYER_SELLERS_FAIL,
       ],
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
