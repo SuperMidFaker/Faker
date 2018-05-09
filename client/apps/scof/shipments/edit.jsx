@@ -116,7 +116,7 @@ export default class EditOrder extends Component {
     });
   }
   handleCancel = () => {
-    this.context.router.push('/scof/orders');
+    this.context.router.push('/scof/shipments');
   }
   render() {
     return (

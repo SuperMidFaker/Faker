@@ -21,7 +21,7 @@ import ActualDate from '../../common/actualDate';
 import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import messages from '../message.i18n';
 
@@ -553,7 +553,7 @@ export default class FeesList extends React.Component {
           />
         </Content>
         <ShipmentDockPanel />
-        <OrderDockPanel />
+        <DeliveryDockPanel />
         <DelegationDockPanel />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />

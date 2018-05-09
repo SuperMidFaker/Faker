@@ -4,17 +4,17 @@ import { Modal, Icon, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import TrimSpan from 'client/components/trimSpan';
 import { loadFeesBeforeTime, alterBillingFees } from 'common/reducers/transportBilling';
 import AddressColumn from '../../common/addressColumn';
-import TrimSpan from 'client/components/trimSpan';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
-import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActualDate from '../../common/actualDate';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 
@@ -34,7 +34,6 @@ export default class BeforeFeesModal extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
-    billingFees: PropTypes.object.isRequired,
     loadFeesBeforeTime: PropTypes.func.isRequired,
     alterBillingFees: PropTypes.func.isRequired,
     toggle: PropTypes.func.isRequired,
@@ -162,11 +161,13 @@ export default class BeforeFeesModal extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render: (o, record) => <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际送货时间',
       dataIndex: 'deliver_act_date',
-      render: (o, record) => <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '回单',
       dataIndex: 'pod_status',
@@ -185,7 +186,7 @@ export default class BeforeFeesModal extends React.Component {
       <Modal maskClosable={false} visible={this.props.visible} width="85%" title="未入账运单" onOk={this.props.toggle} onCancel={this.props.toggle}>
         <Table dataSource={this.state.dataSource} columns={columns} rowKey="id" />
         <ShipmentDockPanel />
-        <OrderDockPanel />
+        <DeliveryDockPanel />
         <DelegationDockPanel />
       </Modal>
     );

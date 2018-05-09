@@ -5,8 +5,8 @@ const messages = defineMessages({
     id: 'sof.module.dashboard',
     defaultMessage: '工作台',
   },
-  orders: {
-    id: 'sof.module.orders',
+  shipments: {
+    id: 'sof.module.shipments',
     defaultMessage: '货运订单',
   },
   invoices: {

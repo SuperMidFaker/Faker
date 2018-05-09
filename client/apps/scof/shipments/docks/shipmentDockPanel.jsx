@@ -38,7 +38,7 @@ function renderStatus(status) {
     hideDock, changeDockTab, cancelOrder, closeOrder,
   }
 )
-export default class OrderDockPanel extends React.Component {
+export default class ShipmentDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

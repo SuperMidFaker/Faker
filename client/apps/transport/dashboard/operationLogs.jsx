@@ -11,18 +11,18 @@ import DataTable from 'client/components/DataTable';
 import { loadShipmentEvents, loadShipmtDetail } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
-import AddressColumn from '../common/addressColumn';
 import { format } from 'client/common/i18n/helpers';
+import { createFilename } from 'client/util/dataTransform';
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
+import AddressColumn from '../common/addressColumn';
 import messages from './message.i18n';
 import '../index.less';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ActualDate from '../common/actualDate';
 import ExceptionsPopover from '../common/popover/exceptionsPopover';
-import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
-import { createFilename } from 'client/util/dataTransform';
-import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
-import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -64,12 +64,9 @@ function fetchData({
 @withPrivilege({ module: 'transport', feature: 'dashboard' })
 export default class Dashboard extends React.Component {
   static propTypes = {
-    children: PropTypes.object,
     tenantId: PropTypes.number.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     loadShipmentEvents: PropTypes.func.isRequired,
-    statistics: PropTypes.object.isRequired,
-    filters: PropTypes.object.isRequired,
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleStatusTypeChange = (e) => {
@@ -113,7 +110,8 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActPickupDate'),
       dataIndex: 'pickup_act_date',
       width: 100,
-      render: (o, record) => o ? (<ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '',
+      render: (o, record) => o &&
+      <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: this.msg('arrivalPlace'),
       width: 250,
@@ -127,12 +125,13 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtPrmDeliveryDate'),
       dataIndex: 'deliver_prm_date',
       width: 100,
-      render: o => o ? moment(o).format('YYYY.MM.DD') : '',
+      render: o => o && moment(o).format('YYYY.MM.DD'),
     }, {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
       width: 100,
-      render: (o, record) => o ? (<ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '',
+      render: (o, record) => o &&
+      <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: this.msg('overtime'),
       key: 'late',
@@ -178,9 +177,8 @@ export default class Dashboard extends React.Component {
           return <Tag color="green">{this.msg('deliveredShipmt')}</Tag>;
         } else if (record.status >= SHIPMENT_TRACK_STATUS.podsubmit) {
           return <Tag color="green">{this.msg('proofOfDelivery')}</Tag>;
-        } else {
-          return <span />;
         }
+        return <span />;
       },
     }, {
       title: this.msg('srName'),
@@ -244,7 +242,7 @@ export default class Dashboard extends React.Component {
           </div>
         </Content>
         <ShipmentDockPanel />
-        <OrderDockPanel />
+        <DeliveryDockPanel />
         <DelegationDockPanel />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />

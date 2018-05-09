@@ -118,7 +118,7 @@ export default class CreateOrder extends Component {
               role="presentation"
               onClick={() => {
                 notification.close('continue-edit');
-                this.context.router.replace(`/scof/orders/edit/${result.data.shipmt_order_no}`);
+                this.context.router.replace(`/scof/shipments/edit/${result.data.shipmt_order_no}`);
             }}
             >继续编辑</a>
             <span className="ant-divider" />
@@ -138,7 +138,7 @@ export default class CreateOrder extends Component {
     });
   }
   handleCancel = () => {
-    this.context.router.push('/scof/orders');
+    this.context.router.push('/scof/shipments');
   }
   render() {
     const { formData } = this.props;

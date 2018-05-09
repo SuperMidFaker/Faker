@@ -4,15 +4,15 @@ import { Button, InputNumber, Layout, Checkbox, message, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
+import messages from '../message.i18n';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
-import { loadShipmtDetail } from 'common/reducers/shipment';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ActualDate from '../../common/actualDate';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
@@ -29,7 +29,12 @@ const { Header, Content } = Layout;
     saving: state.transportBilling.billingSaving,
   }),
   {
-    loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail,
+    loadFeesByBillingId,
+    updateBillingFees,
+    checkBilling,
+    acceptBilling,
+    editBilling,
+    loadShipmtDetail,
   }
 )
 export default class BillingFeeList extends React.Component {
@@ -38,9 +43,6 @@ export default class BillingFeeList extends React.Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    billing: PropTypes.object.isRequired,
-    billingFees: PropTypes.object.isRequired,
-    loadFeesByBillingId: PropTypes.func.isRequired,
     updateBillingFees: PropTypes.func.isRequired,
     checkBilling: PropTypes.func.isRequired,
     acceptBilling: PropTypes.func.isRequired,
@@ -269,11 +271,13 @@ export default class BillingFeeList extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render: (o, record) => <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际送货时间',
       dataIndex: 'deliver_act_date',
-      render: (o, record) => <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',
@@ -296,7 +300,10 @@ export default class BillingFeeList extends React.Component {
         if (operation === 'view') {
           return (<Checkbox disabled defaultChecked={o === 1 || o === 2} />);
         }
-        return (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />);
+        return (<Checkbox
+          defaultChecked={o === 1}
+          onChange={e => this.handleChangeStatus(record.id, e.target.checked)}
+        />);
       },
     }, {
       title: '更新',
@@ -326,7 +333,9 @@ export default class BillingFeeList extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
+              <span style={handleLableStyle}>
+                {partnerSourceType}: <strong>{partnerName}</strong>
+              </span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(billing.chooseModel)}</strong></span>
             </div>
@@ -336,7 +345,7 @@ export default class BillingFeeList extends React.Component {
           </div>
         </Content>
         <ShipmentDockPanel />
-        <OrderDockPanel />
+        <DeliveryDockPanel />
         <DelegationDockPanel />
       </div>
     );

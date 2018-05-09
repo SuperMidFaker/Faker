@@ -21,9 +21,9 @@ import WhseSelect from '../../common/whseSelect';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import ShippingModal from '../outbound/modal/shippingModal';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -607,9 +607,9 @@ export default class ShippingOrderList extends React.Component {
           </Content>
         </Layout>
         <ShippingDockPanel />
-        <OrderDockPanel />
-        <DelegationDockPanel />
         <ShipmentDockPanel />
+        <DelegationDockPanel />
+        <DeliveryDockPanel />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
           adaptors={this.props.adaptors}
