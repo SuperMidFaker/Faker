@@ -4,11 +4,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { locationShape } from 'react-router';
 import { loadTrackings } from 'common/reducers/sofTracking';
-import { format } from 'client/common/i18n/helpers';
 import Navigation from 'client/components/Navigation';
-import messages from './message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from './message.i18n';
 
 @connect(
   state => ({
@@ -33,7 +30,7 @@ export default class ModuleSCOF extends React.Component {
   }
   componentWillMount() {
     this.props.loadTrackings(this.props.tenantId);
-    const { intl, sofApps, aspect } = this.props;
+    const { sofApps, aspect } = this.props;
     const linkMenus = [];
     const appMenus = [];
     linkMenus.push({
@@ -41,7 +38,7 @@ export default class ModuleSCOF extends React.Component {
       key: 'scof-dashboard',
       path: '/scof/dashboard',
       icon: 'logixon icon-dashboard-o',
-      text: formatMsg(intl, 'dashboard'),
+      text: this.msg('dashboard'),
     });
     if (aspect === 0) {
       linkMenus.push({
@@ -49,14 +46,14 @@ export default class ModuleSCOF extends React.Component {
         key: 'scof-purchaseorders',
         path: '/scof/purchaseorders',
         icon: 'logixon icon-order-mng',
-        text: formatMsg(intl, 'purchaseOrders'),
+        text: this.msg('purchaseOrders'),
       });
       linkMenus.push({
         single: true,
         key: 'scof-invoice',
         path: '/scof/invoices',
         icon: 'logixon icon-commercial-invoice',
-        text: formatMsg(intl, 'invoices'),
+        text: this.msg('invoices'),
       });
     }
     linkMenus.push({
@@ -64,18 +61,18 @@ export default class ModuleSCOF extends React.Component {
       key: 'scof-order',
       path: '/scof/orders',
       icon: 'logixon icon-control-tower',
-      text: formatMsg(intl, 'orders'),
+      text: this.msg('orders'),
     });
     linkMenus.push({
       single: false,
       key: 'scof-tracking',
       icon: 'logixon icon-monitor',
-      text: formatMsg(intl, 'tracking'),
+      text: this.msg('tracking'),
       sublinks: [{
         key: 'scof-tracking-999',
         icon: 'logixon icon-install',
         path: '/scof/tracking/customize',
-        text: formatMsg(intl, 'customizeTracking'),
+        text: this.msg('customizeTracking'),
       }],
     });
     linkMenus.push({
@@ -83,30 +80,30 @@ export default class ModuleSCOF extends React.Component {
       key: 'scof-flow',
       path: '/scof/flow',
       icon: 'logixon icon-process',
-      text: formatMsg(intl, 'flow'),
+      text: this.msg('flow'),
     });
     linkMenus.push({
       single: true,
       key: 'scof-customer',
       path: '/scof/customers',
       icon: 'logixon icon-customer-mng',
-      text: formatMsg(intl, 'customers'),
+      text: this.msg('customers'),
     });
-    if (aspect === 0) {
-      linkMenus.push({
-        single: true,
-        key: 'scof-supplier',
-        path: '/scof/suppliers',
-        icon: 'logixon icon-supplier',
-        text: formatMsg(intl, 'suppliers'),
-      });
-    }
+    // if (aspect === 0) {
+    linkMenus.push({
+      single: true,
+      key: 'scof-supplier',
+      path: '/scof/suppliers',
+      icon: 'logixon icon-supplier',
+      text: this.msg('suppliers'),
+    });
+    // }
     linkMenus.push({
       single: true,
       key: 'scof-vendor',
       path: '/scof/vendors',
       icon: 'logixon icon-service-o',
-      text: formatMsg(intl, 'vendors'),
+      text: this.msg('vendors'),
     });
     linkMenus.push({
       single: true,
@@ -114,7 +111,7 @@ export default class ModuleSCOF extends React.Component {
       key: 'scof-settings',
       path: '/scof/settings',
       icon: 'logixon icon-setting-o',
-      text: formatMsg(intl, 'settings'),
+      text: this.msg('settings'),
     });
     if (sofApps.length > 0) {
       if (sofApps.length === 1) {
@@ -123,21 +120,21 @@ export default class ModuleSCOF extends React.Component {
           key: sofApps[0].app_id,
           path: sofApps[0].url,
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, sofApps[0].app_name),
+          text: sofApps[0].app_name,
         });
       } else {
         appMenus.push({
           single: false,
           key: 'sof-app',
           icon: 'logixon icon-apps',
-          text: formatMsg(intl, 'devApps'),
+          text: this.msg('devApps'),
           sublinks: [],
         });
         sofApps.forEach((s, index) => {
           appMenus[0].sublinks.push({
             key: `sof-app-${index}`,
             path: s.url,
-            text: formatMsg(intl, s.app_name),
+            text: s.app_name,
           });
         });
       }
@@ -154,23 +151,23 @@ export default class ModuleSCOF extends React.Component {
       }));
     }
     if (trackingSublinks.length > 0) {
-      const { intl } = this.props;
       const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'scof-tracking');
       linkMenus.splice(3, 0, {
         single: false,
         key: 'scof-tracking',
         icon: 'logixon icon-monitor',
-        text: formatMsg(intl, 'tracking'),
+        text: this.msg('tracking'),
         sublinks: trackingSublinks.concat([{
           key: 'scof-tracking-999',
           icon: 'logixon icon-install',
           path: '/scof/tracking/customize',
-          text: formatMsg(intl, 'customizeTracking'),
+          text: this.msg('customizeTracking'),
         }]),
       });
       this.setState({ linkMenus });
     }
   }
+  msg = formatMsg(this.props.intl)
   render() {
     return (
       <Navigation

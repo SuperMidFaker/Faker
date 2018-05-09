@@ -3,13 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table } from 'antd';
-import { format } from 'client/common/i18n/helpers';
 import { showServiceTeamModal, loadServiceTeamMembers } from 'common/reducers/sofCustomers';
 import { loadDepartments } from 'common/reducers/personnel';
-import messages from '../message.i18n';
 import ServiceTeamModal from '../modals/serviceTeamModal';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../../message.i18n';
 
 @injectIntl
 @connect(
@@ -25,7 +22,7 @@ export default class ServiceTeam extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    serviceTeamMembers: PropTypes.array,
+    serviceTeamMembers: PropTypes.arrayOf(PropTypes.shape({ user_id: PropTypes.number })),
   }
   state = {
     selectedRowKeys: [],
@@ -46,7 +43,7 @@ export default class ServiceTeam extends React.Component {
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   render() {
     const { customer, departments, serviceTeamMembers } = this.props;
     const filters = departments.map(item => ({ text: item.name, value: item.name }));

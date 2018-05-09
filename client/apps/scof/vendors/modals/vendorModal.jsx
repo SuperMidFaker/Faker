@@ -3,37 +3,31 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Checkbox, Modal, Form, Input, Select, Row, Col, Button, Icon, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import { hideVendorModal } from 'common/reducers/sofVendors';
 import { getCompanyInfo } from 'common/reducers/common';
-import { checkPartner, addPartner, editPartner } from 'common/reducers/partner';
+import { hideVendorModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
 import { BUSINESS_TYPES } from 'common/constants';
-import messages from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    visible: state.sofVendors.vendorModal.visible,
-    vendor: state.sofVendors.vendorModal.vendor,
-    operation: state.sofVendors.vendorModal.operation,
+    visible: state.partner.vendorModal.visible,
+    vendor: state.partner.vendorModal.vendor,
+    operation: state.partner.vendorModal.operation,
   }),
   {
     addPartner, editPartner, checkPartner, hideVendorModal, getCompanyInfo,
   }
 )
-
 export default class VendorModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
-    operation: PropTypes.string, // add  edit
+    operation: PropTypes.oneOf(['add', 'edit']),
     addPartner: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
     hideVendorModal: PropTypes.func.isRequired,
@@ -52,7 +46,7 @@ export default class VendorModal extends React.Component {
     phone: '',
     email: '',
     businessType: '',
-
+    country: null,
     companies: [],
   }
   componentWillReceiveProps(nextProps) {
@@ -66,11 +60,12 @@ export default class VendorModal extends React.Component {
         contact: nextProps.vendor.contact,
         phone: nextProps.vendor.phone,
         email: nextProps.vendor.email,
+        country: nextProps.vendor.country,
         businessType: nextProps.vendor.business_type,
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.setState({
       id: -1,
@@ -82,6 +77,7 @@ export default class VendorModal extends React.Component {
       phone: '',
       email: '',
       businessType: '',
+      country: null,
     });
     this.props.hideVendorModal();
   }
@@ -104,8 +100,9 @@ export default class VendorModal extends React.Component {
   handleOk = () => {
     const {
       id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
+      country,
     } = this.state;
-    const { tenantId, operation } = this.props;
+    const { operation, vendor } = this.props;
     let business;
     if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
       business = 'CCB,TRS,FWD';
@@ -113,8 +110,6 @@ export default class VendorModal extends React.Component {
       business = 'CCB,FWD';
     } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
       business = 'TRS';
-    } else {
-      business = 'WHS';
     }
     if (!name || name === '') {
       message.error('企业名称必填');
@@ -124,10 +119,23 @@ export default class VendorModal extends React.Component {
       message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
-    } else if (businessType === '') {
+    } else if (vendor.role === 'VEN' && businessType === '') {
       message.error('请选择服务商业务类型');
-    } else if (this.props.operation === 'edit') {
-      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'VEN', business, customsCode, businessType, contact, phone, email).then((result) => {
+    } else if (operation === 'edit') {
+      const partnerInfo = {
+        name,
+        partnerUniqueCode,
+        code: partnerCode,
+        customsCode,
+        contact,
+        phone,
+        email,
+        country,
+        role: vendor.role,
+        business,
+        businessType,
+      };
+      this.props.editPartner(id, partnerInfo).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -137,10 +145,7 @@ export default class VendorModal extends React.Component {
         }
       });
     } else if (partnerUniqueCode) {
-      this.props.checkPartner({
-        tenantId,
-        partnerInfo: { name, partnerCode, partnerUniqueCode },
-      }).then((result) => {
+      this.props.checkPartner({ name, partnerCode, partnerUniqueCode }).then((result) => {
         let foundName = name;
         if (result.data.partner && result.data.partner.name !== name) {
           foundName = result.data.partner.name;
@@ -157,9 +162,9 @@ export default class VendorModal extends React.Component {
   }
   handleAddVendor = () => {
     const {
-      name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
+      name,
+      partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType, country,
     } = this.state;
-    const { tenantId } = this.props;
     let business;
     if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
       business = 'CCB,TRS,FWD';
@@ -167,16 +172,20 @@ export default class VendorModal extends React.Component {
       business = 'CCB,FWD';
     } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
       business = 'TRS';
-    } else {
-      business = 'WHS';
     }
     this.props.addPartner({
-      tenantId,
       partnerInfo: {
-        partnerName: name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email,
+        partnerName: name,
+        partnerCode,
+        partnerUniqueCode,
+        customsCode,
+        contact,
+        phone,
+        email,
+        country,
       },
       businessType,
-      role: 'VEN',
+      role: this.props.vendor.role,
       business,
     }).then((result1) => {
       if (result1.error) {
@@ -282,14 +291,14 @@ export default class VendorModal extends React.Component {
             label="统一社会信用码"
             hasFeedback
           >
-            <Input placeholder="请填写18位统一社会信用代码" value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
+            <Input placeholder="填写18位统一社会信用代码" value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
             label="海关编码"
             hasFeedback
           >
-            <Input placeholder="请填写10位海关编码" value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
+            <Input placeholder="填写10位海关编码" value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -321,6 +330,17 @@ export default class VendorModal extends React.Component {
               type="email"
               value={this.state.email}
               onChange={(e) => { this.setState({ email: e.target.value }); }}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="国家"
+            hasFeedback
+          >
+            <Input
+              type="country"
+              value={this.state.country}
+              onChange={(e) => { this.setState({ country: e.target.value }); }}
             />
           </FormItem>
         </Form>

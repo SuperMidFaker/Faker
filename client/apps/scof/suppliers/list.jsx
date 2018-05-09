@@ -2,65 +2,60 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Menu, Layout } from 'antd';
-import connectFetch from 'client/common/decorators/connect-fetch';
+import { Menu, Layout } from 'antd';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import DataTable from 'client/components/DataTable';
-import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
-import ToolbarAction from 'client/components/ToolbarAction';
-import { loadVendors, showVendorModal, deleteVendor } from 'common/reducers/sofVendors';
-import { PARTNER_ROLES } from 'common/constants';
+import DataTable from 'client/components/DataTable';
+import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
-import { formatMsg, formatGlobalMsg } from './message.i18n';
-import SupplierModal from './modals/supplierModal';
-
+import ToolbarAction from 'client/components/ToolbarAction';
+import { loadPartnerList, showVendorModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { PARTNER_ROLES } from 'common/constants';
+import VendorModal from '../vendors/modals/vendorModal';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadVendors(state.account.tenantId));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    vendors: state.sofVendors.vendors,
-    loading: state.sofVendors.loading,
-    loaded: state.sofVendors.loaded,
+    supplierlist: state.partner.partnerlist,
+    listFilter: state.partner.partnerFilter,
+    loading: state.partner.loading,
+    loaded: state.partner.loaded,
   }),
-  { loadVendors, deleteVendor, showVendorModal }
+  {
+    loadPartnerList, changePartnerStatus, deletePartner, showVendorModal,
+  }
 )
 @connectNav({
   depth: 2,
   moduleName: 'scof',
 })
-@Form.create()
 export default class SupplierList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    vendors: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
-    loadVendors: PropTypes.func.isRequired,
-    deleteVendor: PropTypes.func.isRequired,
+    loaded: PropTypes.bool.isRequired,
+    supplierlist: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
+    loadPartnerList: PropTypes.func.isRequired,
+    deletePartner: PropTypes.func.isRequired,
     showVendorModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
-  state = {
-    vendor: {},
+  componentDidMount() {
+    this.handleTableLoad();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.vendors !== this.props.vendors) {
-      this.setState({
-        vendor: nextProps.vendors.length === 0 ? {} : nextProps.vendors[0],
-      });
+    if (!nextProps.loaded) {
+      this.handleTableLoad();
     }
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadVendors(this.props.tenantId, params),
+    fetcher: params => this.handleTableLoad(params.pageSize, params.current),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -70,20 +65,19 @@ export default class SupplierList extends React.Component {
       pageSize: result.pageSize,
       showTotal: total => `共 ${total} 条`,
     }),
-    getParams: (pagination, tblfilters) => {
-      const newfilters = { ...this.props.listFilter, ...tblfilters[0] };
+    getParams: (pagination) => {
       const params = {
         pageSize: pagination.pageSize,
         current: pagination.current,
-        filter: JSON.stringify(newfilters),
       };
       return params;
     },
-    remotes: this.props.vendors,
+    remotes: this.props.supplierlist,
   })
   columns = [{
     title: this.msg('supplierCode'),
-    dataIndex: 'code',
+    dataIndex: 'partner_code',
+    width: 100,
   }, {
     title: this.msg('supplierName'),
     dataIndex: 'name',
@@ -91,60 +85,102 @@ export default class SupplierList extends React.Component {
   }, {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
-  }, {
-    title: this.msg('contact'),
-    dataIndex: 'contact',
-  }, {
-    title: this.msg('phone'),
-    dataIndex: 'phone',
-  }, {
-    title: this.msg('email'),
-    dataIndex: 'email',
-  }, {
-    title: this.msg('country'),
-    dataIndex: 'country',
+    width: 180,
   }, {
     title: this.msg('uscCode'),
-    dataIndex: 'usc_code',
+    dataIndex: 'partner_unique_code',
+    width: 200,
   }, {
     title: this.msg('customsCode'),
     dataIndex: 'customs_code',
+    width: 100,
+  }, {
+    title: this.msg('contact'),
+    dataIndex: 'contact',
+    width: 100,
+  }, {
+    title: this.msg('phone'),
+    dataIndex: 'phone',
+    width: 100,
+  }, {
+    title: this.msg('email'),
+    dataIndex: 'email',
+    width: 150,
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+    width: 100,
   }, {
     title: this.msg('internalId'),
-    dataIndex: 'customs_code',
+    dataIndex: 'id',
+    width: 100,
   }, {
-    title: this.msg('createdDate'),
+    title: this.gmsg('createdDate'),
     dataIndex: 'created_date',
+    render: cdt => cdt && moment(cdt).format('YYYY/MM/DD'),
+    width: 100,
+  }, {
+    title: this.gmsg('op'),
+    width: 150,
+    fixed: 'right',
+    render: (_, row) => {
+      if (!row.status) {
+        return (<span>
+          <RowAction onClick={this.handleVendorToggle} icon="play-circle" tooltip={this.gmsg('opEnable')} row={row} />
+          <RowAction danger confirm={this.gmsg('confirmOp')} onClick={this.handleVendorDel} icon="delete" tooltip={this.gmsg('delete')} row={row} />
+        </span>);
+      }
+      return (<span>
+        <RowAction onClick={this.handleVendorEdit} icon="edit" tooltip={this.gmsg('edit')} row={row} />
+        <RowAction onClick={this.handleVendorToggle} icon="pause-circle" tooltip={this.gmsg('opDisable')} row={row} />
+      </span>);
+    },
   }];
 
-  handleTableLoad = () => {
-    this.props.loadVendors(this.props.tenantId);
+  handleTableLoad = (pageSize, current, filters) => {
+    const { supplierlist, listFilter } = this.props;
+    const pageSizeArg = pageSize || supplierlist.pageSize;
+    const currentArg = current || supplierlist.current;
+    const filtersArg = JSON.stringify(filters || listFilter);
+    this.props.loadPartnerList(PARTNER_ROLES.SUP, pageSizeArg, currentArg, filtersArg);
   }
-  handleDelVendor = () => {
-    this.props.deleteVendor(this.state.vendor.id, PARTNER_ROLES.CUS).then(() => {
-      this.handleTableLoad();
-    });
+  handleVendorAdd = () => {
+    this.props.showVendorModal('add', { role: PARTNER_ROLES.SUP });
   }
-  handleSearch = () => {
+  handleVendorEdit = (vendor) => {
+    this.props.showVendorModal('edit', vendor);
+  }
+  handleVendorToggle = (vendor) => {
+    const newstatus = vendor.status === 1 ? 0 : 1;
+    this.props.changePartnerStatus(vendor.id, newstatus);
+  }
+  handleVendorDel = (vendor) => {
+    this.props.deletePartner(vendor.id);
+  }
+  handleSearch = (value) => {
+    const filters = { ...this.props.listFilter, name: value };
+    this.handleTableLoad(null, null, filters);
   }
   render() {
-    const toolbarActions = (<span>
+    const toolbarActions = (<span style={{ width: 500 }}>
       <SearchBox
-        placeholder={this.msg('searchPlaceholder')}
+        placeholder={this.msg('partnerSearchPlaceholder')}
         onSearch={this.handleSearch}
       />
     </span>);
     const dropdown = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="1">{this.msg('importSuppliers')}</Menu.Item>
+        <Menu.Item key="impt">{this.gmsg('import')}</Menu.Item>
       </Menu>
     );
+    const { supplierlist, loading } = this.props;
+    this.dataSource.remotes = supplierlist;
     return (
       <Layout>
-        <PageHeader title={this.msg('vendor')}>
+        <PageHeader title={this.msg('suppliers')}>
           <PageHeader.Actions>
             <ToolbarAction icon="export" label={this.gmsg('export')} />
-            <ToolbarAction primary icon="plus" label={this.msg('createSupplier')} dropdown={dropdown} onClick={() => this.props.showVendorModal('add')} />
+            <ToolbarAction primary icon="plus" label={this.gmsg('create')} dropdown={dropdown} onClick={this.handleVendorAdd} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
@@ -153,10 +189,10 @@ export default class SupplierList extends React.Component {
             dataSource={this.dataSource}
             columns={this.columns}
             rowKey="id"
-            loading={this.props.loading}
+            loading={loading}
           />
         </Content>
-        <SupplierModal onOk={this.handleTableLoad} />
+        <VendorModal onOk={this.handleTableLoad} />
       </Layout>
     );
   }

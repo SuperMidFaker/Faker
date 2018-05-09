@@ -2,164 +2,198 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Row, Table, Tooltip, Layout } from 'antd';
-import connectFetch from 'client/common/decorators/connect-fetch';
+import { Menu, Layout } from 'antd';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import ListContentLayout from 'client/components/ListContentLayout';
 import PageHeader from 'client/components/PageHeader';
-import { format } from 'client/common/i18n/helpers';
-import { loadVendors, showVendorModal, deleteVendor } from 'common/reducers/sofVendors';
-import { PARTNER_ROLES } from 'common/constants';
+import DataTable from 'client/components/DataTable';
+import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
-import OverviewCard from './cards/overviewCard';
-import ResourcesCard from './cards/resourcesCard';
-import messages from './message.i18n';
+import ToolbarAction from 'client/components/ToolbarAction';
+import { loadPartnerList, showVendorModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { PARTNER_ROLES } from 'common/constants';
 import VendorModal from './modals/vendorModal';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadVendors(state.account.tenantId));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    vendors: state.sofVendors.vendors,
-    loading: state.sofVendors.loading,
-    loaded: state.sofVendors.loaded,
+    vendors: state.partner.partnerlist,
+    listFilter: state.partner.partnerFilter,
+    loading: state.partner.loading,
+    loaded: state.partner.loaded,
   }),
-  { loadVendors, deleteVendor, showVendorModal }
+  {
+    loadPartnerList, changePartnerStatus, deletePartner, showVendorModal,
+  }
 )
 @connectNav({
   depth: 2,
   moduleName: 'scof',
 })
-@Form.create()
 export default class VendorList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    vendors: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
-    loadVendors: PropTypes.func.isRequired,
-    deleteVendor: PropTypes.func.isRequired,
+    vendors: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
+    loadPartnerList: PropTypes.func.isRequired,
+    deletePartner: PropTypes.func.isRequired,
     showVendorModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
-  state = {
-    vendor: {},
-    currentPage: 1,
-    collapsed: false,
-    unchanged: true,
-    vendors: [],
+  componentDidMount() {
+    this.handleTableLoad();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.vendors !== this.props.vendors) {
-      this.setState({
-        vendor: nextProps.vendors.length === 0 ? {} : nextProps.vendors[0],
-      });
-    }
-    this.setState({ vendors: nextProps.vendors });
     if (!nextProps.loaded) {
       this.handleTableLoad();
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.handleTableLoad(params.pageSize, params.current),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      return params;
+    },
+    remotes: this.props.vendors,
+  })
+  columns = [{
+    title: this.msg('vendorCode'),
+    dataIndex: 'partner_code',
+    width: 100,
+  }, {
+    title: this.msg('vendorName'),
+    dataIndex: 'name',
+    render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
+  }, {
+    title: this.msg('displayName'),
+    dataIndex: 'display_name',
+    width: 180,
+  }, {
+    title: this.msg('uscCode'),
+    dataIndex: 'partner_unique_code',
+    width: 200,
+  }, {
+    title: this.msg('customsCode'),
+    dataIndex: 'customs_code',
+    width: 100,
+  }, {
+    title: this.msg('contact'),
+    dataIndex: 'contact',
+    width: 100,
+  }, {
+    title: this.msg('phone'),
+    dataIndex: 'phone',
+    width: 100,
+  }, {
+    title: this.msg('email'),
+    dataIndex: 'email',
+    width: 150,
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+    width: 100,
+  }, {
+    title: this.msg('internalId'),
+    dataIndex: 'id',
+    width: 100,
+  }, {
+    title: this.gmsg('createdDate'),
+    dataIndex: 'created_date',
+    render: cdt => cdt && moment(cdt).format('YYYY/MM/DD'),
+    width: 100,
+  }, {
+    title: this.gmsg('op'),
+    width: 150,
+    fixed: 'right',
+    render: (_, row) => {
+      if (!row.status) {
+        return (<span>
+          <RowAction onClick={this.handleVendorToggle} icon="play-circle" tooltip={this.gmsg('opEnable')} row={row} />
+          <RowAction danger confirm={this.gmsg('confirmOp')} onClick={this.handleVendorDel} icon="delete" tooltip={this.gmsg('delete')} row={row} />
+        </span>);
+      }
+      return (<span>
+        <RowAction onClick={this.handleVendorEdit} icon="edit" tooltip={this.gmsg('edit')} row={row} />
+        <RowAction onClick={this.handleVendorToggle} icon="pause-circle" tooltip={this.gmsg('opDisable')} row={row} />
+      </span>);
+    },
+  }];
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
+  handleTableLoad = (pageSize, current, filters) => {
+    const { vendors, listFilter } = this.props;
+    const pageSizeArg = pageSize || vendors.pageSize;
+    const currentArg = current || vendors.current;
+    const filtersArg = JSON.stringify(filters || listFilter);
+    this.props.loadPartnerList(PARTNER_ROLES.VEN, pageSizeArg, currentArg, filtersArg);
   }
-  handleInputChanged = () => {
-    this.setState({ unchanged: false });
+  handleVendorAdd = () => {
+    this.props.showVendorModal('add', { role: PARTNER_ROLES.VEN });
   }
-  handleRowClick = (record) => {
-    this.setState({
-      vendor: record,
-      unchanged: true,
-    });
-    this.props.form.setFieldsValue(record);
+  handleVendorEdit = (vendor) => {
+    this.props.showVendorModal('edit', vendor);
   }
-  handleTableLoad = () => {
-    this.props.loadVendors(this.props.tenantId);
+  handleVendorToggle = (vendor) => {
+    const newstatus = vendor.status === 1 ? 0 : 1;
+    this.props.changePartnerStatus(vendor.id, newstatus);
   }
-  handleDelVendor = () => {
-    this.props.deleteVendor(this.state.vendor.id, PARTNER_ROLES.CUS).then(() => {
-      this.handleTableLoad();
-    });
-  }
-  handlePageChange = (page) => {
-    this.setState({ currentPage: page });
+  handleVendorDel = (vendor) => {
+    this.props.deletePartner(vendor.id);
   }
   handleSearch = (value) => {
-    let { vendors } = this.props;
-    if (value) {
-      vendors = this.props.vendors.filter((item) => {
-        const reg = new RegExp(value);
-        return reg.test(item.name);
-      });
-    }
-    this.setState({ vendors, currentPage: 1 });
-  }
-  handleSave = () => {
-  }
-  renderListColumn() {
-    const { vendor } = this.state;
-    const columns = [{
-      dataIndex: 'name',
-      key: 'name',
-      render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
-    }];
-    return (
-      <Table
-        size="middle"
-        dataSource={this.state.vendors}
-        columns={columns}
-        showHeader={false}
-        pagination={{
-          current: this.state.currentPage,
-          defaultPageSize: 50,
-          onChange: this.handlePageChange,
-        }}
-        rowClassName={record => (record.id === vendor.id ? 'table-row-selected' : '')}
-        rowKey="id"
-        loading={this.props.loading}
-        onRow={record => ({
-          onClick: () => { this.handleRowClick(record); },
-        })}
-      />);
+    const filters = { ...this.props.listFilter, name: value };
+    this.handleTableLoad(null, null, filters);
   }
   render() {
-    const { vendor } = this.state;
-
-    return (
-      <ListContentLayout
-        title={this.msg('vendor')}
-        action={<Tooltip placement="bottom" title="新增服务商">
-          <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showVendorModal('add')} />
-        </Tooltip>}
-        list={this.renderListColumn()}
+    const toolbarActions = (<span style={{ width: 500 }}>
+      <SearchBox
+        placeholder={this.msg('partnerSearchPlaceholder')}
         onSearch={this.handleSearch}
-      >
-        <PageHeader title={vendor.name}>
+      />
+    </span>);
+    const dropdown = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="impt">{this.gmsg('import')}</Menu.Item>
+      </Menu>
+    );
+    const { vendors, loading } = this.props;
+    this.dataSource.remotes = vendors;
+    return (
+      <Layout>
+        <PageHeader title={this.msg('vendors')}>
           <PageHeader.Actions>
-            <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSave}>
-              {this.msg('save')}
-            </Button>
+            <ToolbarAction icon="export" label={this.gmsg('export')} />
+            <ToolbarAction primary icon="plus" label={this.gmsg('create')} dropdown={dropdown} onClick={this.handleVendorAdd} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Row gutter={16}>
-            <OverviewCard vendor={vendor} />
-            <ResourcesCard vendor={vendor} />
-          </Row>
+          <DataTable
+            toolbarActions={toolbarActions}
+            dataSource={this.dataSource}
+            columns={this.columns}
+            rowKey="id"
+            loading={loading}
+          />
         </Content>
         <VendorModal onOk={this.handleTableLoad} />
-      </ListContentLayout>
+      </Layout>
     );
   }
 }

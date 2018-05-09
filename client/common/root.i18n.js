@@ -1,4 +1,3 @@
-
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
@@ -29,6 +28,14 @@ const messages = defineMessages({
   status: {
     id: 'root.status',
     defaultMessage: '状态',
+  },
+  opEnable: {
+    id: 'root.op.enable',
+    defaultMessage: '启用',
+  },
+  opDisable: {
+    id: 'root.op.disable',
+    defaultMessage: '停用',
   },
   todo: {
     id: 'root.todo',

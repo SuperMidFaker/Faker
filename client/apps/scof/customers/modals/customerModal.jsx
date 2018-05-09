@@ -3,41 +3,35 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Input, Checkbox, Select, Row, Col, Button, Icon, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/sofCustomers';
+import { addPartner, checkPartner, editPartner, hideCustomerModal } from 'common/reducers/partner';
 import { getCompanyInfo } from 'common/reducers/common';
-import { checkPartner } from 'common/reducers/partner';
 import { BUSINESS_TYPES } from 'common/constants';
-import messages from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const { Option } = Select;
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    visible: state.sofCustomers.customerModal.visible,
-    customer: state.sofCustomers.customerModal.customer,
-    operation: state.sofCustomers.customerModal.operation,
+    visible: state.partner.customerModal.visible,
+    customer: state.partner.customerModal.customer,
+    operation: state.partner.customerModal.operation,
   }),
   {
-    addCustomer, editCustomer, checkPartner, hideCustomerModal, getCompanyInfo,
+    addPartner, editPartner, checkPartner, hideCustomerModal, getCompanyInfo,
   }
 )
-
 export default class CustomerModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
-    operation: PropTypes.string, // add  edit
-    addCustomer: PropTypes.func.isRequired,
+    operation: PropTypes.oneOf(['add', 'edit']),
+    addPartner: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
     hideCustomerModal: PropTypes.func.isRequired,
-    editCustomer: PropTypes.func.isRequired,
+    editPartner: PropTypes.func.isRequired,
     customer: PropTypes.shape({
       name: PropTypes.string,
     }).isRequired,
@@ -53,6 +47,7 @@ export default class CustomerModal extends React.Component {
     contact: '',
     phone: '',
     email: '',
+    country: null,
     businessType: '',
 
     companies: [],
@@ -68,11 +63,12 @@ export default class CustomerModal extends React.Component {
         contact: nextProps.customer.contact,
         phone: nextProps.customer.phone,
         email: nextProps.customer.email,
+        country: nextProps.customer.country,
         businessType: nextProps.customer.business_type,
       });
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.setState({
       id: -1,
@@ -106,8 +102,9 @@ export default class CustomerModal extends React.Component {
   handleOk = () => {
     const {
       id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
+      country,
     } = this.state;
-    const { tenantId, operation } = this.props;
+    const { operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode === '') {
@@ -118,13 +115,21 @@ export default class CustomerModal extends React.Component {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (businessType === '') {
       message.error('请选择客户业务类型');
-    } else if (this.props.operation === 'edit') {
-      this.props.editCustomer({
-        tenantId,
+    } else if (operation === 'edit') {
+      this.props.editPartner({
         partnerInfo: {
-          id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email,
+          id,
+          name,
+          partnerCode,
+          partnerUniqueCode,
+          customsCode,
+          contact,
+          phone,
+          email,
+          country,
         },
         businessType,
+        role: 'CUS',
       }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -135,10 +140,7 @@ export default class CustomerModal extends React.Component {
         }
       });
     } else if (partnerUniqueCode) {
-      this.props.checkPartner({
-        tenantId,
-        partnerInfo: { name, partnerCode, partnerUniqueCode },
-      }).then((result) => {
+      this.props.checkPartner({ name, partnerCode, partnerUniqueCode }).then((result) => {
         let foundName = name;
         if (result.data.partner && result.data.partner.name !== name) {
           foundName = result.data.partner.name;
@@ -157,13 +159,12 @@ export default class CustomerModal extends React.Component {
     const {
       name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
     } = this.state;
-    const { tenantId } = this.props;
-    this.props.addCustomer({
-      tenantId,
+    this.props.addPartner({
       partnerInfo: {
         name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email,
       },
       businessType,
+      role: 'CUS',
     }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
@@ -310,6 +311,17 @@ export default class CustomerModal extends React.Component {
               type="email"
               value={this.state.email}
               onChange={(e) => { this.setState({ email: e.target.value }); }}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="国家"
+            hasFeedback
+          >
+            <Input
+              type="country"
+              value={this.state.country}
+              onChange={(e) => { this.setState({ country: e.target.value }); }}
             />
           </FormItem>
         </Form>
