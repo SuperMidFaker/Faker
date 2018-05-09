@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Radio, Form, Col, Row, Select, Input, Table } from 'antd';
+import { Modal, Radio, Form, Col, Row, Select, Input } from 'antd';
 import { loadInvoices, loadOrderInvoices, addOrderInvoices, toggleInvoiceModal } from 'common/reducers/sofOrders';
-import { loadInvoiceCategories } from 'common/reducers/sofInvoice';
+import { loadInvoiceCategories, loadCusSupPartners } from 'common/reducers/sofInvoice';
+import DataTable from 'client/components/DataTable';
+import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const RadioButton = Radio.Button;
@@ -15,7 +17,6 @@ const { Option } = Select;
 @connect(
   state => ({
     formData: state.sofOrders.formData,
-    partners: state.partner.partners,
     invoiceCategories: state.sofInvoice.invoiceCategories,
     list: state.sofOrders.invoicesModal.data,
     filter: state.sofOrders.invoicesModal.filter,
@@ -23,6 +24,8 @@ const { Option } = Select;
     pageSize: state.sofOrders.invoicesModal.pageSize,
     current: state.sofOrders.invoicesModal.current,
     totalCount: state.sofOrders.invoicesModal.totalCount,
+    cus: state.sofInvoice.cus,
+    sup: state.sofInvoice.sup,
   }),
   {
     loadInvoices,
@@ -30,6 +33,7 @@ const { Option } = Select;
     addOrderInvoices,
     loadInvoiceCategories,
     toggleInvoiceModal,
+    loadCusSupPartners,
   }
 )
 export default class InvoiceModal extends Component {
@@ -40,10 +44,8 @@ export default class InvoiceModal extends Component {
     coefficient: '',
     selectedRowKeys: [],
   }
-  componentWillMount() {
-    this.handleReload({
-      buyer: '', seller: '', category: '', status: 'unshipped',
-    });
+  componentDidMount() {
+    this.props.loadCusSupPartners('', [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
@@ -63,7 +65,7 @@ export default class InvoiceModal extends Component {
     width: 220,
     render: (o) => {
       if (o) {
-        const partner = this.props.partners.find(pa => pa.id === Number(o));
+        const partner = this.props.cus.find(pa => pa.partner_id === Number(o));
         if (partner) {
           return partner.name;
         }
@@ -76,7 +78,7 @@ export default class InvoiceModal extends Component {
     width: 220,
     render: (o) => {
       if (o) {
-        const partner = this.props.partners.find(pa => pa.id === Number(o));
+        const partner = this.props.sup.find(pa => pa.partner_id === Number(o));
         if (partner) {
           return partner.name;
         }
@@ -113,7 +115,6 @@ export default class InvoiceModal extends Component {
       this.props.formData.shipmt_order_no, coefficient
     ).then((result) => {
       if (!result.error) {
-        this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
         this.handleReload();
       }
     });
@@ -142,7 +143,7 @@ export default class InvoiceModal extends Component {
   }
   render() {
     const {
-      partners, invoiceCategories, visible, pageSize, current, totalCount,
+      invoiceCategories, visible, pageSize, current, totalCount, cus, sup,
     } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -211,7 +212,7 @@ export default class InvoiceModal extends Component {
                   allowClear
                   style={{ width: '100% ' }}
                 >
-                  {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                  {sup.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
                 </Select>
               </FormItem>
             </Col>
@@ -226,7 +227,7 @@ export default class InvoiceModal extends Component {
                   allowClear
                   style={{ width: '100% ' }}
                 >
-                  {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                  {cus.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
                 </Select>
               </FormItem>
             </Col>
@@ -239,7 +240,7 @@ export default class InvoiceModal extends Component {
             </Col>
           </Row>
         </div>
-        <Table
+        <DataTable
           columns={this.columns}
           dataSource={this.props.list}
           rowSelection={rowSelection}

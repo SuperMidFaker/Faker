@@ -431,9 +431,6 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'net_wt',
       label: '净重',
-    }, {
-      field: 'invoice_category',
-      label: '发票类别',
     }],
   },
 };

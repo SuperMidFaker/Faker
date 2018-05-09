@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'BATCH_DELETE_INVOICES', 'BATCH_DELETE_INVOICES_SUCCEED', 'BATCH_DELETE_INVOICES_FAIL',
   'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
   'LOAD_INVOICE_CATEGORIES', 'LOAD_INVOICE_CATEGORIES_SUCCEED', 'LOAD_INVOICE_CATEGORIES_FAIL',
+  'LOAD_CUS_SUP_PARTNERS', 'LOAD_CUS_SUP_PARTNERS_SUCCEED', 'LOAD_CUS_SUP_PARTNERS_FAIL',
 ]);
 
 const initialState = {
@@ -30,6 +31,8 @@ const initialState = {
     record: {},
   },
   invoiceCategories: [],
+  sup: [],
+  cus: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -63,6 +66,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, temporaryDetails: [], invoiceHead: {} };
     case actionTypes.LOAD_INVOICE_CATEGORIES_SUCCEED:
       return { ...state, invoiceCategories: action.result.data };
+    case actionTypes.LOAD_CUS_SUP_PARTNERS_SUCCEED:
+      return {
+        ...state,
+        cus: action.result.data.filter(item => item.role === 'CUS'),
+        sup: action.result.data.filter(item => item.role === 'SUP'),
+      };
     default:
       return state;
   }
@@ -226,6 +235,25 @@ export function loadInvoiceCategories() {
       ],
       endpoint: 'v1/sof/invoices/categories/load',
       method: 'get',
+    },
+  };
+}
+
+export function loadCusSupPartners(tenantId, roles, businessTypes) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CUS_SUP_PARTNERS,
+        actionTypes.LOAD_CUS_SUP_PARTNERS_SUCCEED,
+        actionTypes.LOAD_CUS_SUP_PARTNERS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/type/partners',
+      method: 'get',
+      params: {
+        tenantId,
+        roles: JSON.stringify(roles),
+        businessTypes: JSON.stringify(businessTypes),
+      },
     },
   };
 }

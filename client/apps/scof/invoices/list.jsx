@@ -39,8 +39,7 @@ function fetchData({ state, dispatch }) {
   })));
 
   promises.push(dispatch(loadPartners({
-    tenantId: state.account.tenantId,
-    role: PARTNER_ROLES.CUS,
+    role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP],
   })));
   promises.push(dispatch(loadInvoiceCategories()));
   return Promise.all(promises);
@@ -214,102 +213,105 @@ export default class InvoiceList extends React.Component {
     const { selectedRowKeys } = this.state;
     window.open(`${API_ROOTS.default}v1/scof/invoices/${createFilename('invoices')}.xlsx?invoiceNos=${selectedRowKeys}`);
   }
+  columns = [{
+    title: this.msg('invoiceNo'),
+    dataIndex: 'invoice_no',
+    width: 150,
+    fixed: 'left',
+  }, {
+    title: this.msg('invoiceDate'),
+    dataIndex: 'invoice_date',
+    render: o => o && moment(o).format('YYYY-MM-DD'),
+    width: 100,
+  }, {
+    title: this.msg('category'),
+    dataIndex: 'invoice_category',
+    width: 120,
+    filters: this.props.invoiceCategories.map(cate => ({
+      text: cate.category, value: cate.category,
+    })),
+    onFilter: (value, record) =>
+      record.invoice_category && record.invoice_category.indexOf(value) !== -1,
+  }, {
+    title: this.msg('buyer'),
+    dataIndex: 'buyer',
+    width: 180,
+    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
+    this.props.partners.find(partner => partner.id === Number(o)).name,
+  }, {
+    title: this.msg('seller'),
+    dataIndex: 'seller',
+    width: 180,
+    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
+    this.props.partners.find(partner => partner.id === Number(o)).name,
+  }, {
+    title: this.msg('poNo'),
+    dataIndex: 'po_no',
+  }, {
+    title: this.msg('totalQty'),
+    dataIndex: 'total_qty',
+    align: 'right',
+    width: 120,
+  }, {
+    title: this.msg('totalNetWt'),
+    dataIndex: 'total_net_wt',
+    align: 'right',
+    width: 120,
+  }, {
+    title: this.msg('totalAmount'),
+    dataIndex: 'total_amount',
+    align: 'right',
+    width: 120,
+  }, {
+    title: this.msg('currency'),
+    dataIndex: 'currency',
+    width: 100,
+    render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
+    this.props.currencies.find(curr => curr.curr_code === o).curr_name,
+  }, {
+    title: this.msg('status'),
+    dataIndex: 'invoice_status',
+    width: 100,
+    render: (o) => {
+      switch (o) {
+        case 0:
+          return <Tag>{this.msg('toShip')}</Tag>;
+        case 1:
+          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
+        case 2:
+          return <Tag color="green">{this.msg('shipped')}</Tag>;
+        default:
+          return null;
+      }
+    },
+  }, {
+    title: this.gmsg('createdDate'),
+    dataIndex: 'created_date',
+    width: 140,
+    render: createdate => createdate && moment(createdate).format('YYYY.MM.DD HH:mm'),
+    sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
+  }, {
+    title: this.gmsg('createdBy'),
+    dataIndex: 'created_by',
+    width: 120,
+    render: lid => <UserAvatar size="small" loginId={lid} showName />,
+  }, {
+    title: this.gmsg('actions'),
+    dataIndex: 'OPS_COL',
+    width: 60,
+    className: 'table-col-ops',
+    fixed: 'right',
+    render: (o, record) => (<span>
+      <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />
+    </span>),
+  }];
   render() {
-    const columns = [{
-      title: this.msg('invoiceNo'),
-      dataIndex: 'invoice_no',
-      width: 150,
-      fixed: 'left',
-    }, {
-      title: this.msg('invoiceDate'),
-      dataIndex: 'invoice_date',
-      render: o => o && moment(o).format('YYYY-MM-DD'),
-      width: 100,
-    }, {
-      title: this.msg('category'),
-      dataIndex: 'invoice_category',
-      width: 120,
-      filters: this.props.invoiceCategories && this.props.invoiceCategories.map(cate => ({
-        text: cate.category, value: cate.category,
-      })),
-      onFilter: (value, record) =>
-        record.invoice_category && record.invoice_category.indexOf(value) !== -1,
-    }, {
-      title: this.msg('buyer'),
-      dataIndex: 'buyer',
-      width: 180,
-      render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
-      this.props.partners.find(partner => partner.id === Number(o)).name,
-    }, {
-      title: this.msg('seller'),
-      dataIndex: 'seller',
-      width: 180,
-      render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
-      this.props.partners.find(partner => partner.id === Number(o)).name,
-    }, {
-      title: this.msg('poNo'),
-      dataIndex: 'po_no',
-    }, {
-      title: this.msg('totalQty'),
-      dataIndex: 'total_qty',
-      align: 'right',
-      width: 120,
-    }, {
-      title: this.msg('totalNetWt'),
-      dataIndex: 'total_net_wt',
-      align: 'right',
-      width: 120,
-    }, {
-      title: this.msg('totalAmount'),
-      dataIndex: 'total_amount',
-      align: 'right',
-      width: 120,
-    }, {
-      title: this.msg('currency'),
-      dataIndex: 'currency',
-      width: 100,
-      render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
-      this.props.currencies.find(curr => curr.curr_code === o).curr_name,
-    }, {
-      title: this.msg('status'),
-      dataIndex: 'invoice_status',
-      width: 100,
-      render: (o) => {
-        switch (o) {
-          case 0:
-            return <Tag>{this.msg('toShip')}</Tag>;
-          case 1:
-            return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
-          case 2:
-            return <Tag color="green">{this.msg('shipped')}</Tag>;
-          default:
-            return null;
-        }
-      },
-    }, {
-      title: this.gmsg('createdDate'),
-      dataIndex: 'created_date',
-      width: 140,
-      render: createdate => createdate && moment(createdate).format('YYYY.MM.DD HH:mm'),
-      sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
-    }, {
-      title: this.gmsg('createdBy'),
-      dataIndex: 'created_by',
-      width: 120,
-      render: lid => <UserAvatar size="small" loginId={lid} showName />,
-    }, {
-      title: this.gmsg('actions'),
-      dataIndex: 'OPS_COL',
-      width: 60,
-      className: 'table-col-ops',
-      fixed: 'right',
-      render: (o, record) => (<span>
-        <RowAction onClick={this.handleDetail} icon="edit" tooltip="编辑" row={record} />
-      </span>),
-    }];
     const {
       invoiceList, partners, loading, filter,
     } = this.props;
+    this.columns[2].filters = this.props.invoiceCategories.map(cate => ({
+      text: cate.category, value: cate.category,
+    }));
     let dateVal = [];
     if (filter.endDate) {
       dateVal = [moment(filter.startDate, 'YYYY-MM-DD'), moment(filter.endDate, 'YYYY-MM-DD')];
@@ -371,7 +373,7 @@ export default class InvoiceList extends React.Component {
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}
-            columns={columns}
+            columns={this.columns}
             loading={loading}
             rowKey="invoice_no"
           />

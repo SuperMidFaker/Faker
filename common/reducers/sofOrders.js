@@ -113,6 +113,7 @@ const initialState = {
   orderBizObjects: [],
   containers: [],
   invoices: [],
+  orderInvoicesReload: false,
   invoicesModal: {
     visible: false,
     totalCount: 0,
@@ -122,6 +123,8 @@ const initialState = {
     filter: {
       buyer: '', seller: '', category: '', status: 'unshipped',
     },
+    cus: [],
+    sup: [],
   },
 };
 
@@ -226,7 +229,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, invoices: action.result.data };
     case actionTypes.ADD_ORDER_INVOICES_SUCCEED:
     case actionTypes.REMOVE_ORDER_INVOICE_SUCCEED:
-      return { ...state, orderDetails: { ...state.orderDetails, reload: true } };
+      return {
+        ...state,
+        orderDetails: { ...state.orderDetails, reload: true },
+        orderInvoicesReload: true,
+      };
     case actionTypes.LOAD_INVOICES:
       return {
         ...state,
@@ -239,6 +246,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, invoicesModal: { ...state.invoicesModal, ...action.result.data } };
     case actionTypes.TOGGLE_INVOICE_MODAL:
       return { ...state, invoicesModal: { ...state.invoicesModal, visible: action.data.visible } };
+    case actionTypes.LOAD_ORDER_INVOICES:
+      return { ...state, orderInvoicesReload: false };
     default:
       return state;
   }

@@ -18,6 +18,7 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     currencies: state.cmsManifest.params.currencies,
     formData: state.sofOrders.formData,
     invoices: state.sofOrders.invoices,
+    reload: state.sofOrders.orderInvoicesReload,
   }),
   {
     removeOrderInvoice,
@@ -34,17 +35,18 @@ export default class InvoicePane extends Component {
     this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
     this.props.loadInvoiceCategories();
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
+    }
+  }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleToggleInvoiceModal = () => {
     this.props.toggleInvoiceModal(true);
   }
   handleRemove = (row) => {
-    this.props.removeOrderInvoice(row.id, row.invoice_no, row.shipmt_order_no).then((result) => {
-      if (!result.error) {
-        this.props.loadOrderInvoices(this.props.formData.shipmt_order_no);
-      }
-    });
+    this.props.removeOrderInvoice(row.id, row.invoice_no, row.shipmt_order_no);
   }
   invoiceColumns = [{
     title: this.msg('invoiceNo'),
