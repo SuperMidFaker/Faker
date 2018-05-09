@@ -625,7 +625,7 @@ export function loadOrderAttachments(orderNo) {
   };
 }
 
-export function loadInvoices(partnerId, pageSize, current, filter) {
+export function loadInvoices(pageSize, current, filter) {
   return {
     [CLIENT_API]: {
       types: [
@@ -636,7 +636,7 @@ export function loadInvoices(partnerId, pageSize, current, filter) {
       endpoint: 'v1/sof/order/allinvoices/load',
       method: 'get',
       params: {
-        partnerId, pageSize, current, filter: JSON.stringify(filter),
+        pageSize, current, filter: JSON.stringify(filter),
       },
     },
   };

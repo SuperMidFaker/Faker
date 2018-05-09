@@ -92,10 +92,7 @@ export default class InvoiceModal extends Component {
       newFilter = this.props.filter;
     }
     const { pageSize, current } = this.props;
-    this.props.loadInvoices(
-      this.props.formData.customer_partner_id,
-      pageSize, current, newFilter
-    ).then((result) => {
+    this.props.loadInvoices(pageSize, current, newFilter).then((result) => {
       if (!result.error) {
         this.setState({
           selectedRowKeys: [],
@@ -163,10 +160,7 @@ export default class InvoiceModal extends Component {
       total: totalCount,
       showTotal: total => `共 ${total} 条`,
       onChange: (cur, page) => {
-        this.props.loadInvoices(
-          this.props.formData.customer_partner_id,
-          page, cur, this.props.filter
-        );
+        this.props.loadInvoices(page, cur, this.props.filter);
       },
     };
     return (
