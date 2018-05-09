@@ -110,6 +110,10 @@ const messages = defineMessages({
     id: 'root.actions.delete',
     defaultMessage: '删除',
   },
+  deletedSuccess: {
+    id: 'root.deleted.success',
+    defaultMessage: '删除成功',
+  },
   add: {
     id: 'root.actions.add',
     defaultMessage: '添加',

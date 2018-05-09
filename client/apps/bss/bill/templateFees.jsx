@@ -109,7 +109,7 @@ export default class TemplateFees extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.info('删除成功', 5);
+        message.info(this.gmsg('deletedSuccess'), 5);
         this.handleFeesLoad(1);
       }
     });
@@ -137,7 +137,7 @@ export default class TemplateFees extends Component {
     const feeName = formVal.fee_name;
     const exist = this.props.templateFeelist.data.filter(tp => tp.fee_name === feeName)[0];
     if (exist) {
-      message.error('费用名称已存在', 6);
+      message.error(this.msg('errorMessage'), 6);
     } else {
       const feeCodes = formVal.fee_codes.join('|');
       this.props.addTemplateFee({
@@ -255,7 +255,7 @@ export default class TemplateFees extends Component {
           if (onEdit && editItem.fee_uid === record.fee_uid) {
             return (<span>
               <RowAction onClick={this.handleFeeUpdate} icon="save" row={record} />
-              <RowAction onClick={this.handleFeeEditCancel} icon="close" tooltip="取消" />
+              <RowAction onClick={this.handleFeeEditCancel} icon="close" tooltip={this.gmsg('cancel')} />
             </span>
             );
           }
@@ -315,19 +315,19 @@ export default class TemplateFees extends Component {
               loading={loading}
             />
             <Modal
-              title="添加费用"
+              title={this.msg('addFee')}
               width={695}
               visible={visible}
               onCancel={this.handleAddModalCancel}
               onOk={this.handleAddModalOk}
             >
               <Form>
-                <FormItem label="费用名称" >
+                <FormItem label={this.msg('feeName')} >
                   {getFieldDecorator('fee_name', {
                     rules: [{ required: true }],
                   })(<Input />)}
                 </FormItem>
-                <FormItem label="费用项" >
+                <FormItem label={this.msg('feeCodes')} >
                   {getFieldDecorator('fee_codes', {
                   })(<Transfer
                     dataSource={allFeeElements}

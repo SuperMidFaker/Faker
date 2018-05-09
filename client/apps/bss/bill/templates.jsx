@@ -122,7 +122,7 @@ export default class BillTemplates extends React.Component {
                   >
                     <List.Item.Meta
                       title={item.name}
-                      description={item.settle_name || '全局模板'}
+                      description={item.settle_name || this.msg('publicBillTemplate')}
                     />
                   </List.Item>)}
               />

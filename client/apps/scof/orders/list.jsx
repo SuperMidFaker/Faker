@@ -180,7 +180,7 @@ export default class OrderList extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.info('删除成功');
+        message.info(this.gmsg('deletedSuccess'));
         this.handleTableLoad();
       }
     });
@@ -192,7 +192,7 @@ export default class OrderList extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.info('删除成功');
+        message.info(this.gmsg('deletedSuccess'));
         this.setState({
           selectedRowKeys: [],
         });

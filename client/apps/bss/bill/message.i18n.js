@@ -87,6 +87,10 @@ const messages = defineMessages({
     id: 'bss.bill.template.search.tips',
     defaultMessage: '模板名称/结算对象名称',
   },
+  publicBillTemplate: {
+    id: 'bss.public.bill.template',
+    defaultMessage: '全局模板',
+  },
   newBill: {
     id: 'bss.bill.create',
     defaultMessage: '新建账单',
@@ -103,6 +107,10 @@ const messages = defineMessages({
     id: 'bss.bill.fee.codes',
     defaultMessage: '费用项',
   },
+  addFee: {
+    id: 'bss.bill.fee.add',
+    defaultMessage: '添加费用',
+  },
   billType: {
     id: 'bss.bill.type',
     defaultMessage: '账单类型',
@@ -118,6 +126,10 @@ const messages = defineMessages({
   feeParams: {
     id: 'bss.bill.template.fee.params',
     defaultMessage: '费用参数',
+  },
+  errorMessage: {
+    id: 'bss.bill.template.fee.error.message',
+    defaultMessage: '费用名称已存在',
   },
 });
 
