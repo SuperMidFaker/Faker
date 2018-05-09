@@ -40,7 +40,6 @@ export const PARTNER_BUSINESSES = {
   CCB: 'CCB',
   TRS: 'TRS',
   FWD: 'FWD',
-  WHS: 'WHS',
 };
 
 export const PARTNER_BUSINESSE_TYPES = {

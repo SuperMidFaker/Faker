@@ -85,7 +85,7 @@ export default class TariffPane extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.info('删除成功', 5);
+        message.info(this.gmsg('deletedSuccess'), 5);
         this.handleDeselectRows();
         const addData = this.props.parentFeeElements.filter(fe =>
           feeCodes.includes(fe.fee_code));

@@ -2,170 +2,200 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Row, Col, Table, Tooltip, Layout } from 'antd';
-import connectFetch from 'client/common/decorators/connect-fetch';
+import { Menu, Layout } from 'antd';
+import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
-import ListContentLayout from 'client/components/ListContentLayout';
 import PageHeader from 'client/components/PageHeader';
-import { format } from 'client/common/i18n/helpers';
-import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/sofCustomers';
-import { PARTNER_ROLES } from 'common/constants';
+import DataTable from 'client/components/DataTable';
+import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
-import OverviewCard from './cards/overviewCard';
-import ResourcesCard from './cards/resourcesCard';
-
-import ProfileCard from './cards/profileCard';
+import ToolbarAction from 'client/components/ToolbarAction';
+import { loadPartnerList, showCustomerModal, showCustomerPanel, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { PARTNER_ROLES } from 'common/constants';
+import CustomerPanel from './pane/customerPanel';
 import CustomerModal from './modals/customerModal';
-import messages from './message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadCustomers(state.account.tenantId));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    customers: state.sofCustomers.customers,
-    loading: state.sofCustomers.loading,
-    loaded: state.sofCustomers.loaded,
+    customerlist: state.partner.partnerlist,
+    listFilter: state.partner.partnerFilter,
+    loading: state.partner.loading,
+    loaded: state.partner.loaded,
   }),
-  { loadCustomers, deleteCustomer, showCustomerModal }
+  {
+    loadPartnerList, changePartnerStatus, deletePartner, showCustomerPanel, showCustomerModal,
+  }
 )
 @connectNav({
   depth: 2,
   moduleName: 'scof',
 })
-@Form.create()
-export default class CustomerList extends React.Component {
+export default class VendorList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    customers: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number })).isRequired,
-    loadCustomers: PropTypes.func.isRequired,
-    deleteCustomer: PropTypes.func.isRequired,
+    customerlist: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
+    loadPartnerList: PropTypes.func.isRequired,
+    deletePartner: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
-  state = {
-    customer: {},
-    currentPage: 1,
-    collapsed: false,
-    unchanged: true,
-    customers: [],
+  componentDidMount() {
+    this.handleTableLoad();
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.customers !== this.props.customers) {
-      this.setState({
-        customer: nextProps.customers.length === 0 ? {} : nextProps.customers[0],
-      });
-    }
-    this.setState({ customers: nextProps.customers });
     if (!nextProps.loaded) {
       this.handleTableLoad();
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.handleTableLoad(params.pageSize, params.current),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+      };
+      return params;
+    },
+    remotes: this.props.customerlist,
+  })
+  columns = [{
+    title: this.msg('customerCode'),
+    dataIndex: 'partner_code',
+    width: 100,
+  }, {
+    title: this.msg('customerName'),
+    dataIndex: 'name',
+    render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
+  }, {
+    title: this.msg('displayName'),
+    dataIndex: 'display_name',
+    width: 180,
+  }, {
+    title: this.msg('uscCode'),
+    dataIndex: 'partner_unique_code',
+    width: 200,
+  }, {
+    title: this.msg('customsCode'),
+    dataIndex: 'customs_code',
+    width: 100,
+  }, {
+    title: this.msg('contact'),
+    dataIndex: 'contact',
+    width: 100,
+  }, {
+    title: this.msg('phone'),
+    dataIndex: 'phone',
+    width: 100,
+  }, {
+    title: this.msg('email'),
+    dataIndex: 'email',
+    width: 150,
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+    width: 100,
+  }, {
+    title: this.msg('internalId'),
+    dataIndex: 'id',
+    width: 100,
+  }, {
+    title: this.gmsg('createdDate'),
+    dataIndex: 'created_date',
+    render: cdt => cdt && moment(cdt).format('YYYY/MM/DD'),
+    width: 100,
+  }, {
+    title: this.gmsg('op'),
+    width: 150,
+    fixed: 'right',
+    render: (_, row) => {
+      if (!row.status) {
+        return (<span>
+          <RowAction onClick={this.handleVendorToggle} icon="play-circle" tooltip={this.gmsg('opEnable')} row={row} />
+          <RowAction danger confirm={this.gmsg('confirmOp')} onClick={this.handleVendorDel} icon="delete" tooltip={this.gmsg('delete')} row={row} />
+        </span>);
+      }
+      return (<span>
+        <RowAction onClick={this.handleVendorEdit} icon="edit" tooltip={this.gmsg('edit')} row={row} />
+        <RowAction onClick={this.handleVendorToggle} icon="pause-circle" tooltip={this.gmsg('opDisable')} row={row} />
+      </span>);
+    },
+  }];
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
+  handleTableLoad = (pageSize, current, filters) => {
+    const { customerlist, listFilter } = this.props;
+    const pageSizeArg = pageSize || customerlist.pageSize;
+    const currentArg = current || customerlist.current;
+    const filtersArg = JSON.stringify(filters || listFilter);
+    this.props.loadPartnerList(PARTNER_ROLES.CUS, pageSizeArg, currentArg, filtersArg);
   }
-  handleInputChanged = () => {
-    this.setState({ unchanged: false });
+  handleVendorAdd = () => {
+    this.props.showCustomerModal('add');
   }
-  handleRowClick = (record) => {
-    this.setState({
-      customer: record,
-      unchanged: true,
-    });
-    this.props.form.setFieldsValue(record);
+  handleVendorEdit = (customer) => {
+    this.props.showCustomerPanel({ visible: true, customer });
   }
-  handleTableLoad = () => {
-    this.props.loadCustomers(this.props.tenantId);
+  handleVendorToggle = (customer) => {
+    const newstatus = customer.status === 1 ? 0 : 1;
+    this.props.changePartnerStatus(customer.id, newstatus);
   }
-  handleDelCustomer = () => {
-    this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS).then(() => {
-      this.handleTableLoad();
-    });
-  }
-  handlePageChange = (page) => {
-    this.setState({ currentPage: page });
+  handleVendorDel = (customer) => {
+    this.props.deletePartner(customer.id);
   }
   handleSearch = (value) => {
-    let { customers } = this.props;
-    if (value) {
-      customers = this.props.customers.filter((item) => {
-        const reg = new RegExp(value);
-        return reg.test(item.name);
-      });
-    }
-    this.setState({ customers, currentPage: 1 });
-  }
-  handleSave = () => {
-  }
-  renderListColumn() {
-    const { customer } = this.state;
-    const columns = [{
-      dataIndex: 'name',
-      key: 'name',
-      render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
-    }];
-    return (
-      <Table
-        size="middle"
-        dataSource={this.state.customers}
-        columns={columns}
-        showHeader={false}
-        pagination={{
-          current: this.state.currentPage,
-          defaultPageSize: 50,
-          onChange: this.handlePageChange,
-        }}
-        rowClassName={record => (record.id === customer.id ? 'table-row-selected' : '')}
-        rowKey="id"
-        loading={this.props.loading}
-        onRow={record => ({
-          onClick: () => { this.handleRowClick(record); },
-        })}
-      />);
+    const filters = { ...this.props.listFilter, name: value };
+    this.handleTableLoad(null, null, filters);
   }
   render() {
-    const { customer } = this.state;
-    return (
-      <ListContentLayout
-        title={this.msg('customer')}
-        action={<Tooltip placement="bottom" title="新增客户">
-          <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
-        </Tooltip>}
-        list={this.renderListColumn()}
+    const toolbarActions = (<span style={{ width: 500 }}>
+      <SearchBox
+        placeholder={this.msg('partnerSearchPlaceholder')}
         onSearch={this.handleSearch}
-      >
-        <PageHeader title={customer.name}>
+      />
+    </span>);
+    const dropdown = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="impt">{this.gmsg('import')}</Menu.Item>
+      </Menu>
+    );
+    const { customerlist, loading } = this.props;
+    this.dataSource.remotes = customerlist;
+    return (
+      <Layout>
+        <PageHeader title={this.msg('customers')}>
           <PageHeader.Actions>
-            <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSave}>
-              {this.msg('save')}
-            </Button>
+            <ToolbarAction icon="export" label={this.gmsg('export')} />
+            <ToolbarAction primary icon="plus" label={this.gmsg('create')} dropdown={dropdown} onClick={this.handleVendorAdd} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Row gutter={16}>
-            <Col sm={24} md={16}>
-              <OverviewCard customer={customer} />
-              <ResourcesCard customer={customer} />
-            </Col>
-            <Col sm={24} md={8}>
-              <ProfileCard customer={customer} />
-            </Col>
-          </Row>
+          <DataTable
+            toolbarActions={toolbarActions}
+            dataSource={this.dataSource}
+            columns={this.columns}
+            rowKey="id"
+            loading={loading}
+          />
         </Content>
+        <CustomerPanel />
         <CustomerModal onOk={this.handleTableLoad} />
-      </ListContentLayout>
+      </Layout>
     );
   }
 }

@@ -3,14 +3,16 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Input, message, Modal, Transfer, Form, Layout, Select } from 'antd';
-import { loadTemplateFees, addTemplateFee, deleteTemplateFees, updateTemplateFee } from 'common/reducers/bssBillTemplate';
+import { Button, Input, message, Modal, Transfer, Form, Layout, Select, Card, Row, Col, Checkbox } from 'antd';
+import { loadTemplateFees, addTemplateFee, deleteTemplateFees, updateTemplateFee, updateTemplateProps } from 'common/reducers/bssBillTemplate';
 import { loadAllFeeElements } from 'common/reducers/bssFeeSettings';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
+import InfoItem from 'client/components/InfoItem';
 import ToolbarAction from 'client/components/ToolbarAction';
+import { TEMPLATE_BILL_PROPS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -42,6 +44,7 @@ function fetchData({ params, dispatch, state }) {
     deleteTemplateFees,
     updateTemplateFee,
     loadAllFeeElements,
+    updateTemplateProps,
   }
 )
 @Form.create()
@@ -59,9 +62,20 @@ export default class TemplateFees extends Component {
     fees: [],
     editItem: {},
     onEdit: false,
+    billProps: {},
   };
   componentDidMount() {
     this.props.loadAllFeeElements();
+    const template = this.props.billTemplatelist.data.filter(tp =>
+      String(tp.id) === this.props.params.templateId)[0];
+    if (template && template.bill_props) {
+      const tpBillProps = JSON.parse(template.bill_props);
+      const newProps = {};
+      tpBillProps.forEach((tp) => {
+        newProps[tp.key] = tp.label;
+      });
+      this.setState({ billProps: newProps });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.templateFeelist !== this.props.templateFeelist) {
@@ -95,7 +109,7 @@ export default class TemplateFees extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.info('删除成功', 5);
+        message.info(this.gmsg('deletedSuccess'), 5);
         this.handleFeesLoad(1);
       }
     });
@@ -123,7 +137,7 @@ export default class TemplateFees extends Component {
     const feeName = formVal.fee_name;
     const exist = this.props.templateFeelist.data.filter(tp => tp.fee_name === feeName)[0];
     if (exist) {
-      message.error('费用名称已存在', 6);
+      message.error(this.msg('errorMessage'), 6);
     } else {
       const feeCodes = formVal.fee_codes.join('|');
       this.props.addTemplateFee({
@@ -162,6 +176,36 @@ export default class TemplateFees extends Component {
       onEdit: false, editItem: {}, fees,
     });
   }
+  handleEdit = (key, value) => {
+    const { billProps } = this.state;
+    billProps[key] = value;
+    this.setState({ billProps });
+    const newProps = Object.keys(billProps).map(pkey => ({
+      key: pkey,
+      label: billProps[pkey],
+    }));
+    this.props.updateTemplateProps({
+      billProps: JSON.stringify(newProps),
+      templateId: this.props.params.templateId,
+    });
+  }
+  handleCheck = (key, checked) => {
+    const { billProps } = this.state;
+    if (checked) {
+      billProps[key] = TEMPLATE_BILL_PROPS.filter(tp => tp.key === key)[0].label;
+    } else {
+      delete billProps[key];
+    }
+    this.setState({ billProps });
+    const newProps = Object.keys(billProps).map(pkey => ({
+      key: pkey,
+      label: billProps[pkey],
+    }));
+    this.props.updateTemplateProps({
+      billProps: JSON.stringify(newProps),
+      templateId: this.props.params.templateId,
+    });
+  }
   render() {
     const {
       loading,
@@ -171,7 +215,7 @@ export default class TemplateFees extends Component {
       billTemplatelist,
     } = this.props;
     const {
-      targetKeys, visible, fees, onEdit, editItem,
+      targetKeys, visible, fees, onEdit, editItem, billProps,
     } = this.state;
     let templateName = '';
     const template = billTemplatelist.data.filter(tp => String(tp.id) === templateId)[0];
@@ -211,7 +255,7 @@ export default class TemplateFees extends Component {
           if (onEdit && editItem.fee_uid === record.fee_uid) {
             return (<span>
               <RowAction onClick={this.handleFeeUpdate} icon="save" row={record} />
-              <RowAction onClick={this.handleFeeEditCancel} icon="close" tooltip="取消" />
+              <RowAction onClick={this.handleFeeEditCancel} icon="close" tooltip={this.gmsg('cancel')} />
             </span>
             );
           }
@@ -240,6 +284,25 @@ export default class TemplateFees extends Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content layout-fixed-width" key="main">
+            <Card title={this.msg('feeParams')}>
+              {TEMPLATE_BILL_PROPS.map(data => (
+                <Row>
+                  <Col sm={4}>
+                    <Checkbox
+                      checked={billProps[data.key]}
+                      onChange={ev => this.handleCheck(data.key, ev.target.checked)}
+                    />
+                  </Col>
+                  <Col sm={20}>
+                    <InfoItem
+                      field={billProps[data.key] || data.label}
+                      editable={!!billProps[data.key]}
+                      onEdit={value => this.handleEdit(data.key, value)}
+                    />
+                  </Col>
+                </Row>
+              ))}
+            </Card>
             <DataTable
               toolbarActions={toolbarActions}
               bulkActions={bulkActions}
@@ -252,19 +315,19 @@ export default class TemplateFees extends Component {
               loading={loading}
             />
             <Modal
-              title="添加费用"
+              title={this.msg('addFee')}
               width={695}
               visible={visible}
               onCancel={this.handleAddModalCancel}
               onOk={this.handleAddModalOk}
             >
               <Form>
-                <FormItem label="费用名称" >
+                <FormItem label={this.msg('feeName')} >
                   {getFieldDecorator('fee_name', {
                     rules: [{ required: true }],
                   })(<Input />)}
                 </FormItem>
-                <FormItem label="费用项" >
+                <FormItem label={this.msg('feeCodes')} >
                   {getFieldDecorator('fee_codes', {
                   })(<Transfer
                     dataSource={allFeeElements}

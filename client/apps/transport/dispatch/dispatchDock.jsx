@@ -10,18 +10,17 @@ import InfoItem from 'client/components/InfoItem';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConfirmModal, changeDockStatus } from 'common/reducers/transportDispatch';
-import { addPartner } from 'common/reducers/partner';
 import { computeCostCharges } from 'common/reducers/shipment';
 // import ChargeSpecForm from '../shipment/forms/chargeSpec';
 import SearchBox from 'client/components/SearchBox';
+import { toggleCarrierModal } from 'common/reducers/transportResources';
+import { format } from 'client/common/i18n/helpers';
 import DispatchConfirmModal from './DispatchConfirmModal';
 import CarrierModal from '../resources/modals/carrierModal';
 import VehicleFormMini from '../resources/components/VehicleForm-mini';
-import { toggleCarrierModal } from 'common/reducers/transportResources';
-import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 const formatMsg = format(messages);
 
 export function RowClick(props) {
@@ -56,12 +55,10 @@ function fetch({ state, dispatch, cookie }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    avatar: state.account.profile.avatar,
     lsps: state.transportDispatch.lsps,
     vehicles: state.transportDispatch.vehicles,
     vehicleLoaded: state.transportDispatch.vehicleLoaded,
     lspLoaded: state.transportDispatch.lspLoaded,
-    dispatched: state.transportDispatch.dispatched,
     vehicleTypes: state.transportDispatch.vehicleTypes,
     vehicleLengths: state.transportDispatch.vehicleLengths,
     shipmts: state.transportDispatch.shipmts,
@@ -73,7 +70,6 @@ function fetch({ state, dispatch, cookie }) {
     loadVehicles,
     doDispatch,
     doDispatchAndSend,
-    addPartner,
     computeCostCharges,
     toggleCarrierModal,
     showDispatchConfirmModal,
@@ -86,7 +82,6 @@ export default class DispatchDock extends Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    avatar: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
     shipmts: PropTypes.array.isRequired,
     lsps: PropTypes.object.isRequired,
@@ -96,7 +91,6 @@ export default class DispatchDock extends Component {
     vehicleLoaded: PropTypes.bool.isRequired,
     lspLoaded: PropTypes.bool.isRequired,
     doDispatch: PropTypes.func.isRequired,
-    dispatched: PropTypes.bool.isRequired,
     vehicleTypes: PropTypes.array.isRequired,
     vehicleLengths: PropTypes.array.isRequired,
     computeCostCharges: PropTypes.func.isRequired,
@@ -129,7 +123,7 @@ export default class DispatchDock extends Component {
       title: '成本价（元）',
       dataIndex: 'charge',
       width: 120,
-      render: (o, record, index) => {
+      render: (o) => {
         if (o) {
           const charge = o.reduce((a, b) => ({
             freight_charge: a.freight_charge + b.freight_charge,
@@ -143,13 +137,13 @@ export default class DispatchDock extends Component {
             total_charge: 0,
           });
           return <span>{charge.total_charge.toFixed(2)}</span>;
-          { /*
+          /*
             <Popover placement="rightBottom" title={`${record.partner_name} 价格明细`} content={
               <ChargeSpecForm charges={o} onChange={this.handleChargeChange} index={index} />
               }
             >
               <span>{charge.total_charge.toFixed(2)}</span>
-            </Popover> */ }
+            </Popover> */
         }
         return '';
       },
@@ -359,8 +353,12 @@ export default class DispatchDock extends Component {
     // TODO multi shipments dispatch
     const { type, target } = this.props.dispatchConfirmModal;
     const { tenantId, loginId, shipmts } = this.props;
-    const podType = this.state.podType;
-    const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key, deliverPrmDate: s.deliver_prm_date }));
+    const { podType } = this.state;
+    const shipmtNos = shipmts.map(s => ({
+      shipmtNo: s.shipmt_no,
+      dispId: s.key,
+      deliverPrmDate: s.deliver_prm_date,
+    }));
     if (type === 'tenant') {
       this.props.doDispatch({
         tenantId,

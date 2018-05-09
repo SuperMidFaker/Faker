@@ -14,7 +14,6 @@ const formItemLayout = {
 };
 
 @connect(state => ({
-  tenantId: state.account.tenantId,
   visible: state.transportResources.carrierModal.visible,
   carrier: state.transportResources.carrierModal.carrier,
   operation: state.transportResources.carrierModal.operation,
@@ -24,10 +23,9 @@ const formItemLayout = {
 
 export default class CarrierModal extends React.Component {
   static propTypes = {
-    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool,
     operation: PropTypes.string, // add  edit
-    carrier: PropTypes.object,
+    carrier: PropTypes.shape({ partner_code: PropTypes.string }),
     addPartner: PropTypes.func.isRequired,
     editPartner: PropTypes.func.isRequired,
     toggleCarrierModal: PropTypes.func.isRequired,
@@ -66,16 +64,24 @@ export default class CarrierModal extends React.Component {
     });
   }
   handleOk = () => {
-    const { tenantId, carrier, operation } = this.props;
+    const { carrier, operation } = this.props;
     const {
-      partnerName, partnerCode, partnerUniqueCode, role, business,
+      partnerName, partnerCode, partnerUniqueCode, role, business, businessType,
     } = this.state;
     if (partnerName === '') {
       message.error('请填写承运商名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('请填写统一社会信用代码');
     } else if (this.props.operation === 'edit') {
-      this.props.editPartner(carrier.id, partnerName, partnerUniqueCode, partnerCode, role, business).then((result) => {
+      const partnerInfo = {
+        name: partnerName,
+        partnerUniqueCode,
+        code: partnerCode,
+        role,
+        business,
+        businessType,
+      };
+      this.props.editPartner(carrier.id, partnerInfo).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -88,8 +94,7 @@ export default class CarrierModal extends React.Component {
       });
     } else {
       this.props.checkPartner({
-        tenantId,
-        partnerInfo: { name: partnerName, partnerCode, partnerUniqueCode },
+        name: partnerName, partnerCode, partnerUniqueCode,
       }).then((result) => {
         let foundName = partnerName;
         if (result.data.partner && result.data.partner.name !== partnerName) {
@@ -104,12 +109,14 @@ export default class CarrierModal extends React.Component {
     }
   }
   handleAddPartner = () => {
-    const { tenantId } = this.props;
     const {
       partnerName, partnerCode, partnerUniqueCode, role, business, businessType,
     } = this.state;
     this.props.addPartner({
-      tenantId, partnerInfo: { partnerName, partnerCode, partnerUniqueCode }, role, business, businessType,
+      partnerInfo: { partnerName, partnerCode, partnerUniqueCode },
+      role,
+      business,
+      businessType,
     }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
@@ -131,13 +138,27 @@ export default class CarrierModal extends React.Component {
     return (
       <Modal maskClosable={false} title={operation === 'add' ? '新增承运商' : '修改承运商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem {...formItemLayout} label="承运商名称:" required>
-          <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
+          <Input
+            required
+            value={partnerName}
+            onChange={e =>
+              this.setState({ partnerName: e.target.value })}
+          />
         </FormItem>
         <FormItem {...formItemLayout} label="统一社会信用代码:" required>
-          <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
+          <Input
+            required
+            value={partnerUniqueCode}
+            onChange={e =>
+              this.setState({ partnerUniqueCode: e.target.value })}
+          />
         </FormItem>
         <FormItem {...formItemLayout} label="承运商代码:" required>
-          <Input value={partnerCode} onChange={e => this.setState({ partnerCode: e.target.value })} />
+          <Input
+            value={partnerCode}
+            onChange={e =>
+              this.setState({ partnerCode: e.target.value })}
+          />
         </FormItem>
       </Modal>
     );

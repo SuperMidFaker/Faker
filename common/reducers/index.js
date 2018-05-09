@@ -43,7 +43,6 @@ import cmsParams from './cmsParams';
 import cmsPrefEvents from './cmsPrefEvents';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
-import crmBilling from './crmBilling';
 import cwmReceive from './cwmReceive';
 import cwmOutbound from './cwmOutbound';
 import cwmInventoryStock from './cwmInventoryStock';
@@ -142,7 +141,6 @@ export default combineReducers({
   sofTracking,
   sofCustomers,
   sofOrders,
-  crmBilling,
   cwmReceive,
   cwmOutbound,
   cwmWarehouse,

@@ -30,3 +30,9 @@ export const INVOICE_OP = [
   { key: 'applyInvoice', text: '开票' },
   { key: 'collectInvoice', text: '收票' },
 ];
+
+export const TEMPLATE_BILL_PROPS = [
+  { key: 'customs_entry_nos', label: '报关单号' },
+  { key: 'decl_sheet_qty', label: '联单数' },
+  { key: 'trade_amount', label: '货值' },
+];

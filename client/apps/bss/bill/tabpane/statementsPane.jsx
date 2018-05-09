@@ -16,6 +16,7 @@ import { formatMsg, formatGlobalMsg } from '../message.i18n';
     userMembers: state.account.userMembers,
     billHead: state.bssBill.billHead,
     billTemplateFees: state.bssBill.billTemplateFees,
+    billTemplateProps: state.bssBill.billTemplateProps,
     statementFees: state.bssBill.statementFees,
   }),
   { adjustBillStatement, getBillFeesAndTemplate }
@@ -103,7 +104,7 @@ export default class StatementsPane extends Component {
     });
   }
   render() {
-    const { billTemplateFees } = this.props;
+    const { billTemplateFees, billTemplateProps } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -119,6 +120,14 @@ export default class StatementsPane extends Component {
       dataIndex: 'cust_order_no',
       width: 150,
     }];
+    if (billTemplateProps.length > 0) {
+      const propsColumns = billTemplateProps.map(data => ({
+        title: data.label,
+        dataIndex: data.key,
+        width: 100,
+      }));
+      columns = columns.concat(propsColumns);
+    }
     if (billTemplateFees.length > 0) {
       const billColumns = billTemplateFees.map(data => ({
         title: data.name,
