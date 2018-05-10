@@ -1,5 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
+import { PARTNER_ROLES } from 'common/constants';
 
 const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'LOAD_INVOICES', 'LOAD_INVOICES_SUCCEED', 'LOAD_INVOICES_FAIL',
@@ -239,7 +240,7 @@ export function loadInvoiceCategories() {
   };
 }
 
-export function loadInvoiceBuyerSellers(roles, businessTypes) {
+export function loadInvoiceBuyerSellers() {
   return {
     [CLIENT_API]: {
       types: [
@@ -250,9 +251,8 @@ export function loadInvoiceBuyerSellers(roles, businessTypes) {
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
       params: {
-        tenantId: '',
-        roles: JSON.stringify(roles),
-        businessTypes: JSON.stringify(businessTypes),
+        roles: JSON.stringify([[PARTNER_ROLES.CUS, PARTNER_ROLES.SUP]]),
+        businessTypes: JSON.stringify(null),
       },
     },
   };

@@ -5,7 +5,6 @@ import { Modal, Radio, Form, Col, Row, Select, Input } from 'antd';
 import { loadInvoices, loadOrderInvoices, addOrderInvoices, toggleInvoiceModal } from 'common/reducers/sofOrders';
 import { loadInvoiceCategories, loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import DataTable from 'client/components/DataTable';
-import { PARTNER_ROLES } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const RadioButton = Radio.Button;
@@ -45,7 +44,7 @@ export default class InvoiceModal extends Component {
     selectedRowKeys: [],
   }
   componentDidMount() {
-    this.props.loadInvoiceBuyerSellers([PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null);
+    this.props.loadInvoiceBuyerSellers();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {

@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
     role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP],
   })));
   promises.push(dispatch(loadInvoiceCategories()));
-  promises.push(dispatch(loadInvoiceBuyerSellers([PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null)));
+  promises.push(dispatch(loadInvoiceBuyerSellers()));
   return Promise.all(promises);
 }
 
