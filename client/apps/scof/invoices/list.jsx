@@ -16,7 +16,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo, loadInvoiceCategories } from 'common/reducers/sofInvoice';
+import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo, loadInvoiceCategories, loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
@@ -42,6 +42,7 @@ function fetchData({ state, dispatch }) {
     role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP],
   })));
   promises.push(dispatch(loadInvoiceCategories()));
+  promises.push(dispatch(loadInvoiceBuyerSellers('', [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null)));
   return Promise.all(promises);
 }
 
@@ -57,6 +58,8 @@ function fetchData({ state, dispatch }) {
     adaptors: state.hubDataAdapter.modelAdaptors,
     uploadRecords: state.uploadRecords.uploadRecords,
     invoiceCategories: state.sofInvoice.invoiceCategories,
+    buyers: state.sofInvoice.buyers,
+    sellers: state.sofInvoice.sellers,
   }),
   {
     loadInvoices,
@@ -234,14 +237,14 @@ export default class InvoiceList extends React.Component {
     title: this.msg('buyer'),
     dataIndex: 'buyer',
     width: 180,
-    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
-    this.props.partners.find(partner => partner.id === Number(o)).name,
+    render: o => this.props.buyers.find(buyer => buyer.partner_id === Number(o)) &&
+    this.props.buyers.find(buyer => buyer.partner_id === Number(o)).name,
   }, {
     title: this.msg('seller'),
     dataIndex: 'seller',
     width: 180,
-    render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
-    this.props.partners.find(partner => partner.id === Number(o)).name,
+    render: o => this.props.sellers.find(seller => seller.partner_id === Number(o)) &&
+    this.props.sellers.find(seller => seller.partner_id === Number(o)).name,
   }, {
     title: this.msg('poNo'),
     dataIndex: 'po_no',
@@ -305,7 +308,7 @@ export default class InvoiceList extends React.Component {
   }];
   render() {
     const {
-      invoiceList, partners, loading, filter,
+      invoiceList, partners, loading, filter, buyers, sellers,
     } = this.props;
     const column = this.columns.filter(col => col.dataIndex === 'invoice_category')[0];
     column.filters = this.props.invoiceCategories.map(cate => ({
@@ -396,7 +399,7 @@ export default class InvoiceList extends React.Component {
                 dropdownMatchSelectWidth={false}
                 dropdownStyle={{ width: 360 }}
               >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                {buyers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>
             </Form.Item>
             <Form.Item label={this.msg('seller')}>
@@ -409,7 +412,7 @@ export default class InvoiceList extends React.Component {
                 dropdownMatchSelectWidth={false}
                 dropdownStyle={{ width: 360 }}
               >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                {sellers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>
             </Form.Item>
           </ImportDataPanel>
