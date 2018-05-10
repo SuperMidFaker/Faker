@@ -4,27 +4,27 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   purchaseOrders: {
-    id: 'scof.purchase.orders',
+    id: 'sof.purchase.orders',
     defaultMessage: '采购订单',
   },
   createInvoice: {
-    id: 'scof.purchase.orders.create',
+    id: 'sof.purchase.orders.create',
     defaultMessage: '新建采购订单',
   },
   batchImportInvoices: {
-    id: 'scof.purchase.orders.batch.import',
+    id: 'sof.purchase.orders.batch.import',
     defaultMessage: '导入采购',
   },
   toShip: {
-    id: 'scof.purchase.orders.status.to.ship',
+    id: 'sof.purchase.orders.status.to.ship',
     defaultMessage: '待发货',
   },
   partialShipped: {
-    id: 'scof.purchase.orders.status.partial.shipped',
+    id: 'sof.purchase.orders.status.partial.shipped',
     defaultMessage: '部分发货',
   },
   shipped: {
-    id: 'scof.purchase.orders.status.shipped',
+    id: 'sof.purchase.orders.status.shipped',
     defaultMessage: '已发货',
   },
 });

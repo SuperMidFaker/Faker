@@ -7,12 +7,10 @@ import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Button, Layout, notification } from 'antd';
-import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
 import OrderForm from './order';
-import messages from './message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const VALIDATE_MSG = {
   no_customer: '请选择客户',
@@ -60,7 +58,8 @@ export default class CreateOrder extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleSave = () => {
     const { formData } = this.props;
     const valitFormData = {};
@@ -145,7 +144,7 @@ export default class CreateOrder extends Component {
     const invalidOrder = !formData.cust_shipmt_transfer || !formData.flow_id;
     return (
       <Layout>
-        <PageHeader breadcrumb={[this.msg('shipmentOrders'), this.msg('createOrder')]}>
+        <PageHeader breadcrumb={[this.msg('shipmentOrders'), this.gmsg('create')]}>
           <PageHeader.Actions>
             <Button type="primary" icon="save" onClick={this.handleSave} loading={this.props.saving} disabled={invalidOrder}>
               {this.msg('save')}

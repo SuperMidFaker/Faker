@@ -4,463 +4,463 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   flow: {
-    id: 'scof.flow',
+    id: 'sof.flow',
     defaultMessage: '流程',
   },
   flowName: {
-    id: 'scof.flow.name',
+    id: 'sof.flow.name',
     defaultMessage: '流程名称',
   },
   flowDesigner: {
-    id: 'scof.flow.designer',
+    id: 'sof.flow.designer',
     defaultMessage: '流程设计器',
   },
   createFlow: {
-    id: 'scof.flow.create',
+    id: 'sof.flow.create',
     defaultMessage: '创建流程',
   },
   flowCustomer: {
-    id: 'scof.flow.customer',
+    id: 'sof.flow.customer',
     defaultMessage: '关联客户',
   },
   customerTracking: {
-    id: 'scof.flow.customer.tracking',
+    id: 'sof.flow.customer.tracking',
     defaultMessage: '客户追踪表',
   },
   nodeOrdering: {
-    id: 'scof.flow.node.ordering',
+    id: 'sof.flow.node.ordering',
     defaultMessage: '节点次序',
   },
   flowRelationGraph: {
-    id: 'scof.flow.relation.graph',
+    id: 'sof.flow.relation.graph',
     defaultMessage: '流程关系图',
   },
   addFlowNode: {
-    id: 'scof.flow.node.add',
+    id: 'sof.flow.node.add',
     defaultMessage: '添加节点',
   },
   addFlowEdge: {
-    id: 'scof.flow.edge.add',
+    id: 'sof.flow.edge.add',
     defaultMessage: '添加边界',
   },
   flowEdge: {
-    id: 'scof.flow.graph.edge',
+    id: 'sof.flow.graph.edge',
     defaultMessage: '节点边界',
   },
   providerQuoteNo: {
-    id: 'scof.flow.biz.cms.provider.quote.no',
+    id: 'sof.flow.biz.cms.provider.quote.no',
     defaultMessage: '服务报价',
   },
   sourceNode: {
-    id: 'scof.flow.edge.source',
+    id: 'sof.flow.edge.source',
     defaultMessage: '源节点',
   },
   targetNode: {
-    id: 'scof.flow.edge.target',
+    id: 'sof.flow.edge.target',
     defaultMessage: '目的节点',
   },
   edgeCondition: {
-    id: 'scof.flow.edge.condition',
+    id: 'sof.flow.edge.condition',
     defaultMessage: '边界条件',
   },
   flowNodeImport: {
-    id: 'scof.flow.node.import',
+    id: 'sof.flow.node.import',
     defaultMessage: '进口清关',
   },
   flowNodeExport: {
-    id: 'scof.flow.node.export',
+    id: 'sof.flow.node.export',
     defaultMessage: '出口清关',
   },
   flowNodeTMS: {
-    id: 'scof.flow.node.tms',
+    id: 'sof.flow.node.tms',
     defaultMessage: '运输',
   },
   flowNodeCWMRec: {
-    id: 'scof.flow.node.cwm.rec',
+    id: 'sof.flow.node.cwm.rec',
     defaultMessage: '仓储入库',
   },
   flowNodeCWMShip: {
-    id: 'scof.flow.node.cwm.ship',
+    id: 'sof.flow.node.cwm.ship',
     defaultMessage: '仓储出库',
   },
   flowNodeTerminal: {
-    id: 'scof.flow.node.terminal',
+    id: 'sof.flow.node.terminal',
     defaultMessage: '流程终结点',
   },
   saveFlow: {
-    id: 'scof.flow.graph.save',
+    id: 'sof.flow.graph.save',
     defaultMessage: '保存',
   },
   flowSetting: {
-    id: 'scof.flow.setting',
+    id: 'sof.flow.setting',
     defaultMessage: '流程设置',
   },
   bizObject: {
-    id: 'scof.flow.biz.object',
+    id: 'sof.flow.biz.object',
     defaultMessage: '业务对象',
   },
   bizObjOperation: {
-    id: 'scof.flow.biz.object.operation',
+    id: 'sof.flow.biz.object.operation',
     defaultMessage: '业务操作',
   },
   cmsDelegation: {
-    id: 'scof.flow.biz.cms.delegation',
+    id: 'sof.flow.biz.cms.delegation',
     defaultMessage: '清关委托',
   },
   cmsDeclManifest: {
-    id: 'scof.flow.biz.cms.decl.manifest',
+    id: 'sof.flow.biz.cms.decl.manifest',
     defaultMessage: '报关清单',
   },
   cmsCustomsDecl: {
-    id: 'scof.flow.biz.cms.customs.decl',
+    id: 'sof.flow.biz.cms.customs.decl',
     defaultMessage: '报关单',
   },
   tmsShipment: {
-    id: 'scof.flow.biz.tms.shipment',
+    id: 'sof.flow.biz.tms.shipment',
     defaultMessage: '运单',
   },
   cwmRecAsn: {
-    id: 'scof.flow.biz.cwm.rec.asn',
+    id: 'sof.flow.biz.cwm.rec.asn',
     defaultMessage: '收货通知',
   },
   cwmShippingOrder: {
-    id: 'scof.flow.biz.cwm.shipping.order',
+    id: 'sof.flow.biz.cwm.shipping.order',
     defaultMessage: '出货订单',
   },
   cwmShippingOrderNormalReg: {
-    id: 'scof.flow.biz.cwm.shipping.normalreg',
+    id: 'sof.flow.biz.cwm.shipping.normalreg',
     defaultMessage: '普通出库',
   },
   declCustoms: {
-    id: 'scof.flow.biz.cms.declcustoms',
+    id: 'sof.flow.biz.cms.declcustoms',
     defaultMessage: '申报地海关',
   },
   declWay: {
-    id: 'scof.flow.biz.cms.declWay',
+    id: 'sof.flow.biz.cms.declWay',
     defaultMessage: '报关类型',
   },
   transMode: {
-    id: 'scof.flow.biz.cms.transMode',
+    id: 'sof.flow.biz.cms.transMode',
     defaultMessage: '运输方式',
   },
   customsBroker: {
-    id: 'scof.flow.biz.cms.customs.broker',
+    id: 'sof.flow.biz.cms.customs.broker',
     defaultMessage: '报关供应商',
   },
   ciqBroker: {
-    id: 'scof.flow.biz.cms.ciq.broker',
+    id: 'sof.flow.biz.cms.ciq.broker',
     defaultMessage: '报检供应商',
   },
   customsQuoteNo: {
-    id: 'scof.flow.biz.cms.customs.quote.no',
+    id: 'sof.flow.biz.cms.customs.quote.no',
     defaultMessage: '供应商报价',
   },
   manifestTemplate: {
-    id: 'scof.flow.biz.cms.manifest.template',
+    id: 'sof.flow.biz.cms.manifest.template',
     defaultMessage: '制单规则',
   },
   customsDeclType: {
-    id: 'scof.flow.biz.cms.customs.decl.type',
+    id: 'sof.flow.biz.cms.customs.decl.type',
     defaultMessage: '单证类型',
   },
   customsDeclChannel: {
-    id: 'scof.flow.biz.cms.customs.decl.channel',
+    id: 'sof.flow.biz.cms.customs.decl.channel',
     defaultMessage: '申报通道',
   },
   customsEasipass: {
-    id: 'scof.flow.biz.cms.customs.easipass',
+    id: 'sof.flow.biz.cms.customs.easipass',
     defaultMessage: '亿通EDI',
   },
   customsQuickpass: {
-    id: 'scof.flow.biz.cms.customs.quickpass',
+    id: 'sof.flow.biz.cms.customs.quickpass',
     defaultMessage: 'QP预录入',
   },
   consigner: {
-    id: 'scof.flow.biz.tms.consigner',
+    id: 'sof.flow.biz.tms.consigner',
     defaultMessage: '发货人',
   },
   consignee: {
-    id: 'scof.flow.biz.tms.consignee',
+    id: 'sof.flow.biz.tms.consignee',
     defaultMessage: '收货人',
   },
   transitMode: {
-    id: 'scof.flow.biz.tms.transit.mode',
+    id: 'sof.flow.biz.tms.transit.mode',
     defaultMessage: '运输模式',
   },
   cargoType: {
-    id: 'scof.flow.biz.tms.cargo.type',
+    id: 'sof.flow.biz.tms.cargo.type',
     defaultMessage: '货物类型',
   },
   podType: {
-    id: 'scof.flow.biz.tms.pod.type',
+    id: 'sof.flow.biz.tms.pod.type',
     defaultMessage: '回单',
   },
   locationProvince: {
-    id: 'scof.flow.biz.tms.location.province',
+    id: 'sof.flow.biz.tms.location.province',
     defaultMessage: '省/市/区',
   },
   locationAddress: {
-    id: 'scof.flow.biz.tms.location.address',
+    id: 'sof.flow.biz.tms.location.address',
     defaultMessage: '具体地址',
   },
   locationContact: {
-    id: 'scof.flow.biz.tms.location.contact',
+    id: 'sof.flow.biz.tms.location.contact',
     defaultMessage: '联系人/电话/邮箱',
   },
   newStartLocation: {
-    id: 'scof.flow.biz.tms.newStartLocation',
+    id: 'sof.flow.biz.tms.newStartLocation',
     defaultMessage: '新起始地',
   },
   cwmWarehouse: {
-    id: 'scof.flow.biz.cwm.warehouse',
+    id: 'sof.flow.biz.cwm.warehouse',
     defaultMessage: '仓库',
   },
   supplier: {
-    id: 'scof.flow.biz.cwm.supplier',
+    id: 'sof.flow.biz.cwm.supplier',
     defaultMessage: '供应商',
   },
   nodeName: {
-    id: 'scof.flow.biz.node.name',
+    id: 'sof.flow.biz.node.name',
     defaultMessage: '节点名称',
   },
   nodeDemander: {
-    id: 'scof.flow.biz.node.demander',
+    id: 'sof.flow.biz.node.demander',
     defaultMessage: '业务需求方',
   },
   nodeProvider: {
-    id: 'scof.flow.biz.node.provider',
+    id: 'sof.flow.biz.node.provider',
     defaultMessage: '服务提供方',
   },
   nodeExecutor: {
-    id: 'scof.flow.biz.node.executor',
+    id: 'sof.flow.biz.node.executor',
     defaultMessage: '执行者',
   },
   multiBizInstance: {
-    id: 'scof.flow.biz.node.multi.instance',
+    id: 'sof.flow.biz.node.multi.instance',
     defaultMessage: '多业务实例',
   },
   bizProperties: {
-    id: 'scof.flow.biz.properites',
+    id: 'sof.flow.biz.properites',
     defaultMessage: '业务属性',
   },
   nodeProperties: {
-    id: 'scof.flow.node.properites',
+    id: 'sof.flow.node.properites',
     defaultMessage: '节点属性',
   },
   nodeEvents: {
-    id: 'scof.flow.node.events',
+    id: 'sof.flow.node.events',
     defaultMessage: '节点事件',
   },
   bizEvents: {
-    id: 'scof.flow.biz.events',
+    id: 'sof.flow.biz.events',
     defaultMessage: '业务事件',
   },
   nodeOnEnter: {
-    id: 'scof.flow.biz.node.onenter',
+    id: 'sof.flow.biz.node.onenter',
     defaultMessage: '进入节点',
   },
   nodeOnExit: {
-    id: 'scof.flow.biz.node.onexit',
+    id: 'sof.flow.biz.node.onexit',
     defaultMessage: '离开节点',
   },
   onCreated: {
-    id: 'scof.flow.biz.event.created',
+    id: 'sof.flow.biz.event.created',
     defaultMessage: '已创建',
   },
   onDelgDeclared: {
-    id: 'scof.flow.biz.event.cms.declared',
+    id: 'sof.flow.biz.event.cms.declared',
     defaultMessage: '已发送申报',
   },
   onDelgInspected: {
-    id: 'scof.flow.biz.event.cms.inspected',
+    id: 'sof.flow.biz.event.cms.inspected',
     defaultMessage: '已查验',
   },
   onDelgReleased: {
-    id: 'scof.flow.biz.event.cms.released',
+    id: 'sof.flow.biz.event.cms.released',
     defaultMessage: '已放行',
   },
   onManifestGenerated: {
-    id: 'scof.flow.biz.event.cms.manifest.generated',
+    id: 'sof.flow.biz.event.cms.manifest.generated',
     defaultMessage: '已生成报关建议书',
   },
   onCustomsReviewed: {
-    id: 'scof.flow.biz.event.cms.customs.reviewed',
+    id: 'sof.flow.biz.event.cms.customs.reviewed',
     defaultMessage: '已复核',
   },
   onShipmtAccepted: {
-    id: 'scof.flow.biz.event.tms.shipmt.accepted',
+    id: 'sof.flow.biz.event.tms.shipmt.accepted',
     defaultMessage: '已接单',
   },
   onShipmtDispatched: {
-    id: 'scof.flow.biz.event.tms.shipmt.dispatched',
+    id: 'sof.flow.biz.event.tms.shipmt.dispatched',
     defaultMessage: '已调度',
   },
   onPickedUp: {
-    id: 'scof.flow.biz.event.tms.shipment.pickedup',
+    id: 'sof.flow.biz.event.tms.shipment.pickedup',
     defaultMessage: '已提货',
   },
   onDelivered: {
-    id: 'scof.flow.biz.event.tms.shipment.delivered',
+    id: 'sof.flow.biz.event.tms.shipment.delivered',
     defaultMessage: '已送货',
   },
   onPod: {
-    id: 'scof.flow.biz.event.tms.shipment.pod',
+    id: 'sof.flow.biz.event.tms.shipment.pod',
     defaultMessage: '已回单',
   },
   onAsnReleased: {
-    id: 'scof.flow.biz.event.asn.released',
+    id: 'sof.flow.biz.event.asn.released',
     defaultMessage: '已释放',
   },
   onAsnInbound: {
-    id: 'scof.flow.biz.event.asn.inbound',
+    id: 'sof.flow.biz.event.asn.inbound',
     defaultMessage: '收货中',
   },
   onAsnFinished: {
-    id: 'scof.flow.biz.event.asn.finished',
+    id: 'sof.flow.biz.event.asn.finished',
     defaultMessage: '已完成',
   },
   onSoReleased: {
-    id: 'scof.flow.biz.event.so.released',
+    id: 'sof.flow.biz.event.so.released',
     defaultMessage: '已释放',
   },
   onSoOutbound: {
-    id: 'scof.flow.biz.event.so.outbound',
+    id: 'sof.flow.biz.event.so.outbound',
     defaultMessage: '出库中',
   },
   onSoFinished: {
-    id: 'scof.flow.biz.event.so.finished',
+    id: 'sof.flow.biz.event.so.finished',
     defaultMessage: '已发货',
   },
   onSoDecl: {
-    id: 'scof.flow.biz.event.so.decl',
+    id: 'sof.flow.biz.event.so.decl',
     defaultMessage: '出库清关',
   },
   onRegFinished: {
-    id: 'scof.flow.biz.event.reg.finished',
+    id: 'sof.flow.biz.event.reg.finished',
     defaultMessage: '已备案',
   },
   delgDeclare: {
-    id: 'scof.flow.biz.action.delg.declare',
+    id: 'sof.flow.biz.action.delg.declare',
     defaultMessage: '自动申报（仅适用于接口对接模式）',
   },
   manifestCreate: {
-    id: 'scof.flow.biz.action.manifest.create',
+    id: 'sof.flow.biz.action.manifest.create',
     defaultMessage: '生成清单',
   },
   manifestGenerate: {
-    id: 'scof.flow.biz.action.manifest.generate',
+    id: 'sof.flow.biz.action.manifest.generate',
     defaultMessage: '生成报关建议书',
   },
   customsReview: {
-    id: 'scof.flow.biz.action.customs.review',
+    id: 'sof.flow.biz.action.customs.review',
     defaultMessage: '复核',
   },
   customsDeclare: {
-    id: 'scof.flow.biz.action.customs.delcare',
+    id: 'sof.flow.biz.action.customs.delcare',
     defaultMessage: '发送申报',
   },
   customsRelease: {
-    id: 'scof.flow.biz.action.customs.release',
+    id: 'sof.flow.biz.action.customs.release',
     defaultMessage: '报关单放行',
   },
   shipmtAccept: {
-    id: 'scof.flow.biz.action.shipmt.accept',
+    id: 'sof.flow.biz.action.shipmt.accept',
     defaultMessage: '接单',
   },
   asnRelease: {
-    id: 'scof.flow.biz.action.asn.release',
+    id: 'sof.flow.biz.action.asn.release',
     defaultMessage: '释放',
   },
   soRelease: {
-    id: 'scof.flow.biz.action.so.release',
+    id: 'sof.flow.biz.action.so.release',
     defaultMessage: '释放',
   },
   triggerActions: {
-    id: 'scof.flow.trigger',
+    id: 'sof.flow.trigger',
     defaultMessage: '事件触发器',
   },
   addTrigger: {
-    id: 'scof.flow.trigger.add',
+    id: 'sof.flow.trigger.add',
     defaultMessage: '添加触发器',
   },
   triggerMode: {
-    id: 'scof.flow.trigger.mode',
+    id: 'sof.flow.trigger.mode',
     defaultMessage: '触发方式',
   },
   triggerTimer: {
-    id: 'scof.flow.trigger.timer',
+    id: 'sof.flow.trigger.timer',
     defaultMessage: '定时器',
   },
   triggerAction: {
-    id: 'scof.flow.trigger.action',
+    id: 'sof.flow.trigger.action',
     defaultMessage: '触发动作',
   },
   notifyContent: {
-    id: 'scof.flow.notify.content',
+    id: 'sof.flow.notify.content',
     defaultMessage: '通知内容',
   },
   platformMsg: {
-    id: 'scof.flow.notify.platformMsg',
+    id: 'sof.flow.notify.platformMsg',
     defaultMessage: '平台消息',
   },
   mail: {
-    id: 'scof.flow.notify.mail',
+    id: 'sof.flow.notify.mail',
     defaultMessage: '邮箱',
   },
   sms: {
-    id: 'scof.flow.notify.sms',
+    id: 'sof.flow.notify.sms',
     defaultMessage: '短信',
   },
   timerWait: {
-    id: 'scof.flow.trigger.timer.wait',
+    id: 'sof.flow.trigger.timer.wait',
     defaultMessage: '等待',
   },
   instantTrigger: {
-    id: 'scof.flow.trigger.instant',
+    id: 'sof.flow.trigger.instant',
     defaultMessage: '立即触发',
   },
   scheduledTrigger: {
-    id: 'scof.flow.trigger.scheduled',
+    id: 'sof.flow.trigger.scheduled',
     defaultMessage: '定时触发',
   },
   actionCreate: {
-    id: 'scof.flow.trigger.action.create',
+    id: 'sof.flow.trigger.action.create',
     defaultMessage: '创建业务对象',
   },
   actionUpdate: {
-    id: 'scof.flow.trigger.action.update',
+    id: 'sof.flow.trigger.action.update',
     defaultMessage: '更新业务状态',
   },
   actionExecute: {
-    id: 'scof.flow.trigger.action.execute',
+    id: 'sof.flow.trigger.action.execute',
     defaultMessage: '执行业务操作',
   },
   actionNotify: {
-    id: 'scof.flow.trigger.action.notify',
+    id: 'sof.flow.trigger.action.notify',
     defaultMessage: '发送通知',
   },
   meantime: {
-    id: 'scof.flow.trigger.action.instant.meantime',
+    id: 'sof.flow.trigger.action.instant.meantime',
     defaultMessage: '时立即',
   },
   timerMinutes: {
-    id: 'scof.flow.trigger.action.scheduled.minutes',
+    id: 'sof.flow.trigger.action.scheduled.minutes',
     defaultMessage: '分钟',
   },
   deleteConfirm: {
-    id: 'scof.flow.trigger.action.confirm.delete',
+    id: 'sof.flow.trigger.action.confirm.delete',
     defaultMessage: '确定删除该动作',
   },
   design: {
-    id: 'scof.flow.list.action.design',
+    id: 'sof.flow.list.action.design',
     defaultMessage: '设计',
   },
   authorizedVendor: {
-    id: 'scof.flow.authorized.vendor',
+    id: 'sof.flow.authorized.vendor',
     defaultMessage: '已授权提供方',
   },
   errorMessage: {
-    id: 'scof.flow..error.message',
+    id: 'sof.flow..error.message',
     defaultMessage: '提供方未与本租户建立客户关系',
   },
 });

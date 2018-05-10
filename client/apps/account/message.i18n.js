@@ -1,10 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  pwdTitle: {
-    id: 'account.password.title',
-    defaultMessage: '密码修改',
-  },
   pwdRequired: {
     id: 'account.password.required',
     defaultMessage: '请输入密码',
@@ -32,26 +28,6 @@ const messages = defineMessages({
   confirmPwd: {
     id: 'account.password.confirm',
     defaultMessage: '确认密码',
-  },
-  incorretOldPwd: {
-    id: 'account.password.incorret.old',
-    defaultMessage: '旧密码有误',
-  },
-  invalidUser: {
-    id: 'account.password.invalid.user',
-    defaultMessage: '当前用户非法登录',
-  },
-  profileTitle: {
-    id: 'account.profile.title',
-    defaultMessage: '帐号设置',
-  },
-  avatarUpdate: {
-    id: 'account.profile.avatar.update',
-    defaultMessage: '点击更新',
-  },
-  goBack: {
-    id: 'corp.messageList.goBack',
-    defaultMessage: '返回',
   },
 });
 

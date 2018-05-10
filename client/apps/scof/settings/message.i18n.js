@@ -4,7 +4,7 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   settings: {
-    id: 'scof.settings',
+    id: 'sof.settings',
     defaultMessage: '设置',
   },
   preferences: {
@@ -12,23 +12,23 @@ const messages = defineMessages({
     defaultMessage: '参数设定',
   },
   orderParams: {
-    id: 'scof.settings.order.params',
+    id: 'sof.settings.order.params',
     defaultMessage: '订单参数',
   },
   orderTypes: {
-    id: 'scof.settings.order.types',
+    id: 'sof.settings.order.types',
     defaultMessage: '订单类型',
   },
   exceptionCode: {
-    id: 'scof.settings.order.exception.code',
+    id: 'sof.settings.order.exception.code',
     defaultMessage: '异常原因',
   },
   config: {
-    id: 'scof.settings.config',
+    id: 'sof.settings.config',
     defaultMessage: '配置',
   },
   orderConfig: {
-    id: 'scof.settings.order.config',
+    id: 'sof.settings.order.config',
     defaultMessage: '订单类型配置',
   },
   orderTypeInfo: {

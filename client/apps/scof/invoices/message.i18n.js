@@ -4,95 +4,95 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   invoices: {
-    id: 'scof.invoices',
+    id: 'sof.invoices',
     defaultMessage: '商业发票',
   },
   invoiceNo: {
-    id: 'scof.invoices.invoice.no',
+    id: 'sof.invoices.invoice.no',
     defaultMessage: '发票号',
   },
   invoiceDate: {
-    id: 'scof.invoices.invoice.date',
+    id: 'sof.invoices.invoice.date',
     defaultMessage: '开票日期',
   },
   buyer: {
-    id: 'scof.invoices.invoice.buyer',
+    id: 'sof.invoices.invoice.buyer',
     defaultMessage: '购买方',
   },
   selectBuyer: {
-    id: 'scof.invoices.invoice.buyer.placeholder',
+    id: 'sof.invoices.invoice.buyer.placeholder',
     defaultMessage: '请选择购买方',
   },
   seller: {
-    id: 'scof.invoices.invoice.seller',
+    id: 'sof.invoices.invoice.seller',
     defaultMessage: '销售方',
   },
   selectSeller: {
-    id: 'scof.invoices.invoice.seller.placeholder',
+    id: 'sof.invoices.invoice.seller.placeholder',
     defaultMessage: '请选择销售方',
   },
   poNo: {
-    id: 'scof.invoices.invoice.poNo',
+    id: 'sof.invoices.invoice.poNo',
     defaultMessage: '采购订单号',
   },
   packageAndNumber: {
-    id: 'scof.invoices.invoice.packageAndnumber',
+    id: 'sof.invoices.invoice.packageAndnumber',
     defaultMessage: '包装/件数',
   },
   selectPackage: {
-    id: 'scof.invoices.invoice.package.placeholder',
+    id: 'sof.invoices.invoice.package.placeholder',
     defaultMessage: '选择包装方式',
   },
   grossWt: {
-    id: 'scof.invoices.invoice.grossWt',
+    id: 'sof.invoices.invoice.grossWt',
     defaultMessage: '总毛重',
   },
   tradeMode: {
-    id: 'scof.invoices.invoice.tradeMode',
+    id: 'sof.invoices.invoice.tradeMode',
     defaultMessage: '成交方式',
   },
   totalQty: {
-    id: 'scof.invoices.invoice.totalQty',
+    id: 'sof.invoices.invoice.totalQty',
     defaultMessage: '总数量',
   },
   totalAmount: {
-    id: 'scof.invoices.invoice.totalAmount',
+    id: 'sof.invoices.invoice.totalAmount',
     defaultMessage: '总金额',
   },
   totalNetWt: {
-    id: 'scof.invoices.invoice.totalNetWt',
+    id: 'sof.invoices.invoice.totalNetWt',
     defaultMessage: '总净重',
   },
   category: {
-    id: 'scof.invoices.invoice.category',
+    id: 'sof.invoices.invoice.category',
     defaultMessage: '发票类别',
   },
   currency: {
-    id: 'scof.invoices.invoice.currency',
+    id: 'sof.invoices.invoice.currency',
     defaultMessage: '币制',
   },
   status: {
-    id: 'scof.invoices.invoice.status',
+    id: 'sof.invoices.invoice.status',
     defaultMessage: '状态',
   },
   createInvoice: {
-    id: 'scof.invoices.create',
+    id: 'sof.invoices.create',
     defaultMessage: '新建发票',
   },
   batchImportInvoices: {
-    id: 'scof.invoices.batch.import',
+    id: 'sof.invoices.batch.import',
     defaultMessage: '批量导入发票',
   },
   toShip: {
-    id: 'scof.invoices.status.to.ship',
+    id: 'sof.invoices.status.to.ship',
     defaultMessage: '待发货',
   },
   partialShipped: {
-    id: 'scof.invoices.status.partial.shipped',
+    id: 'sof.invoices.status.partial.shipped',
     defaultMessage: '部分发货',
   },
   shipped: {
-    id: 'scof.invoices.status.shipped',
+    id: 'sof.invoices.status.shipped',
     defaultMessage: '已发货',
   },
 
