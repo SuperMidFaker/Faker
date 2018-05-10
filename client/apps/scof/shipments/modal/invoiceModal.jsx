@@ -45,7 +45,7 @@ export default class InvoiceModal extends Component {
     selectedRowKeys: [],
   }
   componentDidMount() {
-    this.props.loadInvoiceBuyerSellers('', [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null);
+    this.props.loadInvoiceBuyerSellers([PARTNER_ROLES.CUS, PARTNER_ROLES.SUP], null);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {

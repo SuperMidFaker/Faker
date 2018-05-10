@@ -239,7 +239,7 @@ export function loadInvoiceCategories() {
   };
 }
 
-export function loadInvoiceBuyerSellers(tenantId, roles, businessTypes) {
+export function loadInvoiceBuyerSellers(roles, businessTypes) {
   return {
     [CLIENT_API]: {
       types: [
@@ -250,7 +250,7 @@ export function loadInvoiceBuyerSellers(tenantId, roles, businessTypes) {
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
       params: {
-        tenantId,
+        tenantId: '',
         roles: JSON.stringify(roles),
         businessTypes: JSON.stringify(businessTypes),
       },
