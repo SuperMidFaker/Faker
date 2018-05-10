@@ -91,9 +91,13 @@ const messages = defineMessages({
     id: 'sof.partner.english.name',
     defaultMessage: '英文名称',
   },
-  partnerProfile: {
+  profile: {
     id: 'sof.partner.profile',
     defaultMessage: '资料',
+  },
+  businessType: {
+    id: 'sof.partner.business.type',
+    defaultMessage: '业务类型',
   },
   contact: {
     id: 'sof.partner.contact',

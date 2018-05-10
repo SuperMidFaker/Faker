@@ -70,13 +70,11 @@ export default class CarrierModal extends React.Component {
     } = this.state;
     if (partnerName === '') {
       message.error('请填写承运商名称');
-    } else if (operation === 'add' && partnerUniqueCode === '') {
-      message.error('请填写统一社会信用代码');
-    } else if (this.props.operation === 'edit') {
+    } else if (operation === 'edit') {
       const partnerInfo = {
         name: partnerName,
         partnerUniqueCode,
-        code: partnerCode,
+        partnerCode,
         role,
         business,
         businessType,
@@ -113,7 +111,9 @@ export default class CarrierModal extends React.Component {
       partnerName, partnerCode, partnerUniqueCode, role, business, businessType,
     } = this.state;
     this.props.addPartner({
-      partnerInfo: { partnerName, partnerCode, partnerUniqueCode },
+      name: partnerName,
+      partnerCode,
+      partnerUniqueCode,
       role,
       business,
       businessType,
@@ -145,19 +145,18 @@ export default class CarrierModal extends React.Component {
               this.setState({ partnerName: e.target.value })}
           />
         </FormItem>
-        <FormItem {...formItemLayout} label="统一社会信用代码:" required>
-          <Input
-            required
-            value={partnerUniqueCode}
-            onChange={e =>
-              this.setState({ partnerUniqueCode: e.target.value })}
-          />
-        </FormItem>
         <FormItem {...formItemLayout} label="承运商代码:" required>
           <Input
             value={partnerCode}
             onChange={e =>
               this.setState({ partnerCode: e.target.value })}
+          />
+        </FormItem>
+        <FormItem {...formItemLayout} label="统一社会信用代码:" required>
+          <Input
+            value={partnerUniqueCode}
+            onChange={e =>
+              this.setState({ partnerUniqueCode: e.target.value })}
           />
         </FormItem>
       </Modal>

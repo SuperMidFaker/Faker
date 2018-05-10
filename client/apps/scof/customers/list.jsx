@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Menu, Layout } from 'antd';
+import { Menu, Select, Layout } from 'antd';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
@@ -11,13 +11,14 @@ import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import TrimSpan from 'client/components/trimSpan';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { loadPartnerList, showCustomerModal, showCustomerPanel, changePartnerStatus, deletePartner } from 'common/reducers/partner';
-import { PARTNER_ROLES } from 'common/constants';
+import { loadPartnerList, showVendorModal, showCustomerPanel, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { PARTNER_ROLES, BUSINESS_TYPES } from 'common/constants';
 import CustomerPanel from './pane/customerPanel';
-import CustomerModal from './modals/customerModal';
+import VendorModal from '../vendors/modals/vendorModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -28,7 +29,7 @@ const { Content } = Layout;
     loaded: state.partner.loaded,
   }),
   {
-    loadPartnerList, changePartnerStatus, deletePartner, showCustomerPanel, showCustomerModal,
+    loadPartnerList, changePartnerStatus, deletePartner, showCustomerPanel, showVendorModal,
   }
 )
 @connectNav({
@@ -42,7 +43,7 @@ export default class VendorList extends React.Component {
     customerlist: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
     loadPartnerList: PropTypes.func.isRequired,
     deletePartner: PropTypes.func.isRequired,
-    showCustomerModal: PropTypes.func.isRequired,
+    showVendorModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   componentDidMount() {
@@ -146,7 +147,7 @@ export default class VendorList extends React.Component {
     this.props.loadPartnerList(PARTNER_ROLES.CUS, pageSizeArg, currentArg, filtersArg);
   }
   handleVendorAdd = () => {
-    this.props.showCustomerModal('add');
+    this.props.showVendorModal('add', { role: PARTNER_ROLES.CUS });
   }
   handleVendorEdit = (customer) => {
     this.props.showCustomerPanel({ visible: true, customer });
@@ -162,12 +163,24 @@ export default class VendorList extends React.Component {
     const filters = { ...this.props.listFilter, name: value };
     this.handleTableLoad(null, null, filters);
   }
+  handleBusiTypeChange = (biztypes) => {
+    const filters = { ...this.props.listFilter, businessType: biztypes };
+    this.handleTableLoad(null, null, filters);
+  }
   render() {
-    const toolbarActions = (<span style={{ width: 500 }}>
+    const toolbarActions = (<span>
       <SearchBox
         placeholder={this.msg('partnerSearchPlaceholder')}
         onSearch={this.handleSearch}
       />
+      <Select
+        mode="multiple"
+        placeholder={this.msg('businessType')}
+        onChange={this.handleBusiTypeChange}
+      >
+        {BUSINESS_TYPES.map(item => (<Option value={item.value} key={item.value}>
+          {item.label}</Option>))}
+      </Select>
     </span>);
     const dropdown = (
       <Menu onClick={this.handleMenuClick}>
@@ -194,7 +207,7 @@ export default class VendorList extends React.Component {
           />
         </Content>
         <CustomerPanel />
-        <CustomerModal onOk={this.handleTableLoad} />
+        <VendorModal onOk={this.handleTableLoad} />
       </Layout>
     );
   }

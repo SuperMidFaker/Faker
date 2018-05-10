@@ -21,9 +21,8 @@ const { Content, Sider } = Layout;
 
 const { TabPane } = Tabs;
 
-function fetchData({ state, dispatch }) {
+function fetchData({ dispatch }) {
   return dispatch(loadPartners({
-    tenantId: state.account.tenantId,
     role: PARTNER_ROLES.CUS,
     businessType: PARTNER_BUSINESSE_TYPES.clearance,
   }));

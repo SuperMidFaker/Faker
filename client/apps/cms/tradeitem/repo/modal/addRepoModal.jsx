@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Select, message } from 'antd';
 import { createRepo, closeAddModal, loadRepos } from 'common/reducers/cmsTradeitem';
-
+import { loadPartners } from 'common/reducers/partner';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
-
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -18,10 +18,12 @@ const FormItem = Form.Item;
     tenantName: state.account.tenantName,
     loginId: state.account.loginId,
     visibleAddModal: state.cmsTradeitem.visibleAddModal,
-    customers: state.sofCustomers.customers,
+    customers: state.partner.partners,
     repos: state.cmsTradeitem.repos,
   }),
-  { createRepo, closeAddModal, loadRepos }
+  {
+    createRepo, closeAddModal, loadPartners, loadRepos,
+  }
 )
 @Form.create()
 export default class AddTradeRepoModal extends React.Component {
@@ -31,21 +33,30 @@ export default class AddTradeRepoModal extends React.Component {
     tenantName: PropTypes.string.isRequired,
     loginId: PropTypes.number.isRequired,
     visibleAddModal: PropTypes.bool.isRequired,
-    customers: PropTypes.array.isRequired,
-    repos: PropTypes.array.isRequired,
+    customers: PropTypes.arrayOf({ partner_id: PropTypes.number }).isRequired,
+    repos: PropTypes.arrayOf({ owner_partner_id: PropTypes.number }).isRequired,
   }
   state = {
     customerid: null,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && !this.props.visible) {
+      this.props.loadPartners({
+        role: PARTNER_ROLES.CUS,
+        businessType: PARTNER_BUSINESSE_TYPES.clearance,
+      });
+    }
   }
   handleCancel = () => {
     this.props.closeAddModal();
   }
   handleOk = () => {
-    const customer = this.props.customers.filter(cust => cust.id === this.state.customerid)[0];
+    const customer = this.props.customers.filter(cust =>
+      cust.partner_id === this.state.customerid)[0];
     this.props.createRepo({
       createrTenantId: this.props.tenantId,
-      ownerPartnerId: customer.id,
-      ownerTenantId: customer.partner_tenant_id,
+      ownerPartnerId: customer.partner_id,
+      ownerTenantId: customer.tid,
       ownerName: customer.name,
       tenantName: this.props.tenantName,
       createrLoginId: this.props.loginId,
@@ -70,11 +81,8 @@ export default class AddTradeRepoModal extends React.Component {
     const {
       form: { getFieldDecorator }, visibleAddModal, customers, repos,
     } = this.props;
-    let newCustomers = customers;
-    for (let i = 0; i < repos.length; i++) {
-      const owner = repos[i];
-      newCustomers = newCustomers.filter(ct => ct.id !== owner.owner_partner_id);
-    }
+    const newCustomers = customers.filter(ct =>
+      repos.filter(repo => repo.owner_partner_id === ct.partner_id).length > 0);
     return (
       <Modal
         maskClosable={false}
@@ -85,16 +93,15 @@ export default class AddTradeRepoModal extends React.Component {
       >
         <Form>
           <FormItem label={this.msg('repoOwner')} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('customs')(<Select
+            {getFieldDecorator('customerId')(<Select
               showSearch
               placeholder="选择客户"
               optionFilterProp="children"
               onChange={this.handleSelectChange}
             >
               {newCustomers.map(data => (<Option
-                key={data.id}
-                value={data.id}
-                search={`${data.partner_code}${data.name}`}
+                key={data.partner_id}
+                value={data.partner_id}
               >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
               </Option>))}
             </Select>)}

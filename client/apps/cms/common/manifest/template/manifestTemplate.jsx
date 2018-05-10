@@ -104,8 +104,8 @@ function getFieldInits(formData) {
     formData: state.cmsManifest.formData,
     fieldInits: getFieldInits(state.cmsManifest.formData),
     changeTimes: state.cmsManifest.changeTimes,
-    customers: state.sofCustomers.customers.map(tm => ({
-      key: tm.id,
+    customers: state.partner.partners.map(tm => ({
+      key: tm.partner_id,
       text: tm.name,
     })),
   }),

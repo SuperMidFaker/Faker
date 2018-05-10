@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Avatar, Button, Icon, Row, Col, Card, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 import InfoItem from 'client/components/InfoItem';
-import { showCustomerPanel, showCustomerModal } from 'common/reducers/partner';
+import { showCustomerPanel, showVendorModal } from 'common/reducers/partner';
 import ServiceTeamPane from './serviceTeamPane';
 import { formatMsg } from '../message.i18n';
 
@@ -17,7 +17,7 @@ const { TabPane } = Tabs;
     visible: state.partner.customerModal.visiblePanel,
     customer: state.partner.customerModal.customer,
   }),
-  { showCustomerPanel, showCustomerModal },
+  { showCustomerPanel, showVendorModal },
 )
 export default class CustomerPanel extends React.Component {
   static propTypes = {
@@ -26,7 +26,7 @@ export default class CustomerPanel extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   handleCustomerEdit = () => {
-    this.props.showCustomerModal('edit');
+    this.props.showVendorModal('edit', this.props.customer);
   }
   handleClose = () => {
     this.props.showCustomerPanel({ visible: false });
@@ -34,7 +34,7 @@ export default class CustomerPanel extends React.Component {
   render() {
     const { customer, visible } = this.props;
     return (
-      <DockPanel title={this.msg('profile')} size="large" visible={visible} onClose={this.handleClose}>
+      <DockPanel title={`${this.msg('customers')}${this.msg('profile')}`} size="large" visible={visible} onClose={this.handleClose}>
         <Card >
           <Avatar shape="square" icon="global" />
           <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{customer.name}</h2>
@@ -44,37 +44,37 @@ export default class CustomerPanel extends React.Component {
           <Row gutter={16} className="info-group-underline">
             <Col sm={24} lg={8}>
               <InfoItem
-                label="客户代码"
+                label={this.msg('customerCode')}
                 field={customer.partner_code}
               />
             </Col>
             <Col sm={24} lg={8}>
               <InfoItem
-                label="统一社会信用代码"
+                label={this.msg('uscCode')}
                 field={customer.partner_unique_code}
               />
             </Col>
             <Col sm={24} lg={8}>
               <InfoItem
-                label="海关编码"
+                label={this.msg('customsCode')}
                 field={customer.customs_code}
               />
             </Col>
             <Col sm={24} lg={8}>
               <InfoItem
-                label="联系人"
+                label={this.msg('contact')}
                 field={customer.contact}
               />
             </Col>
             <Col sm={24} lg={8}>
               <InfoItem
-                label="电话"
+                label={this.msg('phone')}
                 field={customer.phone}
               />
             </Col>
             <Col sm={24} lg={8}>
               <InfoItem
-                label="邮箱"
+                label={this.msg('email')}
                 field={customer.email}
               />
             </Col>
@@ -82,7 +82,7 @@ export default class CustomerPanel extends React.Component {
         </Card>
         <Card bodyStyle={{ padding: 0 }}>
           <Tabs defaultActiveKey="team">
-            <TabPane tab={<span>服务团队</span>} key="team" >
+            <TabPane tab={<span>{this.msg('serviceTeam')}</span>} key="team" >
               <ServiceTeamPane customer={customer} />
             </TabPane>
           </Tabs>

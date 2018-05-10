@@ -89,15 +89,15 @@ export default class ModuleSCOF extends React.Component {
       icon: 'logixon icon-customer-mng',
       text: this.msg('customers'),
     });
-    // if (aspect === 0) {
-    linkMenus.push({
-      single: true,
-      key: 'scof-supplier',
-      path: '/scof/suppliers',
-      icon: 'logixon icon-supplier',
-      text: this.msg('suppliers'),
-    });
-    // }
+    if (aspect === 0) {
+      linkMenus.push({
+        single: true,
+        key: 'scof-supplier',
+        path: '/scof/suppliers',
+        icon: 'logixon icon-supplier',
+        text: this.msg('suppliers'),
+      });
+    }
     linkMenus.push({
       single: true,
       key: 'scof-vendor',

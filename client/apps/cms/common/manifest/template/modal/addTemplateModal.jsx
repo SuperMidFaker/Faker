@@ -15,7 +15,7 @@ const RadioGroup = Radio.Group;
   tenantName: state.account.tenantName,
   visible: state.cmsManifest.addTemplateModal.visible,
   operation: state.cmsManifest.addTemplateModal.operation,
-  customers: state.sofCustomers.customers,
+  customers: state.partner.partners,
 }), { toggleBillTempModal, createBillTemplate })
 @Form.create()
 export default class AddTemplateModal extends React.Component {
@@ -25,8 +25,7 @@ export default class AddTemplateModal extends React.Component {
     loginName: PropTypes.string.isRequired,
     tenantName: PropTypes.string.isRequired,
     visible: PropTypes.bool,
-    operation: PropTypes.string, // 'add' 'edit'
-    customers: PropTypes.array.isRequired,
+    customers: PropTypes.arrayOf({ partner_id: PropTypes.number }).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -43,8 +42,8 @@ export default class AddTemplateModal extends React.Component {
     } else if (!field.customer) {
       message.error('请选择关联客户');
     } else {
-      const customer = this.props.customers.filter(cust => cust.id === field.customer)[0];
-      formData.customer_partner_id = customer.id;
+      const customer = this.props.customers.filter(cust => cust.partner_id === field.customer)[0];
+      formData.customer_partner_id = customer.partner_id;
       formData.customer_name = customer.name;
       formData.template_name = field.template_name;
       formData.i_e_type = field.i_e_type;
@@ -56,7 +55,11 @@ export default class AddTemplateModal extends React.Component {
       tenantId, loginId, loginName, tenantName,
     } = this.props;
     const params = {
-      ...formData, tenant_id: tenantId, modify_id: loginId, modify_name: loginName, tenant_name: tenantName,
+      ...formData,
+      tenant_id: tenantId,
+      modify_id: loginId,
+      modify_name: loginName,
+      tenant_name: tenantName,
     };
     this.props.createBillTemplate(params).then((result) => {
       if (result.error) {
@@ -89,9 +92,8 @@ export default class AddTemplateModal extends React.Component {
               style={{ width: '100%' }}
             >
               {customers.map(data => (<Option
-                key={data.id}
-                value={data.id}
-                search={`${data.partner_code}${data.name}`}
+                key={data.partner_id}
+                value={data.partner_id}
               >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
               </Option>))}
             </Select>)

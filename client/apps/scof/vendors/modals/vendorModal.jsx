@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Checkbox, Modal, Form, Input, Select, Row, Col, Button, Icon, message } from 'antd';
+import { Checkbox, Modal, Form, Input, Select, Col, Button, Icon, message } from 'antd';
 import { getCompanyInfo } from 'common/reducers/common';
 import { hideVendorModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
-import { BUSINESS_TYPES } from 'common/constants';
-import { formatMsg } from '../../message.i18n';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, BUSINESS_TYPES } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -23,6 +23,7 @@ const CheckboxGroup = Checkbox.Group;
     addPartner, editPartner, checkPartner, hideVendorModal, getCompanyInfo,
   }
 )
+@Form.create()
 export default class VendorModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -32,202 +33,152 @@ export default class VendorModal extends React.Component {
     checkPartner: PropTypes.func.isRequired,
     hideVendorModal: PropTypes.func.isRequired,
     editPartner: PropTypes.func.isRequired,
-    vendor: PropTypes.shape({ id: PropTypes.number }).isRequired,
+    vendor: PropTypes.shape({ id: PropTypes.number, role: PropTypes.string.isRequired }).isRequired,
     onOk: PropTypes.func,
     getCompanyInfo: PropTypes.func.isRequired,
   }
   state = {
-    id: -1,
-    name: '',
-    partnerCode: '',
-    partnerUniqueCode: '',
-    customsCode: '',
-    contact: '',
-    phone: '',
-    email: '',
-    businessType: '',
-    country: null,
     companies: [],
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.operation === 'edit') {
-      this.setState({
-        id: nextProps.vendor.id,
-        name: nextProps.vendor.name,
-        partnerCode: nextProps.vendor.partner_code,
-        partnerUniqueCode: nextProps.vendor.partner_unique_code || '',
-        customsCode: nextProps.vendor.customs_code || '',
-        contact: nextProps.vendor.contact,
-        phone: nextProps.vendor.phone,
-        email: nextProps.vendor.email,
-        country: nextProps.vendor.country,
-        businessType: nextProps.vendor.business_type,
-      });
-    }
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.setState({
-      id: -1,
-      name: '',
-      partnerCode: '',
-      partnerUniqueCode: '',
-      customsCode: '',
-      contact: '',
-      phone: '',
-      email: '',
-      businessType: '',
-      country: null,
-    });
+    this.setState({ companies: [] });
     this.props.hideVendorModal();
   }
-  nameChooseConfirm = (foundName, name) => {
+  nameChooseConfirm = (foundName, partnerInfo) => {
     Modal.confirm({
       title: '请选择',
-      content: `${foundName} 与 ${name} 的唯一标识码一致，请选择该标识码下的企业名称`,
+      content: `${foundName} 与 ${partnerInfo.name} 的唯一标识码一致，请选择该标识码下的企业名称`,
       okText: foundName,
-      cancelText: name,
+      cancelText: partnerInfo.name,
       onOk: () => {
-        this.setState({ name: foundName }, () => {
-          this.handleAddVendor();
-        });
+        this.handleAddVendor({ ...partnerInfo, name: foundName });
       },
       onCancel: () => {
-        this.handleAddVendor();
+        this.handleAddVendor(partnerInfo);
       },
     });
   }
-  handleOk = () => {
-    const {
-      id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
-      country,
-    } = this.state;
-    const { operation, vendor } = this.props;
-    let business;
-    if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
-      business = 'CCB,TRS,FWD';
-    } else if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') === -1) {
-      business = 'CCB,FWD';
-    } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
-      business = 'TRS';
-    }
-    if (!name || name === '') {
-      message.error('企业名称必填');
-    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode === '') {
-      message.error('统一社会信用代码必填');
-    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode.length !== 18) {
-      message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
-    } else if (customsCode && customsCode.length !== 10) {
-      message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
-    } else if (vendor.role === 'VEN' && businessType === '') {
-      message.error('请选择服务商业务类型');
-    } else if (operation === 'edit') {
-      const partnerInfo = {
-        name,
-        partnerUniqueCode,
-        code: partnerCode,
-        customsCode,
-        contact,
-        phone,
-        email,
-        country,
-        role: vendor.role,
-        business,
-        businessType,
-      };
-      this.props.editPartner(id, partnerInfo).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.success('修改成功');
-          this.handleCancel();
-          this.props.onOk();
-        }
-      });
-    } else if (partnerUniqueCode) {
-      this.props.checkPartner({ name, partnerCode, partnerUniqueCode }).then((result) => {
-        let foundName = name;
-        if (result.data.partner && result.data.partner.name !== name) {
-          foundName = result.data.partner.name;
-        }
-        if (foundName !== name) {
-          this.nameChooseConfirm(foundName, name);
-        } else {
-          this.handleAddVendor();
-        }
-      });
+  handlePartnerErrorMsg = (error, partnerInfo) => {
+    const errMsg = error.message;
+    if (errMsg.key === 'partner_code_exist') {
+      const { vendor } = this.props;
+      let vendorCodeLabel = '';
+      let roleName = '';
+      if (vendor.role === PARTNER_ROLES.CUS) {
+        vendorCodeLabel = 'customerCode';
+        roleName = this.msg('customers');
+      } else if (vendor.role === PARTNER_ROLES.VEN) {
+        vendorCodeLabel = 'vendorCode';
+        roleName = this.msg('vendors');
+      } else if (vendor.role === PARTNER_ROLES.SUP) {
+        vendorCodeLabel = 'supplierCode';
+        roleName = this.msg('suppliers');
+      }
+      message.error(`${this.msg(vendorCodeLabel)}[${partnerInfo.partnerCode}]已对应${roleName}[${errMsg.conflictName}]`);
     } else {
-      this.handleAddVendor();
+      message.error(errMsg, 10);
     }
   }
-  handleAddVendor = () => {
-    const {
-      name,
-      partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType, country,
-    } = this.state;
-    let business;
-    if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
-      business = 'CCB,TRS,FWD';
-    } else if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') === -1) {
-      business = 'CCB,FWD';
-    } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
-      business = 'TRS';
-    }
-    this.props.addPartner({
-      partnerInfo: {
-        partnerName: name,
-        partnerCode,
-        partnerUniqueCode,
-        customsCode,
-        contact,
-        phone,
-        email,
-        country,
-      },
-      businessType,
-      role: this.props.vendor.role,
-      business,
-    }).then((result1) => {
+  handleOk = () => {
+    const { form, operation, vendor } = this.props;
+    form.validateFields((errs, formValues) => {
+      if (!errs) {
+        const partnerInfo = { ...formValues, role: vendor.role };
+        if (formValues.businessType.indexOf('clearance') !== -1) {
+          partnerInfo.business = 'CCB,FWD';
+        }
+        partnerInfo.businessType = formValues.businessType.join(',');
+        if (operation === 'edit') {
+          this.props.editPartner(vendor.id, partnerInfo).then((result) => {
+            if (result.error) {
+              this.handlePartnerErrorMsg(result.error, partnerInfo);
+            } else {
+              message.success(this.msg('savedSuccess'));
+              this.handleCancel();
+              this.props.onOk();
+            }
+          });
+        } else if (formValues.partnerUniqueCode) {
+          const { name, partnerCode, partnerUniqueCode } = partnerInfo;
+          this.props.checkPartner({ name, partnerCode, partnerUniqueCode }).then((result) => {
+            let foundName = name;
+            if (result.data.partner && result.data.partner.name !== name) {
+              foundName = result.data.partner.name;
+            }
+            if (foundName !== name) {
+              this.nameChooseConfirm(foundName, partnerInfo);
+            } else {
+              this.handleAddVendor(partnerInfo);
+            }
+          });
+        } else {
+          this.handleAddVendor(partnerInfo);
+        }
+      }
+    });
+  }
+  handleAddVendor = (partnerInfo) => {
+    this.props.addPartner(partnerInfo).then((result1) => {
       if (result1.error) {
-        message.error(result1.error.message);
+        this.handlePartnerErrorMsg(result1.error, partnerInfo);
       } else {
-        message.info('添加成功');
+        message.info(this.msg('savedSuccess'));
         this.handleCancel();
         this.props.onOk();
       }
     });
   }
-  handleVendorTypesChange = (value) => {
-    if (value.length !== 0) {
-      this.setState({ businessType: value.join(',') });
-    }
-  }
-  handleSearchCompany = (value) => {
-    this.props.getCompanyInfo(value).then((result) => {
+  handleSearchCompany = () => {
+    const name = this.props.form.getFieldValue('name');
+    this.props.getCompanyInfo(name).then((result) => {
       if (result.data.Result) {
         this.setState({ companies: result.data.Result });
       } else {
-        message.warning(`企查查：${result.data.Message}`, 5);
+        message.warning(result.data.Message, 5);
       }
     });
   }
-  handleNameChange = (value) => {
+  handleQiChaChaName = (value) => {
     const company = this.state.companies.find(item => item.Name === value);
-    this.setState({ name: value, partnerUniqueCode: company.CreditCode });
+    this.props.form.setFieldsValue({
+      name: value, partnerUniqueCode: company.CreditCode,
+    });
   }
   render() {
-    const { visible, operation } = this.props;
-    const { businessType } = this.state;
-    const businessArray = businessType !== '' ? businessType.split(',') : [];
+    const {
+      form: { getFieldDecorator, getFieldValue }, visible, vendor, operation,
+    } = this.props;
+    if (!visible) {
+      return null;
+    }
+    const { companies } = this.state;
+    const businessArray = getFieldValue('businessType') || vendor.business_type || [];
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
+    let roleName = '';
+    let vendorCodeLabel = '';
+    let vendorNameLabel = '';
+    if (vendor.role === PARTNER_ROLES.CUS) {
+      roleName = this.msg('customers');
+      vendorCodeLabel = 'customerCode';
+      vendorNameLabel = 'customerName';
+    } else if (vendor.role === PARTNER_ROLES.VEN) {
+      roleName = this.msg('vendors');
+      vendorCodeLabel = 'vendorCode';
+      vendorNameLabel = 'vendorName';
+    } else if (vendor.role === PARTNER_ROLES.SUP) {
+      roleName = this.msg('suppliers');
+      vendorCodeLabel = 'supplierCode';
+      vendorNameLabel = 'supplierName';
+    }
     let title = '';
     if (operation === 'add') {
-      title = '新增服务商';
+      title = `${this.msg('add')}${roleName}`;
     } else if (operation === 'edit') {
-      title = '修改服务商资料';
+      title = `${this.msg('edit')}${roleName}${this.msg('profile')}`;
     }
     return (
       <Modal
@@ -240,108 +191,117 @@ export default class VendorModal extends React.Component {
         <Form layout="horizontal">
           <FormItem
             {...formItemLayout}
-            label="服务商名称"
-            hasFeedback
-            required
+            label={this.msg(vendorNameLabel)}
           >
-            <Row gutter={5}>
-              <Col span={20}>
-                <Select
+            <Col span={20}>
+              {getFieldDecorator('name', {
+                  rules: [{
+                  required: true,
+                  message: this.msg('partnerNameRequired'),
+                  }],
+                  initialValue: vendor.name,
+                })(<Select
                   mode="combobox"
-                  value={this.state.name}
                   showSearch
-                  placeholder="输入企业名称搜索"
+                  placeholder={this.msg('qichachaCorpSearch')}
                   optionFilterProp="children"
-                  onSelect={value => this.handleNameChange(value)}
-                  onChange={value => this.setState({ name: value })}
+                  onSelect={this.handleQiChaChaName}
                 >
-                  {this.state.companies.map(item => <Option value={item.Name}>{item.Name}</Option>)}
-                </Select>
-              </Col>
-              <Col span={2}>
-                <Button size="default" onClick={() => this.handleSearchCompany(this.state.name)}>
-                  <Icon type="search" />
-                </Button>
-              </Col>
-            </Row>
+                  {companies.map(item => (<Option value={item.Name} key={item.Name}>
+                    {item.Name}</Option>))}
+                </Select>)}
+            </Col>
+            <Col span={2}>
+              <Button size="default" onClick={this.handleSearchCompany}>
+                <Icon type="search" />
+              </Button>
+            </Col>
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="服务商代码"
-            hasFeedback
+            label={this.msg('displayName')}
           >
-            <Input
-              value={this.state.partnerCode}
-              onChange={(e) => { this.setState({ partnerCode: e.target.value }); }}
-            />
+            {getFieldDecorator('display_name', { initialValue: vendor.display_name })(<Input />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="业务类型"
-            hasFeedback
+            label={this.msg('englishName')}
           >
-            <CheckboxGroup
-              options={BUSINESS_TYPES}
-              value={businessArray}
-              onChange={this.handleVendorTypesChange}
-            />
+            {getFieldDecorator('en_name', { initialValue: vendor.en_name })(<Input />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="统一社会信用码"
-            hasFeedback
+            label={this.msg(vendorCodeLabel)}
           >
-            <Input placeholder="填写18位统一社会信用代码" value={this.state.partnerUniqueCode} onChange={(e) => { this.setState({ partnerUniqueCode: e.target.value }); }} />
+            {getFieldDecorator('partnerCode', { initialValue: vendor.partner_code })(<Input />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="海关编码"
-            hasFeedback
+            label={this.msg('businessType')}
           >
-            <Input placeholder="填写10位海关编码" value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
+            {getFieldDecorator('businessType', {
+              initialValue: vendor.business_type ? vendor.business_type.split(',') : [],
+              rules: [{
+              required: vendor.role === PARTNER_ROLES.VEN,
+              message: this.msg('vendorBusinessTypeRequired'),
+              }],
+            })(<CheckboxGroup options={BUSINESS_TYPES} />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="联系人"
-            hasFeedback
+            label={this.msg('uscCode')}
           >
-            <Input
-              value={this.state.contact}
-              onChange={(e) => { this.setState({ contact: e.target.value }); }}
-            />
+            {getFieldDecorator('partnerUniqueCode', {
+              initialValue: vendor.partner_unique_code,
+              rules: [{
+              required: businessArray.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0,
+              message: this.msg('uscCode18len'),
+              }],
+                })(<Input placeholder={this.msg('uscCode18len')} />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="电话"
-            hasFeedback
+            label={this.msg('customsCode')}
           >
-            <Input
-              type="tel"
-              value={this.state.phone}
-              onChange={(e) => { this.setState({ phone: e.target.value }); }}
-            />
+            {getFieldDecorator('customsCode', {
+              initialValue: vendor.customs_code,
+              rules: [{
+              required: businessArray.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0,
+              message: this.msg('customsCode10len'),
+              }],
+                })(<Input placeholder={this.msg('customsCode10len')} />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="邮箱"
-            hasFeedback
+            label={this.msg('contact')}
           >
-            <Input
-              type="email"
-              value={this.state.email}
-              onChange={(e) => { this.setState({ email: e.target.value }); }}
-            />
+            {getFieldDecorator('contact', {
+                  initialValue: vendor.contact,
+                })(<Input />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="国家"
-            hasFeedback
+            label={this.msg('phone')}
           >
-            <Input
-              type="country"
-              value={this.state.country}
-              onChange={(e) => { this.setState({ country: e.target.value }); }}
-            />
+            {getFieldDecorator('phone', {
+                  initialValue: vendor.phone,
+                })(<Input type="tel" />)}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={this.msg('email')}
+          >
+            {getFieldDecorator('email', {
+                  initialValue: vendor.email,
+                })(<Input type="email" />)}
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label={this.msg('country')}
+          >
+            {getFieldDecorator('country', {
+                  initialValue: vendor.country,
+                })(<Input />)}
           </FormItem>
         </Form>
       </Modal>

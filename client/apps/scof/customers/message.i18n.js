@@ -3,16 +3,15 @@ import { formati18n } from 'client/common/i18n/helpers';
 import moduleMessages from '../message.i18n';
 
 const messages = defineMessages({
-  profile: {
-    id: 'sof.customers.profile',
-    defaultMessage: '客户资料',
+  addToServiceTeam: {
+    id: 'sof.customer.addto.serviceteam',
+    defaultMessage: '添加成员至服务团队',
   },
-  subCustomer: {
-    id: 'sof.customers.sub.customer',
-    defaultMessage: '子客户',
+  allMembers: {
+    id: 'sof.customer.all.members',
+    defaultMessage: '所有成员',
   },
 });
 
 export default messages;
-export const formatMsg = formati18n(messages);
-export const formatModuleMsg = formati18n(moduleMessages);
+export const formatMsg = formati18n({ ...moduleMessages, ...messages });

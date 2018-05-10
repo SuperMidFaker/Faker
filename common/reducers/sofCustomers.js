@@ -2,25 +2,17 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/crm/customers/', [
-  'LOAD_CUSTOMERS', 'LOAD_CUSTOMERS_FAIL', 'LOAD_CUSTOMERS_SUCCEED',
   'HIDE_SERVICETEAM_MODAL', 'SHOW_SERVICETEAM_MODAL',
   'LOAD_SERVICETEAM_MEMBERS', 'LOAD_SERVICETEAM_MEMBERS_SUCCEED', 'LOAD_SERVICETEAM_MEMBERS_FAIL',
   'ADD_SERVICETEAM_MEMBERS', 'ADD_SERVICETEAM_MEMBERS_SUCCEED', 'ADD_SERVICETEAM_MEMBERS_FAIL',
   'LOAD_TENANT_USERS', 'LOAD_TENANT_USERS_SUCCEED', 'LOAD_TENANT_USERS_FAIL',
-  'LOAD_TRANSPORT_TRAIFFS', 'LOAD_TRANSPORT_TRAIFFS_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_FAIL',
-  'LOAD_CMS_QUOTES', 'LOAD_CMS_QUOTES_SUCCEED', 'LOAD_CMS_QUOTES_FAIL',
   'LOAD_OPERATORS', 'LOAD_OPERATORS_SUCCEED', 'LOAD_OPERATORS_FAIL',
   'LOAD_SERVICETEAM_USERIDS', 'LOAD_SERVICETEAM_USERIDS_SUCCEED', 'LOAD_SERVICETEAM_USERIDS_FAIL',
 ]);
 
 const initialState = {
-  loaded: true,
-  loading: false,
-  customers: [],
   serviceTeamMembers: [],
   operators: [],
-  formData: {
-  },
   serviceTeamModal: {
     visible: false,
     tenantUsers: [],
@@ -29,22 +21,6 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_CUSTOMERS:
-      return { ...state, loading: true };
-    case actionTypes.LOAD_CUSTOMERS_SUCCEED: {
-      const customers = action.result.data.filter(customer => !customer.parent_id)
-        .map((customer) => {
-          const subCustomers = [...action.result.data.filter(cus => cus.parent_id === customer.id)];
-          const children = subCustomers.length > 0 ? subCustomers : null;
-          return { ...customer, subCustomers, children };
-        });
-      return {
-        ...state, customers, loaded: true, loading: false,
-      };
-    }
-    case actionTypes.LOAD_CUSTOMERS_FAIL: {
-      return { ...state, loading: false };
-    }
     case actionTypes.HIDE_SERVICETEAM_MODAL: {
       return {
         ...state,
@@ -81,21 +57,6 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-export function loadCustomers() {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_CUSTOMERS,
-        actionTypes.LOAD_CUSTOMERS_SUCCEED,
-        actionTypes.LOAD_CUSTOMERS_FAIL,
-      ],
-      endpoint: 'v1/cooperation/partners',
-      method: 'get',
-      params: { role: 'CUS' },
-    },
-  };
 }
 
 export function showServiceTeamModal() {

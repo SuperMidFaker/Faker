@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Transfer } from 'antd';
 import { hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers } from 'common/reducers/sofCustomers';
-import { formatMsg } from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
@@ -17,12 +17,12 @@ import { formatMsg } from '../../message.i18n';
     hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers,
   }
 )
-
 export default class ServiceTeamModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
+    tenantUsers: PropTypes.arrayOf({ user_id: PropTypes.number }),
     hideServiceTeamModal: PropTypes.func.isRequired,
     customer: PropTypes.shape({ id: PropTypes.number }).isRequired,
     selectedUserIds: PropTypes.arrayOf(PropTypes.number),
@@ -31,7 +31,7 @@ export default class ServiceTeamModal extends React.Component {
     targetKeys: [],
     selectedKeys: [],
   }
-  componentWillMount() {
+  componentDidMount() {
     const { tenantId, selectedUserIds } = this.props;
     this.props.loadTenantUsers(tenantId);
     this.setState({
@@ -74,10 +74,10 @@ export default class ServiceTeamModal extends React.Component {
     const { visible, tenantUsers } = this.props;
     const { targetKeys, selectedKeys } = this.state;
     return (
-      <Modal maskClosable={false} visible={visible} title="添加成员至服务团队" onCancel={this.handleCancel} onOk={this.handleAdd} width={600}>
+      <Modal maskClosable={false} visible={visible} title={this.msg('addToServiceTeam')} onCancel={this.handleCancel} onOk={this.handleAdd} width={600}>
         <Transfer
           dataSource={tenantUsers}
-          titles={['所有成员', '服务团队']}
+          titles={[this.msg('allMembers'), this.msg('serviceTeam')]}
           targetKeys={targetKeys}
           selectedKeys={selectedKeys}
           onChange={this.handleChange}
@@ -89,10 +89,7 @@ export default class ServiceTeamModal extends React.Component {
           </span>)}
           rowKey={item => item.user_id}
           showSearch
-          listStyle={{
-            width: 260,
-            height: 400,
-          }}
+          listStyle={{ height: 400, width: 240 }}
         />
       </Modal>
     );

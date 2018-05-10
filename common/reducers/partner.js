@@ -11,10 +11,9 @@ const actionTypes = createActionTypes('@@welogix/partner/', [
   'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL',
   'DELETE_PARTNER', 'DELETE_PARTNER_SUCCEED', 'DELETE_PARTNER_FAIL',
   'INVITE_PARTNER', 'SHOW_CUSTOMER_PANEL',
-  'SHOW_CUSTOMER_MODAL', 'HIDE_CUSTOMER_MODAL',
   'SHOW_VENDOR_MODAL', 'HIDE_VENDOR_MODAL',
 ]);
-// *TODO* customerModal brokerModal group together
+
 const initialState = {
   loading: true,
   loaded: true,
@@ -30,14 +29,12 @@ const initialState = {
   partners: [],
   customerModal: {
     visiblePanel: false,
-    visible: false,
-    operation: '',
     customer: {},
   },
   vendorModal: {
     visible: false,
     operation: 'add',
-    vendor: {},
+    vendor: { role: '' },
   },
 };
 
@@ -73,22 +70,6 @@ export default function reducer(state = initialState, action) {
           customer: action.data.customer || {},
         },
       };
-    case actionTypes.SHOW_CUSTOMER_MODAL: {
-      return {
-        ...state,
-        customerModal: {
-          ...state.customerModal,
-          visible: true,
-          ...action.data,
-        },
-      };
-    }
-    case actionTypes.HIDE_CUSTOMER_MODAL: {
-      return {
-        ...state,
-        customerModal: initialState.customerModal,
-      };
-    }
     case actionTypes.SHOW_VENDOR_MODAL: {
       return {
         ...state,
@@ -160,9 +141,7 @@ export function loadPartnersByTypes(tenantId, roles, businessTypes) {
   };
 }
 
-export function addPartner({
-  partnerInfo, role, business, businessType,
-}) {
+export function addPartner(partnerInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -172,12 +151,8 @@ export function addPartner({
       ],
       endpoint: 'v1/cooperation/partner/add',
       method: 'post',
-      data: {
+      data:
         partnerInfo,
-        role,
-        business,
-        businessType,
-      },
     },
   };
 }
@@ -252,14 +227,6 @@ export function invitePartner(id) {
 
 export function showCustomerPanel({ visible, customer }) {
   return { type: actionTypes.SHOW_CUSTOMER_PANEL, data: { visible, customer } };
-}
-
-export function showCustomerModal(operation) {
-  return { type: actionTypes.SHOW_CUSTOMER_MODAL, data: { operation } };
-}
-
-export function hideCustomerModal() {
-  return { type: actionTypes.HIDE_CUSTOMER_MODAL };
 }
 
 export function showVendorModal(operation = '', vendor = {}) {
