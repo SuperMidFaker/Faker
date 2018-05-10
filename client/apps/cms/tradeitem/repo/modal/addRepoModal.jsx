@@ -40,7 +40,7 @@ export default class AddTradeRepoModal extends React.Component {
     customerid: null,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.visible && !this.props.visible) {
+    if (nextProps.visibleAddModal && !this.props.visibleAddModal) {
       this.props.loadPartners({
         role: PARTNER_ROLES.CUS,
         businessType: PARTNER_BUSINESSE_TYPES.clearance,
@@ -82,7 +82,8 @@ export default class AddTradeRepoModal extends React.Component {
       form: { getFieldDecorator }, visibleAddModal, customers, repos,
     } = this.props;
     const newCustomers = customers.filter(ct =>
-      repos.filter(repo => repo.owner_partner_id === ct.partner_id).length > 0);
+      repos.filter(repo => repo.owner_partner_id === ct.partner_id ||
+        repo.owner_tenant_id === ct.partner_tenant_id).length === 0);
     return (
       <Modal
         maskClosable={false}
