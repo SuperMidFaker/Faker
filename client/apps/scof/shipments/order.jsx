@@ -375,7 +375,7 @@ export default class OrderForm extends Component {
                       </FormItem>
                     </Col>
                     <Col span={6}>
-                      <FormItem label="订单类型" {...formItemLayout} required>
+                      <FormItem label="货运类型" {...formItemLayout} required>
                         {orderTypes.length === 0 ?
                           <Select
                             value={formData.cust_shipmt_transfer}

@@ -11,26 +11,6 @@ const messages = defineMessages({
     id: 'cwm.common.whse.changed',
     defaultMessage: '当前仓库已切换',
   },
-  billsStatus: {
-    id: 'cwm.common.status',
-    defaultMessage: '账单状态',
-  },
-  statusDraft: {
-    id: 'cwm.common.status.draft',
-    defaultMessage: '草稿',
-  },
-  statusPending: {
-    id: 'cwm.common.status.pending',
-    defaultMessage: '待对账',
-  },
-  statusAccepted: {
-    id: 'cwm.common.status.accepted',
-    defaultMessage: '已接受',
-  },
-  statusOffline: {
-    id: 'cwm.common.status.offline',
-    defaultMessage: '线下账单',
-  },
 });
 
 export default messages;

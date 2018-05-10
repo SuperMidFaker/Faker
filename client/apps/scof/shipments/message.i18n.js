@@ -4,119 +4,119 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   shipmentOrders: {
-    id: 'scof.orders.shipment',
+    id: 'sof.shipments.shipment',
     defaultMessage: '货运订单',
   },
   createShipment: {
-    id: 'scof.orders.create.shipment',
+    id: 'sof.shipments.create.shipment',
     defaultMessage: '新建货运订单',
   },
   editOrder: {
-    id: 'scof.orders.edit.order',
+    id: 'sof.shipments.edit.order',
     defaultMessage: '编辑订单',
   },
   allOrders: {
-    id: 'scof.orders.all',
+    id: 'sof.shipments.all',
     defaultMessage: '全部订单',
   },
   statusPending: {
-    id: 'scof.orders.status.pending',
+    id: 'sof.shipments.status.pending',
     defaultMessage: '待处理',
   },
   statusActive: {
-    id: 'scof.orders.status.active',
+    id: 'sof.shipments.status.active',
     defaultMessage: '执行中',
   },
   statusExpedited: {
-    id: 'scof.orders.status.expedited',
+    id: 'sof.shipments.status.expedited',
     defaultMessage: '加急订单',
   },
   statusCompleted: {
-    id: 'scof.orders.status.completed',
+    id: 'sof.shipments.status.completed',
     defaultMessage: '已完成',
   },
   startOrder: {
-    id: 'scof.orders.start',
+    id: 'sof.shipments.start',
     defaultMessage: '开始',
   },
   shipmentNo: {
-    id: 'scof.orders.shipmentno',
+    id: 'sof.shipments.shipmentno',
     defaultMessage: 'Shipment No.',
   },
   orderNo: {
-    id: 'scof.orders.orderno',
+    id: 'sof.shipments.orderno',
     defaultMessage: 'Order No.',
   },
   originCountry: {
-    id: 'scof.orders.origin.country',
+    id: 'sof.shipments.origin.country',
     defaultMessage: 'Origin Cntry',
   },
   originPort: {
-    id: 'scof.orders.origin.port',
+    id: 'sof.shipments.origin.port',
     defaultMessage: 'Origin Port',
   },
   destPort: {
-    id: 'scof.orders.dest.port',
+    id: 'sof.shipments.dest.port',
     defaultMessage: 'Dest. Port',
   },
   mode: {
-    id: 'scof.orders.mode',
+    id: 'sof.shipments.mode',
     defaultMessage: 'Mode',
   },
   etd: {
-    id: 'scof.orders.etd',
+    id: 'sof.shipments.etd',
     defaultMessage: 'ETD',
   },
   atd: {
-    id: 'scof.orders.atd',
+    id: 'sof.shipments.atd',
     defaultMessage: 'ATD',
   },
   eta: {
-    id: 'scof.orders.eta',
+    id: 'sof.shipments.eta',
     defaultMessage: 'ETA',
   },
   ata: {
-    id: 'scof.orders.ata',
+    id: 'sof.shipments.ata',
     defaultMessage: 'ATA',
   },
   status: {
-    id: 'scof.orders.status',
+    id: 'sof.shipments.status',
     defaultMessage: 'Status',
   },
   customsCleared: {
-    id: 'scof.orders.customs.cleared',
+    id: 'sof.shipments.customs.cleared',
     defaultMessage: 'Customs Cleared',
   },
   etaDelivery: {
-    id: 'scof.orders.delivery.eta',
+    id: 'sof.shipments.delivery.eta',
     defaultMessage: 'ETA of DLV',
   },
   ataDelivery: {
-    id: 'scof.orders.delivery.ata',
+    id: 'sof.shipments.delivery.ata',
     defaultMessage: 'ATA of DLV',
   },
   atorigin: {
-    id: 'scof.orders.at.origin',
+    id: 'sof.shipments.at.origin',
     defaultMessage: 'At Origin',
   },
   intransit: {
-    id: 'scof.orders.in.transit',
+    id: 'sof.shipments.in.transit',
     defaultMessage: 'In Transit',
   },
   atdest: {
-    id: 'scof.orders.at.dest',
+    id: 'sof.shipments.at.dest',
     defaultMessage: 'At Dest.',
   },
   atclearance: {
-    id: 'scof.orders.at.clearance',
+    id: 'sof.shipments.at.clearance',
     defaultMessage: 'Clearance',
   },
   atdelivering: {
-    id: 'scof.orders.at.delivering',
+    id: 'sof.shipments.at.delivering',
     defaultMessage: 'Delivering',
   },
   atreceived: {
-    id: 'scof.orders.at.received',
+    id: 'sof.shipments.at.received',
     defaultMessage: 'Received',
   },
   allOperators: {
@@ -124,655 +124,655 @@ const messages = defineMessages({
     defaultMessage: '全部人员',
   },
   opColumn: {
-    id: 'scof.orders.column.operation',
+    id: 'sof.shipments.column.operation',
     defaultMessage: 'Operation',
   },
   sendAtDest: {
-    id: 'scof.orders.operation.send',
+    id: 'sof.shipments.operation.send',
     defaultMessage: 'Send',
   },
   viewTrack: {
-    id: 'scof.orders.operation.viewtrack',
+    id: 'sof.shipments.operation.viewtrack',
     defaultMessage: 'View',
   },
   searchPlaceholder: {
-    id: 'scof.orders.search.placeholder',
+    id: 'sof.shipments.search.placeholder',
     defaultMessage: '业务编号或客户单号',
   },
   all: {
-    id: 'scof.orders.radio.all',
+    id: 'sof.shipments.radio.all',
     defaultMessage: 'All',
   },
   new: {
-    id: 'scof.orders.new',
+    id: 'sof.shipments.new',
     defaultMessage: '新建订单',
   },
   save: {
-    id: 'scof.orders.save',
+    id: 'sof.shipments.save',
     defaultMessage: '保存',
   },
   cancel: {
-    id: 'scof.orders.cancel',
+    id: 'sof.shipments.cancel',
     defaultMessage: '取消',
   },
   forwarder: {
-    id: 'scof.orders.forwarder',
+    id: 'sof.shipments.forwarder',
     defaultMessage: 'Forwarder',
   },
   carrier: {
-    id: 'scof.orders.carrier',
+    id: 'sof.shipments.carrier',
     defaultMessage: 'Carrier',
   },
   mawb: {
-    id: 'scof.orders.mawb',
+    id: 'sof.shipments.mawb',
     defaultMessage: 'MAWB',
   },
   hawb: {
-    id: 'scof.orders.hawb',
+    id: 'sof.shipments.hawb',
     defaultMessage: 'HAWB',
   },
   flightNo: {
-    id: 'scof.orders.flight.no',
+    id: 'sof.shipments.flight.no',
     defaultMessage: 'Flight No.',
   },
   vessel: {
-    id: 'scof.orders.vessel',
+    id: 'sof.shipments.vessel',
     defaultMessage: 'Vessel',
   },
   billlading: {
-    id: 'scof.orders.billlading',
+    id: 'sof.shipments.billlading',
     defaultMessage: 'B/L',
   },
   voyage: {
-    id: 'scof.orders.voyage',
+    id: 'sof.shipments.voyage',
     defaultMessage: 'Voyage',
   },
   containerSizeHeight: {
-    id: 'scof.orders.container.size.height',
+    id: 'sof.shipments.container.size.height',
     defaultMessage: 'Contn. Size/Height',
   },
   moveType: {
-    id: 'scof.orders.movement.type',
+    id: 'sof.shipments.movement.type',
     defaultMessage: 'Movement Type',
   },
   pickupQty: {
-    id: 'scof.orders.pickup.qty',
+    id: 'sof.shipments.pickup.qty',
     defaultMessage: 'Pickup Qty',
   },
   ctnQty: {
-    id: 'scof.orders.ctn.qty',
+    id: 'sof.shipments.ctn.qty',
     defaultMessage: 'CTN Qty',
   },
   grossWeight: {
-    id: 'scof.orders.gross.weight',
+    id: 'sof.shipments.gross.weight',
     defaultMessage: 'Gross Weight',
   },
   broker: {
-    id: 'scof.orders.broker',
+    id: 'sof.shipments.broker',
     defaultMessage: 'Broker',
   },
   cdSheetNo: {
-    id: 'scof.orders.cd.sheetno',
+    id: 'sof.shipments.cd.sheetno',
     defaultMessage: 'CD Sheets No.',
   },
   sendShipment: {
-    id: 'scof.orders.sendto',
+    id: 'sof.shipments.sendto',
     defaultMessage: 'Send Shipment',
   },
   sendClearance: {
-    id: 'scof.orders.send.clearance',
+    id: 'sof.shipments.send.clearance',
     defaultMessage: 'Clearance',
   },
   sendTrucking: {
-    id: 'scof.orders.send.trucking',
+    id: 'sof.shipments.send.trucking',
     defaultMessage: 'Trucking',
   },
   sendTransport: {
-    id: 'scof.orders.send.transportation',
+    id: 'sof.shipments.send.transportation',
     defaultMessage: 'Transportation',
   },
   transportDest: {
-    id: 'scof.orders.send.transport.dest',
+    id: 'sof.shipments.send.transport.dest',
     defaultMessage: 'Destination',
   },
   declareWay: {
-    id: 'scof.orders.delg.declareWay',
+    id: 'sof.shipments.delg.declareWay',
     defaultMessage: '报关类型',
   },
   manualNo: {
-    id: 'scof.orders.delg.manualNo',
+    id: 'sof.shipments.delg.manualNo',
     defaultMessage: '备案号',
   },
   delgGrossWt: {
-    id: 'scof.orders.delg.grosswt',
+    id: 'sof.shipments.delg.grosswt',
     defaultMessage: '毛重',
   },
   packageNum: {
-    id: 'scof.orders.delg.packageNum',
+    id: 'sof.shipments.delg.packageNum',
     defaultMessage: '件数',
   },
   transferMode: {
-    id: 'scof.orders.biz.cms.transfer.mode',
+    id: 'sof.shipments.biz.cms.transfer.mode',
     defaultMessage: '运输方式',
   },
   tooltipTransferMode: {
-    id: 'scof.orders.biz.cms.transfer.mode.tooltip',
+    id: 'sof.shipments.biz.cms.transfer.mode.tooltip',
     defaultMessage: '运输方式',
   },
   declCustoms: {
-    id: 'scof.orders.biz.cms.declcustoms',
+    id: 'sof.shipments.biz.cms.declcustoms',
     defaultMessage: '申报地海关',
   },
   customsBroker: {
-    id: 'scof.orders.biz.cms.customs.broker',
+    id: 'sof.shipments.biz.cms.customs.broker',
     defaultMessage: '报关行',
   },
   ciqBroker: {
-    id: 'scof.orders.biz.cms.ciq.broker',
+    id: 'sof.shipments.biz.cms.ciq.broker',
     defaultMessage: '报检商',
   },
   quoteNo: {
-    id: 'scof.orders.biz.quote.no',
+    id: 'sof.shipments.biz.quote.no',
     defaultMessage: '报价编号',
   },
   delgWeight: {
-    id: 'scof.orders.delg.weight',
+    id: 'sof.shipments.delg.weight',
     defaultMessage: '总毛重',
   },
   pickupEstDate: {
-    id: 'scof.order.shipment.pickup.est.date',
+    id: 'sof.order.shipment.pickup.est.date',
     defaultMessage: '计划提货日期',
   },
   shipmtTransit: {
-    id: 'scof.order.shipment.transit.time',
+    id: 'sof.order.shipment.transit.time',
     defaultMessage: '时效(天)',
   },
   deliveryEstDate: {
-    id: 'scof.order.shipment.delivery.est.date',
+    id: 'sof.order.shipment.delivery.est.date',
     defaultMessage: '计划送货日期',
   },
   personResponsible: {
-    id: 'scof.orders.responsible.person',
+    id: 'sof.shipments.responsible.person',
     defaultMessage: '跟单人员',
   },
   addMore: {
-    id: 'scof.orders.delg.addMore',
+    id: 'sof.shipments.delg.addMore',
     defaultMessage: '添加',
   },
   created: {
-    id: 'scof.orders.status.created',
+    id: 'sof.shipments.status.created',
     defaultMessage: '创建',
   },
   clearancing: {
-    id: 'scof.orders.status.clearancing',
+    id: 'sof.shipments.status.clearancing',
     defaultMessage: '清关',
   },
   transporting: {
-    id: 'scof.orders.status.transporting',
+    id: 'sof.shipments.status.transporting',
     defaultMessage: '运输',
   },
   processing: {
-    id: 'scof.orders.status.processing',
+    id: 'sof.shipments.status.processing',
     defaultMessage: '进行中',
   },
   finished: {
-    id: 'scof.orders.status.finished',
+    id: 'sof.shipments.status.finished',
     defaultMessage: '已完成',
   },
   clearance: {
-    id: 'scof.orders.previewer.clearance',
+    id: 'sof.shipments.previewer.clearance',
     defaultMessage: '清关',
   },
   transport: {
-    id: 'scof.orders.previewer.transport',
+    id: 'sof.shipments.previewer.transport',
     defaultMessage: '运输',
   },
   charge: {
-    id: 'scof.orders.previewer.charge',
+    id: 'sof.shipments.previewer.charge',
     defaultMessage: '费用',
   },
   logs: {
-    id: 'scof.orders.previewer.logs',
+    id: 'sof.shipments.previewer.logs',
     defaultMessage: '日志',
   },
   customerInfo: {
-    id: 'scof.orders.previewer.customerInfo',
+    id: 'sof.shipments.previewer.customerInfo',
     defaultMessage: '客户信息',
   },
   shipmtSchedule: {
-    id: 'scof.orders.previewer.shipmtSchedule',
+    id: 'sof.shipments.previewer.shipmtSchedule',
     defaultMessage: '运输计划',
   },
 
   client: {
-    id: 'scof.orders.client',
+    id: 'sof.shipments.client',
     defaultMessage: '客户名称',
   },
   refExternalNo: {
-    id: 'scof.orders.previewer.ref.external',
+    id: 'sof.shipments.previewer.ref.external',
     defaultMessage: '客户单号',
   },
   refWaybillNo: {
-    id: 'scof.orders.previewer.ref.waybill',
+    id: 'sof.shipments.previewer.ref.waybill',
     defaultMessage: '关联提运单号',
   },
   refEntryNo: {
-    id: 'scof.orders.previewer.ref.entryno',
+    id: 'sof.shipments.previewer.ref.entryno',
     defaultMessage: '关联报关单号',
   },
   day: {
-    id: 'scof.orders.previewer.day',
+    id: 'sof.shipments.previewer.day',
     defaultMessage: '天',
   },
   remark: {
-    id: 'scof.orders.previewer.remark',
+    id: 'sof.shipments.previewer.remark',
     defaultMessage: '备注',
   },
   transitModeInfo: {
-    id: 'scof.orders.previewer.transit.mode.info',
+    id: 'sof.shipments.previewer.transit.mode.info',
     defaultMessage: '运输模式',
   },
   goodsInfo: {
-    id: 'scof.orders.previewer.goods.info',
+    id: 'sof.shipments.previewer.goods.info',
     defaultMessage: '货物信息',
   },
   goodsType: {
-    id: 'scof.orders.previewer.goods.type',
+    id: 'sof.shipments.previewer.goods.type',
     defaultMessage: '货物类型',
   },
   totalCount: {
-    id: 'scof.orders.previewer.goods.total.count',
+    id: 'sof.shipments.previewer.goods.total.count',
     defaultMessage: '总数量',
   },
   goodsPackage: {
-    id: 'scof.orders.previewer.goods.package',
+    id: 'sof.shipments.previewer.goods.package',
     defaultMessage: '包装',
   },
   totalWeight: {
-    id: 'scof.orders.previewer.goods.total.weight',
+    id: 'sof.shipments.previewer.goods.total.weight',
     defaultMessage: '总重量',
   },
   kilogram: {
-    id: 'scof.orders.previewer.goods.kilogram',
+    id: 'sof.shipments.previewer.goods.kilogram',
     defaultMessage: '公斤',
   },
   insuranceValue: {
-    id: 'tcrm.orders.previewer.goods.insurance',
+    id: 'sof.shipments.previewer.goods.insurance',
     defaultMessage: '保险货值',
   },
   CNY: {
-    id: 'scof.orders.previewer.goods.cny',
+    id: 'sof.shipments.previewer.goods.cny',
     defaultMessage: '元',
   },
   totalVolume: {
-    id: 'scof.orders.previewer.goods.total.volume',
+    id: 'sof.shipments.previewer.goods.total.volume',
     defaultMessage: '总体积',
   },
   cubicMeter: {
-    id: 'scof.orders.previewer.goods.cubic.meter',
+    id: 'sof.shipments.previewer.goods.cubic.meter',
     defaultMessage: '立方米',
   },
   goodsCode: {
-    id: 'scof.orders.previewer.goods.code',
+    id: 'sof.shipments.previewer.goods.code',
     defaultMessage: '货物代码',
   },
   goodsName: {
-    id: 'scof.orders.previewer.goods.name',
+    id: 'sof.shipments.previewer.goods.name',
     defaultMessage: '货物名称',
   },
   goodsCount: {
-    id: 'scof.orders.previewer.goods.count',
+    id: 'sof.shipments.previewer.goods.count',
     defaultMessage: '数量',
   },
   goodsWeight: {
-    id: 'scof.orders.previewer.goods.weight',
+    id: 'sof.shipments.previewer.goods.weight',
     defaultMessage: '重量(千克)',
   },
   goodsVolume: {
-    id: 'scof.orders.previewer.goods.volume',
+    id: 'sof.shipments.previewer.goods.volume',
     defaultMessage: '体积',
   },
   goodsLength: {
-    id: 'scof.orders.previewer.goods.length',
+    id: 'sof.shipments.previewer.goods.length',
     defaultMessage: '长(米)',
   },
   goodsWidth: {
-    id: 'scof.orders.previewer.goods.width',
+    id: 'sof.shipments.previewer.goods.width',
     defaultMessage: '宽(米)',
   },
   goodsHeight: {
-    id: 'scof.orders.previewer.goods.height',
+    id: 'sof.shipments.previewer.goods.height',
     defaultMessage: '高(米)',
   },
   goodsRemark: {
-    id: 'scof.orders.previewer.goods.remark',
+    id: 'sof.shipments.previewer.goods.remark',
     defaultMessage: '备注',
   },
   vehicleType: {
-    id: 'scof.orders.shipment.vehicle.type',
+    id: 'sof.shipments.shipment.vehicle.type',
     defaultMessage: '车型',
   },
   vehicleLength: {
-    id: 'scof.orders.shipment.vehicle.length',
+    id: 'sof.shipments.shipment.vehicle.length',
     defaultMessage: '车长',
   },
   containerPack: {
-    id: 'scof.order.shipment.container.pack',
+    id: 'sof.order.shipment.container.pack',
     defaultMessage: '集装箱',
   },
   containerNo: {
-    id: 'scof.orders.shipment.container.no',
+    id: 'sof.shipments.shipment.container.no',
     defaultMessage: '箱号',
   },
   expressNo: {
-    id: 'scof.order.shipment.express.no',
+    id: 'sof.order.shipment.express.no',
     defaultMessage: '快递单号',
   },
   expressVendor: {
-    id: 'scof.order.shipment.express.vendor',
+    id: 'sof.order.shipment.express.vendor',
     defaultMessage: '快递公司',
   },
   basicCharge: {
-    id: 'scof.orders.previewer.basic.charge',
+    id: 'sof.shipments.previewer.basic.charge',
     defaultMessage: '基本运费',
   },
   revenueItem: {
-    id: 'scof.orders.previewer.charge.revenue.item',
+    id: 'sof.shipments.previewer.charge.revenue.item',
     defaultMessage: '收入明细项',
   },
   chargeRate: {
-    id: 'scof.orders.previewer.charge.rate',
+    id: 'sof.shipments.previewer.charge.rate',
     defaultMessage: '费率',
   },
   chargeAmount: {
-    id: 'scof.orders.previewer.charge.amount',
+    id: 'sof.shipments.previewer.charge.amount',
     defaultMessage: '计费量',
   },
   chargeFee: {
-    id: 'scof.orders.previewer.charge.fee',
+    id: 'sof.shipments.previewer.charge.fee',
     defaultMessage: '金额',
   },
   chargeChecked: {
-    id: 'scof.orders.previewer.charge.checked',
+    id: 'sof.shipments.previewer.charge.checked',
     defaultMessage: '计入',
   },
   pickupCharge: {
-    id: 'scof.orders.previewer.pickup.charge',
+    id: 'sof.shipments.previewer.pickup.charge',
     defaultMessage: '提货费',
   },
   deliverCharge: {
-    id: 'scof.orders.previewer.deliver.charge',
+    id: 'sof.shipments.previewer.deliver.charge',
     defaultMessage: '配送费',
   },
   surcharge: {
-    id: 'scof.orders.previewer.surcharge',
+    id: 'sof.shipments.previewer.surcharge',
     defaultMessage: '运费调整项',
   },
   totalCharge: {
-    id: 'scof.orders.previewer.total.charge',
+    id: 'sof.shipments.previewer.total.charge',
     defaultMessage: '总运费',
   },
   advanceName: {
-    id: 'scof.orders.previewer.advance.name',
+    id: 'sof.shipments.previewer.advance.name',
     defaultMessage: '垫付类型',
   },
   advanceAmount: {
-    id: 'scof.orders.previewer.advance.amount',
+    id: 'sof.shipments.previewer.advance.amount',
     defaultMessage: '金额',
   },
   advanceSubmitter: {
-    id: 'scof.orders.previewer.advance.submitter',
+    id: 'sof.shipments.previewer.advance.submitter',
     defaultMessage: '提交者',
   },
   advanceRemark: {
-    id: 'scof.orders.previewer.advance.remark',
+    id: 'sof.shipments.previewer.advance.remark',
     defaultMessage: '备注',
   },
 
   serviceFee: {
-    id: 'scof.orders.previewer.service.fee',
+    id: 'sof.shipments.previewer.service.fee',
     defaultMessage: '服务费',
   },
   cushionFee: {
-    id: 'scof.orders.previewer.cushion.fee',
+    id: 'sof.shipments.previewer.cushion.fee',
     defaultMessage: '代垫费',
   },
   feeName: {
-    id: 'scof.orders.previewer.fee.name',
+    id: 'sof.shipments.previewer.fee.name',
     defaultMessage: '费用名称',
   },
   charCount: {
-    id: 'scof.orders.previewer.charge.count',
+    id: 'sof.shipments.previewer.charge.count',
     defaultMessage: '计费数量',
   },
   unitPrice: {
-    id: 'scof.orders.previewer.unit.price',
+    id: 'sof.shipments.previewer.unit.price',
     defaultMessage: '计费单价',
   },
   feeVal: {
-    id: 'scof.orders.previewer.fee.val',
+    id: 'sof.shipments.previewer.fee.val',
     defaultMessage: '费用金额',
   },
   taxFee: {
-    id: 'scof.orders.previewer.tax.fee',
+    id: 'sof.shipments.previewer.tax.fee',
     defaultMessage: '税金',
   },
   totalFee: {
-    id: 'scof.orders.previewer.total.fee',
+    id: 'sof.shipments.previewer.total.fee',
     defaultMessage: '应收金额',
   },
 
   pendingShipmt: {
-    id: 'scof.orders.previewer.transport.status.pendingShipmt',
+    id: 'sof.shipments.previewer.transport.status.pendingShipmt',
     defaultMessage: '待接单',
   },
   acceptedShipmt: {
-    id: 'scof.orders.previewer.transport.status.acceptedShipmt',
+    id: 'sof.shipments.previewer.transport.status.acceptedShipmt',
     defaultMessage: '待调度',
   },
   dispatchedShipmt: {
-    id: 'scof.orders.previewer.transport.status.dispatchedShipmt',
+    id: 'sof.shipments.previewer.transport.status.dispatchedShipmt',
     defaultMessage: '待提货',
   },
   intransitShipmt: {
-    id: 'scof.orders.previewer.transport.status.intransitShipmt',
+    id: 'sof.shipments.previewer.transport.status.intransitShipmt',
     defaultMessage: '运输中',
   },
   deliveredShipmt: {
-    id: 'scof.orders.previewer.transport.status.deliveredShipmt',
+    id: 'sof.shipments.previewer.transport.status.deliveredShipmt',
     defaultMessage: '已送货',
   },
   podsubmit: {
-    id: 'scof.orders.previewer.transport.status.podsubmit',
+    id: 'sof.shipments.previewer.transport.status.podsubmit',
     defaultMessage: '回单已提交',
   },
   podaccept: {
-    id: 'scof.orders.previewer.transport.status.podaccept',
+    id: 'sof.shipments.previewer.transport.status.podaccept',
     defaultMessage: '回单已接受',
   },
 
   unacceptedDelegation: {
-    id: 'scof.orders.previewer.clearance.status.unaccepted',
+    id: 'sof.shipments.previewer.clearance.status.unaccepted',
     defaultMessage: '待接单',
   },
   acceptedDelegation: {
-    id: 'scof.orders.previewer.clearance.status.accepted',
+    id: 'sof.shipments.previewer.clearance.status.accepted',
     defaultMessage: '已接单',
   },
   processedDelegation: {
-    id: 'scof.orders.previewer.clearance.status.processed',
+    id: 'sof.shipments.previewer.clearance.status.processed',
     defaultMessage: '制单中',
   },
   declaredDelegation: {
-    id: 'scof.orders.previewer.clearance.status.declared',
+    id: 'sof.shipments.previewer.clearance.status.declared',
     defaultMessage: '已申报',
   },
   releasedDelegation: {
-    id: 'scof.orders.previewer.clearance.status.released',
+    id: 'sof.shipments.previewer.clearance.status.released',
     defaultMessage: '已放行',
   },
   declaredPartDelegation: {
-    id: 'scof.orders.previewer.clearance.status.declaredPart',
+    id: 'sof.shipments.previewer.clearance.status.declaredPart',
     defaultMessage: '部分申报',
   },
   releasedPartDelegation: {
-    id: 'scof.orders.previewer.clearance.status.releasedPart',
+    id: 'sof.shipments.previewer.clearance.status.releasedPart',
     defaultMessage: '部分放行',
   },
   delgDeclare: {
-    id: 'scof.orders.progress.action.delg.declare',
+    id: 'sof.shipments.progress.action.delg.declare',
     defaultMessage: '发送申报',
   },
   delgInspect: {
-    id: 'scof.orders.progress.action.delg.inspect',
+    id: 'sof.shipments.progress.action.delg.inspect',
     defaultMessage: '查验',
   },
   delgRelease: {
-    id: 'scof.orders.progress.action.delg.release',
+    id: 'sof.shipments.progress.action.delg.release',
     defaultMessage: '放行',
   },
   manifestCreate: {
-    id: 'scof.orders.progress.action.manifest.create',
+    id: 'sof.shipments.progress.action.manifest.create',
     defaultMessage: '生成清单',
   },
   manifestGenerate: {
-    id: 'scof.orders.progress.action.manifest.generate',
+    id: 'sof.shipments.progress.action.manifest.generate',
     defaultMessage: '生成报关建议书',
   },
   customsReview: {
-    id: 'scof.orders.progress.action.customs.review',
+    id: 'sof.shipments.progress.action.customs.review',
     defaultMessage: '复核',
   },
   customsDeclare: {
-    id: 'scof.orders.progress.action.customs.delcare',
+    id: 'sof.shipments.progress.action.customs.delcare',
     defaultMessage: '发送申报',
   },
   customsRelease: {
-    id: 'scof.orders.progress.action.customs.release',
+    id: 'sof.shipments.progress.action.customs.release',
     defaultMessage: '报关单放行',
   },
   shipmtAccept: {
-    id: 'scof.orders.progress.action.shipmt.accept',
+    id: 'sof.shipments.progress.action.shipmt.accept',
     defaultMessage: '接单',
   },
   shipmtDispatch: {
-    id: 'scof.orders.progress.action.shipmt.dispatch',
+    id: 'sof.shipments.progress.action.shipmt.dispatch',
     defaultMessage: '调度',
   },
   shipmtPickup: {
-    id: 'scof.orders.progress.action.shipmt.pickup',
+    id: 'sof.shipments.progress.action.shipmt.pickup',
     defaultMessage: '提货',
   },
   shipmtDeliver: {
-    id: 'scof.orders.progress.action.shipmt.deliver',
+    id: 'sof.shipments.progress.action.shipmt.deliver',
     defaultMessage: '交货',
   },
   shipmtPod: {
-    id: 'scof.orders.progress.action.shipmt.pod',
+    id: 'sof.shipments.progress.action.shipmt.pod',
     defaultMessage: '回单',
   },
   asnRelease: {
-    id: 'scof.orders.progress.action.asn.release',
+    id: 'sof.shipments.progress.action.asn.release',
     defaultMessage: '释放',
   },
   asnInbound: {
-    id: 'scof.orders.progress.action.asn.inbound',
+    id: 'sof.shipments.progress.action.asn.inbound',
     defaultMessage: '收货',
   },
   asnFinish: {
-    id: 'scof.orders.progress.action.asn.finished',
+    id: 'sof.shipments.progress.action.asn.finished',
     defaultMessage: '入库',
   },
   soRelease: {
-    id: 'scof.orders.progress.action.so.release',
+    id: 'sof.shipments.progress.action.so.release',
     defaultMessage: '释放',
   },
   soOutbound: {
-    id: 'scof.orders.progress.action.so.outbound',
+    id: 'sof.shipments.progress.action.so.outbound',
     defaultMessage: '出库',
   },
   soFinish: {
-    id: 'scof.orders.progress.action.so.finished',
+    id: 'sof.shipments.progress.action.so.finished',
     defaultMessage: '发货',
   },
   soDecl: {
-    id: 'scof.orders.progress.action.so.decl',
+    id: 'sof.shipments.progress.action.so.decl',
     defaultMessage: '保税清关',
   },
   regFinish: {
-    id: 'scof.orders.progress.action.so.reg.finished',
+    id: 'sof.shipments.progress.action.so.reg.finished',
     defaultMessage: '备案',
   },
   tabOrder: {
-    id: 'scof.orders.dock.tab.order',
+    id: 'sof.shipments.dock.tab.order',
     defaultMessage: '订单信息',
   },
   tabFlow: {
-    id: 'scof.orders.dock.tab.flow',
+    id: 'sof.shipments.dock.tab.flow',
     defaultMessage: '流程节点',
   },
   tabAttachment: {
-    id: 'scof.orders.dock.tab.attachment',
+    id: 'sof.shipments.dock.tab.attachment',
     defaultMessage: '附件',
   },
   invoiceNo: {
-    id: 'scof.orders.invoice.no',
+    id: 'sof.shipments.invoice.no',
     defaultMessage: '发票号',
   },
   invoiceDate: {
-    id: 'scof.orders.invoice.date',
+    id: 'sof.shipments.invoice.date',
     defaultMessage: '发票日期',
   },
   buyer: {
-    id: 'scof.orders.invoice.buyer',
+    id: 'sof.shipments.invoice.buyer',
     defaultMessage: '购买方',
   },
   seller: {
-    id: 'scof.orders.invoice.seller',
+    id: 'sof.shipments.invoice.seller',
     defaultMessage: '销售方',
   },
   'select invoices': {
-    id: 'scof.orders.invoice.select',
+    id: 'sof.shipments.invoice.select',
     defaultMessage: '选择商业发票',
   },
   invoiceStatus: {
-    id: 'scof.orders.invoice.status',
+    id: 'sof.shipments.invoice.status',
     defaultMessage: '发票状态',
   },
   shipped: {
-    id: 'scof.orders.invoice.shipped',
+    id: 'sof.shipments.invoice.shipped',
     defaultMessage: '已发货',
   },
   unshipped: {
-    id: 'scof.orders.invoice.unshipped',
+    id: 'sof.shipments.invoice.unshipped',
     defaultMessage: '未发货',
   },
   category: {
-    id: 'scof.orders.invoice.category',
+    id: 'sof.shipments.invoice.category',
     defaultMessage: '发票类别',
   },
   coefficient: {
-    id: 'scof.orders.invoice.coefficient',
+    id: 'sof.shipments.invoice.coefficient',
     defaultMessage: '金额调整系数',
   },
   poNo: {
-    id: 'scof.orders.invoice.poNo',
+    id: 'sof.shipments.invoice.poNo',
     defaultMessage: '订单号',
   },
   totalAmount: {
-    id: 'scof.orders.invoice.totalAmount',
+    id: 'sof.shipments.invoice.totalAmount',
     defaultMessage: '总价',
   },
   currency: {
-    id: 'scof.orders.invoice.currency',
+    id: 'sof.shipments.invoice.currency',
     defaultMessage: '币制',
   },
   totalQty: {
-    id: 'scof.orders.invoice.totalQty',
+    id: 'sof.shipments.invoice.totalQty',
     defaultMessage: '总数量',
   },
   totalNetWt: {
-    id: 'scof.orders.invoice.totalNetWt',
+    id: 'sof.shipments.invoice.totalNetWt',
     defaultMessage: '总净重',
   },
 });
