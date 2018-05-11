@@ -6,7 +6,6 @@ import moment from 'moment';
 import { Table, Button, Layout, Tag, message } from 'antd';
 import NavLink from 'client/components/NavLink';
 import RowAction from 'client/components/RowAction';
-import { loadPartners } from 'common/reducers/partner';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal } from 'common/reducers/cmsManifest';
 import { CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 
@@ -25,7 +24,6 @@ const { Content } = Layout;
     customer: state.cmsResources.customer,
   }),
   {
-    loadPartners,
     loadBillemplates,
     deleteTemplate,
     toggleBillTempModal,

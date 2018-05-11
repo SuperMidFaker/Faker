@@ -182,6 +182,10 @@ const messages = defineMessages({
     id: 'cwm.stock.transit.upload.update',
     defaultMessage: '批量导入调整',
   },
+  moveSearchPlaceholder: {
+    id: 'cwm.stock.move.search.placeholder',
+    defaultMessage: '移库单号/原因',
+  },
 });
 
 export default messages;

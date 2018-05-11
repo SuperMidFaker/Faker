@@ -2,8 +2,8 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/inventory/movement/', [
-  'OPEN_MOVEMENT_MODAL', 'CLOSE_MOVEMENT_MODAL', 'SET_FILTER',
-  'INVENTORY_SEARCH', 'INVENTORY_SEARCH_SUCCESS', 'INVENTORY_SEARCH_FAIL',
+  'OPEN_MOVEMENT_MODAL', 'CLOSE_MOVEMENT_MODAL', 'SET_MOVEMODAL_FILTER',
+  'SEARCH_OWNSTOCK', 'SEARCH_OWNSTOCK_SUCCESS', 'SEARCH_OWNSTOCK_FAIL',
   'CREATE_MOVEMENT', 'CREATE_MOVEMENT_SUCCESS', 'CREATE_MOVEMENT_FAIL',
   'LOAD_MOVEMENTS', 'LOAD_MOVEMENTS_SUCCESS', 'LOAD_MOVEMENTS_FAIL',
   'LOAD_MOVEMENT_HEAD', 'LOAD_MOVEMENT_HEAD_SUCCESS', 'LOAD_MOVEMENT_HEAD_FAIL',
@@ -20,8 +20,6 @@ const initialState = {
   movementModal: {
     visible: false,
     filter: {
-      ownerCode: '',
-      ownerName: '',
       productNo: '',
       location: '',
       startTime: '',
@@ -47,19 +45,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, movementModal: { ...state.movementModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_MOVEMENT_MODAL:
       return { ...state, movementModal: { ...state.movementModal, visible: false } };
-    case actionTypes.INVENTORY_SEARCH:
+    case actionTypes.LOAD_MOVEMENTS:
       return {
         ...state,
-        movementModal: {
-          ...state.movementModal,
-          filter: JSON.parse(action.params.filter),
-        },
+        movements: { ...state.movements, loading: true },
+        movementFilter: JSON.parse(action.params.filter),
       };
-    case actionTypes.LOAD_MOVEMENTS:
-      return { ...state, movements: { ...state.movements, loading: true } };
+    case actionTypes.LOAD_MOVEMENTS_FAIL:
+      return { ...state, movements: { ...state.movements, loading: false } };
     case actionTypes.LOAD_MOVEMENTS_SUCCESS:
       return { ...state, movements: { ...action.result.data, loading: false } };
-    case actionTypes.SET_FILTER:
+    case actionTypes.SET_MOVEMODAL_FILTER:
       return { ...state, movementModal: { ...state.movementModal, filter: action.filter } };
     case actionTypes.LOAD_MOVEMENT_HEAD_SUCCESS:
       return { ...state, movementHead: action.result.data };
@@ -84,13 +80,13 @@ export function closeMovementModal() {
   };
 }
 
-export function inventorySearch(filter, whseCode, ownerCode) {
+export function searchOwnerStock(filter, whseCode, ownerCode) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.INVENTORY_SEARCH,
-        actionTypes.INVENTORY_SEARCH_SUCCESS,
-        actionTypes.INVENTORY_SEARCH_FAIL,
+        actionTypes.SEARCH_OWNSTOCK,
+        actionTypes.SEARCH_OWNSTOCK_SUCCESS,
+        actionTypes.SEARCH_OWNSTOCK_FAIL,
       ],
       endpoint: 'v1/cwm/owner/inbound/details',
       method: 'get',
@@ -137,7 +133,7 @@ export function loadMovements({
 
 export function setMovementsFilter(filter) {
   return {
-    type: actionTypes.SET_FILTER,
+    type: actionTypes.SET_MOVEMODAL_FILTER,
     filter,
   };
 }

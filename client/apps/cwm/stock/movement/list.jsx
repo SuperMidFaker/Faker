@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Layout, Select, Icon, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
@@ -16,25 +15,13 @@ import { Logixon } from 'client/components/FontIcon';
 import { openMovementModal, loadMovements, cancelMovement } from 'common/reducers/cwmMovement';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
-import { format } from 'client/common/i18n/helpers';
 import WhseSelect from '../../common/whseSelect';
 import MovementModal from './modal/movementModal';
-import messages from '../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-
-const formatMsg = format(messages);
 const { Content } = Layout;
 const { Option } = Select;
 
-function fetchData({ state, dispatch }) {
-  dispatch(loadMovements({
-    whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmMovement.movements.pageSize,
-    current: state.cwmMovement.movements.current,
-    filter: state.cwmMovement.movementFilter,
-  }));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -65,22 +52,23 @@ export default class MovementList extends React.Component {
   state = {
     selectedRowKeys: [],
   }
+  componentDidMount() {
+    this.handleListLoad();
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
       const whseCode = nextProps.defaultWhse.code;
-      this.props.loadMovements({
-        whseCode,
-        pageSize: this.props.movements.pageSize,
-        current: this.props.movements.current,
-        filter: this.props.filter,
-      });
+      this.handleListLoad(whseCode);
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: '移库单号',
     dataIndex: 'movement_no',
     width: 180,
+  }, {
+    title: '原因',
+    dataIndex: 'reason',
   }, {
     title: '货主',
     width: 300,
@@ -88,6 +76,7 @@ export default class MovementList extends React.Component {
   }, {
     title: '类型',
     dataIndex: 'move_type',
+    width: 100,
     render: o => o && CWM_MOVEMENT_TYPE[o - 1].text,
   }, {
     title: '状态',
@@ -142,49 +131,32 @@ export default class MovementList extends React.Component {
   handleCreateMovement = () => {
     this.props.openMovementModal();
   }
-  handleStatusChange = () => {
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadMovements({
-      whseCode,
-      pageSize: this.props.movements.pageSize,
-      current: this.props.movements.current,
-    });
-  }
   handleMovementDetail = (row) => {
     const link = `/cwm/stock/movement/${row.movement_no}`;
     this.context.router.push(link);
   }
 
-  handleSearch = () => {
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadMovements({
-      whseCode,
-      pageSize: this.props.movements.pageSize,
-      current: this.props.movements.current,
-      filter: this.props.filter,
-    });
+  handleSearch = (value) => {
+    const filter = { ...this.props.filter, search: value };
+    this.handleListLoad(null, null, 1, filter);
   }
   handleOwnerChange = (value) => {
     const filter = { ...this.props.filter, owner: value };
-    const whseCode = this.props.defaultWhse.code;
+    this.handleListLoad(null, null, 1, filter);
+  }
+  handleListLoad = (whseCode, pageSize, current, filter) => {
     this.props.loadMovements({
-      whseCode,
-      pageSize: this.props.movements.pageSize,
-      current: this.props.movements.current,
-      filter,
+      whseCode: whseCode || this.props.defaultWhse.code,
+      pageSize: pageSize || this.props.movements.pageSize,
+      current: current || this.props.movements.current,
+      filter: filter || this.props.filter,
     });
   }
   cancelMovement = (row) => {
     const { loginName } = this.props;
     this.props.cancelMovement(row.movement_no, loginName).then((result) => {
       if (!result.err) {
-        const whseCode = this.props.defaultWhse.code;
-        this.props.loadMovements({
-          whseCode,
-          pageSize: this.props.movements.pageSize,
-          current: this.props.movements.current,
-          filter: this.props.filter,
-        });
+        this.handleListLoad();
       }
     });
   }
@@ -193,7 +165,7 @@ export default class MovementList extends React.Component {
       owners, loading,
     } = this.props;
     const dataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadMovements(params),
+      fetcher: params => this.handleListLoad(null, params.pageSize, params.current),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -203,13 +175,10 @@ export default class MovementList extends React.Component {
         pageSize: result.pageSize,
         showTotal: total => `共 ${total} 条`,
       }),
-      getParams: (pagination, tblfilters) => {
-        const newfilters = { ...this.props.filters, ...tblfilters[0] };
+      getParams: (pagination) => {
         const params = {
-          whseCode: this.props.defaultWhse.code,
           pageSize: pagination.pageSize,
           current: pagination.current,
-          filters: newfilters,
         };
         return params;
       },
@@ -222,7 +191,7 @@ export default class MovementList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBox placeholder={this.msg('searchPlaceholder')} onSearch={this.handleSearch} />
+      <SearchBox placeholder={this.msg('moveSearchPlaceholder')} onSearch={this.handleSearch} />
       <Select
         showSearch
         optionFilterProp="children"
@@ -265,7 +234,7 @@ export default class MovementList extends React.Component {
             loading={loading}
           />
         </Content>
-        <MovementModal />
+        <MovementModal reload={this.handleListLoad} />
       </QueueAnim>
     );
   }

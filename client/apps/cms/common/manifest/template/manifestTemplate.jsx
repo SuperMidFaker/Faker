@@ -104,10 +104,6 @@ function getFieldInits(formData) {
     formData: state.cmsManifest.formData,
     fieldInits: getFieldInits(state.cmsManifest.formData),
     changeTimes: state.cmsManifest.changeTimes,
-    customers: state.partner.partners.map(tm => ({
-      key: tm.partner_id,
-      text: tm.name,
-    })),
   }),
   {
     saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo,
@@ -125,7 +121,6 @@ export default class ManifestTemplate extends Component {
     }).isRequired,
     operation: PropTypes.string.isRequired,
     changeTimes: PropTypes.number,
-    customers: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.number })).isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -224,10 +219,6 @@ export default class ManifestTemplate extends Component {
   handleTempInfoChange = (val, field) => {
     const change = {};
     change[field] = val;
-    if (field === 'customer_partner_id') {
-      const cust = this.props.customers.find(ct => ct.key === val);
-      change.customer_name = cust.text;
-    }
     this.props.changeTempInfo({ change, templateId: this.props.template.id });
   }
   toggleRightSider = () => {

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Card, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, message } from 'antd';
-import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmMovement';
+import { closeMovementModal, searchOwnerStock, createMovement, setMovementsFilter } from 'common/reducers/cwmMovement';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { CWM_MOVEMENT_TYPE } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
@@ -21,16 +22,15 @@ const { Option } = Select;
     loginName: state.account.username,
     owners: state.cwmContext.whseAttrs.owners,
     filter: state.cwmMovement.movementModal.filter,
-    movements: state.cwmMovement.movements,
-    movementFilter: state.cwmMovement.movementFilter,
   }),
   {
-    closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter,
+    closeMovementModal, searchOwnerStock, createMovement, setMovementsFilter,
   }
 )
 export default class MovementModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    reload: PropTypes.func.isRequired,
   }
   state = {
     stocks: [],
@@ -52,10 +52,7 @@ export default class MovementModal extends Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: o =>
-      o && <Button>{o}</Button>
-
-    ,
+    render: o => o && <Button>{o}</Button>,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -118,10 +115,7 @@ export default class MovementModal extends Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: o =>
-      o &&
-        <Button>{o}</Button>
-    ,
+    render: o => o && <Button>{o}</Button>,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -163,6 +157,12 @@ export default class MovementModal extends Component {
   handleCancel = () => {
     this.props.closeMovementModal();
     this.setState({
+      stocks: [],
+      movements: [],
+      moveType: 1,
+      reason: '',
+      transactionNo: '',
+      owner: {},
     });
   }
   handleSearch = () => {
@@ -173,9 +173,10 @@ export default class MovementModal extends Component {
     }
     if (!filter.productNo && !filter.location) {
       message.info('请填写货品或库位');
+      this.setState({ stocks: [] });
       return;
     }
-    this.props.inventorySearch(
+    this.props.searchOwnerStock(
       JSON.stringify(filter), this.props.defaultWhse.code,
       this.state.owner.id
     ).then((result) => {
@@ -188,16 +189,14 @@ export default class MovementModal extends Component {
   }
   handleOwnerChange = (value) => {
     const owner = this.props.owners.find(item => item.id === value);
-    if (owner) {
-      this.setState({ owner });
-    }
+    this.setState({ owner: owner || {}, stocks: [] });
   }
   handleProductChange = (e) => {
     const newFilter = { ...this.props.filter, productNo: e.target.value };
     this.props.setMovementsFilter(newFilter);
   }
   handleLocationChange = (value) => {
-    const newFilter = { ...this.props.filter, location: value };
+    const newFilter = { ...this.props.filter, location: value || null };
     this.props.setMovementsFilter(newFilter);
   }
   handleDateChange = (dates, dateString) => {
@@ -270,13 +269,7 @@ export default class MovementModal extends Component {
     ).then((result) => {
       if (!result.err) {
         this.props.closeMovementModal();
-        this.props.loadMovements({
-          whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
-          pageSize: this.props.movements.pageSize,
-          current: this.props.movements.current,
-          filter: this.props.movementFilter,
-        });
+        this.props.reload();
         this.setState({
           stocks: [],
           movements: [],
@@ -327,7 +320,7 @@ export default class MovementModal extends Component {
         <LocationSelect
           style={{ width: 160 }}
           value={this.props.filter.location}
-          onSelect={this.handleLocationChange}
+          onChange={this.handleLocationChange}
           disabled={!owner.id}
         />
       </FormItem>
