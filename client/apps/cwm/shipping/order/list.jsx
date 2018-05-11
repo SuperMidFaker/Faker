@@ -10,6 +10,7 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
+import ToolbarAction from 'client/components/ToolbarAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import connectNav from 'client/common/decorators/connect-nav';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
@@ -135,6 +136,7 @@ export default class ShippingOrderList extends React.Component {
   }, {
     title: '承运人',
     dataIndex: 'carrier_name',
+    width: 180,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -208,6 +210,8 @@ export default class ShippingOrderList extends React.Component {
     width: 80,
     render: o => this.props.userMembers.find(member => member.login_id === o) &&
     this.props.userMembers.find(member => member.login_id === o).name,
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -541,10 +545,9 @@ export default class ShippingOrderList extends React.Component {
           ]}
         >
           <PageHeader.Actions>
-            <Button onClick={() => { this.setState({ importPanelVisible: true }); }}>{this.msg('batchImport')}</Button>
-            <Button type="primary" icon="plus" onClick={this.handleCreateSO}>
-              {this.msg('createSO')}
-            </Button>
+            <ToolbarAction icon="download" label={this.gmsg('export')} onClick={this.handleExport} />
+            <ToolbarAction icon="upload" label={this.gmsg('import')} onClick={() => { this.setState({ importPanelVisible: true }); }} />
+            <ToolbarAction primary icon="plus" label={this.gmsg('create')} onClick={this.handleCreateSO} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>

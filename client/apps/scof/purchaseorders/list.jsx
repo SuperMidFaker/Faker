@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Dropdown, Form, Menu, Layout, Select, Tag, DatePicker } from 'antd';
+import { Form, Menu, Layout, Select, DatePicker } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -120,42 +120,66 @@ export default class InvoiceList extends React.Component {
   })
 
   columns = [{
-    title: '发票号',
-    dataIndex: 'invoice_no',
+    title: this.msg('poNo'),
+    dataIndex: 'po_no',
     width: 150,
     fixed: 'left',
   }, {
-    title: '发票日期',
-    dataIndex: 'invoice_date',
-    render: o => o && moment(o).format('YYYY-MM-DD'),
-    width: 100,
-  }, {
-    title: '购买方',
-    dataIndex: 'buyer',
+    title: this.msg('customer'),
+    dataIndex: 'customer',
     width: 200,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
-    title: '销售方',
-    dataIndex: 'seller',
+    title: '购买方国别',
+    dataIndex: 'customer_country',
+    width: 120,
+  }, {
+    title: this.msg('supplier'),
+    dataIndex: 'supplier',
     width: 200,
     render: o => this.props.partners.find(partner => partner.id === Number(o)) &&
     this.props.partners.find(partner => partner.id === Number(o)).name,
   }, {
-    title: '采购订单号',
-    dataIndex: 'po_no',
+    title: '供应商国别',
+    dataIndex: 'supplier_country',
+    width: 120,
   }, {
-    title: '总数量',
+    title: '成交方式',
+    dataIndex: 'incoterms',
+    width: 120,
+  }, {
+    title: '运输方式',
+    dataIndex: 'transport_means',
+    width: 120,
+  }, {
+    title: '产品货号',
+    dataIndex: 'product_no',
+    width: 120,
+  }, {
+    title: '产品名称',
+    dataIndex: 'product_name',
+    width: 120,
+  }, {
+    title: '库别',
+    dataIndex: 'division_code',
+    width: 120,
+  }, {
+    title: '品牌',
+    dataIndex: 'brand_code',
+    width: 120,
+  }, {
+    title: '订单数量',
     dataIndex: 'total_qty',
     align: 'right',
     width: 120,
   }, {
-    title: '总净重',
-    dataIndex: 'total_net_wt',
+    title: '单价',
+    dataIndex: 'unit_price',
     align: 'right',
     width: 120,
   }, {
-    title: '总金额',
+    title: '总价',
     dataIndex: 'total_amount',
     align: 'right',
     width: 120,
@@ -166,21 +190,24 @@ export default class InvoiceList extends React.Component {
     render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
     this.props.currencies.find(curr => curr.curr_code === o).curr_name,
   }, {
-    title: '状态',
-    dataIndex: 'invoice_status',
+    title: '净重',
+    dataIndex: 'net_weight',
+    align: 'right',
+    width: 120,
+  }, {
+    title: '净重单位',
+    dataIndex: 'nw_unit',
+    align: 'right',
+    width: 120,
+  }, {
+    title: '关联发票号',
+    dataIndex: 'invoice_no',
+    width: 120,
+  }, {
+    title: this.msg('shippingDate'),
+    dataIndex: 'shipping_date',
+    render: o => o && moment(o).format('YYYY-MM-DD'),
     width: 100,
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <Tag>{this.msg('toShip')}</Tag>;
-        case 1:
-          return <Tag color="orange">{this.msg('partialShipped')}</Tag>;
-        case 2:
-          return <Tag color="green">{this.msg('shipped')}</Tag>;
-        default:
-          return null;
-      }
-    },
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
@@ -192,6 +219,8 @@ export default class InvoiceList extends React.Component {
     dataIndex: 'created_by',
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
@@ -319,7 +348,6 @@ export default class InvoiceList extends React.Component {
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onSelect={this.handleSelect}
-        style={{ width: '100%' }}
       >
         <Option value="all" key="all">全部</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
@@ -338,10 +366,8 @@ export default class InvoiceList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('purchaseOrders')}>
           <PageHeader.Actions>
-            <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
-              {this.gmsg('batchImport')}
-            </Dropdown.Button>
-            <Button type="primary" icon="plus" onClick={this.handleCreate} >{this.msg('createInvoice')}</Button>
+            <ToolbarAction icon="download" label={this.gmsg('export')} onClick={this.handleExport} />
+            <ToolbarAction icon="upload" label={this.gmsg('import')} dropdown={menu} onClick={this.handleImport} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

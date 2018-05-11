@@ -359,7 +359,7 @@ class DataTable extends React.Component {
       scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } :
         {
           x: minWidth || this.state.tableColumns.reduce((acc, cur) =>
-            acc + (cur.width ? cur.width : 220), 0),
+            acc + (cur.width ? cur.width : 100), 0),
           y: this.state.scrollY,
         };
     }

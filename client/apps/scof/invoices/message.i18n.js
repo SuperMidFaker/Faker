@@ -9,7 +9,7 @@ const messages = defineMessages({
   },
   invoiceNo: {
     id: 'sof.invoices.invoice.no',
-    defaultMessage: '发票号',
+    defaultMessage: '商业发票号',
   },
   invoiceDate: {
     id: 'sof.invoices.invoice.date',

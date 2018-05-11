@@ -297,6 +297,23 @@ export default class AuditList extends React.Component {
           ],
         },
         {
+          key: 'g_data',
+          title: this.gmsg('data'),
+          type: 'group',
+          children: [
+            {
+              key: 'import',
+              icon: 'upload',
+              title: this.gmsg('import'),
+            },
+            {
+              key: 'export',
+              icon: 'download',
+              title: this.gmsg('export'),
+            },
+          ],
+        },
+        {
           key: 'g_setting',
           title: this.gmsg('setting'),
           type: 'group',

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker, Dropdown } from 'antd';
+import { Form, Input, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
@@ -377,7 +377,7 @@ export default class OrderList extends React.Component {
     };
     const menu = (
       <Menu onClick={this.handleImportMenuClick}>
-        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
+        <Menu.Item key="logs"><Icon type="profile" /> {this.gmsg('importLogs')}</Menu.Item>
       </Menu>
     );
     const columns = [{
@@ -497,12 +497,9 @@ export default class OrderList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('shipmentOrders')}>
           <PageHeader.Actions>
-            <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
-              {this.gmsg('import')}
-            </Dropdown.Button>
-            <Button type="primary" icon="plus" onClick={this.handleCreate}>
-              {this.msg('createShipment')}
-            </Button>
+            <ToolbarAction icon="download" label={this.gmsg('export')} onClick={this.handleExport} />
+            <ToolbarAction icon="upload" label={this.gmsg('import')} dropdown={menu} onClick={this.handleImport} />
+            <ToolbarAction primary icon="plus" label={this.gmsg('create')} onClick={this.handleCreate} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>
