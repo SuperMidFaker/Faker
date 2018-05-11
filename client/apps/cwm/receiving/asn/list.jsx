@@ -8,7 +8,7 @@ import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import TrimSpan from 'client/components/trimSpan';
+import ToolbarAction from 'client/components/ToolbarAction';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
@@ -94,13 +94,12 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'cust_order_no',
   }, {
     title: '货主',
+    width: 180,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '供货商',
     width: 180,
     dataIndex: 'supplier_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -182,6 +181,8 @@ export default class ReceivingASNList extends React.Component {
     width: 80,
     render: o => this.props.userMembers.find(member => member.login_id === o)
     && this.props.userMembers.find(member => member.login_id === o).name,
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -451,9 +452,8 @@ export default class ReceivingASNList extends React.Component {
           ]}
         >
           <PageHeader.Actions>
-            <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
-              {this.msg('createASN')}
-            </Button>
+            <ToolbarAction icon="download" label={this.gmsg('export')} onClick={this.handleExport} />
+            <ToolbarAction primary icon="plus" label={this.gmsg('create')} onClick={this.handleCreateASN} />
           </PageHeader.Actions>
         </PageHeader>
         <Layout>

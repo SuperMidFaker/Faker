@@ -170,14 +170,6 @@ export default class BillList extends React.Component {
             onClose={this.toggleExtra}
           >
             <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleExtraMenuClick}>
-              <Menu.ItemGroup key="views" title={this.gmsg('views')}>
-                <Menu.Item key="table">
-                  <Icon type="table" /> {this.gmsg('tableView')}
-                </Menu.Item>
-                <Menu.Item key="board" disabled>
-                  <Icon type="layout" /> {this.gmsg('boardView')}
-                </Menu.Item>
-              </Menu.ItemGroup>
               <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
                 <Menu.Item key="templates">
                   <Icon type="tool" /> {this.msg('billTemplates')}

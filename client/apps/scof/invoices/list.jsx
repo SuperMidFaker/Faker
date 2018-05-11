@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Dropdown, Form, Menu, Layout, Select, Tag, DatePicker } from 'antd';
+import { Icon, Form, Menu, Layout, Select, Tag, DatePicker } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
+import EmptyState from 'client/components/EmptyState';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
@@ -219,7 +220,7 @@ export default class InvoiceList extends React.Component {
   columns = [{
     title: this.msg('invoiceNo'),
     dataIndex: 'invoice_no',
-    width: 150,
+    width: 180,
     fixed: 'left',
   }, {
     title: this.msg('invoiceDate'),
@@ -229,37 +230,38 @@ export default class InvoiceList extends React.Component {
   }, {
     title: this.msg('buyer'),
     dataIndex: 'buyer',
-    width: 180,
+    width: 200,
     render: o => this.props.buyers.find(buyer => buyer.partner_id === Number(o)) &&
     this.props.buyers.find(buyer => buyer.partner_id === Number(o)).name,
   }, {
     title: this.msg('seller'),
     dataIndex: 'seller',
-    width: 180,
+    width: 200,
     render: o => this.props.sellers.find(seller => seller.partner_id === Number(o)) &&
     this.props.sellers.find(seller => seller.partner_id === Number(o)).name,
   }, {
     title: this.msg('poNo'),
     dataIndex: 'po_no',
+    width: 180,
   }, {
     title: this.msg('totalQty'),
     dataIndex: 'total_qty',
     align: 'right',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('totalNetWt'),
     dataIndex: 'total_net_wt',
     align: 'right',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('totalAmount'),
     dataIndex: 'total_amount',
     align: 'right',
-    width: 120,
+    width: 150,
   }, {
     title: this.msg('currency'),
     dataIndex: 'currency',
-    width: 100,
+    width: 150,
     render: o => this.props.currencies.find(curr => curr.curr_code === o) &&
     this.props.currencies.find(curr => curr.curr_code === o).curr_name,
   }, {
@@ -289,6 +291,8 @@ export default class InvoiceList extends React.Component {
     dataIndex: 'created_by',
     width: 120,
     render: lid => <UserAvatar size="small" loginId={lid} showName />,
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
@@ -328,7 +332,7 @@ export default class InvoiceList extends React.Component {
     };
     const menu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
+        <Menu.Item key="logs"><Icon type="profile" /> {this.gmsg('importLogs')}</Menu.Item>
       </Menu>
     );
     const toolbarActions = (<span>
@@ -342,7 +346,6 @@ export default class InvoiceList extends React.Component {
         dropdownMatchSelectWidth={false}
         dropdownStyle={{ width: 360 }}
         onSelect={this.handleSelect}
-        style={{ width: '100%' }}
       >
         <Option value="all" key="all">{this.gmsg('all')}</Option>
         {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
@@ -361,10 +364,9 @@ export default class InvoiceList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('invoices')}>
           <PageHeader.Actions>
-            <Dropdown.Button icon="upload" onClick={this.handleImport} overlay={menu}>
-              {this.gmsg('batchImport')}
-            </Dropdown.Button>
-            <Button type="primary" icon="plus" onClick={this.handleCreate} >{this.msg('createInvoice')}</Button>
+            <ToolbarAction icon="download" label={this.gmsg('export')} onClick={this.handleExport} />
+            <ToolbarAction icon="upload" label={this.gmsg('import')} dropdown={menu} onClick={this.handleImport} />
+            <ToolbarAction primary icon="plus" label={this.gmsg('create')} onClick={this.handleCreate} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
@@ -378,6 +380,12 @@ export default class InvoiceList extends React.Component {
             columns={columns}
             loading={loading}
             rowKey="invoice_no"
+            locale={{
+              emptyText: <EmptyState
+                header={this.msg('invoiceEmpty')}
+                primaryAction={<ToolbarAction primary icon="plus" label={this.gmsg('createInvoice')} onClick={this.handleCreate} />}
+              />,
+            }}
           />
           <ImportDataPanel
             title={this.msg('batchImportInvoices')}
