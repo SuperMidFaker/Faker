@@ -251,7 +251,7 @@ export function loadInvoiceBuyerSellers() {
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
       params: {
-        roles: JSON.stringify([[PARTNER_ROLES.CUS, PARTNER_ROLES.SUP]]),
+        roles: JSON.stringify([PARTNER_ROLES.CUS, PARTNER_ROLES.SUP]),
         businessTypes: JSON.stringify(null),
       },
     },
