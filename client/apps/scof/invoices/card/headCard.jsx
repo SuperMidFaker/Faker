@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, DatePicker, Card, Col, Row } from 'antd';
 import moment from 'moment';
 import FormPane from 'client/components/FormPane';
+import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { WRAP_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
@@ -23,7 +24,7 @@ const InputGroup = Input.Group;
     buyers: state.sofInvoice.buyers,
     sellers: state.sofInvoice.sellers,
   }),
-  {}
+  { loadInvoiceBuyerSellers }
 )
 export default class HeadCard extends Component {
   static propTypes = {
@@ -32,6 +33,9 @@ export default class HeadCard extends Component {
     handlePackageSelect: PropTypes.func.isRequired,
     packageType: PropTypes.string,
     editable: PropTypes.bool.isRequired,
+  }
+  componentDidMount() {
+    this.props.loadInvoiceBuyerSellers();
   }
   handleSelect = (value) => {
     this.props.handlePackageSelect(value);

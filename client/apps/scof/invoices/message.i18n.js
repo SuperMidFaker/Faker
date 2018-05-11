@@ -95,7 +95,10 @@ const messages = defineMessages({
     id: 'sof.invoices.status.shipped',
     defaultMessage: '已发货',
   },
-
+  searchPlaceholder: {
+    id: 'sof.invoices.searchPlaceholder',
+    defaultMessage: '发票号',
+  },
 });
 
 export default messages;

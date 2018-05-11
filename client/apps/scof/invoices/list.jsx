@@ -227,13 +227,6 @@ export default class InvoiceList extends React.Component {
     render: o => o && moment(o).format('YYYY-MM-DD'),
     width: 100,
   }, {
-    title: this.msg('category'),
-    dataIndex: 'invoice_category',
-    width: 120,
-    filters: [],
-    onFilter: (value, record) =>
-      record.invoice_category && record.invoice_category.indexOf(value) !== -1,
-  }, {
     title: this.msg('buyer'),
     dataIndex: 'buyer',
     width: 180,
@@ -310,10 +303,30 @@ export default class InvoiceList extends React.Component {
     const {
       invoiceList, partners, loading, filter, buyers, sellers,
     } = this.props;
-    const column = this.columns.filter(col => col.dataIndex === 'invoice_category')[0];
-    column.filters = this.props.invoiceCategories.map(cate => ({
-      text: cate.category, value: cate.category,
-    }));
+    const columns = [...this.columns];
+    if (columns.filter(col => col.dataIndex === 'invoice_category')[0]) {
+      columns.splice(2, 1, {
+        title: this.msg('category'),
+        dataIndex: 'invoice_category',
+        width: 120,
+        filters: this.props.invoiceCategories.map(cate => ({
+          text: cate.category, value: cate.category,
+        })),
+        onFilter: (value, record) =>
+          record.invoice_category && record.invoice_category.indexOf(value) !== -1,
+      });
+    } else {
+      columns.splice(2, 0, {
+        title: this.msg('category'),
+        dataIndex: 'invoice_category',
+        width: 120,
+        filters: this.props.invoiceCategories.map(cate => ({
+          text: cate.category, value: cate.category,
+        })),
+        onFilter: (value, record) =>
+          record.invoice_category && record.invoice_category.indexOf(value) !== -1,
+      });
+    }
     let dateVal = [];
     if (filter.endDate) {
       dateVal = [moment(filter.startDate, 'YYYY-MM-DD'), moment(filter.endDate, 'YYYY-MM-DD')];
@@ -375,7 +388,7 @@ export default class InvoiceList extends React.Component {
             rowSelection={rowSelection}
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}
-            columns={this.columns}
+            columns={columns}
             loading={loading}
             rowKey="invoice_no"
           />
