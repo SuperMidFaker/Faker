@@ -114,12 +114,11 @@ export default class InvoiceList extends React.Component {
       pageSize: Number(result.pageSize),
       showTotal: total => `共 ${total} 条`,
     }),
-    getParams: (pagination, tblfilters) => {
-      const newfilters = { ...this.props.filter, ...tblfilters[0] };
+    getParams: (pagination) => {
       const params = {
         pageSize: pagination.pageSize,
         current: pagination.current,
-        filter: JSON.stringify(newfilters),
+        filter: JSON.stringify(this.props.filter),
       };
       return params;
     },

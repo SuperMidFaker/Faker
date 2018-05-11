@@ -287,13 +287,13 @@ export default class TemplateFees extends Component {
             <Card title={this.msg('feeParams')}>
               {TEMPLATE_BILL_PROPS.map(data => (
                 <Row>
-                  <Col sm={4}>
+                  <Col span={2}>
                     <Checkbox
-                      checked={billProps[data.key]}
+                      checked={!!billProps[data.key]}
                       onChange={ev => this.handleCheck(data.key, ev.target.checked)}
                     />
                   </Col>
-                  <Col sm={20}>
+                  <Col span={12}>
                     <InfoItem
                       field={billProps[data.key] || data.label}
                       editable={!!billProps[data.key]}

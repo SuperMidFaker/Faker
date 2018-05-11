@@ -41,7 +41,7 @@ export default class ManifestRulesPane extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: this.props.ietype });
   }
   msg = formatMsg(this.props.intl)

@@ -108,6 +108,10 @@ export default class OutboundList extends React.Component {
       <a onClick={() => this.handlePreview(record.so_no, record.outbound_no)}>{o}</a>
       : <span>{o}</span>),
   }, {
+    title: '客户单号',
+    dataIndex: 'cust_order_no',
+    width: 160,
+  }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
     width: 50,

@@ -119,7 +119,12 @@ export default class CarrierModal extends React.Component {
       businessType,
     }).then((result1) => {
       if (result1.error) {
-        message.error(result1.error.message);
+        const errMsg = result1.error.message;
+        if (errMsg.key === 'partner_code_exist') {
+          message.error(`承运商代码[${partnerCode}]已对应承运商[${errMsg.conflictName}]`);
+        } else {
+          message.error(result1.error.message);
+        }
       } else {
         this.handleCancel();
         message.info('添加成功');
@@ -137,22 +142,21 @@ export default class CarrierModal extends React.Component {
     const { partnerName, partnerCode, partnerUniqueCode } = this.state;
     return (
       <Modal maskClosable={false} title={operation === 'add' ? '新增承运商' : '修改承运商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <FormItem {...formItemLayout} label="承运商名称:" required>
+        <FormItem {...formItemLayout} label="承运商名称" required>
           <Input
-            required
             value={partnerName}
             onChange={e =>
               this.setState({ partnerName: e.target.value })}
           />
         </FormItem>
-        <FormItem {...formItemLayout} label="承运商代码:" required>
+        <FormItem {...formItemLayout} label="承运商代码" required>
           <Input
             value={partnerCode}
             onChange={e =>
               this.setState({ partnerCode: e.target.value })}
           />
         </FormItem>
-        <FormItem {...formItemLayout} label="统一社会信用代码:" required>
+        <FormItem {...formItemLayout} label="统一社会信用代码" >
           <Input
             value={partnerUniqueCode}
             onChange={e =>

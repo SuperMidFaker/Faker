@@ -486,6 +486,10 @@ const messages = defineMessages({
     id: 'cms.delegation.allocate.originator',
     defaultMessage: '指定执行者',
   },
+  tmplSearchPlaceholder: {
+    id: 'cms.delegation.template.search.placeholder',
+    defaultMessage: '客户名称',
+  },
 });
 
 export default messages;
