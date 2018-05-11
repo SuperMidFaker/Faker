@@ -304,29 +304,16 @@ export default class InvoiceList extends React.Component {
       invoiceList, partners, loading, filter, buyers, sellers,
     } = this.props;
     const columns = [...this.columns];
-    if (columns.filter(col => col.dataIndex === 'invoice_category')[0]) {
-      columns.splice(2, 1, {
-        title: this.msg('category'),
-        dataIndex: 'invoice_category',
-        width: 120,
-        filters: this.props.invoiceCategories.map(cate => ({
-          text: cate.category, value: cate.category,
-        })),
-        onFilter: (value, record) =>
-          record.invoice_category && record.invoice_category.indexOf(value) !== -1,
-      });
-    } else {
-      columns.splice(2, 0, {
-        title: this.msg('category'),
-        dataIndex: 'invoice_category',
-        width: 120,
-        filters: this.props.invoiceCategories.map(cate => ({
-          text: cate.category, value: cate.category,
-        })),
-        onFilter: (value, record) =>
-          record.invoice_category && record.invoice_category.indexOf(value) !== -1,
-      });
-    }
+    columns.splice(1, 0, {
+      title: this.msg('category'),
+      dataIndex: 'invoice_category',
+      width: 120,
+      filters: this.props.invoiceCategories.map(cate => ({
+        text: cate.category, value: cate.category,
+      })),
+      onFilter: (value, record) =>
+        record.invoice_category && record.invoice_category.indexOf(value) !== -1,
+    });
     let dateVal = [];
     if (filter.endDate) {
       dateVal = [moment(filter.startDate, 'YYYY-MM-DD'), moment(filter.endDate, 'YYYY-MM-DD')];
