@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Menu, Layout } from 'antd';
+import { Icon, Menu, Layout } from 'antd';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
-import TrimSpan from 'client/components/trimSpan';
 import ToolbarAction from 'client/components/ToolbarAction';
 import { loadPartnerList, showVendorModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
@@ -81,7 +80,7 @@ export default class SupplierList extends React.Component {
   }, {
     title: this.msg('supplierName'),
     dataIndex: 'name',
-    render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
+    width: 250,
   }, {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
@@ -120,19 +119,22 @@ export default class SupplierList extends React.Component {
     render: cdt => cdt && moment(cdt).format('YYYY/MM/DD'),
     width: 100,
   }, {
+    dataIndex: 'SPACER_COL',
+  }, {
     title: this.gmsg('op'),
-    width: 150,
+    width: 90,
+    className: 'table-col-ops',
     fixed: 'right',
     render: (_, row) => {
       if (!row.status) {
         return (<span>
           <RowAction onClick={this.handleVendorToggle} icon="play-circle" tooltip={this.gmsg('opEnable')} row={row} />
-          <RowAction danger confirm={this.gmsg('confirmOp')} onClick={this.handleVendorDel} icon="delete" tooltip={this.gmsg('delete')} row={row} />
+          <RowAction danger confirm={this.gmsg('confirmOp')} onConfirm={this.handleVendorDel} icon="delete" tooltip={this.gmsg('delete')} row={row} />
         </span>);
       }
       return (<span>
         <RowAction onClick={this.handleVendorEdit} icon="edit" tooltip={this.gmsg('edit')} row={row} />
-        <RowAction onClick={this.handleVendorToggle} icon="pause-circle" tooltip={this.gmsg('opDisable')} row={row} />
+        <RowAction onClick={this.handleVendorToggle} icon="pause-circle-o" tooltip={this.gmsg('opDisable')} row={row} />
       </span>);
     },
   }];
@@ -170,7 +172,7 @@ export default class SupplierList extends React.Component {
     </span>);
     const dropdown = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="impt">{this.gmsg('import')}</Menu.Item>
+        <Menu.Item key="impt"><Icon type="upload" /> {this.gmsg('batchImport')}</Menu.Item>
       </Menu>
     );
     const { supplierlist, loading } = this.props;

@@ -130,7 +130,8 @@ class DataTable extends React.Component {
         }
         newTableColumns.push({ ...currentOne, ...item, index: i });
       }
-      const popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      const popoverColumns = this.props.columns.filter(column =>
+        (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
       for (let i = 0; i < columnRule.popoverStorage.length; i++) {
         const item = columnRule.popoverStorage[i];
         let currentOne = null;
@@ -152,7 +153,8 @@ class DataTable extends React.Component {
         checked: true,
         index,
       }));
-      let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      let popoverColumns = this.props.columns.filter(column =>
+        (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
       popoverColumns = popoverColumns.map((column, index) => ({
         ...column,
         checked: true,
@@ -177,7 +179,8 @@ class DataTable extends React.Component {
         checked: true,
         index,
       }));
-      let popoverColumns = nextProps.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      let popoverColumns = nextProps.columns.filter(column =>
+        (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
       popoverColumns = popoverColumns.map((column, index) => ({
         ...column,
         checked: true,
@@ -264,7 +267,8 @@ class DataTable extends React.Component {
     if (window.localStorage) {
       window.localStorage.removeItem(pathname);
     }
-    let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+    let popoverColumns = this.props.columns.filter(column =>
+      (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
     popoverColumns = popoverColumns.map((column, index) => ({
       ...column,
       checked: true,
@@ -282,7 +286,8 @@ class DataTable extends React.Component {
     const popoverColumns = [...this.state.popoverColumns];
     const { pathname } = this.state;
     let columns = popoverColumns.filter(column => column.checked);
-    const operation = tableColumns.find(column => column.dataIndex === 'OPS_COL');
+    const operation = tableColumns.find(column =>
+      (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
     if (operation) { columns = columns.concat(operation); }
     const newColumns = columns.map(column => ({ ...column }));
     this.setState({
