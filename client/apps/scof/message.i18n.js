@@ -67,6 +67,10 @@ const messages = defineMessages({
     id: 'sof.customers.service.team',
     defaultMessage: '服务团队',
   },
+  batchImportCustomers: {
+    id: 'sof.customers.batch.import',
+    defaultMessage: '批量导入客户',
+  },
   supplierName: {
     id: 'sof.supplier.name',
     defaultMessage: '供应商名称',
@@ -75,6 +79,10 @@ const messages = defineMessages({
     id: 'sof.supplier.code',
     defaultMessage: '供应商代码',
   },
+  batchImportSuppliers: {
+    id: 'sof.supplier.batch.import',
+    defaultMessage: '批量导入供应商',
+  },
   vendorName: {
     id: 'sof.vendors.name',
     defaultMessage: '服务商名称',
@@ -82,6 +90,10 @@ const messages = defineMessages({
   vendorCode: {
     id: 'sof.vendors.code',
     defaultMessage: '服务商代码',
+  },
+  batchImportVendors: {
+    id: 'sof.vendors.batch.import',
+    defaultMessage: '批量导入服务商',
   },
   displayName: {
     id: 'sof.partner.display.name',

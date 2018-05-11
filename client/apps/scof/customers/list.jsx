@@ -12,6 +12,8 @@ import SearchBox from 'client/components/SearchBox';
 import ToolbarAction from 'client/components/ToolbarAction';
 import { loadPartnerList, showVendorModal, showCustomerPanel, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import { PARTNER_ROLES, BUSINESS_TYPES } from 'common/constants';
+import { createFilename } from 'client/util/dataTransform';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import CustomerPanel from './pane/customerPanel';
 import VendorModal from '../vendors/modals/vendorModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -45,8 +47,11 @@ export default class VendorList extends React.Component {
     showVendorModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
+  state = {
+    importPanelVisible: false,
+  }
   componentDidMount() {
-    this.handleTableLoad();
+    this.handleTableLoad(null, 1);
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded) {
@@ -87,6 +92,10 @@ export default class VendorList extends React.Component {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
     width: 180,
+  }, {
+    title: this.msg('englishName'),
+    dataIndex: 'en_name',
+    width: 150,
   }, {
     title: this.msg('uscCode'),
     dataIndex: 'partner_unique_code',
@@ -170,6 +179,17 @@ export default class VendorList extends React.Component {
     const filters = { ...this.props.listFilter, businessType: biztypes };
     this.handleTableLoad(null, null, filters);
   }
+  handleExport = () => {
+    window.open(`${API_ROOTS.default}v1/scof/partners/export/${createFilename('customers')}.xlsx?role=CUS`);
+  }
+  handleMenuClick = () => {
+    this.setState({
+      importPanelVisible: true,
+    });
+  }
+  customersUploaded = () => {
+    this.handleTableLoad();
+  }
   render() {
     const toolbarActions = (<span>
       <SearchBox
@@ -196,7 +216,7 @@ export default class VendorList extends React.Component {
       <Layout>
         <PageHeader title={this.msg('customers')}>
           <PageHeader.Actions>
-            <ToolbarAction icon="export" label={this.gmsg('export')} />
+            <ToolbarAction icon="export" label={this.gmsg('export')} onClick={this.handleExport} />
             <ToolbarAction primary icon="plus" label={this.gmsg('create')} dropdown={dropdown} onClick={this.handleVendorAdd} />
           </PageHeader.Actions>
         </PageHeader>
@@ -209,6 +229,15 @@ export default class VendorList extends React.Component {
             loading={loading}
           />
         </Content>
+        <ImportDataPanel
+          title={this.msg('batchImportCustomers')}
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cooperation/partner/import`}
+          formData={{ role: PARTNER_ROLES.CUS }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.customersUploaded}
+          template={`${XLSX_CDN}/客户导入模板.xlsx`}
+        />
         <CustomerPanel />
         <VendorModal onOk={this.handleTableLoad} />
       </Layout>
