@@ -140,7 +140,7 @@ export default class FlowList extends React.Component {
     width: 140,
     render: (_, record) => (<span>
       <RowAction onClick={this.handleDesignFlow} icon="form" label={this.msg('design')} row={record} />
-      {record.status === 1 ? <RowAction onClick={this.toggleFlowStatus} icon="pause-circle" tooltip={this.msg('disable')} row={record} /> :
+      {record.status === 1 ? <RowAction onClick={this.toggleFlowStatus} icon="pause-circle-o" tooltip={this.msg('disable')} row={record} /> :
       <RowAction onClick={this.toggleFlowStatus} icon="play-circle" tooltip={this.msg('enable')} row={record} />
       }
     </span>
