@@ -6,8 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, DatePicker, Card, Col, Row } from 'antd';
 import moment from 'moment';
 import FormPane from 'client/components/FormPane';
-import { loadPartners } from 'common/reducers/partner';
-import { PARTNER_ROLES, WRAP_TYPE } from 'common/constants';
+import { WRAP_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -19,11 +18,12 @@ const InputGroup = Input.Group;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    partners: state.partner.partners,
     trxModes: state.cmsManifest.params.trxModes,
     invoiceHead: state.sofInvoice.invoiceHead,
+    buyers: state.sofInvoice.buyers,
+    sellers: state.sofInvoice.sellers,
   }),
-  { loadPartners }
+  {}
 )
 export default class HeadCard extends Component {
   static propTypes = {
@@ -33,12 +33,6 @@ export default class HeadCard extends Component {
     packageType: PropTypes.string,
     editable: PropTypes.bool.isRequired,
   }
-  componentWillMount() {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role: PARTNER_ROLES.CUS,
-    });
-  }
   handleSelect = (value) => {
     this.props.handlePackageSelect(value);
   }
@@ -46,7 +40,7 @@ export default class HeadCard extends Component {
   gmsg = formatGlobalMsg(this.props.intl)
   render() {
     const {
-      form: { getFieldDecorator }, invoiceHead, partners, trxModes, packageType, editable,
+      form: { getFieldDecorator }, invoiceHead, sellers, buyers, trxModes, packageType, editable,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -83,15 +77,15 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('buyer')} {...formItemLayout}>
                 {getFieldDecorator('buyer', {
                 initialValue: invoiceHead.buyer &&
-                partners.find(partner => partner.id === Number(invoiceHead.buyer)) &&
-                partners.find(partner => partner.id === Number(invoiceHead.buyer)).name,
+                buyers.find(partner => partner.partner_id === Number(invoiceHead.buyer)) &&
+                buyers.find(partner => partner.partner_id === Number(invoiceHead.buyer)).name,
               })(<Select
                 allowClear
                 showSearch
                 showArrow
                 optionFilterProp="children"
               >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                {buyers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>)}
               </FormItem>
             </Col>
@@ -99,15 +93,15 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('seller')} {...formItemLayout}>
                 {getFieldDecorator('seller', {
                 initialValue: invoiceHead.seller &&
-                partners.find(partner => partner.id === Number(invoiceHead.seller)) &&
-                partners.find(partner => partner.id === Number(invoiceHead.seller)).name,
+                sellers.find(partner => partner.partner_id === Number(invoiceHead.seller)) &&
+                sellers.find(partner => partner.partner_id === Number(invoiceHead.seller)).name,
               })(<Select
                 allowClear
                 showSearch
                 showArrow
                 optionFilterProp="children"
               >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                {sellers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>)}
               </FormItem>
             </Col>
