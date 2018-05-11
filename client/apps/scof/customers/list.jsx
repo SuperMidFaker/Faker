@@ -88,6 +88,7 @@ export default class VendorList extends React.Component {
     title: this.msg('customerName'),
     dataIndex: 'name',
     width: 250,
+    render: (o, record) => <a onClick={() => this.handleShowCusPanel(record)}>{o}</a>,
   }, {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
@@ -161,8 +162,11 @@ export default class VendorList extends React.Component {
   handleVendorAdd = () => {
     this.props.showVendorModal('add', { role: PARTNER_ROLES.CUS });
   }
-  handleVendorEdit = (customer) => {
+  handleShowCusPanel = (customer) => {
     this.props.showCustomerPanel({ visible: true, customer });
+  }
+  handleVendorEdit = (customer) => {
+    this.props.showVendorModal('edit', customer);
   }
   handleVendorToggle = (customer) => {
     const newstatus = customer.status === 1 ? 0 : 1;
