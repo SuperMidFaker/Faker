@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Menu, Select, Layout } from 'antd';
+import { Icon, Menu, Layout } from 'antd';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
@@ -10,27 +10,25 @@ import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { loadPartnerList, showVendorModal, showCustomerPanel, changePartnerStatus, deletePartner } from 'common/reducers/partner';
-import { PARTNER_ROLES, BUSINESS_TYPES } from 'common/constants';
+import { loadPartnerList, showPartnerModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { PARTNER_ROLES } from 'common/constants';
 import { createFilename } from 'client/util/dataTransform';
 import ImportDataPanel from 'client/components/ImportDataPanel';
-import CustomerPanel from './pane/customerPanel';
-import VendorModal from '../vendors/modals/vendorModal';
+import PartnerModal from '../modal/partnerModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
-const { Option } = Select;
 
 @injectIntl
 @connect(
   state => ({
-    customerlist: state.partner.partnerlist,
+    vendors: state.partner.partnerlist,
     listFilter: state.partner.partnerFilter,
     loading: state.partner.loading,
     loaded: state.partner.loaded,
   }),
   {
-    loadPartnerList, changePartnerStatus, deletePartner, showCustomerPanel, showVendorModal,
+    loadPartnerList, changePartnerStatus, deletePartner, showPartnerModal,
   }
 )
 @connectNav({
@@ -41,10 +39,10 @@ export default class VendorList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
-    customerlist: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
+    vendors: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
     loadPartnerList: PropTypes.func.isRequired,
     deletePartner: PropTypes.func.isRequired,
-    showVendorModal: PropTypes.func.isRequired,
+    showPartnerModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
@@ -78,17 +76,16 @@ export default class VendorList extends React.Component {
       };
       return params;
     },
-    remotes: this.props.customerlist,
+    remotes: this.props.vendors,
   })
   columns = [{
-    title: this.msg('customerCode'),
+    title: this.msg('vendorCode'),
     dataIndex: 'partner_code',
     width: 100,
   }, {
-    title: this.msg('customerName'),
+    title: this.msg('vendorName'),
     dataIndex: 'name',
     width: 250,
-    render: (o, record) => <a onClick={() => this.handleShowCusPanel(record)}>{o}</a>,
   }, {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
@@ -134,7 +131,6 @@ export default class VendorList extends React.Component {
     dataIndex: 'SPACER_COL',
   }, {
     title: this.gmsg('op'),
-    dataIndex: 'OPS_COL',
     width: 90,
     className: 'table-col-ops',
     fixed: 'right',
@@ -153,72 +149,57 @@ export default class VendorList extends React.Component {
   }];
 
   handleTableLoad = (pageSize, current, filters) => {
-    const { customerlist, listFilter } = this.props;
-    const pageSizeArg = pageSize || customerlist.pageSize;
-    const currentArg = current || customerlist.current;
+    const { vendors, listFilter } = this.props;
+    const pageSizeArg = pageSize || vendors.pageSize;
+    const currentArg = current || vendors.current;
     const filtersArg = JSON.stringify(filters || listFilter);
-    this.props.loadPartnerList(PARTNER_ROLES.CUS, pageSizeArg, currentArg, filtersArg);
+    this.props.loadPartnerList(PARTNER_ROLES.VEN, pageSizeArg, currentArg, filtersArg);
   }
   handleVendorAdd = () => {
-    this.props.showVendorModal('add', { role: PARTNER_ROLES.CUS });
+    this.props.showPartnerModal('add', { role: PARTNER_ROLES.VEN });
   }
-  handleShowCusPanel = (customer) => {
-    this.props.showCustomerPanel({ visible: true, customer });
+  handleVendorEdit = (vendor) => {
+    this.props.showPartnerModal('edit', vendor);
   }
-  handleVendorEdit = (customer) => {
-    this.props.showVendorModal('edit', customer);
+  handleVendorToggle = (vendor) => {
+    const newstatus = vendor.status === 1 ? 0 : 1;
+    this.props.changePartnerStatus(vendor.id, newstatus);
   }
-  handleVendorToggle = (customer) => {
-    const newstatus = customer.status === 1 ? 0 : 1;
-    this.props.changePartnerStatus(customer.id, newstatus);
-  }
-  handleVendorDel = (customer) => {
-    this.props.deletePartner(customer.id);
+  handleVendorDel = (vendor) => {
+    this.props.deletePartner(vendor.id);
   }
   handleSearch = (value) => {
     const filters = { ...this.props.listFilter, name: value };
     this.handleTableLoad(null, null, filters);
   }
-  handleBusiTypeChange = (biztypes) => {
-    const filters = { ...this.props.listFilter, businessType: biztypes };
-    this.handleTableLoad(null, null, filters);
-  }
   handleExport = () => {
-    window.open(`${API_ROOTS.default}v1/scof/partners/export/${createFilename('customers')}.xlsx?role=CUS`);
+    window.open(`${API_ROOTS.default}v1/scof/partners/export/${createFilename('vendors')}.xlsx?role=VEN`);
   }
   handleMenuClick = () => {
     this.setState({
       importPanelVisible: true,
     });
   }
-  customersUploaded = () => {
+  suppliersUploaded = () => {
     this.handleTableLoad();
   }
   render() {
-    const toolbarActions = (<span>
+    const toolbarActions = (<span style={{ width: 500 }}>
       <SearchBox
         placeholder={this.msg('partnerSearchPlaceholder')}
         onSearch={this.handleSearch}
       />
-      <Select
-        mode="multiple"
-        placeholder={this.msg('businessType')}
-        onChange={this.handleBusiTypeChange}
-      >
-        {BUSINESS_TYPES.map(item => (<Option value={item.value} key={item.value}>
-          {item.label}</Option>))}
-      </Select>
     </span>);
     const dropdown = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="impt"><Icon type="upload" /> {this.gmsg('batchImport')}</Menu.Item>
       </Menu>
     );
-    const { customerlist, loading } = this.props;
-    this.dataSource.remotes = customerlist;
+    const { vendors, loading } = this.props;
+    this.dataSource.remotes = vendors;
     return (
       <Layout>
-        <PageHeader title={this.msg('customers')}>
+        <PageHeader title={this.msg('vendors')}>
           <PageHeader.Actions>
             <ToolbarAction icon="export" label={this.gmsg('export')} onClick={this.handleExport} />
             <ToolbarAction primary icon="plus" label={this.gmsg('create')} dropdown={dropdown} onClick={this.handleVendorAdd} />
@@ -234,16 +215,15 @@ export default class VendorList extends React.Component {
           />
         </Content>
         <ImportDataPanel
-          title={this.msg('batchImportCustomers')}
+          title={this.msg('batchImportVendors')}
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cooperation/partner/import`}
-          formData={{ role: PARTNER_ROLES.CUS }}
+          formData={{ role: PARTNER_ROLES.VEN }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
-          onUploaded={this.customersUploaded}
+          onUploaded={this.vendorsUploaded}
           template={`${XLSX_CDN}/客户导入模板.xlsx`}
         />
-        <CustomerPanel />
-        <VendorModal onOk={this.handleTableLoad} />
+        <PartnerModal onOk={this.handleTableLoad} />
       </Layout>
     );
   }

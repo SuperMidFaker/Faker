@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Button, Badge, Modal, Layout, Radio, Select, Tooltip, Tag } from 'antd';
-import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList,
-  editFlow, toggleFlowDesigner, toggleFlowStatus } from 'common/reducers/scofFlow';
+import {
+  loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList,
+  editFlow, toggleFlowDesigner, toggleFlowStatus,
+} from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import DataTable from 'client/components/DataTable';
@@ -99,9 +101,11 @@ export default class FlowList extends React.Component {
   columns = [{
     title: this.msg('流程名称'),
     dataIndex: 'name',
+    width: 250,
   }, {
     title: this.msg('关联客户'),
     dataIndex: 'customer',
+    width: 250,
     render: (o, record) => {
       if (record.partner_id) {
         return (record.customer_tenant_id === -1 ?
@@ -135,9 +139,12 @@ export default class FlowList extends React.Component {
     width: 100,
     render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
+    dataIndex: 'SPACER_COL',
+  }, {
     title: '操作',
-    key: 'OP_COL',
+    key: 'OPS_COL',
     width: 140,
+    className: 'table-col-ops',
     render: (_, record) => (<span>
       <RowAction onClick={this.handleDesignFlow} icon="form" label={this.msg('design')} row={record} />
       {record.status === 1 ? <RowAction onClick={this.toggleFlowStatus} icon="pause-circle-o" tooltip={this.msg('disable')} row={record} /> :

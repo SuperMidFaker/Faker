@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Checkbox, Modal, Form, Input, Select, Col, Button, Icon, message } from 'antd';
 import { getCompanyInfo } from 'common/reducers/common';
-import { hideVendorModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
+import { hidePartnerModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, BUSINESS_TYPES } from 'common/constants';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -20,18 +20,18 @@ const CheckboxGroup = Checkbox.Group;
     operation: state.partner.vendorModal.operation,
   }),
   {
-    addPartner, editPartner, checkPartner, hideVendorModal, getCompanyInfo,
+    addPartner, editPartner, checkPartner, hidePartnerModal, getCompanyInfo,
   }
 )
 @Form.create()
-export default class VendorModal extends React.Component {
+export default class PartnerModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     operation: PropTypes.oneOf(['add', 'edit']),
     addPartner: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
-    hideVendorModal: PropTypes.func.isRequired,
+    hidePartnerModal: PropTypes.func.isRequired,
     editPartner: PropTypes.func.isRequired,
     vendor: PropTypes.shape({ id: PropTypes.number, role: PropTypes.string.isRequired }).isRequired,
     onOk: PropTypes.func,
@@ -41,9 +41,10 @@ export default class VendorModal extends React.Component {
     companies: [],
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleCancel = () => {
     this.setState({ companies: [] });
-    this.props.hideVendorModal();
+    this.props.hidePartnerModal();
   }
   nameChooseConfirm = (foundName, partnerInfo) => {
     Modal.confirm({
@@ -176,19 +177,20 @@ export default class VendorModal extends React.Component {
     }
     let title = '';
     if (operation === 'add') {
-      title = `${this.msg('add')}${roleName}`;
+      title = `${this.gmsg('create')}${roleName}`;
     } else if (operation === 'edit') {
       title = `${this.msg('edit')}${roleName}${this.msg('profile')}`;
     }
     return (
       <Modal
+        width={800}
         maskClosable={false}
         visible={visible}
         title={title}
         onCancel={this.handleCancel}
         onOk={this.handleOk}
       >
-        <Form layout="horizontal">
+        <Form layout="horizontal" className="form-layout-compact">
           <FormItem
             {...formItemLayout}
             label={this.msg(vendorNameLabel)}
@@ -237,15 +239,11 @@ export default class VendorModal extends React.Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label={this.msg('businessType')}
+            label={this.msg('country')}
           >
-            {getFieldDecorator('businessType', {
-              initialValue: vendor.business_type ? vendor.business_type.split(',') : [],
-              rules: [{
-              required: vendor.role === PARTNER_ROLES.VEN,
-              message: this.msg('vendorBusinessTypeRequired'),
-              }],
-            })(<CheckboxGroup options={BUSINESS_TYPES} />)}
+            {getFieldDecorator('country', {
+                  initialValue: vendor.country,
+                })(<Input />)}
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -297,11 +295,15 @@ export default class VendorModal extends React.Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label={this.msg('country')}
+            label={this.msg('businessType')}
           >
-            {getFieldDecorator('country', {
-                  initialValue: vendor.country,
-                })(<Input />)}
+            {getFieldDecorator('businessType', {
+              initialValue: vendor.business_type ? vendor.business_type.split(',') : [],
+              rules: [{
+              required: vendor.role === PARTNER_ROLES.VEN,
+              message: this.msg('vendorBusinessTypeRequired'),
+              }],
+            })(<CheckboxGroup options={BUSINESS_TYPES} />)}
           </FormItem>
         </Form>
       </Modal>

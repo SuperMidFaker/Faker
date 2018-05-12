@@ -229,10 +229,10 @@ export function showCustomerPanel({ visible, customer }) {
   return { type: actionTypes.SHOW_CUSTOMER_PANEL, data: { visible, customer } };
 }
 
-export function showVendorModal(operation = '', vendor = {}) {
+export function showPartnerModal(operation = '', vendor = {}) {
   return { type: actionTypes.SHOW_VENDOR_MODAL, data: { operation, vendor } };
 }
 
-export function hideVendorModal() {
+export function hidePartnerModal() {
   return { type: actionTypes.HIDE_VENDOR_MODAL };
 }

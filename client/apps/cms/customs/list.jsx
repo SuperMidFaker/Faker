@@ -12,8 +12,11 @@ import SearchBox from 'client/components/SearchBox';
 import Drawer from 'client/components/Drawer';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
-  toggleInspectModal, toggleDeclModModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
+import {
+  loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
+  toggleInspectModal, toggleDeclModModal, openDeclReleasedModal,
+  showBatchSendModal, showDeclMsgDock,
+} from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
@@ -250,6 +253,7 @@ export default class CustomsList extends Component {
   }, {
     title: '进/出口口岸',
     dataIndex: 'i_e_port',
+    width: 120,
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';
@@ -324,6 +328,8 @@ export default class CustomsList extends Component {
       }
       return null;
     },
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',

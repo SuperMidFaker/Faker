@@ -10,11 +10,11 @@ import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { loadPartnerList, showVendorModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { loadPartnerList, showPartnerModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
 import { createFilename } from 'client/util/dataTransform';
 import ImportDataPanel from 'client/components/ImportDataPanel';
-import VendorModal from '../vendors/modals/vendorModal';
+import PartnerModal from '../modal/partnerModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -28,7 +28,7 @@ const { Content } = Layout;
     loaded: state.partner.loaded,
   }),
   {
-    loadPartnerList, changePartnerStatus, deletePartner, showVendorModal,
+    loadPartnerList, changePartnerStatus, deletePartner, showPartnerModal,
   }
 )
 @connectNav({
@@ -42,7 +42,7 @@ export default class SupplierList extends React.Component {
     supplierlist: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
     loadPartnerList: PropTypes.func.isRequired,
     deletePartner: PropTypes.func.isRequired,
-    showVendorModal: PropTypes.func.isRequired,
+    showPartnerModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
@@ -156,10 +156,10 @@ export default class SupplierList extends React.Component {
     this.props.loadPartnerList(PARTNER_ROLES.SUP, pageSizeArg, currentArg, filtersArg);
   }
   handleVendorAdd = () => {
-    this.props.showVendorModal('add', { role: PARTNER_ROLES.SUP });
+    this.props.showPartnerModal('add', { role: PARTNER_ROLES.SUP });
   }
   handleVendorEdit = (vendor) => {
-    this.props.showVendorModal('edit', vendor);
+    this.props.showPartnerModal('edit', vendor);
   }
   handleVendorToggle = (vendor) => {
     const newstatus = vendor.status === 1 ? 0 : 1;
@@ -223,7 +223,7 @@ export default class SupplierList extends React.Component {
           onUploaded={this.suppliersUploaded}
           template={`${XLSX_CDN}/客户导入模板.xlsx`}
         />
-        <VendorModal onOk={this.handleTableLoad} />
+        <PartnerModal onOk={this.handleTableLoad} />
       </Layout>
     );
   }
