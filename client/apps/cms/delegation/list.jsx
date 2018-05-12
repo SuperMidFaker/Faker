@@ -12,15 +12,19 @@ import UserAvatar from 'client/components/UserAvatar';
 import SearchBox from 'client/components/SearchBox';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE, CMS_DELG_TODO,
-  TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+  TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES,
+} from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 
 import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
-import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire, updateDelegation } from 'common/reducers/cmsDelegation';
+import {
+  loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
+  ensureManifestMeta, showDispModal, toggleExchangeDocModal,
+  toggleQuarantineModal, loadFormRequire, updateDelegation,
+} from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
@@ -301,7 +305,10 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('lastActTime'),
     dataIndex: 'last_act_time',
+    width: 100,
     render: (o, record) => (record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-'),
+  }, {
+    dataIndex: 'SPACER_COL',
   }]
   handleArrDateChange = (dataString, delgNo) => {
     this.props.updateDelegation({ intl_arrival_date: dataString }, delgNo).then((result) => {

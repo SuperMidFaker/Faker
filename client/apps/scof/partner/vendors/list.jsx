@@ -10,11 +10,11 @@ import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { loadPartnerList, showVendorModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { loadPartnerList, showPartnerModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
 import { createFilename } from 'client/util/dataTransform';
 import ImportDataPanel from 'client/components/ImportDataPanel';
-import VendorModal from './modals/vendorModal';
+import PartnerModal from '../modal/partnerModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -28,7 +28,7 @@ const { Content } = Layout;
     loaded: state.partner.loaded,
   }),
   {
-    loadPartnerList, changePartnerStatus, deletePartner, showVendorModal,
+    loadPartnerList, changePartnerStatus, deletePartner, showPartnerModal,
   }
 )
 @connectNav({
@@ -42,7 +42,7 @@ export default class VendorList extends React.Component {
     vendors: PropTypes.shape({ totalCount: PropTypes.number }).isRequired,
     loadPartnerList: PropTypes.func.isRequired,
     deletePartner: PropTypes.func.isRequired,
-    showVendorModal: PropTypes.func.isRequired,
+    showPartnerModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
@@ -81,11 +81,12 @@ export default class VendorList extends React.Component {
   columns = [{
     title: this.msg('vendorCode'),
     dataIndex: 'partner_code',
+    fixed: 'left',
     width: 100,
   }, {
     title: this.msg('vendorName'),
     dataIndex: 'name',
-    width: 250,
+    width: 300,
   }, {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
@@ -94,6 +95,10 @@ export default class VendorList extends React.Component {
     title: this.msg('englishName'),
     dataIndex: 'en_name',
     width: 150,
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+    width: 100,
   }, {
     title: this.msg('uscCode'),
     dataIndex: 'partner_unique_code',
@@ -114,10 +119,6 @@ export default class VendorList extends React.Component {
     title: this.msg('email'),
     dataIndex: 'email',
     width: 150,
-  }, {
-    title: this.msg('country'),
-    dataIndex: 'country',
-    width: 100,
   }, {
     title: this.msg('internalId'),
     dataIndex: 'id',
@@ -156,10 +157,10 @@ export default class VendorList extends React.Component {
     this.props.loadPartnerList(PARTNER_ROLES.VEN, pageSizeArg, currentArg, filtersArg);
   }
   handleVendorAdd = () => {
-    this.props.showVendorModal('add', { role: PARTNER_ROLES.VEN });
+    this.props.showPartnerModal('add', { role: PARTNER_ROLES.VEN });
   }
   handleVendorEdit = (vendor) => {
-    this.props.showVendorModal('edit', vendor);
+    this.props.showPartnerModal('edit', vendor);
   }
   handleVendorToggle = (vendor) => {
     const newstatus = vendor.status === 1 ? 0 : 1;
@@ -223,7 +224,7 @@ export default class VendorList extends React.Component {
           onUploaded={this.vendorsUploaded}
           template={`${XLSX_CDN}/客户导入模板.xlsx`}
         />
-        <VendorModal onOk={this.handleTableLoad} />
+        <PartnerModal onOk={this.handleTableLoad} />
       </Layout>
     );
   }

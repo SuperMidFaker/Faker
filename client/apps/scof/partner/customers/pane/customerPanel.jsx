@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Avatar, Button, Icon, Row, Col, Card, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 import InfoItem from 'client/components/InfoItem';
-import { showCustomerPanel, showVendorModal } from 'common/reducers/partner';
+import { showCustomerPanel, showPartnerModal } from 'common/reducers/partner';
 import ServiceTeamPane from './serviceTeamPane';
 import { formatMsg } from '../message.i18n';
 
@@ -17,7 +17,7 @@ const { TabPane } = Tabs;
     visible: state.partner.customerModal.visiblePanel,
     customer: state.partner.customerModal.customer,
   }),
-  { showCustomerPanel, showVendorModal },
+  { showCustomerPanel, showPartnerModal },
 )
 export default class CustomerPanel extends React.Component {
   static propTypes = {
@@ -26,7 +26,7 @@ export default class CustomerPanel extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   handleCustomerEdit = () => {
-    this.props.showVendorModal('edit', this.props.customer);
+    this.props.showPartnerModal('edit', this.props.customer);
   }
   handleClose = () => {
     this.props.showCustomerPanel({ visible: false });
