@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Checkbox, Modal, Form, Input, Select, Col, Button, Icon, message } from 'antd';
+import { Checkbox, Modal, Form, Input, Select, Col, Button, message } from 'antd';
 import { getCompanyInfo } from 'common/reducers/common';
 import { hidePartnerModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, BUSINESS_TYPES } from 'common/constants';
@@ -179,7 +179,7 @@ export default class PartnerModal extends React.Component {
     if (operation === 'add') {
       title = `${this.gmsg('create')}${roleName}`;
     } else if (operation === 'edit') {
-      title = `${this.msg('edit')}${roleName}${this.msg('profile')}`;
+      title = `${this.gmsg('edit')}${roleName}${this.msg('profile')}`;
     }
     return (
       <Modal
@@ -195,7 +195,7 @@ export default class PartnerModal extends React.Component {
             {...formItemLayout}
             label={this.msg(vendorNameLabel)}
           >
-            <Col span={20}>
+            <Col span={18}>
               {getFieldDecorator('name', {
                   rules: [{
                   required: true,
@@ -213,9 +213,9 @@ export default class PartnerModal extends React.Component {
                     {item.Name}</Option>))}
                 </Select>)}
             </Col>
-            <Col span={2}>
-              <Button size="default" onClick={this.handleSearchCompany}>
-                <Icon type="search" />
+            <Col span={6}>
+              <Button icon="search" onClick={this.handleSearchCompany}>
+                {this.msg('businessInfo')}
               </Button>
             </Col>
           </FormItem>

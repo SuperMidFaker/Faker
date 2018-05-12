@@ -83,11 +83,12 @@ export default class CustomerList extends React.Component {
   columns = [{
     title: this.msg('customerCode'),
     dataIndex: 'partner_code',
+    fixed: 'left',
     width: 100,
   }, {
     title: this.msg('customerName'),
     dataIndex: 'name',
-    width: 250,
+    width: 300,
     render: (o, record) => <a onClick={() => this.handleShowCusPanel(record)}>{o}</a>,
   }, {
     title: this.msg('displayName'),
@@ -97,6 +98,10 @@ export default class CustomerList extends React.Component {
     title: this.msg('englishName'),
     dataIndex: 'en_name',
     width: 150,
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+    width: 100,
   }, {
     title: this.msg('uscCode'),
     dataIndex: 'partner_unique_code',
@@ -117,10 +122,6 @@ export default class CustomerList extends React.Component {
     title: this.msg('email'),
     dataIndex: 'email',
     width: 150,
-  }, {
-    title: this.msg('country'),
-    dataIndex: 'country',
-    width: 100,
   }, {
     title: this.msg('internalId'),
     dataIndex: 'id',

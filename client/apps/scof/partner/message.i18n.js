@@ -71,6 +71,10 @@ const messages = defineMessages({
     id: 'sof.partner.profile',
     defaultMessage: '资料',
   },
+  businessInfo: {
+    id: 'sof.partner.business.info',
+    defaultMessage: '工商信息',
+  },
   businessType: {
     id: 'sof.partner.business.type',
     defaultMessage: '业务类型',
@@ -92,7 +96,7 @@ const messages = defineMessages({
     defaultMessage: '国家/地区',
   },
   uscCode: {
-    id: 'sof.partner.usccode',
+    id: 'sof.partner.usc.code',
     defaultMessage: '统一社会信用代码',
   },
   customsCode: {

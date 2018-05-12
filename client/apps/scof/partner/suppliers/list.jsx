@@ -81,11 +81,12 @@ export default class SupplierList extends React.Component {
   columns = [{
     title: this.msg('supplierCode'),
     dataIndex: 'partner_code',
+    fixed: 'left',
     width: 100,
   }, {
     title: this.msg('supplierName'),
     dataIndex: 'name',
-    width: 250,
+    width: 300,
   }, {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
@@ -94,6 +95,10 @@ export default class SupplierList extends React.Component {
     title: this.msg('englishName'),
     dataIndex: 'en_name',
     width: 150,
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+    width: 100,
   }, {
     title: this.msg('uscCode'),
     dataIndex: 'partner_unique_code',
@@ -114,10 +119,6 @@ export default class SupplierList extends React.Component {
     title: this.msg('email'),
     dataIndex: 'email',
     width: 150,
-  }, {
-    title: this.msg('country'),
-    dataIndex: 'country',
-    width: 100,
   }, {
     title: this.msg('internalId'),
     dataIndex: 'id',
