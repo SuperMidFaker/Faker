@@ -79,13 +79,19 @@ export default class SHFTZCargoList extends React.Component {
     owner: this.props.cargoOwner,
     rule: null,
   }
+  componentDidMount() {
+    if (this.props.cargoOwner) {
+      this.handleCargoLoad(1, { ...this.props.listFilter, status: 'completed' }, this.props.cargoOwner);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.cargoOwner !== this.props.cargoOwner) {
       const owner = nextProps.cargoOwner;
       this.setState({ owner });
       this.handleCargoLoad(1, this.props.listFilter, owner);
     }
-    if (this.state.rule === null || nextProps.cargoRule !== this.props.cargoRule) {
+    if (this.state.rule === null || (nextProps.cargoRule && nextProps.cargoRule
+      !== this.props.cargoRule)) {
       this.setState({ rule: nextProps.cargoRule.type });
     }
   }
