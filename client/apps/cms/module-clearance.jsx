@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { routerShape, locationShape } from 'react-router';
+import { TENANT_ASPECT } from 'common/constants';
 import { switchNavOption } from 'common/reducers/cmsPreferences';
 import { findForemostRoute, hasPermission } from 'client/common/decorators/withPrivilege';
 import Navigation from 'client/components/Navigation';
@@ -14,6 +15,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
+    aspect: state.account.aspect,
     privileges: state.account.privileges,
     cmsApps: state.account.apps.cms,
   }),
@@ -38,7 +40,9 @@ export default class Clearance extends React.Component {
     appMenus: [],
   }
   componentWillMount() {
-    const { privileges, intl, cmsApps } = this.props;
+    const {
+      privileges, intl, cmsApps, aspect,
+    } = this.props;
     const linkMenus = [];
     const appMenus = [];
     if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
@@ -99,24 +103,30 @@ export default class Clearance extends React.Component {
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
+      const billingSublinks = [];
+      if (aspect === TENANT_ASPECT.LSP) {
+        billingSublinks.push({
+          key: 'cms-billing-0',
+          path: '/clearance/billing/receivable',
+          text: formatMsg(intl, 'receivableExpense'),
+        });
+      }
+      billingSublinks.push({
+        key: 'cms-billing-1',
+        path: '/clearance/billing/payable',
+        text: formatMsg(intl, 'payableExpense'),
+      });
+      billingSublinks.push({
+        key: 'cms-billing-3',
+        path: '/clearance/billing/quote',
+        text: formatMsg(intl, 'quote'),
+      });
       linkMenus.push({
         single: false,
         key: 'cms-billing',
         icon: 'logixon icon-finance',
         text: formatMsg(intl, 'billing'),
-        sublinks: [{
-          key: 'cms-billing-0',
-          path: '/clearance/billing/receivable',
-          text: formatMsg(intl, 'receivableExpense'),
-        }, {
-          key: 'cms-billing-1',
-          path: '/clearance/billing/payable',
-          text: formatMsg(intl, 'payableExpense'),
-        }, {
-          key: 'cms-billing-3',
-          path: '/clearance/billing/quote',
-          text: formatMsg(intl, 'quote'),
-        }],
+        sublinks: billingSublinks,
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'analytics' })) {

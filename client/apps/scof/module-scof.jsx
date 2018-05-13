@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { locationShape } from 'react-router';
+import { TENANT_ASPECT } from 'common/constants';
 import { loadTrackings } from 'common/reducers/sofTracking';
 import Navigation from 'client/components/Navigation';
 import { formatMsg } from './message.i18n';
@@ -40,7 +41,7 @@ export default class ModuleSCOF extends React.Component {
       icon: 'logixon icon-dashboard-o',
       text: this.msg('dashboard'),
     });
-    if (aspect === 0) {
+    if (aspect === TENANT_ASPECT.ENT) {
       linkMenus.push({
         single: true,
         key: 'scof-purchaseorders',
@@ -89,7 +90,7 @@ export default class ModuleSCOF extends React.Component {
       icon: 'logixon icon-customer-mng',
       text: this.msg('customers'),
     });
-    if (aspect === 0) {
+    if (aspect === TENANT_ASPECT.ENT) {
       linkMenus.push({
         single: true,
         key: 'scof-supplier',

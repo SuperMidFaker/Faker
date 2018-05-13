@@ -111,6 +111,7 @@ export default class PayableExpenseList extends Component {
     }, {
       title: this.msg('sellerName'),
       dataIndex: 'seller_name',
+      width: 160,
     }, {
       title: this.msg('custOrderNo'),
       dataIndex: 'cust_order_no',
@@ -192,6 +193,8 @@ export default class PayableExpenseList extends Component {
       dataIndex: 'confirmed_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
+    }, {
+      dataIndex: 'SPACER_COL',
     }, {
       title: this.gmsg('actions'),
       dataIndex: 'OPS_COL',
@@ -430,7 +433,6 @@ export default class PayableExpenseList extends Component {
               dataSource={this.dataSource}
               rowKey="expense_no"
               loading={expensesLoading}
-              bordered
             />
           </Content>
           <ImportDataPanel

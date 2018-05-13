@@ -6,7 +6,7 @@ import { Button, Divider, Icon, Layout, Menu } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
-import { PARTNER_ROLES } from 'common/constants';
+import { PARTNER_ROLES, TENANT_ASPECT } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { toggleNewBillModal, reloadBillList } from 'common/reducers/bssBill';
 import PageHeader from 'client/components/PageHeader';
@@ -46,7 +46,7 @@ export default class BillList extends React.Component {
     extraVisible: false,
   }
   componentDidMount() {
-    if (this.props.aspect === 0) {
+    if (this.props.aspect === TENANT_ASPECT.ENT) {
       this.handleTabChange('sellerBill');
       this.props.loadPartners({ role: [PARTNER_ROLES.VEN] });
     } else {
@@ -106,7 +106,7 @@ export default class BillList extends React.Component {
       },
     ];
     const { aspect } = this.props;
-    if (aspect === 0) {
+    if (aspect === TENANT_ASPECT.ENT) {
       menus = [{
         key: 'sellerBill',
         menu: this.msg('sellerBill'),
