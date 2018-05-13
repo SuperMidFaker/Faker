@@ -12,8 +12,8 @@ const ACCOUNT_STATUS = {
 };
 
 const TENANT_ASPECT = {
-  BO: 0, // 企业主
-  SP: 1, // 服务商
+  ENT: 0, // 进出口货主企业
+  LSP: 1, // 物流服务商
 };
 const TENANT_LEVEL = {
   STANDARD: 0,
