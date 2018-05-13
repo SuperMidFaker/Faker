@@ -13,7 +13,6 @@ import OrderPane from './tabpanes/orderPane';
 import FlowPane from './tabpanes/flowPane';
 import AttachmentPane from './tabpanes/attachmentPane';
 import { formatMsg } from '../message.i18n';
-import '../orders.less';
 
 const { TabPane } = Tabs;
 function renderStatus(status) {

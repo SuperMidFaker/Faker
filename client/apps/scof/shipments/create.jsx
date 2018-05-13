@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Button, Layout, notification } from 'antd';
 import PageHeader from 'client/components/PageHeader';
-import OrderForm from './order';
+import OrderForm from './shipment';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;

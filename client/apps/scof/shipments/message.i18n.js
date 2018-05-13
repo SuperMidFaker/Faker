@@ -7,13 +7,13 @@ const messages = defineMessages({
     id: 'sof.shipments.shipment',
     defaultMessage: '货运订单',
   },
-  createShipment: {
-    id: 'sof.shipments.create.shipment',
-    defaultMessage: '新建货运订单',
+  shipper: {
+    id: 'sof.shipments.shipper',
+    defaultMessage: '货主',
   },
-  editOrder: {
-    id: 'sof.shipments.edit.order',
-    defaultMessage: '编辑订单',
+  serviceProvider: {
+    id: 'sof.shipments.service.provider',
+    defaultMessage: '服务商',
   },
   allOrders: {
     id: 'sof.shipments.all',
@@ -49,15 +49,27 @@ const messages = defineMessages({
   },
   originCountry: {
     id: 'sof.shipments.origin.country',
-    defaultMessage: 'Origin Cntry',
+    defaultMessage: '启运国(地区)',
   },
-  originPort: {
-    id: 'sof.shipments.origin.port',
-    defaultMessage: 'Origin Port',
+  destCountry: {
+    id: 'sof.shipments.dest.country',
+    defaultMessage: '运抵国(地区)',
+  },
+  importPort: {
+    id: 'sof.shipments.import.port',
+    defaultMessage: '进口口岸',
+  },
+  exportPort: {
+    id: 'sof.shipments.export.port',
+    defaultMessage: '出口口岸',
+  },
+  deptPort: {
+    id: 'sof.shipments.dept.port',
+    defaultMessage: '起运港',
   },
   destPort: {
     id: 'sof.shipments.dest.port',
-    defaultMessage: 'Dest. Port',
+    defaultMessage: '抵运港',
   },
   mode: {
     id: 'sof.shipments.mode',

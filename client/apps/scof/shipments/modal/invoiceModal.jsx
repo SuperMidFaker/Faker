@@ -181,84 +181,80 @@ export default class InvoiceModal extends Component {
     return (
       <Modal
         title={this.msg('select invoices')}
-        width={695}
+        width={800}
         visible={visible}
         onCancel={this.handleCancel}
         onOk={this.handleOk}
         destroyOnClose
       >
-        <div>
-          <Row>
-            <Col span={12}>
-              <FormItem label={this.msg('invoiceStatus')} {...formItemLayout}>
-                <RadioGroup onChange={this.handleStatusChange} defaultValue="unshipped">
-                  <RadioButton value="unshipped">{this.msg('unshipped')}</RadioButton>
-                  <RadioButton value="shipped">{this.msg('shipped')}</RadioButton>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem label={this.msg('category')} {...formItemLayout}>
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  onChange={this.handleCategoryChange}
-                  allowClear
-                  style={{ width: '100% ' }}
-                >
-                  {invoiceCategories.map(data => (
-                    <Option key={data.category} value={data.category}>
-                      {data.category}
-                    </Option>))}
-                </Select>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <FormItem label={this.msg('seller')} {...formItemLayout}>
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  onChange={this.handleSellerChange}
-                  dropdownMatchSelectWidth={false}
-                  dropdownStyle={{ width: 360 }}
-                  allowClear
-                  style={{ width: '100% ' }}
-                >
-                  {sellers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem label={this.msg('buyer')} {...formItemLayout}>
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  onChange={this.handleBuyerChange}
-                  dropdownMatchSelectWidth={false}
-                  dropdownStyle={{ width: 360 }}
-                  allowClear
-                  style={{ width: '100% ' }}
-                >
-                  {buyers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-                </Select>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <FormItem label={this.msg('coefficient')} {...formItemLayout}>
-                <Input value={this.state.coefficient} onChange={this.handleCoefficientChange} />
-              </FormItem>
-            </Col>
-          </Row>
-        </div>
+        <Row>
+          <Col span={12}>
+            <FormItem label={this.msg('invoiceStatus')} {...formItemLayout}>
+              <RadioGroup onChange={this.handleStatusChange} defaultValue="unshipped">
+                <RadioButton value="unshipped">{this.msg('unshipped')}</RadioButton>
+                <RadioButton value="shipped">{this.msg('shipped')}</RadioButton>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label={this.msg('category')} {...formItemLayout}>
+              <Select
+                showSearch
+                optionFilterProp="children"
+                onChange={this.handleCategoryChange}
+                allowClear
+                style={{ width: '100% ' }}
+              >
+                {invoiceCategories.map(data => (
+                  <Option key={data.category} value={data.category}>
+                    {data.category}
+                  </Option>))}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label={this.msg('seller')} {...formItemLayout}>
+              <Select
+                showSearch
+                optionFilterProp="children"
+                onChange={this.handleSellerChange}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 360 }}
+                allowClear
+                style={{ width: '100% ' }}
+              >
+                {sellers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label={this.msg('buyer')} {...formItemLayout}>
+              <Select
+                showSearch
+                optionFilterProp="children"
+                onChange={this.handleBuyerChange}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 360 }}
+                allowClear
+                style={{ width: '100% ' }}
+              >
+                {buyers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label={this.msg('coefficient')} {...formItemLayout}>
+              <Input value={this.state.coefficient} onChange={this.handleCoefficientChange} />
+            </FormItem>
+          </Col>
+        </Row>
+
         <DataTable
           columns={this.columns}
           dataSource={this.dataSource}
           rowSelection={rowSelection}
           rowKey="invoice_no"
+          noSetting
         />
       </Modal>
     );

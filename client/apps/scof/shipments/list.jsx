@@ -377,11 +377,11 @@ export default class OrderList extends React.Component {
     };
     const menu = (
       <Menu onClick={this.handleImportMenuClick}>
-        <Menu.Item key="logs"><Icon type="profile" /> {this.gmsg('importLogs')}</Menu.Item>
+        <Menu.Item key="logs"><Icon type="profile" /> {this.gmsg('viewImportLogs')}</Menu.Item>
       </Menu>
     );
     const columns = [{
-      title: '订单号/货主',
+      title: '货运订单号/货主',
       width: 200,
       fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,

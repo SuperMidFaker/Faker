@@ -146,7 +146,7 @@ export default class UploadLogsPanel extends React.Component {
       remotes: this.props.uploadRecords,
     });
     return (
-      <DockPanel title={this.gmsg('importLogs')} size="large" visible={visible} onClose={this.handleClose}>
+      <DockPanel title={this.msg('uploadLogs')} size="large" visible={visible} onClose={this.handleClose}>
         <DataTable
           size="middle"
           columns={this.columns}

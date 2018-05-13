@@ -10,7 +10,7 @@ import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/re
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import OrderForm from './order';
+import OrderForm from './shipment';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
