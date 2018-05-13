@@ -7,7 +7,6 @@ import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODE
 import { setClientForm } from 'common/reducers/sofOrders';
 import { loadPartnerFlowList, loadFlowGraph, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/sofCustomers';
-import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
 import UserAvatar from 'client/components/UserAvatar';
 import CMSDelegateForm from './forms/cmsDelegateForm';
@@ -17,9 +16,8 @@ import CwmShippingForm from './forms/cwmShippingForm';
 import ContainerPane from './tabpane/containerPane';
 import InvoicePane from './tabpane/invoicePane';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
-import messages from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -82,7 +80,8 @@ export default class OrderForm extends Component {
       this.props.loadOperators(formData.customer_partner_id, this.props.tenantId);
     }
   }
-  msg = key => formatMsg(this.props.intl, key)
+  msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   handleClientChange = (value) => {
     const selPartnerId = Number(value);
     const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
@@ -300,8 +299,9 @@ export default class OrderForm extends Component {
       </ul>
     );
     */
-    const shipmentDisabled = !formData.cust_shipmt_transfer || formData.cust_shipmt_transfer === 'DOM';
-    const shipmentActiveKey = shipmentDisabled ? [] : ['shipment'];
+    // const shipmentDisabled = !formData.cust_shipmt_transfer
+    // || formData.cust_shipmt_transfer === 'DOM';
+    // const shipmentActiveKey = shipmentDisabled ? [] : ['shipment'];
     let ext1Label = { label: '扩展字段1' };
     let ext2Label = { label: '扩展字段2' };
     let ext3Label = { label: '扩展字段3' };
@@ -346,6 +346,12 @@ export default class OrderForm extends Component {
         ext4Label = null;
       }
     }
+    let labelCountry = this.msg('originCountry');
+    let labelIEPort = this.msg('importPort');
+    if (formData.cust_shipmt_transfer === 'EXP') {
+      labelCountry = this.msg('destCountry');
+      labelIEPort = this.msg('exportPort');
+    }
 
     return (
       <div>
@@ -355,10 +361,10 @@ export default class OrderForm extends Component {
               <FormPane>
                 <Card>
                   <Row>
-                    <Col span={12}>
-                      <FormItem label="客户" {...formItemSpan2Layout} required>
+                    <Col span={6}>
+                      <FormItem label={this.msg('shipper')} {...formItemLayout} required>
                         <Select
-                          placeholder="请选择客户"
+                          placeholder="请选择货主"
                           showSearch
                           allowClear
                           optionFilterProp="children"
@@ -375,101 +381,34 @@ export default class OrderForm extends Component {
                       </FormItem>
                     </Col>
                     <Col span={6}>
-                      <FormItem label="货运类型" {...formItemLayout} required>
-                        {orderTypes.length === 0 ?
-                          <Select
-                            value={formData.cust_shipmt_transfer}
-                            onChange={value =>
-                            this.handleKvChange('cust_shipmt_transfer', value, 'transfer')}
-                          >
-                            {SCOF_ORDER_TRANSFER.map(sot =>
-                            (<Option value={sot.value} key={sot.value}>
-                              {sot.text}</Option>))}
-                          </Select> :
-                          <Select
-                            value={formData.cust_shipmt_order_type &&
-                                String(formData.cust_shipmt_order_type)}
-                            onChange={this.handleOrderTypeChange}
-                          >
-                            {orderTypes.map(ort =>
-                            (<Option value={String(ort.id)} key={ort.id}>
-                              {ort.name}</Option>))}
-                          </Select>
-                        }
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label={this.msg('跟单人员')} {...formItemLayout}>
-                        <Select value={formData.exec_login_id} onChange={value => this.handleChange('exec_login_id', value)}>
-                          {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
+                      <FormItem label={this.msg('serviceProvider')} {...formItemLayout} required>
+                        <Select
+                          placeholder="请选择服务商"
+                          showSearch
+                          allowClear
+                          optionFilterProp="children"
+                          value={formData.customer_partner_id}
+                          onChange={value => this.handleClientChange(value)}
+                          dropdownMatchSelectWidth={false}
+                          dropdownStyle={{ width: 360 }}
+                          style={{ width: '100%' }}
+                          disabled={!!(formData.shipmt_order_no)}
+                        >
+                          {formRequires.clients.map(data => (
+                            <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
                         </Select>
                       </FormItem>
                     </Col>
                     <Col span={6}>
-                      <FormItem label="客户单号" {...formItemLayout}>
+                      <FormItem label="订单参考号" {...formItemLayout}>
                         <Input value={formData.cust_order_no} onChange={e => this.handleChange('cust_order_no', e.target.value)} />
                       </FormItem>
                     </Col>
                     <Col span={6}>
-                      <FormItem label="件数/包装" {...formItemLayout}>
-                        <InputGroup compact>
-                          <Input
-                            type="number"
-                            style={{ width: '50%' }}
-                            value={formData.cust_shipmt_pieces}
-                            onChange={(ev) => {
-                              const pieces = parseFloat(ev.target.value);
-                              if (!Number.isNaN(Number(pieces))) {
-                                this.handleChange('cust_shipmt_pieces', ev.target.value);
-                              } else {
-                                this.handleChange('cust_shipmt_pieces', null);
-                              }
-                            }}
-                          />
-                          <Select
-                            style={{ width: '50%' }}
-                            placeholder="选择包装方式"
-                            onChange={value => this.handleKvChange('cust_shipmt_wrap_type', value, 'wrap')}
-                            value={formData.cust_shipmt_wrap_type}
-                          >
-                            {WRAP_TYPE.map(wt => (<Option value={wt.value} key={wt.value}>
-                              {wt.text}</Option>))}
-                          </Select>
-                        </InputGroup>
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label="总毛重" {...formItemLayout}>
-                        <Input
-                          type="number"
-                          addonAfter="KG"
-                          value={formData.cust_shipmt_weight}
-                          onChange={(ev) => {
-                            const weight = parseFloat(ev.target.value);
-                            if (!Number.isNaN(weight)) {
-                              this.handleChange('cust_shipmt_weight', weight);
-                            } else {
-                              this.handleChange('cust_shipmt_weight', null);
-                            }
-                          }}
-                        />
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label={this.msg('CBM')} {...formItemLayout}>
-                        <Input
-                          type="number"
-                          addonAfter={this.msg('立方米')}
-                          value={formData.cust_shipmt_volume}
-                          onChange={(ev) => {
-                            const volume = parseFloat(ev.target.value);
-                            if (!Number.isNaN(volume)) {
-                              this.handleChange('cust_shipmt_volume', volume);
-                            } else {
-                              this.handleChange('cust_shipmt_volume', null);
-                            }
-                          }}
-                        />
+                      <FormItem label={this.msg('执行人员')} {...formItemLayout}>
+                        <Select value={formData.exec_login_id} onChange={value => this.handleChange('exec_login_id', value)}>
+                          {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
+                        </Select>
                       </FormItem>
                     </Col>
                     <Col span={6}>
@@ -484,55 +423,124 @@ export default class OrderForm extends Component {
                         </Select>
                       </FormItem>
                     </Col>
-                    <Col span={6}>
-                      <FormItem label="货物类型" {...formItemLayout}>
-                        <Select value={formData.cust_shipmt_goods_type} onChange={value => this.handleKvChange('cust_shipmt_goods_type', value, 'goods')}>
-                          <Option value={GOODSTYPES[0].value}>
-                            <Tag>GN</Tag>{GOODSTYPES[0].text}</Option>
-                          <Option value={GOODSTYPES[1].value}>
-                            <Tag color="#2db7f5">FR</Tag>{GOODSTYPES[1].text}</Option>
-                          <Option value={GOODSTYPES[2].value}>
-                            <Tag color="#f50">DG</Tag>{GOODSTYPES[2].text}</Option>
-                        </Select>
-                      </FormItem>
-                    </Col>
+
                     <Col span={12}>
                       <FormItem label="备注" {...formItemSpan2Layout}>
                         <Input value={formData.cust_remark} onChange={e => this.handleChange('cust_remark', e.target.value)} />
                       </FormItem>
                     </Col>
-                    {ext1Label &&
-                      <Col span={6}>
-                        <FormItem {...ext1Label} {...formItemLayout}>
-                          <Input value={formData.ext_attr_1} onChange={e => this.handleChange('ext_attr_1', e.target.value)} />
-                        </FormItem>
-                      </Col>}
-                    {ext2Label &&
-                      <Col span={6}>
-                        <FormItem {...ext2Label} {...formItemLayout}>
-                          <Input value={formData.ext_attr_2} onChange={e => this.handleChange('ext_attr_2', e.target.value)} />
-                        </FormItem>
-                      </Col>}
-                    {ext3Label &&
-                      <Col span={6}>
-                        <FormItem {...ext3Label} {...formItemLayout}>
-                          <Input value={formData.ext_attr_3} onChange={e => this.handleChange('ext_attr_3', e.target.value)} />
-                        </FormItem>
-                      </Col>}
-                    {ext4Label &&
-                      <Col span={6}>
-                        <FormItem {...ext4Label} {...formItemLayout}>
-                          <Input value={formData.ext_attr_4} onChange={e => this.handleChange('ext_attr_4', e.target.value)} />
-                        </FormItem>
-                      </Col>}
+
                   </Row>
                 </Card>
-                <Card bodyStyle={{ padding: 0 }} >
-                  <Collapse bordered={false} activeKey={shipmentActiveKey}>
-                    <Panel header="货运信息" key="shipment" style={{ borderBottom: 'none' }} disabled={shipmentDisabled}>
+                <Card
+                  title={<span>货运类型
+                    {orderTypes.length === 0 ?
+                      <Select
+                        value={formData.cust_shipmt_transfer}
+                        onChange={value =>
+                        this.handleKvChange('cust_shipmt_transfer', value, 'transfer')}
+                        style={{ width: '30%', marginLeft: 32 }}
+                      >
+                        {SCOF_ORDER_TRANSFER.map(sot =>
+                        (<Option value={sot.value} key={sot.value}>
+                          {sot.text}</Option>))}
+                      </Select> :
+                      <Select
+                        value={formData.cust_shipmt_order_type &&
+                            String(formData.cust_shipmt_order_type)}
+                        onChange={this.handleOrderTypeChange}
+                        style={{ width: '30%', marginLeft: 32 }}
+                      >
+                        {orderTypes.map(ort =>
+                        (<Option value={String(ort.id)} key={ort.id}>
+                          {ort.name}</Option>))}
+                      </Select>
+                    }
+                  </span>}
+                  bodyStyle={{ padding: 0 }}
+                >
+                  <Collapse bordered={false} defaultActiveKey="shipment">
+                    <Panel header="货运信息" key="shipment">
                       <Row>
                         <Col span={6}>
-                          <FormItem label="运输方式" {...formItemLayout}>
+                          <FormItem label="货物类型" {...formItemLayout}>
+                            <Select value={formData.cust_shipmt_goods_type} onChange={value => this.handleKvChange('cust_shipmt_goods_type', value, 'goods')}>
+                              <Option value={GOODSTYPES[0].value}>
+                                <Tag>GN</Tag>{GOODSTYPES[0].text}</Option>
+                              <Option value={GOODSTYPES[1].value}>
+                                <Tag color="#2db7f5">FR</Tag>{GOODSTYPES[1].text}</Option>
+                              <Option value={GOODSTYPES[2].value}>
+                                <Tag color="#f50">DG</Tag>{GOODSTYPES[2].text}</Option>
+                            </Select>
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="件数/包装" {...formItemLayout}>
+                            <InputGroup compact>
+                              <Input
+                                type="number"
+                                style={{ width: '50%' }}
+                                value={formData.cust_shipmt_pieces}
+                                onChange={(ev) => {
+                              const pieces = parseFloat(ev.target.value);
+                              if (!Number.isNaN(Number(pieces))) {
+                                this.handleChange('cust_shipmt_pieces', ev.target.value);
+                              } else {
+                                this.handleChange('cust_shipmt_pieces', null);
+                              }
+                            }}
+                              />
+                              <Select
+                                style={{ width: '50%' }}
+                                placeholder="选择包装方式"
+                                onChange={value => this.handleKvChange('cust_shipmt_wrap_type', value, 'wrap')}
+                                value={formData.cust_shipmt_wrap_type}
+                              >
+                                {WRAP_TYPE.map(wt => (<Option value={wt.value} key={wt.value}>
+                                  {wt.text}</Option>))}
+                              </Select>
+                            </InputGroup>
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="总毛重" {...formItemLayout}>
+                            <Input
+                              type="number"
+                              addonAfter="KG"
+                              value={formData.cust_shipmt_weight}
+                              onChange={(ev) => {
+                            const weight = parseFloat(ev.target.value);
+                            if (!Number.isNaN(weight)) {
+                              this.handleChange('cust_shipmt_weight', weight);
+                            } else {
+                              this.handleChange('cust_shipmt_weight', null);
+                            }
+                          }}
+                            />
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label={this.msg('CBM')} {...formItemLayout}>
+                            <Input
+                              type="number"
+                              addonAfter={this.msg('立方米')}
+                              value={formData.cust_shipmt_volume}
+                              onChange={(ev) => {
+                            const volume = parseFloat(ev.target.value);
+                            if (!Number.isNaN(volume)) {
+                              this.handleChange('cust_shipmt_volume', volume);
+                            } else {
+                              this.handleChange('cust_shipmt_volume', null);
+                            }
+                          }}
+                            />
+                          </FormItem>
+                        </Col>
+                      </Row>
+                      {formData.cust_shipmt_transfer !== 'DOM' &&
+                      <Row>
+                        <Col span={6}>
+                          <FormItem label="国际运输方式" {...formItemLayout}>
                             <Select
                               value={formData.cust_shipmt_trans_mode}
                               onChange={value => this.handleKvChange('cust_shipmt_trans_mode', value, 'transmode')}
@@ -596,28 +604,29 @@ export default class OrderForm extends Component {
                             </InputGroup>
                           </FormItem>}
                         </Col>
+
                         <Col span={6}>
-                          <FormItem label="承运人" {...formItemLayout}>
-                            <Input value={formData.cust_shipmt_carrier} onChange={e => this.handleChange('cust_shipmt_carrier', e.target.value)} />
-                          </FormItem>
-                        </Col>
-                        <Col span={6}>
-                          <FormItem label="进出口岸" {...formItemLayout}>
-                            <Input value={formData.cust_shipmt_i_e_port} onChange={e => this.handleChange('cust_shipmt_i_e_port', e.target.value)} />
-                          </FormItem>
-                        </Col>
-                        <Col span={6}>
-                          <FormItem label="起运/运抵国" {...formItemLayout}>
+                          <FormItem label={labelCountry} {...formItemLayout}>
                             <Input value={formData.cust_shipmt_orig_dest_country} onChange={e => this.handleChange('cust_shipmt_orig_dest_country', e.target.value)} />
                           </FormItem>
                         </Col>
                         <Col span={6}>
-                          <FormItem label="ETA" {...formItemLayout}>
-                            <Input value={formData.cust_shipmt_eta} onChange={e => this.handleChange('cust_shipmt_eta', e.target.value)} />
+                          <FormItem label={labelIEPort} {...formItemLayout}>
+                            <Input value={formData.cust_shipmt_i_e_port} onChange={e => this.handleChange('cust_shipmt_i_e_port', e.target.value)} />
                           </FormItem>
                         </Col>
                         <Col span={6}>
-                          <FormItem label="货运代理" {...formItemLayout}>
+                          <FormItem label="起运港" {...formItemLayout}>
+                            <Input value={formData.cust_shipmt_dept_port} onChange={e => this.handleChange('cust_shipmt_dept_port', e.target.value)} />
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="抵运港" {...formItemLayout}>
+                            <Input value={formData.cust_shipmt_dest_port} onChange={e => this.handleChange('cust_shipmt_dest_port', e.target.value)} />
+                          </FormItem>
+                        </Col>
+                        <Col span={6}>
+                          <FormItem label="国际货运代理" {...formItemLayout}>
                             <Input value={formData.cust_shipmt_forwarder} onChange={e => this.handleChange('cust_shipmt_forwarder', e.target.value)} />
                           </FormItem>
                         </Col>
@@ -666,12 +675,40 @@ export default class OrderForm extends Component {
                             </InputGroup>
                           </FormItem>
                         </Col>
+                      </Row>}
+                    </Panel>
+                    <Panel header="扩展属性" key="ext" style={{ borderBottom: 'none' }} >
+                      <Row>
+                        {ext1Label &&
+                        <Col span={6}>
+                          <FormItem {...ext1Label} {...formItemLayout}>
+                            <Input value={formData.ext_attr_1} onChange={e => this.handleChange('ext_attr_1', e.target.value)} />
+                          </FormItem>
+                        </Col>}
+                        {ext2Label &&
+                        <Col span={6}>
+                          <FormItem {...ext2Label} {...formItemLayout}>
+                            <Input value={formData.ext_attr_2} onChange={e => this.handleChange('ext_attr_2', e.target.value)} />
+                          </FormItem>
+                        </Col>}
+                        {ext3Label &&
+                        <Col span={6}>
+                          <FormItem {...ext3Label} {...formItemLayout}>
+                            <Input value={formData.ext_attr_3} onChange={e => this.handleChange('ext_attr_3', e.target.value)} />
+                          </FormItem>
+                        </Col>}
+                        {ext4Label &&
+                        <Col span={6}>
+                          <FormItem {...ext4Label} {...formItemLayout}>
+                            <Input value={formData.ext_attr_4} onChange={e => this.handleChange('ext_attr_4', e.target.value)} />
+                          </FormItem>
+                        </Col>}
                       </Row>
                     </Panel>
                   </Collapse>
                 </Card>
                 <Card
-                  title={<span>流程
+                  title={<span>订单流程
                     <Select
                       placeholder="请选择流程规则"
                       showSearch
@@ -679,7 +716,7 @@ export default class OrderForm extends Component {
                       optionFilterProp="children"
                       value={formData.flow_id}
                       onChange={this.handleFlowChange}
-                      style={{ width: '50%', marginLeft: 24 }}
+                      style={{ width: '30%', marginLeft: 32 }}
                     >
                       {flows.map(data =>
                         <Option key={data.id} value={data.id}>{data.name}</Option>)}

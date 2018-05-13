@@ -8,7 +8,7 @@ import { loadOrderProgress } from 'common/reducers/sofOrders';
 import { CRM_ORDER_STATUS, NODE_BIZ_OBJECTS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import '../orders.less';
+import './style.less';
 
 const formatMsg = format(messages);
 const { Step } = Steps;

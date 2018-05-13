@@ -283,7 +283,7 @@
   "sof.order.shipment.pickup.est.date": "计划提货日期",
   "sof.order.shipment.transit.time": "时效(天)",
   "sof.order.shipment.delivery.est.date": "计划送货日期",
-  "sof.shipments.responsible.person": "跟单人员",
+  "sof.shipments.responsible.person": "执行人员",
   "sof.shipments.delg.addMore": "添加",
   "sof.shipments.status.created": "创建",
   "sof.shipments.status.clearancing": "清关",

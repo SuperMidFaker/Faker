@@ -101,10 +101,10 @@ export default class ImportDataPanel extends React.Component {
           </Select>
         </Form.Item>
         }
-      <Form.Item label="重复数据处理">
+      <Form.Item label={this.msg('handlingDuplicated')}>
         <Radio.Group onChange={this.handleSkipModeChange} value={skipMode}>
-          <Radio value={1}>覆盖原数据</Radio>
-          <Radio value={2}>忽略重复数据</Radio>
+          <Radio value={1}>{this.msg('overwrite')}</Radio>
+          <Radio value={2}>{this.msg('ignore')}</Radio>
         </Radio.Group>
       </Form.Item>
     </Form>);

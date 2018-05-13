@@ -331,7 +331,7 @@ export default class InvoiceList extends React.Component {
     };
     const menu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="logs"><Icon type="profile" /> {this.gmsg('importLogs')}</Menu.Item>
+        <Menu.Item key="logs"><Icon type="profile" /> {this.gmsg('viewImportLogs')}</Menu.Item>
       </Menu>
     );
     const toolbarActions = (<span>
