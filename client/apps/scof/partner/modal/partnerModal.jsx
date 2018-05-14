@@ -248,7 +248,7 @@ export default class PartnerModal extends React.Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label={this.msg('businessType')}
+            label={this.msg('country')}
           >
             {getFieldDecorator('country', {
                   initialValue: vendor.country || '142',
