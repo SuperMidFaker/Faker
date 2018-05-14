@@ -253,8 +253,8 @@ export default class PartnerModal extends React.Component {
             {getFieldDecorator('country', {
                   initialValue: vendor.country || '142',
                 })(<Select>
-                  {this.props.countries.map(coun => (<Option key={coun.value} value={coun.value}>
-                    {coun.text}
+                  {this.props.countries.map(cntry => (<Option key={cntry.value} value={cntry.value}>
+                    {cntry.text}
                   </Option>))}
                 </Select>)}
           </FormItem>
