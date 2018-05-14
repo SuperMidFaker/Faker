@@ -130,7 +130,9 @@ export default class VendorList extends React.Component {
     render: (o) => {
       if (o) {
         const country = this.props.countries.find(coun => coun.value === o);
-        return country.text;
+        if (country) {
+          return country.text;
+        }
       }
       return '';
     },
