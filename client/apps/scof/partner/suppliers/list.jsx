@@ -128,9 +128,9 @@ export default class SupplierList extends React.Component {
     dataIndex: 'country',
     width: 100,
     render: (country) => {
-      const existCoun = this.props.countries.find(coun => coun.value === country);
-      if (existCoun) {
-        return existCoun.text;
+      const existCntry = this.props.countries.find(cntry => cntry.value === country);
+      if (existCntry) {
+        return existCntry.text;
       }
       return country;
     },
