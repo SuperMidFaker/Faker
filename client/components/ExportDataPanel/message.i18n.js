@@ -22,9 +22,13 @@ const messages = defineMessages({
     id: 'component.export.data.panel.specific.period',
     defaultMessage: '指定时间段',
   },
-  selectedFields: {
-    id: 'component.export.data.panel.selected.fields',
-    defaultMessage: '包含字段',
+  headerFields: {
+    id: 'component.export.data.panel.header.fields',
+    defaultMessage: '表头字段',
+  },
+  bodyFields: {
+    id: 'component.export.data.panel.body.fields',
+    defaultMessage: '表体字段',
   },
   exportFormat: {
     id: 'component.export.data.panel.export.format',

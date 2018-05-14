@@ -69,7 +69,17 @@ export default class ExportDataPanel extends React.Component {
                 <Form.Item>
                   <RangePicker format="YYYY/MM/DD" />
                 </Form.Item>
-                <Form.Item label={this.msg('selectedFields')}>
+                <Form.Item label={this.msg('headerFields')}>
+                  <Select
+                    allowClear
+                    mode="multiple"
+                    onChange={this.handleAdaptorChange}
+                  >
+                    {dataFields && dataFields.map(opt =>
+                      <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
+                  </Select>
+                </Form.Item>
+                <Form.Item label={this.msg('bodyFields')}>
                   <Select
                     allowClear
                     mode="multiple"
