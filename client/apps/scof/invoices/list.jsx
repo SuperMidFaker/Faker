@@ -14,6 +14,7 @@ import SearchBox from 'client/components/SearchBox';
 import UserAvatar from 'client/components/UserAvatar';
 import ToolbarAction from 'client/components/ToolbarAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import ExportDataPanel from 'client/components/ExportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
@@ -21,7 +22,7 @@ import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUpload
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
-import { createFilename } from 'client/util/dataTransform';
+// import { createFilename } from 'client/util/dataTransform';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -85,6 +86,7 @@ export default class InvoiceList extends React.Component {
   }
   state = {
     importPanelVisible: false,
+    exportPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
     buyer: '',
@@ -213,8 +215,12 @@ export default class InvoiceList extends React.Component {
     });
   }
   handleExport = () => {
-    const { selectedRowKeys } = this.state;
-    window.open(`${API_ROOTS.default}v1/scof/invoices/${createFilename('invoices')}.xlsx?invoiceNos=${selectedRowKeys}`);
+    this.setState({
+      exportPanelVisible: true,
+    });
+    // const { selectedRowKeys } = this.state;
+    // window.open(`${API_ROOTS.default}v1/scof/invoices/
+    // ${createFilename('invoices')}.xlsx?invoiceNos=${selectedRowKeys}`);
   }
   columns = [{
     title: this.msg('invoiceNo'),
@@ -423,6 +429,10 @@ export default class InvoiceList extends React.Component {
               </Select>
             </Form.Item>
           </ImportDataPanel>
+          <ExportDataPanel
+            visible={this.state.exportPanelVisible}
+            onClose={() => { this.setState({ exportPanelVisible: false }); }}
+          />
           <UploadLogsPanel
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}
             type={UPLOAD_BATCH_OBJECT.SCOF_INVOICE}
