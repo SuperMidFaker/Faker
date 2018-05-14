@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Checkbox, Modal, Form, Input, Select, Col, Button, message } from 'antd';
 import { getCompanyInfo } from 'common/reducers/common';
-import { loadCmsParams } from 'common/reducers/cmsManifest';
-import { hideVendorModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
+import { loadCountries } from 'common/reducers/cmsParams';
+import { hidePartnerModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, BUSINESS_TYPES } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
@@ -19,13 +19,13 @@ const CheckboxGroup = Checkbox.Group;
     visible: state.partner.vendorModal.visible,
     vendor: state.partner.vendorModal.vendor,
     operation: state.partner.vendorModal.operation,
-    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+    countries: state.cmsParams.countries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
   }),
   {
-    addPartner, editPartner, checkPartner, hideVendorModal, getCompanyInfo, loadCmsParams,
+    addPartner, editPartner, checkPartner, hidePartnerModal, getCompanyInfo, loadCountries,
   }
 )
 @Form.create()
@@ -46,7 +46,7 @@ export default class PartnerModal extends React.Component {
     companies: [],
   }
   componentDidMount() {
-    this.props.loadCmsParams();
+    this.props.loadCountries();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -248,11 +248,15 @@ export default class PartnerModal extends React.Component {
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label={this.msg('country')}
+            label={this.msg('businessType')}
           >
             {getFieldDecorator('country', {
-                  initialValue: vendor.country,
-                })(<Input />)}
+                  initialValue: vendor.country || '142',
+                })(<Select>
+                  {this.props.countries.map(coun => (<Option key={coun.value} value={coun.value}>
+                    {coun.text}
+                  </Option>))}
+                </Select>)}
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -306,13 +310,13 @@ export default class PartnerModal extends React.Component {
             {...formItemLayout}
             label={this.msg('businessType')}
           >
-            {getFieldDecorator('country', {
-                  initialValue: vendor.country || '142',
-                })(<Select>
-                  {this.props.countries.map(coun => (<Option key={coun.value} value={coun.value}>
-                    {coun.text}
-                  </Option>))}
-                </Select>)}
+            {getFieldDecorator('businessType', {
+              initialValue: vendor.business_type ? vendor.business_type.split(',') : [],
+              rules: [{
+              required: vendor.role === PARTNER_ROLES.VEN,
+              message: this.msg('vendorBusinessTypeRequired'),
+              }],
+            })(<CheckboxGroup options={BUSINESS_TYPES} />)}
           </FormItem>
         </Form>
       </Modal>

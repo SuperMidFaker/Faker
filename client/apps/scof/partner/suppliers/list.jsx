@@ -26,7 +26,7 @@ const { Content } = Layout;
     listFilter: state.partner.partnerFilter,
     loading: state.partner.loading,
     loaded: state.partner.loaded,
-    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+    countries: state.cmsParams.countries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
@@ -127,14 +127,12 @@ export default class SupplierList extends React.Component {
     title: this.msg('country'),
     dataIndex: 'country',
     width: 100,
-    render: (o) => {
-      if (o) {
-        const country = this.props.countries.find(coun => coun.value === o);
-        if (country) {
-          return country.text;
-        }
+    render: (country) => {
+      const existCoun = this.props.countries.find(coun => coun.value === country);
+      if (existCoun) {
+        return existCoun.text;
       }
-      return '';
+      return country;
     },
   }, {
     title: this.msg('internalId'),
