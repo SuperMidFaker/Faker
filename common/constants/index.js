@@ -30,6 +30,7 @@ const INVITATION_STATUS = {
 };
 
 export const PARTNER_ROLES = {
+  OWN: 'OWN',
   DCUS: 'DCUS',
   CUS: 'CUS',
   SUP: 'SUP',

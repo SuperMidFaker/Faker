@@ -254,16 +254,16 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('function')}>
-                {getFieldDecorator('function', {
-                  initialValue: fieldInits.function,
+              <FormItem {...formItemLayout} label={this.msg('functionality')}>
+                {getFieldDecorator('functionality', {
+                  initialValue: fieldInits.functionality,
                 })(<Input />)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('use')}>
-                {getFieldDecorator('use', {
-                  initialValue: fieldInits.use,
+              <FormItem {...formItemLayout} label={this.msg('usage')}>
+                {getFieldDecorator('usage', {
+                  initialValue: fieldInits.usage,
                 })(<Input />)}
               </FormItem>
             </Col>
@@ -289,8 +289,8 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('copUOM')}>
-                {getFieldDecorator('cop_uom', {
+              <FormItem {...formItemLayout} label={this.msg('copItemGroup')}>
+                {getFieldDecorator('cop_item_group', {
                   initialValue: fieldInits.cop_uom,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {

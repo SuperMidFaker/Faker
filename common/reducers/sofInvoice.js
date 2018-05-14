@@ -70,8 +70,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_INVOICE_BUYER_SELLERS_SUCCEED:
       return {
         ...state,
-        buyers: action.result.data.filter(item => item.role === 'CUS'),
-        sellers: action.result.data.filter(item => item.role === 'SUP'),
+        buyers: action.result.data.filter(item => item.role === PARTNER_ROLES.CUS
+        || item.role === PARTNER_ROLES.OWN),
+        sellers: action.result.data.filter(item => item.role === PARTNER_ROLES.SUP
+        || item.role === PARTNER_ROLES.OWN),
       };
     default:
       return state;
@@ -251,7 +253,7 @@ export function loadInvoiceBuyerSellers() {
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
       params: {
-        roles: JSON.stringify([PARTNER_ROLES.CUS, PARTNER_ROLES.SUP]),
+        roles: JSON.stringify([PARTNER_ROLES.OWN, PARTNER_ROLES.CUS, PARTNER_ROLES.SUP]),
         businessTypes: JSON.stringify(null),
       },
     },
