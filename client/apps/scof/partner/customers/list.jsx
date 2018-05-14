@@ -28,6 +28,10 @@ const { Option } = Select;
     listFilter: state.partner.partnerFilter,
     loading: state.partner.loading,
     loaded: state.partner.loaded,
+    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
   }),
   {
     loadPartnerList, changePartnerStatus, deletePartner, showCustomerPanel, showPartnerModal,
@@ -122,6 +126,17 @@ export default class CustomerList extends React.Component {
     title: this.msg('email'),
     dataIndex: 'email',
     width: 150,
+  }, {
+    title: this.msg('country'),
+    dataIndex: 'country',
+    width: 100,
+    render: (o) => {
+      if (o) {
+        const country = this.props.countries.find(coun => coun.value === o);
+        return country.text;
+      }
+      return '';
+    },
   }, {
     title: this.msg('internalId'),
     dataIndex: 'id',
