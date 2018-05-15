@@ -92,6 +92,6 @@ export * from './scv';
 export * from './cwm';
 export * from './lineAdaptor';
 export * from './operationLog';
-export * from './hub';
+export * from './paas';
 export * from './bss';
 export * from './uploadRecords';
