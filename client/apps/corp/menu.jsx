@@ -40,6 +40,13 @@ export default class CorpSiderMenu extends React.Component {
               </NavLink>
             </Menu.Item>
           </MenuItemGroup>
+          <MenuItemGroup key="collab" title={this.msg('corpCollab')}>
+            <Menu.Item key="invitation">
+              <NavLink to="/corp/collab/invitation">
+                <span><Icon type="team" /><span>{this.msg('invitation')}</span></span>
+              </NavLink>
+            </Menu.Item>
+          </MenuItemGroup>
           <MenuItemGroup key="dataMenu" title={this.msg('corpData')}>
             <Menu.Item key="logs">
               <NavLink to="/corp/logs">

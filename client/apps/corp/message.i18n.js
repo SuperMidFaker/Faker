@@ -19,6 +19,14 @@ const messages = defineMessages({
     id: 'corp.role',
     defaultMessage: '角色权限',
   },
+  corpCollab: {
+    id: 'corp.collab',
+    defaultMessage: '企业间协作',
+  },
+  invitation: {
+    id: 'corp.collab.invitation',
+    defaultMessage: '协作邀请',
+  },
   corpData: {
     id: 'corp.data',
     defaultMessage: '数据监控',

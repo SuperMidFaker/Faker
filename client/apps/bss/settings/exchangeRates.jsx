@@ -46,7 +46,7 @@ export default class ExchangeRates extends Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   itemsColumns = [{
-    title: '币制',
+    title: '转换币制',
     dataIndex: 'currency',
     width: 200,
     render: (o) => {
@@ -55,7 +55,7 @@ export default class ExchangeRates extends Component {
       return <span>{text}</span>;
     },
   }, {
-    title: '本币',
+    title: '基准币制',
     dataIndex: 'base_currency',
     width: 200,
     render: (o) => {

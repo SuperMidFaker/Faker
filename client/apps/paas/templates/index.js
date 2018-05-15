@@ -1,0 +1,1 @@
+export NoticeTemplate from './noticeTemplate';
