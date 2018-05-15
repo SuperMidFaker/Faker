@@ -317,6 +317,12 @@ export default class OrderDetailsPane extends React.Component {
       return true;
     }).sort((pa, pb) => {
       if (!pa.order_qty && !pb.order_qty) {
+        if (!pa.alloc_qty && pb.alloc_qty) {
+          return -1;
+        }
+        if (pa.alloc_qty && !pb.alloc_qty) {
+          return 1;
+        }
         return pa.seq_no - pb.seq_no;
       }
       if (pa.alloc_qty === 0 && pb.alloc_qty === 0) {

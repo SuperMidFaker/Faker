@@ -178,8 +178,8 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.cop.functionality',
     defaultMessage: '功能',
   },
-  use: {
-    id: 'cms.tradeitem.col.cop.use',
+  usage: {
+    id: 'cms.tradeitem.col.cop.usage',
     defaultMessage: '用途',
   },
   markPass: {

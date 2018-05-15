@@ -291,13 +291,8 @@ export default class ItemMasterPane extends React.Component {
             <Col span={6}>
               <FormItem {...formItemLayout} label={this.msg('copItemGroup')}>
                 {getFieldDecorator('cop_item_group', {
-                  initialValue: fieldInits.cop_uom,
-                })(<Select showSearch showArrow optionFilterProp="search">
-                  {
-                    units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
-                  }
-                </Select>)}
+                  initialValue: fieldInits.cop_item_group,
+                })(<Input />)}
               </FormItem>
             </Col>
           </Row>
