@@ -103,6 +103,13 @@ export default class SupplierList extends React.Component {
     title: this.msg('country'),
     dataIndex: 'country',
     width: 100,
+    render: (country) => {
+      const existCntry = this.props.countries.find(cntry => cntry.value === country);
+      if (existCntry) {
+        return existCntry.text;
+      }
+      return country;
+    },
   }, {
     title: this.msg('uscCode'),
     dataIndex: 'partner_unique_code',
@@ -123,17 +130,6 @@ export default class SupplierList extends React.Component {
     title: this.msg('email'),
     dataIndex: 'email',
     width: 150,
-  }, {
-    title: this.msg('country'),
-    dataIndex: 'country',
-    width: 100,
-    render: (country) => {
-      const existCntry = this.props.countries.find(cntry => cntry.value === country);
-      if (existCntry) {
-        return existCntry.text;
-      }
-      return country;
-    },
   }, {
     title: this.msg('internalId'),
     dataIndex: 'id',
