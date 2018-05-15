@@ -150,10 +150,6 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.item.type',
     defaultMessage: '类型',
   },
-  itemGroup: {
-    id: 'cms.tradeitem.col.item.group',
-    defaultMessage: '物料分组',
-  },
   copCode: {
     id: 'cms.tradeitem.col.cop.code',
     defaultMessage: '内部代码',
@@ -162,9 +158,9 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.cop.bu',
     defaultMessage: '所属BU',
   },
-  copUOM: {
-    id: 'cms.tradeitem.col.cop.uom',
-    defaultMessage: '企业计量单位',
+  copItemGroup: {
+    id: 'cms.tradeitem.col.cop.itemgroup',
+    defaultMessage: '产品大类',
   },
   copBrand: {
     id: 'cms.tradeitem.col.cop.brand',
@@ -178,8 +174,8 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.material.ingredient',
     defaultMessage: '材质/成分',
   },
-  function: {
-    id: 'cms.tradeitem.col.cop.function',
+  functionality: {
+    id: 'cms.tradeitem.col.cop.functionality',
     defaultMessage: '功能',
   },
   use: {

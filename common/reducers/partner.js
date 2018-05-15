@@ -107,7 +107,7 @@ export function loadPartnerList(role, pageSize, current, filters) {
   };
 }
 
-export function loadPartners(params) { // role businessType
+export function loadPartners(params) { // role businessType excludeOwn
   return {
     [CLIENT_API]: {
       types: [

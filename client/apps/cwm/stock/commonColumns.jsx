@@ -59,6 +59,10 @@ exports.commonTraceColumns = (intl) => {
     width: 120,
     dataIndex: 'virtual_whse',
   }, {
+    title: msg('supplierName'),
+    width: 120,
+    dataIndex: 'supplier',
+  }, {
     title: msg('damageLevel'),
     width: 120,
     dataIndex: 'damage_level',
@@ -110,6 +114,14 @@ exports.commonTraceColumns = (intl) => {
     width: 120,
     dataIndex: 'attrib_8_date',
     render: attr8date => attr8date && moment(attr8date).format('YYYY.MM.DD'),
+  }, {
+    title: msg('ftzEntNo'),
+    width: 120,
+    dataIndex: 'ftz_ent_no',
+  }, {
+    title: msg('cusDeclNo'),
+    width: 120,
+    dataIndex: 'in_cus_decl_no',
   }, {
     title: msg('ftzEntryId'),
     width: 120,

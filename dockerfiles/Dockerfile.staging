@@ -9,7 +9,6 @@ COPY .  /opt/apps/welogix-web
 
 EXPOSE 3022
 
-ENV STAGING_DOMAIN=docker.welogix.co
 RUN npm run build-staging
 
 CMD [ "pm2-docker", "pm2/staging.json" ]

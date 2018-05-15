@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/shftz/stock/', [
+  'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
   'COMPARE_FTZST', 'COMPARE_FTZST_SUCCEED', 'COMPARE_FTZST_FAIL',
   'MATCH_IMPFTZST', 'MATCH_IMPFTZST_SUCCEED', 'MATCH_IMPFTZST_FAIL',
   'LOAD_STOTASKS', 'LOAD_STOTASKS_SUCCEED', 'LOAD_STOTASKS_FAIL',

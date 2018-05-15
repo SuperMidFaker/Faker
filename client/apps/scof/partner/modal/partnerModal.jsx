@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Checkbox, Modal, Form, Input, Select, Col, Button, message } from 'antd';
 import { getCompanyInfo } from 'common/reducers/common';
+import { loadCountries } from 'common/reducers/cmsParams';
 import { hidePartnerModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, BUSINESS_TYPES } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -18,9 +19,13 @@ const CheckboxGroup = Checkbox.Group;
     visible: state.partner.vendorModal.visible,
     vendor: state.partner.vendorModal.vendor,
     operation: state.partner.vendorModal.operation,
+    countries: state.cmsParams.countries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
   }),
   {
-    addPartner, editPartner, checkPartner, hidePartnerModal, getCompanyInfo,
+    addPartner, editPartner, checkPartner, hidePartnerModal, getCompanyInfo, loadCountries,
   }
 )
 @Form.create()
@@ -39,6 +44,9 @@ export default class PartnerModal extends React.Component {
   }
   state = {
     companies: [],
+  }
+  componentDidMount() {
+    this.props.loadCountries();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -155,6 +163,7 @@ export default class PartnerModal extends React.Component {
     }
     const { companies } = this.state;
     const businessArray = getFieldValue('businessType') || vendor.business_type || [];
+    const country = getFieldValue('country') || vendor.country || '142';
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -242,8 +251,12 @@ export default class PartnerModal extends React.Component {
             label={this.msg('country')}
           >
             {getFieldDecorator('country', {
-                  initialValue: vendor.country,
-                })(<Input />)}
+                  initialValue: vendor.country || '142',
+                })(<Select>
+                  {this.props.countries.map(cntry => (<Option key={cntry.value} value={cntry.value}>
+                    {cntry.text}
+                  </Option>))}
+                </Select>)}
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -252,7 +265,7 @@ export default class PartnerModal extends React.Component {
             {getFieldDecorator('partnerUniqueCode', {
               initialValue: vendor.partner_unique_code,
               rules: [{
-              required: businessArray.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0,
+              required: country === '142',
               message: this.msg('uscCode18len'),
               }],
                 })(<Input placeholder={this.msg('uscCode18len')} />)}
