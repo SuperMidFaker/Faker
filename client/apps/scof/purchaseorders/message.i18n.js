@@ -107,6 +107,18 @@ const messages = defineMessages({
     id: 'sof.purchase.orders.status.shipped',
     defaultMessage: '已发货',
   },
+  poNoIsRequired: {
+    id: 'sof.purchase.orders.status.poNoIsRequired',
+    defaultMessage: '采购订单号必填',
+  },
+  productNoIsRequired: {
+    id: 'sof.purchase.orders.status.productNoIsRequired',
+    defaultMessage: '货号必填',
+  },
+  qtyIsRequired: {
+    id: 'sof.purchase.orders.status.qtyIsRequired',
+    defaultMessage: '订单数量必填',
+  },
 });
 
 export default messages;

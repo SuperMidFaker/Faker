@@ -14,7 +14,7 @@ import UserAvatar from 'client/components/UserAvatar';
 import ToolbarAction from 'client/components/ToolbarAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import ExportDataPanel from 'client/components/ExportDataPanel';
-import { loadCountries, loadCurrencies, loadTrxnMode, loadTransModes, loadUnits } from 'common/reducers/cmsParams';
+import { loadParams } from 'common/reducers/cmsParams';
 import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { loadPurchaseOrders, batchDeletePurchaseOrders } from 'common/reducers/sofPurchaseOrders';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
@@ -25,11 +25,7 @@ const { RangePicker } = DatePicker;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
-  promises.push(dispatch(loadCountries()));
-  promises.push(dispatch(loadCurrencies()));
-  promises.push(dispatch(loadTrxnMode()));
-  promises.push(dispatch(loadTransModes()));
-  promises.push(dispatch(loadUnits()));
+  promises.push(dispatch(loadParams()));
   promises.push(dispatch(loadPurchaseOrders({
     filter: JSON.stringify({
       ...state.sofPurchaseOrders.filter, searchText: '', partner: 'all', startDate: '', endDate: '',

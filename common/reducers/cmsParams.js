@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/cms/params/', [
   'LOAD_TRXN_MODES', 'LOAD_TRXN_MODES_SUCCEED', 'LOAD_TRXN_MODES_FAIL',
   'LOAD_TRANS_MODES', 'LOAD_TRANS_MODES_SUCCEED', 'LOAD_TRANS_MODES_FAIL',
   'LOAD_UNITS', 'LOAD_UNITS_SUCCEED', 'LOAD_UNITS_FAIL',
+  'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
 ]);
 
 const initialState = {
@@ -29,6 +30,15 @@ export default function reducer(state = initialState, action) {
       return { ...state, transModes: action.result.data };
     case actionTypes.LOAD_UNITS_SUCCEED:
       return { ...state, units: action.result.data };
+    case actionTypes.LOAD_PARAMS_SUCCEED:
+      return {
+        ...state,
+        currencies: action.result.data.currencies,
+        countries: action.result.data.countries,
+        trxnModes: action.result.data.trxnModes,
+        transModes: action.result.data.transModes,
+        units: action.result.data.units,
+      };
     default:
       return state;
   }
@@ -99,6 +109,20 @@ export function loadUnits() {
         actionTypes.LOAD_UNITS_FAIL,
       ],
       endpoint: 'v1/cms/params/units/load',
+      method: 'get',
+    },
+  };
+}
+
+export function loadParams() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PARAMS,
+        actionTypes.LOAD_PARAMS_SUCCEED,
+        actionTypes.LOAD_PARAMS_FAIL,
+      ],
+      endpoint: 'v1/cms/params/load',
       method: 'get',
     },
   };

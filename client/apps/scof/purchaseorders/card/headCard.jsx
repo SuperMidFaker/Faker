@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, Card, Col, Row } from 'antd';
 import FormPane from 'client/components/FormPane';
-import { loadCountries, loadCurrencies, loadTrxnMode, loadTransModes, loadUnits } from 'common/reducers/cmsParams';
+import { loadParams } from 'common/reducers/cmsParams';
 import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
@@ -41,11 +41,7 @@ const { Option } = Select;
   }),
   {
     loadInvoiceBuyerSellers,
-    loadCountries,
-    loadCurrencies,
-    loadTrxnMode,
-    loadTransModes,
-    loadUnits,
+    loadParams,
   }
 )
 export default class HeadCard extends Component {
@@ -53,13 +49,9 @@ export default class HeadCard extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadInvoiceBuyerSellers();
-    this.props.loadCountries();
-    this.props.loadCurrencies();
-    this.props.loadTrxnMode();
-    this.props.loadTransModes();
-    this.props.loadUnits();
+    this.props.loadParams();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -86,7 +78,7 @@ export default class HeadCard extends Component {
             <Col span={6}>
               <FormItem label={this.msg('poNo')} {...formItemLayout}>
                 {getFieldDecorator('po_no', {
-                rules: [{ type: 'string', required: true, message: 'Please select time!' }],
+                rules: [{ type: 'string', required: true, message: this.msg('poNoIsRequired') }],
                 initialValue: purchaseOrder && purchaseOrder.po_no,
               })(<Input />)}
               </FormItem>
@@ -95,7 +87,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('customer')} {...formItemLayout}>
                 {getFieldDecorator('customer_partner_id', {
                 initialValue: (purchaseOrder && purchaseOrder.customer_partner_id),
-              })(<Select>
+              })(<Select allowClear showSearch optionFilterProp="children">
                 {buyers.map(buyer =>
                   (<Option key={buyer.partner_id} value={buyer.partner_id}>
                     {buyer.name}
@@ -107,7 +99,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('customerCntry')} {...formItemLayout}>
                 {getFieldDecorator('customer_country', {
                 initialValue: purchaseOrder && purchaseOrder.customer_country,
-              })(<Select>
+              })(<Select allowClear showSearch optionFilterProp="children">
                 {countries.map(cntry =>
                   (<Option key={cntry.value} value={cntry.value}>
                     {cntry.text}
@@ -119,7 +111,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('supplier')} {...formItemLayout}>
                 {getFieldDecorator('supplier', {
                 initialValue: purchaseOrder && purchaseOrder.supplier_partner_id,
-              })(<Select>
+              })(<Select allowClear showSearch optionFilterProp="children">
                 {sellers.map(seller =>
                   (<Option key={seller.partner_id} value={seller.partner_id}>
                     {seller.name}
@@ -131,7 +123,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('supplierCntry')} {...formItemLayout}>
                 {getFieldDecorator('supplier_country', {
                 initialValue: purchaseOrder && purchaseOrder.supplier_country,
-              })(<Select>
+              })(<Select allowClear showSearch optionFilterProp="children">
                 {countries.map(cntry =>
                   (<Option key={cntry.value} value={cntry.value}>
                     {cntry.text}
@@ -143,7 +135,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('trxnMode')} {...formItemLayout}>
                 {getFieldDecorator('trxn_mode', {
                   initialValue: purchaseOrder && purchaseOrder.trxn_mode,
-                })(<Select>
+                })(<Select allowClear showSearch optionFilterProp="children">
                   {trxnModes.map(trxn =>
                     (<Option key={trxn.value} value={trxn.value}>
                       {trxn.text}
@@ -155,7 +147,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('transMode')} {...formItemLayout}>
                 {getFieldDecorator('trans_mode', {
                 initialValue: purchaseOrder && purchaseOrder.trans_mode,
-              })(<Select>
+              })(<Select allowClear showSearch optionFilterProp="children">
                 {transModes.map(trans =>
                   (<Option key={trans.value} value={trans.value}>
                     {trans.text}
@@ -166,6 +158,7 @@ export default class HeadCard extends Component {
             <Col span={6}>
               <FormItem label={this.msg('productNo')} {...formItemLayout}>
                 {getFieldDecorator('product_no', {
+                 rules: [{ required: true, message: this.msg('productNoIsRequired') }],
                 initialValue: purchaseOrder && purchaseOrder.product_no,
               })(<Input />)}
               </FormItem>
@@ -194,6 +187,7 @@ export default class HeadCard extends Component {
             <Col span={6}>
               <FormItem label={this.msg('orderQty')} {...formItemLayout}>
                 {getFieldDecorator('order_qty', {
+                  rules: [{ required: true, message: this.msg('qtyIsRequired') }],
                 initialValue: purchaseOrder && purchaseOrder.order_qty,
               })(<Input />)}
               </FormItem>
@@ -216,7 +210,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('currency')} {...formItemLayout}>
                 {getFieldDecorator('currency', {
                 initialValue: purchaseOrder && purchaseOrder.currency,
-              })(<Select>
+              })(<Select allowClear showSearch optionFilterProp="children">
                 {currencies.map(currency =>
                   (<Option value={currency.value} key={currency.value}>
                     {currency.text}
@@ -235,7 +229,7 @@ export default class HeadCard extends Component {
               <FormItem label={this.msg('wtUnit')} {...formItemLayout}>
                 {getFieldDecorator('wt_unit', {
                 initialValue: purchaseOrder && purchaseOrder.wt_unit,
-              })(<Select>
+              })(<Select allowClear showSearch optionFilterProp="children">
                 {units.map(unit =>
                   (<Option key={unit.value} value={unit.value}>
                     {unit.text}
