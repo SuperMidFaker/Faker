@@ -3,50 +3,70 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Select, DatePicker, Card, Col, Row } from 'antd';
-import moment from 'moment';
+import { Form, Input, Select, Card, Col, Row } from 'antd';
 import FormPane from 'client/components/FormPane';
-import { loadPartners } from 'common/reducers/partner';
-import { PARTNER_ROLES, WRAP_TYPE } from 'common/constants';
+import { loadCountries, loadCurrencies, loadTrxnMode, loadTransModes, loadUnits } from 'common/reducers/cmsParams';
+import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
-const dateFormat = 'YYYY/MM/DD';
 const FormItem = Form.Item;
 const { Option } = Select;
-const InputGroup = Input.Group;
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    partners: state.partner.partners,
-    trxModes: state.cmsManifest.params.trxModes,
-    invoiceHead: state.sofInvoice.invoiceHead,
+    purchaseOrder: state.sofPurchaseOrders.purchaseOrder,
+    buyers: state.sofInvoice.buyers,
+    sellers: state.sofInvoice.sellers,
+    currencies: state.cmsParams.currencies.map(currency => ({
+      value: currency.curr_code,
+      text: currency.curr_name,
+    })),
+    countries: state.cmsParams.countries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
+    trxnModes: state.cmsParams.trxnModes.map(trxn => ({
+      value: trxn.trx_mode,
+      text: trxn.trx_spec,
+    })),
+    transModes: state.cmsParams.transModes.map(trans => ({
+      value: trans.trans_code,
+      text: trans.trans_spec,
+    })),
+    units: state.cmsParams.units.map(unit => ({
+      value: unit.unit_code,
+      text: unit.unit_name,
+    })),
   }),
-  { loadPartners }
+  {
+    loadInvoiceBuyerSellers,
+    loadCountries,
+    loadCurrencies,
+    loadTrxnMode,
+    loadTransModes,
+    loadUnits,
+  }
 )
 export default class HeadCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.shape({ getFieldDecorator: PropTypes.func.isRequired }).isRequired,
-    handlePackageSelect: PropTypes.func.isRequired,
-    packageType: PropTypes.string,
-    editable: PropTypes.bool.isRequired,
   }
   componentWillMount() {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role: PARTNER_ROLES.CUS,
-    });
-  }
-  handleSelect = (value) => {
-    this.props.handlePackageSelect(value);
+    this.props.loadInvoiceBuyerSellers();
+    this.props.loadCountries();
+    this.props.loadCurrencies();
+    this.props.loadTrxnMode();
+    this.props.loadTransModes();
+    this.props.loadUnits();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   render() {
     const {
-      form: { getFieldDecorator }, invoiceHead, partners, trxModes, packageType, editable,
+      form: { getFieldDecorator }, purchaseOrder, buyers, sellers, countries, trxnModes,
+      transModes, currencies, units,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -64,126 +84,170 @@ export default class HeadCard extends Component {
         <FormPane descendant>
           <Row>
             <Col span={6}>
-              <FormItem label="发票号" {...formItemLayout}>
-                {getFieldDecorator('invoice_no', {
-                rules: [{ type: 'string', required: true, message: 'Please select time!' }],
-                initialValue: invoiceHead && invoiceHead.invoice_no,
-              })(<Input disabled={!editable} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="开票日期" {...formItemLayout}>
-                {getFieldDecorator('invoice_date', {
-                initialValue: (invoiceHead && invoiceHead.invoice_date) ?
-                moment(new Date(invoiceHead.invoice_date)) : moment(new Date()),
-              })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="购买方" {...formItemLayout}>
-                {getFieldDecorator('buyer', {
-                initialValue: invoiceHead.buyer &&
-                partners.find(partner => partner.id === Number(invoiceHead.buyer)) &&
-                partners.find(partner => partner.id === Number(invoiceHead.buyer)).name,
-              })(<Select
-                allowClear
-                showSearch
-                showArrow
-                optionFilterProp="children"
-              >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-              </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="销售方" {...formItemLayout}>
-                {getFieldDecorator('seller', {
-                initialValue: invoiceHead.seller &&
-                partners.find(partner => partner.id === Number(invoiceHead.seller)) &&
-                partners.find(partner => partner.id === Number(invoiceHead.seller)).name,
-              })(<Select
-                allowClear
-                showSearch
-                showArrow
-                optionFilterProp="children"
-              >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-              </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="采购订单号" {...formItemLayout}>
+              <FormItem label={this.msg('poNo')} {...formItemLayout}>
                 {getFieldDecorator('po_no', {
-                initialValue: invoiceHead && invoiceHead.po_no,
+                rules: [{ type: 'string', required: true, message: 'Please select time!' }],
+                initialValue: purchaseOrder && purchaseOrder.po_no,
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="件数/包装" {...formItemLayout}>
-                <InputGroup compact>
-                  {getFieldDecorator('package_number', {
-                  initialValue: invoiceHead && invoiceHead.package_number,
-                })(<Input
-                  type="number"
-                  style={{ width: '50%' }}
-                />)}
-                  <Select
-                    style={{ width: '50%' }}
-                    placeholder="选择包装方式"
-                    onSelect={this.handleSelect}
-                    value={packageType}
-                  >
-                    {WRAP_TYPE.map(wt => (<Option value={wt.value} key={wt.value}>
-                      {wt.text}</Option>))}
-                  </Select>
-                </InputGroup>
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="总毛重" {...formItemLayout}>
-                {getFieldDecorator('gross_wt', {
-                initialValue: invoiceHead && invoiceHead.gross_wt,
-              })(<Input
-                type="number"
-                addonAfter="KG"
-              />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem label="成交方式" {...formItemLayout}>
-                {getFieldDecorator('trade_mode', {
-                initialValue: invoiceHead && invoiceHead.trade_mode,
+              <FormItem label={this.msg('customer')} {...formItemLayout}>
+                {getFieldDecorator('customer_partner_id', {
+                initialValue: (purchaseOrder && purchaseOrder.customer_partner_id),
               })(<Select>
-                {trxModes.map(mode =>
-                  (<Option key={mode.trx_mode} vaule={mode.trx_mode}>
-                    {mode.trx_mode} | {mode.trx_spec}
+                {buyers.map(buyer =>
+                  (<Option key={buyer.partner_id} value={buyer.partner_id}>
+                    {buyer.name}
                   </Option>))}
               </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="总数量" {...formItemLayout}>
-                {getFieldDecorator('total_qty', {
-                initialValue: invoiceHead && invoiceHead.total_qty,
-              })(<Input disabled />)}
+              <FormItem label={this.msg('customerCntry')} {...formItemLayout}>
+                {getFieldDecorator('customer_country', {
+                initialValue: purchaseOrder && purchaseOrder.customer_country,
+              })(<Select>
+                {countries.map(cntry =>
+                  (<Option key={cntry.value} value={cntry.value}>
+                    {cntry.text}
+                  </Option>))}
+              </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="总金额" {...formItemLayout}>
+              <FormItem label={this.msg('supplier')} {...formItemLayout}>
+                {getFieldDecorator('supplier', {
+                initialValue: purchaseOrder && purchaseOrder.supplier_partner_id,
+              })(<Select>
+                {sellers.map(seller =>
+                  (<Option key={seller.partner_id} value={seller.partner_id}>
+                    {seller.name}
+                  </Option>))}
+              </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('supplierCntry')} {...formItemLayout}>
+                {getFieldDecorator('supplier_country', {
+                initialValue: purchaseOrder && purchaseOrder.supplier_country,
+              })(<Select>
+                {countries.map(cntry =>
+                  (<Option key={cntry.value} value={cntry.value}>
+                    {cntry.text}
+                  </Option>))}
+              </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('trxnMode')} {...formItemLayout}>
+                {getFieldDecorator('trxn_mode', {
+                  initialValue: purchaseOrder && purchaseOrder.trxn_mode,
+                })(<Select>
+                  {trxnModes.map(trxn =>
+                    (<Option key={trxn.value} value={trxn.value}>
+                      {trxn.text}
+                    </Option>))}
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('transMode')} {...formItemLayout}>
+                {getFieldDecorator('trans_mode', {
+                initialValue: purchaseOrder && purchaseOrder.trans_mode,
+              })(<Select>
+                {transModes.map(trans =>
+                  (<Option key={trans.value} value={trans.value}>
+                    {trans.text}
+                  </Option>))}
+              </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('productNo')} {...formItemLayout}>
+                {getFieldDecorator('product_no', {
+                initialValue: purchaseOrder && purchaseOrder.product_no,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('gName')} {...formItemLayout}>
+                {getFieldDecorator('g_name', {
+                initialValue: purchaseOrder && purchaseOrder.g_name,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('virtualWhse')} {...formItemLayout}>
+                {getFieldDecorator('virtual_whse', {
+                initialValue: purchaseOrder && purchaseOrder.virtual_whse,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('brand')} {...formItemLayout}>
+                {getFieldDecorator('brand', {
+                initialValue: purchaseOrder && purchaseOrder.brand,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('orderQty')} {...formItemLayout}>
+                {getFieldDecorator('order_qty', {
+                initialValue: purchaseOrder && purchaseOrder.order_qty,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('unitPrice')} {...formItemLayout}>
+                {getFieldDecorator('unit_price', {
+                initialValue: purchaseOrder && purchaseOrder.unit_price,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('totalAmount')} {...formItemLayout}>
                 {getFieldDecorator('total_amount', {
-                initialValue: invoiceHead && invoiceHead.total_amount,
-              })(<Input disabled />)}
+                initialValue: purchaseOrder && purchaseOrder.total_amount,
+              })(<Input />)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="总净重" {...formItemLayout}>
-                {getFieldDecorator('total_net_wt', {
-                initialValue: invoiceHead && invoiceHead.total_net_wt,
-              })(<Input
-                type="number"
-                addonAfter="KG"
-                disabled
-              />)}
+              <FormItem label={this.msg('currency')} {...formItemLayout}>
+                {getFieldDecorator('currency', {
+                initialValue: purchaseOrder && purchaseOrder.currency,
+              })(<Select>
+                {currencies.map(currency =>
+                  (<Option value={currency.value} key={currency.value}>
+                    {currency.text}
+                  </Option>))}
+              </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('netWt')} {...formItemLayout}>
+                {getFieldDecorator('net_wt', {
+                initialValue: purchaseOrder && purchaseOrder.net_wt,
+              })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('wtUnit')} {...formItemLayout}>
+                {getFieldDecorator('wt_unit', {
+                initialValue: purchaseOrder && purchaseOrder.wt_unit,
+              })(<Select>
+                {units.map(unit =>
+                  (<Option key={unit.value} value={unit.value}>
+                    {unit.text}
+                  </Option>))}
+              </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
+                {getFieldDecorator('invoice_no', {
+                initialValue: purchaseOrder && purchaseOrder.invoice_no,
+              })(<Input />)}
               </FormItem>
             </Col>
           </Row>
