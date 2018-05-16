@@ -19,7 +19,7 @@ import { formatMsg } from './message.i18n';
   { loadTrackings }
 )
 @injectIntl
-export default class ModuleSCOF extends React.Component {
+export default class ModuleSOF extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
@@ -65,25 +65,6 @@ export default class ModuleSCOF extends React.Component {
       text: this.msg('shipments'),
     });
     linkMenus.push({
-      single: false,
-      key: 'scof-tracking',
-      icon: 'logixon icon-monitor',
-      text: this.msg('tracking'),
-      sublinks: [{
-        key: 'scof-tracking-999',
-        icon: 'logixon icon-install',
-        path: '/scof/tracking/customize',
-        text: this.msg('customizeTracking'),
-      }],
-    });
-    linkMenus.push({
-      single: true,
-      key: 'scof-flow',
-      path: '/scof/flow',
-      icon: 'logixon icon-process',
-      text: this.msg('flow'),
-    });
-    linkMenus.push({
       single: true,
       key: 'scof-customer',
       path: '/scof/customers',
@@ -105,14 +86,6 @@ export default class ModuleSCOF extends React.Component {
       path: '/scof/vendors',
       icon: 'logixon icon-service-o',
       text: this.msg('vendors'),
-    });
-    linkMenus.push({
-      single: true,
-      bottom: true,
-      key: 'scof-settings',
-      path: '/scof/settings',
-      icon: 'logixon icon-setting-o',
-      text: this.msg('settings'),
     });
     if (sofApps.length > 0) {
       if (sofApps.length === 1) {

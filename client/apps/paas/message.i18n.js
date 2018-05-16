@@ -46,6 +46,10 @@ const messages = defineMessages({
     id: 'paas.menu.param.prefs',
     defaultMessage: '参数配置',
   },
+  shipmentParams: {
+    id: 'paas.menu.param.prefs.shipment',
+    defaultMessage: '货运参数',
+  },
   templates: {
     id: 'paas.menu.templates',
     defaultMessage: '模板',

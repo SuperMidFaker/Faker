@@ -5,10 +5,9 @@ import { Button, Card, Collapse, List, Layout, Modal } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/reducers/sofOrderPref';
 import connectNav from 'client/common/decorators/connect-nav';
-import ListContentLayout from 'client/components/ListContentLayout';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import SettingMenu from '../menu';
+import HubSiderMenu from '../../menu';
 import TypeForm from './forms/typeForm';
 import FieldsForm from './forms/fieldsForm';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -84,7 +83,7 @@ export default class OrderParams extends Component {
     const menus = [
       {
         key: 'orderTypes',
-        menu: this.msg('orderTypes'),
+        menu: this.msg('shipmentTypes'),
       },
       {
         key: 'exceptionCode',
@@ -92,17 +91,15 @@ export default class OrderParams extends Component {
       },
     ];
     return (
-      <ListContentLayout
-        title={this.msg('settings')}
-        list={<SettingMenu currentKey="orderparams" />}
-        listWidth={200}
-      >
-        <PageHeader menus={menus} onTabChange={this.handleTabChange} />
-        <Content className="page-content layout-fixed-width">
-          <Card extra={<Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>{this.gmsg('add')}</Button>} bodyStyle={{ padding: 0 }} >
-            <List
-              loading={orderTypeList.loading}
-              pagination={{
+      <Layout>
+        <HubSiderMenu currentKey="shipmentParams" openKey="paramPrefs" />
+        <Layout>
+          <PageHeader menus={menus} onTabChange={this.handleTabChange} />
+          <Content className="page-content layout-fixed-width">
+            <Card extra={<Button type="primary" icon="plus-circle-o" onClick={this.handleCreate}>{this.gmsg('add')}</Button>} bodyStyle={{ padding: 0 }} >
+              <List
+                loading={orderTypeList.loading}
+                pagination={{
                   pageSize: orderTypeList.pageSize,
                   current: orderTypeList.current,
                   total: orderTypeList.totalCount,
@@ -110,44 +107,45 @@ export default class OrderParams extends Component {
                   size: 'small',
                   hideOnSinglePage: true,
                 }}
-              dataSource={orderTypeList.data}
-              renderItem={type => (
-                <List.Item
-                  key={type.id}
-                  actions={[<RowAction row={type} key="config" onClick={this.handleConfig} icon="setting" tooltip={this.gmsg('config')} />,
-                    <RowAction danger row={type} confirm={this.gmsg('deleteConfirm')} key="del" onConfirm={this.handleTypeDel} icon="delete" />,
+                dataSource={orderTypeList.data}
+                renderItem={type => (
+                  <List.Item
+                    key={type.id}
+                    actions={[<RowAction row={type} key="config" onClick={this.handleConfig} icon="setting" tooltip={this.gmsg('config')} />,
+                      <RowAction danger row={type} confirm={this.gmsg('deleteConfirm')} key="del" onConfirm={this.handleTypeDel} icon="delete" />,
                     ]}
-                >
-                  <List.Item.Meta title={type.name} />
-                </List.Item>
+                  >
+                    <List.Item.Meta title={type.name} />
+                  </List.Item>
                   )}
-            />
-          </Card>
-        </Content>
-        <Modal
-          maskClosable={false}
-          title={this.msg('orderConfig')}
-          width="100%"
-          visible={visible}
-          onCancel={this.handleModalCancel}
-          footer={null}
-          wrapClassName="fullscreen-modal"
-          destroyOnClose
-        >
-          <Content className="layout-fixed-width">
-            <Card bodyStyle={{ padding: 0 }}>
-              <Collapse accordion bordered={false} defaultActiveKey={['type']}>
-                <Panel header="订单类型" key="type">
-                  <TypeForm />
-                </Panel>
-                <Panel header="扩展字段" key="fields" disabled={!modalOrderType.id}>
-                  <FieldsForm />
-                </Panel>
-              </Collapse>
+              />
             </Card>
           </Content>
-        </Modal>
-      </ListContentLayout>
+          <Modal
+            maskClosable={false}
+            title={this.msg('orderConfig')}
+            width="100%"
+            visible={visible}
+            onCancel={this.handleModalCancel}
+            footer={null}
+            wrapClassName="fullscreen-modal"
+            destroyOnClose
+          >
+            <Content className="layout-fixed-width">
+              <Card bodyStyle={{ padding: 0 }}>
+                <Collapse accordion bordered={false} defaultActiveKey={['type']}>
+                  <Panel header="订单类型" key="type">
+                    <TypeForm />
+                  </Panel>
+                  <Panel header="扩展字段" key="fields" disabled={!modalOrderType.id}>
+                    <FieldsForm />
+                  </Panel>
+                </Collapse>
+              </Card>
+            </Content>
+          </Modal>
+        </Layout>
+      </Layout>
     );
   }
 }
