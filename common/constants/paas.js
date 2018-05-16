@@ -47,45 +47,37 @@ export const PAAS_BIZ_OBJECTS = [
   {
     key: 'purchaseOrder',
     link: '/paas/objects/purchaseorder',
-    description: 'Purchase Order',
   },
   {
     key: 'commercialInvoice',
     link: '/paas/objects/comminvoice',
-    description: 'Purchase Order',
   },
   {
     key: 'shipmentOrder',
     link: '/paas/objects/shipment',
-    description: 'Purchase Order',
   },
   {
     key: 'customsDelegation',
     link: '/paas/objects/delegation',
-    description: 'Purchase Order',
   },
 ];
 
 export const PAAS_PARAM_PREFS = [
   {
-    key: 'shipmentTypes',
-    link: '/paas/prefs/shipmenttypes',
-    description: 'Purchase Order',
+    key: 'shipmentParams',
+    link: '/paas/prefs/shipment',
   },
   {
     key: 'currencies',
     link: '/paas/prefs/currencies',
-    description: 'Purchase Order',
   },
   {
     key: 'feeItems',
     link: '/paas/prefs/feeitems',
-    description: 'Purchase Order',
   },
   {
     key: 'taxes',
     link: '/paas/prefs/taxes',
-    description: 'Purchase Order',
   },
 ];
 
@@ -93,6 +85,5 @@ export const PAAS_TEMPLATES = [
   {
     key: 'notify',
     link: '/paas/templates/notify',
-    description: 'Purchase Order',
   },
 ];

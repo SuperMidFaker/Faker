@@ -305,13 +305,17 @@ const messages = defineMessages({
     id: 'root.module.bss',
     defaultMessage: '结算中心',
   },
+  moduleDIS: {
+    id: 'root.module.dis',
+    defaultMessage: '统计分析',
+  },
   moduleTransport: {
     id: 'root.module.transport',
     defaultMessage: '运输管理',
   },
   moduleClearance: {
     id: 'root.module.clearance',
-    defaultMessage: '清关管理',
+    defaultMessage: '关务管理',
   },
   moduleCWM: {
     id: 'root.module.cwm',

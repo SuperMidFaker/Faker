@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   delegation: {
     id: 'cms.module.delegation',
-    defaultMessage: '委托管理',
+    defaultMessage: '委托制单',
   },
   customsDecl: {
     id: 'cms.module.customs.decl',
@@ -19,7 +19,7 @@ const messages = defineMessages({
   },
   complianceGroup: {
     id: 'cms.module.group.compliance',
-    defaultMessage: '合规管理',
+    defaultMessage: '合规资料',
   },
   tradeItem: {
     id: 'cms.module.compliance.trade.item',
