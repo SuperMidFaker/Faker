@@ -3,6 +3,10 @@ import { formati18n } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
+  corpAdmin: {
+    id: 'corp.admin',
+    defaultMessage: '企业后台',
+  },
   corpSettings: {
     id: 'corp.settings',
     defaultMessage: '企业设置',

@@ -7,27 +7,27 @@ const messages = defineMessages({
     defaultMessage: '工作台',
   },
   orderStats: {
-    id: 'sof.dashboard.order.stats',
+    id: 'sof.dashboard.shipment.stats',
     defaultMessage: '订单统计',
   },
   totalOrders: {
-    id: 'sof.dashboard.order.total',
+    id: 'sof.dashboard.shipment.total',
     defaultMessage: '订单总量',
   },
   pending: {
-    id: 'sof.dashboard.order.pending',
+    id: 'sof.dashboard.shipment.pending',
     defaultMessage: '待处理',
   },
   processing: {
-    id: 'sof.dashboard.order.processing',
+    id: 'sof.dashboard.shipment.processing',
     defaultMessage: '进行中',
   },
   urgent: {
-    id: 'sof.dashboard.order.urgent',
+    id: 'sof.dashboard.shipment.urgent',
     defaultMessage: '紧急',
   },
   completed: {
-    id: 'sof.dashboard.order.completed',
+    id: 'sof.dashboard.shipment.completed',
     defaultMessage: '已完成',
   },
 });

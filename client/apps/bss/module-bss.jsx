@@ -61,10 +61,10 @@ export default class ModuleBSS extends React.Component {
     });
     linkMenus.push({
       single: true,
-      key: 'bss-voucher',
+      key: 'bss-payment',
       icon: 'logixon icon-voucher',
-      text: formatMsg(intl, 'voucher'),
-      path: '/bss/voucher',
+      text: formatMsg(intl, 'payment'),
+      path: '/bss/payment',
     });
     linkMenus.push({
       single: true,
