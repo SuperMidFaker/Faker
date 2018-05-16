@@ -106,7 +106,7 @@ import * as BSSDashboard from './bss/dashboard';
 import * as BSSAudit from './bss/audit';
 import * as BSSBill from './bss/bill';
 import * as BSSInvoice from './bss/invoice';
-import * as BSSVoucher from './bss/voucher';
+import * as BSSPayment from './bss/payment';
 import * as BSSSettings from './bss/settings';
 
 export default(store) => {
@@ -518,9 +518,9 @@ export default(store) => {
               <IndexRoute component={BSSInvoice.List} />
               <Route path=":invoiceNo" component={BSSInvoice.Detail} />
             </Route>
-            <Route path="voucher">
-              <IndexRoute component={BSSVoucher.List} />
-              <Route path=":voucherNo" component={BSSVoucher.Detail} />
+            <Route path="payment">
+              <IndexRoute component={BSSPayment.List} />
+              <Route path=":voucherNo" component={BSSPayment.Detail} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/bss/settings/preferences" />

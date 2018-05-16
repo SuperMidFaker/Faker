@@ -10,6 +10,7 @@ import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
+import SearchBox from 'client/components/SearchBox';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
@@ -19,7 +20,6 @@ import AddUser from './modal/addUserModal';
 import { formatMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
-const { Search } = Input;
 const { SubMenu } = Menu;
 
 function fetchData({ state, dispatch }) {
@@ -351,7 +351,7 @@ export default class MemberDepartmentView extends React.Component {
               <Layout className="main-wrapper">
                 <Sider className="nav-sider">
                   <div className="nav-sider-head">
-                    <Search placeholder="搜索用户" onSearch={this.handleSearch} />
+                    <SearchBox onSearch={this.handleSearch} />
                   </div>
                   <Menu
                     defaultOpenKeys={['deptMenu']}

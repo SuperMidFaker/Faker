@@ -704,9 +704,9 @@ export default class DelegationList extends Component {
             <Menu mode="inline" selectedKeys={[this.state.currentFilter]} onClick={this.handleFilterChange}>
               <Menu.Item key="all">{this.msg('allDelegation')}</Menu.Item>
               <Menu.ItemGroup key="gTodo" title="待办">
-                {Object.keys(CMS_DELG_TODO).map(declkey =>
-                  (<Menu.Item key={declkey}>
-                    <Icon type={CMS_DELG_TODO[declkey].icon} /> {CMS_DELG_TODO[declkey].text}
+                {Object.keys(CMS_DELG_TODO).map(todoKey =>
+                  (<Menu.Item key={todoKey}>
+                    <Icon type={CMS_DELG_TODO[todoKey].icon} /> {this.msg(todoKey)}
                   </Menu.Item>))}
               </Menu.ItemGroup>
               <Menu.ItemGroup key="gIE" title="进/出口">

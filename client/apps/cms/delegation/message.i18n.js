@@ -34,9 +34,13 @@ const messages = defineMessages({
     id: 'cms.delegation.all',
     defaultMessage: '全部委托',
   },
-  accepting: {
-    id: 'cms.delegation.stage.accepting',
+  pending: {
+    id: 'cms.delegation.stage.pending',
     defaultMessage: '接单',
+  },
+  exchange: {
+    id: 'cms.delegation.stage.exchange',
+    defaultMessage: '换单',
   },
   processing: {
     id: 'cms.delegation.stage.processing',

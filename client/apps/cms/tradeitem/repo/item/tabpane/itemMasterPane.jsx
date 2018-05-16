@@ -493,20 +493,6 @@ export default class ItemMasterPane extends React.Component {
                 })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
               </FormItem>
             </Col>
-            <Col span={12}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('importPermit')}>
-                {getFieldDecorator('import_permit', {
-                  initialValue: fieldInits.import_permit,
-                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('exportPermit')}>
-                {getFieldDecorator('export_permit', {
-                  initialValue: fieldInits.export_permit,
-                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
-              </FormItem>
-            </Col>
             <Col span={6}>
               <FormItem {...formItemLayout} {...formItemLayout} label={this.msg('preClassifyNo')}>
                 {getFieldDecorator('pre_classify_no', {

@@ -4,35 +4,35 @@ import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   voucher: {
-    id: 'bss.voucher',
+    id: 'bss.payment',
     defaultMessage: '凭证管理',
   },
   receipt: {
-    id: 'bss.voucher.receipt',
+    id: 'bss.payment.receipt',
     defaultMessage: '收款',
   },
   payment: {
-    id: 'bss.voucher.payment',
+    id: 'bss.payment.made',
     defaultMessage: '付款',
   },
   transfer: {
-    id: 'bss.voucher.transter',
+    id: 'bss.payment.transter',
     defaultMessage: '转账',
   },
   receivedPayment: {
-    id: 'bss.voucher.payment.received',
+    id: 'bss.payment.received',
     defaultMessage: '收款认领',
   },
   receiptVoucher: {
-    id: 'bss.voucher.receipt.voucher',
+    id: 'bss.payment.receipt.payment',
     defaultMessage: '收款凭证',
   },
   paymentVoucher: {
-    id: 'bss.voucher.payment.voucher',
+    id: 'bss.payment.voucher',
     defaultMessage: '付款凭证',
   },
   transferVoucher: {
-    id: 'bss.voucher.transter.voucher',
+    id: 'bss.payment.transter.voucher',
     defaultMessage: '转账凭证',
   },
 });
