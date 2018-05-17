@@ -8,14 +8,14 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadForm, loadFormRequire, onFormFieldsChange, setConsignFields } from 'common/reducers/shipment';
 import { loadTable, saveEdit } from 'common/reducers/transport-acceptance';
+import AddLocationModal from 'client/apps/paas/flow/modal/addLocationModal';
+import { format } from 'client/common/i18n/helpers';
 import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import CorrelInfo from '../shipment/forms/correlInfo';
 import FreightCharge from '../shipment/forms/freightCharge';
-import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
-import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -184,13 +184,21 @@ export default class ShipmentEdit extends React.Component {
                   <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
                 </Card>
                 <Card bodyStyle={{ padding: 16 }}>
-                  <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
+                  <ConsignInfo
+                    type="consigner"
+                    intl={intl}
+                    outerColSpan={16}
+                    labelColSpan={8}
+                    formhoc={form}
                   />
                 </Card>
                 <Card bodyStyle={{ padding: 16 }}>
-                  <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
+                  <ConsignInfo
+                    type="consignee"
+                    intl={intl}
+                    outerColSpan={16}
+                    labelColSpan={8}
+                    formhoc={form}
                   />
                 </Card>
                 <Card bodyStyle={{ padding: 16 }}>

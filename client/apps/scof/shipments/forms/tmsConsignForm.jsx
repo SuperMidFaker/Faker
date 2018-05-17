@@ -12,8 +12,8 @@ import { format } from 'client/common/i18n/helpers';
 import FormPane from 'client/components/FormPane';
 import UserAvatar from 'client/components/UserAvatar';
 import * as Location from 'client/util/location';
-import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
-import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
+import AddLineModal from 'client/apps/paas/flow/modal/addLineModal';
+import AddLocationModal from 'client/apps/paas/flow/modal/addLocationModal';
 import messages from '../message.i18n';
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;

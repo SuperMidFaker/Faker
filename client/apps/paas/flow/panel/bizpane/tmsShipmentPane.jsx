@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { Collapse, Form, Col, Row, Switch, Select, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
-import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
-import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
 import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal } from 'common/reducers/scofFlow';
 import * as Location from 'client/util/location';
+import AddLineModal from '../../modal/addLineModal';
+import AddLocationModal from '../../modal/addLocationModal';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 

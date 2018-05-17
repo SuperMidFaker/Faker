@@ -9,16 +9,17 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadFormRequire, onFormFieldsChange, setConsignFields } from 'common/reducers/shipment';
 import { savePending, saveAndAccept, loadTable, saveDraft }
   from 'common/reducers/transport-acceptance';
+import AddLocationModal from 'client/apps/paas/flow/modal/addLocationModal';
+import { format } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 import ClientInfo from '../shipment/forms/clientInfo';
 import ConsignInfo from '../shipment/forms/consign-info';
 import GoodsInfo from '../shipment/forms/goods-info';
 import ModeInfo from '../shipment/forms/mode-info';
 import CorrelInfo from '../shipment/forms/correlInfo';
 import FreightCharge from '../shipment/forms/freightCharge';
-import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
-import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import globalMessages from 'client/common/root.i18n';
+
 
 const formatGlobalMsg = format(globalMessages);
 const formatMsg = format(messages);
@@ -248,14 +249,18 @@ export default class ShipmentCreate extends React.Component {
                 <Row gutter={16}>
                   <Col sm={24} md={12}>
                     <Card bodyStyle={{ padding: 16 }}>
-                      <ConsignInfo type="consigner" intl={intl}
+                      <ConsignInfo
+                        type="consigner"
+                        intl={intl}
                         formhoc={form}
                       />
                     </Card>
                   </Col>
                   <Col sm={24} md={12}>
                     <Card bodyStyle={{ padding: 16 }}>
-                      <ConsignInfo type="consignee" intl={intl}
+                      <ConsignInfo
+                        type="consignee"
+                        intl={intl}
                         formhoc={form}
                       />
                     </Card>
