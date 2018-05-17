@@ -36,7 +36,7 @@ export default class ModuleSOF extends React.Component {
     const appMenus = [];
     linkMenus.push({
       single: true,
-      key: 'scof-dashboard',
+      key: 'sof-dashboard',
       path: '/scof/dashboard',
       icon: 'logixon icon-dashboard-o',
       text: this.msg('dashboard'),
@@ -44,14 +44,14 @@ export default class ModuleSOF extends React.Component {
     if (aspect === TENANT_ASPECT.ENT) {
       linkMenus.push({
         single: true,
-        key: 'scof-purchaseorders',
+        key: 'sof-purchaseorders',
         path: '/scof/purchaseorders',
         icon: 'logixon icon-order-mng',
         text: this.msg('purchaseOrders'),
       });
       linkMenus.push({
         single: true,
-        key: 'scof-invoice',
+        key: 'sof-invoice',
         path: '/scof/invoices',
         icon: 'logixon icon-commercial-invoice',
         text: this.msg('invoices'),
@@ -59,14 +59,14 @@ export default class ModuleSOF extends React.Component {
     }
     linkMenus.push({
       single: true,
-      key: 'scof-shipment',
+      key: 'sof-shipment',
       path: '/scof/shipments',
       icon: 'logixon icon-shipment',
       text: this.msg('shipments'),
     });
     linkMenus.push({
       single: true,
-      key: 'scof-customer',
+      key: 'sof-customer',
       path: '/scof/customers',
       icon: 'logixon icon-customer-mng',
       text: this.msg('customers'),
@@ -74,7 +74,7 @@ export default class ModuleSOF extends React.Component {
     if (aspect === TENANT_ASPECT.ENT) {
       linkMenus.push({
         single: true,
-        key: 'scof-supplier',
+        key: 'sof-supplier',
         path: '/scof/suppliers',
         icon: 'logixon icon-supplier',
         text: this.msg('suppliers'),
@@ -82,7 +82,7 @@ export default class ModuleSOF extends React.Component {
     }
     linkMenus.push({
       single: true,
-      key: 'scof-vendor',
+      key: 'sof-vendor',
       path: '/scof/vendors',
       icon: 'logixon icon-service-o',
       text: this.msg('vendors'),
@@ -115,24 +115,25 @@ export default class ModuleSOF extends React.Component {
     }
     this.setState({ linkMenus, appMenus });
   }
+  /*
   componentWillReceiveProps(nextProps) {
     let trackingSublinks = [];
     if (nextProps.trackings.length > 0) {
       trackingSublinks = nextProps.trackings.map((item, index) => ({
-        key: `scof-tracking-${index}`,
+        key: `sof-tracking-${index}`,
         path: `/scof/tracking/${item.id}`,
         text: item.name,
       }));
     }
     if (trackingSublinks.length > 0) {
-      const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'scof-tracking');
+      const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'sof-tracking');
       linkMenus.splice(3, 0, {
         single: false,
-        key: 'scof-tracking',
+        key: 'sof-tracking',
         icon: 'logixon icon-monitor',
         text: this.msg('tracking'),
         sublinks: trackingSublinks.concat([{
-          key: 'scof-tracking-999',
+          key: 'sof-tracking-999',
           icon: 'logixon icon-install',
           path: '/scof/tracking/customize',
           text: this.msg('customizeTracking'),
@@ -141,6 +142,7 @@ export default class ModuleSOF extends React.Component {
       this.setState({ linkMenus });
     }
   }
+  */
   msg = formatMsg(this.props.intl)
   render() {
     return (

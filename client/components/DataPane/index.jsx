@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Table, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
+import DataTable from '../DataTable';
 import toolbar from './toolbar';
 import actions from './actions';
 import extra from './extra';
@@ -26,37 +27,25 @@ export default class DataPane extends React.Component {
   static contextTypes = {
     fullscreen: PropTypes.bool,
   }
-  state = { scrollY: 0 }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - this.props.scrollOffset,
-      });
-    }
-  }
   componentWillReceiveProps(nextProps, nextContext) {
     if (nextContext.fullscreen !== this.context.fullscreen) {
       if (nextContext.fullscreen) {
-        this.setState({
-          scrollY: window.innerHeight - this.props.scrollOffset,
-        });
+        //
       } else {
-        this.setState({
-          scrollY: window.innerHeight - 198,
-        });
+        //
       }
     }
   }
   render() {
     const {
-      baseCls, children, columns, header, pagination,
+      baseCls, children, header, pagination,
       selectedRowKeys, onDeselectRows, onFilterSelected, bulkActions,
     } = this.props;
     return (
       <div className={baseCls}>
         {header ? <div className={`${baseCls}-header`}>{header}</div> : null}
         {children}
-        <Table
+        <DataTable
           size="middle"
           {...this.props}
           pagination={pagination || {
@@ -64,10 +53,7 @@ export default class DataPane extends React.Component {
             showSizeChanger: true,
             showTotal: total => `共 ${total} 条`,
           }}
-          scroll={{
-            x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0),
-            y: this.state.scrollY,
-          }}
+          showToolbar={false}
         />
         {selectedRowKeys &&
           <div className={`${baseCls}-toolbar-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>

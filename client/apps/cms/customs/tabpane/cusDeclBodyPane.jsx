@@ -370,6 +370,7 @@ export default class CusDeclBodyPane extends React.Component {
       render: col => buildTipItems(col),
     }, {
       title: this.msg('inspection'),
+      width: 150,
       dataIndex: 'inspection',
       render: col => buildTipItems(col, true),
     }];
