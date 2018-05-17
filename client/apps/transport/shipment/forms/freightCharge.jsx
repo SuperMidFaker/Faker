@@ -6,15 +6,15 @@ import moment from 'moment';
 import { Button, Card, Checkbox, message, Alert, Table, Collapse, Form, Input } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { computeSaleCharge, setConsignFields } from 'common/reducers/shipment';
+import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
+import AddLineModal from 'client/apps/paas/flow/modal/addLineModal';
 import { toggleAddLineModal } from 'common/reducers/scofFlow';
 import { getChargeAmountExpression } from '../../common/charge';
 import InputItem from './input-item';
-import { TARIFF_METER_METHODS, GOODS_TYPES } from 'common/constants';
-import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 const FormItem = Form.Item;
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
