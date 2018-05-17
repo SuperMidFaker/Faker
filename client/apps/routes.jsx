@@ -100,7 +100,6 @@ import * as SOFTracking from './scof/tracking';
 import * as SOFCustomers from './scof/partner/customers';
 import * as SOFSuppliers from './scof/partner/suppliers';
 import * as SOFVendors from './scof/partner/vendors';
-import * as SOFFlow from './scof/flow';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
 import * as BSSAudit from './bss/audit';
@@ -499,7 +498,6 @@ export default(store) => {
             <Route path="customers" component={SOFCustomers.List} />
             <Route path="suppliers" component={SOFSuppliers.List} />
             <Route path="vendors" component={SOFVendors.List} />
-            <Route path="flow" component={SOFFlow.List} />
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
             <IndexRedirect to="/bss/dashboard" />
