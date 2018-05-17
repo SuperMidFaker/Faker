@@ -6,22 +6,24 @@ import moment from 'moment';
 import { Avatar, DatePicker, Icon, Layout, Menu, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import TrimSpan from 'client/components/trimSpan';
 import RowAction from 'client/components/RowAction';
 import UserAvatar from 'client/components/UserAvatar';
 import SearchBox from 'client/components/SearchBox';
 import Drawer from 'client/components/Drawer';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
-  toggleInspectModal, toggleDeclModModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsCustomsDeclare';
+import {
+  loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
+  toggleInspectModal, toggleDeclModModal, openDeclReleasedModal,
+  showBatchSendModal, showDeclMsgDock,
+} from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_DECL_MOD_TYPE, INSPECT_STATUS } from 'common/constants';
-import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
-import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
+import ShipmentDockPanel from 'client/apps/scof/shipments/docks/shipmentDockPanel';
+import DeliveryDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import InspectModal from './modals/inspectModal';
@@ -193,7 +195,6 @@ export default class CustomsList extends Component {
     title: this.msg('orderNo'),
     width: 180,
     dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('packCount'),
     width: 60,
@@ -249,17 +250,17 @@ export default class CustomsList extends Component {
     title: '收发货人',
     dataIndex: 'trade_name',
     width: 180,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '进/出口口岸',
     dataIndex: 'i_e_port',
+    width: 120,
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';
       if (cust) {
         port = cust.text;
       }
-      return <TrimSpan text={port} maxLen={14} />;
+      return port;
     },
   }, {
     title: '监管方式',
@@ -271,7 +272,7 @@ export default class CustomsList extends Component {
       if (tradeMd) {
         trade = tradeMd.text;
       }
-      return <TrimSpan text={trade} maxLen={14} />;
+      return trade;
     },
   }, {
     title: '提运单号',
@@ -307,7 +308,6 @@ export default class CustomsList extends Component {
     title: '申报单位',
     dataIndex: 'agent_name',
     width: 180,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '审核人员',
     dataIndex: 'reviewed_by',
@@ -328,6 +328,8 @@ export default class CustomsList extends Component {
       }
       return null;
     },
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -378,16 +380,16 @@ export default class CustomsList extends Component {
         spanElems.push(<RowAction
           key="return"
           overlay={<Menu onClick={({ key }) => this.showDeclMsgModModal(key, record)}>
-            {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
-            {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
-            {record.status < CMS_DECL_STATUS.released.value && <Menu.Divider />}
-            {record.status < CMS_DECL_STATUS.released.value && <Menu.Item key="declMod">{this.msg('declMod')}</Menu.Item>}
+            <Menu.Item key={`${record.sent_file}|sent`} disabled={!record.sent_file}>{this.msg('viewDeclMsg')}</Menu.Item>
+            <Menu.Item key={`${record.return_file}|return`} disabled={!record.return_file}>{this.msg('viewResultMsg')}</Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="declMod" disabled={record.status >= CMS_DECL_STATUS.released.value}>{this.msg('declMod')}</Menu.Item>
           </Menu>}
           row={record}
         />);
       }
       return (<span>
-        <RowAction onClick={this.handleDetail} icon="eye-o" tooltip={this.gmsg('view')} row={record} />
+        <RowAction onClick={this.handleDetail} icon="eye-o" label={this.gmsg('view')} row={record} />
         {spanElems}
       </span>);
     },
@@ -732,8 +734,8 @@ export default class CustomsList extends Component {
         </Layout>
         <DeclMsgPanel />
         <DelegationDockPanel />
-        <OrderDockPanel />
         <ShipmentDockPanel />
+        <DeliveryDockPanel />
         <DeclMsgModal />
       </Layout>
     );

@@ -15,7 +15,6 @@ import { createFilename } from 'client/util/dataTransform';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
-import TrimSpan from 'client/components/trimSpan';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CIQ_DECL_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
@@ -140,13 +139,12 @@ export default class CiqDeclList extends Component {
     dataIndex: 'i_e_type',
     width: 180,
     render: (o, record) => (o === 0 ?
-      <TrimSpan text={record.ciq_consignee_name_cn} maxLen={12} /> :
-      <TrimSpan text={record.ciq_consignor_name_cn} maxLen={12} />),
+      record.ciq_consignee_name_cn :
+      record.ciq_consignor_name_cn),
   }, {
     title: this.msg('custOrderNo'),
     width: 180,
     dataIndex: 'cust_order_no',
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('status'),
     dataIndex: 'status',

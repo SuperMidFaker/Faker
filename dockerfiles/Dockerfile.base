@@ -2,11 +2,12 @@ FROM daocloud.io/node:8.9.4-alpine
 MAINTAINER developer@welogix.cn
 RUN mkdir -p /opt/apps/welogix-web
 WORKDIR /opt/apps/welogix-web
-RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 
-COPY package.json /opt/apps/welogix-web
+COPY package.json package-lock.json /opt/apps/welogix-web/
 
-RUN cnpm install && cnpm install pm2 -g
+# remove cnpm https://github.com/cnpm/cnpm/issues/226
+RUN alias npm='npm --registry=https://registry.npm.taobao.org --disturl=https://npm.taobao.org/dist'
+RUN npm install --production && npm install pm2 -g
 
 # $ docker build -f dockerfiles/Dockerfile.base ./ -t welogix-web-base:1.0 --no-cache
 

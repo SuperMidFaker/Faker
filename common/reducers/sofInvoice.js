@@ -1,5 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
+import { PARTNER_ROLES } from 'common/constants';
 
 const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'LOAD_INVOICES', 'LOAD_INVOICES_SUCCEED', 'LOAD_INVOICES_FAIL',
@@ -12,6 +13,8 @@ const actionTypes = createActionTypes('@@welogix/sof/invoice/', [
   'SPLIT_SOF_INVOICE', 'SPLIT_SOF_INVOICE_SUCCEED', 'SPLIT_SOF_INVOICE_FAIL',
   'BATCH_DELETE_INVOICES', 'BATCH_DELETE_INVOICES_SUCCEED', 'BATCH_DELETE_INVOICES_FAIL',
   'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
+  'LOAD_INVOICE_CATEGORIES', 'LOAD_INVOICE_CATEGORIES_SUCCEED', 'LOAD_INVOICE_CATEGORIES_FAIL',
+  'LOAD_INVOICE_BUYER_SELLERS', 'LOAD_INVOICE_BUYER_SELLERS_SUCCEED', 'LOAD_INVOICE_BUYER_SELLERS_FAIL',
 ]);
 
 const initialState = {
@@ -28,6 +31,9 @@ const initialState = {
     visible: false,
     record: {},
   },
+  invoiceCategories: [],
+  sellers: [],
+  buyers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -59,6 +65,16 @@ export default function reducer(state = initialState, action) {
       };
     case actionTypes.CLEAR_INVOICE:
       return { ...state, temporaryDetails: [], invoiceHead: {} };
+    case actionTypes.LOAD_INVOICE_CATEGORIES_SUCCEED:
+      return { ...state, invoiceCategories: action.result.data };
+    case actionTypes.LOAD_INVOICE_BUYER_SELLERS_SUCCEED:
+      return {
+        ...state,
+        buyers: action.result.data.filter(item => item.role === PARTNER_ROLES.CUS
+        || item.role === PARTNER_ROLES.OWN),
+        sellers: action.result.data.filter(item => item.role === PARTNER_ROLES.SUP
+        || item.role === PARTNER_ROLES.OWN),
+      };
     default:
       return state;
   }
@@ -208,6 +224,38 @@ export function batchDeleteByUploadNo(uploadNo) {
       endpoint: 'v1/sof/invoices/batch/delete/by/uploadno',
       method: 'post',
       data: { uploadNo },
+    },
+  };
+}
+
+export function loadInvoiceCategories() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INVOICE_CATEGORIES,
+        actionTypes.LOAD_INVOICE_CATEGORIES_SUCCEED,
+        actionTypes.LOAD_INVOICE_CATEGORIES_FAIL,
+      ],
+      endpoint: 'v1/sof/invoices/categories/load',
+      method: 'get',
+    },
+  };
+}
+
+export function loadInvoiceBuyerSellers() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_INVOICE_BUYER_SELLERS,
+        actionTypes.LOAD_INVOICE_BUYER_SELLERS_SUCCEED,
+        actionTypes.LOAD_INVOICE_BUYER_SELLERS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/type/partners',
+      method: 'get',
+      params: {
+        roles: JSON.stringify([PARTNER_ROLES.OWN, PARTNER_ROLES.CUS, PARTNER_ROLES.SUP]),
+        businessTypes: JSON.stringify(null),
+      },
     },
   };
 }

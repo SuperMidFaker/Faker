@@ -369,14 +369,14 @@ export const DELG_STATUS = {
 };
 
 export const CMS_DELG_TODO = {
-  accepting: {
-    value: 0, text: '接单', icon: 'select', badge: 'default',
+  pending: {
+    value: 0, text: '接单', icon: 'select',
   },
   exchange: {
-    value: 1, text: '换单', icon: 'swap', badge: 'processing',
+    value: 1, text: '换单', icon: 'swap',
   },
-  undeclared: {
-    value: 1, text: '制单', icon: 'file-text', badge: 'processing',
+  processing: {
+    value: 1, text: '制单', icon: 'file-text',
   },
 };
 

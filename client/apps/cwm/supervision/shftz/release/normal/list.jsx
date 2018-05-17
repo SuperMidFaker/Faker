@@ -15,9 +15,9 @@ import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import PageHeader from 'client/components/PageHeader';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
-import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import NormalRelRegModal from './modal/normalRelRegModal';
 import { formatMsg } from '../../message.i18n';
 
@@ -374,9 +374,9 @@ export default class SHFTZNormalRelRegList extends React.Component {
             defaultExpandAllRows
           />
           <ShippingDockPanel />
-          <OrderDockPanel />
-          <DelegationDockPanel />
           <ShipmentDockPanel />
+          <DelegationDockPanel />
+          <DeliveryDockPanel />
           <NormalRelRegModal reload={this.handleNewNormalRelRegLoad} />
         </Content>
       </Layout>

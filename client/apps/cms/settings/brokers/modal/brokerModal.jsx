@@ -10,7 +10,7 @@ import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const { Option } = Select;
 
-const role = PARTNER_ROLES.SUP;
+const role = PARTNER_ROLES.VEN;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 const formItemLayout = {
   labelCol: { span: 8 },

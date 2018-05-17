@@ -108,6 +108,7 @@ export default class ReceivableExpenseList extends Component {
     }, {
       title: this.msg('buyerName'),
       dataIndex: 'buyer_name',
+      width: 160,
     }, {
       title: this.msg('custOrderNo'),
       dataIndex: 'cust_order_no',
@@ -189,6 +190,8 @@ export default class ReceivableExpenseList extends Component {
       dataIndex: 'confirmed_by',
       width: 120,
       render: lid => <UserAvatar size="small" loginId={lid} showName />,
+    }, {
+      dataIndex: 'SPACER_COL',
     }, {
       title: this.gmsg('actions'),
       dataIndex: 'OPS_COL',
@@ -342,7 +345,7 @@ export default class ReceivableExpenseList extends Component {
     };
     const menu = (
       <Menu onClick={this.showImportLogs}>
-        <Menu.Item key="logs">{this.gmsg('importLogs')}</Menu.Item>
+        <Menu.Item key="logs">{this.gmsg('viewImportLogs')}</Menu.Item>
       </Menu>
     );
     const toolbarActions = (<span>
@@ -425,7 +428,6 @@ export default class ReceivableExpenseList extends Component {
               dataSource={this.dataSource}
               rowKey="expense_no"
               loading={expensesLoading}
-              bordered
             />
           </Content>
           <ImportDataPanel

@@ -39,7 +39,7 @@ import MyShipmentsSelect from '../common/myShipmentsSelect';
 import ShipmentAdvanceModal from '../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../tracking/land/modals/create-specialCharge';
 import CustomerSelect from '../common/customerSelect';
-import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 
 const { Header, Content } = Layout;
@@ -128,12 +128,6 @@ export default class DispatchList extends React.Component {
   state = {
     selectedRowKeys: [],
     advancedSearchVisible: false,
-    searchValue: '',
-  }
-
-  componentWillMount() {
-    const { filters } = this.props;
-    this.setState({ searchValue: filters.shipmt_no || '' });
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded && !nextProps.loading) {
@@ -594,7 +588,6 @@ export default class DispatchList extends React.Component {
   handleSearch = (searchVal) => {
     const filters = mergeFilters(this.props.filters, 'shipmt_no', searchVal);
     this.handleTableLoad(filters);
-    this.setState({ searchValue: searchVal });
   }
 
   handleAdvancedSearch = (searchVals) => {
@@ -1116,7 +1109,7 @@ export default class DispatchList extends React.Component {
           {tb}
         </Content>
         <ShipmentDockPanel />
-        <OrderDockPanel />
+        <DeliveryDockPanel />
         <DelegationDockPanel />
         <DispatchDock />
         <SegmentDock />

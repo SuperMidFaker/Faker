@@ -12,8 +12,8 @@ const ACCOUNT_STATUS = {
 };
 
 const TENANT_ASPECT = {
-  BO: 0, // 企业主
-  SP: 1, // 服务商
+  ENT: 0, // 进出口货主企业
+  LSP: 1, // 物流服务商
 };
 const TENANT_LEVEL = {
   STANDARD: 0,
@@ -30,6 +30,7 @@ const INVITATION_STATUS = {
 };
 
 export const PARTNER_ROLES = {
+  OWN: 'OWN',
   DCUS: 'DCUS',
   CUS: 'CUS',
   SUP: 'SUP',
@@ -39,8 +40,7 @@ export const PARTNER_ROLES = {
 export const PARTNER_BUSINESSES = {
   CCB: 'CCB',
   TRS: 'TRS',
-  CIB: 'CIB',
-  ICB: 'ICB',
+  FWD: 'FWD',
 };
 
 export const PARTNER_BUSINESSE_TYPES = {
@@ -92,6 +92,6 @@ export * from './scv';
 export * from './cwm';
 export * from './lineAdaptor';
 export * from './operationLog';
-export * from './hub';
+export * from './paas';
 export * from './bss';
 export * from './uploadRecords';

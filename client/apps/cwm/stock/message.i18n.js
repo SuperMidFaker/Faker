@@ -150,6 +150,10 @@ const messages = defineMessages({
     id: 'cwm.stock.virtual.whse',
     defaultMessage: '库别',
   },
+  supplierName: {
+    id: 'cwm.stock.supplier.name',
+    defaultMessage: '供货商',
+  },
   bonded: {
     id: 'cwm.stock.bonded',
     defaultMessage: '保税',
@@ -166,6 +170,14 @@ const messages = defineMessages({
     id: 'cwm.stock.expiry.date',
     defaultMessage: '过期日期',
   },
+  ftzEntNo: {
+    id: 'cwm.stock.ftz.ent.no',
+    defaultMessage: '海关入库单号',
+  },
+  cusDeclNo: {
+    id: 'cwm.stock.cus.decl.no',
+    defaultMessage: '报关单号',
+  },
   ftzEntryId: {
     id: 'cwm.stock.ftz.entry.id',
     defaultMessage: '入库明细ID',
@@ -181,6 +193,10 @@ const messages = defineMessages({
   transitUploadUpdate: {
     id: 'cwm.stock.transit.upload.update',
     defaultMessage: '批量导入调整',
+  },
+  moveSearchPlaceholder: {
+    id: 'cwm.stock.move.search.placeholder',
+    defaultMessage: '移库单号/原因',
   },
 });
 

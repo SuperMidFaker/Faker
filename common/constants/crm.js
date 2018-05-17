@@ -13,13 +13,13 @@ export const CRM_ORDER_MODE = {
 
 export const SCOF_ORDER_TRANSFER = [
   {
-    value: 'IMP', text: '进口订单', icon: 'login', desc: '货物由境外运输入境',
+    value: 'IMP', text: '进口货运', icon: 'login', desc: '货物由境外运输入境',
   },
   {
-    value: 'EXP', text: '出口订单', icon: 'logout', desc: '货物由境内运输出境',
+    value: 'EXP', text: '出口货运', icon: 'logout', desc: '货物由境内运输出境',
   },
   {
-    value: 'DOM', text: '国内流转', icon: 'reload', desc: '无实际进出境运输',
+    value: 'DOM', text: '国内货运', icon: 'reload', desc: '无实际进出境运输',
   },
 ];
 

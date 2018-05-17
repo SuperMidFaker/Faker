@@ -43,7 +43,6 @@ import cmsParams from './cmsParams';
 import cmsPrefEvents from './cmsPrefEvents';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
-import crmBilling from './crmBilling';
 import cwmReceive from './cwmReceive';
 import cwmOutbound from './cwmOutbound';
 import cwmInventoryStock from './cwmInventoryStock';
@@ -67,6 +66,9 @@ import scofFlow from './scofFlow';
 import sofOrderPref from './sofOrderPref';
 import sofVendors from './sofVendors';
 import sofTracking from './sofTracking';
+import sofDashboard from './sofDashboard';
+import sofInvoice from './sofInvoice';
+import sofPurchaseOrders from './sofPurchaseOrders';
 import transportAcceptance from './transport-acceptance';
 import trackingLandStatus from './trackingLandStatus';
 import trackingLandPod from './trackingLandPod';
@@ -79,8 +81,6 @@ import transportTariff from './transportTariff';
 import transportBilling from './transportBilling';
 import transportKpi from './transportKpi';
 import template from './template';
-import sofDashboard from './sofDashboard';
-import sofInvoice from './sofInvoice';
 import uploadRecords from './uploadRecords';
 
 export default combineReducers({
@@ -142,7 +142,9 @@ export default combineReducers({
   sofTracking,
   sofCustomers,
   sofOrders,
-  crmBilling,
+  sofDashboard,
+  sofInvoice,
+  sofPurchaseOrders,
   cwmReceive,
   cwmOutbound,
   cwmWarehouse,
@@ -164,7 +166,5 @@ export default combineReducers({
   cmsPermit,
   hubDevApp,
   template,
-  sofDashboard,
-  sofInvoice,
   uploadRecords,
 });

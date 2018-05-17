@@ -3,31 +3,31 @@ import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   dashboard: {
-    id: 'scof.dashboard',
+    id: 'sof.dashboard',
     defaultMessage: '工作台',
   },
   orderStats: {
-    id: 'scof.dashboard.order.stats',
+    id: 'sof.dashboard.shipment.stats',
     defaultMessage: '订单统计',
   },
   totalOrders: {
-    id: 'scof.dashboard.order.total',
+    id: 'sof.dashboard.shipment.total',
     defaultMessage: '订单总量',
   },
   pending: {
-    id: 'scof.dashboard.order.pending',
+    id: 'sof.dashboard.shipment.pending',
     defaultMessage: '待处理',
   },
   processing: {
-    id: 'scof.dashboard.order.processing',
+    id: 'sof.dashboard.shipment.processing',
     defaultMessage: '进行中',
   },
   urgent: {
-    id: 'scof.dashboard.order.urgent',
+    id: 'sof.dashboard.shipment.urgent',
     defaultMessage: '紧急',
   },
   completed: {
-    id: 'scof.dashboard.order.completed',
+    id: 'sof.dashboard.shipment.completed',
     defaultMessage: '已完成',
   },
 });

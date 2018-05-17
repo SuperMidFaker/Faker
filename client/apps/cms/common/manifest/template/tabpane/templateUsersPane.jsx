@@ -9,7 +9,7 @@ import { loadPartners } from 'common/reducers/partner';
 import { formatMsg } from '../../../message.i18n';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
-const role = PARTNER_ROLES.SUP;
+const role = PARTNER_ROLES.VEN;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
 
 const { Option } = Select;

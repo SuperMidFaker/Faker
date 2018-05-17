@@ -2,72 +2,112 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/partner/', [
+  'LOAD_PARTNERLIST', 'LOAD_PARTNERLIST_SUCCEED', 'LOAD_PARTNERLIST_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
   'LOAD_TYPEPARTNERS', 'LOAD_TYPEPARTNERS_SUCCEED', 'LOAD_TYPEPARTNERS_FAIL',
-  'EDIT_PROVIDER_TYPES', 'EDIT_PROVIDER_TYPES_SUCCEED', 'EDIT_PROVIDER_TYPES_FAIL',
   'ADD_PARTNER', 'ADD_PARTNER_SUCCEED', 'ADD_PARTNER_FAIL',
   'CHECK_PARTNER', 'CHECK_PARTNER_SUCCEED', 'CHECK_PARTNER_FAIL',
   'EDIT_PARTNER', 'EDIT_PARTNER_SUCCEED', 'EDIT_PARTNER_FAIL',
   'CHANGE_PARTNER_STATUS', 'CHANGE_PARTNER_STATUS_SUCCEED', 'CHANGE_PARTNER_STATUS_FAIL',
   'DELETE_PARTNER', 'DELETE_PARTNER_SUCCEED', 'DELETE_PARTNER_FAIL',
-  'INVITE_PARTNER', 'OPEN_SPMODAL', 'CLOSE_SPMODAL',
-  'ADD_SP', 'ADD_SP_SUCCEED', 'ADD_SP_FAIL',
-  'EDIT_SP', 'EDIT_SP_SUCCEED', 'EDIT_SP_FAIL',
-  'MATCH_TENANT', 'MATCH_TENANT_SUCCEED', 'MATCH_TENANT_FAIL',
+  'INVITE_PARTNER', 'SHOW_CUSTOMER_PANEL',
+  'SHOW_VENDOR_MODAL', 'HIDE_VENDOR_MODAL',
 ]);
-// *TODO* customerModal brokerModal group together
+
 const initialState = {
   loading: true,
   loaded: true,
-  partnershipTypes: [
-    /* { key:, name: count: } */
-  ],
-  partnerTenants: [
-    /* { id:, name: } */
-  ],
+  partnerlist: {
+    totalCount: 0,
+    pageSize: 20,
+    current: 1,
+    data: [],
+  },
+  partnerFilter: {
+    name: undefined,
+  },
   partners: [],
-  selectedMenuItemKey: '0', // 记录当前MenuItemKey的值,
-  providerType: 'ALL', // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
-  visibleSpModal: false,
-  spModal: { partner: {} },
+  customerModal: {
+    visiblePanel: false,
+    customer: {},
+  },
+  vendorModal: {
+    visible: false,
+    operation: 'add',
+    vendor: { role: '' },
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_PARTNERLIST:
+      return {
+        ...state, loading: true, loaded: true, partnerFilter: JSON.parse(action.params.filters),
+      };
+    case actionTypes.LOAD_PARTNERLIST_SUCCEED:
+      return {
+        ...state, loading: false, partnerlist: action.result.data,
+      };
+    case actionTypes.LOAD_PARTNERLIST_FAIL:
+      return { ...state, loading: false };
     case actionTypes.LOAD_PARTNERS:
-      return { ...state, loading: true };
+      return { ...state, loaded: true };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
     case actionTypes.LOAD_TYPEPARTNERS_SUCCEED:
-      return {
-        ...state, partners: action.result.data, loaded: true, loading: false,
-      };
-    case actionTypes.SET_PROVIDER_TYPE:
-      return { ...state, providerType: action.providerType };
-    case actionTypes.ADD_PARTNER_SUCCEED: {
-      return { ...state, loaded: false };
-    }
-    case actionTypes.EDIT_PARTNER_SUCCEED: {
-      return { ...state, loaded: false };
-    }
+      return { ...state, partners: action.result.data };
     case actionTypes.CHANGE_PARTNER_STATUS_SUCCEED:
-      return { ...state, loaded: false };
     case actionTypes.DELETE_PARTNER_SUCCEED:
-      return { ...state, loaded: false };
     case actionTypes.INVITE_PARTNER:
-    case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED:
+    case actionTypes.ADD_PARTNER_SUCCEED:
+    case actionTypes.EDIT_PARTNER_SUCCEED:
       return { ...state, loaded: false };
-    case actionTypes.CLOSE_SPMODAL:
+    case actionTypes.SHOW_CUSTOMER_PANEL:
       return {
-        ...state, visibleSpModal: false, spModal: initialState.spModal, matchedPartners: [],
+        ...state,
+        customerModal: {
+          ...state.customerModal,
+          visiblePanel: action.data.visible,
+          customer: action.data.customer || {},
+        },
       };
-    case actionTypes.OPEN_SPMODAL:
-      return { ...state, spModal: action.data, visibleSpModal: true };
+    case actionTypes.SHOW_VENDOR_MODAL: {
+      return {
+        ...state,
+        vendorModal: {
+          visible: true,
+          ...action.data,
+        },
+      };
+    }
+    case actionTypes.HIDE_VENDOR_MODAL: {
+      return {
+        ...state,
+        vendorModal: initialState.vendorModal,
+      };
+    }
     default:
       return state;
   }
 }
 
-export function loadPartners(params) { // tenantId role businessType from
+export function loadPartnerList(role, pageSize, current, filters) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PARTNERLIST,
+        actionTypes.LOAD_PARTNERLIST_SUCCEED,
+        actionTypes.LOAD_PARTNERLIST_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partner/list',
+      method: 'get',
+      params: {
+        role, filters, pageSize, current,
+      },
+    },
+  };
+}
+
+export function loadPartners(params) { // role businessType excludeOwn
   return {
     [CLIENT_API]: {
       types: [
@@ -92,14 +132,16 @@ export function loadPartnersByTypes(tenantId, roles, businessTypes) {
       ],
       endpoint: 'v1/cooperation/type/partners',
       method: 'get',
-      params: { tenantId, roles: JSON.stringify(roles), businessTypes: JSON.stringify(businessTypes) },
+      params: {
+        tenantId,
+        roles: JSON.stringify(roles),
+        businessTypes: JSON.stringify(businessTypes),
+      },
     },
   };
 }
 
-export function addPartner({
-  tenantId, partnerInfo, role, business, businessType,
-}) {
+export function addPartner(partnerInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -109,18 +151,13 @@ export function addPartner({
       ],
       endpoint: 'v1/cooperation/partner/add',
       method: 'post',
-      data: {
-        tenantId,
+      data:
         partnerInfo,
-        role,
-        business,
-        businessType,
-      },
     },
   };
 }
 
-export function checkPartner({ tenantId, partnerInfo }) {
+export function checkPartner(partnerInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -130,15 +167,12 @@ export function checkPartner({ tenantId, partnerInfo }) {
       ],
       endpoint: 'v1/cooperation/partner/check',
       method: 'post',
-      data: {
-        tenantId,
-        partnerInfo,
-      },
+      data: partnerInfo,
     },
   };
 }
 
-export function editPartner(partnerId, name, partnerUniqueCode, code, role, business, customsCode, businessType, contact, phone, email) {
+export function editPartner(partnerId, partnerInfo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -149,24 +183,12 @@ export function editPartner(partnerId, name, partnerUniqueCode, code, role, busi
       endpoint: 'v1/cooperation/partner/edit',
       method: 'post',
       id: partnerId,
-      data: {
-        partnerId,
-        name,
-        partnerUniqueCode,
-        code,
-        role,
-        business,
-        customsCode,
-        businessType,
-        contact,
-        phone,
-        email,
-      },
+      data: { partnerId, partnerInfo },
     },
   };
 }
 
-export function changePartnerStatus(id, status, role, businessType) {
+export function changePartnerStatus(id, status) {
   return {
     [CLIENT_API]: {
       types: [
@@ -176,17 +198,12 @@ export function changePartnerStatus(id, status, role, businessType) {
       ],
       endpoint: 'v1/cooperation/partner/change_status',
       method: 'post',
-      data: {
-        id,
-        status,
-        role,
-        businessType,
-      },
+      data: { id, status },
     },
   };
 }
 
-export function deletePartner(id, role, businessType) {
+export function deletePartner(id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -196,10 +213,7 @@ export function deletePartner(id, role, businessType) {
       ],
       endpoint: 'v1/cooperation/partner/delete',
       method: 'post',
-      id,
-      data: {
-        id, role, businessType,
-      },
+      data: { id },
     },
   };
 }
@@ -211,55 +225,14 @@ export function invitePartner(id) {
   };
 }
 
-export function openSpModal(partner, operation) {
-  return { type: actionTypes.OPEN_SPMODAL, data: { partner, operation } };
+export function showCustomerPanel({ visible, customer }) {
+  return { type: actionTypes.SHOW_CUSTOMER_PANEL, data: { visible, customer } };
 }
 
-export function closeSpModal() {
-  return { type: actionTypes.CLOSE_SPMODAL };
+export function showPartnerModal(operation = '', vendor = {}) {
+  return { type: actionTypes.SHOW_VENDOR_MODAL, data: { operation, vendor } };
 }
 
-export function addSp(sp) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ADD_SP,
-        actionTypes.ADD_SP_SUCCEED,
-        actionTypes.ADD_SP_FAIL,
-      ],
-      endpoint: 'v1/cooperation/partner/spadd',
-      method: 'post',
-      data: sp,
-    },
-  };
-}
-
-export function editSp(sp) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.EDIT_SP,
-        actionTypes.EDIT_SP_SUCCEED,
-        actionTypes.EDIT_SP_FAIL,
-      ],
-      endpoint: 'v1/cooperation/partner/spedit',
-      method: 'post',
-      data: sp,
-    },
-  };
-}
-
-export function matchTenant(name) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.MATCH_TENANT,
-        actionTypes.MATCH_TENANT_SUCCEED,
-        actionTypes.MATCH_TENANT_FAIL,
-      ],
-      endpoint: 'v1/cooperation/match/tenant',
-      method: 'get',
-      params: { name },
-    },
-  };
+export function hidePartnerModal() {
+  return { type: actionTypes.HIDE_VENDOR_MODAL };
 }

@@ -76,7 +76,7 @@ export default class OrderStatsCard extends Component {
           action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
           total={orderStats.totalOrders || 0}
           style={{ width: '20%' }}
-          link="/scof/orders?from=dashboard"
+          link="/scof/shipments?from=dashboard"
           grid
           onClick={() => this.handleLinkClick('totalOrders')}
         />
@@ -86,7 +86,7 @@ export default class OrderStatsCard extends Component {
           total={orderStats.pending || 0}
           style={{ width: '20%' }}
           type="warning"
-          link="/scof/orders?from=dashboard"
+          link="/scof/shipments?from=dashboard"
           grid
           onClick={() => this.handleLinkClick('pending')}
         />
@@ -96,7 +96,7 @@ export default class OrderStatsCard extends Component {
           total={orderStats.processing || 0}
           style={{ width: '20%' }}
           type="processing"
-          link="/scof/orders?from=dashboard"
+          link="/scof/shipments?from=dashboard"
           grid
           onClick={() => this.handleLinkClick('processing')}
         />
@@ -106,7 +106,7 @@ export default class OrderStatsCard extends Component {
           total={orderStats.urgent || 0}
           style={{ width: '20%' }}
           type="error"
-          link="/scof/orders?from=dashboard"
+          link="/scof/shipments?from=dashboard"
           grid
           onClick={() => this.handleLinkClick('urgent')}
         />
@@ -116,7 +116,7 @@ export default class OrderStatsCard extends Component {
           total={orderStats.completed || 0}
           style={{ width: '20%' }}
           type="success"
-          link="/scof/orders?from=dashboard"
+          link="/scof/shipments?from=dashboard"
           grid
           onClick={() => this.handleLinkClick('completed')}
         />

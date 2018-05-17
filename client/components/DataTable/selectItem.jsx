@@ -78,7 +78,7 @@ export default class SelectItem extends Component {
     connectDropTarget: PropTypes.func.isRequired,
     isDragging: PropTypes.bool.isRequired,
     checked: PropTypes.bool.isRequired,
-    title: PropTypes.string,
+    title: PropTypes.node,
     index: PropTypes.number.isRequired,
     // moveSelect: PropTypes.func.isRequired,
     onFixed: PropTypes.func.isRequired,

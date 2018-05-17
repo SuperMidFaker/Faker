@@ -1,4 +1,3 @@
-
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
@@ -29,6 +28,14 @@ const messages = defineMessages({
   status: {
     id: 'root.status',
     defaultMessage: '状态',
+  },
+  opEnable: {
+    id: 'root.op.enable',
+    defaultMessage: '启用',
+  },
+  opDisable: {
+    id: 'root.op.disable',
+    defaultMessage: '停用',
   },
   todo: {
     id: 'root.todo',
@@ -110,6 +117,10 @@ const messages = defineMessages({
     id: 'root.actions.delete',
     defaultMessage: '删除',
   },
+  deletedSuccess: {
+    id: 'root.deleted.success',
+    defaultMessage: '删除成功',
+  },
   add: {
     id: 'root.actions.add',
     defaultMessage: '添加',
@@ -186,9 +197,9 @@ const messages = defineMessages({
     id: 'root.batch.import',
     defaultMessage: '批量导入',
   },
-  importLogs: {
+  viewImportLogs: {
     id: 'root.batch.import.logs',
-    defaultMessage: '导入历史记录',
+    defaultMessage: '查看历史导入日志',
   },
   batchDelete: {
     id: 'root.batch.delete',
@@ -266,8 +277,8 @@ const messages = defineMessages({
     id: 'root.partnership.customer',
     defaultMessage: '客户',
   },
-  SUP: {
-    id: 'root.partnership.supplier',
+  VEN: {
+    id: 'root.partnership.vendor',
     defaultMessage: '服务商',
   },
   CCB: {
@@ -287,120 +298,116 @@ const messages = defineMessages({
     defaultMessage: '仓储',
   },
   moduleSCOF: {
-    id: 'component.module.scof',
+    id: 'root.module.sof',
     defaultMessage: '订单中心',
   },
   moduleBSS: {
-    id: 'component.module.bss',
+    id: 'root.module.bss',
     defaultMessage: '结算中心',
   },
+  moduleDIS: {
+    id: 'root.module.dis',
+    defaultMessage: '统计分析',
+  },
   moduleTransport: {
-    id: 'component.module.transport',
+    id: 'root.module.transport',
     defaultMessage: '运输管理',
   },
   moduleClearance: {
-    id: 'component.module.clearance',
-    defaultMessage: '清关管理',
+    id: 'root.module.clearance',
+    defaultMessage: '关务管理',
   },
   moduleCWM: {
-    id: 'component.module.cwm',
+    id: 'root.module.cwm',
     defaultMessage: '保税仓储',
   },
   featCorpOverview: {
-    id: 'component.feature.corp.overview',
+    id: 'root.feature.corp.overview',
     defaultMessage: '概况',
   },
   featCorpInfo: {
-    id: 'component.feature.corp.info',
+    id: 'root.feature.corp.info',
     defaultMessage: '企业信息',
   },
   featCorpPersonnel: {
-    id: 'component.feature.corp.personnel',
+    id: 'root.feature.corp.personnel',
     defaultMessage: '用户管理',
   },
   featCorpOrganization: {
-    id: 'component.feature.corp.organization',
+    id: 'root.feature.corp.organization',
     defaultMessage: '组织机构',
   },
   featCorpRole: {
-    id: 'component.feature.corp.role',
+    id: 'root.feature.corp.role',
     defaultMessage: '角色权限',
   },
   featCorpPartners: {
-    id: 'component.feature.corp.partners',
+    id: 'root.feature.corp.partners',
     defaultMessage: '协作网络',
   },
   featClearanceImport: {
-    id: 'component.feature.clearance.import',
+    id: 'root.feature.clearance.import',
     defaultMessage: '进口',
   },
   featClearanceExport: {
-    id: 'component.feature.clearance.export',
+    id: 'root.feature.clearance.export',
     defaultMessage: '出口',
   },
   featClearanceQuote: {
-    id: 'component.feature.clearance.quote',
+    id: 'root.feature.clearance.quote',
     defaultMessage: '报价',
   },
   featClearanceExpense: {
-    id: 'component.feature.clearance.expense',
+    id: 'root.feature.clearance.expense',
     defaultMessage: '费用',
   },
   featClearanceBilling: {
-    id: 'component.feature.clearance.billing',
+    id: 'root.feature.clearance.billing',
     defaultMessage: '账单',
   },
   featClearanceSettings: {
-    id: 'component.feature.clearance.setting',
+    id: 'root.feature.clearance.setting',
     defaultMessage: '设置',
   },
   featTransportDashboard: {
-    id: 'component.feature.transport.dashboard',
+    id: 'root.feature.transport.dashboard',
     defaultMessage: '工作台',
   },
   featTransportShipment: {
-    id: 'component.feature.transport.shipment',
+    id: 'root.feature.transport.shipment',
     defaultMessage: '运单',
   },
   featTransportDispatch: {
-    id: 'component.feature.transport.dispatch',
+    id: 'root.feature.transport.dispatch',
     defaultMessage: '调度',
   },
   featTransportTracking: {
-    id: 'component.feature.transport.tracking',
+    id: 'root.feature.transport.tracking',
     defaultMessage: '追踪',
   },
   featTransportResources: {
-    id: 'component.feature.transport.resources',
+    id: 'root.feature.transport.resources',
     defaultMessage: '资源',
   },
   featTransportTariff: {
-    id: 'component.feature.transport.tariff',
+    id: 'root.feature.transport.tariff',
     defaultMessage: '价格管理',
   },
   featActionView: {
-    id: 'component.action.view',
+    id: 'root.feature.action.view',
     defaultMessage: '查看',
   },
   featActionEdit: {
-    id: 'component.action.edit',
+    id: 'root.feature.action.edit',
     defaultMessage: '编辑',
   },
   featActionCreate: {
-    id: 'component.action.create',
+    id: 'root.feature.action.create',
     defaultMessage: '创建',
   },
   featActionDelete: {
-    id: 'component.action.delete',
+    id: 'root.feature.action.delete',
     defaultMessage: '删除',
-  },
-  allocateOriginator: {
-    id: 'component.operators.cms.title',
-    defaultMessage: '指定执行者',
-  },
-  allocateOperator: {
-    id: 'component.operators.tms.title',
-    defaultMessage: '指定接单人',
   },
 });
 export default messages;

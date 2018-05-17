@@ -5,12 +5,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Table, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { loadPartners } from 'common/reducers/partner';
-
-import { formatMsg } from '../../message.i18n';
-import AddTemplateModal from './modal/addTemplateModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
-import { loadCustomers } from 'common/reducers/sofCustomers';
+import AddTemplateModal from './modal/addTemplateModal';
+import { formatMsg } from '../../message.i18n';
 
 
 @injectIntl
@@ -20,7 +18,7 @@ import { loadCustomers } from 'common/reducers/sofCustomers';
     billtemplates: state.cmsManifest.billtemplates,
   }),
   {
-    loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, loadCustomers,
+    loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal,
   }
 )
 
@@ -28,14 +26,17 @@ export default class ManifestTemplateList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    billtemplates: PropTypes.array,
+    billtemplates: PropTypes.arrayOf(PropTypes.shape({ template_name: PropTypes.string })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: this.props.ietype });
-    this.props.loadCustomers(this.props.tenantId);
+    this.props.loadPartners({
+      role: PARTNER_ROLES.CUS,
+      businessType: PARTNER_BUSINESSE_TYPES.clearance,
+    });
   }
   msg = formatMsg(this.props.intl)
   handleDetail = (record) => {
@@ -57,11 +58,6 @@ export default class ManifestTemplateList extends React.Component {
     });
   }
   handleAddBtnClicked = () => {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role: PARTNER_ROLES.CUS,
-      businessType: PARTNER_BUSINESSE_TYPES.clearance,
-    });
     this.props.toggleBillTempModal(true, 'add');
   }
   render() {

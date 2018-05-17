@@ -3,6 +3,10 @@ import { formati18n } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
+  uploadLogs: {
+    id: 'component.upload.logs',
+    defaultMessage: '历史导入日志',
+  },
   id: {
     id: 'component.upload.logs.panel.id',
     defaultMessage: '导入编号',

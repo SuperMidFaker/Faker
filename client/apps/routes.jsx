@@ -17,18 +17,21 @@ import PackCorp from './corp/packCorp';
 import * as Corp from './corp';
 import * as CorpMembers from './corp/members';
 import * as CorpRole from './corp/role';
+import * as CorpCollab from './corp/collab';
 import * as CorpLogs from './corp/logs';
-import PackCollabHub from './hub/packCollabHub';
-import * as Collab from './hub/collab';
-import * as HubDev from './hub/dev';
-import * as HubAdapter from './hub/adapter';
-import * as HubIntegration from './hub/integration';
-import * as HubArCTM from './hub/integration/arctm';
-import * as HubQuickPass from './hub/integration/quickpass';
-import * as HubEasipassEDI from './hub/integration/easipass';
-import * as HubSingleWindow from './hub/integration/singlewindow';
-import * as HubSHFTZ from './hub/integration/shftz';
-import * as HubSFExpress from './hub/integration/sfexpress';
+import PackPaaS from './paas/packPaaS';
+import * as HubDev from './paas/dev';
+import * as HubAdapter from './paas/adapter';
+import * as HubIntegration from './paas/integration';
+import * as HubArCTM from './paas/integration/arctm';
+import * as HubQuickPass from './paas/integration/quickpass';
+import * as HubEasipassEDI from './paas/integration/easipass';
+import * as HubSingleWindow from './paas/integration/singlewindow';
+import * as HubSHFTZ from './paas/integration/shftz';
+import * as HubSFExpress from './paas/integration/sfexpress';
+import * as HubTemplates from './paas/templates';
+import * as HubFlow from './paas/flow';
+import * as PaaSPrefs from './paas/prefs';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -88,23 +91,25 @@ import * as CWMSupSHFTZBatchDecl from './cwm/supervision/shftz/decl/batch';
 import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
 import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbonded';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
-import SCOF from './scof/module-scof';
-import * as SCOFDashboard from './scof/dashboard';
-import * as SCOFOrders from './scof/orders';
-import * as SCOFInvoices from './scof/invoices';
-import * as SCOFTracking from './scof/tracking';
-import * as SCOFCustomers from './scof/customers';
-import * as SCOFSuppliers from './scof/suppliers';
-import * as SCOFVendors from './scof/vendors';
-import * as SCOFFlow from './scof/flow';
-import * as SCOFSettings from './scof/settings';
+import SOF from './scof/module-sof';
+import * as SOFDashboard from './scof/dashboard';
+import * as SOFShipments from './scof/shipments';
+import * as SOFInvoices from './scof/invoices';
+import * as SOFPurchaseOrders from './scof/purchaseorders';
+import * as SOFTracking from './scof/tracking';
+import * as SOFCustomers from './scof/partner/customers';
+import * as SOFSuppliers from './scof/partner/suppliers';
+import * as SOFVendors from './scof/partner/vendors';
+import * as SOFFlow from './scof/flow';
 import BSS from './bss/module-bss';
 import * as BSSDashboard from './bss/dashboard';
 import * as BSSAudit from './bss/audit';
 import * as BSSBill from './bss/bill';
 import * as BSSInvoice from './bss/invoice';
-import * as BSSVoucher from './bss/voucher';
+import * as BSSPayment from './bss/payment';
 import * as BSSSettings from './bss/settings';
+import DIS from './dis/module-dis';
+import * as DISDashboard from './dis/dashboard';
 
 export default(store) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -161,8 +166,8 @@ export default(store) => {
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
         </Route>
-        <Route path="hub" component={PackCollabHub}>
-          <IndexRedirect to="/hub/integration/apps" />
+        <Route path="paas" component={PackPaaS}>
+          <IndexRedirect to="/paas/integration/apps" />
           <Route path="dev">
             <IndexRoute component={HubDev.List} />
             <Route path=":appId" component={HubDev.Config} />
@@ -190,9 +195,12 @@ export default(store) => {
               <Route path="config/:uuid" component={HubSFExpress.Config} />
             </Route>
           </Route>
-          <Route path="collab">
-            <Route path="invitation" component={Collab.Invitation} />
-            <Route path="template" component={Collab.Template} />
+          <Route path="flow" component={HubFlow.List} />
+          <Route path="prefs">
+            <Route path="shipment" component={PaaSPrefs.Shipment} />
+          </Route>
+          <Route path="templates">
+            <Route path="notice" component={HubTemplates.NoticeTemplate} />
           </Route>
         </Route>
         <Route path="corp" component={PackCorp}>
@@ -207,6 +215,9 @@ export default(store) => {
             <IndexRoute component={CorpRole.List} />
             <Route path="new" component={CorpRole.Create} />
             <Route path="edit/:id" component={CorpRole.Edit} />
+          </Route>
+          <Route path="collab">
+            <Route path="invitation" component={CorpCollab.Invitation} />
           </Route>
           <Route path="logs" component={CorpLogs.List} />
         </Route>
@@ -461,33 +472,34 @@ export default(store) => {
               <Route path="templates" component={CWMSettings.Templates} />
             </Route>
           </Route>
-          <Route path={DEFAULT_MODULES.scof.id} component={SCOF}>
+          <Route path={DEFAULT_MODULES.scof.id} component={SOF}>
             <IndexRedirect to="/scof/dashboard" />
-            <Route path="dashboard" component={SCOFDashboard.Index} />
-            <Route path="orders" >
-              <IndexRoute component={SCOFOrders.List} />
-              <Route path="create" component={SCOFOrders.Create} />
-              <Route path="edit/:orderNo" component={SCOFOrders.Edit} />
+            <Route path="dashboard" component={SOFDashboard.Index} />
+            <Route path="shipments" >
+              <IndexRoute component={SOFShipments.List} />
+              <Route path="create" component={SOFShipments.Create} />
+              <Route path="edit/:orderNo" component={SOFShipments.Edit} />
             </Route>
             <Route path="invoices">
-              <IndexRoute component={SCOFInvoices.List} />
-              <Route path="create" component={SCOFInvoices.Create} />
-              <Route path="edit/:invoiceNo" component={SCOFInvoices.Edit} />
+              <IndexRoute component={SOFInvoices.List} />
+              <Route path="create" component={SOFInvoices.Create} />
+              <Route path="edit/:invoiceNo" component={SOFInvoices.Edit} />
+            </Route>
+            <Route path="purchaseorders">
+              <IndexRoute component={SOFPurchaseOrders.List} />
+              <Route path="create" component={SOFPurchaseOrders.Create} />
+              <Route path="edit/:poNo" component={SOFPurchaseOrders.Edit} />
             </Route>
             <Route path="tracking">
               <Route path="customize">
-                <IndexRoute component={SCOFTracking.Customize} />
+                <IndexRoute component={SOFTracking.Customize} />
               </Route>
-              <Route path=":trackingId" component={SCOFTracking.Instance} />
+              <Route path=":trackingId" component={SOFTracking.Instance} />
             </Route>
-            <Route path="customers" component={SCOFCustomers.List} />
-            <Route path="suppliers" component={SCOFSuppliers.List} />
-            <Route path="vendors" component={SCOFVendors.List} />
-            <Route path="flow" component={SCOFFlow.List} />
-            <Route path="settings">
-              <IndexRedirect to="/scof/settings/orderparams" />
-              <Route path="orderparams" component={SCOFSettings.OrderParams} />
-            </Route>
+            <Route path="customers" component={SOFCustomers.List} />
+            <Route path="suppliers" component={SOFSuppliers.List} />
+            <Route path="vendors" component={SOFVendors.List} />
+            <Route path="flow" component={SOFFlow.List} />
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
             <IndexRedirect to="/bss/dashboard" />
@@ -507,9 +519,9 @@ export default(store) => {
               <IndexRoute component={BSSInvoice.List} />
               <Route path=":invoiceNo" component={BSSInvoice.Detail} />
             </Route>
-            <Route path="voucher">
-              <IndexRoute component={BSSVoucher.List} />
-              <Route path=":voucherNo" component={BSSVoucher.Detail} />
+            <Route path="payment">
+              <IndexRoute component={BSSPayment.List} />
+              <Route path=":voucherNo" component={BSSPayment.Detail} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/bss/settings/preferences" />
@@ -517,6 +529,14 @@ export default(store) => {
               <Route path="fees" component={BSSSettings.Fees} />
               <Route path="exchangerates" component={BSSSettings.ExchangeRates} />
               <Route path="taxrates" component={BSSSettings.TaxRates} />
+            </Route>
+          </Route>
+          <Route path={DEFAULT_MODULES.dis.id} component={DIS}>
+            <IndexRedirect to="/dis/dashboard" />
+            <Route path="dashboard" component={DISDashboard.Index} />
+            <Route path="report">
+              <IndexRoute component={BSSAudit.List} />
+              <Route path=":orderRelNo" component={BSSAudit.Detail} />
             </Route>
           </Route>
         </Route>

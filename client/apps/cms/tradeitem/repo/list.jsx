@@ -6,7 +6,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Switch, Breadcrumb, Button, Icon, Menu, Modal, Layout, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadRepos, openAddModal, deleteRepo, switchRepoMode, switchRepoVersionKeep, showLinkSlaveModal, unlinkMasterSlave } from 'common/reducers/cmsTradeitem';
-import { loadCustomers } from 'common/reducers/sofCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -36,7 +35,6 @@ const { Sider, Content } = Layout;
     switchRepoVersionKeep,
     showLinkSlaveModal,
     unlinkMasterSlave,
-    loadCustomers,
   }
 )
 @connectNav({
@@ -205,7 +203,6 @@ export default class RepoList extends React.Component {
     this.props.switchRepoVersionKeep(repoId, keep);
   }
   handleAddRepo = () => {
-    this.props.loadCustomers();
     this.props.openAddModal();
   }
   handleLinkSlave = (masterRepo) => {

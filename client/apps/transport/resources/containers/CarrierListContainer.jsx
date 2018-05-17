@@ -8,7 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { toggleCarrierModal } from 'common/reducers/transportResources';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
-const role = PARTNER_ROLES.SUP;
+const role = PARTNER_ROLES.VEN;
 const businessType = PARTNER_BUSINESSE_TYPES.transport;
 
 function fetchData({ dispatch, state }) {
@@ -80,9 +80,8 @@ export default class DriverListContainer extends Component {
       if (this.state.searchText) {
         const reg = new RegExp(this.state.searchText);
         return reg.test(item.name) || reg.test(item.partner_code) || reg.test(item.partner_unique_code);
-      } else {
-        return true;
       }
+      return true;
     });
     return (
       <CarrierList

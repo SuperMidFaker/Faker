@@ -6,6 +6,8 @@ import update from 'immutability-helper';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import SearchBox from 'client/components/SearchBox';
+import { Resizable } from 'react-resizable';
+import 'react-resizable/css/styles.css';
 import SelectItem from './selectItem';
 // import AnimTableBody from './animTableBody';
 import './style.less';
@@ -19,6 +21,31 @@ function resolveCurrent(total, current, pageSize) {
   // 删除完一页时返回上一页
   return total > 0 && (current - 1) * pageSize === total ? current - 1 : current;
 }
+export function ResizeableTitle(props) {
+  const { onResize, width, ...restProps } = props;
+
+  if (!width) {
+    return <th {...restProps} />;
+  }
+
+  return (
+    <Resizable
+      width={width}
+      height={0}
+      axis="x"
+      onResize={onResize}
+      minConstraints={[60, 0]}
+      maxConstraints={[500, 0]}
+    >
+      <th {...restProps} />
+    </Resizable>
+  );
+}
+
+ResizeableTitle.propTypes = {
+  onResize: PropTypes.func,
+  width: PropTypes.number,
+};
 
 class DataSource {
   init(config) {
@@ -103,7 +130,8 @@ class DataTable extends React.Component {
         }
         newTableColumns.push({ ...currentOne, ...item, index: i });
       }
-      const popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      const popoverColumns = this.props.columns.filter(column =>
+        (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
       for (let i = 0; i < columnRule.popoverStorage.length; i++) {
         const item = columnRule.popoverStorage[i];
         let currentOne = null;
@@ -125,7 +153,8 @@ class DataTable extends React.Component {
         checked: true,
         index,
       }));
-      let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      let popoverColumns = this.props.columns.filter(column =>
+        (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
       popoverColumns = popoverColumns.map((column, index) => ({
         ...column,
         checked: true,
@@ -150,7 +179,8 @@ class DataTable extends React.Component {
         checked: true,
         index,
       }));
-      let popoverColumns = nextProps.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      let popoverColumns = nextProps.columns.filter(column =>
+        (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
       popoverColumns = popoverColumns.map((column, index) => ({
         ...column,
         checked: true,
@@ -193,6 +223,16 @@ class DataTable extends React.Component {
     const builtinParams = { ...params, ...dataSource.extraParams };
     return dataSource.fetcher(builtinParams);
   }
+  handleColumnResize = index => (e, { size }) => {
+    this.setState(({ tableColumns }) => {
+      const nextColumns = [...tableColumns];
+      nextColumns[index] = {
+        ...nextColumns[index],
+        width: size.width,
+      };
+      return { tableColumns: nextColumns };
+    });
+  };
   handleTableChange = (pagination, filters, sorter) => {
     const { dataSource } = this.props;
     if (!isLocalDataSource(dataSource)) {
@@ -227,7 +267,8 @@ class DataTable extends React.Component {
     if (window.localStorage) {
       window.localStorage.removeItem(pathname);
     }
-    let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+    let popoverColumns = this.props.columns.filter(column =>
+      (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
     popoverColumns = popoverColumns.map((column, index) => ({
       ...column,
       checked: true,
@@ -245,7 +286,8 @@ class DataTable extends React.Component {
     const popoverColumns = [...this.state.popoverColumns];
     const { pathname } = this.state;
     let columns = popoverColumns.filter(column => column.checked);
-    const operation = tableColumns.find(column => column.dataIndex === 'OPS_COL');
+    const operation = tableColumns.find(column =>
+      (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
     if (operation) { columns = columns.concat(operation); }
     const newColumns = columns.map(column => ({ ...column }));
     this.setState({
@@ -317,7 +359,7 @@ class DataTable extends React.Component {
       scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } :
         {
           x: minWidth || this.state.tableColumns.reduce((acc, cur) =>
-            acc + (cur.width ? cur.width : 220), 0),
+            acc + (cur.width ? cur.width : 100), 0),
           y: this.state.scrollY,
         };
     }
@@ -344,6 +386,18 @@ class DataTable extends React.Component {
       [`${baseCls}-body-fixed`]: fixedBody,
     });
     // const animateBody = props => <AnimTableBody {...props} />;
+    const columns = this.state.tableColumns.map((col, index) => ({
+      ...col,
+      onHeaderCell: (column) => {
+        if (!column.fixed) {
+          return ({
+            width: column.width,
+            onResize: this.handleColumnResize(index),
+          });
+        }
+        return null;
+      },
+    }));
     return (
       <div className={classes}>
         {showToolbar &&
@@ -373,8 +427,11 @@ class DataTable extends React.Component {
             pagination={pagination}
             onChange={this.handleTableChange}
             scroll={scrollProp}
-            columns={this.state.tableColumns}
+            columns={columns}
             components={{
+              header: {
+                cell: ResizeableTitle,
+              },
               //  body: { wrapper: animateBody },
             }}
           />

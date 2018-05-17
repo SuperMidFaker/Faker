@@ -7,21 +7,24 @@ import { Avatar, Badge, Button, DatePicker, Layout, Icon, Popconfirm, Select, Ta
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
 import PageHeader from 'client/components/PageHeader';
-import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import UserAvatar from 'client/components/UserAvatar';
 import SearchBox from 'client/components/SearchBox';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE, CMS_DELG_TODO,
-  TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+  TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES,
+} from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 
 import OperatorPopover from 'client/common/operatorsPopover';
 import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
-import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal, toggleExchangeDocModal, toggleQuarantineModal, loadFormRequire, updateDelegation } from 'common/reducers/cmsDelegation';
+import {
+  loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
+  ensureManifestMeta, showDispModal, toggleExchangeDocModal,
+  toggleQuarantineModal, loadFormRequire, updateDelegation,
+} from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
@@ -29,8 +32,8 @@ import ExchangeDocModal from './modals/exchangeDocModal';
 import QuarantineModal from './modals/quarantineModal';
 import { formatMsg } from './message.i18n';
 import DelgDispModal from '../common/dock/delgDispModal';
-import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
-import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
+import ShipmentDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
+import DeliveryDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
@@ -176,17 +179,14 @@ export default class DelegationList extends Component {
     title: this.msg('client'),
     width: 180,
     dataIndex: 'send_name',
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('waybillLadingNo'),
     width: 200,
     dataIndex: 'bl_wb_no',
-    render: o => <TrimSpan text={o} maxLen={25} />,
   }, {
     title: this.msg('orderNo'),
     width: 180,
     dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('transMode'),
     width: 100,
@@ -297,7 +297,6 @@ export default class DelegationList extends Component {
     title: this.msg('customsBroker'),
     width: 180,
     dataIndex: 'customs_name',
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('operatedBy'),
     width: 120,
@@ -306,7 +305,10 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('lastActTime'),
     dataIndex: 'last_act_time',
+    width: 100,
     render: (o, record) => (record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-'),
+  }, {
+    dataIndex: 'SPACER_COL',
   }]
   handleArrDateChange = (dataString, delgNo) => {
     this.props.updateDelegation({ intl_arrival_date: dataString }, delgNo).then((result) => {
@@ -702,9 +704,9 @@ export default class DelegationList extends Component {
             <Menu mode="inline" selectedKeys={[this.state.currentFilter]} onClick={this.handleFilterChange}>
               <Menu.Item key="all">{this.msg('allDelegation')}</Menu.Item>
               <Menu.ItemGroup key="gTodo" title="待办">
-                {Object.keys(CMS_DELG_TODO).map(declkey =>
-                  (<Menu.Item key={declkey}>
-                    <Icon type={CMS_DELG_TODO[declkey].icon} /> {CMS_DELG_TODO[declkey].text}
+                {Object.keys(CMS_DELG_TODO).map(todoKey =>
+                  (<Menu.Item key={todoKey}>
+                    <Icon type={CMS_DELG_TODO[todoKey].icon} /> {this.msg(todoKey)}
                   </Menu.Item>))}
               </Menu.ItemGroup>
               <Menu.ItemGroup key="gIE" title="进/出口">
@@ -737,8 +739,8 @@ export default class DelegationList extends Component {
           <DelgDispModal />
         </Layout>
         <DelegationDockPanel />
-        <OrderDockPanel />
         <ShipmentDockPanel />
+        <DeliveryDockPanel />
         <ReceiveDockPanel />
         <ShippingDockPanel />
       </Layout>

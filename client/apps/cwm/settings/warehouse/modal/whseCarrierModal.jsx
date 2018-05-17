@@ -12,7 +12,7 @@ import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const role = PARTNER_ROLES.SUP;
+const role = PARTNER_ROLES.VEN;
 const businessType = PARTNER_BUSINESSE_TYPES.transport;
 
 function fetchData({ dispatch }) {
@@ -117,7 +117,8 @@ export default class SuppliersModal extends Component {
           <FormItem label="关联货主:" {...formItemLayout}>
             {getFieldDecorator('owner_partner_id', {
               rules: [{ required: true }],
-            })(<Select id="select"
+            })(<Select
+              id="select"
               showSearch
               placeholder=""
               optionFilterProp="children"
@@ -125,8 +126,10 @@ export default class SuppliersModal extends Component {
             >
               {
                   whseOwners.map(pt => (
-                    <Option searched={`${pt.owner_code}${pt.owner_name}`}
-                      value={pt.owner_partner_id} key={pt.owner_partner_id}
+                    <Option
+                      searched={`${pt.owner_code}${pt.owner_name}`}
+                      value={pt.owner_partner_id}
+                      key={pt.owner_partner_id}
                     >
                       {pt.owner_code ? `${pt.owner_code} | ${pt.owner_name}` : pt.owner_name}
                     </Option>))

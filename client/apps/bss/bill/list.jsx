@@ -6,7 +6,7 @@ import { Button, Divider, Icon, Layout, Menu } from 'antd';
 import ButtonToggle from 'client/components/ButtonToggle';
 import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
-import { PARTNER_ROLES } from 'common/constants';
+import { PARTNER_ROLES, TENANT_ASPECT } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { toggleNewBillModal, reloadBillList } from 'common/reducers/bssBill';
 import PageHeader from 'client/components/PageHeader';
@@ -46,11 +46,11 @@ export default class BillList extends React.Component {
     extraVisible: false,
   }
   componentDidMount() {
-    if (this.props.aspect === 0) {
+    if (this.props.aspect === TENANT_ASPECT.ENT) {
       this.handleTabChange('sellerBill');
-      this.props.loadPartners({ role: [PARTNER_ROLES.SUP] });
+      this.props.loadPartners({ role: [PARTNER_ROLES.VEN] });
     } else {
-      this.props.loadPartners({ role: [PARTNER_ROLES.CUS, PARTNER_ROLES.SUP] });
+      this.props.loadPartners({ role: [PARTNER_ROLES.CUS, PARTNER_ROLES.VEN] });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -106,7 +106,7 @@ export default class BillList extends React.Component {
       },
     ];
     const { aspect } = this.props;
-    if (aspect === 0) {
+    if (aspect === TENANT_ASPECT.ENT) {
       menus = [{
         key: 'sellerBill',
         menu: this.msg('sellerBill'),
@@ -170,14 +170,6 @@ export default class BillList extends React.Component {
             onClose={this.toggleExtra}
           >
             <Menu mode="inline" selectedKeys={[this.state.status]} onClick={this.handleExtraMenuClick}>
-              <Menu.ItemGroup key="views" title={this.gmsg('views')}>
-                <Menu.Item key="table">
-                  <Icon type="table" /> {this.gmsg('tableView')}
-                </Menu.Item>
-                <Menu.Item key="board" disabled>
-                  <Icon type="layout" /> {this.gmsg('boardView')}
-                </Menu.Item>
-              </Menu.ItemGroup>
               <Menu.ItemGroup key="settings" title={this.gmsg('settings')}>
                 <Menu.Item key="templates">
                   <Icon type="tool" /> {this.msg('billTemplates')}

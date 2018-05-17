@@ -26,5 +26,5 @@ export default [
   ['get', '/scv*', renderWebPage],
   ['get', '/my*', renderWebPage],
   ['get', '/pub/*', renderWebPage],
-  ['get', '/hub*', renderWebPage],
+  ['get', '/paas*', renderWebPage],
 ];

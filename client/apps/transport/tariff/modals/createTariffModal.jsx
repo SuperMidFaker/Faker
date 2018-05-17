@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Modal, Select } from 'antd';
 import { loadPartners, loadNewForm, showCreateTariffModal } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -80,7 +81,7 @@ export default class CreateTariffModal extends React.Component {
     } else if (kind.value === 'cost') {
       this.props.loadPartners(
         this.props.tenantId,
-        [PARTNER_ROLES.SUP],
+        [PARTNER_ROLES.VEN],
         [PARTNER_BUSINESSE_TYPES.transport]
       )
         .then((result) => {
@@ -101,7 +102,11 @@ export default class CreateTariffModal extends React.Component {
       wrapperCol: { span: 18 },
     };
     return (
-      <Modal maskClosable={false} title="新建报价" onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal
+        maskClosable={false}
+        title="新建报价"
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
         visible={this.props.visible}
       >
         <Form className="row" style={{ width: '400px' }}>
@@ -124,8 +129,10 @@ export default class CreateTariffModal extends React.Component {
               })(<Select showSearch optionFilterProp="searched" allowClear>
                 {
                   partners.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
+                    <Option
+                      searched={`${pt.partner_code}${pt.name}`}
+                      value={pt.partner_id}
+                      key={pt.partner_id}
                     >
                       {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
                     </Option>))

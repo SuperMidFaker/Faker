@@ -5,17 +5,16 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadFeesByChooseModal, createBilling, updateBillingFees } from 'common/reducers/transportBilling';
 import AddressColumn from '../../common/addressColumn';
-import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
-import { loadShipmtDetail } from 'common/reducers/shipment';
 import ActualDate from '../../common/actualDate';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -41,8 +40,6 @@ export default class CreateBilling extends React.Component {
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['receivable', 'payable']),
-    billing: PropTypes.object.isRequired,
-    billingFees: PropTypes.object.isRequired,
     loadFeesByChooseModal: PropTypes.func.isRequired,
     createBilling: PropTypes.func.isRequired,
     updateBillingFees: PropTypes.func.isRequired,
@@ -174,7 +171,6 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '客户单号',
       dataIndex: 'ref_external_no',
-      render: o => <TrimSpan text={o} />,
     }, {
       title: '费率',
       dataIndex: 'charge_gradient',
@@ -239,11 +235,13 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render: (o, record) => <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际送货时间',
       dataIndex: 'deliver_act_date',
-      render: (o, record) => <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
+      render: (o, record) =>
+        <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',
@@ -266,7 +264,11 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '是否入账',
       dataIndex: 'status',
-      render: (o, record) => (<Checkbox defaultChecked={o === 1} onChange={e => this.handleChangeStatus(record.id, e.target.checked)} />),
+      render: (o, record) =>
+        (<Checkbox
+          defaultChecked={o === 1}
+          onChange={e => this.handleChangeStatus(record.id, e.target.checked)}
+        />),
     }];
     return (
       <div>
@@ -279,7 +281,9 @@ export default class CreateBilling extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
-              <span style={handleLableStyle}>{partnerSourceType}: <strong>{partnerName}</strong></span>
+              <span style={handleLableStyle}>
+                {partnerSourceType}: <strong>{partnerName}</strong>
+              </span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(beginDate).format('YYYY-MM-DD')} ~ {moment(endDate).format('YYYY-MM-DD')}</strong></span>
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(chooseModel)}</strong></span>
               <Button type="default" className="pull-right" onClick={this.toggleBeforeFeesModal}>未入账运单</Button>
@@ -287,11 +291,15 @@ export default class CreateBilling extends React.Component {
             <div className="panel-body table-panel table-fixed-layout">
               <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} />
             </div>
-            <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />
+            <BeforeFeesModal
+              type={type}
+              visible={this.state.beforeFeesModalVisible}
+              toggle={this.toggleBeforeFeesModal}
+            />
           </div>
         </Content>
         <ShipmentDockPanel />
-        <OrderDockPanel />
+        <DeliveryDockPanel />
         <DelegationDockPanel />
       </div>
     );

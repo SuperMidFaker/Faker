@@ -49,7 +49,7 @@ export default class BillingForm extends React.Component {
     if (this.props.type === 'receivable') {
       roles = [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS];
     } else if (this.props.type === 'payable') {
-      roles = [PARTNER_ROLES.SUP];
+      roles = [PARTNER_ROLES.VEN];
     }
     this.props.loadPartners(this.props.tenantId, roles, businessTypes);
   }
@@ -94,8 +94,12 @@ export default class BillingForm extends React.Component {
     const { form: { getFieldDecorator }, partners, visible } = this.props;
     const { beginDate, endDate, name } = this.state;
     return (
-      <Modal maskClosable={false} visible={visible} title={`${this.msg(this.props.type)}${this.msg('billing')}`}
-        onOk={this.handleOk} onCancel={this.handleCancel}
+      <Modal
+        maskClosable={false}
+        visible={visible}
+        title={`${this.msg(this.props.type)}${this.msg('billing')}`}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
       >
         <Form>
           <FormItem
@@ -104,7 +108,8 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            {getFieldDecorator('partnerId')(<Select id="select"
+            {getFieldDecorator('partnerId')(<Select
+              id="select"
               showSearch
               placeholder=""
               optionFilterProp="children"
@@ -112,8 +117,10 @@ export default class BillingForm extends React.Component {
             >
               {
                   partners.map(pt => (
-                    <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
+                    <Option
+                      searched={`${pt.partner_code}${pt.name}`}
+                      value={pt.partner_id}
+                      key={pt.partner_id}
                     >
                       {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
                     </Option>))

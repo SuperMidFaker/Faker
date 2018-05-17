@@ -1,12 +1,14 @@
 import { defineMessages } from 'react-intl';
+import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   dashboard: {
     id: 'sof.module.dashboard',
     defaultMessage: '工作台',
   },
-  orders: {
-    id: 'sof.module.orders',
+  shipments: {
+    id: 'sof.module.shipments',
     defaultMessage: '货运订单',
   },
   invoices: {
@@ -52,3 +54,5 @@ const messages = defineMessages({
 });
 
 export default messages;
+export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);

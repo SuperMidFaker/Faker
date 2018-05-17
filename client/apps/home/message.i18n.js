@@ -1,17 +1,17 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  applications: {
-    id: 'home.applications',
+  apps: {
+    id: 'home.apps',
     defaultMessage: '业务应用',
   },
-  openPlatform: {
-    id: 'home.hub',
-    defaultMessage: '协作平台',
+  paas: {
+    id: 'home.paas',
+    defaultMessage: '平台服务',
   },
-  corp: {
-    id: 'home.corp',
-    defaultMessage: '管理后台',
+  corpAdmin: {
+    id: 'home.corp.admin',
+    defaultMessage: '企业后台',
   },
   notFound: {
     id: 'home.not.found',

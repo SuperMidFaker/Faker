@@ -5,25 +5,31 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Radio } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import ShipmentAdvanceModal from './modals/shipment-advance-modal';
-import CreateSpecialCharge from './modals/create-specialCharge';
 import { format } from 'client/common/i18n/helpers';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import ExportExcel from './modals/export-excel';
 import { loadPartners } from 'common/reducers/shipment';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import ShipmentAdvanceModal from './modals/shipment-advance-modal';
+import CreateSpecialCharge from './modals/create-specialCharge';
+import ExportExcel from './modals/export-excel';
+
 import messages from './message.i18n';
+
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadPartners(state.account.tenantId, [PARTNER_ROLES.SUP], [PARTNER_BUSINESSE_TYPES.transport]));
+  return dispatch(loadPartners(
+    state.account.tenantId,
+    [PARTNER_ROLES.VEN],
+    [PARTNER_BUSINESSE_TYPES.transport]
+  ));
 }
 @connectFetch()(fetchData)
 @injectIntl
@@ -43,11 +49,8 @@ function fetchData({ state, dispatch }) {
 export default class TrackingLandWrapper extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    location: PropTypes.object.isRequired,
-    statusfilters: PropTypes.array,
-    podfilters: PropTypes.array,
-    excpfilters: PropTypes.array,
-    children: PropTypes.object.isRequired,
+    location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
+    children: PropTypes.node.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -141,7 +144,7 @@ export default class TrackingLandWrapper extends React.Component {
           {this.props.children}
         </Content>
         <ShipmentDockPanel />
-        <OrderDockPanel />
+        <DeliveryDockPanel />
         <DelegationDockPanel />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />

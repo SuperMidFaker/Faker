@@ -406,7 +406,7 @@ export default class PickingDetailsPane extends React.Component {
           </DataPane.BulkActions>
           <DataPane.Actions>
             {outboundHead.shipping_mode === 'manual' && outboundHead.su_setting.enabled &&
-            <Button onClick={this.handleSuPickChk}>
+            <Button onClick={this.handleSuPickChk} loading={this.state.loading}>
             条码拣货装箱
             </Button>}
           </DataPane.Actions>

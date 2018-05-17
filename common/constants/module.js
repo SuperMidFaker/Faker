@@ -1,4 +1,4 @@
-const MODULE_SCOF = {
+const MODULE_SOF = {
   id: 'scof',
   text: 'moduleSCOF',
   defaultText: '订单中心',
@@ -139,10 +139,10 @@ const MODULE_SCOF = {
   ],
 };
 
-const MODULE_CLEARANCE = {
+const MODULE_CDM = {
   id: 'clearance',
   text: 'moduleClearance',
-  defaultText: '清关管理',
+  defaultText: '关务管理',
   features: [
     {
       id: 'dashboard',
@@ -337,7 +337,7 @@ const MODULE_CLEARANCE = {
   ],
 };
 
-const MODULE_TRANSPORT = {
+const MODULE_TMS = {
   id: 'transport',
   text: 'moduleTransport',
   defaultText: '运输管理',
@@ -447,7 +447,7 @@ const MODULE_TRANSPORT = {
   ],
 };
 
-const MODULE_CWM = {
+const MODULE_BWM = {
   id: 'cwm',
   text: 'moduleCWM',
   defaultText: '保税仓储',
@@ -596,19 +596,28 @@ const MODULE_BSS = {
   features: [],
 };
 
+const MODULE_DIS = {
+  id: 'dis',
+  text: 'moduleDIS',
+  defaultText: '统计分析',
+  status: 'dev',
+  features: [],
+};
+
 const appModules = [
-  MODULE_SCOF,
-  MODULE_CLEARANCE,
-  MODULE_CWM,
-  MODULE_TRANSPORT,
+  MODULE_SOF,
+  MODULE_CDM,
+  MODULE_BWM,
+  MODULE_TMS,
   MODULE_BSS,
+  MODULE_DIS,
 ];
 
 const spnModules = [
-  MODULE_SCOF,
-  MODULE_CLEARANCE,
-  MODULE_CWM,
-  MODULE_TRANSPORT,
+  MODULE_SOF,
+  MODULE_CDM,
+  MODULE_BWM,
+  MODULE_TMS,
   MODULE_BSS,
 ];
 

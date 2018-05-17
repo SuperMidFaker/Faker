@@ -33,7 +33,7 @@ export default class CorpPack extends React.Component {
     return (
       <Layout className="welo-layout-wrapper">
         <Header>
-          <CorpHeaderBar title="管理后台" />
+          <CorpHeaderBar title={this.msg('corpAdmin')} />
         </Header>
         <Layout>
           {this.props.children}

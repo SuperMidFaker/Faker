@@ -5,6 +5,7 @@ import { Layout, Tabs } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
+import { TENANT_ASPECT } from 'common/constants';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import { loadBuyerSellerExpenses, loadCurrencies } from 'common/reducers/cmsExpense';
@@ -54,18 +55,18 @@ export default class ExpenseDetail extends Component {
     const { location } = this.context.router;
     let defaultActiveKey;
     if (location.query.from === 'receivable') {
-      if (aspect !== 0) {
+      if (aspect === TENANT_ASPECT.LSP) {
         defaultActiveKey = 'receivable';
       }
     } else if (location.query.from === 'payable') {
       if (delgExpenses.pays.length === 0) {
-        if (aspect !== 0) {
+        if (aspect === TENANT_ASPECT.LSP) {
           defaultActiveKey = 'receivable';
         }
       } else {
         defaultActiveKey = `payable-${delgExpenses.pays[0].seller_partner_id}`;
       }
-    } else if (aspect !== 0) {
+    } else if (aspect === TENANT_ASPECT.LSP) {
       defaultActiveKey = 'receivable';
     } else if (delgExpenses.pays.length > 0) {
       defaultActiveKey = `payable-${delgExpenses.pays[0].seller_partner_id}`;
@@ -76,7 +77,7 @@ export default class ExpenseDetail extends Component {
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey={defaultActiveKey}>
-              {aspect !== 0 &&
+              {aspect === TENANT_ASPECT.LSP &&
               <TabPane tab="应收明细" key="receivable" >
                 <FeesPane
 

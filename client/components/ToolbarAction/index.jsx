@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dropdown, Popconfirm, Popover, Tooltip } from 'antd';
+import { Button, Dropdown, Icon, Popconfirm, Popover, Tooltip } from 'antd';
 import './style.less';
 
 export default class ToolbarAction extends Component {
@@ -46,12 +46,11 @@ export default class ToolbarAction extends Component {
       shape={shape}
       ghost={secondary}
       disabled={disabled}
-      icon={icon}
       onClick={this.handleClick}
       className="welo-toolbar-action"
       overlay={dropdown}
     >
-      {label}
+      {icon && <Icon type={icon} />}{label}
     </Dropdown.Button>) :
       (<Button
         type={type}

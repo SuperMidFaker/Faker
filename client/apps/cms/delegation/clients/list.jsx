@@ -21,9 +21,8 @@ const { Content, Sider } = Layout;
 
 const { TabPane } = Tabs;
 
-function fetchData({ state, dispatch }) {
+function fetchData({ dispatch }) {
   return dispatch(loadPartners({
-    tenantId: state.account.tenantId,
     role: PARTNER_ROLES.CUS,
     businessType: PARTNER_BUSINESSE_TYPES.clearance,
   }));
@@ -73,7 +72,7 @@ export default class ClientsList extends Component {
     if (value) {
       customers = this.props.customers.filter((item) => {
         const reg = new RegExp(value);
-        return reg.test(item.name) || reg.test(item.id);
+        return reg.test(item.name);
       });
     }
     this.setState({ customers, currentPage: 1 });
@@ -114,7 +113,7 @@ export default class ClientsList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <SearchBox onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} width="100%" />
+              <SearchBox onSearch={this.handleSearch} placeholder={this.msg('tmplSearchPlaceholder')} width="100%" />
             </div>
             <div className="list-body">
               <Table

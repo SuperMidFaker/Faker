@@ -73,7 +73,7 @@ export default class Kpi extends React.Component {
     });
     this.props.loadPartners(
       this.props.tenantId,
-      [PARTNER_ROLES.SUP],
+      [PARTNER_ROLES.VEN],
       [PARTNER_BUSINESSE_TYPES.transport]
     ).then((result) => {
       this.setState({ carriers: result.data });

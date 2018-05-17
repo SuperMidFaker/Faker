@@ -22,7 +22,7 @@ export default class MoreApplications extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   handleQuery = () => {
-    const subdomain = this.props.subdomain;
+    const { subdomain } = this.props;
     window.open(`${window.location.origin}/pub/tracking?shipmtNo=${this.state.shipmtNo}&subdomain=${subdomain}`);
   }
   render() {

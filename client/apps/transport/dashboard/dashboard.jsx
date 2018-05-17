@@ -8,6 +8,8 @@ import { Breadcrumb, Col, Layout, Row } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { changeDockStatus } from 'common/reducers/transportDispatch';
 import ButtonToggle from 'client/components/ButtonToggle';
+import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
+import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 import StatsPanel from './panel/statsPanel';
 import TodoPanel from './panel/todoPanel';
 import MoreApplications from './panel/moreApplications';
@@ -15,10 +17,9 @@ import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';
-import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
-import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
-import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
+
 
 const { Header, Content, Sider } = Layout;
 
@@ -64,7 +65,8 @@ export default class Dashboard extends React.Component {
               </Breadcrumb>
               <div className="page-header-tools" style={{ marginRight: collapsed ? 0 : 330 }}>
                 <ButtonToggle
-                  iconOn="menu-unfold" iconOff="menu-fold"
+                  iconOn="menu-unfold"
+                  iconOff="menu-fold"
                   onClick={this.toggle}
                 />
               </div>
@@ -78,7 +80,7 @@ export default class Dashboard extends React.Component {
               </Row>
             </Content>
             <ShipmentDockPanel />
-            <OrderDockPanel />
+            <DeliveryDockPanel />
             <DelegationDockPanel />
             <DispatchDock
               onClose={this.handleDispatchDockClose}
@@ -89,7 +91,11 @@ export default class Dashboard extends React.Component {
             <ShipmentAdvanceModal />
             <CreateSpecialCharge />
           </Layout>
-          <Sider width={320} className="menu-sider" key="sider" trigger={null}
+          <Sider
+            width={320}
+            className="menu-sider"
+            key="sider"
+            trigger={null}
             collapsible
             collapsed={collapsed}
             collapsedWidth={0}

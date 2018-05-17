@@ -19,9 +19,9 @@ import { format } from 'client/common/i18n/helpers';
 import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
 import ShippingDockPanel from '../dock/shippingDockPanel';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import DeliveryDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 
 const formatMsg = format(messages);
@@ -107,6 +107,10 @@ export default class OutboundList extends React.Component {
     render: (o, record) => (record.so_no ?
       <a onClick={() => this.handlePreview(record.so_no, record.outbound_no)}>{o}</a>
       : <span>{o}</span>),
+  }, {
+    title: '客户单号',
+    dataIndex: 'cust_order_no',
+    width: 160,
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_product_qty',
@@ -336,9 +340,9 @@ export default class OutboundList extends React.Component {
           />
         </Content>
         <ShippingDockPanel />
-        <OrderDockPanel />
-        <DelegationDockPanel />
         <ShipmentDockPanel />
+        <DelegationDockPanel />
+        <DeliveryDockPanel />
       </QueueAnim>
     );
   }

@@ -24,7 +24,7 @@ import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
 import messages from './message.i18n';
-import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
+import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
@@ -530,8 +530,8 @@ export default class AcceptList extends React.Component {
           />
         </Content>
         <RevokeModal reload={this.handleTableLoad} />
-        <ShipmentDockPanel reload={this.handleTableLoad} />
-        <OrderDockPanel />
+        <DeliveryDockPanel reload={this.handleTableLoad} />
+        <ShipmentDockPanel />
         <DelegationDockPanel />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />

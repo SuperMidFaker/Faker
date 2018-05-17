@@ -530,25 +530,25 @@ exports.SKU_REQUIRED_PROPS = [{
 }];
 
 exports.PICK_PRINT_FIELDS = [{
-  field: 'product_no', text: '货号', width: 100,
+  field: 'product_no', text: '货号', width: 80,
 }, {
-  field: 'name', text: '产品名称', width: 120,
+  field: 'name', text: '产品名称', width: 100,
 }, {
-  field: 'sku_category', text: '商品分类', width: 100,
+  field: 'sku_category', text: '商品分类', width: 80,
 }, {
   field: 'location', text: '库位', width: 60,
 }, {
-  field: 'serial_no', text: '序列号', width: 120,
+  field: 'serial_no', text: '序列号', width: 80,
 }, {
-  field: 'virtual_whse', text: '库别', width: 100,
+  field: 'virtual_whse', text: '库别', width: 80,
 }, {
-  field: 'external_lot_no', text: '批次号', width: 100,
+  field: 'external_lot_no', text: '批次号', width: 80,
 }, {
-  field: 'attrib_1_string', text: '客户属性1', width: '*',
+  field: 'attrib_1_string', text: '客户属性1', width: '90',
 }, {
-  field: 'attrib_2_string', text: '客户属性2', width: '*',
+  field: 'attrib_2_string', text: '客户属性2', width: '90',
 }, {
-  field: 'attrib_3_string', text: '客户属性3', width: '*',
+  field: 'attrib_3_string', text: '客户属性3', width: '90',
 }, {
-  field: 'attrib_4_string', text: '客户属性4', width: '*',
+  field: 'attrib_4_string', text: '客户属性4', width: '90',
 }];

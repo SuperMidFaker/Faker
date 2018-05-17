@@ -196,7 +196,9 @@ export default class PutawayDetailsPane extends React.Component {
     this.handleLoad();
   }
   render() {
-    const { inboundHead, inboundPutaways, submitting } = this.props;
+    const {
+      inboundHead, inboundPutaways, loading, submitting,
+    } = this.props;
     const dataSource = inboundPutaways.filter((item) => {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
@@ -270,20 +272,20 @@ export default class PutawayDetailsPane extends React.Component {
             <Button onClick={this.handleBatchPutAways} icon="check">
           批量上架确认
             </Button>
-            <Button loading={submitting} onClick={this.handleBatchUndoReceives} icon="rollback">
+            <Button loading={submitting} onClick={this.handleBatchUndoReceives}icon="rollback">
           批量取消收货
             </Button>
           </DataPane.BulkActions>
           <DataPane.Actions>
             {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
               dataSource.filter(ds => ds.serial_no && ds.result === 0).length > 0 &&
-              <Button onClick={this.handleSuBarcodePutaway}>
+              <Button onClick={this.handleSuBarcodePutaway} loading={loading}>
               条码上架
               </Button>
             }
             {inboundHead.rec_mode === 'manual' &&
               dataSource.filter(ds => ds.receive_location && ds.result === 0).length > 0 &&
-              <Button loading={submitting} type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
+              <Button loading={submitting || loading} type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
               </Button>
             }

@@ -69,18 +69,18 @@ export default class Home extends React.Component {
     const { intl, logo, name } = this.props;
     const tenantMenus = [
       <MenuItem key="home">
-        <Logixon type="grid" /> {formatMsg(intl, 'applications')}
+        <Logixon type="grid" /> {formatMsg(intl, 'apps')}
       </MenuItem>,
     ];
     if (this.state.corpMenuLink) {
-      tenantMenus.push(<MenuItem key="hub">
-        <NavLink to="/hub">
-          <Logixon type="collab" /> {formatMsg(intl, 'openPlatform')}
+      tenantMenus.push(<MenuItem key="paas">
+        <NavLink to="/paas">
+          <Logixon type="collab" /> {formatMsg(intl, 'paas')}
         </NavLink>
       </MenuItem>);
       tenantMenus.push(<MenuItem key="corp">
         <NavLink to="/corp">
-          <Logixon type="admin" /> {formatMsg(intl, 'corp')}
+          <Logixon type="admin" /> {formatMsg(intl, 'corpAdmin')}
         </NavLink>
       </MenuItem>);
     }

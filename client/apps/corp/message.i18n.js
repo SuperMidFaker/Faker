@@ -3,9 +3,9 @@ import { formati18n } from 'client/common/i18n/helpers';
 import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
-  corpOverview: {
-    id: 'corp.overview',
-    defaultMessage: '概况',
+  corpAdmin: {
+    id: 'corp.admin',
+    defaultMessage: '企业后台',
   },
   corpSettings: {
     id: 'corp.settings',
@@ -22,6 +22,14 @@ const messages = defineMessages({
   corpRole: {
     id: 'corp.role',
     defaultMessage: '角色权限',
+  },
+  corpCollab: {
+    id: 'corp.collab',
+    defaultMessage: '企业间协作',
+  },
+  invitation: {
+    id: 'corp.collab.invitation',
+    defaultMessage: '协作邀请',
   },
   corpData: {
     id: 'corp.data',

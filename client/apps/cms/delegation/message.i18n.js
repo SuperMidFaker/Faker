@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   delgManifest: {
     id: 'cms.delegation.manifest',
-    defaultMessage: '委托管理',
+    defaultMessage: '委托制单',
   },
   createDelegation: {
     id: 'cms.delegation.create',
@@ -34,9 +34,13 @@ const messages = defineMessages({
     id: 'cms.delegation.all',
     defaultMessage: '全部委托',
   },
-  accepting: {
-    id: 'cms.delegation.stage.accepting',
+  pending: {
+    id: 'cms.delegation.stage.pending',
     defaultMessage: '接单',
+  },
+  exchange: {
+    id: 'cms.delegation.stage.exchange',
+    defaultMessage: '换单',
   },
   processing: {
     id: 'cms.delegation.stage.processing',
@@ -485,6 +489,10 @@ const messages = defineMessages({
   allocateOriginator: {
     id: 'cms.delegation.allocate.originator',
     defaultMessage: '指定执行者',
+  },
+  tmplSearchPlaceholder: {
+    id: 'cms.delegation.template.search.placeholder',
+    defaultMessage: '客户名称',
   },
 });
 

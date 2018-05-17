@@ -26,7 +26,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'MANUAL_ENTFI', 'MANUAL_ENTFI_SUCCEED', 'MANUAL_ENTFI_FAIL',
   'ATTACHMENT_UPLOAD', 'ATTACHMENT_UPLOAD_SUCCEED', 'ATTACHMENT_UPLOAD_FAIL',
   'LOAD_ATTACHMENTS', 'LOAD_ATTACHMENTS_SUCCEED', 'LOAD_ATTACHMENTS_FAIL',
-  'LOAD_UNSHIPPED_INVOICES', 'LOAD_UNSHIPPED_INVOICES_SUCCEED', 'LOAD_UNSHIPPED_INVOICES_FAIL',
+  'LOAD_INVOICES', 'LOAD_INVOICES_SUCCEED', 'LOAD_INVOICES_FAIL',
   'REMOVE_ORDER_INVOICE', 'REMOVE_ORDER_INVOICE_SUCCEED', 'REMOVE_ORDER_INVOICE_FAIL',
   'ADD_ORDER_CONTAINER', 'ADD_ORDER_CONTAINER_SUCCEED', 'ADD_ORDER_CONTAINER_FAIL',
   'LOAD_ORDER_CONTAINERS', 'LOAD_ORDER_CONTAINERS_SUCCEED', 'LOAD_ORDER_CONTAINERS_FAIL',
@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'BATCH_DELETE_BY_UPLOADNO', 'BATCH_DELETE_BY_UPLOADNO_SUCCEED', 'BATCH_DELETE_BY_UPLOADNO_FAIL',
   'BATCH_START', 'BATCH_START_SUCCEED', 'BATCH_START_FAIL',
   'BATCH_DELETE', 'BATCH_DELETE_SUCCEED', 'BATCH_DELETE_FAIL',
+  'TOGGLE_INVOICE_MODAL',
 ]);
 
 const initialState = {
@@ -79,7 +80,7 @@ const initialState = {
     cust_shipmt_pieces: null,
     cust_shipmt_weight: null,
     cust_shipmt_volume: null,
-    cust_shipmt_expedited: 0,
+    cust_shipmt_expedited: '0',
     cust_shipmt_goods_type: 0,
     cust_shipmt_wrap_type: null,
     ccb_need_exchange: 0,
@@ -87,7 +88,6 @@ const initialState = {
   },
   formRequires: {
     orderTypes: [],
-    clients: [],
     packagings: [],
     transitModes: [],
     goodsTypes: [],
@@ -112,6 +112,17 @@ const initialState = {
   orderBizObjects: [],
   containers: [],
   invoices: [],
+  orderInvoicesReload: false,
+  invoicesModal: {
+    visible: false,
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
+    filter: {
+      buyer: '', seller: '', category: '', status: 'unshipped',
+    },
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -215,7 +226,25 @@ export default function reducer(state = initialState, action) {
       return { ...state, invoices: action.result.data };
     case actionTypes.ADD_ORDER_INVOICES_SUCCEED:
     case actionTypes.REMOVE_ORDER_INVOICE_SUCCEED:
-      return { ...state, orderDetails: { ...state.orderDetails, reload: true } };
+      return {
+        ...state,
+        orderDetails: { ...state.orderDetails, reload: true },
+        orderInvoicesReload: true,
+      };
+    case actionTypes.LOAD_INVOICES:
+      return {
+        ...state,
+        invoicesModal: {
+          ...state.invoicesModal,
+          filter: JSON.parse(action.params.filter),
+        },
+      };
+    case actionTypes.LOAD_INVOICES_SUCCEED:
+      return { ...state, invoicesModal: { ...state.invoicesModal, ...action.result.data } };
+    case actionTypes.TOGGLE_INVOICE_MODAL:
+      return { ...state, invoicesModal: { ...state.invoicesModal, visible: action.data.visible } };
+    case actionTypes.LOAD_ORDER_INVOICES:
+      return { ...state, orderInvoicesReload: false };
     default:
       return state;
   }
@@ -602,18 +631,27 @@ export function loadOrderAttachments(orderNo) {
   };
 }
 
-export function loadUnshippedInvoices(partnerId) {
+export function loadInvoices({ pageSize, current, filter }) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_UNSHIPPED_INVOICES,
-        actionTypes.LOAD_UNSHIPPED_INVOICES_SUCCEED,
-        actionTypes.LOAD_UNSHIPPED_INVOICES_FAIL,
+        actionTypes.LOAD_INVOICES,
+        actionTypes.LOAD_INVOICES_SUCCEED,
+        actionTypes.LOAD_INVOICES_FAIL,
       ],
-      endpoint: 'v1/sof/invoices/unshipped/load',
+      endpoint: 'v1/sof/order/allinvoices/load',
       method: 'get',
-      params: { partnerId },
+      params: {
+        pageSize, current, filter: JSON.stringify(filter),
+      },
     },
+  };
+}
+
+export function toggleInvoiceModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_INVOICE_MODAL,
+    data: { visible },
   };
 }
 
@@ -694,7 +732,7 @@ export function loadOrderInvoices(orderNo) {
   };
 }
 
-export function addOrderInvoices(invoiceNos, orderNo) {
+export function addOrderInvoices(invoiceNos, orderNo, coefficient) {
   return {
     [CLIENT_API]: {
       types: [
@@ -704,7 +742,7 @@ export function addOrderInvoices(invoiceNos, orderNo) {
       ],
       endpoint: 'v1/sof/order/invoices/add',
       method: 'post',
-      data: { invoiceNos, orderNo },
+      data: { invoiceNos, orderNo, coefficient },
     },
   };
 }

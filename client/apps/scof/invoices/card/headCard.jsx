@@ -6,8 +6,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, DatePicker, Card, Col, Row } from 'antd';
 import moment from 'moment';
 import FormPane from 'client/components/FormPane';
-import { loadPartners } from 'common/reducers/partner';
-import { PARTNER_ROLES, WRAP_TYPE } from 'common/constants';
+import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
+import { WRAP_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -19,11 +19,12 @@ const InputGroup = Input.Group;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    partners: state.partner.partners,
     trxModes: state.cmsManifest.params.trxModes,
     invoiceHead: state.sofInvoice.invoiceHead,
+    buyers: state.sofInvoice.buyers,
+    sellers: state.sofInvoice.sellers,
   }),
-  { loadPartners }
+  { loadInvoiceBuyerSellers }
 )
 export default class HeadCard extends Component {
   static propTypes = {
@@ -33,11 +34,8 @@ export default class HeadCard extends Component {
     packageType: PropTypes.string,
     editable: PropTypes.bool.isRequired,
   }
-  componentWillMount() {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role: PARTNER_ROLES.CUS,
-    });
+  componentDidMount() {
+    this.props.loadInvoiceBuyerSellers();
   }
   handleSelect = (value) => {
     this.props.handlePackageSelect(value);
@@ -46,7 +44,7 @@ export default class HeadCard extends Component {
   gmsg = formatGlobalMsg(this.props.intl)
   render() {
     const {
-      form: { getFieldDecorator }, invoiceHead, partners, trxModes, packageType, editable,
+      form: { getFieldDecorator }, invoiceHead, sellers, buyers, trxModes, packageType, editable,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -64,7 +62,7 @@ export default class HeadCard extends Component {
         <FormPane descendant>
           <Row>
             <Col span={6}>
-              <FormItem label="发票号" {...formItemLayout}>
+              <FormItem label={this.msg('invoiceNo')} {...formItemLayout}>
                 {getFieldDecorator('invoice_no', {
                 rules: [{ type: 'string', required: true, message: 'Please select time!' }],
                 initialValue: invoiceHead && invoiceHead.invoice_no,
@@ -72,7 +70,7 @@ export default class HeadCard extends Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="开票日期" {...formItemLayout}>
+              <FormItem label={this.msg('invoiceDate')} {...formItemLayout}>
                 {getFieldDecorator('invoice_date', {
                 initialValue: (invoiceHead && invoiceHead.invoice_date) ?
                 moment(new Date(invoiceHead.invoice_date)) : moment(new Date()),
@@ -80,46 +78,46 @@ export default class HeadCard extends Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="购买方" {...formItemLayout}>
+              <FormItem label={this.msg('buyer')} {...formItemLayout}>
                 {getFieldDecorator('buyer', {
                 initialValue: invoiceHead.buyer &&
-                partners.find(partner => partner.id === Number(invoiceHead.buyer)) &&
-                partners.find(partner => partner.id === Number(invoiceHead.buyer)).name,
+                buyers.find(partner => partner.partner_id === Number(invoiceHead.buyer)) &&
+                buyers.find(partner => partner.partner_id === Number(invoiceHead.buyer)).name,
               })(<Select
                 allowClear
                 showSearch
                 showArrow
                 optionFilterProp="children"
               >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                {buyers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="销售方" {...formItemLayout}>
+              <FormItem label={this.msg('seller')} {...formItemLayout}>
                 {getFieldDecorator('seller', {
                 initialValue: invoiceHead.seller &&
-                partners.find(partner => partner.id === Number(invoiceHead.seller)) &&
-                partners.find(partner => partner.id === Number(invoiceHead.seller)).name,
+                sellers.find(partner => partner.partner_id === Number(invoiceHead.seller)) &&
+                sellers.find(partner => partner.partner_id === Number(invoiceHead.seller)).name,
               })(<Select
                 allowClear
                 showSearch
                 showArrow
                 optionFilterProp="children"
               >
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+                {sellers.map(data => (<Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="采购订单号" {...formItemLayout}>
+              <FormItem label={this.msg('poNo')} {...formItemLayout}>
                 {getFieldDecorator('po_no', {
                 initialValue: invoiceHead && invoiceHead.po_no,
               })(<Input />)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="件数/包装" {...formItemLayout}>
+              <FormItem label={this.msg('packageAndNumber')} {...formItemLayout}>
                 <InputGroup compact>
                   {getFieldDecorator('package_number', {
                   initialValue: invoiceHead && invoiceHead.package_number,
@@ -129,7 +127,7 @@ export default class HeadCard extends Component {
                 />)}
                   <Select
                     style={{ width: '50%' }}
-                    placeholder="选择包装方式"
+                    placeholder={this.msg('selectPackage')}
                     onSelect={this.handleSelect}
                     value={packageType}
                   >
@@ -140,7 +138,7 @@ export default class HeadCard extends Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="总毛重" {...formItemLayout}>
+              <FormItem label={this.msg('grossWt')} {...formItemLayout}>
                 {getFieldDecorator('gross_wt', {
                 initialValue: invoiceHead && invoiceHead.gross_wt,
               })(<Input
@@ -150,7 +148,7 @@ export default class HeadCard extends Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="成交方式" {...formItemLayout}>
+              <FormItem label={this.msg('tradeMode')} {...formItemLayout}>
                 {getFieldDecorator('trade_mode', {
                 initialValue: invoiceHead && invoiceHead.trade_mode,
               })(<Select>
@@ -162,21 +160,21 @@ export default class HeadCard extends Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="总数量" {...formItemLayout}>
+              <FormItem label={this.msg('totalQty')} {...formItemLayout}>
                 {getFieldDecorator('total_qty', {
                 initialValue: invoiceHead && invoiceHead.total_qty,
               })(<Input disabled />)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="总金额" {...formItemLayout}>
+              <FormItem label={this.msg('totalAmount')} {...formItemLayout}>
                 {getFieldDecorator('total_amount', {
                 initialValue: invoiceHead && invoiceHead.total_amount,
               })(<Input disabled />)}
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem label="总净重" {...formItemLayout}>
+              <FormItem label={this.msg('totalNetWt')} {...formItemLayout}>
                 {getFieldDecorator('total_net_wt', {
                 initialValue: invoiceHead && invoiceHead.total_net_wt,
               })(<Input
@@ -184,6 +182,13 @@ export default class HeadCard extends Component {
                 addonAfter="KG"
                 disabled
               />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem label={this.msg('category')} {...formItemLayout}>
+                {getFieldDecorator('invoice_category', {
+                initialValue: invoiceHead && invoiceHead.invoice_category,
+              })(<Input />)}
               </FormItem>
             </Col>
           </Row>
