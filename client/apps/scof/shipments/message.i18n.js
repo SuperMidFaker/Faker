@@ -39,6 +39,10 @@ const messages = defineMessages({
     id: 'sof.shipments.start',
     defaultMessage: '开始',
   },
+  editOrder: {
+    id: 'sof.shipments.order.edit',
+    defaultMessage: '编辑订单',
+  },
   shipmentNo: {
     id: 'sof.shipments.shipmentno',
     defaultMessage: 'Shipment No.',

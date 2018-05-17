@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/sofOrders';
+import { loadPartners } from 'common/reducers/partner';
+import { loadFormRequires, setClientForm, submitOrder, validateOrder } from 'common/reducers/sofOrders';
 import { loadRequireOrderTypes } from 'common/reducers/sofOrderPref';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Button, Layout, notification } from 'antd';
 import PageHeader from 'client/components/PageHeader';
+import { TENANT_ASPECT, PARTNER_ROLES } from 'common/constants';
 import OrderForm from './shipment';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -40,11 +42,15 @@ function fetchData({ state, dispatch }) {
 })
 @connect(
   state => ({
+    aspect: state.account.aspect,
+    loginId: state.account.loginId,
     tenantName: state.account.tenantName,
     formData: state.sofOrders.formData,
     saving: state.sofOrders.orderSaving,
   }),
-  { submitOrder, validateOrder }
+  {
+    submitOrder, validateOrder, setClientForm, loadPartners,
+  }
 )
 export default class CreateOrder extends Component {
   static propTypes = {
@@ -57,6 +63,35 @@ export default class CreateOrder extends Component {
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
+  }
+  componentDidMount() {
+    let role = PARTNER_ROLES.VEN;
+    if (this.props.aspect === TENANT_ASPECT.LSP) {
+      role = PARTNER_ROLES.CUS;
+    }
+    this.props.loadPartners({ role }).then((result) => {
+      if (!result.error) {
+        const own = result.data.find(rd => rd.role === PARTNER_ROLES.OWN);
+        if (own) {
+          if (role === PARTNER_ROLES.CUS) {
+            this.props.setClientForm(-1, {
+              provider_name: own.name,
+              provider_tenant_id: own.partner_tenant_id,
+              provider_partner_id: own.id,
+              exec_login_id: this.props.loginId,
+            });
+          } else {
+            this.props.setClientForm(-1, {
+              customer_name: own.name,
+              customer_tenant_id: own.partner_tenant_id,
+              customer_partner_id: own.id,
+              customer_partner_code: own.partner_code,
+              exec_login_id: this.props.loginId,
+            });
+          }
+        }
+      }
+    });
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)

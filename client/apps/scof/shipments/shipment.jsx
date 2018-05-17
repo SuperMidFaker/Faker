@@ -7,6 +7,7 @@ import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODE
 import { setClientForm } from 'common/reducers/sofOrders';
 import { loadPartnerFlowList, loadFlowGraph, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/sofCustomers';
+import { loadCountries } from 'common/reducers/cmsParams';
 import FormPane from 'client/components/FormPane';
 import UserAvatar from 'client/components/UserAvatar';
 import CMSDelegateForm from './forms/cmsDelegateForm';
@@ -41,6 +42,8 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
     graphLoading: state.scofFlow.graphLoading,
     serviceTeam: state.sofCustomers.operators,
     orderTypes: state.sofOrderPref.requireOrderTypes,
+    partners: state.partner.partners,
+    countries: state.cmsParams.countries,
   }),
   {
     setClientForm,
@@ -48,6 +51,7 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
     loadFlowGraph,
     loadOperators,
     loadCwmBizParams,
+    loadCountries,
   }
 )
 export default class OrderForm extends Component {
@@ -64,6 +68,7 @@ export default class OrderForm extends Component {
   }
   componentDidMount() {
     this.handleOrderParamsLoad(this.props.formData);
+    this.props.loadCountries();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {
@@ -74,7 +79,6 @@ export default class OrderForm extends Component {
     if (formData.customer_partner_id) {
       this.props.loadPartnerFlowList({
         partnerId: formData.customer_partner_id,
-        tenantId: this.props.tenantId,
       });
       this.props.loadCwmBizParams(formData.customer_partner_id);
       this.props.loadOperators(formData.customer_partner_id, this.props.tenantId);
@@ -84,7 +88,7 @@ export default class OrderForm extends Component {
   gmsg = formatGlobalMsg(this.props.intl)
   handleClientChange = (value) => {
     const selPartnerId = Number(value);
-    const client = this.props.formRequires.clients.find(cl => cl.partner_id === selPartnerId);
+    const client = this.props.partners.find(cl => cl.id === selPartnerId);
     if (client) {
       this.props.setClientForm(-1, {
         flow_id: null,
@@ -93,6 +97,17 @@ export default class OrderForm extends Component {
         customer_partner_id: selPartnerId,
         customer_partner_code: client.partner_code,
         subOrders: [],
+      });
+    }
+  }
+  handleProviderChange = (value) => {
+    const selPartnerId = Number(value);
+    const client = this.props.partners.find(cl => cl.id === selPartnerId);
+    if (client) {
+      this.props.setClientForm(-1, {
+        provider_name: client.name,
+        provider_tenant_id: client.tid,
+        provider_partner_id: selPartnerId,
       });
     }
   }
@@ -247,9 +262,27 @@ export default class OrderForm extends Component {
     }
     return steps;
   }
+  renderPartnerSelect = (selItemProps) => {
+    const { partners } = this.props;
+    return (
+      <Select
+        showSearch
+        allowClear
+        optionFilterProp="children"
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
+        style={{ width: '100%' }}
+        {...selItemProps}
+      >
+        {partners.map(data => (
+          <Option key={String(data.id)} value={String(data.id)}>{
+            data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+      </Select>
+    );
+  }
   render() {
     const {
-      formRequires, formData, flows, serviceTeam, orderTypes,
+      formRequires, formData, flows, serviceTeam, orderTypes, tenantId,
     } = this.props;
     const formItemLayout = {
       labelCol: {
@@ -352,6 +385,24 @@ export default class OrderForm extends Component {
       labelCountry = this.msg('destCountry');
       labelIEPort = this.msg('exportPort');
     }
+    const customerName = [formData.customer_partner_code, formData.customer_name].filter(fd => fd).join('|');
+    let customerFormItem = <Input value={customerName} disabled />;
+    let provderFormItem = <Input value={formData.provider_name} disabled />;
+    if (!formData.shipmt_order_no) {
+      if (formData.provider_tenant_id === tenantId) {
+        customerFormItem = this.renderPartnerSelect({
+          placeholder: '请选择货主',
+          onChange: this.handleClientChange,
+          value: String(formData.customer_partner_id || ''),
+        });
+      } else if (formData.customer_tenant_id === tenantId) {
+        provderFormItem = this.renderPartnerSelect({
+          placeholder: '请选择服务商',
+          onChange: this.handleProviderChange,
+          value: String(formData.provider_partner_id || ''),
+        });
+      }
+    }
 
     return (
       <div>
@@ -363,40 +414,12 @@ export default class OrderForm extends Component {
                   <Row>
                     <Col span={6}>
                       <FormItem label={this.msg('shipper')} {...formItemLayout} required>
-                        <Select
-                          placeholder="请选择货主"
-                          showSearch
-                          allowClear
-                          optionFilterProp="children"
-                          value={formData.customer_partner_id}
-                          onChange={value => this.handleClientChange(value)}
-                          dropdownMatchSelectWidth={false}
-                          dropdownStyle={{ width: 360 }}
-                          style={{ width: '100%' }}
-                          disabled={!!(formData.shipmt_order_no)}
-                        >
-                          {formRequires.clients.map(data => (
-                            <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-                        </Select>
+                        {customerFormItem}
                       </FormItem>
                     </Col>
                     <Col span={6}>
-                      <FormItem label={this.msg('serviceProvider')} {...formItemLayout} required>
-                        <Select
-                          placeholder="请选择服务商"
-                          showSearch
-                          allowClear
-                          optionFilterProp="children"
-                          value={formData.customer_partner_id}
-                          onChange={value => this.handleClientChange(value)}
-                          dropdownMatchSelectWidth={false}
-                          dropdownStyle={{ width: 360 }}
-                          style={{ width: '100%' }}
-                          disabled={!!(formData.shipmt_order_no)}
-                        >
-                          {formRequires.clients.map(data => (
-                            <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
-                        </Select>
+                      <FormItem label={this.msg('serviceProvider')} {...formItemLayout}>
+                        {provderFormItem}
                       </FormItem>
                     </Col>
                     <Col span={6}>
@@ -483,7 +506,7 @@ export default class OrderForm extends Component {
                                 value={formData.cust_shipmt_pieces}
                                 onChange={(ev) => {
                               const pieces = parseFloat(ev.target.value);
-                              if (!Number.isNaN(Number(pieces))) {
+                              if (!Number.isNaN(pieces)) {
                                 this.handleChange('cust_shipmt_pieces', ev.target.value);
                               } else {
                                 this.handleChange('cust_shipmt_pieces', null);
@@ -509,12 +532,11 @@ export default class OrderForm extends Component {
                               addonAfter="KG"
                               value={formData.cust_shipmt_weight}
                               onChange={(ev) => {
-                            const weight = parseFloat(ev.target.value);
-                            if (!Number.isNaN(weight)) {
-                              this.handleChange('cust_shipmt_weight', weight);
-                            } else {
-                              this.handleChange('cust_shipmt_weight', null);
+                            let weight = parseFloat(ev.target.value);
+                            if (Number.isNaN(weight)) {
+                              weight = null;
                             }
+                              this.handleChange('cust_shipmt_weight', weight);
                           }}
                             />
                           </FormItem>
@@ -607,12 +629,36 @@ export default class OrderForm extends Component {
 
                         <Col span={6}>
                           <FormItem label={labelCountry} {...formItemLayout}>
-                            <Input value={formData.cust_shipmt_orig_dest_country} onChange={e => this.handleChange('cust_shipmt_orig_dest_country', e.target.value)} />
+                            <Select
+                              showSearch
+                              allowClear
+                              optionFilterProp="children"
+                              value={formData.cust_shipmt_orig_dest_country}
+                              onChange={value =>
+                                this.handleChange('cust_shipmt_orig_dest_country', value)}
+                            >
+                              {this.props.countries.map(cntry => (
+                                <Option key={cntry.cntry_co} value={cntry.cntry_co}>
+                                  {cntry.cntry_co} | {cntry.cntry_name_cn}
+                                </Option>))}
+                            </Select>
                           </FormItem>
                         </Col>
                         <Col span={6}>
                           <FormItem label={labelIEPort} {...formItemLayout}>
-                            <Input value={formData.cust_shipmt_i_e_port} onChange={e => this.handleChange('cust_shipmt_i_e_port', e.target.value)} />
+                            <Select
+                              showSearch
+                              allowClear
+                              optionFilterProp="children"
+                              value={formData.cust_shipmt_i_e_port}
+                              onChange={value =>
+                                this.handleChange('cust_shipmt_i_e_port', value)}
+                            >
+                              {this.props.formRequires.declPorts.map(custport => (
+                                <Option key={custport.code} value={custport.code}>
+                                  {custport.code} | {custport.name}
+                                </Option>))}
+                            </Select>
                           </FormItem>
                         </Col>
                         <Col span={6}>
@@ -627,7 +673,17 @@ export default class OrderForm extends Component {
                         </Col>
                         <Col span={6}>
                           <FormItem label="国际货运代理" {...formItemLayout}>
-                            <Input value={formData.cust_shipmt_forwarder} onChange={e => this.handleChange('cust_shipmt_forwarder', e.target.value)} />
+                            <Select
+                              allowClear
+                              showSearch
+                              optionFilterProp="children"
+                              value={formData.cust_shipmt_forwarder}
+                              onChange={value => this.handleChange('cust_shipmt_forwarder', value)}
+                            >
+                              {formRequires.customsBrokers.map(cb =>
+                      (<Option value={String(cb.partner_id)} key={String(cb.partner_id)}>
+                        {cb.partner_code}|{cb.name}</Option>)) }
+                            </Select>
                           </FormItem>
                         </Col>
                         <Col span={6}>

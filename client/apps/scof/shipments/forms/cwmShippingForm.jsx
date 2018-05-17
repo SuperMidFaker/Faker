@@ -110,7 +110,7 @@ export default class CwmSoForm extends Component {
             </Col>
             <Col span={8}>
               <FormItem label={this.msg('操作人员')} {...formItemLayout}>
-                <Select value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+                <Select value={node.person_id} onChange={value => this.handleCommonFieldChange('person_id', value)}>
                   {serviceTeam.map(st => <Option value={st.lid} key={st.lid}><UserAvatar size="small" loginId={st.lid} showName /></Option>)}
                 </Select>
               </FormItem>
