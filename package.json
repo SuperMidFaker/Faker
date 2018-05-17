@@ -21,7 +21,7 @@
     "debug": "node --debug .",
     "lint": "eslint --fix --ext .js --ext .jsx client server common",
     "lint-staged": "lint-staged",
-    "hot": "webpack-dev-server --config webpack/dev.js",
+    "hot": "node --max_old_space_size=4096 ./node_modules/.bin/webpack-dev-server --config webpack/dev.js",
     "dev": "nodemon",
     "start": "npm run clean & npm run hot &  npm run dev",
     "test-build": "npm run build-i18n & NODE_ENV=test node --max_old_space_size=4096 ./node_modules/.bin/webpack --progress --profile --diplay-modules --display-origins --config webpack/prod.js",

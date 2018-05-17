@@ -389,7 +389,7 @@ class DataTable extends React.Component {
     const columns = this.state.tableColumns.map((col, index) => ({
       ...col,
       onHeaderCell: (column) => {
-        if (!column.fixed) {
+        if (!column.fixed || column.fixed === 'left') {
           return ({
             width: column.width,
             onResize: this.handleColumnResize(index),
