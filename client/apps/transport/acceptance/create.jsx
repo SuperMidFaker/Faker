@@ -249,14 +249,18 @@ export default class ShipmentCreate extends React.Component {
                 <Row gutter={16}>
                   <Col sm={24} md={12}>
                     <Card bodyStyle={{ padding: 16 }}>
-                      <ConsignInfo type="consigner" intl={intl}
+                      <ConsignInfo
+                        type="consigner"
+                        intl={intl}
                         formhoc={form}
                       />
                     </Card>
                   </Col>
                   <Col sm={24} md={12}>
                     <Card bodyStyle={{ padding: 16 }}>
-                      <ConsignInfo type="consignee" intl={intl}
+                      <ConsignInfo
+                        type="consignee"
+                        intl={intl}
                         formhoc={form}
                       />
                     </Card>

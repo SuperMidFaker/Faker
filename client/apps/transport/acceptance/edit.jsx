@@ -184,13 +184,21 @@ export default class ShipmentEdit extends React.Component {
                   <ClientInfo outerColSpan={16} intl={intl} formhoc={form} />
                 </Card>
                 <Card bodyStyle={{ padding: 16 }}>
-                  <ConsignInfo type="consigner" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
+                  <ConsignInfo
+                    type="consigner"
+                    intl={intl}
+                    outerColSpan={16}
+                    labelColSpan={8}
+                    formhoc={form}
                   />
                 </Card>
                 <Card bodyStyle={{ padding: 16 }}>
-                  <ConsignInfo type="consignee" intl={intl} outerColSpan={16}
-                    labelColSpan={8} formhoc={form}
+                  <ConsignInfo
+                    type="consignee"
+                    intl={intl}
+                    outerColSpan={16}
+                    labelColSpan={8}
+                    formhoc={form}
                   />
                 </Card>
                 <Card bodyStyle={{ padding: 16 }}>

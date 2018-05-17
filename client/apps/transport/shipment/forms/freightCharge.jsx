@@ -470,8 +470,12 @@ export default class FreightCharge extends React.Component {
     }];
     const title = (<span>{this.msg('freightCharge')} - 销售{tariffType === 'base' ? '基准' : ''}价</span>);
     return (
-      <Card title={title} bodyStyle={{ padding: 16 }}
-        extra={computed ? <a role="presentation" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
+      <Card
+        title={title}
+        bodyStyle={{ padding: 16 }}
+        extra={computed ? <a role="presentation" onClick={this.handleReset}>重置</a> : <Button
+          type="primary"
+          icon="calculator"
           onClick={() => this.handleCompute('normal')}
         >{this.msg('computeCharge')}
         </Button>}
@@ -482,7 +486,9 @@ export default class FreightCharge extends React.Component {
             message={
               baseTariffAvailable ? (
                 <span>{alert.message}
-                  <Button type="primary" icon="calculator"
+                  <Button
+                    type="primary"
+                    icon="calculator"
                     onClick={() => this.handleCompute('base')}
                     style={{ marginLeft: 60 }}
                   >用基准价{this.msg('computeCharge')}
@@ -496,51 +502,75 @@ export default class FreightCharge extends React.Component {
           />
         }
         <FormItem label="价格协议">
-          <Input readOnly
+          <Input
+            readOnly
             value={computed ? this.renderTmsTariff(formData.quote_no, formData.transport_mode_code, formData.meter, formData.goods_type) : formData.quote_no}
           />
         </FormItem>
         {
           computed ?
-            <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}
-              field="freight_charge" fieldProps={{ initialValue: formData.freight_charge }}
-              colSpan={8} readOnly
+            <InputItem
+              formhoc={formhoc}
+              labelName={this.msg('basicCharge')}
+              addonAfter={this.msg('CNY')}
+              field="freight_charge"
+              fieldProps={{ initialValue: formData.freight_charge }}
+              colSpan={8}
+              readOnly
             /> : ''
         }
         {
           computed ?
-            <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
+            <InputItem
+              formhoc={formhoc}
+              addonAfter={this.msg('CNY')}
               labelName={<span>
                 <Checkbox checked={formData.pickup_checked} onChange={this.handlePickupCheck} />
                 {this.msg('pickupCharge')}
               </span>}
-              field="pickup_charge" fieldProps={{ initialValue: formData.pickup_charge }}
-              colSpan={8} readOnly colon={false}
+              field="pickup_charge"
+              fieldProps={{ initialValue: formData.pickup_charge }}
+              colSpan={8}
+              readOnly
+              colon={false}
             /> : ''
         }
         {
           computed ?
-            <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
+            <InputItem
+              formhoc={formhoc}
+              addonAfter={this.msg('CNY')}
               labelName={<span>
                 <Checkbox checked={formData.deliver_checked} onChange={this.handleDeliverCheck} />
                 {this.msg('deliverCharge')}
               </span>}
-              field="deliver_charge" fieldProps={{ initialValue: formData.deliver_charge }}
-              colSpan={8} readOnly colon={false}
+              field="deliver_charge"
+              fieldProps={{ initialValue: formData.deliver_charge }}
+              colSpan={8}
+              readOnly
+              colon={false}
             /> : ''
         }
         {
           computed ?
-            <InputItem formhoc={formhoc} labelName={this.msg('surcharge')} addonAfter={this.msg('CNY')}
-              field="surcharge" fieldProps={{
+            <InputItem
+              formhoc={formhoc}
+              labelName={this.msg('surcharge')}
+              addonAfter={this.msg('CNY')}
+              field="surcharge"
+              fieldProps={{
  initialValue: formData.surcharge,
                 onChange: this.handleSurchargeChange,
 }}
               colSpan={8}
             /> : ''
         }
-        <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
-          field="total_charge" fieldProps={{
+        <InputItem
+          formhoc={formhoc}
+          labelName={this.msg('totalCharge')}
+          addonAfter={this.msg('CNY')}
+          field="total_charge"
+          fieldProps={{
  initialValue: formData.total_charge,
             onChange: this.handleTotalChange,
           }}
@@ -549,11 +579,18 @@ export default class FreightCharge extends React.Component {
             transform: v => Number(v),
             message: this.msg('totalChargeMustBeNumber'),
 }]}
-          colSpan={8} readOnly={computed}
+          colSpan={8}
+          readOnly={computed}
         />
-        <InputItem formhoc={formhoc} labelName={this.msg('distance')} addonAfter={this.msg('kilometer')}
-          field="distance" fieldProps={{ initialValue: formData.distance }} type="number"
-          colSpan={8} readOnly={computed}
+        <InputItem
+          formhoc={formhoc}
+          labelName={this.msg('distance')}
+          addonAfter={this.msg('kilometer')}
+          field="distance"
+          fieldProps={{ initialValue: formData.distance }}
+          type="number"
+          colSpan={8}
+          readOnly={computed}
         />
         <Collapse bordered={false}>
           <Panel header="计费参数" key="1">
