@@ -534,21 +534,21 @@ exports.PICK_PRINT_FIELDS = [{
 }, {
   field: 'name', text: '产品名称', width: 100,
 }, {
-  field: 'sku_category', text: '商品分类', width: 80,
+  field: 'sku_category', text: '商品分类', width: 60,
 }, {
   field: 'location', text: '库位', width: 60,
 }, {
   field: 'serial_no', text: '序列号', width: 80,
 }, {
-  field: 'virtual_whse', text: '库别', width: 80,
+  field: 'virtual_whse', text: '库别', width: 50,
 }, {
-  field: 'external_lot_no', text: '批次号', width: 80,
+  field: 'external_lot_no', text: '批次号', width: 60,
 }, {
-  field: 'attrib_1_string', text: '客户属性1', width: '90',
+  field: 'attrib_1_string', text: '客户属性1', width: 60,
 }, {
-  field: 'attrib_2_string', text: '客户属性2', width: '90',
+  field: 'attrib_2_string', text: '客户属性2', width: 40,
 }, {
-  field: 'attrib_3_string', text: '客户属性3', width: '90',
+  field: 'attrib_3_string', text: '客户属性3', width: 40,
 }, {
-  field: 'attrib_4_string', text: '客户属性4', width: '90',
+  field: 'attrib_4_string', text: '客户属性4', width: 40,
 }];

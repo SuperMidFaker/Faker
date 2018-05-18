@@ -181,6 +181,10 @@ export default class SHFTZStockMatchTask extends Component {
     title: '分拨',
     width: 60,
     dataIndex: 'portion',
+  }, {
+    title: '监管库位单位',
+    width: 60,
+    dataIndex: 'ftz_unit',
   }]
   matchedDataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadMatchTaskMatched(params),
