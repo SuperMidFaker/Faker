@@ -40,12 +40,21 @@ function ColumnInput(props) {
     }
   }
   const typeStr = (!type) ? 'text' : type;
+  let editValue = record[field];
   if (inEdit) {
-    return (<Input type={typeStr} autosize={autosize} value={edit[field] || ''} onChange={handleChange} />);
-  } else if (decimal) {
-    return <span>{record[field] ? parseFloat(record[field]).toFixed(decimal) : ''}</span>;
+    editValue = edit[field];
   }
-  return <span>{record[field] || ''}</span>;
+  if (editValue === null || editValue === undefined || editValue === '') {
+    editValue = '';
+  } else if (decimal) {
+    editValue = parseFloat(editValue).toFixed(decimal);
+  }
+  if (inEdit) {
+    return (<Input type={typeStr} autosize={autosize} value={editValue} onChange={handleChange} />);
+  } else if (decimal) {
+    return <span>{editValue}</span>;
+  }
+  return <span>{editValue}</span>;
 }
 ColumnInput.propTypes = {
   inEdit: PropTypes.bool,
@@ -680,16 +689,6 @@ export default class ManifestBodyPane extends React.Component {
         current: hscodes.current,
         searchText: value,
       });
-    }
-  }
-  handleEdit = (row, index) => {
-    if (this.props.billSeqNo) {
-      this.setState({
-        editIndex: index,
-        editBody: row,
-      });
-    } else {
-      message.error(this.msg('headUncreated'), 10);
     }
   }
   handleEditBody = (row) => {

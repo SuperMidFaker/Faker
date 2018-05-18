@@ -88,28 +88,33 @@ export default class OrderForm extends Component {
   gmsg = formatGlobalMsg(this.props.intl)
   handleClientChange = (value) => {
     const selPartnerId = Number(value);
-    const client = this.props.partners.find(cl => cl.id === selPartnerId);
-    if (client) {
-      this.props.setClientForm(-1, {
-        flow_id: null,
-        customer_name: client.name,
-        customer_tenant_id: client.tid,
-        customer_partner_id: selPartnerId,
-        customer_partner_code: client.partner_code,
-        subOrders: [],
-      });
-    }
+    const client = this.props.partners.find(cl => cl.id === selPartnerId) || {
+      name: '',
+      tid: null,
+      id: null,
+      partner_code: null,
+    };
+    this.props.setClientForm(-1, {
+      flow_id: null,
+      customer_name: client.name,
+      customer_tenant_id: client.tid,
+      customer_partner_id: client.id,
+      customer_partner_code: client.partner_code,
+      subOrders: [],
+    });
   }
   handleProviderChange = (value) => {
     const selPartnerId = Number(value);
-    const client = this.props.partners.find(cl => cl.id === selPartnerId);
-    if (client) {
-      this.props.setClientForm(-1, {
-        provider_name: client.name,
-        provider_tenant_id: client.tid,
-        provider_partner_id: selPartnerId,
-      });
-    }
+    const client = this.props.partners.find(cl => cl.id === selPartnerId) || {
+      name: '',
+      tid: null,
+      selPartnerId: null,
+    };
+    this.props.setClientForm(-1, {
+      provider_name: client.name,
+      provider_tenant_id: client.tid,
+      provider_partner_id: client.id,
+    });
   }
   handleFlowChange = (value) => {
     const flow = this.props.flows.filter(flw => flw.id === value)[0];
