@@ -144,6 +144,7 @@ export default class SHFTZTransferSelfDetail extends Component {
   }, {
     title: '原产国',
     dataIndex: 'country',
+    width: 100,
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
       const text = country ? `${country.value}| ${country.text}` : o;

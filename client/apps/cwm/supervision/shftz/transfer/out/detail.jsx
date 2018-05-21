@@ -173,6 +173,7 @@ export default class SHFTZTransferOutDetail extends Component {
     width: 100,
   }, {
     title: '转出单位',
+    width: 100,
     dataIndex: 'out_unit',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];

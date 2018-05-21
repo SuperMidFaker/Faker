@@ -33,7 +33,7 @@ export default class AddTradeRepoModal extends React.Component {
     tenantName: PropTypes.string.isRequired,
     loginId: PropTypes.number.isRequired,
     visibleAddModal: PropTypes.bool.isRequired,
-    customers: PropTypes.arrayOf({ partner_id: PropTypes.number }).isRequired,
+    customers: PropTypes.arrayOf({ id: PropTypes.number }).isRequired,
     repos: PropTypes.arrayOf({ owner_partner_id: PropTypes.number }).isRequired,
   }
   state = {
@@ -52,7 +52,7 @@ export default class AddTradeRepoModal extends React.Component {
   }
   handleOk = () => {
     const customer = this.props.customers.filter(cust =>
-      cust.partner_id === this.state.customerid)[0];
+      cust.id === this.state.customerid)[0];
     this.props.createRepo({
       createrTenantId: this.props.tenantId,
       ownerPartnerId: customer.partner_id,
@@ -82,8 +82,8 @@ export default class AddTradeRepoModal extends React.Component {
       form: { getFieldDecorator }, visibleAddModal, customers, repos,
     } = this.props;
     const newCustomers = customers.filter(ct =>
-      repos.filter(repo => repo.owner_partner_id === ct.partner_id ||
-        repo.owner_tenant_id === ct.partner_tenant_id).length === 0);
+      repos.filter(repo => repo.owner_partner_id === ct.id || (ct.partner_tenant_id !== -1 &&
+        repo.owner_tenant_id === ct.partner_tenant_id)).length === 0);
     return (
       <Modal
         maskClosable={false}
@@ -101,8 +101,8 @@ export default class AddTradeRepoModal extends React.Component {
               onChange={this.handleSelectChange}
             >
               {newCustomers.map(data => (<Option
-                key={data.partner_id}
-                value={data.partner_id}
+                key={data.id}
+                value={data.id}
               >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
               </Option>))}
             </Select>)}

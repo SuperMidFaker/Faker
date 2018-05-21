@@ -6,7 +6,7 @@ import { Checkbox, Modal, Form, Input, Select, Col, Button, message } from 'antd
 import { getCompanyInfo } from 'common/reducers/common';
 import { loadCountries } from 'common/reducers/cmsParams';
 import { hidePartnerModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, BUSINESS_TYPES } from 'common/constants';
+import { PARTNER_ROLES, BUSINESS_TYPES } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -162,7 +162,6 @@ export default class PartnerModal extends React.Component {
       return null;
     }
     const { companies } = this.state;
-    const businessArray = getFieldValue('businessType') || vendor.business_type || [];
     const country = getFieldValue('country') || vendor.country || '142';
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -276,10 +275,6 @@ export default class PartnerModal extends React.Component {
           >
             {getFieldDecorator('customsCode', {
               initialValue: vendor.customs_code,
-              rules: [{
-              required: businessArray.indexOf(PARTNER_BUSINESSE_TYPES.clearance) >= 0,
-              message: this.msg('customsCode10len'),
-              }],
                 })(<Input placeholder={this.msg('customsCode10len')} />)}
           </FormItem>
           <FormItem

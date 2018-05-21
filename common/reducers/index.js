@@ -64,7 +64,6 @@ import hubDevApp from './hubDevApp';
 import hubIntegration from './hubIntegration';
 import scofFlow from './scofFlow';
 import sofOrderPref from './sofOrderPref';
-import sofVendors from './sofVendors';
 import sofTracking from './sofTracking';
 import sofDashboard from './sofDashboard';
 import sofInvoice from './sofInvoice';
@@ -138,7 +137,6 @@ export default combineReducers({
   cmsPrefEvents,
   scofFlow,
   sofOrderPref,
-  sofVendors,
   sofTracking,
   sofCustomers,
   sofOrders,

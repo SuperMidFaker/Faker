@@ -74,6 +74,10 @@ export default class LogsList extends React.Component {
     dataIndex: 'op_ref_billno',
     width: 200,
   }, {
+    title: '客户单号',
+    dataIndex: 'op_cust_order_no',
+    width: 200,
+  }, {
     title: '内容',
     dataIndex: 'op_content',
   }, {

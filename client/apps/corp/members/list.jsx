@@ -6,7 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
 import { MdIcon } from 'client/components/FontIcon';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal, toggleUserModal } from 'common/reducers/personnel';
+import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal, toggleUserModal, removeDepartmentMember } from 'common/reducers/personnel';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -17,7 +17,7 @@ import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'commo
 import CorpSiderMenu from '../menu';
 import AddMemberModal from './modal/addMemberModal';
 import AddUser from './modal/addUserModal';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -25,12 +25,11 @@ const { SubMenu } = Menu;
 function fetchData({ state, dispatch }) {
   const promises = [
     dispatch(loadMembers({
-      tenantId: state.account.tenantId,
       pageSize: state.personnel.memberlist.pageSize,
       current: state.personnel.memberlist.current,
       filters: JSON.stringify(state.personnel.memberFilters),
     })),
-    dispatch(loadDepartments(state.account.tenantId)),
+    dispatch(loadDepartments()),
   ];
   return Promise.all(promises);
 }
@@ -53,6 +52,7 @@ function fetchData({ state, dispatch }) {
     loadMembers,
     openMemberModal,
     toggleUserModal,
+    removeDepartmentMember,
   }
 )
 @withPrivilege({ module: 'corp', feature: 'personnel' })
@@ -80,6 +80,7 @@ export default class MemberDepartmentView extends React.Component {
     deptPopVisible: false,
   }
   msg = formatMsg(this.props.intl)
+  gmsg=formatGlobalMsg(this.props.intl)
   columns = [{
     title: this.msg('fullName'),
     dataIndex: 'name',
@@ -131,12 +132,12 @@ export default class MemberDepartmentView extends React.Component {
     width: 80,
     render: (o, record) => {
       let style = { color: '#51C23A' };
-      let { text } = ACCOUNT_STATUS.normal;
+      let acStText = ACCOUNT_STATUS.normal.text;
       if (record.status === ACCOUNT_STATUS.blocked.id) {
         style = { color: '#CCC' };
-        text = ACCOUNT_STATUS.blocked.text; // eslint-disable-line
+        acStText = ACCOUNT_STATUS.blocked.text;
       }
-      return <span style={style}>{this.msg(text)}</span>;
+      return <span style={style}>{this.msg(acStText)}</span>;
     },
   }, {
     title: this.msg('opCol'),
@@ -147,24 +148,29 @@ export default class MemberDepartmentView extends React.Component {
       if (record.role === PRESET_TENANT_ROLE.owner.name) {
         return (
           <PrivilegeCover module="corp" feature="personnel" action="edit">
-            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={() => this.toggleUserModal(record.key)} />
+            <RowAction icon="edit" tooltip={this.gmsg('modify')} onClick={() => this.toggleUserModal(record.key)} />
           </PrivilegeCover>
         );
       } else if (record.status === ACCOUNT_STATUS.normal.id) {
+        let deptAction = null;
+        if (!Number.isNaN(parseFloat(this.props.filters.dept_id))) {
+          deptAction = <RowAction icon="logout" tooltip="移出部门" onClick={() => this.handleRemFromDept(record)} />;
+        }
         return (
           <PrivilegeCover module="corp" feature="personnel" action="edit">
-            <RowAction icon="edit" tooltip={this.msg('modify')} onClick={() => this.toggleUserModal(record.key)} />
-            <RowAction icon="pause-circle-o" tooltip={this.msg('disable')} onClick={() => this.handleStatusSwitch(record, index)} />
+            <RowAction icon="edit" tooltip={this.gmsg('modify')} onClick={() => this.toggleUserModal(record.key)} />
+            {deptAction}
+            <RowAction icon="pause-circle-o" tooltip={this.gmsg('disable')} onClick={() => this.handleStatusSwitch(record, index)} />
           </PrivilegeCover>
         );
       } else if (record.status === ACCOUNT_STATUS.blocked.id) {
         return (
           <span>
             <PrivilegeCover module="corp" feature="personnel" action="edit">
-              <RowAction icon="play-circle-o" tooltip={this.msg('enable')} onClick={() => this.handleStatusSwitch(record, index)} />
+              <RowAction icon="play-circle-o" tooltip={this.gmsg('enable')} onClick={() => this.handleStatusSwitch(record, index)} />
             </PrivilegeCover>
             <PrivilegeCover module="corp" feature="personnel" action="delete">
-              <RowAction danger icon="delete" tooltip={this.msg('delete')} confirm="确认删除？" onConfirm={() => this.handlePersonnelDel(record)} />
+              <RowAction danger icon="delete" tooltip={this.gmsg('delete')} confirm="确认删除？" onConfirm={() => this.handlePersonnelDel(record)} />
             </PrivilegeCover>
           </span>
         );
@@ -185,7 +191,6 @@ export default class MemberDepartmentView extends React.Component {
     }),
     getParams: (pagination, filters, sorter) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         current: pagination.current,
         sortField: sorter.field,
@@ -219,9 +224,8 @@ export default class MemberDepartmentView extends React.Component {
       this.props.createDepartment(this.props.tenantId, this.state.departmentName).then((result) => {
         if (!result.error) {
           this.setState({ departmentName: '', deptPopVisible: false });
-          this.props.loadDepartments(this.props.tenantId);
+          this.props.loadDepartments();
           this.props.loadMembers({
-            tenantId: this.props.tenantId,
             pageSize: this.props.personnelist.pageSize,
             current: 1,
             filters: JSON.stringify({ ...this.props.filters, dept_id: result.data }),
@@ -248,7 +252,6 @@ export default class MemberDepartmentView extends React.Component {
         message.error(result.error.message, 10);
       } else {
         this.props.loadMembers({
-          tenantId,
           pageSize,
           filters: JSON.stringify(filters),
           current: resolveCurrentPageNumber(totalCount - 1, current, pageSize),
@@ -259,7 +262,6 @@ export default class MemberDepartmentView extends React.Component {
   handleSearch = (searchVal) => {
     const filters = { ...this.props.filters, name: searchVal };
     this.props.loadMembers({
-      tenantId: this.props.tenantId,
       pageSize: this.props.personnelist.pageSize,
       current: 1,
       filters: JSON.stringify(filters),
@@ -270,11 +272,13 @@ export default class MemberDepartmentView extends React.Component {
     const { key } = menukey;
     if (key === 'members') {
       filters.dept_id = undefined;
-    } else if (!isNaN(key)) { // eslint-disable-line
-      filters.dept_id = parseInt(key, 10);
+    } else {
+      const keyDeptId = parseInt(key, 10);
+      if (!Number.isNaN(key)) {
+        filters.dept_id = keyDeptId;
+      }
     }
     this.props.loadMembers({
-      tenantId: this.props.tenantId,
       pageSize: this.props.personnelist.pageSize,
       current: 1,
       filters: JSON.stringify(filters),
@@ -287,7 +291,6 @@ export default class MemberDepartmentView extends React.Component {
     if (this.props.filters.dept_id &&
       (this.props.personnelist.data.length < this.props.personnelist.pageSize)) {
       this.props.loadMembers({
-        tenantId: this.props.tenantId,
         pageSize: this.props.personnelist.pageSize,
         current: this.props.personnelist.current,
         filters: JSON.stringify(this.props.filters),
@@ -296,7 +299,6 @@ export default class MemberDepartmentView extends React.Component {
   }
   handleReloadAllMembers = () => {
     this.props.loadMembers({
-      tenantId: this.props.tenantId,
       pageSize: this.props.personnelist.pageSize,
       current: 1,
       filters: JSON.stringify(this.props.filters),
@@ -304,6 +306,14 @@ export default class MemberDepartmentView extends React.Component {
   }
   toggleUserModal = (key) => {
     this.props.toggleUserModal(true, key);
+  }
+  handleRemFromDept = (user) => {
+    const deptId = parseFloat(this.props.filters.dept_id);
+    this.props.removeDepartmentMember(user.key, deptId).then((result) => {
+      if (!result.error) {
+        this.handleReloadAllMembers();
+      }
+    });
   }
   renderColumnText = (status, text) => {
     let style = {};
@@ -319,7 +329,7 @@ export default class MemberDepartmentView extends React.Component {
     this.dataSource.remotes = personnelist;
     const selectMenuKeys = [];
     let contentHeadAction;
-    if (!isNaN(filters.dept_id)) { // eslint-disable-line
+    if (!Number.isNaN(parseFloat(filters.dept_id))) {
       selectMenuKeys.push(filters.dept_id.toString());
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
@@ -351,7 +361,7 @@ export default class MemberDepartmentView extends React.Component {
               <Layout className="main-wrapper">
                 <Sider className="nav-sider">
                   <div className="nav-sider-head">
-                    <SearchBox onSearch={this.handleSearch} />
+                    <SearchBox onSearch={this.handleSearch} placeholder="搜索成员" />
                   </div>
                   <Menu
                     defaultOpenKeys={['deptMenu']}
