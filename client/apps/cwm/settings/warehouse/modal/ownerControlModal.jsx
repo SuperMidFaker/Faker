@@ -44,59 +44,59 @@ function SuAttribFormItem(props) {
       {attribField.enabled === 'subarcode' &&
       <Input.Group compact>
         <Input
+          addonBefore="分隔项"
+          placeholder="从0开始"
+          value={attribField.part}
+          style={{ width: '30%', borderRight: 0 }}
+          onChange={ev => this.handleChange('part', ev.target.value)}
+        />
+        <Input
+          addonBefore="距头部"
+          placeholder="字符数"
           onChange={ev => handleChange('start', ev.target.value)}
-          placeholder="起始位置必填"
           value={attribField.start}
-          style={{ width: '30%' }}
+          style={{ width: '35%' }}
         />
         <Input
-          style={{
-            width: '5%',
-            borderLeft: 0,
-            pointerEvents: 'none',
-            backgroundColor: '#fff',
-          }}
-          placeholder="~"
-          disabled
-        />
-        <Input
-          placeholder="终止位置必填"
+          addonBefore="距尾部"
+          placeholder="字符数"
           value={attribField.end}
           onChange={ev => handleChange('end', ev.target.value)}
-          style={{ width: '30%', borderLeft: 0 }}
+          style={{ width: '35%', borderLeft: 0 }}
         />
+      </Input.Group>}
+      {attribField.enabled === 'subarcode' &&
         <Input
           placeholder="时间解析格式YYYYMMDD选填"
           value={attribField.time_format}
           onChange={ev => handleChange('time_format', ev.target.value)}
           style={{ width: '35%' }}
-        />
-      </Input.Group>}
+        />}
     </FormItem>);
 }
 
 const initialSuBarcodeSetting = {
   enabled: false,
   product_no: {
-    start: null, end: null,
+    part: null, start: 0, end: 0,
   },
   serial_no: {
-    start: null, end: null,
+    part: null, start: 0, end: 0,
   },
   expiry_date: {
-    enabled: false, start: null, end: null, time_format: null,
+    enabled: false, part: null, start: 0, end: 0, time_format: null,
   },
   attrib_1_string: {
-    enabled: false, display: null, start: null, end: null, time_format: null,
+    enabled: false, display: null, part: null, start: 0, end: 0, time_format: null,
   },
   attrib_2_string: {
-    enabled: false, display: null, start: null, end: null, time_format: null,
+    enabled: false, display: null, part: null, start: 0, end: 0, time_format: null,
   },
   attrib_3_string: {
-    enabled: false, display: null, start: null, end: null, time_format: null,
+    enabled: false, display: null, part: null, start: 0, end: 0, time_format: null,
   },
   attrib_4_string: {
-    enabled: false, display: null, start: null, end: null, time_format: null,
+    enabled: false, display: null, part: null, start: 0, end: 0, time_format: null,
   },
 };
 
@@ -232,10 +232,10 @@ export default class OwnerControlModal extends Component {
   }
   handleChangeSuField = (field, key, value) => {
     const suBarcodeSetting = { ...this.state.suBarcodeSetting };
-    if (key === 'start' || key === 'end') {
+    if (key === 'start' || key === 'end' || key === 'part') {
       const fltValue = parseFloat(value);
       if (Number.isNaN(fltValue)) {
-        suBarcodeSetting[field][key] = null;
+        suBarcodeSetting[field][key] = 0;
       } else {
         suBarcodeSetting[field][key] = fltValue;
       }
@@ -257,6 +257,19 @@ export default class OwnerControlModal extends Component {
       suBarcodeBackup: null,
     });
   }
+  checkSuBarPart = (setting) => {
+    const { suBarcodeSetting } = this.state;
+    const start = parseFloat(setting.start);
+    const end = parseFloat(setting.end);
+    const part = parseFloat(setting.part);
+    if (Number.isNaN(start) || Number.isNaN(end)) {
+      return false;
+    }
+    if (suBarcodeSetting.separator && Number.isNaN(part)) {
+      return false;
+    }
+    return true;
+  }
   handleSuSettingOk = () => {
     const { suBarcodeSetting } = this.state;
     if (suBarcodeSetting.enabled) {
@@ -266,25 +279,25 @@ export default class OwnerControlModal extends Component {
         const suKey = suKeys[i];
         const setting = suBarcodeSetting[suKey];
         if (suKey === 'product_no') {
-          if (!setting.start || !setting.end) {
+          if (!this.checkSuBarPart(setting)) {
             completed = false;
             break;
           }
         } else if (suKey === 'serial_no') {
-          if (!setting.start || !setting.end) {
+          if (!this.checkSuBarPart(setting)) {
             completed = false;
             break;
           }
         } else if (setting.enabled) {
           if (suKey === 'expiry_date') {
-            if (!setting.start || !setting.end || !setting.time_format) {
+            if (!this.checkSuBarPart(setting) || !setting.time_format) {
               completed = false;
               break;
             }
           } else if (setting.enabled === 'maninput' && !setting.display) {
             completed = false;
             break;
-          } else if (setting.enabled === 'subarcode' && (!setting.start || !setting.end || !setting.display)) {
+          } else if (setting.enabled === 'subarcode' && (!this.checkSuBarPart(setting) || !setting.display)) {
             completed = false;
             break;
           }
@@ -357,28 +370,34 @@ export default class OwnerControlModal extends Component {
             <FormItem {...formItemLayout} label="启用">
               <Switch checked={suBarcodeSetting.enabled} onChange={this.handleSuBarScanEnable} />
             </FormItem>
+            <FormItem {...formItemLayout} label="分隔符">
+              <Input
+                value={suBarcodeSetting.separator}
+                placeholder="条码内不同项分隔符号"
+                onChange={ev => this.handleSubarFieldChange('separator', ev.target.value)}
+              />
+            </FormItem>
             <FormItem {...formItemLayout} label="货号">
               <Input.Group compact>
                 <Input
-                  placeholder="起始位置必填"
+                  addonBefore="分隔项"
+                  placeholder="从0开始"
+                  value={suBarcodeSetting.product_no.part}
+                  style={{ width: '30%', borderRight: 0 }}
+                  onChange={ev => this.handleChangeSuField('product_no', 'part', ev.target.value)}
+                />
+                <Input
+                  addonBefore="距头部"
+                  placeholder="字符数"
                   value={suBarcodeSetting.product_no.start}
-                  style={{ width: '40%' }}
+                  style={{ width: '35%', borderLeft: 0, borderRight: 0 }}
                   onChange={ev => this.handleChangeSuField('product_no', 'start', ev.target.value)}
                 />
                 <Input
-                  style={{
-                    width: '5%',
-                    borderLeft: 0,
-                    pointerEvents: 'none',
-                    backgroundColor: '#fff',
-                  }}
-                  placeholder="~"
-                  disabled
-                />
-                <Input
-                  placeholder="终止位置必填"
+                  addonBefore="距尾部"
+                  placeholder="字符数"
                   value={suBarcodeSetting.product_no.end}
-                  style={{ width: '40%', borderLeft: 0 }}
+                  style={{ width: '35%', borderLeft: 0 }}
                   onChange={ev => this.handleChangeSuField('product_no', 'end', ev.target.value)}
                 />
               </Input.Group>
@@ -386,26 +405,25 @@ export default class OwnerControlModal extends Component {
             <FormItem {...formItemLayout} label="序列号">
               <Input.Group compact>
                 <Input
-                  onChange={ev => this.handleChangeSuField('serial_no', 'start', ev.target.value)}
-                  placeholder="起始位置必填"
+                  addonBefore="分隔项"
+                  placeholder="从0开始"
+                  value={suBarcodeSetting.serial_no.part}
+                  style={{ width: '30%', borderRight: 0 }}
+                  onChange={ev => this.handleChangeSuField('serial_no', 'part', ev.target.value)}
+                />
+                <Input
+                  addonBefore="距头部"
+                  placeholder="字符数"
                   value={suBarcodeSetting.serial_no.start}
-                  style={{ width: '40%' }}
+                  style={{ width: '35%', borderLeft: 0, borderRight: 0 }}
+                  onChange={ev => this.handleChangeSuField('serial_no', 'start', ev.target.value)}
                 />
                 <Input
-                  style={{
-                    width: '5%',
-                    borderLeft: 0,
-                    pointerEvents: 'none',
-                    backgroundColor: '#fff',
-                  }}
-                  placeholder="~"
-                  disabled
-                />
-                <Input
-                  onChange={ev => this.handleChangeSuField('serial_no', 'end', ev.target.value)}
-                  placeholder="终止位置必填"
+                  addonBefore="距尾部"
+                  placeholder="字符数"
                   value={suBarcodeSetting.serial_no.end}
-                  style={{ width: '40%', borderLeft: 0 }}
+                  style={{ width: '35%', borderLeft: 0 }}
+                  onChange={ev => this.handleChangeSuField('serial_no', 'end', ev.target.value)}
                 />
               </Input.Group>
             </FormItem>
@@ -417,34 +435,34 @@ export default class OwnerControlModal extends Component {
               {suBarcodeSetting.expiry_date.enabled &&
               <Input.Group compact>
                 <Input
-                  placeholder="起始位置必填"
+                  addonBefore="分隔项"
+                  placeholder="从0开始"
+                  value={suBarcodeSetting.expiry_date.part}
+                  style={{ width: '30%', borderRight: 0 }}
+                  onChange={ev => this.handleChangeSuField('expiry_date', 'part', ev.target.value)}
+                />
+                <Input
+                  addonBefore="距头部"
+                  placeholder="字符数"
                   value={suBarcodeSetting.expiry_date.start}
+                  style={{ width: '35%', borderLeft: 0 }}
                   onChange={ev => this.handleChangeSuField('expiry_date', 'start', ev.target.value)}
-                  style={{ width: '30%' }}
                 />
                 <Input
-                  style={{
-                    width: '5%',
-                    borderLeft: 0,
-                    pointerEvents: 'none',
-                    backgroundColor: '#fff',
-                  }}
-                  placeholder="~"
-                  disabled
-                />
-                <Input
-                  onChange={ev => this.handleChangeSuField('expiry_date', 'end', ev.target.value)}
-                  placeholder="终止位置必填"
+                  addonBefore="距尾部"
+                  placeholder="字符数"
                   value={suBarcodeSetting.expiry_date.end}
-                  style={{ width: '30%', borderLeft: 0 }}
-                />
-                <Input
-                  onChange={ev => this.handleChangeSuField('expiry_date', 'time_format', ev.target.value)}
-                  placeholder="解析时间格式YYYYMMDD必填"
-                  value={suBarcodeSetting.expiry_date.time_format}
-                  style={{ width: '35%' }}
+                  style={{ width: '35%', borderLeft: 0 }}
+                  onChange={ev => this.handleChangeSuField('expiry_date', 'end', ev.target.value)}
                 />
               </Input.Group>}
+              {suBarcodeSetting.expiry_date.enabled &&
+              <Input
+                onChange={ev => this.handleChangeSuField('expiry_date', 'time_format', ev.target.value)}
+                placeholder="解析时间格式YYYYMMDD必填"
+                value={suBarcodeSetting.expiry_date.time_format}
+                style={{ width: '30%' }}
+              />}
             </FormItem>
             <SuAttribFormItem
               formItemLayout={formItemLayout}

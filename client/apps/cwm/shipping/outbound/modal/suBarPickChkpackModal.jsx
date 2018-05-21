@@ -140,10 +140,23 @@ export default class SuBarPickChkpackModal extends Component {
         }
       });
       const suScan = {};
+      let barcodeParts = [barcode];
+      if (suSetting.separator) {
+        barcodeParts = barcode.split(suSetting.separator);
+      }
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
-        suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        if (suConf.part >= 0) {
+          const barcodePart = barcodeParts[suConf.part];
+          if (barcodePart) {
+            suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
+          } else {
+            suScan[suKey] = null;
+          }
+        } else {
+          suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        }
         if (!suScan[suKey]) {
           this.setState({
             alertMsg: '错误条码',
