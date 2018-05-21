@@ -184,6 +184,7 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '收货数量',
     dataIndex: 'received_qty',
+    width: 120,
     align: 'right',
     render: (o, record) => {
       if (record.received_qty === record.expect_qty) {

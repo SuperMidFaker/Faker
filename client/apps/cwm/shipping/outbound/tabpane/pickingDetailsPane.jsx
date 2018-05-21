@@ -144,6 +144,7 @@ export default class PickingDetailsPane extends React.Component {
     render: portion => (portion ? <Tag color="green">可分拨</Tag> : <Tag>否</Tag>),
   }, {
     title: '库别',
+    width: 100,
     dataIndex: 'virtual_whse',
   }, {
     title: '批次号',

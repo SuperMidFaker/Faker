@@ -1,7 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
-import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC,
-  clearFormC } from './form-common';
+import { appendFormAcitonTypes, formReducer, isFormDataLoadedC, loadFormC, assignFormC, clearFormC } from './form-common';
 
 const actionTypes = createActionTypes('@@welogix/personnel/', [
   'LOAD_DEPARTMENTS', 'LOAD_DEPARTMENTS_SUCCEED', 'LOAD_DEPARTMENTS_FAIL',
@@ -16,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/personnel/', [
   'LOAD_NONDEPTM', 'LOAD_NONDEPTM_SUCCEED', 'LOAD_NONDEPTM_FAIL',
   'OPEN_AMM', 'CLOSE_AMM', 'TOGGLE_USER_MODAL',
   'LOAD_DEPARTMENT_MEMBERS', 'LOAD_DEPARTMENT_MEMBERS_SUCCEED', 'LOAD_DEPARTMENT_MEMBERS_FAIL',
+  'REMOVE_DEPM', 'REMOVE_DEPM_SUCCEED', 'REMOVE_DEPM_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/personnel/', actionTypes);
 
@@ -105,7 +105,7 @@ export function loadMembers(params) {
   };
 }
 
-export function loadDepartments(tenantId) {
+export function loadDepartments() {
   return {
     [CLIENT_API]: {
       types: [
@@ -115,7 +115,6 @@ export function loadDepartments(tenantId) {
       ],
       endpoint: 'v1/personnel/departments',
       method: 'get',
-      params: { tenantId },
     },
   };
 }
@@ -286,5 +285,20 @@ export function toggleUserModal(visible, pid = '') {
     type: actionTypes.TOGGLE_USER_MODAL,
     visible,
     pid,
+  };
+}
+
+export function removeDepartmentMember(userId, deptId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_DEPM,
+        actionTypes.REMOVE_DEPM_SUCCEED,
+        actionTypes.REMOVE_DEPM_FAIL,
+      ],
+      endpoint: 'v1/personnel/remove/department/member',
+      method: 'post',
+      data: { deptId, userId },
+    },
   };
 }
