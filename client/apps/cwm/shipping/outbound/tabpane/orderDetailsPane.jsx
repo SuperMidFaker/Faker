@@ -339,9 +339,19 @@ export default class OrderDetailsPane extends React.Component {
     let alertMsg;
     if (outboundHead.total_alloc_qty > 0 &&
       outboundHead.total_alloc_qty !== outboundHead.total_qty) {
-      const seqNos = outboundProducts.filter(op => !op.alloc_qty || op.alloc_qty < op.order_qty).map(op => op.seq_no).join(',');
-      if (seqNos.length > 0) {
-        alertMsg = `未完成配货行号: ${seqNos}`;
+      const unallocPrds = outboundProducts.filter(op =>
+        !op.alloc_qty || op.alloc_qty < op.order_qty);
+      if (unallocPrds.length > 0) {
+        const seqNos = unallocPrds.map(op => op.seq_no).join(',');
+        alertMsg = <span>未完成配货行号: {seqNos}</span>;
+        const noqtyPrds = unallocPrds.filter(uaprd => !uaprd.product_no);
+        let allocHintMsg = null;
+        if (noqtyPrds.length > 0) { // 无货号数量时无法手工分配,分配错误提示
+          allocHintMsg = `检查是否${outboundHead.alloc_rules.filter(aoc => aoc.eigen).map(aoc => aoc.eigen).concat('已获取海关入库监管ID').join('或')}`;
+        }
+        if (allocHintMsg) {
+          alertMsg = <span>未完成配货行号: {seqNos}<br />{allocHintMsg}</span>;
+        }
       }
     }
     const rowKey = 'seq_no';
