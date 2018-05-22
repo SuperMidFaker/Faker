@@ -9,7 +9,6 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import ToolbarAction from 'client/components/ToolbarAction';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadBillableStatementStat } from 'common/reducers/bssStatement';
@@ -61,7 +60,6 @@ export default class BuyerPendingTable extends React.Component {
   }, {
     title: '客户名称',
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '客户单号',
     width: 180,

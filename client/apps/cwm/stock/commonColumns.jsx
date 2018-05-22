@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import { Tag } from 'antd';
 import { CWM_DAMAGE_LEVEL, CWM_TRANSACTIONS_TYPE } from 'common/constants';
-import TrimSpan from 'client/components/trimSpan';
 import { formatMsg } from './message.i18n';
 
 exports.commonTraceColumns = (intl) => {
@@ -48,12 +47,10 @@ exports.commonTraceColumns = (intl) => {
     title: msg('lotNo'),
     width: 120,
     dataIndex: 'external_lot_no',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('serialNo'),
     width: 120,
     dataIndex: 'serial_no',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('virtualWhse'),
     width: 120,
@@ -78,32 +75,26 @@ exports.commonTraceColumns = (intl) => {
     title: msg('attrib1'),
     width: 120,
     dataIndex: 'attrib_1_string',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('attrib2'),
     width: 120,
     dataIndex: 'attrib_2_string',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('attrib3'),
     width: 120,
     dataIndex: 'attrib_3_string',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('attrib4'),
     width: 120,
     dataIndex: 'attrib_4_string',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('attrib5'),
     width: 120,
     dataIndex: 'attrib_5_string',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('attrib6'),
     width: 120,
     dataIndex: 'attrib_6_string',
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: msg('attrib7'),
     width: 120,

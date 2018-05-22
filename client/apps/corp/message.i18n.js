@@ -25,7 +25,7 @@ const messages = defineMessages({
   },
   corpCollab: {
     id: 'corp.collab',
-    defaultMessage: '企业间协作',
+    defaultMessage: '企业互联',
   },
   invitation: {
     id: 'corp.collab.invitation',

@@ -8,7 +8,6 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import { PARTNER_ROLES, BILL_STATUS } from 'common/constants';
 import { loadBills, loadBillStatistics, sendBill, deleteBills, writeOffBill, recallBill } from 'common/reducers/bssBill';
 import BillTypeTag from './common/billTypeTag';
@@ -97,7 +96,6 @@ export default class SellerBills extends React.Component {
     title: '服务商',
     width: 200,
     dataIndex: 'seller_name',
-    render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: '账单类型',
     dataIndex: 'bill_type',

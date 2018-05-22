@@ -6,7 +6,6 @@ import DockPanel from 'client/components/DockPanel';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import TrimSpan from 'client/components/trimSpan';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsCustomsDeclare';
 import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
@@ -145,7 +144,7 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '回执报文',
     dataIndex: 'return_file',
-    render: o => <a onClick={() => this.showDeclMsgModal('return', o)}><TrimSpan text={o} maxLen={70} tailer={20} /></a>,
+    render: o => <a onClick={() => this.showDeclMsgModal('return', o)}>{o}</a>,
   }, {
     title: '接收时间',
     dataIndex: 'return_date',

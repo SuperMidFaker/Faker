@@ -7,15 +7,16 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Alert, Badge, Tooltip, Layout, Tabs, Steps, Button, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import SearchBox from 'client/components/SearchBox';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg, fileRelTransfers, cancelRelReg,
-  editReleaseWt } from 'common/reducers/cwmShFtz';
+import {
+  loadRelDetails, loadParams, updateRelReg, fileRelTransfers, cancelRelReg,
+  editReleaseWt,
+} from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
@@ -166,7 +167,6 @@ export default class SHFTZTransferOutDetail extends Component {
     title: '规格型号',
     dataIndex: 'model',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '转出数量',
     dataIndex: 'out_qty',

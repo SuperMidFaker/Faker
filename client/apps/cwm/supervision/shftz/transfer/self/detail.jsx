@@ -9,7 +9,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Layout, Steps, Button, Tabs, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -105,7 +104,6 @@ export default class SHFTZTransferSelfDetail extends Component {
     title: '规格型号',
     dataIndex: 'model',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',
     dataIndex: 'stock_qty',

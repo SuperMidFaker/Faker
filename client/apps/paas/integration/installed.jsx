@@ -127,7 +127,7 @@ export default class InstalledAppsList extends React.Component {
       <Layout>
         <HubSiderMenu currentKey="installed" openKey="integration" />
         <Layout>
-          <PageHeader title={this.msg('installedApps')} />
+          <PageHeader title={this.msg('installedPlugins')} />
           <Content className="page-content layout-fixed-width">
             <Card bodyStyle={{ padding: 0 }} >
               <List

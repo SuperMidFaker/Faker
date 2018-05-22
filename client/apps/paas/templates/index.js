@@ -1,1 +1,2 @@
-export NoticeTemplate from './noticeTemplate';
+export Print from './print';
+export Notice from './notice';

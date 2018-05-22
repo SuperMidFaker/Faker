@@ -9,7 +9,6 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import ToolbarAction from 'client/components/ToolbarAction';
 import { PARTNER_ROLES } from 'common/constants';
 import { loadBillableStatementStat } from 'common/reducers/bssStatement';
@@ -61,7 +60,7 @@ export default class SellerPendingTable extends React.Component {
   }, {
     title: '服务商',
     dataIndex: 'vendor_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
+    width: 150,
   }, {
     title: '客户单号',
     width: 180,

@@ -145,6 +145,7 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
+    width: 100,
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',

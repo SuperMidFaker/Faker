@@ -51,7 +51,7 @@ export default class ReceivedInvitationList extends Component {
     this.props.loadReceiveInvitations(this.props.tenantId);
   }
   columns = [{
-    title: '合作伙伴',
+    title: '企业名称',
     dataIndex: 'inviter_name',
     key: 'inviter_name',
     width: 350,

@@ -6,6 +6,7 @@ export const INTEGRATION_APPS = [
     link: '/paas/integration/singlewindow/install',
     description: '国际贸易单一窗口',
   },
+  /*
   {
     app_type: 'QP',
     title: 'QP海关预录入系统',
@@ -13,6 +14,7 @@ export const INTEGRATION_APPS = [
     link: '/paas/integration/quickpass/install',
     description: 'QuickPass 海关预录入系统',
   },
+  */
   {
     app_type: 'EASIPASS',
     title: '亿通EDI海关申报系统',
@@ -60,6 +62,34 @@ export const PAAS_BIZ_OBJECTS = [
     key: 'customsDelegation',
     link: '/paas/objects/delegation',
   },
+  {
+    key: 'customsManifest',
+    link: '/paas/objects/cusmanifest',
+  },
+  {
+    key: 'customsDeclaration',
+    link: '/paas/objects/cusdecl',
+  },
+  {
+    key: 'receivingNotice',
+    link: '/paas/objects/asn',
+  },
+  {
+    key: 'shippingOrder',
+    link: '/paas/objects/so',
+  },
+  {
+    key: 'inboundOrder',
+    link: '/paas/objects/inbound',
+  },
+  {
+    key: 'outboundOrder',
+    link: '/paas/objects/outbound',
+  },
+  {
+    key: 'freightOrder',
+    link: '/paas/objects/freight',
+  },
 ];
 
 export const PAAS_PARAM_PREFS = [
@@ -83,7 +113,11 @@ export const PAAS_PARAM_PREFS = [
 
 export const PAAS_TEMPLATES = [
   {
-    key: 'notify',
-    link: '/paas/templates/notify',
+    key: 'printTempl',
+    link: '/paas/templates/print',
+  },
+  {
+    key: 'noticeTempl',
+    link: '/paas/templates/notice',
   },
 ];

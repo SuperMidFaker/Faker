@@ -257,7 +257,7 @@ export default class FlowList extends React.Component {
     </span>);
     return (
       <Layout>
-        <HubSiderMenu currentKey="flow" openKey="bizFlow" />
+        <HubSiderMenu currentKey="flowDesign" openKey="bizFlow" />
         <Layout>
           <PageHeader title={this.msg('flow')}>
             <PageHeader.Actions>

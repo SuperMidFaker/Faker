@@ -5,7 +5,6 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Layout, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -117,7 +116,7 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '发货单位',
     width: 280,
     dataIndex: 'owner_name',
-    render: (o, record) => <TrimSpan text={`${record.owner_cus_code}|${o}`} maxLen={30} />,
+    render: (o, record) => <span>{`${record.owner_cus_code}|${o}`}</span>,
   }, {
     title: '发货仓库号',
     width: 100,
@@ -126,7 +125,7 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '收货单位',
     width: 280,
     dataIndex: 'receiver_name',
-    render: (o, record) => (record.receiver_cus_code ? <TrimSpan text={`${record.receiver_cus_code}|${o}`} maxLen={30} /> : o),
+    render: (o, record) => (record.receiver_cus_code ? <span>{`${record.receiver_cus_code}|${o}`}</span> : o),
   }, {
     title: '收货仓库号',
     width: 100,

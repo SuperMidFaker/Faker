@@ -11,7 +11,6 @@ import Drawer from 'client/components/Drawer';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataTable from 'client/components/DataTable';
-import TrimSpan from 'client/components/trimSpan';
 import FTZStockPane from './tabpane/ftzStockPane';
 import { formatMsg } from './message.i18n';
 
@@ -67,7 +66,6 @@ export default class SHFTZStockMatchTask extends Component {
     dataIndex: 'product_no',
     width: 150,
     fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: this.msg('gName'),
     width: 120,

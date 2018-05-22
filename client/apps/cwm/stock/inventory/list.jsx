@@ -11,7 +11,6 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import PageHeader from 'client/components/PageHeader';
 import WhseSelect from '../../common/whseSelect';
@@ -84,14 +83,13 @@ export default class StockInventoryList extends React.Component {
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: (text, row) => getNormalCol(<TrimSpan maxLen={15} text={text} />, row),
+    render: (text, row) => getNormalCol(text, row),
   }, {
     title: this.msg('SKU'),
     dataIndex: 'product_sku',
@@ -102,7 +100,6 @@ export default class StockInventoryList extends React.Component {
     title: this.msg('descCN'),
     dataIndex: 'name',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('location'),
     width: 120,

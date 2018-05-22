@@ -9,7 +9,6 @@ import { loadNonbondedStocks } from 'common/reducers/cwmShFtzStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import QueryForm from './queryForm';
@@ -66,7 +65,6 @@ export default class SHFTZNonBondedStockList extends React.Component {
     dataIndex: 'owner_name',
     width: 150,
     fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('productNo'),
     width: 120,
