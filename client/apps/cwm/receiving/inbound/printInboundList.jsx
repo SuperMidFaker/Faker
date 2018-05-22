@@ -54,9 +54,10 @@ export default class Print extends Component {
       { text: inboundHead.cust_order_no, style: 'table' }, { text: '入库日期', style: 'table' }, { text: '', style: 'table' }]);
     pdf.push([{ text: '货物属性', style: 'table' }, { text: inboundHead.bonded ? '保税' : '非保税', style: 'table' }, { text: '客户', style: 'table' },
       { text: inboundHead.owner_name, style: 'table' }, { text: '仓库', style: 'table' }, { text: defaultWhse.name, style: 'table' }]);
-    pdf.push([{ text: '件数', style: 'table' }, { text: inboundHead.total_expect_qty, style: 'table' }, { text: '提运单号', style: 'table' },
-      { text: '', style: 'table' }, { text: '海关入库编号', style: 'table' }, { text: '', style: 'table' }]);
-    pdf.push([{ text: '备注', style: 'table' }, { text: '', colSpan: 5 }, {}, {}, {}, {}]);
+    pdf.push([{ text: '供货商', style: 'table' }, { text: inboundHead.supplier_name, style: 'table' }, { text: '提运单号', style: 'table' },
+      { text: '', style: 'table' }, { text: '进区单号', style: 'table' }, { text: '', style: 'table' }]);
+    pdf.push([{ text: '件数', style: 'table' }, { text: inboundHead.total_expect_qty, style: 'table' },
+      { text: '备注', style: 'table' }, { text: '', colSpan: 3 }, {}, {}]);
     return pdf;
   }
   pdfInboundDetails = () => {

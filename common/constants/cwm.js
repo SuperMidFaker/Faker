@@ -530,7 +530,7 @@ exports.SKU_REQUIRED_PROPS = [{
 }];
 
 exports.PICK_PRINT_FIELDS = [{
-  field: 'product_no', text: '货号', width: 80,
+  field: 'product_no', text: '货号', width: 83,
 }, {
   field: 'name', text: '产品名称', width: 100,
 }, {
