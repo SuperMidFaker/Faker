@@ -13,7 +13,6 @@ import DescriptionList from 'client/components/DescriptionList';
 import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -149,7 +148,6 @@ export default class BatchDeclDetail extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    render: o => <TrimSpan text={o} maxLen={30} />,
     width: 240,
   }, {
     title: '原产国',

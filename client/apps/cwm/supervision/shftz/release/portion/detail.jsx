@@ -7,7 +7,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Alert, Badge, Tooltip, Layout, Tabs, Steps, Button, Radio, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -308,7 +307,6 @@ export default class SHFTZRelDetail extends Component {
     title: '规格型号',
     dataIndex: 'model',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',
     dataIndex: 'qty',
@@ -376,7 +374,6 @@ export default class SHFTZRelDetail extends Component {
     title: '报关申请单号',
     dataIndex: 'ftz_apply_nos',
     width: 200,
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '备案状态',
     dataIndex: 'status',

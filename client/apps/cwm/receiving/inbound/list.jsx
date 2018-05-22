@@ -8,7 +8,6 @@ import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -116,7 +115,7 @@ export default class ReceivingInboundList extends React.Component {
   }, {
     title: '货主',
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    width: 160,
   }, {
     title: '预期总数量',
     dataIndex: 'total_expect_qty',

@@ -80,6 +80,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '中文品名',
     dataIndex: 'name',
+    width: 200,
   }, {
     title: '订货数量',
     dataIndex: 'order_qty',

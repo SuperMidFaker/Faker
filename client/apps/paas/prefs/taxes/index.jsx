@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Layout } from 'antd';
+import { Button, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleOrderTypeModal, loadOrderTypes, removeOrderType } from 'common/reducers/sofOrderPref';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
-import SettingMenu from './menu';
-import { formatMsg, formatGlobalMsg } from './message.i18n';
+import HubSiderMenu from '../../menu';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -76,18 +76,7 @@ export default class TaxRates extends Component {
     }];
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('settings')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <SettingMenu currentKey="taxrates" />
-          </div>
-        </Sider>
+        <HubSiderMenu currentKey="taxes" openKey="paramPrefs" />
         <Layout>
           <PageHeader>
             <PageHeader.Actions>

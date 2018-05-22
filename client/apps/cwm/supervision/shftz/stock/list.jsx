@@ -13,7 +13,6 @@ import { string2Bytes } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import DockPanel from 'client/components/DockPanel';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import ButtonToggle from 'client/components/ButtonToggle';
@@ -74,7 +73,6 @@ export default class SHFTZStockList extends React.Component {
     dataIndex: 'owner_name',
     width: 150,
     fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('ftzEntNo'),
     dataIndex: 'ftz_ent_no',

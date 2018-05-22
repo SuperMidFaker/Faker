@@ -46,7 +46,7 @@ export default class ConfigAmberRoadCTM extends React.Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            this.msg('installedApps'),
+            this.msg('installedPlugins'),
             this.msg('appAmberRoadCTM'),
             <span>{app.name} {this.renderStatusTag(app.enabled)}</span>,
           ]}

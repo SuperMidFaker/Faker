@@ -8,7 +8,6 @@ import { loadTransactions } from 'common/reducers/cwmTransaction';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import Drawer from 'client/components/Drawer';
 import WhseSelect from '../../common/whseSelect';
@@ -58,19 +57,16 @@ export default class StockTransactionsList extends React.Component {
     width: 150,
     sorter: true,
     fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: pn => <TrimSpan maxLen={15} text={pn} />,
   }, {
     title: this.msg('descCN'),
     dataIndex: 'name',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('location'),
     width: 120,

@@ -46,7 +46,7 @@ export default class ConfigSHFTZ extends React.Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            this.msg('installedApps'),
+            this.msg('installedPlugins'),
             this.msg('appSHFTZ'),
             <span>{shftz.name} {this.renderStatusTag(app.enabled)}</span>,
           ]}

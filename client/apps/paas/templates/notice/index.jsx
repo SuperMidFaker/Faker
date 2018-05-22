@@ -7,9 +7,9 @@ import SearchBox from 'client/components/SearchBox';
 import { intlShape, injectIntl } from 'react-intl';
 import { toggleTemplateModal, loadTemplates, deleteTemplate } from 'common/reducers/template';
 import RowAction from 'client/components/RowAction';
-import HubSiderMenu from '../menu';
+import HubSiderMenu from '../../menu';
 import CreateModal from './modal/createModal';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const { Content } = Layout;
 
@@ -85,9 +85,9 @@ export default class NoticeTemplateList extends React.Component {
     };
     return (
       <Layout>
-        <HubSiderMenu currentKey="notice" openKey="templates" />
+        <HubSiderMenu currentKey="noticeTempl" openKey="templates" />
         <Layout>
-          <PageHeader title={this.msg('templates')}>
+          <PageHeader title={this.msg('noticeTempl')}>
             <PageHeader.Actions>
               <Button type="primary" icon="plus" onClick={this.toggleTemplateModal}>
                 {this.msg('create')}

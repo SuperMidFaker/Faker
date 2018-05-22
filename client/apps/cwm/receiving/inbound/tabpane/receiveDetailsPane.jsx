@@ -183,6 +183,7 @@ export default class ReceiveDetailsPane extends React.Component {
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
+    width: 100,
     dataIndex: 'received_qty',
     width: 120,
     align: 'right',

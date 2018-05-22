@@ -134,6 +134,7 @@ export default class DetailsPane extends Component {
     }, {
       title: '计量单位',
       dataIndex: 'unit',
+      width: 100,
       align: 'center',
       width: 100,
       render: (o) => {

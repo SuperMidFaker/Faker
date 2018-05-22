@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Button, Layout, Dropdown, Menu } from 'antd';
-
 import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showImportModal, loadManualLists } from 'common/reducers/cmsTradeManual';
@@ -101,44 +99,35 @@ export default class ManualList extends Component {
     title: this.msg('ownerName'),
     width: 180,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('tradeName'),
     width: 180,
     dataIndex: 'trade_name',
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('manualType'),
     width: 200,
     dataIndex: 'manual_type',
-    render: o => <TrimSpan text={o} maxLen={25} />,
   }, {
     title: this.msg('masterCustomsCode'),
     width: 180,
     dataIndex: 'master_customs_code',
-    render: o => (<TrimSpan
-      text={this.props.customs.find(cs => cs.value === o) &&
-        this.props.customs.find(cs => cs.value === o).text}
-      maxLen={20}
-    />),
+    render: o => (<span>{this.props.customs.find(cs => cs.value === o) &&
+      this.props.customs.find(cs => cs.value === o).text}</span>),
   }, {
     title: this.msg('tradeMode'),
     width: 180,
     dataIndex: 'trade_mode',
-    render: o => (<TrimSpan
-      text={this.props.tradeModes.find(tm => tm.value === o) &&
+    render: o => (<span>{this.props.tradeModes.find(tm => tm.value === o) &&
         this.props.tradeModes.find(tm => tm.value === o).text}
-      maxLen={10}
-    />),
+    </span>),
   }, {
     title: this.msg('cutMode'),
     width: 80,
     dataIndex: 'cut_mode',
-    render: o => (<TrimSpan
-      text={this.props.remissionModes.find(rm => rm.value === o) &&
+    render: o => (<span>
+      {this.props.remissionModes.find(rm => rm.value === o) &&
         this.props.remissionModes.find(rm => rm.value === o).text}
-      maxLen={10}
-    />),
+    </span>),
   }, {
     title: this.msg('inputDate'),
     dataIndex: 'input_date',

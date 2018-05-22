@@ -48,7 +48,7 @@ export default class ConfigSFExpress extends React.Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            this.msg('installedApps'),
+            this.msg('installedPlugins'),
             this.msg('appSFExpress'),
             <span>{sfexpress.name} {this.renderStatusTag(app.enabled)}</span>,
           ]}

@@ -46,7 +46,7 @@ export default class ConfigQuickPass extends React.Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            this.msg('installedApps'),
+            this.msg('installedPlugins'),
             this.msg('appSingleWindow'),
             <span>{singlewindow.name} {this.renderStatusTag(app.enabled)}</span>,
           ]}

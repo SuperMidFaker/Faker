@@ -592,7 +592,6 @@ const MODULE_BSS = {
   id: 'bss',
   text: 'moduleBSS',
   defaultText: '结算中心',
-  status: 'alpha',
   features: [],
 };
 
@@ -600,7 +599,6 @@ const MODULE_DIS = {
   id: 'dis',
   text: 'moduleDIS',
   defaultText: '统计分析',
-  status: 'dev',
   features: [],
 };
 

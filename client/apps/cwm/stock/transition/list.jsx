@@ -10,7 +10,6 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import Summary from 'client/components/Summary';
 import PageHeader from 'client/components/PageHeader';
 import { createFilename } from 'client/util/dataTransform';
@@ -118,24 +117,20 @@ export default class StockTransitionList extends React.Component {
     width: 150,
     sorter: true,
     fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: pn => <TrimSpan maxLen={15} text={pn} />,
   }, {
     title: this.msg('descCN'),
     dataIndex: 'name',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('SKUCategory'),
     dataIndex: 'sku_category',
     width: 120,
-    render: o => <TrimSpan text={o} maxLen={10} tailer={3} />,
   }, {
     title: this.msg('location'),
     width: 120,

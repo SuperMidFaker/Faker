@@ -1619,7 +1619,7 @@
   "paas.integration.cat.sup": "辅助监管",
   "paas.integration.cat.log": "物流平台",
   "paas.integration.apps.store": "应用市场",
-  "paas.integration.installed.apps": "已安装应用",
+  "paas.integration.installed.plugins": "已安装插件",
   "paas.integration.app.name": "应用名称",
   "paas.integration.app.arctm": "AmberRoad CTM",
   "paas.integration.app.quickpass": "QP预录入",

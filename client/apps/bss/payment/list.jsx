@@ -11,7 +11,6 @@ import ToolbarAction from 'client/components/ToolbarAction';
 import Drawer from 'client/components/Drawer';
 import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import RowAction from 'client/components/RowAction';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import UserAvatar from 'client/components/UserAvatar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -70,7 +69,6 @@ export default class AuditList extends React.Component {
     title: '客户',
     width: 180,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '客户单号',
     width: 150,

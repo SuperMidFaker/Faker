@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import { loadParams, showTransferInModal, loadEntryTransRegs, loadVtransferRegDetails, saveVirtualTransfer } from 'common/reducers/cwmShFtz';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
-const Option = Select.Option;
+const { Option } = Select;
 
 @injectIntl
 @connect(
@@ -38,19 +37,22 @@ const Option = Select.Option;
     submitting: state.cwmShFtz.submitting,
   }),
   {
-    loadParams, showTransferInModal, loadEntryTransRegs, loadVtransferRegDetails, saveVirtualTransfer,
+    loadParams,
+    showTransferInModal,
+    loadEntryTransRegs,
+    loadVtransferRegDetails,
+    saveVirtualTransfer,
   }
 )
 export default class TransferSelfModal extends Component {
   static propTypes = {
-    intl: intlShape.isRequired,
+    // intl: intlShape.isRequired,
     reload: PropTypes.func.isRequired,
   }
   state = {
     ownerCusCode: '',
     relDateRange: [],
     entryRegNo: '',
-    portionRegs: [],
     regDetails: [],
     transRegs: [],
   }
@@ -102,20 +104,12 @@ export default class TransferSelfModal extends Component {
     title: '货号',
     dataIndex: 'product_no',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
+    render: o => o && <Button>{o}</Button>,
   }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 180,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
+    render: o => o && <Button>{o}</Button>,
   }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
@@ -131,7 +125,7 @@ export default class TransferSelfModal extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    render: o => <TrimSpan text={o} maxLen={30} />,
+    width: 150,
   }, {
     title: '原产国',
     dataIndex: 'country',
@@ -185,20 +179,23 @@ export default class TransferSelfModal extends Component {
     this.props.loadVtransferRegDetails({ ftzEntNo: row.ftz_ent_no }).then((result) => {
       if (!result.error) {
         const entNo = row.ftz_ent_no;
-        const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(result.data.map(dt => ({ ...dt, ftz_ent_no: entNo })));
-        const transRegs = this.state.transRegs.map(pr => (pr.ftz_ent_no === entNo ? { ...pr, added: true } : pr));
+        const regDetails = this.state.regDetails.filter(reg =>
+          reg.ftz_ent_no !== entNo).concat(result.data.map(dt => ({ ...dt, ftz_ent_no: entNo })));
+        const transRegs = this.state.transRegs.map(pr =>
+          (pr.ftz_ent_no === entNo ? { ...pr, added: true } : pr));
         this.setState({ regDetails, transRegs });
       }
     });
   }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
-    const transRegs = this.state.transRegs.map(pr => (pr.ftz_ent_no === detail.ftz_ent_no ? { ...pr, added: false } : pr));
+    const transRegs = this.state.transRegs.map(pr =>
+      (pr.ftz_ent_no === detail.ftz_ent_no ? { ...pr, added: false } : pr));
     this.setState({ regDetails, transRegs });
   }
   handleCancel = () => {
     this.setState({
-      ownerCusCode: '', transRegs: [], regDetails: [], rel_no: '', relDateRange: [],
+      ownerCusCode: '', transRegs: [], regDetails: [], relDateRange: [],
     });
     this.props.showTransferInModal({ visible: false });
   }
@@ -230,7 +227,8 @@ export default class TransferSelfModal extends Component {
     this.state.regDetails.forEach((regd) => {
       detailIds.push(regd.id);
     });
-    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode).map(own => ({
+    const owner = this.props.owners.filter(own =>
+      own.customs_code === this.state.ownerCusCode).map(own => ({
       partner_id: own.id,
       tenant_id: own.partner_tenant_id,
       customs_code: own.customs_code,
@@ -314,7 +312,11 @@ export default class TransferSelfModal extends Component {
               columns={this.entryRegColumns}
               dataSource={transRegs}
               rowKey="ftz_ent_no"
-              scroll={{ x: this.entryRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+              scroll={{
+                x: this.entryRegColumns.reduce((acc, cur) =>
+                acc + (cur.width ? cur.width : 240), 0),
+                y: this.state.scrollY,
+            }}
             />
           </div>
         </Card>
@@ -325,7 +327,11 @@ export default class TransferSelfModal extends Component {
               columns={this.regDetailColumns}
               dataSource={regDetails}
               rowKey="id"
-              scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+              scroll={{
+                x: this.regDetailColumns.reduce((acc, cur) =>
+                acc + (cur.width ? cur.width : 240), 0),
+                y: this.state.scrollY,
+              }}
             />
           </div>
         </Card>

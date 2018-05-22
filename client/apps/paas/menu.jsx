@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Layout, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { PAAS_BIZ_OBJECTS, PAAS_PARAM_PREFS, PAAS_TEMPLATES } from 'common/constants';
+import { PAAS_PARAM_PREFS, PAAS_TEMPLATES } from 'common/constants';
 import NavLink from 'client/components/NavLink';
 import { formatMsg } from './message.i18n';
 
@@ -37,6 +37,40 @@ export default class HubSiderMenu extends React.Component {
           selectedKeys={[this.props.currentKey]}
           openKeys={this.state.openKeys}
         >
+          <Menu.Item key="home">
+            <NavLink to="/paas">
+              <Icon type="home" /> {this.msg('home')}
+            </NavLink>
+          </Menu.Item>
+          <SubMenu key="bizObject" title={<span><Icon type="appstore" /> {this.msg('bizObject')}</span>} onTitleClick={this.openSubMenu}>
+            <Menu.Item key="stdObj">
+              <NavLink to="/paas/object/std">
+                {this.msg('stdObj')}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="myObj">
+              <NavLink to="/paas/object/my">
+                {this.msg('myObj')}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="field">
+              <NavLink to="/paas/object/field">
+                {this.msg('field')}
+              </NavLink>
+            </Menu.Item>
+          </SubMenu>
+          <SubMenu key="bizFlow" title={<span><Icon type="fork" /> {this.msg('bizFlow')}</span>} onTitleClick={this.openSubMenu}>
+            <Menu.Item key="flowDesign">
+              <NavLink to="/paas/flow">
+                {this.msg('flowDesign')}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="flowMonitor">
+              <NavLink to="/paas/flow/monitor">
+                {this.msg('flowMonitor')}
+              </NavLink>
+            </Menu.Item>
+          </SubMenu>
           <SubMenu key="integration" title={<span><Icon type="api" /> {this.msg('integration')}</span>} onTitleClick={this.openSubMenu}>
             <Menu.Item key="apps">
               <NavLink to="/paas/integration/apps">
@@ -45,7 +79,7 @@ export default class HubSiderMenu extends React.Component {
             </Menu.Item>
             <Menu.Item key="installed">
               <NavLink to="/paas/integration/installed">
-                {this.msg('installedApps')}
+                {this.msg('installedPlugins')}
               </NavLink>
             </Menu.Item>
             <Menu.Item key="dev">
@@ -56,27 +90,6 @@ export default class HubSiderMenu extends React.Component {
             <Menu.Item key="adapter">
               <NavLink to="/paas/adapter">
                 {this.msg('dataAdapters')}
-              </NavLink>
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu key="bizObject" title={<span><Icon type="profile" /> {this.msg('bizObject')}</span>} onTitleClick={this.openSubMenu}>
-            {PAAS_BIZ_OBJECTS.map(obj => (
-              <Menu.Item key={obj.key}>
-                <NavLink to={obj.link}>
-                  {this.msg(obj.key)}
-                </NavLink>
-              </Menu.Item>))
-            }
-          </SubMenu>
-          <SubMenu key="bizFlow" title={<span><Icon type="fork" /> {this.msg('bizFlow')}</span>} onTitleClick={this.openSubMenu}>
-            <Menu.Item key="flowDesigner">
-              <NavLink to="/paas/flow">
-                {this.msg('flowDesigner')}
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key="flowMonitor">
-              <NavLink to="/paas/flow/monitor">
-                {this.msg('flowMonitor')}
               </NavLink>
             </Menu.Item>
           </SubMenu>

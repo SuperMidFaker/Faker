@@ -10,7 +10,6 @@ import { Alert, Badge, Layout, InputNumber, Popover, Radio, Steps, Button, Tag, 
 import connectNav from 'client/common/decorators/connect-nav';
 import Drawer from 'client/components/Drawer';
 import EditableCell from 'client/components/EditableCell';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -484,7 +483,6 @@ export default class SHFTZEntryDetail extends Component {
     title: '规格型号',
     dataIndex: 'model',
     width: 250,
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',
     dataIndex: 'qty',

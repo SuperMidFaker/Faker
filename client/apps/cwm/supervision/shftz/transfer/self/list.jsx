@@ -5,7 +5,6 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Layout, Select, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -102,12 +101,10 @@ export default class SHFTZTransferSelfList extends React.Component {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '转移方向',
     width: 180,
     dataIndex: 'sender_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '转出时间',
     width: 150,
