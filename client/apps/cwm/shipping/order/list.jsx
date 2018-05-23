@@ -634,7 +634,6 @@ export default class ShippingOrderList extends React.Component {
           template={`${XLSX_CDN}/SO批量导入模板.xlsx`}
         />
         <ExportDataPanel
-          visible={this.props.visible}
           type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[1]}
           formData={{ whseCode: this.props.defaultWhse.code }}
         />

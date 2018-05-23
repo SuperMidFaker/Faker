@@ -426,7 +426,6 @@ export default class InvoiceList extends React.Component {
             </Form.Item>
           </ImportDataPanel>
           <ExportDataPanel
-            visible={this.props.visible}
             type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[3]}
             formData={{}}
           />

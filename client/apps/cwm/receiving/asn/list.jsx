@@ -513,7 +513,6 @@ export default class ReceivingASNList extends React.Component {
               locale={{ emptyText: '没有当前状态的ASN' }}
             />
             <ExportDataPanel
-              visible={this.props.visible}
               type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[5]}
               formData={{ whseCode: this.props.defaultWhse.code }}
             />

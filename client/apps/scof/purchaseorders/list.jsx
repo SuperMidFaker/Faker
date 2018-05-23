@@ -363,7 +363,6 @@ export default class PurchaseOrderList extends React.Component {
             template={`${XLSX_CDN}/采购订单导入模板.xlsx`}
           />
           <ExportDataPanel
-            visible={this.props.visible}
             type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[4]}
             formData={{}}
           />
