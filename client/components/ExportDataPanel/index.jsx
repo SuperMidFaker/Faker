@@ -9,7 +9,7 @@ import { Button, DatePicker, Form, Radio, Select, Steps, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { handleExport } from 'common/reducers/sofExport';
+import { handleExport, toggleExportPanel } from 'common/reducers/saasExport';
 import { formatMsg } from './message.i18n';
 import './style.less';
 
@@ -19,10 +19,12 @@ const { Step } = Steps;
 
 @injectIntl
 @connect(
-  () => ({
+  state => ({
+    visible: state.saasExport.visible,
   }),
   {
     handleExport,
+    toggleExportPanel,
   }
 )
 export default class ExportDataPanel extends React.Component {
@@ -30,29 +32,19 @@ export default class ExportDataPanel extends React.Component {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     title: PropTypes.string,
-    onClose: PropTypes.func,
     type: PropTypes.string.isRequired,
-    whseCode: PropTypes.string,
+    formData: PropTypes.PropTypes.shape({
+      whseCode: PropTypes.string,
+    }),
   }
   state = {
-    format: 2,
+    format: 'xlsx',
     exportType: 1,
     disabled: true,
     startDate: null,
     endDate: null,
-    thead: [],
-    tbody: [],
     selectedThead: [],
     selectedTbody: [],
-  }
-  componentDidMount() {
-    const { columns } = LINE_FILE_ADAPTOR_MODELS[this.props.type];
-    const thead = columns.filter(column => column.thead);
-    const tbody = columns.filter(column => column.tbody);
-    this.setState({
-      thead,
-      tbody,
-    });
   }
   onDateChange = (data, dataString) => {
     this.setState({
@@ -77,9 +69,7 @@ export default class ExportDataPanel extends React.Component {
     this.setState(updateData);
   }
   handleClose = () => {
-    if (this.props.onClose) {
-      this.props.onClose();
-    }
+    this.props.toggleExportPanel(false);
   }
   msg = formatMsg(this.props.intl)
   handleHeaderSelect = (value) => {
@@ -93,7 +83,7 @@ export default class ExportDataPanel extends React.Component {
     });
   }
   handleExport = () => {
-    const { type, whseCode } = this.props;
+    const { type, formData: { whseCode } } = this.props;
     const {
       selectedThead, selectedTbody, startDate, endDate, format,
     } = this.state;
@@ -102,7 +92,7 @@ export default class ExportDataPanel extends React.Component {
       return;
     }
     this.props.handleExport({
-      type, thead: selectedThead, tbody: selectedTbody, startDate, endDate, whseCode,
+      type, thead: selectedThead, tbody: selectedTbody, formData: { startDate, endDate, whseCode },
     }).then((result) => {
       if (!result.error) {
         const fields = selectedThead.concat(selectedTbody);
@@ -115,13 +105,15 @@ export default class ExportDataPanel extends React.Component {
             labelMap[column.field] = column.label;
           }
         });
-        if (format === 2) {
-          const excelData = result.data.map((dv) => {
-            const data = {};
-            fields.forEach((field) => {
-              data[labelMap[field]] = dv[field];
-            });
-            return data;
+        if (format === 'xlsx') {
+          const excelData = [];
+          result.data.forEach((dv) => {
+            const item = {};
+            for (let i = 0; i < fields.length; i++) {
+              const field = fields[i];
+              item[labelMap[field]] = dv[i];
+            }
+            excelData.push(item);
           });
           const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
           const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
@@ -134,7 +126,7 @@ export default class ExportDataPanel extends React.Component {
           let csvData = '';
           fields.forEach((field, index) => {
             if (index === fields.length - 1) {
-              csvData += `${labelMap[field]}\n`;
+              csvData += `${labelMap[field]}\r\n`;
             } else {
               csvData += `${labelMap[field]},`;
             }
@@ -152,13 +144,16 @@ export default class ExportDataPanel extends React.Component {
   }
   render() {
     const {
-      visible, title,
+      visible, title, type,
     } = this.props;
     const {
-      startDate, endDate, disabled, thead, tbody,
+      startDate, endDate, disabled,
     } = this.state;
+    const { columns } = LINE_FILE_ADAPTOR_MODELS[type];
+    const thead = columns.filter(column => column.thead);
+    const tbody = columns.filter(column => column.tbody);
     let rangerValue = [];
-    if (startDate) {
+    if (startDate && endDate) {
       rangerValue = [moment(startDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')];
     }
     return (
@@ -216,8 +211,8 @@ export default class ExportDataPanel extends React.Component {
                 </Form.Item>
                 <Form.Item label={this.msg('exportFormat')}>
                   <Radio.Group onChange={this.handleFormatChange} value={this.state.format}>
-                    <Radio value={1}>CSV (Comma Separated Value)</Radio>
-                    <Radio value={2}>XLSX (Microsoft Excel)</Radio>
+                    <Radio value="csv">CSV (Comma Separated Value)</Radio>
+                    <Radio value="xlsx">XLSX (Microsoft Excel)</Radio>
                   </Radio.Group>
                 </Form.Item>
               </div>

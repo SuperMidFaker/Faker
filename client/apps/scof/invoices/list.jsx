@@ -20,6 +20,7 @@ import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo, loadInvoiceCategories, loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
+import { toggleExportPanel } from 'common/reducers/saasExport';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
 // import { createFilename } from 'client/util/dataTransform';
@@ -62,6 +63,7 @@ function fetchData({ state, dispatch }) {
     invoiceCategories: state.sofInvoice.invoiceCategories,
     buyers: state.sofInvoice.buyers,
     sellers: state.sofInvoice.sellers,
+    visible: state.saasExport.visible,
   }),
   {
     loadInvoices,
@@ -71,6 +73,7 @@ function fetchData({ state, dispatch }) {
     batchDeleteByUploadNo,
     setUploadRecordsReload,
     togglePanelVisible,
+    toggleExportPanel,
   }
 )
 @connectNav({
@@ -86,7 +89,6 @@ export default class InvoiceList extends React.Component {
   }
   state = {
     importPanelVisible: false,
-    exportPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
     buyer: '',
@@ -215,9 +217,7 @@ export default class InvoiceList extends React.Component {
     });
   }
   handleExport = () => {
-    this.setState({
-      exportPanelVisible: true,
-    });
+    this.props.toggleExportPanel(true);
   }
   columns = [{
     title: this.msg('invoiceNo'),
@@ -427,9 +427,9 @@ export default class InvoiceList extends React.Component {
             </Form.Item>
           </ImportDataPanel>
           <ExportDataPanel
-            visible={this.state.exportPanelVisible}
-            onClose={() => { this.setState({ exportPanelVisible: false }); }}
-            type={LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key}
+            visible={this.props.visible}
+            type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[3]}
+            formData={{}}
           />
           <UploadLogsPanel
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}

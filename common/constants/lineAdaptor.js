@@ -110,7 +110,27 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       tbody: true,
     }, {
       field: 'po_no',
-      label: '进库订单号',
+      label: '采购订单号',
+      tbody: true,
+    }, {
+      field: 'asn_cust_order_no',
+      label: '入库订单号',
+      tbody: true,
+    }, {
+      field: 'attrib_1_string',
+      label: '扩展属性1',
+      tbody: true,
+    }, {
+      field: 'attrib_2_string',
+      label: '扩展属性2',
+      tbody: true,
+    }, {
+      field: 'attrib_3_string',
+      label: '扩展属性3',
+      tbody: true,
+    }, {
+      field: 'attrib_4_string',
+      label: '扩展属性4',
       tbody: true,
     }, {
       field: 'external_no',
@@ -170,7 +190,7 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }],
   },
   SOF_ORDER: {
-    key: 'SOF_ORDER',
+    key: 'SOF.ORDER',
     name: '订单模板',
     columns: [{
       field: 'cust_code',
@@ -642,17 +662,14 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: 'asn编号',
       thead: true,
     }, {
-      field: 'po_no',
-      label: '采购订单号',
-      thead: true,
-    }, {
       field: 'owner_name',
       label: '货主',
       thead: true,
     }, {
       field: 'supplier_name',
       label: '供应商',
-      thead: true,
+      exportField: 'supplier',
+      tbody: true,
     }, {
       field: 'bonded',
       label: '保税监管',
@@ -661,6 +678,34 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       field: 'bonded_intype',
       label: '监管状态',
       thead: true,
+    }, {
+      field: 'cust_order_no',
+      label: '入库订单号',
+      thead: true,
+    }, {
+      field: 'attrib_1_string',
+      label: '扩展属性1',
+      tbody: true,
+    }, {
+      field: 'attrib_2_string',
+      label: '扩展属性2',
+      tbody: true,
+    }, {
+      field: 'attrib_3_string',
+      label: '扩展属性3',
+      tbody: true,
+    }, {
+      field: 'attrib_4_string',
+      label: '扩展属性4',
+      tbody: true,
+    }, {
+      field: 'serial_no',
+      label: '序列号',
+      tbody: true,
+    }, {
+      field: 'po_no',
+      label: '采购订单号',
+      tbody: true,
     }, {
       field: 'invoice_no',
       label: '发票号',
@@ -684,18 +729,6 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'unit_price',
       label: '单价',
-      tbody: true,
-    }, {
-      field: 'currency',
-      label: '币制',
-      tbody: true,
-    }, {
-      field: 'country',
-      label: '国别',
-      tbody: true,
-    }, {
-      field: 'trxn_mode',
-      label: '成交方式',
       tbody: true,
     }, {
       field: 'virtual_whse',

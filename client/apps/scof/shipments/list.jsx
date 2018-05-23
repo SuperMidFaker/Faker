@@ -13,6 +13,7 @@ import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
+import { toggleExportPanel } from 'common/reducers/saasExport';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -52,6 +53,7 @@ const { RangePicker } = DatePicker;
   flows: state.scofFlow.partnerFlows,
   orderTypes: state.sofOrderPref.requireOrderTypes,
   uploadRecords: state.uploadRecords.uploadRecords,
+  visible: state.saasExport.visible,
 }), {
   loadOrders,
   loadPartners,
@@ -70,6 +72,7 @@ const { RangePicker } = DatePicker;
   batchStart,
   batchDelete,
   togglePanelVisible,
+  toggleExportPanel,
 })
 @connectNav({
   depth: 2,
@@ -103,7 +106,6 @@ export default class OrderList extends React.Component {
       cust_order_no: null,
       cust_order_no_input: false,
     },
-    exportPanelVisible: false,
   }
   componentDidMount() {
     const { query } = this.props.location;
@@ -363,9 +365,7 @@ export default class OrderList extends React.Component {
     });
   }
   handleExport = () => {
-    this.setState({
-      exportPanelVisible: true,
-    });
+    this.props.toggleExportPanel(true);
   }
   render() {
     const {
@@ -603,13 +603,14 @@ export default class OrderList extends React.Component {
           </Form.Item>}
         </ImportDataPanel>
         <ExportDataPanel
-          visible={this.state.exportPanelVisible}
-          onClose={() => { this.setState({ exportPanelVisible: false }); }}
-          type={LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key}
+          visible={this.props.visible}
+          type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[2]}
+          formData={{}}
         />
         <UploadLogsPanel
           onUploadBatchDelete={this.removeOrdersByBatchUpload}
           type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
+          formData={{}}
         />
       </Layout>
     );

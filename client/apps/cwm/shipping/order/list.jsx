@@ -18,6 +18,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
 import { exportNormalExitBySo, openShippingModal } from 'common/reducers/cwmOutbound';
+import { toggleExportPanel } from 'common/reducers/saasExport';
 import ExportDataPanel from 'client/components/ExportDataPanel';
 import WhseSelect from '../../common/whseSelect';
 import ShippingDockPanel from '../dock/shippingDockPanel';
@@ -47,6 +48,7 @@ const { RangePicker } = DatePicker;
     tenantName: state.account.tenantName,
     userMembers: state.account.userMembers,
     adaptors: state.hubDataAdapter.modelAdaptors,
+    visible: state.saasExport.visible,
   }),
   {
     loadSos,
@@ -59,6 +61,7 @@ const { RangePicker } = DatePicker;
     exportNormalExitBySo,
     openShippingModal,
     loadModelAdaptors,
+    toggleExportPanel,
   }
 )
 @connectNav({
@@ -77,7 +80,6 @@ export default class ShippingOrderList extends React.Component {
     selectedRows: [],
     createWaveEnable: true,
     importPanelVisible: false,
-    exportPanelVisible: false,
   }
   componentDidMount() {
     const filters = {
@@ -410,9 +412,7 @@ export default class ShippingOrderList extends React.Component {
     });
   }
   handleExport = () => {
-    this.setState({
-      exportPanelVisible: true,
-    });
+    this.props.toggleExportPanel(true);
   }
   render() {
     const {
@@ -635,10 +635,9 @@ export default class ShippingOrderList extends React.Component {
           template={`${XLSX_CDN}/SO批量导入模板.xlsx`}
         />
         <ExportDataPanel
-          visible={this.state.exportPanelVisible}
-          onClose={() => { this.setState({ exportPanelVisible: false }); }}
-          type={LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key}
-          whseCode={this.props.defaultWhse.code}
+          visible={this.props.visible}
+          type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[1]}
+          formData={{ whseCode: this.props.defaultWhse.code }}
         />
         <AddToWaveModal reload={this.handleReload} selectedRowKeys={this.state.selectedRowKeys} />
         <ShippingModal shipMode="batchSo" selectedRows={this.state.selectedRows.map(sr => sr.so_no)} onShipped={this.handleReload} />
