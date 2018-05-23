@@ -63,7 +63,6 @@ function fetchData({ state, dispatch }) {
     invoiceCategories: state.sofInvoice.invoiceCategories,
     buyers: state.sofInvoice.buyers,
     sellers: state.sofInvoice.sellers,
-    visible: state.saasExport.visible,
   }),
   {
     loadInvoices,

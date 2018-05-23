@@ -50,7 +50,6 @@ function fetchData({ state, dispatch }) {
     uploadRecords: state.uploadRecords.uploadRecords,
     buyers: state.sofInvoice.buyers,
     sellers: state.sofInvoice.sellers,
-    visible: state.saasExport.visible,
     countries: state.cmsParams.countries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,

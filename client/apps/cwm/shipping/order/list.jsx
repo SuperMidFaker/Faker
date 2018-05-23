@@ -48,7 +48,6 @@ const { RangePicker } = DatePicker;
     tenantName: state.account.tenantName,
     userMembers: state.account.userMembers,
     adaptors: state.hubDataAdapter.modelAdaptors,
-    visible: state.saasExport.visible,
   }),
   {
     loadSos,

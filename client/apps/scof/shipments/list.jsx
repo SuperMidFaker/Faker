@@ -53,7 +53,6 @@ const { RangePicker } = DatePicker;
   flows: state.scofFlow.partnerFlows,
   orderTypes: state.sofOrderPref.requireOrderTypes,
   uploadRecords: state.uploadRecords.uploadRecords,
-  visible: state.saasExport.visible,
 }), {
   loadOrders,
   loadPartners,
