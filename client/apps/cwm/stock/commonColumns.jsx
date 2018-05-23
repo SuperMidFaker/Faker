@@ -32,6 +32,18 @@ exports.commonTraceColumns = (intl) => {
     width: 150,
     dataIndex: 'cust_order_no',
   }, {
+    title: msg('billLadingNo'),
+    width: 150,
+    dataIndex: 'bl_wb_no',
+  }, {
+    title: msg('billLadingMawb'),
+    width: 150,
+    dataIndex: 'bl_wb_mawb',
+  }, {
+    title: msg('billLadingHawb'),
+    width: 150,
+    dataIndex: 'bl_wb_hawb',
+  }, {
     title: msg('poNo'),
     width: 150,
     dataIndex: 'po_no',

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
+import { Form, Checkbox, Input, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
@@ -100,6 +100,7 @@ export default class OrderList extends React.Component {
     status: 'all',
     importPanel: {
       visible: false,
+      cust_order_nodup: true,
       customer_partner_id: undefined,
       flow_id: undefined,
       cust_order_no: null,
@@ -168,7 +169,7 @@ export default class OrderList extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleImport = () => {
-    this.setState({ importPanel: { visible: true } });
+    this.setState({ importPanel: { visible: true, cust_order_nodup: true } });
   }
   handleCreate = () => {
     this.props.setClientForm(-2, {});
@@ -315,6 +316,14 @@ export default class OrderList extends React.Component {
   }
   handleImportCustNoChange = (ev) => {
     this.setState({ importPanel: { ...this.state.importPanel, cust_order_no: ev.target.value } });
+  }
+  handleCustOrderDupCheck = (ev) => {
+    this.setState({
+      importPanel: {
+        ...this.state.importPanel,
+        cust_order_nodup: ev.target.checked,
+      },
+    });
   }
   handleCheckUpload = (msg) => {
     if (!this.state.importPanel.flow_id) {
@@ -561,6 +570,7 @@ export default class OrderList extends React.Component {
             customer_partner_id: importPanel.partner_id,
             flow_id: importPanel.flow_id,
             cust_order_no: importPanel.cust_order_no,
+            cust_order_nodup: importPanel.cust_order_nodup,
           }}
           onClose={this.handleImportClose}
           onBeforeUpload={this.handleCheckUpload}
@@ -570,6 +580,7 @@ export default class OrderList extends React.Component {
             this.props.setUploadRecordsReload(true);
           }}
           template={`${XLSX_CDN}/订单导入模板.xlsx`}
+          customizeOverwrite
         >
           <Form.Item label="客户">
             <Select
@@ -600,6 +611,13 @@ export default class OrderList extends React.Component {
           <Form.Item label="客户订单号">
             <Input value={importPanel.cust_order_no} onChange={this.handleImportCustNoChange} />
           </Form.Item>}
+          <Form.Item>
+            <Checkbox
+              onChange={this.handleCustOrderDupCheck}
+              checked={importPanel.cust_order_nodup}
+            >忽略已存在客户单号
+            </Checkbox>
+          </Form.Item>
         </ImportDataPanel>
         <ExportDataPanel
           type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[2]}
