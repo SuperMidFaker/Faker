@@ -11,8 +11,9 @@ import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
+import ExportDataPanel from 'client/components/ExportDataPanel';
 import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import WhseSelect from '../../common/whseSelect';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
@@ -57,6 +58,7 @@ export default class ReceivingASNList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    exportPanelVisible: false,
   }
   componentDidMount() {
     const filters = {
@@ -365,6 +367,11 @@ export default class ReceivingASNList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleExport = () => {
+    this.setState({
+      exportPanelVisible: true,
+    });
+  }
   render() {
     const {
       defaultWhse, owners, suppliers, filters, loading,
@@ -506,6 +513,12 @@ export default class ReceivingASNList extends React.Component {
               rowKey="asn_no"
               loading={loading}
               locale={{ emptyText: '没有当前状态的ASN' }}
+            />
+            <ExportDataPanel
+              visible={this.state.exportPanelVisible}
+              onClose={() => { this.setState({ exportPanelVisible: false }); }}
+              type={LINE_FILE_ADAPTOR_MODELS.CWM_ASN.key}
+              whseCode={this.props.defaultWhse.code}
             />
           </Content>
         </Layout>

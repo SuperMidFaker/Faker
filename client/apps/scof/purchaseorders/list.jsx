@@ -18,6 +18,7 @@ import { loadParams } from 'common/reducers/cmsParams';
 import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { loadPurchaseOrders, batchDeletePurchaseOrders } from 'common/reducers/sofPurchaseOrders';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
+import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -365,6 +366,7 @@ export default class PurchaseOrderList extends React.Component {
           <ExportDataPanel
             visible={this.state.exportPanelVisible}
             onClose={() => { this.setState({ exportPanelVisible: false }); }}
+            type={LINE_FILE_ADAPTOR_MODELS.SCOF_PURCHASE_ORDER.key}
           />
         </Content>
       </Layout>

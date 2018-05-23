@@ -68,6 +68,7 @@ import sofTracking from './sofTracking';
 import sofDashboard from './sofDashboard';
 import sofInvoice from './sofInvoice';
 import sofPurchaseOrders from './sofPurchaseOrders';
+import sofExport from './sofExport';
 import transportAcceptance from './transport-acceptance';
 import trackingLandStatus from './trackingLandStatus';
 import trackingLandPod from './trackingLandPod';
@@ -143,6 +144,7 @@ export default combineReducers({
   sofDashboard,
   sofInvoice,
   sofPurchaseOrders,
+  sofExport,
   cwmReceive,
   cwmOutbound,
   cwmWarehouse,

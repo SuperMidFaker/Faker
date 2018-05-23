@@ -18,6 +18,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
 import { exportNormalExitBySo, openShippingModal } from 'common/reducers/cwmOutbound';
+import ExportDataPanel from 'client/components/ExportDataPanel';
 import WhseSelect from '../../common/whseSelect';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
@@ -76,6 +77,7 @@ export default class ShippingOrderList extends React.Component {
     selectedRows: [],
     createWaveEnable: true,
     importPanelVisible: false,
+    exportPanelVisible: false,
   }
   componentDidMount() {
     const filters = {
@@ -407,6 +409,11 @@ export default class ShippingOrderList extends React.Component {
       }
     });
   }
+  handleExport = () => {
+    this.setState({
+      exportPanelVisible: true,
+    });
+  }
   render() {
     const {
       defaultWhse, owners, filters, loading,
@@ -626,6 +633,12 @@ export default class ShippingOrderList extends React.Component {
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}
           template={`${XLSX_CDN}/SO批量导入模板.xlsx`}
+        />
+        <ExportDataPanel
+          visible={this.state.exportPanelVisible}
+          onClose={() => { this.setState({ exportPanelVisible: false }); }}
+          type={LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key}
+          whseCode={this.props.defaultWhse.code}
         />
         <AddToWaveModal reload={this.handleReload} selectedRowKeys={this.state.selectedRowKeys} />
         <ShippingModal shipMode="batchSo" selectedRows={this.state.selectedRows.map(sr => sr.so_no)} onShipped={this.handleReload} />

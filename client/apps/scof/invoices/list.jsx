@@ -218,9 +218,6 @@ export default class InvoiceList extends React.Component {
     this.setState({
       exportPanelVisible: true,
     });
-    // const { selectedRowKeys } = this.state;
-    // window.open(`${API_ROOTS.default}v1/scof/invoices/
-    // ${createFilename('invoices')}.xlsx?invoiceNos=${selectedRowKeys}`);
   }
   columns = [{
     title: this.msg('invoiceNo'),
@@ -432,6 +429,7 @@ export default class InvoiceList extends React.Component {
           <ExportDataPanel
             visible={this.state.exportPanelVisible}
             onClose={() => { this.setState({ exportPanelVisible: false }); }}
+            type={LINE_FILE_ADAPTOR_MODELS.SCOF_INVOICE.key}
           />
           <UploadLogsPanel
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}

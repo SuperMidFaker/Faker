@@ -1,8 +1,15 @@
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
-import { Button, DatePicker, Form, Radio, Select, Steps } from 'antd';
+import { connect } from 'react-redux';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
+import { string2Bytes, createFilename } from 'client/util/dataTransform';
+import { Button, DatePicker, Form, Radio, Select, Steps, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
+import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { handleExport } from 'common/reducers/sofExport';
 import { formatMsg } from './message.i18n';
 import './style.less';
 
@@ -11,29 +18,149 @@ const { RangePicker } = DatePicker;
 const { Step } = Steps;
 
 @injectIntl
+@connect(
+  () => ({
+  }),
+  {
+    handleExport,
+  }
+)
 export default class ExportDataPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     title: PropTypes.string,
     onClose: PropTypes.func,
+    type: PropTypes.string.isRequired,
+    whseCode: PropTypes.string,
   }
   state = {
-
+    format: 2,
+    exportType: 1,
+    disabled: true,
+    startDate: null,
+    endDate: null,
+    thead: [],
+    tbody: [],
+    selectedThead: [],
+    selectedTbody: [],
   }
-  msg = formatMsg(this.props.intl)
-
+  componentDidMount() {
+    const { columns } = LINE_FILE_ADAPTOR_MODELS[this.props.type];
+    const thead = columns.filter(column => column.thead);
+    const tbody = columns.filter(column => column.tbody);
+    this.setState({
+      thead,
+      tbody,
+    });
+  }
+  onDateChange = (data, dataString) => {
+    this.setState({
+      startDate: dataString[0],
+      endDate: dataString[1],
+    });
+  }
+  handleFormatChange = (e) => {
+    this.setState({
+      format: e.target.value,
+    });
+  }
+  handleExportTypeChange = (e) => {
+    const updateData = { exportType: e.target.value };
+    if (e.target.value === 1) {
+      updateData.disabled = true;
+      updateData.startDate = null;
+      updateData.endDate = null;
+    } else {
+      updateData.disabled = false;
+    }
+    this.setState(updateData);
+  }
   handleClose = () => {
     if (this.props.onClose) {
       this.props.onClose();
     }
   }
-
+  msg = formatMsg(this.props.intl)
+  handleHeaderSelect = (value) => {
+    this.setState({
+      selectedThead: value,
+    });
+  }
+  handleTbodySelect = (value) => {
+    this.setState({
+      selectedTbody: value,
+    });
+  }
+  handleExport = () => {
+    const { type, whseCode } = this.props;
+    const {
+      selectedThead, selectedTbody, startDate, endDate, format,
+    } = this.state;
+    if (selectedThead.length === 0 && selectedTbody.length === 0) {
+      message.warning(this.msg('pleaseSelectFields'));
+      return;
+    }
+    this.props.handleExport({
+      type, thead: selectedThead, tbody: selectedTbody, startDate, endDate, whseCode,
+    }).then((result) => {
+      if (!result.error) {
+        const fields = selectedThead.concat(selectedTbody);
+        const { columns } = LINE_FILE_ADAPTOR_MODELS[type];
+        const labelMap = {};
+        columns.forEach((column) => {
+          if (column.exportField) {
+            labelMap[column.exportField] = column.exportLabel;
+          } else {
+            labelMap[column.field] = column.label;
+          }
+        });
+        if (format === 2) {
+          const excelData = result.data.map((dv) => {
+            const data = {};
+            fields.forEach((field) => {
+              data[labelMap[field]] = dv[field];
+            });
+            return data;
+          });
+          const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+          const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+          wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(excelData);
+          FileSaver.saveAs(
+            new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
+            `${createFilename(type)}.xlsx`
+          );
+        } else {
+          let csvData = '';
+          fields.forEach((field, index) => {
+            if (index === fields.length - 1) {
+              csvData += `${labelMap[field]}\n`;
+            } else {
+              csvData += `${labelMap[field]},`;
+            }
+          });
+          result.data.forEach((data) => {
+            csvData += `${Object.values(data).join(',')}\n`;
+          });
+          FileSaver.saveAs(
+            new window.Blob([csvData], { type: 'text/plain;charset=utf-8' }),
+            `${createFilename(type)}.csv`
+          );
+        }
+      }
+    });
+  }
   render() {
     const {
-      visible, title, dataObjects, dataFields,
+      visible, title,
     } = this.props;
-
+    const {
+      startDate, endDate, disabled, thead, tbody,
+    } = this.state;
+    let rangerValue = [];
+    if (startDate) {
+      rangerValue = [moment(startDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')];
+    }
     return (
       <DockPanel
         title={title || this.msg('export')}
@@ -44,53 +171,51 @@ export default class ExportDataPanel extends React.Component {
       ><Form layout="vertical">
         <Steps direction="vertical" size="small">
           <Step
-            title={this.msg('dataObjects')}
-            status="wait"
-            description={<Form.Item><Select
-              allowClear
-              showSearch
-              onChange={this.handleAdaptorChange}
-            >
-              {dataObjects && dataObjects.map(opt =>
-                <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
-            </Select></Form.Item>}
-          />
-          <Step
             title={this.msg('exportOptions')}
             status="wait"
             description={
               <div>
                 <Form.Item>
-                  <Radio.Group onChange={this.handleSkipModeChange}>
+                  <Radio.Group onChange={this.handleExportTypeChange} value={this.state.exportType}>
                     <Radio value={1}>{this.msg('allData')}</Radio>
                     <Radio value={2}>{this.msg('specificPeriod')}</Radio>
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item>
-                  <RangePicker format="YYYY/MM/DD" />
+                  <RangePicker format="YYYY/MM/DD" value={rangerValue} onChange={this.onDateChange} disabled={disabled} />
                 </Form.Item>
                 <Form.Item label={this.msg('headerFields')}>
                   <Select
                     allowClear
                     mode="multiple"
-                    onChange={this.handleAdaptorChange}
+                    onChange={this.handleHeaderSelect}
                   >
-                    {dataFields && dataFields.map(opt =>
-                      <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
+                    {thead.map(opt =>
+                      (<Option
+                        value={opt.exportField || opt.field}
+                        key={opt.exportField || opt.field}
+                      >
+                        {opt.exportLabel || opt.label}
+                      </Option>))}
                   </Select>
                 </Form.Item>
                 <Form.Item label={this.msg('bodyFields')}>
                   <Select
                     allowClear
                     mode="multiple"
-                    onChange={this.handleAdaptorChange}
+                    onChange={this.handleTbodySelect}
                   >
-                    {dataFields && dataFields.map(opt =>
-                      <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
+                    {tbody.map(opt =>
+                      (<Option
+                        value={opt.exportField || opt.field}
+                        key={opt.exportField || opt.field}
+                      >
+                        {opt.exportLabel || opt.label}
+                      </Option>))}
                   </Select>
                 </Form.Item>
                 <Form.Item label={this.msg('exportFormat')}>
-                  <Radio.Group onChange={this.handleSkipModeChange}>
+                  <Radio.Group onChange={this.handleFormatChange} value={this.state.format}>
                     <Radio value={1}>CSV (Comma Separated Value)</Radio>
                     <Radio value={2}>XLSX (Microsoft Excel)</Radio>
                   </Radio.Group>
@@ -101,7 +226,7 @@ export default class ExportDataPanel extends React.Component {
           <Step
             title=""
             status="wait"
-            description={<Button type="primary">{this.msg('export')}</Button>}
+            description={<Button type="primary" onClick={this.handleExport}>{this.msg('export')}</Button>}
           />
         </Steps>
       </Form>

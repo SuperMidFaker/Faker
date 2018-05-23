@@ -21,6 +21,7 @@ import UserAvatar from 'client/components/UserAvatar';
 import ToolbarAction from 'client/components/ToolbarAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import ExportDataPanel from 'client/components/ExportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import ShipmentDockPanel from './docks/shipmentDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
@@ -102,6 +103,7 @@ export default class OrderList extends React.Component {
       cust_order_no: null,
       cust_order_no_input: false,
     },
+    exportPanelVisible: false,
   }
   componentDidMount() {
     const { query } = this.props.location;
@@ -360,6 +362,11 @@ export default class OrderList extends React.Component {
       }
     });
   }
+  handleExport = () => {
+    this.setState({
+      exportPanelVisible: true,
+    });
+  }
   render() {
     const {
       loading, filters, flows, partners,
@@ -595,6 +602,11 @@ export default class OrderList extends React.Component {
             <Input value={importPanel.cust_order_no} onChange={this.handleImportCustNoChange} />
           </Form.Item>}
         </ImportDataPanel>
+        <ExportDataPanel
+          visible={this.state.exportPanelVisible}
+          onClose={() => { this.setState({ exportPanelVisible: false }); }}
+          type={LINE_FILE_ADAPTOR_MODELS.SOF_ORDER.key}
+        />
         <UploadLogsPanel
           onUploadBatchDelete={this.removeOrdersByBatchUpload}
           type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
