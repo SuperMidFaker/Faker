@@ -34,6 +34,10 @@ const messages = defineMessages({
     id: 'component.export.data.panel.export.format',
     defaultMessage: '导出文件格式',
   },
+  pleaseSelectFields: {
+    id: 'component.export.data.panel.warning.pleaseSelectFields',
+    defaultMessage: '请选择导出字段',
+  },
 });
 export default messages;
 export const formatMsg = formati18n(messages);

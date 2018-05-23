@@ -85,66 +85,108 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     columns: [{
       field: 'owner_code',
       label: '客户代码',
+      exportField: 'owner_name',
+      exportLabel: '货主',
+      thead: true,
     }, {
       field: 'cust_order_no',
       label: '客户订单号',
+      thead: true,
     }, {
       field: 'product_no',
       label: '商品货号',
+      tbody: true,
     }, {
       field: 'name',
       label: '品名',
+      tbody: true,
     }, {
       field: 'order_qty',
       label: '数量',
+      tbody: true,
     }, {
       field: 'virtual_whse',
       label: '库别',
+      tbody: true,
     }, {
       field: 'po_no',
-      label: '进库订单号',
+      label: '采购订单号',
+      tbody: true,
+    }, {
+      field: 'asn_cust_order_no',
+      label: '入库订单号',
+      tbody: true,
+    }, {
+      field: 'attrib_1_string',
+      label: '扩展属性1',
+      tbody: true,
+    }, {
+      field: 'attrib_2_string',
+      label: '扩展属性2',
+      tbody: true,
+    }, {
+      field: 'attrib_3_string',
+      label: '扩展属性3',
+      tbody: true,
+    }, {
+      field: 'attrib_4_string',
+      label: '扩展属性4',
+      tbody: true,
     }, {
       field: 'external_no',
       label: '批次号',
+      tbody: true,
     }, {
       field: 'serial_no',
       label: '产品序列号',
+      tbody: true,
     }, {
       field: 'receiver_name',
       label: '收货方',
+      thead: true,
     }, {
       field: 'receiver_contact',
       label: '联系人',
+      thead: true,
     }, {
       field: 'receiver_address',
       label: '收件详细地址',
+      thead: true,
     }, {
       field: 'receiver_phone',
       label: '联系电话',
+      thead: true,
     }, {
       field: 'receiver_number',
       label: '手机号',
+      thead: true,
     }, {
       field: 'receiver_post_code',
       label: '邮政编码',
+      thead: true,
     }, {
       field: 'expect_shipping_date',
       label: '要求出货日期',
+      thead: true,
     }, {
       field: 'bonded',
       label: '货物属性',
+      thead: true,
     }, {
       field: 'amount',
       label: '金额',
+      tbody: true,
     }, {
       field: 'bonded_outtype',
       label: '监管方式',
+      thead: true,
     }, {
       field: 'supplier',
       label: '供货商',
     }, {
       field: 'so_type',
       label: 'SO类型',
+      thead: true,
     }],
   },
   SOF_ORDER: {
@@ -153,218 +195,295 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     columns: [{
       field: 'cust_code',
       label: '客户代码',
+      exportField: 'customer_name',
+      exportLabel: '客户名称',
+      thead: true,
     }, {
       field: 'cust_order_no',
       label: '客户单号',
+      thead: true,
     }, {
       field: 'cust_shipmt_transfer',
       label: '进出口标识',
+      thead: true,
     }, {
       field: 'cust_shipmt_pieces',
       label: '件数',
+      thead: true,
     }, {
       field: 'cust_shipmt_wrap_type',
       label: '包装',
+      thead: true,
     }, {
       field: 'cust_shipmt_weight',
       label: '总毛重',
+      thead: true,
     }, {
       field: 'cust_shipmt_volume',
       label: 'CBM',
+      thead: true,
     }, {
       field: 'cust_shipmt_expedited',
       label: '是否紧急',
+      thead: true,
     }, {
       field: 'cust_shipmt_goods_type',
       label: '货物类型',
+      thead: true,
     }, {
       field: 'cust_receiver_code',
       label: '收货方代码',
+      thead: true,
     }, {
       field: 'cust_receiver_name',
       label: '收货方名称',
+      thead: true,
     }, {
       field: 'cust_receiver_contact',
       label: '收货方联系人',
+      thead: true,
     }, {
       field: 'cust_receiver_address',
       label: '收件详细地址',
+      thead: true,
     }, {
       field: 'cust_receiver_tel',
       label: '收货方联系电话',
+      thead: true,
     }, {
       field: 'cust_receiver_mobile',
       label: '收货方手机号',
+      thead: true,
     }, {
       field: 'cust_remark',
       label: '备注',
+      thead: true,
     }, {
       field: 'cust_shipmt_trans_mode',
       label: '运输方式',
+      thead: true,
     }, {
       field: 'bl_mawb',
       label: '提运单/主运单',
+      exportField: 'cust_shipmt_mawb',
+      exportLabel: '主运单号',
+      thead: true,
     }, {
       field: 'swb_hawb',
       label: '海运单/分运单',
+      exportField: 'cust_shipmt_hawb',
+      exportLabel: '分运单号',
+      thead: true,
     }, {
       field: 'cust_shipmt_vessel',
       label: '船名/航班号',
+      thead: true,
     }, {
       field: 'cust_shipmt_voy',
       label: '航次',
+      thead: true,
     }, {
       field: 'cust_shipmt_forwarder',
       label: '货运代理',
+      thead: true,
     }, {
       field: 'cust_shipmt_freight',
       label: '运费',
+      thead: true,
     }, {
       field: 'cust_shipmt_freight_currency',
       label: '运费币制',
+      thead: true,
     }, {
       field: 'cust_shipmt_insur_fee',
       label: '保费',
+      thead: true,
     }, {
       field: 'cust_shipmt_insur_currency',
       label: '保费币制',
+      thead: true,
     }, {
       field: 'cust_shipmt_misc_fee',
       label: '杂费',
+      thead: true,
     }, {
       field: 'cust_shipmt_misc_currency',
       label: '杂费币制',
+      thead: true,
     }, {
       field: 'container_no',
       label: '集装箱号',
+      tbody: true,
     }, {
       field: 'invoice_no',
       label: '发票号',
+      tbody: true,
     }, {
       field: 'invoice_date',
       label: '发票日期',
+      tbody: true,
     }, {
       field: 'po_no',
       label: '订单号',
+      tbody: true,
     }, {
       field: 'product_no',
       label: '商品货号',
+      tbody: true,
     }, {
       field: 'manual_no',
       label: '手册号',
+      tbody: true,
     }, {
       field: 'prdt_item_no',
       label: '项号',
+      tbody: true,
     }, {
       field: 'hscode',
       label: '商品编码',
+      tbody: true,
     }, {
       field: 'name',
       label: '商品名称',
+      tbody: true,
     }, {
       field: 'en_name',
       label: '英文描述',
+      tbody: true,
     }, {
       field: 'qty',
       label: '数量(个数)',
+      tbody: true,
     }, {
       field: 'unit',
       label: '单位(个数)',
+      tbody: true,
     }, {
       field: 'model',
       label: '规格型号',
+      tbody: true,
     }, {
       field: 'g_qty',
       label: '申报数量',
+      tbody: true,
     }, {
       field: 'g_unit',
       label: '申报单位',
+      tbody: true,
     }, {
       field: 'qty_1',
       label: '法定第一数量',
+      tbody: true,
     }, {
       field: 'unit_1',
       label: '法定第一单位',
+      tbody: true,
     }, {
       field: 'qty_2',
       label: '法定第二数量',
+      tbody: true,
     }, {
       field: 'unit_2',
       label: '法定第二单位',
+      tbody: true,
     }, {
       field: 'gross_wt',
       label: '毛重(千克)',
+      tbody: true,
     }, {
       field: 'net_wt',
       label: '净重(千克)',
+      tbody: true,
     }, {
       field: 'unit_price',
       label: '申报单价',
+      tbody: true,
     }, {
       field: 'amount',
       label: '申报总价',
+      tbody: true,
     }, {
       field: 'currency',
       label: '币制',
+      tbody: true,
     }, {
       field: 'duty_mode',
       label: '征免方式',
+      tbody: true,
     }, {
       field: 'country',
       label: '原产国',
+      tbody: true,
     }, {
       field: 'dest_country',
       label: '目的国',
+      tbody: true,
     }, {
       field: 'version_no',
       label: '版本号',
+      tbody: true,
     }, {
       field: 'processing_fees',
       label: '工缴费',
+      tbody: true,
     }, {
       field: 'trxn_mode',
       label: '成交方式',
+      tbody: true,
     }, {
       field: 'asn_cust_order_no',
       label: '入库订单号',
+      tbody: true,
     }, {
       field: 'virtual_whse',
       label: '库别',
+      tbody: true,
     }, {
       field: 'supplier',
       label: '供货商',
+      tbody: true,
     }, {
       field: 'external_lot_no',
       label: '批次号',
+      tbody: true,
     }, {
       field: 'serial_no',
       label: '序列号',
+      tbody: true,
     }, {
       field: 'attrib_1_string',
       label: '扩展属性1',
+      tbody: true,
     }, {
       field: 'attrib_2_string',
       label: '扩展属性2',
+      tbody: true,
     }, {
       field: 'attrib_3_string',
       label: '扩展属性3',
+      tbody: true,
     }, {
       field: 'attrib_4_string',
       label: '扩展属性4',
+      tbody: true,
     }, {
       field: 'attrib_5_string',
       label: '扩展属性5',
+      tbody: true,
     }, {
       field: 'attrib_6_string',
       label: '扩展属性6',
+      tbody: true,
     }, {
       field: 'attrib_7_date',
       label: '扩展属性7',
       datatype: 'date',
+      tbody: true,
     }, {
       field: 'attrib_8_date',
       label: '扩展属性8',
       datatype: 'date',
+      tbody: true,
     }],
   },
   SCOF_INVOICE: {
@@ -373,64 +492,252 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     columns: [{
       field: 'invoice_no',
       label: '发票号',
+      thead: true,
     }, {
       field: 'invoice_category',
       label: '发票类别',
+      thead: true,
     }, {
       field: 'invoice_date',
       label: '发票日期',
       datatype: 'date',
+      thead: true,
     }, {
       field: 'buyer',
       label: '购买方',
+      thead: true,
     }, {
       field: 'seller',
       label: '销售方',
+      thead: true,
     }, {
       field: 'po_no',
       label: '采购订单号',
+      thead: true,
     }, {
       field: 'package_number',
       label: '件数',
+      thead: true,
     }, {
       field: 'package_type',
       label: '包装',
+      thead: true,
     }, {
       field: 'gross_wt',
       label: '总毛重',
+      thead: true,
     }, {
       field: 'trade_mode',
       label: '成交方式',
+      thead: true,
     }, {
       field: 'product_no',
       label: '货号',
+      tbody: true,
     }, {
       field: 'description',
       label: '商品描述',
+      tbody: true,
     }, {
       field: 'qty',
       label: '数量',
+      tbody: true,
     }, {
       field: 'unit',
       label: '计量单位',
+      tbody: true,
     }, {
       field: 'unit_price',
       label: '单价',
+      tbody: true,
     }, {
       field: 'amount',
       label: '总价',
+      tbody: true,
     }, {
       field: 'currency',
       label: '发票币制',
+      thead: true,
     }, {
       field: 'real_currency',
       label: '导入币制',
+      thead: true,
     }, {
       field: 'orig_country',
       label: '原产国',
+      tbody: true,
     }, {
       field: 'net_wt',
       label: '净重',
+      tbody: true,
+    }],
+  },
+  SCOF_PURCHASE_ORDER: {
+    key: 'SCOF_PURCHASE_ORDER',
+    name: '采购订单模板',
+    columns: [{
+      field: 'po_no',
+      label: '采购订单号',
+      thead: true,
+    }, {
+      field: 'customer_partner_id',
+      label: '购买方',
+      thead: true,
+    }, {
+      field: 'customer_country',
+      label: '购买方国别',
+      thead: true,
+    }, {
+      field: 'supplier_partner_id',
+      label: '供应商',
+      thead: true,
+    }, {
+      field: 'supplier_country',
+      label: '供应商国别',
+      thead: true,
+    }, {
+      field: 'trxn_mode',
+      label: '交易方式',
+      thead: true,
+    }, {
+      field: 'trans_mode',
+      label: '运输方式',
+      thead: true,
+    }, {
+      field: 'product_no',
+      label: '货号',
+      thead: true,
+    }, {
+      field: 'g_name',
+      label: '名称',
+      thead: true,
+    }, {
+      field: 'virtual_whse',
+      label: '库别',
+      thead: true,
+    }, {
+      field: 'brand',
+      label: '品牌',
+      thead: true,
+    }, {
+      field: 'order_qty',
+      label: '数量',
+      thead: true,
+    }, {
+      field: 'unit_price',
+      label: '单价',
+      thead: true,
+    }, {
+      field: 'total_amount',
+      label: '总价',
+      thead: true,
+    }, {
+      field: 'currency',
+      label: '币制',
+      thead: true,
+    }, {
+      field: 'net_wt',
+      label: '净重',
+      thead: true,
+    }, {
+      field: 'wt_unit',
+      label: '净重单位',
+      thead: true,
+    }, {
+      field: 'invoice_no',
+      label: '关联发票号',
+      thead: true,
+    }, {
+      field: 'shipping_date',
+      label: '发货日期',
+      datatype: 'date',
+      thead: true,
+    }],
+  },
+  CWM_ASN: {
+    key: 'CWM_ASN',
+    name: '收货通知模板',
+    columns: [{
+      field: 'asn_no',
+      label: 'asn编号',
+      thead: true,
+    }, {
+      field: 'owner_name',
+      label: '货主',
+      thead: true,
+    }, {
+      field: 'supplier_name',
+      label: '供应商',
+      exportField: 'supplier',
+      tbody: true,
+    }, {
+      field: 'bonded',
+      label: '保税监管',
+      thead: true,
+    }, {
+      field: 'bonded_intype',
+      label: '监管状态',
+      thead: true,
+    }, {
+      field: 'cust_order_no',
+      label: '入库订单号',
+      thead: true,
+    }, {
+      field: 'attrib_1_string',
+      label: '扩展属性1',
+      tbody: true,
+    }, {
+      field: 'attrib_2_string',
+      label: '扩展属性2',
+      tbody: true,
+    }, {
+      field: 'attrib_3_string',
+      label: '扩展属性3',
+      tbody: true,
+    }, {
+      field: 'attrib_4_string',
+      label: '扩展属性4',
+      tbody: true,
+    }, {
+      field: 'serial_no',
+      label: '序列号',
+      tbody: true,
+    }, {
+      field: 'po_no',
+      label: '采购订单号',
+      tbody: true,
+    }, {
+      field: 'invoice_no',
+      label: '发票号',
+      tbody: true,
+    }, {
+      field: 'product_no',
+      label: '货号',
+      tbody: true,
+    }, {
+      field: 'name',
+      label: '名称',
+      tbody: true,
+    }, {
+      field: 'product_sku',
+      label: 'sku',
+      tbody: true,
+    }, {
+      field: 'unit',
+      label: '单位',
+      tbody: true,
+    }, {
+      field: 'unit_price',
+      label: '单价',
+      tbody: true,
+    }, {
+      field: 'virtual_whse',
+      label: '库别',
+      tbody: true,
+    }, {
+      field: 'external_lot_no',
+      label: '外部批次号',
+      tbody: true,
     }],
   },
 };

@@ -13,6 +13,7 @@ import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
+import { toggleExportPanel } from 'common/reducers/saasExport';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -21,6 +22,7 @@ import UserAvatar from 'client/components/UserAvatar';
 import ToolbarAction from 'client/components/ToolbarAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import ExportDataPanel from 'client/components/ExportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import ShipmentDockPanel from './docks/shipmentDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
@@ -69,6 +71,7 @@ const { RangePicker } = DatePicker;
   batchStart,
   batchDelete,
   togglePanelVisible,
+  toggleExportPanel,
 })
 @connectNav({
   depth: 2,
@@ -360,6 +363,9 @@ export default class OrderList extends React.Component {
       }
     });
   }
+  handleExport = () => {
+    this.props.toggleExportPanel(true);
+  }
   render() {
     const {
       loading, filters, flows, partners,
@@ -595,9 +601,14 @@ export default class OrderList extends React.Component {
             <Input value={importPanel.cust_order_no} onChange={this.handleImportCustNoChange} />
           </Form.Item>}
         </ImportDataPanel>
+        <ExportDataPanel
+          type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[2]}
+          formData={{}}
+        />
         <UploadLogsPanel
           onUploadBatchDelete={this.removeOrdersByBatchUpload}
           type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
+          formData={{}}
         />
       </Layout>
     );
