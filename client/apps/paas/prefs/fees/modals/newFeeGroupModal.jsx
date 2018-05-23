@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message } from 'antd';
 import { toggleNewFeeGroupModal, addFeeGroup } from 'common/reducers/bssFeeSettings';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
 const formItemLayout = {

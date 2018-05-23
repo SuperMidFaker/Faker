@@ -98,12 +98,12 @@ export const PAAS_PARAM_PREFS = [
     link: '/paas/prefs/shipment',
   },
   {
-    key: 'currencies',
-    link: '/paas/prefs/currencies',
+    key: 'fees',
+    link: '/paas/prefs/fees',
   },
   {
-    key: 'feeItems',
-    link: '/paas/prefs/feeitems',
+    key: 'currencies',
+    link: '/paas/prefs/currencies',
   },
   {
     key: 'taxes',

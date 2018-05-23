@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, Input, message, Select } from 'antd';
 import { toggleNewFeeElementModal, addFeeElement } from 'common/reducers/bssFeeSettings';
 import { FEE_TYPE } from 'common/constants';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from '../../message.i18n';
 
 
 const { Option } = Select;

@@ -51,19 +51,24 @@ export default class InvoicePane extends Component {
   invoiceColumns = [{
     title: this.msg('invoiceNo'),
     dataIndex: 'invoice_no',
+    width: 200,
   }, {
     title: this.msg('invoiceDate'),
     dataIndex: 'invoice_date',
     render: o => o && moment(o).format('YYYY/MM/DD'),
+    width: 150,
   }, {
     title: this.msg('poNo'),
     dataIndex: 'po_no',
+    width: 200,
   }, {
     title: this.msg('totalAmount'),
     dataIndex: 'total_amount',
+    width: 150,
   }, {
     title: this.msg('currency'),
     dataIndex: 'currency',
+    width: 150,
     render: (o) => {
       const currency = this.props.currencies.find(curr => Number(curr.curr_code) === Number(o));
       if (currency) {
@@ -74,9 +79,11 @@ export default class InvoicePane extends Component {
   }, {
     title: this.msg('totalQty'),
     dataIndex: 'total_qty',
+    width: 150,
   }, {
     title: this.msg('totalNetWt'),
     dataIndex: 'total_net_wt',
+    width: 150,
   }, {
     dataIndex: 'OPS_COL',
     className: 'table-col-ops',
