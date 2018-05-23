@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Dropdown, Icon, Menu, Layout } from 'antd';
+import { Button, Dropdown, Icon, Menu, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import { createFilename } from 'client/util/dataTransform';
 import { toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFeeElements } from 'common/reducers/bssFeeSettings';
-import SettingMenu from './menu';
+import HubSiderMenu from '../../menu';
 import FeeGroups from './feeGroups';
 import FeeElements from './feeElements';
 import NewFeeGroupModal from './modals/newFeeGroupModal';
 import NewFeeElementModal from './modals/newFeeElementModal';
-import { formatMsg, formatGlobalMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -116,18 +116,7 @@ export default class Fees extends Component {
     );
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('settings')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <SettingMenu currentKey="fees" />
-          </div>
-        </Sider>
+        <HubSiderMenu currentKey="fees" openKey="paramPrefs" />
         <Layout>
           <PageHeader menus={menus} onTabChange={this.handleTabChange}>
             <PageHeader.Actions>

@@ -111,6 +111,18 @@ const messages = defineMessages({
     id: 'paas.menu.param.prefs.shipment',
     defaultMessage: '货运参数',
   },
+  fees: {
+    id: 'paas.menu.param.prefs.fees',
+    defaultMessage: '费用参数',
+  },
+  currencies: {
+    id: 'paas.menu.param.prefs.currencies',
+    defaultMessage: '币制汇率',
+  },
+  taxes: {
+    id: 'paas.menu.param.prefs.taxes',
+    defaultMessage: '税率',
+  },
   templates: {
     id: 'paas.menu.templates',
     defaultMessage: '模板定制',

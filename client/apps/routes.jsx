@@ -107,7 +107,6 @@ import * as BSSAudit from './bss/audit';
 import * as BSSBill from './bss/bill';
 import * as BSSInvoice from './bss/invoice';
 import * as BSSPayment from './bss/payment';
-import * as BSSSettings from './bss/settings';
 import DIS from './dis/module-dis';
 import * as DISDashboard from './dis/dashboard';
 
@@ -198,6 +197,7 @@ export default(store) => {
           <Route path="flow" component={PaaSFlow.List} />
           <Route path="prefs">
             <Route path="shipment" component={PaaSPrefs.Shipment} />
+            <Route path="fees" component={PaaSPrefs.Fees} />
             <Route path="currencies" component={PaaSPrefs.Currencies} />
             <Route path="taxes" component={PaaSPrefs.Taxes} />
           </Route>
@@ -524,13 +524,6 @@ export default(store) => {
             <Route path="payment">
               <IndexRoute component={BSSPayment.List} />
               <Route path=":voucherNo" component={BSSPayment.Detail} />
-            </Route>
-            <Route path="settings">
-              <IndexRedirect to="/bss/settings/preferences" />
-              <Route path="preferences" component={BSSSettings.Preferences} />
-              <Route path="fees" component={BSSSettings.Fees} />
-              <Route path="exchangerates" component={BSSSettings.ExchangeRates} />
-              <Route path="taxrates" component={BSSSettings.TaxRates} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.dis.id} component={DIS}>

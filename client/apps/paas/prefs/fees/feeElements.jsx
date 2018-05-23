@@ -8,10 +8,12 @@ import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
-import { loadFeeElements, alterFeeElement, deleteFeeElement,
-  toggleNewFeeElementModal, changeFeeElementGroup } from 'common/reducers/bssFeeSettings';
+import {
+  loadFeeElements, alterFeeElement, deleteFeeElement,
+  toggleNewFeeElementModal, changeFeeElementGroup,
+} from 'common/reducers/bssFeeSettings';
 import { FEE_TYPE } from 'common/constants';
-import { formatMsg, formatGlobalMsg } from './message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Option } = Select;
 

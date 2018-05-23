@@ -75,12 +75,12 @@ export default class Home extends React.Component {
     if (this.state.corpMenuLink) {
       tenantMenus.push(<MenuItem key="paas">
         <NavLink to="/paas">
-          <Logixon type="collab" /> {formatMsg(intl, 'paas')}
+          <Logixon type="admin" /> {formatMsg(intl, 'paas')}
         </NavLink>
       </MenuItem>);
       tenantMenus.push(<MenuItem key="corp">
         <NavLink to="/corp">
-          <Logixon type="admin" /> {formatMsg(intl, 'corpAdmin')}
+          <Logixon type="corp-o" /> {formatMsg(intl, 'corpAdmin')}
         </NavLink>
       </MenuItem>);
     }
