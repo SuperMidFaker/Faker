@@ -16,8 +16,10 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import ExportDataPanel from 'client/components/ExportDataPanel';
 import { loadParams } from 'common/reducers/cmsParams';
 import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
+import { toggleExportPanel } from 'common/reducers/saasExport';
 import { loadPurchaseOrders, batchDeletePurchaseOrders } from 'common/reducers/sofPurchaseOrders';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
+import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -70,6 +72,7 @@ function fetchData({ state, dispatch }) {
     setUploadRecordsReload,
     togglePanelVisible,
     loadPurchaseOrders,
+    toggleExportPanel,
   }
 )
 @connectNav({
@@ -85,7 +88,6 @@ export default class PurchaseOrderList extends React.Component {
   }
   state = {
     importPanelVisible: false,
-    exportPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
   }
@@ -264,9 +266,7 @@ export default class PurchaseOrderList extends React.Component {
     });
   }
   handleExport = () => {
-    this.setState({
-      exportPanelVisible: true,
-    });
+    this.props.toggleExportPanel(true);
   }
   handleSelect = (value) => {
     const filter = { ...this.props.filter, partner: value };
@@ -363,8 +363,8 @@ export default class PurchaseOrderList extends React.Component {
             template={`${XLSX_CDN}/采购订单导入模板.xlsx`}
           />
           <ExportDataPanel
-            visible={this.state.exportPanelVisible}
-            onClose={() => { this.setState({ exportPanelVisible: false }); }}
+            type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[4]}
+            formData={{}}
           />
         </Content>
       </Layout>

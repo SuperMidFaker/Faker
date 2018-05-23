@@ -18,6 +18,7 @@ const formItemLayout = {
 @connect(
   state => ({
     ownerMovements: state.cwmMovement.ownerMovements,
+    suppliers: state.cwmContext.whseAttrs.suppliers,
   }),
   { loadOwnerUndoneMovements }
 )
@@ -52,6 +53,8 @@ export default class TransitAttribForm extends React.Component {
     const {
       batched, detail, form: { getFieldDecorator }, ownerMovements,
     } = this.props;
+    const suppliers = this.props.suppliers.filter(sup =>
+      sup.owner_partner_id === detail.owner_partner_id);
     return (
       <div>
         <Row gutter={16} className="form-row">
@@ -140,6 +143,16 @@ export default class TransitAttribForm extends React.Component {
               {getFieldDecorator('expiry_date', {
                 initialValue: detail.expiry_date && moment(detail.expiry_date),
               })(<DatePicker style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem {...formItemLayout} label="供货商">
+              {getFieldDecorator('supplier', {
+                initialValue: detail.supplier,
+              })(<Select style={{ width: '100%' }} allowClear showSearch optionFilterProp="children">
+                {suppliers.map(sup =>
+                  <Option value={sup.name} key={sup.name}>{sup.name}</Option>)}
+              </Select>)}
             </FormItem>
           </Col>
         </Row>

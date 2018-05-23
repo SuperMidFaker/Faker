@@ -32,7 +32,7 @@ export default class TransitPane extends React.Component {
     Object.keys(transitValues).forEach((transitKey) => {
       if (transitValues[transitKey] !== this.props.detail[transitKey]) {
         valueChanged = true;
-        transit[transitKey] = transitValues[transitKey];
+        transit[transitKey] = transitValues[transitKey] || null;
       }
     });
     const { loginName } = this.props;

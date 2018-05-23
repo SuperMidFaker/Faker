@@ -73,7 +73,7 @@ export default class RepoList extends React.Component {
       return null;
     },
   }, {
-    title: <Tooltip title="启用保留HS编码或名称修改历史版本,用于出库申报"><Icon type="clock-circle-o" /></Tooltip>,
+    title: <Tooltip title="选择启用时,保留HS编码或名称修改前历史归类版本,用于出库申报"><Icon type="clock-circle-o" /></Tooltip>,
     dataIndex: 'keep_version',
     width: 100,
     align: 'center',
@@ -82,7 +82,7 @@ export default class RepoList extends React.Component {
         return (<Switch
           size="small"
           checked={keep}
-          disabled={repo.master_repo_id}
+          disabled={!!repo.master_repo_id}
           onChange={checked => this.handleVersionKeepChange(repo.id, checked)}
         />);
       }

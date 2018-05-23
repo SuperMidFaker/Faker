@@ -100,7 +100,6 @@ export default class SuBarcodeScanModal extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.props.viewSuBarcodeScanModal({ visible: false });
     this.setState({
       inboundProductSeqMap: null,
       dataSource: [],
@@ -112,13 +111,14 @@ export default class SuBarcodeScanModal extends Component {
     if (window.localStorage) {
       window.localStorage.removeItem('subarcode-data');
     }
+    this.props.viewSuBarcodeScanModal({ visible: false });
   }
   handleDeleteDetail = (data) => {
     const inboundProductSeqMap = new Map(this.state.inboundProductSeqMap);
     const productSeqMap = inboundProductSeqMap.get(data.product_no);
     const seqQty = productSeqMap.get(data.asn_seq_no);
     seqQty.received_qty -= data.qty;
-    const dataSource = this.state.dataSource.filter(ds => ds.serial_no === data.serial_no);
+    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== data.serial_no);
     inboundProductSeqMap.set(data.product_no, productSeqMap);
     this.setState({ dataSource, inboundProductSeqMap });
   }
@@ -269,10 +269,23 @@ export default class SuBarcodeScanModal extends Component {
         }
       });
       const barcode = suScan.su_barcode;
+      let barcodeParts = [barcode];
+      if (suSetting.separator) {
+        barcodeParts = barcode.split(suSetting.separator);
+      }
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
-        suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        if (suConf.part >= 0) {
+          const barcodePart = barcodeParts[suConf.part];
+          if (!barcodePart) {
+            suScan[suKey] = null;
+          } else {
+            suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
+          }
+        } else {
+          suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        }
         if (!suScan[suKey]) {
           this.setState({ scanRecv: NullSuScan });
           this.emptySuInputElement();

@@ -126,6 +126,18 @@ const messages = defineMessages({
     id: 'cwm.stock.in.custorderno',
     defaultMessage: '入库单号',
   },
+  billLadingNo: {
+    id: 'cwm.stock.bill.ladingno',
+    defaultMessage: '提运单号',
+  },
+  billLadingMawb: {
+    id: 'cwm.stock.bill.lading.mawb',
+    defaultMessage: '主运单号',
+  },
+  billLadingHawb: {
+    id: 'cwm.stock.bill.lading.hawb',
+    defaultMessage: '分运单号',
+  },
   poNo: {
     id: 'cwm.stock.po.no',
     defaultMessage: '采购订单号',
@@ -168,7 +180,7 @@ const messages = defineMessages({
   },
   expiryDate: {
     id: 'cwm.stock.expiry.date',
-    defaultMessage: '过期日期',
+    defaultMessage: '失效日期',
   },
   ftzEntNo: {
     id: 'cwm.stock.ftz.ent.no',

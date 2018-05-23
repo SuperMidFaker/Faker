@@ -25,6 +25,7 @@ export default class ImportDataPanel extends React.Component {
     onClose: PropTypes.func,
     adaptors: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string })),
     onAdaptorChange: PropTypes.func,
+    customizeOverwrite: PropTypes.bool,
   }
   state = {
     importInfo: {},
@@ -82,7 +83,7 @@ export default class ImportDataPanel extends React.Component {
   }
   renderOptions() {
     const {
-      children, adaptors,
+      children, adaptors, customizeOverwrite,
     } = this.props;
     const { adaptor, skipMode } = this.state;
     return (<Form layout="vertical">
@@ -101,12 +102,13 @@ export default class ImportDataPanel extends React.Component {
           </Select>
         </Form.Item>
         }
-      <Form.Item label={this.msg('handlingDuplicated')}>
-        <Radio.Group onChange={this.handleSkipModeChange} value={skipMode}>
-          <Radio value={1}>{this.msg('overwrite')}</Radio>
-          <Radio value={2}>{this.msg('ignore')}</Radio>
-        </Radio.Group>
-      </Form.Item>
+      {!customizeOverwrite &&
+        <Form.Item label={this.msg('handlingDuplicated')}>
+          <Radio.Group onChange={this.handleSkipModeChange} value={skipMode}>
+            <Radio value={1}>{this.msg('overwrite')}</Radio>
+            <Radio value={2}>{this.msg('ignore')}</Radio>
+          </Radio.Group>
+        </Form.Item>}
     </Form>);
   }
   renderUpload() {

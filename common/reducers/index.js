@@ -64,11 +64,11 @@ import hubDevApp from './hubDevApp';
 import hubIntegration from './hubIntegration';
 import scofFlow from './scofFlow';
 import sofOrderPref from './sofOrderPref';
-import sofVendors from './sofVendors';
 import sofTracking from './sofTracking';
 import sofDashboard from './sofDashboard';
 import sofInvoice from './sofInvoice';
 import sofPurchaseOrders from './sofPurchaseOrders';
+import saasExport from './saasExport';
 import transportAcceptance from './transport-acceptance';
 import trackingLandStatus from './trackingLandStatus';
 import trackingLandPod from './trackingLandPod';
@@ -138,13 +138,13 @@ export default combineReducers({
   cmsPrefEvents,
   scofFlow,
   sofOrderPref,
-  sofVendors,
   sofTracking,
   sofCustomers,
   sofOrders,
   sofDashboard,
   sofInvoice,
   sofPurchaseOrders,
+  saasExport,
   cwmReceive,
   cwmOutbound,
   cwmWarehouse,

@@ -75,7 +75,6 @@ export default class StockTransitionList extends React.Component {
     selectedRowKeys: [],
     transitionSplitNum: 0,
     unfreezeReason: '',
-    selTotalStockQty: 0,
     allSelectedRows: [],
     /*
     stat: {
@@ -312,21 +311,18 @@ export default class StockTransitionList extends React.Component {
       traceIds: this.state.selectedRowKeys,
       detail: this.state.batchTransitDetail,
     });
-    this.handleDeselectRows();
   }
   handleBatchFreeze = () => {
     this.props.openBatchFreezeModal({
       freezed: true,
       traceIds: this.state.selectedRowKeys,
     });
-    this.handleDeselectRows();
   }
   handleBatchUnfreeze = () => {
     this.props.openBatchFreezeModal({
       freezed: false,
       traceIds: this.state.selectedRowKeys,
     });
-    this.handleDeselectRows();
   }
   handleStatusChange = (ev) => {
     const filter = { ...this.props.listFilter, status: ev.target.value };
@@ -346,7 +342,6 @@ export default class StockTransitionList extends React.Component {
   handleDeselectRows = () => {
     this.setState({
       selectedRowKeys: [],
-      selTotalStockQty: 0,
       allSelectedRows: [],
     });
   }
@@ -365,55 +360,66 @@ export default class StockTransitionList extends React.Component {
   toggleTableSetting = () => {
     this.setState({ showTableSetting: !this.state.showTableSetting });
   }
+  handleRowSelect = (selectedRows) => {
+    let enableBatchTransit = true;
+    let i = 0;
+    let batchTransitDetail = {};
+    while (i < selectedRows.length - 1) {
+      if (selectedRows[i].owner_partner_id !== selectedRows[i + 1].owner_partner_id) {
+        enableBatchTransit = false;
+        break;
+      } else {
+        i += 1;
+      }
+    }
+    if (selectedRows.length > 0 && enableBatchTransit) {
+      batchTransitDetail = {
+        owner_partner_id: selectedRows[0].owner_partner_id,
+        owner_name: selectedRows[0].owner_name,
+        whse_code: selectedRows[0].whse_code,
+      };
+    }
+    const selectedRowKeys = selectedRows.map(sr => sr.trace_id);
+    this.setState({
+      selectedRowKeys,
+      enableBatchTransit,
+      batchTransitDetail,
+      allSelectedRows: selectedRows,
+    });
+  }
   render() {
     const {
-      loading, listFilter, transitionStat,
+      loading, listFilter, transitionStat, transitionlist,
     } = this.props;
-    const { selTotalStockQty } = this.state;
+    const { allSelectedRows } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selRows) => {
-        const { allSelectedRows } = this.state;
-        allSelectedRows[this.props.transitionlist.current] = selRows;
-        let selectedRows = [];
-        for (let j = 1; j < allSelectedRows.length; j++) {
-          const rows = allSelectedRows[j];
-          if (rows) {
-            selectedRows = selectedRows.concat(rows);
-          }
-        }
-        const total = selectedRows.reduce((res, bsf) => ({
-          stock_qty: (res.stock_qty || 0) + (bsf.stock_qty || 0),
-        }), {
-          stock_qty: 0,
-        });
-        let enableBatchTransit = true;
-        let i = 0;
-        let batchTransitDetail = {};
-        while (i < selectedRows.length - 1) {
-          if (selectedRows[i].owner_partner_id !== selectedRows[i + 1].owner_partner_id) {
-            enableBatchTransit = false;
-            break;
-          } else {
-            i += 1;
-          }
-        }
-        if (selectedRows.length > 0 && enableBatchTransit) {
-          batchTransitDetail = {
-            owner_partner_id: selectedRows[0].owner_partner_id,
-            owner_name: selectedRows[0].owner_name,
-            whse_code: selectedRows[0].whse_code,
-          };
-        }
-        this.setState({
-          selectedRowKeys,
-          enableBatchTransit,
-          batchTransitDetail,
-          selTotalStockQty: total.stock_qty,
-          allSelectedRows,
-        });
+        const selectedRows = allSelectedRows.filter(asr =>
+          this.props.transitionlist.data.filter(trd => trd.trace_id === asr.trace_id).length === 0)
+          .concat(selRows.map(sr => ({
+            trace_id: sr.trace_id,
+            stock_qty: sr.stock_qty,
+            owner_partner_id: sr.owner_partner_id,
+          })));
+        this.handleRowSelect(selectedRows);
       },
+      hideDefaultSelections: true,
+      selections: [{
+        key: 'selectall',
+        text: '全部选择',
+        onSelect: () => {
+          this.handleRowSelect(transitionlist.totalReducedList);
+        },
+      }, {
+        key: 'unselectall',
+        text: '取消选择',
+        onSelect: () => {
+          this.handleRowSelect([]);
+        },
+      }],
     };
+    const selTotalStockQty = allSelectedRows.reduce((res, bsf) => res + (bsf.stock_qty || 0), 0);
     const rowKey = 'trace_id'; // selectedRowKeys 有影响
     const dataSource = new DataTable.DataSource({
       fetcher: (params) => { this.props.loadTransitions(params); },
@@ -446,7 +452,7 @@ export default class StockTransitionList extends React.Component {
         params.filter = JSON.stringify(filter);
         return params;
       },
-      remotes: this.props.transitionlist,
+      remotes: transitionlist,
     });
     const toolbarActions = (<span>
       <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >

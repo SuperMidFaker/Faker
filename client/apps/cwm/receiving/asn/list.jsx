@@ -11,8 +11,10 @@ import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
+import ExportDataPanel from 'client/components/ExportDataPanel';
 import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { toggleExportPanel } from 'common/reducers/saasExport';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import WhseSelect from '../../common/whseSelect';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
@@ -41,7 +43,7 @@ const { RangePicker } = DatePicker;
     userMembers: state.account.userMembers,
   }),
   {
-    showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease,
+    showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease, toggleExportPanel,
   }
 )
 @connectNav({
@@ -365,6 +367,9 @@ export default class ReceivingASNList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleExport = () => {
+    this.props.toggleExportPanel(true);
+  }
   render() {
     const {
       defaultWhse, owners, suppliers, filters, loading,
@@ -506,6 +511,10 @@ export default class ReceivingASNList extends React.Component {
               rowKey="asn_no"
               loading={loading}
               locale={{ emptyText: '没有当前状态的ASN' }}
+            />
+            <ExportDataPanel
+              type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[5]}
+              formData={{ whseCode: this.props.defaultWhse.code }}
             />
           </Content>
         </Layout>

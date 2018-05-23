@@ -17,8 +17,7 @@ import { formatMsg } from '../../message.i18n';
   }),
   { showServiceTeamModal, loadServiceTeamMembers, loadDepartments },
 )
-
-export default class ServiceTeam extends React.Component {
+export default class ServiceTeamPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -27,15 +26,12 @@ export default class ServiceTeam extends React.Component {
   state = {
     selectedRowKeys: [],
   }
-  componentWillMount() {
+  componentDidMount() {
     const { tenantId } = this.props;
     this.props.loadDepartments(tenantId);
+    this.props.loadServiceTeamMembers(this.props.customer.id);
   }
   componentWillReceiveProps(nextProps) {
-    const partnerId = nextProps.customer.id;
-    if (partnerId !== this.props.customer.id) {
-      this.props.loadServiceTeamMembers(partnerId);
-    }
     if (nextProps.serviceTeamMembers !== this.props.serviceTeamMembers) {
       const selectedUserIds = nextProps.serviceTeamMembers.map(item => Number(item.user_id));
       this.setState({

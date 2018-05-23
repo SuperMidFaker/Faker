@@ -95,19 +95,26 @@ export default class SHFTZTransferInDetail extends Component {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           // todo 对比视图 数据保存
-          let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
-            `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
-          if (remainFtzMsg) {
-            remainFtzMsg = `东方支付入库单剩余以下未配: ${remainFtzMsg}`;
+          const { remainFtzStocks, remainProducts } = result.data;
+          let remainFtzMsg = null;
+          if (remainFtzStocks.length > 0) {
+            remainFtzMsg = (<span>东方支付入库单剩余以下未配: <br />{
+              remainFtzStocks.map(rfs =>
+                (<span key={rfs.ftz_ent_detail_id}>{rfs.ftz_ent_detail_id}-{rfs.hscode}-{rfs.name}
+                  <br />净重: {rfs.stock_wt.toFixed(6)} 数量: {rfs.stock_qty} <br /></span>))
+            }</span>);
           }
-          let remainPrdtMsg = result.data.remainProducts.map(rps =>
-            `${rps.product_no}-${rps.hscode}-${rps.name} 数量: ${rps.expect_qty}`).join('\n');
-          if (remainPrdtMsg) {
-            remainPrdtMsg = `订单剩余以下未配: ${remainPrdtMsg}`;
+          let remainPrdtMsg = null;
+          if (remainProducts.length > 0) {
+            remainPrdtMsg = (<span>订单剩余以下未配: <br />{
+          remainProducts.map(rps =>
+            (<span key={`${rps.product_no}${rps.asn_seq_no}`}>{rps.product_no}-{rps.hscode}-{rps.name}
+            数量: {rps.expect_qty}<br /></span>))
+            }</span>);
           }
           notification.warn({
             message: '未完全匹配',
-            description: `${remainFtzMsg}\n${remainPrdtMsg}`,
+            description: <span>{remainFtzMsg}<br />{remainPrdtMsg}</span>,
             duration: 0,
             placement: 'topLeft',
           });
@@ -198,6 +205,7 @@ export default class SHFTZTransferInDetail extends Component {
   }, {
     title: '原产国',
     dataIndex: 'country',
+    width: 100,
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
       const text = country ? `${country.value}| ${country.text}` : o;

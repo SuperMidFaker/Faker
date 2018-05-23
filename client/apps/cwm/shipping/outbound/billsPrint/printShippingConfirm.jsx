@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { formatMsg } from '../../message.i18n';
 
 function textToBase64Barcode(text) {
   const canvas = document.createElement('canvas');
@@ -17,13 +18,13 @@ function textToBase64Barcode(text) {
   defaultWhse: state.cwmContext.defaultWhse,
   outboundHead: state.cwmOutbound.outboundFormHead,
   pickDetails: state.cwmOutbound.pickDetails,
-}), )
-
+}))
 export default class PrintShippingConfirm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
   }
+  msg = formatMsg(this.props.intl);
   pdfHead = () => {
     const { outboundHead, defaultWhse, outboundNo } = this.props;
     const barcode = textToBase64Barcode(outboundNo);
@@ -110,7 +111,6 @@ export default class PrintShippingConfirm extends Component {
     const { pickDetails } = this.props;
     const docDefinition = {
       content: [],
-      pageOrientation: 'landscape',
       pageSize: 'A4',
       pageMargins: [20, 15],
       styles: {
@@ -148,7 +148,7 @@ export default class PrintShippingConfirm extends Component {
     };
     let num = 0;
     if (pickDetails.length > 22) {
-      num = 30 - (pickDetails.length - 22) % 30;
+      num = 30 - ((pickDetails.length - 22) % 30);
     } else {
       num = 22 - pickDetails.length;
     }
@@ -162,7 +162,8 @@ export default class PrintShippingConfirm extends Component {
             return (i === 0 || i === node.table.widths.length) ? 1.2 : 0.5;
           },
           hLineWidth(i, node) {
-            return (i === 0 || i === 1 || i === node.table.body.length - 1 || i === node.table.body.length) ? 1.2 : 0.5;
+            return (((i === 0 || i === 1) || i === node.table.body.length - 1)
+              || i === node.table.body.length) ? 1.2 : 0.5;
           },
           paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
         },

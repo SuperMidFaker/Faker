@@ -136,6 +136,7 @@ export default class DetailsPane extends Component {
       dataIndex: 'unit',
       width: 100,
       align: 'center',
+      width: 100,
       render: (o) => {
         const unit = units.find(item => item.code === o);
         if (unit) return unit.name;
@@ -174,6 +175,7 @@ export default class DetailsPane extends Component {
       align: 'right',
     }, {
       title: '币制',
+      width: 100,
       dataIndex: 'currency',
       render: (o) => {
         const currency = currencies.find(curr => Number(curr.code) === Number(o));

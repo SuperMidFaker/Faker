@@ -79,7 +79,6 @@ export default class SuBarPutawayModal extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.props.viewSuBarPutawayModal({ visible: false });
     this.setState({
       serialDetailMap: null,
       dataSource: [],
@@ -90,6 +89,7 @@ export default class SuBarPutawayModal extends Component {
     if (window.localStorage) {
       window.localStorage.removeItem('subarcode-putaway');
     }
+    this.props.viewSuBarPutawayModal({ visible: false });
   }
   handleDeleteDetail = (row) => {
     const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== row.serial_no);
@@ -150,11 +150,24 @@ export default class SuBarPutawayModal extends Component {
           suKeys.push(suKey);
         }
       });
+      let barcodeParts = [barcode];
+      if (suSetting.separator) {
+        barcodeParts = barcode.split(suSetting.separator);
+      }
       const suScan = {};
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
-        suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        if (suConf.part >= 0) {
+          const barcodePart = barcodeParts[suConf.part];
+          if (barcodePart) {
+            suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
+          } else {
+            suScan[suKey] = null;
+          }
+        } else {
+          suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+        }
         if (!suScan[suKey]) {
           this.setState({
             alertMsg: '错误条码',
