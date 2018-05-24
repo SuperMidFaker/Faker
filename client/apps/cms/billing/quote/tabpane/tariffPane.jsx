@@ -195,7 +195,7 @@ export default class TariffPane extends Component {
       }, {
         title: this.msg('feeGroup'),
         dataIndex: 'fee_group',
-        width: 150,
+        width: 100,
         render: o =>
           allFeeGroups.find(fg => fg.fee_group_code === o) &&
           allFeeGroups.find(fg => fg.fee_group_code === o).fee_group_name,
@@ -206,7 +206,7 @@ export default class TariffPane extends Component {
           { text: '服务', value: 'SC' },
           { text: '代垫', value: 'AP' },
         ],
-        width: 150,
+        width: 100,
         render: (o) => {
           const type = FEE_TYPE.filter(fe => fe.key === o)[0];
           return type ? <Tag color={type.tag}>{type.text}</Tag> : <span />;
@@ -231,18 +231,9 @@ export default class TariffPane extends Component {
           return method ? method.label : '';
         },
       }, {
-        title: this.msg('settle'),
-        dataIndex: 'need_settle',
-        width: 120,
-        render: (o, record) => {
-          if (onEdit && editItem.id === record.id) {
-            return <Switch checked={!!editItem.need_settle} onChange={checked => this.handleEditChange('need_settle', checked)} />;
-          }
-          return <Switch checked={!!o} disabled />;
-        },
-      }, {
         title: this.msg('formulaFactor'),
         dataIndex: 'formula_factor',
+        width: 200,
         render: (o, record) => {
           if (onEdit && editItem.id === record.id) {
             if (editItem.billing_way === '$formula') {
@@ -294,16 +285,39 @@ export default class TariffPane extends Component {
           }
           return o;
         },
+      }, {
+        title: this.msg('minAmount'),
+        dataIndex: 'min_amount',
+        width: 120,
+      }, {
+        title: this.msg('maxAmount'),
+        dataIndex: 'max_amount',
+        width: 120,
+      }, {
+        title: this.msg('settle'),
+        dataIndex: 'need_settle',
+        width: 100,
+        render: (o, record) => {
+          if (onEdit && editItem.id === record.id) {
+            return <Switch size="small" checked={!!editItem.need_settle} onChange={checked => this.handleEditChange('need_settle', checked)} />;
+          }
+          return <Switch size="small" checked={!!o} disabled />;
+        },
+      }, {
+        dataIndex: 'SPACER_COL',
       },
     ];
     if (!readOnly) {
       columns.push({
+        dataIndex: 'OPS_COL',
+        className: 'table-col-ops',
+        fixed: 'right',
         width: 90,
         render: (o, record) => {
           if (onEdit && editItem.id === record.id) {
             return (<span>
               <RowAction onClick={this.handleFeeSave} icon="save" row={record} />
-              <RowAction onClick={this.handleFeeEditCancel} icon="close" tooltip="取消" />
+              <RowAction onClick={this.handleFeeEditCancel} icon="close" tooltip={this.gmsg('cancel')} />
             </span>
             );
           }

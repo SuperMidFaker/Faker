@@ -57,11 +57,11 @@ const messages = defineMessages({
   },
   submitAll: {
     id: 'cms.billing.submit.all',
-    defaultMessage: '全部提交',
+    defaultMessage: '一键提交',
   },
   confirmAll: {
     id: 'cms.billing.confirm.all',
-    defaultMessage: '全部确认',
+    defaultMessage: '一键确认',
   },
   chooseModel: {
     id: 'cms.billing.export.chooseModel',
