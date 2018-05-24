@@ -344,6 +344,14 @@ const messages = defineMessages({
     id: 'cms.billing.spe.name',
     defaultMessage: '特殊费用名称',
   },
+  minAmount: {
+    id: 'cms.billing.quotefee.minamout',
+    defaultMessage: '最低金额',
+  },
+  maxAmount: {
+    id: 'cms.billing.quotefee.maxamout',
+    defaultMessage: '最高金额',
+  },
 });
 
 export default messages;

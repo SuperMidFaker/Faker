@@ -251,7 +251,7 @@ export default class SHFTZTransferSelfList extends React.Component {
         dropdownStyle={{ width: 360 }}
       >
         <OptGroup>
-          <Option value="all">全部货主</Option>
+          <Option value="all">全部转入货主</Option>
           {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
         </OptGroup>
       </Select>

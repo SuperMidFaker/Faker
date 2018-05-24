@@ -162,6 +162,8 @@ export default class TariffPane extends Component {
       billing_way: item.billing_way,
       formula_factor: item.formula_factor,
       need_settle: item.need_settle,
+      max_amount: item.max_amount,
+      min_amount: item.min_amount,
     });
     const fees = [...this.state.fees];
     const feeIndex = fees.findIndex(fe => fe.id === item.id);
@@ -289,10 +291,36 @@ export default class TariffPane extends Component {
         title: this.msg('minAmount'),
         dataIndex: 'min_amount',
         width: 120,
+        render: (o, record) => {
+          if (onEdit && editItem.id === record.id && editItem.billing_way !== '$input') {
+            return (
+              <Input
+                size="small"
+                value={editItem.min_amount}
+                onChange={e => this.handleEditChange('min_amount', e.target.value)}
+                style={{ width: '100%' }}
+              />
+            );
+          }
+          return o || null;
+        },
       }, {
         title: this.msg('maxAmount'),
         dataIndex: 'max_amount',
         width: 120,
+        render: (o, record) => {
+          if (onEdit && editItem.id === record.id && editItem.billing_way !== '$input') {
+            return (
+              <Input
+                size="small"
+                value={editItem.max_amount}
+                onChange={e => this.handleEditChange('max_amount', e.target.value)}
+                style={{ width: '100%' }}
+              />
+            );
+          }
+          return o || null;
+        },
       }, {
         title: this.msg('settle'),
         dataIndex: 'need_settle',
