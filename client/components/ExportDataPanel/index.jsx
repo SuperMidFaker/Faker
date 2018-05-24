@@ -9,7 +9,7 @@ import { Button, DatePicker, Form, Radio, Select, Steps, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { handleExport, toggleExportPanel, toggleExportLoading } from 'common/reducers/saasExport';
+import { exportSaasBizFile, toggleExportPanel, toggleExportLoading } from 'common/reducers/saasExport';
 import { formatMsg } from './message.i18n';
 import './style.less';
 
@@ -21,10 +21,10 @@ const { Step } = Steps;
 @connect(
   state => ({
     visible: state.saasExport.visible,
-    loading: state.saasExport.loading,
+    exporting: state.saasExport.exporting,
   }),
   {
-    handleExport,
+    exportSaasBizFile,
     toggleExportPanel,
     toggleExportLoading,
   }
@@ -85,7 +85,6 @@ export default class ExportDataPanel extends React.Component {
     });
   }
   handleExport = () => {
-    this.props.toggleExportLoading(true);
     const { type, formData: { whseCode } } = this.props;
     const {
       selectedThead, selectedTbody, startDate, endDate, format,
@@ -94,7 +93,8 @@ export default class ExportDataPanel extends React.Component {
       message.warning(this.msg('pleaseSelectFields'));
       return;
     }
-    this.props.handleExport({
+    this.props.toggleExportLoading(true);
+    this.props.exportSaasBizFile({
       type, thead: selectedThead, tbody: selectedTbody, formData: { startDate, endDate, whseCode },
     }).then((result) => {
       if (!result.error) {
@@ -144,11 +144,10 @@ export default class ExportDataPanel extends React.Component {
         }
       }
     });
-    this.props.toggleExportLoading(false);
   }
   render() {
     const {
-      visible, title, type, loading,
+      visible, title, type, exporting,
     } = this.props;
     const {
       startDate, endDate, disabled,
@@ -225,7 +224,7 @@ export default class ExportDataPanel extends React.Component {
           <Step
             title=""
             status="wait"
-            description={<Button type="primary" onClick={this.handleExport} loading={loading}>{this.msg('export')}</Button>}
+            description={<Button type="primary" onClick={this.handleExport} loading={exporting}>{this.msg('export')}</Button>}
           />
         </Steps>
       </Form>
