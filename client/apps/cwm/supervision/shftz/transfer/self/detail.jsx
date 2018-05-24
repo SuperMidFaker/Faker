@@ -210,10 +210,11 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   handleSelfTransfExport = () => {
     const { transfSelfReg, getSelfTransfFtzCargos: lstfcFunc } = this.props;
+    const sheet = transfSelfReg.ftz_rel_no || transfSelfReg.pre_ftz_ent_no;
     lstfcFunc(transfSelfReg.pre_ftz_ent_no).then((result) => {
       if (!result.error) {
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
-        const wb = { SheetNames: [transfSelfReg.ftz_rel_no], Sheets: {}, Props: {} };
+        const wb = { SheetNames: [sheet], Sheets: {}, Props: {} };
         const mergedFtzDetailMap = new Map();
         const details = [...transfSelfReg.details];
         const ftzCargoMap = result.data;
@@ -266,10 +267,10 @@ export default class SHFTZTransferSelfDetail extends Component {
           库位: null,
           标签: mrd.tag,
         }));
-        wb.Sheets[transfSelfReg.ftz_rel_no] = XLSX.utils.json_to_sheet(csvData);
+        wb.Sheets[sheet] = XLSX.utils.json_to_sheet(csvData);
         FileSaver.saveAs(
           new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
-          `区内转让转入_${transfSelfReg.ftz_rel_no}.xlsx`
+          `区内转让转入_${sheet}.xlsx`
         );
       }
     });
@@ -423,12 +424,8 @@ export default class SHFTZTransferSelfDetail extends Component {
                   onSave={value => this.handleInfoSave('ftz_ent_no', value)}
                 />
               </Description>
-            </DescriptionList>
-            <DescriptionList col={2}>
               <Description term="转出货主单位">{transfSelfReg.sender_cus_code}|{transfSelfReg.sender_name}</Description>
               <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
-            </DescriptionList>
-            <DescriptionList col={4}>
               <Description term="发货仓库号">{transfSelfReg.sender_ftz_whse_code}</Description>
               <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
               <Description term="收货仓库号">{transfSelfReg.receiver_ftz_whse_code}</Description>

@@ -351,8 +351,6 @@ export default class SHFTZTransferInDetail extends Component {
                   onSave={value => this.handleInfoSave('ftz_ent_no', value)}
                 />
               </Description>
-            </DescriptionList>
-            <DescriptionList col={2}>
               <Description term="发货单位">{transfInReg.sender_cus_code}|{transfInReg.sender_name}</Description>
               <Description term="海关出库单号">
                 <EditableCell
@@ -360,8 +358,6 @@ export default class SHFTZTransferInDetail extends Component {
                   onSave={value => this.handleInfoSave('ftz_rel_no', value)}
                 />
               </Description>
-            </DescriptionList>
-            <DescriptionList col={4}>
               <Description term="收货仓库号">{transfInReg.receiver_ftz_whse_code}</Description>
               <Description term="转入完成时间">
                 <EditableCell
