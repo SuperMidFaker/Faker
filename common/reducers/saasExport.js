@@ -3,17 +3,20 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scof/export/', [
   'HANDLE_EXPORT', 'HANDLE_EXPORT_SUCCEED', 'HANDLE_EXPORT_FAIL',
-  'TOGGLE_EXPORT_PANEL',
+  'TOGGLE_EXPORT_PANEL', 'TOGGLE_EXPORT_LOADING',
 ]);
 
 const initialState = {
   visible: false,
+  loading: false,
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TOGGLE_EXPORT_PANEL:
       return { ...state, visible: action.visible };
+    case actionTypes.TOGGLE_EXPORT_LOADING:
+      return { ...state, loading: action.loading };
     default:
       return state;
   }
@@ -21,7 +24,7 @@ export default function reducer(state = initialState, action) {
 
 
 export function handleExport({
-  type, thead, tbody, formData
+  type, thead, tbody, formData,
 }) {
   return {
     [CLIENT_API]: {
@@ -42,9 +45,16 @@ export function handleExport({
   };
 }
 
-export function toggleExportPanel (visible) {
+export function toggleExportPanel(visible) {
   return {
     type: actionTypes.TOGGLE_EXPORT_PANEL,
     visible,
+  };
+}
+
+export function toggleExportLoading(loading) {
+  return {
+    type: actionTypes.TOGGLE_EXPORT_LOADING,
+    loading,
   };
 }

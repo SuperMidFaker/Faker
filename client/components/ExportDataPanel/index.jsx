@@ -9,7 +9,7 @@ import { Button, DatePicker, Form, Radio, Select, Steps, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { handleExport, toggleExportPanel } from 'common/reducers/saasExport';
+import { handleExport, toggleExportPanel, toggleExportLoading } from 'common/reducers/saasExport';
 import { formatMsg } from './message.i18n';
 import './style.less';
 
@@ -21,10 +21,12 @@ const { Step } = Steps;
 @connect(
   state => ({
     visible: state.saasExport.visible,
+    loading: state.saasExport.loading,
   }),
   {
     handleExport,
     toggleExportPanel,
+    toggleExportLoading,
   }
 )
 export default class ExportDataPanel extends React.Component {
@@ -45,7 +47,6 @@ export default class ExportDataPanel extends React.Component {
     endDate: null,
     selectedThead: [],
     selectedTbody: [],
-    loading: false,
   }
   onDateChange = (data, dataString) => {
     this.setState({
@@ -84,9 +85,7 @@ export default class ExportDataPanel extends React.Component {
     });
   }
   handleExport = () => {
-    this.setState({
-      loading: true,
-    });
+    this.props.toggleExportLoading(true);
     const { type, formData: { whseCode } } = this.props;
     const {
       selectedThead, selectedTbody, startDate, endDate, format,
@@ -145,16 +144,14 @@ export default class ExportDataPanel extends React.Component {
         }
       }
     });
-    this.setState({
-      loading: false,
-    });
+    this.props.toggleExportLoading(false);
   }
   render() {
     const {
-      visible, title, type,
+      visible, title, type, loading,
     } = this.props;
     const {
-      startDate, endDate, disabled, loading,
+      startDate, endDate, disabled,
     } = this.state;
     const { columns } = LINE_FILE_ADAPTOR_MODELS[type];
     const thead = columns.filter(column => column.thead);
