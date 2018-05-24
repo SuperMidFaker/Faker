@@ -286,8 +286,8 @@ class DataTable extends React.Component {
     const popoverColumns = [...this.state.popoverColumns];
     const { pathname } = this.state;
     let columns = popoverColumns.filter(column => column.checked);
-    const operation = tableColumns.find(column =>
-      (column.dataIndex !== 'OPS_COL' && column.dataIndex !== 'SPACER_COL'));
+    const operation = tableColumns.filter(column =>
+      (column.dataIndex === 'OPS_COL' || column.dataIndex === 'SPACER_COL'));
     if (operation) { columns = columns.concat(operation); }
     const newColumns = columns.map(column => ({ ...column }));
     this.setState({

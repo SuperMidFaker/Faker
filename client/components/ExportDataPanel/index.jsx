@@ -9,7 +9,7 @@ import { Button, DatePicker, Form, Radio, Select, Steps, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { handleExport, toggleExportPanel } from 'common/reducers/saasExport';
+import { exportSaasBizFile, toggleExportPanel } from 'common/reducers/saasExport';
 import { formatMsg } from './message.i18n';
 import './style.less';
 
@@ -21,9 +21,10 @@ const { Step } = Steps;
 @connect(
   state => ({
     visible: state.saasExport.visible,
+    exporting: state.saasExport.exporting,
   }),
   {
-    handleExport,
+    exportSaasBizFile,
     toggleExportPanel,
   }
 )
@@ -91,7 +92,7 @@ export default class ExportDataPanel extends React.Component {
       message.warning(this.msg('pleaseSelectFields'));
       return;
     }
-    this.props.handleExport({
+    this.props.exportSaasBizFile({
       type, thead: selectedThead, tbody: selectedTbody, formData: { startDate, endDate, whseCode },
     }).then((result) => {
       if (!result.error) {
@@ -144,7 +145,7 @@ export default class ExportDataPanel extends React.Component {
   }
   render() {
     const {
-      visible, title, type,
+      visible, title, type, exporting,
     } = this.props;
     const {
       startDate, endDate, disabled,
@@ -221,7 +222,7 @@ export default class ExportDataPanel extends React.Component {
           <Step
             title=""
             status="wait"
-            description={<Button type="primary" onClick={this.handleExport}>{this.msg('export')}</Button>}
+            description={<Button type="primary" onClick={this.handleExport} loading={exporting}>{this.msg('export')}</Button>}
           />
         </Steps>
       </Form>
