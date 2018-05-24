@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Tag, Modal } from 'antd';
+import { Button, Tag, Modal, message } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, showSkuRuleModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { showAllocRuleModal } from 'common/reducers/cwmAllocRule';
 import { clearTransition } from 'common/reducers/cwmTransition';
@@ -229,6 +229,10 @@ export default class OwnersPane extends Component {
       },
     });
   };
+  handleStockUploaded = () => {
+    this.setState({ importPanelVisible: false });
+    message.success('库存初始化导入完成', 3);
+  }
   render() {
     const {
       warehouse, whseCode, whseName, whseTenantId, whseOwners,
@@ -262,7 +266,7 @@ export default class OwnersPane extends Component {
             owner: this.state.seletedOwner,
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
-          onUploaded={this.handleReload}
+          onUploaded={this.handleStockUploaded}
           template={`${XLSX_CDN}/ASN库存导入模板201804.xlsx`}
         />
       </DataPane>
