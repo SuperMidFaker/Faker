@@ -45,6 +45,7 @@ export default class ExportDataPanel extends React.Component {
     endDate: null,
     selectedThead: [],
     selectedTbody: [],
+    loading: false,
   }
   onDateChange = (data, dataString) => {
     this.setState({
@@ -83,6 +84,9 @@ export default class ExportDataPanel extends React.Component {
     });
   }
   handleExport = () => {
+    this.setState({
+      loading: true,
+    });
     const { type, formData: { whseCode } } = this.props;
     const {
       selectedThead, selectedTbody, startDate, endDate, format,
@@ -141,13 +145,16 @@ export default class ExportDataPanel extends React.Component {
         }
       }
     });
+    this.setState({
+      loading: false,
+    });
   }
   render() {
     const {
       visible, title, type,
     } = this.props;
     const {
-      startDate, endDate, disabled,
+      startDate, endDate, disabled, loading,
     } = this.state;
     const { columns } = LINE_FILE_ADAPTOR_MODELS[type];
     const thead = columns.filter(column => column.thead);
@@ -221,7 +228,7 @@ export default class ExportDataPanel extends React.Component {
           <Step
             title=""
             status="wait"
-            description={<Button type="primary" onClick={this.handleExport}>{this.msg('export')}</Button>}
+            description={<Button type="primary" onClick={this.handleExport} loading={loading}>{this.msg('export')}</Button>}
           />
         </Steps>
       </Form>

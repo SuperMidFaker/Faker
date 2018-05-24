@@ -101,10 +101,6 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '品名',
       tbody: true,
     }, {
-      field: 'order_qty',
-      label: '数量',
-      tbody: true,
-    }, {
       field: 'virtual_whse',
       label: '库别',
       tbody: true,
@@ -133,7 +129,7 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '扩展属性4',
       tbody: true,
     }, {
-      field: 'external_no',
+      field: 'external_lot_no',
       label: '批次号',
       tbody: true,
     }, {
@@ -187,6 +183,10 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       field: 'so_type',
       label: 'SO类型',
       thead: true,
+    }, {
+      field: 'outbound_qty',
+      label: '出库数量',
+      tbody: true,
     }],
   },
   SOF_ORDER: {
@@ -561,7 +561,6 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'real_currency',
       label: '导入币制',
-      thead: true,
     }, {
       field: 'orig_country',
       label: '原产国',
@@ -723,10 +722,6 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: 'sku',
       tbody: true,
     }, {
-      field: 'unit',
-      label: '单位',
-      tbody: true,
-    }, {
       field: 'unit_price',
       label: '单价',
       tbody: true,
@@ -737,6 +732,10 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
     }, {
       field: 'external_lot_no',
       label: '外部批次号',
+      tbody: true,
+    }, {
+      field: 'stock_qty',
+      label: '库存数量',
       tbody: true,
     }],
   },
