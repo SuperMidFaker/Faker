@@ -9,7 +9,7 @@ import { Button, DatePicker, Form, Radio, Select, Steps, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
-import { exportSaasBizFile, toggleExportPanel, toggleExportLoading } from 'common/reducers/saasExport';
+import { exportSaasBizFile, toggleExportPanel } from 'common/reducers/saasExport';
 import { formatMsg } from './message.i18n';
 import './style.less';
 
@@ -26,7 +26,6 @@ const { Step } = Steps;
   {
     exportSaasBizFile,
     toggleExportPanel,
-    toggleExportLoading,
   }
 )
 export default class ExportDataPanel extends React.Component {
@@ -93,7 +92,6 @@ export default class ExportDataPanel extends React.Component {
       message.warning(this.msg('pleaseSelectFields'));
       return;
     }
-    this.props.toggleExportLoading(true);
     this.props.exportSaasBizFile({
       type, thead: selectedThead, tbody: selectedTbody, formData: { startDate, endDate, whseCode },
     }).then((result) => {

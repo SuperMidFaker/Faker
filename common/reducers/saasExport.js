@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/scof/export/', [
   'EXPORT_SAAS_BIZ_FILE', 'EXPORT_SAAS_BIZ_FILE_SUCCEED', 'EXPORT_SAAS_BIZ_FILE_FAIL',
-  'TOGGLE_EXPORT_PANEL', 'TOGGLE_EXPORT_LOADING',
+  'TOGGLE_EXPORT_PANEL',
 ]);
 
 const initialState = {
@@ -15,8 +15,8 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.TOGGLE_EXPORT_PANEL:
       return { ...state, visible: action.visible };
-    case actionTypes.TOGGLE_EXPORT_LOADING:
-      return { ...state, exporting: action.exporting };
+    case actionTypes.EXPORT_SAAS_BIZ_FILE:
+      return { ...state, exporting: true };
     case actionTypes.EXPORT_SAAS_BIZ_FILE_SUCCEED:
     case actionTypes.EXPORT_SAAS_BIZ_FILE_FAIL:
       return { ...state, exporting: false };
@@ -52,12 +52,5 @@ export function toggleExportPanel(visible) {
   return {
     type: actionTypes.TOGGLE_EXPORT_PANEL,
     visible,
-  };
-}
-
-export function toggleExportLoading(exporting) {
-  return {
-    type: actionTypes.TOGGLE_EXPORT_LOADING,
-    exporting,
   };
 }
