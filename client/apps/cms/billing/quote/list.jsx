@@ -145,6 +145,7 @@ export default class RatesList extends Component {
       }, {
         title: this.msg('quoteName'),
         dataIndex: 'quote_name',
+        width: 250,
       }, {
         title: this.props.listFilter.viewStatus === 'clientQuote' ? this.msg('buyerName') : this.msg('sellerName'),
         width: 250,
@@ -174,6 +175,8 @@ export default class RatesList extends Component {
         dataIndex: 'created_date',
         width: 120,
         render: o => o && moment(o).format('YYYY.MM.DD'),
+      }, {
+        dataIndex: 'SPACER_COL',
       }, {
         title: this.gmsg('actions'),
         dataIndex: 'OPS_COL',
