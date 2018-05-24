@@ -318,7 +318,7 @@ export default class SHFTZEntryDetail extends Component {
   handleCancelReg = () => {
     const { preEntrySeqNo } = this.props.params;
     this.props.putCustomsRegFields(
-      preEntrySeqNo,
+      { pre_entry_seq_no: preEntrySeqNo },
       { status: CWM_SHFTZ_APIREG_STATUS.pending }
     ).then((result) => {
       if (result.error) {
@@ -361,7 +361,7 @@ export default class SHFTZEntryDetail extends Component {
     if (owner) {
       const { preEntrySeqNo } = this.props.params;
       this.props.putCustomsRegFields(
-        preEntrySeqNo,
+        { pre_entry_seq_no: preEntrySeqNo },
         { owner_cus_code: owner.key, owner_name: owner.name }
       ).then((result) => {
         if (result.error) {

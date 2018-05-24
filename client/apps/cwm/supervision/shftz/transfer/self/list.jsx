@@ -98,23 +98,23 @@ export default class SHFTZTransferSelfList extends React.Component {
       return null;
     },
   }, {
-    title: '货主',
+    title: '转入货主',
     width: 180,
     dataIndex: 'owner_name',
   }, {
-    title: '转移方向',
+    title: '转出货主',
     width: 180,
     dataIndex: 'sender_name',
-  }, {
-    title: '转出时间',
-    width: 150,
-    dataIndex: 'ftz_rel_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '转入时间',
     width: 150,
     dataIndex: 'ftz_ent_date',
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
+    title: '转出时间',
+    width: 150,
+    dataIndex: 'ftz_rel_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '创建时间',
     width: 120,

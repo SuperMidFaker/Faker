@@ -574,7 +574,12 @@ export default class OrderList extends React.Component {
           }}
           onClose={this.handleImportClose}
           onBeforeUpload={this.handleCheckUpload}
-          onUploaded={() => {
+          onUploaded={(respData) => {
+            if (respData.existOrderNos) {
+              message.warn(<span>
+                以下客户订单号已存在<br />
+                {respData.existOrderNos.join(',').slice(0, 100)}</span>, 10);
+            }
             this.handleImportClose();
             this.handleTableLoad();
             this.props.setUploadRecordsReload(true);

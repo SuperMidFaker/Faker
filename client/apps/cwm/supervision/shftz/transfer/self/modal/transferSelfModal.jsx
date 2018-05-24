@@ -173,16 +173,16 @@ export default class TransferSelfModal extends Component {
     title: '删除',
     width: 80,
     fixed: 'right',
-    render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
+    render: (o, record) => <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} />,
   }]
   handleAddReg = (row) => {
-    this.props.loadVtransferRegDetails({ ftzEntNo: row.ftz_ent_no }).then((result) => {
+    this.props.loadVtransferRegDetails({ preFtzEntNo: row.pre_ftz_ent_no }).then((result) => {
       if (!result.error) {
-        const entNo = row.ftz_ent_no;
+        const entNo = row.pre_ftz_ent_no;
         const regDetails = this.state.regDetails.filter(reg =>
-          reg.ftz_ent_no !== entNo).concat(result.data.map(dt => ({ ...dt, ftz_ent_no: entNo })));
+          reg.pre_ftz_ent_no !== entNo).concat(result.data);
         const transRegs = this.state.transRegs.map(pr =>
-          (pr.ftz_ent_no === entNo ? { ...pr, added: true } : pr));
+          (pr.pre_ftz_ent_no === entNo ? { ...pr, added: true } : pr));
         this.setState({ regDetails, transRegs });
       }
     });
@@ -190,7 +190,7 @@ export default class TransferSelfModal extends Component {
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
     const transRegs = this.state.transRegs.map(pr =>
-      (pr.ftz_ent_no === detail.ftz_ent_no ? { ...pr, added: false } : pr));
+      (pr.pre_ftz_ent_no === detail.pre_ftz_ent_no ? { ...pr, added: false } : pr));
     this.setState({ regDetails, transRegs });
   }
   handleCancel = () => {
@@ -238,6 +238,7 @@ export default class TransferSelfModal extends Component {
       detailIds,
       owner,
       whseCode: this.props.defaultWhse.code,
+      ftzWhseCode: this.props.defaultWhse.ftz_whse_code,
       loginId: this.props.loginId,
     }).then((result) => {
       if (!result.error) {
