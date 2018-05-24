@@ -5,7 +5,6 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Layout, Select, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -99,25 +98,23 @@ export default class SHFTZTransferSelfList extends React.Component {
       return null;
     },
   }, {
-    title: '货主',
+    title: '转入货主',
     width: 180,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '转移方向',
+    title: '转出货主',
     width: 180,
     dataIndex: 'sender_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '转出时间',
-    width: 150,
-    dataIndex: 'ftz_rel_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '转入时间',
     width: 150,
     dataIndex: 'ftz_ent_date',
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
+    title: '转出时间',
+    width: 150,
+    dataIndex: 'ftz_rel_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '创建时间',
     width: 120,
@@ -254,7 +251,7 @@ export default class SHFTZTransferSelfList extends React.Component {
         dropdownStyle={{ width: 360 }}
       >
         <OptGroup>
-          <Option value="all">全部货主</Option>
+          <Option value="all">全部转入货主</Option>
           {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
         </OptGroup>
       </Select>

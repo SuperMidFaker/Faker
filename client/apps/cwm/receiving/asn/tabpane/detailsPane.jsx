@@ -114,6 +114,7 @@ export default class DetailsPane extends Component {
       align: 'right',
     }, {
       title: '计量单位',
+      width: 100,
       dataIndex: 'unit',
       align: 'center',
       render: (un) => {
@@ -142,6 +143,7 @@ export default class DetailsPane extends Component {
       align: 'right',
     }, {
       title: '币制',
+      width: 100,
       dataIndex: 'currency',
       align: 'center',
       render: (o) => {

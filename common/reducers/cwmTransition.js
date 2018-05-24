@@ -48,6 +48,7 @@ const initialState = {
     current: 1,
     pageSize: 20,
     data: [],
+    totalReducedList: [],
   },
   stat: {
     stock_qty: null,

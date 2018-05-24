@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   paas: {
     id: 'home.paas',
-    defaultMessage: '平台服务',
+    defaultMessage: '平台设置',
   },
   corpAdmin: {
     id: 'home.corp.admin',

@@ -99,6 +99,7 @@ export default class PutawayDetailsPane extends React.Component {
     width: 120, */
   }, {
     title: '中文品名',
+    width: 200,
     dataIndex: 'name',
   }, {
     title: '上架人员',

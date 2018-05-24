@@ -789,7 +789,7 @@ export function queryEntryRegInfos(asnNo, preEntrySeqNo, whseCode, ftzWhseCode) 
   };
 }
 
-export function putCustomsRegFields(preEntrySeqNo, fields) {
+export function putCustomsRegFields(entrySeqNoCls, fields) {
   return {
     [CLIENT_API]: {
       types: [
@@ -799,7 +799,7 @@ export function putCustomsRegFields(preEntrySeqNo, fields) {
       ],
       endpoint: 'v1/cwm/shftz/entry/reg/put/fields',
       method: 'post',
-      data: { preEntrySeqNo, fields },
+      data: { entrySeqNoCls, fields },
     },
   };
 }

@@ -57,11 +57,11 @@ const messages = defineMessages({
   },
   submitAll: {
     id: 'cms.billing.submit.all',
-    defaultMessage: '全部提交',
+    defaultMessage: '一键提交',
   },
   confirmAll: {
     id: 'cms.billing.confirm.all',
-    defaultMessage: '全部确认',
+    defaultMessage: '一键确认',
   },
   chooseModel: {
     id: 'cms.billing.export.chooseModel',
@@ -343,6 +343,14 @@ const messages = defineMessages({
   speName: {
     id: 'cms.billing.spe.name',
     defaultMessage: '特殊费用名称',
+  },
+  minAmount: {
+    id: 'cms.billing.quotefee.minamout',
+    defaultMessage: '最低金额',
+  },
+  maxAmount: {
+    id: 'cms.billing.quotefee.maxamout',
+    defaultMessage: '最高金额',
   },
 });
 

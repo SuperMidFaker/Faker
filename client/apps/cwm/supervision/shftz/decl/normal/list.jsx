@@ -5,7 +5,6 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Button, Layout, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -74,12 +73,12 @@ export default class NormalDeclList extends React.Component {
     title: '出区提货单号',
     dataIndex: 'ftz_rel_nos',
     width: 250,
-    render: o => <span className="text-emphasis"><TrimSpan text={o} maxLen={20} /></span>,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '报关单号',
     dataIndex: 'cus_decl_nos',
     width: 180,
-    render: o => <span className="text-emphasis"><TrimSpan text={o} maxLen={18} /></span>,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -100,7 +99,6 @@ export default class NormalDeclList extends React.Component {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '清关委托编号',
     dataIndex: 'delg_no',
@@ -109,7 +107,6 @@ export default class NormalDeclList extends React.Component {
     title: '报关代理',
     dataIndex: 'broker_name',
     width: 180,
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',

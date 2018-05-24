@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Breadcrumb, Layout } from 'antd';
+import { Button, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal } from 'common/reducers/bssExRateSettings';
@@ -11,11 +11,11 @@ import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
-import SettingMenu from './menu';
-import NewExRateModal from './modals/newExRateModal';
-import { formatMsg, formatGlobalMsg } from './message.i18n';
+import HubSiderMenu from '../../menu';
+import CurrencyModal from './modals/currencyModal';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -32,7 +32,7 @@ const { Content, Sider } = Layout;
   depth: 2,
   moduleName: 'bss',
 })
-export default class ExchangeRates extends Component {
+export default class Currencies extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -129,18 +129,7 @@ export default class ExchangeRates extends Component {
     this.dataSource.remotes = exRateList;
     return (
       <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('settings')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <SettingMenu currentKey="exchangerates" />
-          </div>
-        </Sider>
+        <HubSiderMenu currentKey="currencies" openKey="paramPrefs" />
         <Layout>
           <PageHeader>
             <PageHeader.Actions>
@@ -156,7 +145,7 @@ export default class ExchangeRates extends Component {
               rowKey="id"
             />
           </Content>
-          <NewExRateModal reload={this.handleRateLoad} />
+          <CurrencyModal reload={this.handleRateLoad} />
         </Layout>
       </Layout>
     );

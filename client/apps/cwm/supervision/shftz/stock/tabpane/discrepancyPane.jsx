@@ -126,28 +126,46 @@ export default class FTZDiscrepancyPane extends React.Component {
       const out = {};
       const entrylist = this.props.entrydiffs.filter(erd =>
         erd.ftz_ent_detail_id === dv.ftz_ent_detail_id);
-      for (let i = 0; i < entrylist.length; i++) {
-        const el = entrylist[i];
-        const ins = this.props.inbounddiffs.filter(ibd =>
-          ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
-        for (let j = 0; j < ins.length; j++) {
-          const inb = ins[j];
-          out[this.msg('billNo')] = dv.ftz_ent_no;
-          out[this.msg('detailId')] = dv.ftz_ent_detail_id;
-          out[this.msg('hsCode')] = dv.hscode;
-          out[this.msg('gName')] = dv.name;
-          out[this.msg('cargoType')] = this.columns[4].render(dv.portion);
-          out[this.msg('ftzStockQty')] = dv.ftz_qty;
-          out[this.msg('ftzNetWt')] = dv.ftz_net_wt;
-          out[this.msg('ftzAmount')] = dv.ftz_amount;
-          out[this.msg('productNo')] = el.product_no;
-          out[this.msg('whseStockQty')] = el.stock_qty;
-          out[this.msg('whseNetWt')] = el.stock_netwt;
-          out[this.msg('whseAmount')] = el.stock_amount;
-          out['库位数量'] = inb.stock_qty;
-          out[this.msg('location')] = inb.location;
-          csvData.push(out);
+      if (entrylist.length > 0) {
+        for (let i = 0; i < entrylist.length; i++) {
+          const el = entrylist[i];
+          const ins = this.props.inbounddiffs.filter(ibd =>
+            ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
+          for (let j = 0; j < ins.length; j++) {
+            const inb = ins[j];
+            out[this.msg('billNo')] = dv.ftz_ent_no;
+            out[this.msg('detailId')] = dv.ftz_ent_detail_id;
+            out[this.msg('hsCode')] = dv.hscode;
+            out[this.msg('gName')] = dv.name;
+            out[this.msg('cargoType')] = this.columns[4].render(dv.portion);
+            out[this.msg('ftzStockQty')] = dv.ftz_qty;
+            out[this.msg('ftzNetWt')] = dv.ftz_net_wt;
+            out[this.msg('ftzAmount')] = dv.ftz_amount;
+            out[this.msg('productNo')] = el.product_no;
+            out[this.msg('whseStockQty')] = el.stock_qty;
+            out[this.msg('whseNetWt')] = el.stock_netwt;
+            out[this.msg('whseAmount')] = el.stock_amount;
+            out['库位数量'] = inb.stock_qty;
+            out[this.msg('location')] = inb.location;
+            csvData.push(out);
+          }
         }
+      } else {
+        out[this.msg('billNo')] = dv.ftz_ent_no;
+        out[this.msg('detailId')] = dv.ftz_ent_detail_id;
+        out[this.msg('hsCode')] = dv.hscode;
+        out[this.msg('gName')] = dv.name;
+        out[this.msg('cargoType')] = this.columns[4].render(dv.portion);
+        out[this.msg('ftzStockQty')] = dv.ftz_qty;
+        out[this.msg('ftzNetWt')] = dv.ftz_net_wt;
+        out[this.msg('ftzAmount')] = dv.ftz_amount;
+        out[this.msg('productNo')] = '';
+        out[this.msg('whseStockQty')] = 0;
+        out[this.msg('whseNetWt')] = 0;
+        out[this.msg('whseAmount')] = 0;
+        out['库位数量'] = 0;
+        out[this.msg('location')] = '';
+        csvData.push(out);
       }
     });
     const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };

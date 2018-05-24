@@ -34,9 +34,9 @@ const messages = defineMessages({
     id: 'paas.integration.apps.store',
     defaultMessage: '应用市场',
   },
-  installedApps: {
-    id: 'paas.integration.installed.apps',
-    defaultMessage: '已安装应用',
+  installedPlugins: {
+    id: 'paas.integration.installed.plugins',
+    defaultMessage: '已安装插件',
   },
   appName: {
     id: 'paas.integration.app.name',

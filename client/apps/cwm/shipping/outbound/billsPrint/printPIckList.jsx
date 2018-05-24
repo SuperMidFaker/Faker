@@ -128,7 +128,7 @@ export default class OutboundPickPrint extends Component {
   handleDocDef = (pickDetails, printRule) => {
     const docDefinition = {
       content: [],
-      pageOrientation: 'landscape',
+      // pageOrientation: 'landscape',
       pageSize: 'A4',
       pageMargins: [20, 15],
       styles: {
@@ -144,13 +144,13 @@ export default class OutboundPickPrint extends Component {
           margin: [0, 3, 0, 4],
         },
         table: {
-          fontSize: 11,
+          fontSize: 9,
           color: 'black',
           alignment: 'center',
           margin: [2, 2, 2, 2],
         },
         tableHeader: {
-          fontSize: 11,
+          fontSize: 10,
           bold: true,
           color: 'black',
           alignment: 'center',

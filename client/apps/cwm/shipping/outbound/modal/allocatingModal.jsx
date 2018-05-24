@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox, Popover } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import TrimSpan from 'client/components/trimSpan';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES, ALLOC_MATCH_FIELDS } from 'common/constants';
@@ -267,12 +266,10 @@ export default class AllocatingModal extends Component {
     title: '',
     dataIndex: 'ALLOC_PLACEHOLDER',
     width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '入库客户单号',
     dataIndex: 'cust_order_no',
     width: 100,
-    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '货物属性',
     dataIndex: 'bonded',
@@ -329,17 +326,14 @@ export default class AllocatingModal extends Component {
     title: '采购订单号',
     dataIndex: 'po_no',
     width: 125,
-    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: 'ASN编号',
     dataIndex: 'asn_no',
     width: 125,
-    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',

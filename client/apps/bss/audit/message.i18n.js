@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   confirmAll: {
     id: 'bss.audit.confirm.all',
-    defaultMessage: '全部确认',
+    defaultMessage: '一键确认',
   },
   searchTips: {
     id: 'bss.audit.search.tips',

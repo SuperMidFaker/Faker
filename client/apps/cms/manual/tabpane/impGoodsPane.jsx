@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import SearchBox from 'client/components/SearchBox';
 import DataPane from 'client/components/DataPane';
-import TrimSpan from 'client/components/trimSpan';
 import { loadManualGoods } from 'common/reducers/cmsTradeManual';
 import { DELG_EXEMPTIONWAY } from 'common/constants';
 
@@ -85,16 +84,14 @@ export default class ImpGoodsPane extends React.Component {
     title: this.msg('unit'),
     dataIndex: 'g_unit',
     width: 100,
-    render: o => (<TrimSpan text={this.props.units.find(u => u.value === o) &&
-       this.props.units.find(u => u.value === o).text}
-    />),
+    render: o => this.props.units.find(u => u.value === o) &&
+       this.props.units.find(u => u.value === o).text,
   }, {
     title: this.msg('unit1'),
     dataIndex: 'unit_1',
     width: 100,
-    render: o => (<TrimSpan text={this.props.units.find(u => u.value === o) &&
-       this.props.units.find(u => u.value === o).text}
-    />),
+    render: o => this.props.units.find(u => u.value === o) &&
+       this.props.units.find(u => u.value === o).text,
   }, {
     title: this.msg('decQty'),
     dataIndex: 'dec_qty',
@@ -111,23 +108,20 @@ export default class ImpGoodsPane extends React.Component {
     title: this.msg('currency'),
     dataIndex: 'currency',
     width: 100,
-    render: o => (<TrimSpan text={this.props.currencies.find(cu => cu.value === o) &&
-       this.props.currencies.find(cu => cu.value === o).text}
-    />),
+    render: o => this.props.currencies.find(cu => cu.value === o) &&
+       this.props.currencies.find(cu => cu.value === o).text,
   }, {
     title: this.msg('country'),
     width: 100,
     dataIndex: 'country',
-    render: o => (<TrimSpan text={this.props.countries.find(co => co.value === o) &&
-       this.props.countries.find(co => co.value === o).text}
-    />),
+    render: o => this.props.countries.find(co => co.value === o) &&
+       this.props.countries.find(co => co.value === o).text,
   }, {
     title: this.msg('dutyMode'),
     width: 100,
     dataIndex: 'duty_mode',
-    render: o => (<TrimSpan text={DELG_EXEMPTIONWAY.find(way => way.value === o) &&
-       DELG_EXEMPTIONWAY.find(way => way.value === o).text}
-    />),
+    render: o => DELG_EXEMPTIONWAY.find(way => way.value === o) &&
+       DELG_EXEMPTIONWAY.find(way => way.value === o).text,
   }, {
     title: this.msg('dutyRate'),
     width: 100,

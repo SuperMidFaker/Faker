@@ -4,7 +4,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Table, Form, Modal, Radio, Row, Col, Select, Tag, Input, message, Checkbox } from 'antd';
-import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
 import { format } from 'client/common/i18n/helpers';
 import { loadBrokers } from 'common/reducers/cwmWarehouse';
@@ -151,7 +150,6 @@ export default class BatchDeclModal extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    render: o => <TrimSpan text={o} maxLen={30} />,
     width: 260,
   }, {
     title: '原产国',

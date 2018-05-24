@@ -6,7 +6,7 @@ import { Modal, Form, Input, message, Menu } from 'antd';
 import { toggleTemplateModal, createTemplate, updateTemplate } from 'common/reducers/template';
 import BraftEditor from 'braft-editor';
 import 'braft-editor/dist/braft.css';
-import { formatMsg } from '../../message.i18n';
+import { formatMsg } from '../../../message.i18n';
 
 const FormItem = Form.Item;
 

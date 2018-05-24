@@ -46,7 +46,7 @@ export default class ConfigEasipassEDI extends React.Component {
       <Layout>
         <PageHeader
           breadcrumb={[
-            this.msg('installedApps'),
+            this.msg('installedPlugins'),
             this.msg('appEasipassEDI'),
             <span>{easipass.name} {this.renderStatusTag(app.enabled)}</span>,
           ]}

@@ -4,20 +4,15 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-
-const formatMsg = format(messages);
+import { WRAP_TYPE } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
-@connect(
-  state => ({
-    defaultWhse: state.cwmContext.defaultWhse,
-    inboundHead: state.cwmReceive.inboundFormHead,
-    inboundProducts: state.cwmReceive.inboundProducts,
-  }),
-  { }
-)
+@connect(state => ({
+  defaultWhse: state.cwmContext.defaultWhse,
+  inboundHead: state.cwmReceive.inboundFormHead,
+  inboundProducts: state.cwmReceive.inboundProducts,
+}))
 
 export default class Print extends Component {
   static propTypes = {
@@ -41,9 +36,16 @@ export default class Print extends Component {
       document.body.appendChild(script);
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   pdfInboundHead = () => {
-    const { inboundHead, defaultWhse, inboundNo } = this.props;
+    const {
+      inboundHead, defaultWhse, inboundNo, entryRegs,
+    } = this.props;
+    let wrapType = WRAP_TYPE.filter(wt => wt.value === inboundHead.shipmt_wrap_type)[0];
+    if (wrapType) {
+      wrapType = wrapType.text;
+    }
+    const ftzEntNos = entryRegs.filter(er => er.ftz_ent_no).map(er => er.ftz_ent_no).join(',');
     const pdf = [];
     const header = [];
     header.push({
@@ -54,8 +56,11 @@ export default class Print extends Component {
       { text: inboundHead.cust_order_no, style: 'table' }, { text: '入库日期', style: 'table' }, { text: '', style: 'table' }]);
     pdf.push([{ text: '货物属性', style: 'table' }, { text: inboundHead.bonded ? '保税' : '非保税', style: 'table' }, { text: '客户', style: 'table' },
       { text: inboundHead.owner_name, style: 'table' }, { text: '仓库', style: 'table' }, { text: defaultWhse.name, style: 'table' }]);
-    pdf.push([{ text: '件数', style: 'table' }, { text: inboundHead.total_expect_qty, style: 'table' }, { text: '提运单号', style: 'table' },
-      { text: '', style: 'table' }, { text: '海关入库编号', style: 'table' }, { text: '', style: 'table' }]);
+    pdf.push([{ text: '供货商', style: 'table' }, { text: inboundHead.supplier_name, style: 'table' }, { text: '提运单号', style: 'table' },
+      { text: inboundHead.bl_wb_no, style: 'table' }, { text: '进区单号', style: 'table' }, { text: ftzEntNos, style: 'table' }]);
+    pdf.push([{ text: '包装大件数', style: 'table' }, { text: `${inboundHead.shipmt_pieces}${wrapType}`, style: 'table' },
+      { text: '总毛重', style: 'table' },
+      { text: inboundHead.shipmt_weight, style: 'table' }, { text: '总个数', style: 'table' }, { text: inboundHead.total_expect_qty, style: 'table' }]);
     pdf.push([{ text: '备注', style: 'table' }, { text: '', colSpan: 5 }, {}, {}, {}, {}]);
     return pdf;
   }

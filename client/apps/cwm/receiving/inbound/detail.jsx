@@ -164,7 +164,7 @@ export default class ReceiveInbound extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
-            <Print inboundNo={this.props.params.inboundNo} />
+            <Print inboundNo={this.props.params.inboundNo} entryRegs={entryRegs} />
             }
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step && false &&
             <Dropdown overlay={tagMenu}>

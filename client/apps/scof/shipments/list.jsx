@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Input, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
+import { Form, Checkbox, Input, Menu, Icon, Popconfirm, Progress, message, Layout, Tooltip, Select, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { Link } from 'react-router';
 import { CRM_ORDER_STATUS, PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
@@ -13,6 +13,7 @@ import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows, loadPartnerFlowList } from 'common/reducers/scofFlow';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
+import { toggleExportPanel } from 'common/reducers/saasExport';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
 import PageHeader from 'client/components/PageHeader';
@@ -21,6 +22,7 @@ import UserAvatar from 'client/components/UserAvatar';
 import ToolbarAction from 'client/components/ToolbarAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import ExportDataPanel from 'client/components/ExportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import ShipmentDockPanel from './docks/shipmentDockPanel';
 import OrderNoColumn from './columndef/orderNoColumn';
@@ -69,6 +71,7 @@ const { RangePicker } = DatePicker;
   batchStart,
   batchDelete,
   togglePanelVisible,
+  toggleExportPanel,
 })
 @connectNav({
   depth: 2,
@@ -97,6 +100,7 @@ export default class OrderList extends React.Component {
     status: 'all',
     importPanel: {
       visible: false,
+      cust_order_nodup: true,
       customer_partner_id: undefined,
       flow_id: undefined,
       cust_order_no: null,
@@ -165,7 +169,7 @@ export default class OrderList extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   handleImport = () => {
-    this.setState({ importPanel: { visible: true } });
+    this.setState({ importPanel: { visible: true, cust_order_nodup: true } });
   }
   handleCreate = () => {
     this.props.setClientForm(-2, {});
@@ -313,6 +317,14 @@ export default class OrderList extends React.Component {
   handleImportCustNoChange = (ev) => {
     this.setState({ importPanel: { ...this.state.importPanel, cust_order_no: ev.target.value } });
   }
+  handleCustOrderDupCheck = (ev) => {
+    this.setState({
+      importPanel: {
+        ...this.state.importPanel,
+        cust_order_nodup: ev.target.checked,
+      },
+    });
+  }
   handleCheckUpload = (msg) => {
     if (!this.state.importPanel.flow_id) {
       if (msg) {
@@ -359,6 +371,9 @@ export default class OrderList extends React.Component {
         this.handleTableLoad(1);
       }
     });
+  }
+  handleExport = () => {
+    this.props.toggleExportPanel(true);
   }
   render() {
     const {
@@ -555,15 +570,22 @@ export default class OrderList extends React.Component {
             customer_partner_id: importPanel.partner_id,
             flow_id: importPanel.flow_id,
             cust_order_no: importPanel.cust_order_no,
+            cust_order_nodup: importPanel.cust_order_nodup,
           }}
           onClose={this.handleImportClose}
           onBeforeUpload={this.handleCheckUpload}
-          onUploaded={() => {
+          onUploaded={(respData) => {
+            if (respData.existOrderNos) {
+              message.warn(<span>
+                以下客户订单号已存在<br />
+                {respData.existOrderNos.join(',').slice(0, 100)}</span>, 10);
+            }
             this.handleImportClose();
             this.handleTableLoad();
             this.props.setUploadRecordsReload(true);
           }}
           template={`${XLSX_CDN}/订单导入模板.xlsx`}
+          customizeOverwrite
         >
           <Form.Item label="客户">
             <Select
@@ -594,10 +616,22 @@ export default class OrderList extends React.Component {
           <Form.Item label="客户订单号">
             <Input value={importPanel.cust_order_no} onChange={this.handleImportCustNoChange} />
           </Form.Item>}
+          <Form.Item>
+            <Checkbox
+              onChange={this.handleCustOrderDupCheck}
+              checked={importPanel.cust_order_nodup}
+            >忽略已存在客户单号
+            </Checkbox>
+          </Form.Item>
         </ImportDataPanel>
+        <ExportDataPanel
+          type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[2]}
+          formData={{}}
+        />
         <UploadLogsPanel
           onUploadBatchDelete={this.removeOrdersByBatchUpload}
           type={UPLOAD_BATCH_OBJECT.SCOF_ORDER}
+          formData={{}}
         />
       </Layout>
     );

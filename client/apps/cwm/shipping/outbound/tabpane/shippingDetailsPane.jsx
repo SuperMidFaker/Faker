@@ -90,6 +90,7 @@ export default class ShippingDetailsPane extends React.Component {
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
+    width: 100,
     render: (o) => {
       if (o) {
         return <Tag>{o}</Tag>;

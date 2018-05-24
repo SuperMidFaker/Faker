@@ -9,7 +9,6 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Layout, Steps, Button, Tabs, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import Drawer from 'client/components/Drawer';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -17,7 +16,7 @@ import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import EditableCell from 'client/components/EditableCell';
 import Summary from 'client/components/Summary';
-import { loadVirtualTransferDetails, getSelfTransfFtzCargos, loadParams, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
+import { loadVirtualTransferDetails, getSelfTransfFtzCargos, loadParams, updateEntryReg, putCustomsRegFields, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { string2Bytes } from 'client/util/dataTransform';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -56,6 +55,7 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
+    owners: state.cwmContext.whseAttrs.owners,
     submitting: state.cwmShFtz.submitting,
   }),
   {
@@ -64,6 +64,7 @@ function fetchData({ dispatch, params }) {
     transferToOwnWhse,
     queryOwnTransferOutIn,
     getSelfTransfFtzCargos,
+    putCustomsRegFields,
   }
 )
 @connectNav({
@@ -82,6 +83,10 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   columns = [{
+    title: '入库单号',
+    dataIndex: 'ftz_ent_no',
+    width: 120,
+  }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 160,
@@ -105,7 +110,6 @@ export default class SHFTZTransferSelfDetail extends Component {
     title: '规格型号',
     dataIndex: 'model',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',
     dataIndex: 'stock_qty',
@@ -138,7 +142,7 @@ export default class SHFTZTransferSelfDetail extends Component {
     width: 100,
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      const text = currency ? `${currency.value}|${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
@@ -151,10 +155,14 @@ export default class SHFTZTransferSelfDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
-  handleInfoSave = (field, value) => {
-    const { transfSelfReg, updateEntryReg: upERfunc } = this.props;
-    upERfunc(transfSelfReg.pre_ftz_ent_no, field, value, true)
-      .then((result) => {
+  handleTransfOwnerChange= (value) => {
+    const owner = this.props.owners.filter(own => own.customs_code === value)[0];
+    const { transfSelfReg } = this.props;
+    if (owner) {
+      this.props.putCustomsRegFields(
+        { pre_ftz_ent_no: transfSelfReg.pre_ftz_ent_no },
+        { owner_cus_code: owner.customs_code, owner_name: owner.name }
+      ).then((result) => {
         if (result.error) {
           notification.error({
             message: '操作失败',
@@ -165,13 +173,48 @@ export default class SHFTZTransferSelfDetail extends Component {
           message.success('修改成功');
         }
       });
+    }
+  }
+  handleInfoSave = (field, value) => {
+    const { transfSelfReg, updateEntryReg: upERfunc, params } = this.props;
+    upERfunc(transfSelfReg.pre_ftz_ent_no, field, value, true)
+      .then((result) => {
+        if (result.error) {
+          notification.error({
+            message: '操作失败',
+            description: result.error.message,
+            duration: 15,
+          });
+        } else {
+          message.success('修改成功');
+          if (field === 'ftz_ent_no') {
+            this.props.loadVirtualTransferDetails(params.asnNo);
+          }
+        }
+      });
+  }
+  handleCancelReg = () => {
+    const { transfSelfReg } = this.props;
+    this.props.putCustomsRegFields(
+      { pre_ftz_ent_no: transfSelfReg.pre_ftz_ent_no },
+      { status: CWM_SHFTZ_APIREG_STATUS.pending }
+    ).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      }
+    });
   }
   handleSelfTransfExport = () => {
     const { transfSelfReg, getSelfTransfFtzCargos: lstfcFunc } = this.props;
+    const sheet = transfSelfReg.ftz_rel_no || transfSelfReg.pre_ftz_ent_no;
     lstfcFunc(transfSelfReg.pre_ftz_ent_no).then((result) => {
       if (!result.error) {
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
-        const wb = { SheetNames: [transfSelfReg.ftz_rel_no], Sheets: {}, Props: {} };
+        const wb = { SheetNames: [sheet], Sheets: {}, Props: {} };
         const mergedFtzDetailMap = new Map();
         const details = [...transfSelfReg.details];
         const ftzCargoMap = result.data;
@@ -224,10 +267,10 @@ export default class SHFTZTransferSelfDetail extends Component {
           库位: null,
           标签: mrd.tag,
         }));
-        wb.Sheets[transfSelfReg.ftz_rel_no] = XLSX.utils.json_to_sheet(csvData);
+        wb.Sheets[sheet] = XLSX.utils.json_to_sheet(csvData);
         FileSaver.saveAs(
           new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
-          `区内转让转入_${transfSelfReg.ftz_rel_no}.xlsx`
+          `区内转让转入_${sheet}.xlsx`
         );
       }
     });
@@ -307,7 +350,7 @@ export default class SHFTZTransferSelfDetail extends Component {
     this.setState({ searchVal: searchText });
   }
   render() {
-    const { transfSelfReg, submitting } = this.props;
+    const { owners, transfSelfReg, submitting } = this.props;
     if (!transfSelfReg.details) {
       return null;
     }
@@ -353,8 +396,9 @@ export default class SHFTZTransferSelfDetail extends Component {
           <PageHeader.Actions>
             {transfSelfReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
+            <Button icon="export" loading={submitting} onClick={this.handleSelfTransfExport}>导出</Button>
             {transfSelfReg.reg_status === CWM_SHFTZ_APIREG_STATUS.processing &&
-              <Button icon="export" loading={submitting} onClick={this.handleSelfTransfExport}>导出</Button>}
+              <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退</Button>}
             {transfSelfReg.reg_status === CWM_SHFTZ_APIREG_STATUS.processing &&
                   transfSelfReg.ftz_ent_no &&
                   <Button icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
@@ -362,27 +406,29 @@ export default class SHFTZTransferSelfDetail extends Component {
         </PageHeader>
         <Layout>
           <Drawer top onCollapseChange={this.handleCollapseChange}>
-            <DescriptionList col={4}>
-              <Description term="收货单位海关编码">
+            <DescriptionList col={2}>
+              <Description term="转入收货单位">
                 <EditableCell
                   value={transfSelfReg.owner_cus_code}
-                  onSave={value => this.handleInfoSave('owner_cus_code', value)}
+                  type="select"
+                  options={owners.map(data => ({
+                      key: data.customs_code,
+                      text: `${data.customs_code}|${data.name}`,
+                    }))}
+                  onSave={this.handleTransfOwnerChange}
                 />
               </Description>
-              <Description term="收货单位">
-                <EditableCell
-                  value={transfSelfReg.owner_name}
-                  onSave={value => this.handleInfoSave('owner_name', value)}
-                />
-              </Description>
-              <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
-              <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
               <Description term="入库单号">
                 <EditableCell
                   value={transfSelfReg.ftz_ent_no}
                   onSave={value => this.handleInfoSave('ftz_ent_no', value)}
                 />
               </Description>
+              <Description term="转出货主单位">{transfSelfReg.sender_cus_code}|{transfSelfReg.sender_name}</Description>
+              <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
+              <Description term="发货仓库号">{transfSelfReg.sender_ftz_whse_code}</Description>
+              <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <Description term="收货仓库号">{transfSelfReg.receiver_ftz_whse_code}</Description>
               <Description term="转入时间">
                 <EditableCell
                   type="date"
@@ -398,14 +444,10 @@ export default class SHFTZTransferSelfDetail extends Component {
             </Steps>
           </Drawer>
           <Content className="page-content">
-            <MagicCard
-              bodyStyle={{ padding: 0 }}
-
-            >
+            <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="transitDetails">
                 <TabPane tab="转移明细" key="transitDetails">
                   <DataPane
-
                     columns={this.columns}
                     rowSelection={rowSelection}
                     indentSize={8}

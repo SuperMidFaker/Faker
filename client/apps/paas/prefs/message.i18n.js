@@ -7,10 +7,6 @@ const messages = defineMessages({
     id: 'paas.prefs',
     defaultMessage: '设置',
   },
-  preferences: {
-    id: 'sof.order.preference',
-    defaultMessage: '参数设定',
-  },
   orderParams: {
     id: 'paas.prefs.order.params',
     defaultMessage: '参数',
@@ -19,49 +15,49 @@ const messages = defineMessages({
     id: 'paas.prefs.order.types',
     defaultMessage: '货运类型',
   },
-  exceptionCode: {
-    id: 'paas.prefs.order.exception.code',
-    defaultMessage: '异常原因',
+  fees: {
+    id: 'paas.prefs.fees',
+    defaultMessage: '费用',
   },
-  config: {
-    id: 'paas.prefs.config',
-    defaultMessage: '配置',
+  feeItems: {
+    id: 'paas.prefs.fees.items',
+    defaultMessage: '费用元素',
   },
-  orderConfig: {
-    id: 'paas.prefs.order.config',
-    defaultMessage: '订单类型配置',
+  feeGroups: {
+    id: 'paas.prefs.fees.groups',
+    defaultMessage: '费用分组',
   },
-  orderTypeInfo: {
-    id: 'paas.prefs.order.type.info',
-    defaultMessage: '订单类型信息',
+  newFeeGroup: {
+    id: 'paas.prefs.new.fees.groups',
+    defaultMessage: '新建费用分组',
   },
-  orderTransfer: {
-    id: 'paas.prefs.order.type.transfer',
-    defaultMessage: '订单流向',
+  newFeeElement: {
+    id: 'paas.prefs.new.fees.element',
+    defaultMessage: '新建费用元素',
   },
-  extField1: {
-    id: 'paas.prefs.order.type.extfield1',
-    defaultMessage: '扩展字段1',
+  groupsSearchTip: {
+    id: 'paas.prefs.fee.group.search',
+    defaultMessage: '分组代码/分组名称',
   },
-  extField2: {
-    id: 'paas.prefs.order.type.extfield2',
-    defaultMessage: '扩展字段2',
+  elementsSearchTip: {
+    id: 'paas.prefs.fee.element.search',
+    defaultMessage: '费用代码/费用名称',
   },
-  extField3: {
-    id: 'paas.prefs.order.type.extfield3',
-    defaultMessage: '扩展字段3',
+  newChildFeeElement: {
+    id: 'paas.prefs.new.child.fees.element',
+    defaultMessage: '新建子费用元素',
   },
-  extField4: {
-    id: 'paas.prefs.order.type.extfield4',
-    defaultMessage: '扩展字段4',
+  exchangeRates: {
+    id: 'paas.prefs.exchange.rates',
+    defaultMessage: '汇率',
   },
-  extField5: {
-    id: 'paas.prefs.order.type.extfield5',
-    defaultMessage: '扩展字段5',
+  addChangeRate: {
+    id: 'paas.prefs.exchange.rate.add',
+    defaultMessage: '添加汇率',
   },
-  extField6: {
-    id: 'paas.prefs.order.type.extfield6',
-    defaultMessage: '扩展字段6',
+  taxRates: {
+    id: 'paas.prefs.tax.rates',
+    defaultMessage: '税率',
   },
 });
 

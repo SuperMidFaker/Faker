@@ -20,17 +20,18 @@ import * as CorpRole from './corp/role';
 import * as CorpCollab from './corp/collab';
 import * as CorpLogs from './corp/logs';
 import PackPaaS from './paas/packPaaS';
-import * as HubDev from './paas/dev';
-import * as HubAdapter from './paas/adapter';
-import * as HubIntegration from './paas/integration';
-import * as HubArCTM from './paas/integration/arctm';
-import * as HubQuickPass from './paas/integration/quickpass';
-import * as HubEasipassEDI from './paas/integration/easipass';
-import * as HubSingleWindow from './paas/integration/singlewindow';
-import * as HubSHFTZ from './paas/integration/shftz';
-import * as HubSFExpress from './paas/integration/sfexpress';
-import * as HubTemplates from './paas/templates';
-import * as HubFlow from './paas/flow';
+import PaaS from './paas';
+import * as PaaSDev from './paas/dev';
+import * as PaaSAdapter from './paas/adapter';
+import * as PaaSIntegration from './paas/integration';
+import * as PaaSArCTM from './paas/integration/arctm';
+import * as PaaSQuickPass from './paas/integration/quickpass';
+import * as PaaSEasipassEDI from './paas/integration/easipass';
+import * as PaaSSingleWindow from './paas/integration/singlewindow';
+import * as PaaSSHFTZ from './paas/integration/shftz';
+import * as PaaSSFExpress from './paas/integration/sfexpress';
+import * as PaaSTemplates from './paas/templates';
+import * as PaaSFlow from './paas/flow';
 import * as PaaSPrefs from './paas/prefs';
 import Module from './module';
 import TMS from './transport/module-transport';
@@ -106,7 +107,6 @@ import * as BSSAudit from './bss/audit';
 import * as BSSBill from './bss/bill';
 import * as BSSInvoice from './bss/invoice';
 import * as BSSPayment from './bss/payment';
-import * as BSSSettings from './bss/settings';
 import DIS from './dis/module-dis';
 import * as DISDashboard from './dis/dashboard';
 
@@ -166,40 +166,44 @@ export default(store) => {
           <Route path="password" component={Password} />
         </Route>
         <Route path="paas" component={PackPaaS}>
-          <IndexRedirect to="/paas/integration/apps" />
+          <IndexRoute component={PaaS} />
           <Route path="dev">
-            <IndexRoute component={HubDev.List} />
-            <Route path=":appId" component={HubDev.Config} />
+            <IndexRoute component={PaaSDev.List} />
+            <Route path=":appId" component={PaaSDev.Config} />
           </Route>
-          <Route path="adapter" component={HubAdapter.List} />
+          <Route path="adapter" component={PaaSAdapter.List} />
           <Route path="integration">
-            <Route path="apps" component={HubIntegration.AppStore} />
-            <Route path="installed" component={HubIntegration.InstalledList} />
+            <Route path="apps" component={PaaSIntegration.AppStore} />
+            <Route path="installed" component={PaaSIntegration.InstalledList} />
             <Route path="arctm">
-              <Route path="config/:uuid" component={HubArCTM.Config} />
+              <Route path="config/:uuid" component={PaaSArCTM.Config} />
             </Route>
             <Route path="quickpass">
-              <Route path="config/:uuid" component={HubQuickPass.Config} />
+              <Route path="config/:uuid" component={PaaSQuickPass.Config} />
             </Route>
             <Route path="easipass">
-              <Route path="config/:uuid" component={HubEasipassEDI.Config} />
+              <Route path="config/:uuid" component={PaaSEasipassEDI.Config} />
             </Route>
             <Route path="singlewindow">
-              <Route path="config/:uuid" component={HubSingleWindow.Config} />
+              <Route path="config/:uuid" component={PaaSSingleWindow.Config} />
             </Route>
             <Route path="shftz">
-              <Route path="config/:uuid" component={HubSHFTZ.Config} />
+              <Route path="config/:uuid" component={PaaSSHFTZ.Config} />
             </Route>
             <Route path="sfexpress">
-              <Route path="config/:uuid" component={HubSFExpress.Config} />
+              <Route path="config/:uuid" component={PaaSSFExpress.Config} />
             </Route>
           </Route>
-          <Route path="flow" component={HubFlow.List} />
+          <Route path="flow" component={PaaSFlow.List} />
           <Route path="prefs">
             <Route path="shipment" component={PaaSPrefs.Shipment} />
+            <Route path="fees" component={PaaSPrefs.Fees} />
+            <Route path="currencies" component={PaaSPrefs.Currencies} />
+            <Route path="taxes" component={PaaSPrefs.Taxes} />
           </Route>
           <Route path="templates">
-            <Route path="notice" component={HubTemplates.NoticeTemplate} />
+            <Route path="print" component={PaaSTemplates.Print} />
+            <Route path="notice" component={PaaSTemplates.Notice} />
           </Route>
         </Route>
         <Route path="corp" component={PackCorp}>
@@ -520,13 +524,6 @@ export default(store) => {
             <Route path="payment">
               <IndexRoute component={BSSPayment.List} />
               <Route path=":voucherNo" component={BSSPayment.Detail} />
-            </Route>
-            <Route path="settings">
-              <IndexRedirect to="/bss/settings/preferences" />
-              <Route path="preferences" component={BSSSettings.Preferences} />
-              <Route path="fees" component={BSSSettings.Fees} />
-              <Route path="exchangerates" component={BSSSettings.ExchangeRates} />
-              <Route path="taxrates" component={BSSSettings.TaxRates} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.dis.id} component={DIS}>

@@ -50,6 +50,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '中文品名',
     dataIndex: 'name',
+    width: 200,
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',

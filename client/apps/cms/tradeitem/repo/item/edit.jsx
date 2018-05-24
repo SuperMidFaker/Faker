@@ -101,8 +101,6 @@ export default class TradeItemEdit extends Component {
           } else {
             message.success('保存成功');
             this.props.notifyFormChanged(false);
-            this.context.router.goBack();
-            // this.context.router.push('/clearance/classification/tradeitem');
           }
         });
       }

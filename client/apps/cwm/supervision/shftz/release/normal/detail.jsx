@@ -10,7 +10,6 @@ import { Alert, Badge, Tabs, Layout, Steps, Button, Radio, Tag, notification, me
 import connectNav from 'client/common/decorators/connect-nav';
 import Drawer from 'client/components/Drawer';
 import EditableCell from 'client/components/EditableCell';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import SearchBox from 'client/components/SearchBox';
 import MagicCard from 'client/components/MagicCard';
@@ -327,7 +326,6 @@ export default class SHFTZNormalRelRegDetail extends Component {
     title: '规格型号',
     dataIndex: 'model',
     width: 150,
-    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',
     dataIndex: 'qty',

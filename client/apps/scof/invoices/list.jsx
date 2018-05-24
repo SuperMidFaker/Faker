@@ -20,6 +20,7 @@ import { loadPartners } from 'common/reducers/partner';
 import { loadCmsParams } from 'common/reducers/cmsManifest';
 import { loadInvoices, deleteSofInvice, batchDeleteInvoices, batchDeleteByUploadNo, loadInvoiceCategories, loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
+import { toggleExportPanel } from 'common/reducers/saasExport';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
 import { PARTNER_ROLES, LINE_FILE_ADAPTOR_MODELS, UPLOAD_BATCH_OBJECT } from 'common/constants';
 // import { createFilename } from 'client/util/dataTransform';
@@ -71,6 +72,7 @@ function fetchData({ state, dispatch }) {
     batchDeleteByUploadNo,
     setUploadRecordsReload,
     togglePanelVisible,
+    toggleExportPanel,
   }
 )
 @connectNav({
@@ -86,7 +88,6 @@ export default class InvoiceList extends React.Component {
   }
   state = {
     importPanelVisible: false,
-    exportPanelVisible: false,
     selectedRows: [],
     selectedRowKeys: [],
     buyer: '',
@@ -215,12 +216,7 @@ export default class InvoiceList extends React.Component {
     });
   }
   handleExport = () => {
-    this.setState({
-      exportPanelVisible: true,
-    });
-    // const { selectedRowKeys } = this.state;
-    // window.open(`${API_ROOTS.default}v1/scof/invoices/
-    // ${createFilename('invoices')}.xlsx?invoiceNos=${selectedRowKeys}`);
+    this.props.toggleExportPanel(true);
   }
   columns = [{
     title: this.msg('invoiceNo'),
@@ -430,8 +426,8 @@ export default class InvoiceList extends React.Component {
             </Form.Item>
           </ImportDataPanel>
           <ExportDataPanel
-            visible={this.state.exportPanelVisible}
-            onClose={() => { this.setState({ exportPanelVisible: false }); }}
+            type={Object.keys(LINE_FILE_ADAPTOR_MODELS)[3]}
+            formData={{}}
           />
           <UploadLogsPanel
             onUploadBatchDelete={this.removeInvoiceByBatchUpload}

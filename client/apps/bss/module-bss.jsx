@@ -66,14 +66,6 @@ export default class ModuleBSS extends React.Component {
       text: formatMsg(intl, 'payment'),
       path: '/bss/payment',
     });
-    linkMenus.push({
-      single: true,
-      bottom: true,
-      key: 'bss-settings',
-      path: '/bss/settings',
-      icon: 'logixon icon-setting-o',
-      text: formatMsg(intl, 'settings'),
-    });
     if (bssApps.length > 0) {
       if (bssApps.length === 1) {
         appMenus.push({
