@@ -87,7 +87,7 @@ export default class CreateQuoteModal extends React.Component {
     return (
       <Modal
         maskClosable={false}
-        title={this.msg('newQuote')}
+        title={this.msg('createQuote')}
         visible={visible}
         onOk={this.handleOk}
         onCancel={this.handleCancel}

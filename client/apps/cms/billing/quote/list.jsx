@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
+import { TENANT_ASPECT } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Divider, Layout, message } from 'antd';
-import ButtonToggle from 'client/components/ButtonToggle';
+import { Button, Layout, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import NestedMenuPanel from 'client/components/NestedMenuPanel';
 import SearchBox from 'client/components/SearchBox';
 import RowAction from 'client/components/RowAction';
 import ToolbarAction from 'client/components/ToolbarAction';
 import UserAvatar from 'client/components/UserAvatar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
+import { toggleEventsModal } from 'common/reducers/cmsPrefEvents';
 import { toggleQuoteCreateModal, loadQuoteTable, deleteQuotes } from 'common/reducers/cmsQuote';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 import CreateQuoteModal from '../modals/createQuoteModal';
@@ -35,6 +35,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    aspect: state.account.aspect,
     quotesList: state.cmsQuote.quotesList,
     listFilter: state.cmsQuote.listFilter,
   }),
@@ -42,6 +43,7 @@ function fetchData({ state, dispatch }) {
     toggleQuoteCreateModal,
     loadQuoteTable,
     deleteQuotes,
+    toggleEventsModal,
   }
 )
 @connectNav({
@@ -132,11 +134,14 @@ export default class RatesList extends Component {
     const filter = { ...this.props.listFilter, searchText: value };
     this.handleQuoteTableLoad(1, filter);
   }
+  handleClick = (key) => {
+    this.props.toggleEventsModal(true, key);
+  }
   toggleExtra = () => {
     this.setState({ extraVisible: !this.state.extraVisible });
   }
   render() {
-    const { quotesList, tenantId } = this.props;
+    const { quotesList, tenantId, aspect } = this.props;
     const columns = [
       {
         title: this.msg('quoteNo'),
@@ -196,16 +201,17 @@ export default class RatesList extends Component {
       },
     ];
     this.dataSource.remotes = quotesList;
-    const menus = [
-      {
+    const menus = [];
+    if (aspect === TENANT_ASPECT.LSP) {
+      menus.push({
         key: 'clientQuote',
         menu: this.msg('clientQuote'),
-      },
-      {
-        key: 'providerQuote',
-        menu: this.msg('providerQuote'),
-      },
-    ];
+      });
+    }
+    menus.push({
+      key: 'providerQuote',
+      menu: this.msg('providerQuote'),
+    });
     const toolbarActions = <SearchBox placeholder={this.gmsg('searchTip')} onSearch={this.handleSearch} />;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -216,30 +222,13 @@ export default class RatesList extends Component {
     const bulkActions = (<span>
       <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />
     </span>);
-    const menuStack = [
-      [
-        {
-          key: 'g_setting',
-          title: this.gmsg('setting'),
-          type: 'group',
-          children: [
-            {
-              key: 'rules',
-              icon: 'tool',
-              title: this.msg('事件绑定'),
-            },
-          ],
-        },
-      ],
-    ];
     return (
       <Layout>
         <PageHeader title={this.msg('quote')} menus={menus} currentKey={this.props.listFilter.viewStatus} onTabChange={this.handleTabChange}>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreate}>
-              新建报价
+              {this.msg('createQuote')}
             </Button>
-            <ButtonToggle icon="bars" onClick={this.toggleExtra} state={this.state.extraVisible} />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
@@ -254,15 +243,6 @@ export default class RatesList extends Component {
             loading={quotesList.loading}
             rowKey="quote_no"
           />
-          <NestedMenuPanel
-            title={this.gmsg('extraMenu')}
-            visible={this.state.extraVisible}
-            onClose={this.toggleExtra}
-            stack={menuStack}
-            onMenuClick={this.handleExtraMenuClick}
-          >
-            <Divider />
-          </NestedMenuPanel>
         </Content>
         <CreateQuoteModal />
       </Layout>

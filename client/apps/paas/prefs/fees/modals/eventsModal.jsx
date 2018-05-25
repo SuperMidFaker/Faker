@@ -24,7 +24,7 @@ const { Option } = Select;
   }
 )
 @Form.create()
-export default class InspectModal extends React.Component {
+export default class EventsModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,

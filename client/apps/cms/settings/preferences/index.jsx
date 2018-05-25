@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Collapse, List, Radio, Layout, Switch } from 'antd';
+import { Breadcrumb, Card, Collapse, List, Radio, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { switchNavOption } from 'common/reducers/cmsPreferences';
-import { CMS_DECL_CHANNEL, CMS_PLUGINS } from 'common/constants';
+import { CMS_DECL_CHANNEL } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import PageHeader from 'client/components/PageHeader';
@@ -99,25 +99,7 @@ export default class Preferences extends Component {
         <Layout>
           <PageHeader title={this.msg('preferences')} />
           <Content className="page-content layout-fixed-width">
-            <Collapse bordered={false} defaultActiveKey={['pluginsPref', 'cusDeclPref']}>
-              <Panel header={this.msg('pluginsPref')} key="pluginsPref" style={customPanelStyle}>
-                <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }} >
-                  <List
-                    dataSource={CMS_PLUGINS}
-                    renderItem={plugin => (
-                      <List.Item
-                        key={plugin.key}
-                        actions={[<Switch checkedChildren="开启" unCheckedChildren="关闭" />]}
-                      >
-                        <List.Item.Meta
-                          title={plugin.name}
-                          description={plugin.desc}
-                        />
-                      </List.Item>
-                      )}
-                  />
-                </Card>
-              </Panel>
+            <Collapse bordered={false} defaultActiveKey={['cusDeclPref']}>
               <Panel header={this.msg('cusDeclPref')} key="cusDeclPref" style={customPanelStyle}>
                 <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }} >
                   <List

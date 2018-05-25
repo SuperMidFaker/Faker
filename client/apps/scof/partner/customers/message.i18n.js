@@ -5,7 +5,7 @@ import moduleMessages from '../message.i18n';
 const messages = defineMessages({
   addToServiceTeam: {
     id: 'sof.customer.addto.serviceteam',
-    defaultMessage: '添加成员至服务团队',
+    defaultMessage: '添加团队成员',
   },
   allMembers: {
     id: 'sof.customer.all.members',

@@ -79,7 +79,7 @@ export default class SellerBills extends React.Component {
   columns = [{
     title: '账单名称',
     dataIndex: 'bill_title',
-    width: 150,
+    width: 200,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {

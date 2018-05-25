@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   serviceTeam: {
     id: 'sof.partner.customers.service.team',
-    defaultMessage: '服务团队',
+    defaultMessage: '相关团队',
   },
   batchImportCustomers: {
     id: 'sof.partner.customers.batch.import',

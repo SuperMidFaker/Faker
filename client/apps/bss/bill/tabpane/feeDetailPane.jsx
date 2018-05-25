@@ -48,6 +48,7 @@ export default class FeeDetailPane extends Component {
     }, {
       title: '费用名称',
       dataIndex: 'fee',
+      width: 150,
     }, {
       title: '费用种类',
       dataIndex: 'fee_category',

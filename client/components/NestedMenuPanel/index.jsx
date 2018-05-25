@@ -96,7 +96,7 @@ export default class NestedNavPanel extends PureComponent {
 
   render() {
     const {
-      visible, children, onClose, onMenuClick,
+      visible, children, onClose, onMenuClick, stack,
     } = this.props;
     return (
       <DockPanel
@@ -106,9 +106,9 @@ export default class NestedNavPanel extends PureComponent {
         visible={visible}
         onClose={onClose}
       >
-        <Menu selectable={false} onClick={onMenuClick}>
+        {stack && <Menu selectable={false} onClick={onMenuClick}>
           {this.renderStack()}
-        </Menu>
+        </Menu>}
         {children}
       </DockPanel>
     );

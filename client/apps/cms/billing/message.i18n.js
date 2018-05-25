@@ -288,8 +288,8 @@ const messages = defineMessages({
     id: 'cms.modals.expense.detail',
     defaultMessage: '费用明细',
   },
-  newQuote: {
-    id: 'cms.billing.quote.new',
+  createQuote: {
+    id: 'cms.billing.quote.create',
     defaultMessage: '新建报价',
   },
   quote: {

@@ -77,7 +77,7 @@ export default class AuditList extends React.Component {
     width: 180,
     dataIndex: 'seller_name',
   }, {
-    title: '账单号/业务编号',
+    title: '账单号',
     width: 150,
     dataIndex: 'cust_order_no',
   }, {

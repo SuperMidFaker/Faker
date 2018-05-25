@@ -27,6 +27,10 @@ const messages = defineMessages({
     id: 'paas.prefs.fees.groups',
     defaultMessage: '费用分组',
   },
+  feeEvents: {
+    id: 'paas.prefs.fees.events',
+    defaultMessage: '费用与事件关联',
+  },
   newFeeGroup: {
     id: 'paas.prefs.new.fees.groups',
     defaultMessage: '新建费用分组',

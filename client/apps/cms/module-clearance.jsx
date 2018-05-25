@@ -129,6 +129,7 @@ export default class Clearance extends React.Component {
         sublinks: billingSublinks,
       });
     }
+    /*
     if (hasPermission(privileges, { module: 'clearance', feature: 'analytics' })) {
       linkMenus.push({
         single: true,
@@ -138,6 +139,7 @@ export default class Clearance extends React.Component {
         path: '/clearance/analytics',
       });
     }
+    */
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: true,

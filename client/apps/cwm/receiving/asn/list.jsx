@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Button, Divider, Form, Layout, Icon, Menu, Select, Tag, notification, DatePicker } from 'antd';
+import { Badge, Button, Divider, Form, Layout, Menu, Select, Tag, notification, DatePicker } from 'antd';
 import DataTable from 'client/components/DataTable';
 import Drawer from 'client/components/Drawer';
 import SearchBox from 'client/components/SearchBox';
@@ -469,28 +469,28 @@ export default class ReceivingASNList extends React.Component {
               </Menu.Item>
               <Menu.ItemGroup key="inboundStatus" title={this.msg('inboundStatus')}>
                 <Menu.Item key={CWM_ASN_STATUS.PENDING.key}>
-                  <Icon type="" /> {CWM_ASN_STATUS.PENDING.text}
+                  {CWM_ASN_STATUS.PENDING.text}
                 </Menu.Item>
                 <Menu.Item key={CWM_ASN_STATUS.INBOUND.key}>
-                  <Icon type="" /> {CWM_ASN_STATUS.INBOUND.text}
+                  {CWM_ASN_STATUS.INBOUND.text}
                 </Menu.Item>
                 <Menu.Item key={CWM_ASN_STATUS.DISCREPANT.key}>
-                  <Icon type="" /> {CWM_ASN_STATUS.DISCREPANT.text}
+                  {CWM_ASN_STATUS.DISCREPANT.text}
                 </Menu.Item>
                 <Menu.Item key={CWM_ASN_STATUS.COMPLETED.key}>
-                  <Icon type="" /> {CWM_ASN_STATUS.COMPLETED.text}
+                  {CWM_ASN_STATUS.COMPLETED.text}
                 </Menu.Item>
               </Menu.ItemGroup>
               {defaultWhse.bonded &&
               <Menu.ItemGroup key="regStatus" title={this.msg('regStatus')}>
                 <Menu.Item key="regPending">
-                  <Icon type="" /> 待备案
+                  待备案
                 </Menu.Item>
                 <Menu.Item key="regProcessing">
-                  <Icon type="" /> 已发送
+                  已发送
                 </Menu.Item>
                 <Menu.Item key="regCompleted">
-                  <Icon type="" /> 备案完成
+                  备案完成
                 </Menu.Item>
               </Menu.ItemGroup>}
             </Menu>
