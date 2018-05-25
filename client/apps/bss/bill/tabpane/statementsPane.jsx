@@ -132,7 +132,7 @@ export default class StatementsPane extends Component {
       const billColumns = billTemplateFees.map(data => ({
         title: data.name,
         dataIndex: data.uid,
-        width: 100,
+        width: 150,
       }));
       columns = columns.concat(billColumns);
     }
@@ -160,6 +160,7 @@ export default class StatementsPane extends Component {
     }, {
       title: '备注',
       dataIndex: 'remark',
+      width: 150,
     }, {
       title: '订单日期',
       width: 150,

@@ -567,31 +567,31 @@ export default class ShippingOrderList extends React.Component {
               </Menu.Item>
               <Menu.ItemGroup key="outboundStatus" title={this.msg('outboundStatus')}>
                 <Menu.Item key={CWM_SO_STATUS.PENDING.key}>
-                  <Icon type="" /> {CWM_SO_STATUS.PENDING.text}
+                  {CWM_SO_STATUS.PENDING.text}
                 </Menu.Item>
                 <Menu.Item key={CWM_SO_STATUS.OUTBOUND.key}>
-                  <Icon type="" /> {CWM_SO_STATUS.OUTBOUND.text}
+                  {CWM_SO_STATUS.OUTBOUND.text}
                 </Menu.Item>
                 <Menu.Item key="tbdexit">
-                  <Icon type="check-square-o" /> {this.msg('statusTbdExitable')}
+                  {this.msg('statusTbdExitable')}
                 </Menu.Item>
                 <Menu.Item key={CWM_SO_STATUS.PARTIAL.key}>
-                  <Icon type="" /> {CWM_SO_STATUS.PARTIAL.text}
+                  {CWM_SO_STATUS.PARTIAL.text}
                 </Menu.Item>
                 <Menu.Item key={CWM_SO_STATUS.COMPLETED.key}>
-                  <Icon type="" /> {CWM_SO_STATUS.COMPLETED.text}
+                  {CWM_SO_STATUS.COMPLETED.text}
                 </Menu.Item>
               </Menu.ItemGroup>
               {defaultWhse.bonded &&
                 <Menu.ItemGroup key="regStatus" title={this.msg('regStatus')}>
                   <Menu.Item key="regPending">
-                    <Icon type="" /> 待备案
+                    待备案
                   </Menu.Item>
                   <Menu.Item key="regProcessing">
-                    <Icon type="" /> 已发送
+                    已发送
                   </Menu.Item>
                   <Menu.Item key="regCompleted">
-                    <Icon type="" /> 备案完成
+                    备案完成
                   </Menu.Item>
                 </Menu.ItemGroup>}
               <Divider />

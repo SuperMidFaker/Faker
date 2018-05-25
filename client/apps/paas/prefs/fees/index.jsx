@@ -11,8 +11,10 @@ import { toggleNewFeeGroupModal, loadFeeGroups, toggleNewFeeElementModal, loadFe
 import HubSiderMenu from '../../menu';
 import FeeGroups from './feeGroups';
 import FeeElements from './feeElements';
+import FeeEvents from './feeEvents';
 import NewFeeGroupModal from './modals/newFeeGroupModal';
 import NewFeeElementModal from './modals/newFeeElementModal';
+import EventsModal from './modals/eventsModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -107,6 +109,10 @@ export default class Fees extends Component {
         key: 'feeGroups',
         menu: this.msg('feeGroups'),
       },
+      {
+        key: 'feeEvents',
+        menu: this.msg('feeEvents'),
+      },
     ];
     const moreMenu = (
       <Menu onClick={this.handleMoreMenuClick}>
@@ -134,7 +140,9 @@ export default class Fees extends Component {
           <Content className="page-content">
             {currentTab === 'feeItems' && <FeeElements feeGroups={feeGroups} reload={this.handleLoadElements} />}
             {currentTab === 'feeGroups' && <FeeGroups reload={this.handleLoadGroups} />}
+            {currentTab === 'feeEvents' && <FeeEvents />}
           </Content>
+          <EventsModal />
           <NewFeeGroupModal reload={this.handleLoadGroups} />
           <NewFeeElementModal feeGroups={feeGroups} reload={this.handleLoadElements} />
           <ImportDataPanel
