@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Form, Modal, message, Select, Radio } from 'antd';
+import { Button, Col, Form, Modal, Row, message, Select, Radio } from 'antd';
 import { toggleApplyInvoiceModal, createInvoice } from 'common/reducers/bssInvoice';
 import { INVOICE_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
@@ -14,10 +14,6 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 16 },
-};
 
 @injectIntl
 @connect(
@@ -78,19 +74,30 @@ export default class ApplyInvoiceModal extends React.Component {
     const {
       partners,
     } = this.state;
+    const title = (<div>
+      <span>{this.msg('applyInvoice')}</span>
+      <div className="toolbar-right">
+        <Button onClick={this.handleCancel}>{this.gmsg('cancel')}</Button>
+        <Button type="primary" onClick={this.handleManualAllocSave}>{this.gmsg('save')}</Button>
+      </div>
+    </div>);
     return (
       <Modal
         maskClosable={false}
-        title={this.msg('applyInvoice')}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
         visible={visible}
-        onOk={this.handleOk}
-        onCancel={this.handleCancel}
+        footer={null}
         destroyOnClose
       >
-        <Form>
-          <FormItem label="付款方" {...formItemLayout}>
-            {getFieldDecorator('partner_id', {
-              rules: [{ required: true, message: '结算对象必选' }],
+        <Form layout="vertical" className="layout-fixed-width">
+          <Row gutter={24}>
+            <Col span={12}>
+              <FormItem label={this.msg('customer')}>
+                {getFieldDecorator('partner_id', {
+              rules: [{ required: true, message: '客户必选' }],
             })(<Select
               showSearch
               showArrow
@@ -106,9 +113,11 @@ export default class ApplyInvoiceModal extends React.Component {
                 </Option>))
               }
             </Select>)}
-          </FormItem>
-          <FormItem label={this.msg('invoiceType')} {...formItemLayout}>
-            {getFieldDecorator('invoice_type', {
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem label={this.msg('invoiceType')}>
+                {getFieldDecorator('invoice_type', {
               rules: [{ required: true, message: '发票类型必选' }],
             })(<RadioGroup onChange={this.handleTypeSelect}>
               {
@@ -116,8 +125,11 @@ export default class ApplyInvoiceModal extends React.Component {
                   <RadioButton value={qt.key} key={qt.key}>{qt.text}</RadioButton>)
               }
             </RadioGroup>)}
-          </FormItem>
+              </FormItem>
+            </Col>
+          </Row>
         </Form>
+
       </Modal>
     );
   }

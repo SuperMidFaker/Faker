@@ -14,10 +14,7 @@ import { openNewTransfOutModal, loadReleaseRegDatas } from 'common/reducers/cwmS
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
-import ShipmentDockPanel from '../../../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
-import DeliveryDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
+import { ShipmentDock, DelegationDock, ShippingDock, FreightDock } from 'client/components/Dock';
 import messages from '../../message.i18n';
 import NewTransfOutModal from './newTransfOutModal';
 
@@ -275,10 +272,10 @@ export default class SHFTZTransferOutList extends React.Component {
             onDeselectRows={this.handleDeselectRows}
             loading={this.props.loading}
           />
-          <ShippingDockPanel />
-          <ShipmentDockPanel />
-          <DelegationDockPanel />
-          <DeliveryDockPanel />
+          <ShippingDock />
+          <ShipmentDock />
+          <DelegationDock />
+          <FreightDock />
           <NewTransfOutModal reload={this.handleReleaseListLoad} />
         </Content>
       </Layout>

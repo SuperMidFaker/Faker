@@ -14,10 +14,7 @@ import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import PageHeader from 'client/components/PageHeader';
-import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
-import ShipmentDockPanel from '../../../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
-import DeliveryDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
+import { ShipmentDock, DelegationDock, ShippingDock, FreightDock } from 'client/components/Dock';
 import messages from '../../message.i18n';
 
 
@@ -315,10 +312,10 @@ export default class SHFTZReleaseList extends React.Component {
             loading={this.props.loading}
             indentSize={0}
           />
-          <ShippingDockPanel />
-          <ShipmentDockPanel />
-          <DelegationDockPanel />
-          <DeliveryDockPanel />
+          <ShippingDock />
+          <ShipmentDock />
+          <DelegationDock />
+          <FreightDock />
         </Content>
       </Layout>
     );

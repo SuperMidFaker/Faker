@@ -16,12 +16,9 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import { ShipmentDock, DelegationDock, ShippingDock, FreightDock } from 'client/components/Dock';
 import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
-import ShippingDockPanel from '../dock/shippingDockPanel';
-import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import DeliveryDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 
 const formatMsg = format(messages);
@@ -339,10 +336,10 @@ export default class OutboundList extends React.Component {
             onDeselectRows={this.handleDeselectRows}
           />
         </Content>
-        <ShippingDockPanel />
-        <ShipmentDockPanel />
-        <DelegationDockPanel />
-        <DeliveryDockPanel />
+        <ShippingDock />
+        <ShipmentDock />
+        <DelegationDock />
+        <FreightDock />
       </QueueAnim>
     );
   }

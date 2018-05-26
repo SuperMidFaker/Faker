@@ -23,7 +23,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
 import Drawer from 'client/components/Drawer';
 import UserAvatar from 'client/components/UserAvatar';
-import DelegationDockPanel from '../common/dock/delegationDockPanel';
+import { DelegationDock } from 'client/components/Dock';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const FormItem = Form.Item;
@@ -473,7 +473,7 @@ export default class PayableExpenseList extends Component {
             type={UPLOAD_BATCH_OBJECT.CMS_EXPENSE}
           />
         </Layout>
-        <DelegationDockPanel />
+        <DelegationDock />
       </Layout>
     );
   }

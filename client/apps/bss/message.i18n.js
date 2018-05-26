@@ -18,9 +18,9 @@ const messages = defineMessages({
     id: 'bss.module.invoice',
     defaultMessage: '发票管理',
   },
-  voucher: {
-    id: 'bss.module.voucher',
-    defaultMessage: '凭证管理',
+  payment: {
+    id: 'bss.module.payment',
+    defaultMessage: '收付款管理',
   },
   settings: {
     id: 'bss.module.settings',

@@ -60,6 +60,7 @@ export default class BuyerPendingTable extends React.Component {
   }, {
     title: '客户名称',
     dataIndex: 'owner_name',
+    width: 200,
   }, {
     title: '客户单号',
     width: 180,
@@ -73,6 +74,8 @@ export default class BuyerPendingTable extends React.Component {
     title: '应收金额',
     dataIndex: 'seller_settled_amount',
     width: 150,
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',

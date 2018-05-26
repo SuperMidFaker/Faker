@@ -10,9 +10,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadPartners } from 'common/reducers/shipment';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
-import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import ShipmentAdvanceModal from './modals/shipment-advance-modal';
 import CreateSpecialCharge from './modals/create-specialCharge';
 import ExportExcel from './modals/export-excel';
@@ -143,9 +141,9 @@ export default class TrackingLandWrapper extends React.Component {
         <Content className="main-content" key="main">
           {this.props.children}
         </Content>
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
-        <DelegationDockPanel />
+        <ShipmentDock />
+        <FreightDock />
+        <DelegationDock />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </QueueAnim>

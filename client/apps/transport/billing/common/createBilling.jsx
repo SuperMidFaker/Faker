@@ -7,13 +7,11 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { loadFeesByChooseModal, createBilling, updateBillingFees } from 'common/reducers/transportBilling';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import AddressColumn from '../../common/addressColumn';
 import BeforeFeesModal from './beforeFeesModal';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
-import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import ActualDate from '../../common/actualDate';
-import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -298,9 +296,9 @@ export default class CreateBilling extends React.Component {
             />
           </div>
         </Content>
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
-        <DelegationDockPanel />
+        <ShipmentDock />
+        <FreightDock />
+        <DelegationDock />
       </div>
     );
   }

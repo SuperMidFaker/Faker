@@ -60,7 +60,7 @@ export default class SellerPendingTable extends React.Component {
   }, {
     title: '服务商',
     dataIndex: 'vendor_name',
-    width: 150,
+    width: 200,
   }, {
     title: '客户单号',
     width: 180,
@@ -74,6 +74,8 @@ export default class SellerPendingTable extends React.Component {
     title: '应付金额',
     dataIndex: 'buyer_settled_amount',
     width: 150,
+  }, {
+    dataIndex: 'SPACER_COL',
   }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',

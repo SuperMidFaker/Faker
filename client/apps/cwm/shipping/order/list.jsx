@@ -20,13 +20,10 @@ import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease }
 import { exportNormalExitBySo, openShippingModal } from 'common/reducers/cwmOutbound';
 import { toggleExportPanel } from 'common/reducers/saasExport';
 import ExportDataPanel from 'client/components/ExportDataPanel';
+import { ShipmentDock, DelegationDock, ShippingDock, FreightDock } from 'client/components/Dock';
 import WhseSelect from '../../common/whseSelect';
-import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import ShippingModal from '../outbound/modal/shippingModal';
-import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import DeliveryDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -615,10 +612,10 @@ export default class ShippingOrderList extends React.Component {
             />
           </Content>
         </Layout>
-        <ShippingDockPanel />
-        <ShipmentDockPanel />
-        <DelegationDockPanel />
-        <DeliveryDockPanel />
+        <ShippingDock />
+        <ShipmentDock />
+        <DelegationDock />
+        <FreightDock />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
           adaptors={this.props.adaptors}

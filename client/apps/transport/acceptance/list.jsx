@@ -19,13 +19,12 @@ import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES, SHIPMENT_TRACK_S
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
 import { format } from 'client/common/i18n/helpers';
+import { ShipmentDock, FreightDock, DelegationDock } from 'client/components/Dock';
 import RevokeModal from '../common/modal/revokeModal';
-import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
+
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
 import messages from './message.i18n';
-import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import CustomerSelect from '../common/customerSelect';
@@ -530,9 +529,9 @@ export default class AcceptList extends React.Component {
           />
         </Content>
         <RevokeModal reload={this.handleTableLoad} />
-        <DeliveryDockPanel reload={this.handleTableLoad} />
-        <ShipmentDockPanel />
-        <DelegationDockPanel />
+        <FreightDock reload={this.handleTableLoad} />
+        <ShipmentDock />
+        <DelegationDock />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
         <DispatchDock />

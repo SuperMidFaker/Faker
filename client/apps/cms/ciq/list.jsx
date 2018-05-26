@@ -17,7 +17,7 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CIQ_DECL_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import DelegationDockPanel from '../common/dock/delegationDockPanel';
+import { DelegationDock } from 'client/components/Dock';
 import { formatMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -347,7 +347,7 @@ export default class CiqDeclList extends Component {
             })}
           />
         </Content>
-        <DelegationDockPanel />
+        <DelegationDock />
       </Layout>
     );
   }

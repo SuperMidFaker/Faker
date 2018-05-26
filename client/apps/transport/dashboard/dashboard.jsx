@@ -10,15 +10,13 @@ import { changeDockStatus } from 'common/reducers/transportDispatch';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import StatsPanel from './panel/statsPanel';
 import TodoPanel from './panel/todoPanel';
 import MoreApplications from './panel/moreApplications';
-import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import { formatMsg } from './message.i18n';
-import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 
 
 const { Header, Content, Sider } = Layout;
@@ -79,9 +77,9 @@ export default class Dashboard extends React.Component {
                 </Col>
               </Row>
             </Content>
-            <ShipmentDockPanel />
-            <DeliveryDockPanel />
-            <DelegationDockPanel />
+            <ShipmentDock />
+            <FreightDock />
+            <DelegationDock />
             <DispatchDock
               onClose={this.handleDispatchDockClose}
             />

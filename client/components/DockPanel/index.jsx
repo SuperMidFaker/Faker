@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Badge, Breadcrumb, Button, Popover, Spin } from 'antd';
+import { Alert, Badge, Breadcrumb, Button, Icon, Popover, Spin } from 'antd';
 import classNames from 'classnames';
 import './style.less';
 
@@ -17,6 +17,7 @@ export default class DockPanel extends PureComponent {
     prefixCls: PropTypes.string,
     visible: PropTypes.bool.isRequired,
     size: PropTypes.string,
+    label: PropTypes.string,
     title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     mode: PropTypes.string,
     uppperLevel: PropTypes.node,
@@ -67,8 +68,8 @@ export default class DockPanel extends PureComponent {
   }
   render() {
     const {
-      prefixCls, size = '', className, visible, title, mode, uppperLevel, status, statusText,
-      overlay, extra, loading, alert, alertType, children,
+      prefixCls, size = '', className, visible, label, title, mode, uppperLevel, status, statusText,
+      overlay, onEdit, extra, loading, alert, alertType, children,
     } = this.props;
     const sizeCls = ({
       large: 'lg',
@@ -95,23 +96,29 @@ export default class DockPanel extends PureComponent {
                 {this.state.depth > 1 && <Button icon="left" onClick={this.handleBackward} />}
                 <Breadcrumb>
                   {uppperLevel && <Breadcrumb.Item>{uppperLevel}</Breadcrumb.Item>}
-                  <Breadcrumb.Item>{title}</Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <div className={`${prefixCls}-head-title-label`}>{label}</div>
+                    <div>{title}</div>
+                  </Breadcrumb.Item>
                 </Breadcrumb>
                 {status ? <Badge status={status} text={statusText} /> : null}
-                {overlay &&
                 <div className={`${prefixCls}-head-overlay`}>
-                  <Popover
-                    placement="bottomRight"
-                    title="更多操作"
-                    visible={this.state.overlayVisible}
-                    onVisibleChange={this.handleVisibleChange}
-                    content={<div className={`${prefixCls}-popover`} onClick={this.hideOverlay}>{overlay}</div>}
-                    trigger="click"
-                  >
-                    <Button shape="circle" icon="ellipsis" />
-                  </Popover>
+                  {onEdit &&
+                    <Button icon="edit" onClick={onEdit}>编辑</Button>
+                  }
+                  {overlay &&
+                    <Popover
+                      placement="bottomRight"
+                      visible={this.state.overlayVisible}
+                      onVisibleChange={this.handleVisibleChange}
+                      content={<div className={`${prefixCls}-popover`} onClick={this.hideOverlay}>{overlay}</div>}
+                      trigger="click"
+                      overlayClassName="navbar-popover"
+                    >
+                      <Button>更多 <Icon type="down" /></Button>
+                    </Popover>
+                  }
                 </div>
-                }
                 <div className={`${prefixCls}-head-close`}>
                   <Button shape="circle" icon="close" onClick={this.handleClose} />
                 </div>

@@ -143,6 +143,8 @@ export default class SellerBills extends React.Component {
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
+    dataIndex: 'SPACER_COL',
+  }, {
     title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
     fixed: 'right',

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { locationShape } from 'react-router';
+import { TENANT_ASPECT } from 'common/constants';
 import Navigation from 'client/components/Navigation';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -12,6 +13,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
+    aspect: state.account.aspect,
     bssApps: state.account.apps.bss,
   }),
   {}
@@ -27,7 +29,7 @@ export default class ModuleBSS extends React.Component {
     appMenus: [],
   }
   componentWillMount() {
-    const { intl, bssApps } = this.props;
+    const { intl, bssApps, aspect } = this.props;
     const linkMenus = [];
     const appMenus = [];
     linkMenus.push({
@@ -38,13 +40,15 @@ export default class ModuleBSS extends React.Component {
       icon: 'logixon icon-dashboard',
       text: formatMsg(intl, 'dashboard'),
     });
-    linkMenus.push({
-      single: true,
-      key: 'bss-audit',
-      icon: 'logixon icon-expense-audit',
-      text: formatMsg(intl, 'audit'),
-      path: '/bss/audit',
-    });
+    if (aspect === TENANT_ASPECT.LSP) {
+      linkMenus.push({
+        single: true,
+        key: 'bss-audit',
+        icon: 'logixon icon-expense-audit',
+        text: formatMsg(intl, 'audit'),
+        path: '/bss/audit',
+      });
+    }
     linkMenus.push({
       single: true,
       key: 'bss-bill',
@@ -52,20 +56,22 @@ export default class ModuleBSS extends React.Component {
       text: formatMsg(intl, 'bill'),
       path: '/bss/bill',
     });
-    linkMenus.push({
-      single: true,
-      key: 'bss-invoice',
-      icon: 'logixon icon-invoice',
-      text: formatMsg(intl, 'invoice'),
-      path: '/bss/invoice',
-    });
-    linkMenus.push({
-      single: true,
-      key: 'bss-payment',
-      icon: 'logixon icon-voucher',
-      text: formatMsg(intl, 'payment'),
-      path: '/bss/payment',
-    });
+    if (aspect === TENANT_ASPECT.LSP) {
+      linkMenus.push({
+        single: true,
+        key: 'bss-invoice',
+        icon: 'logixon icon-invoice',
+        text: formatMsg(intl, 'invoice'),
+        path: '/bss/invoice',
+      });
+      linkMenus.push({
+        single: true,
+        key: 'bss-payment',
+        icon: 'logixon icon-voucher',
+        text: formatMsg(intl, 'payment'),
+        path: '/bss/payment',
+      });
+    }
     if (bssApps.length > 0) {
       if (bssApps.length === 1) {
         appMenus.push({

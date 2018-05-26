@@ -63,31 +63,27 @@ export default class AuditList extends React.Component {
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
-    title: '发票号',
-    dataIndex: 'invoice_no',
+    title: '开票申请号',
+    dataIndex: 'invoicing_apply_no',
     width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '购买方',
+    title: '客户名称',
     width: 180,
     dataIndex: 'buyer_name',
-  }, {
-    title: '销售方',
-    width: 180,
-    dataIndex: 'seller_name',
   }, {
     title: '账单号',
     width: 150,
     dataIndex: 'cust_order_no',
   }, {
-    title: '发票类型',
+    title: '开票类型',
     width: 100,
     dataIndex: 'invoice_type',
   }, {
-    title: '发票种类',
+    title: '发票号码',
     width: 100,
-    dataIndex: 'invoice_category',
+    dataIndex: 'invoice_no',
   }, {
     title: '发票金额',
     dataIndex: 'invoice_amount',

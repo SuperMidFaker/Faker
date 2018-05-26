@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Avatar, Button, Icon, Row, Col, Card, Tabs } from 'antd';
+import { Row, Col, Card, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 import InfoItem from 'client/components/InfoItem';
 import { showCustomerPanel, showPartnerModal } from 'common/reducers/partner';
+import GeneralPane from './generalPane';
 import ServiceTeamPane from './serviceTeamPane';
+import LogsPane from './logsPane';
 import { formatMsg } from '../message.i18n';
 
 const { TabPane } = Tabs;
@@ -31,59 +33,58 @@ export default class CustomerPanel extends React.Component {
   handleClose = () => {
     this.props.showCustomerPanel({ visible: false });
   }
+  renderExtra() {
+    const { customer } = this.props;
+    return (
+      <Row>
+        <Col sm={24} lg={4}>
+          <InfoItem
+            label={this.msg('customerCode')}
+            field={customer.partner_code}
+          />
+        </Col>
+        <Col sm={24} lg={8}>
+          <InfoItem
+            label={this.msg('uscCode')}
+            field={customer.partner_unique_code}
+          />
+        </Col>
+        <Col sm={24} lg={8}>
+          <InfoItem
+            label={this.msg('customsCode')}
+            field={customer.customs_code}
+          />
+        </Col>
+        <Col sm={24} lg={4}>
+          <InfoItem
+            label={this.msg('contact')}
+            field={customer.contact}
+          />
+        </Col>
+      </Row>);
+  }
   render() {
     const { customer, visible } = this.props;
     return (
-      <DockPanel title={`${this.msg('customers')}${this.msg('profile')}`} size="large" visible={visible} onClose={this.handleClose}>
-        <Card >
-          <Avatar shape="square" icon="global" />
-          <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{customer.name}</h2>
-          <div className="pull-right">
-            <Button onClick={this.handleCustomerEdit}><Icon type="edit" /></Button>
-          </div>
-          <Row gutter={16} className="info-group-underline">
-            <Col sm={24} lg={8}>
-              <InfoItem
-                label={this.msg('customerCode')}
-                field={customer.partner_code}
-              />
-            </Col>
-            <Col sm={24} lg={8}>
-              <InfoItem
-                label={this.msg('uscCode')}
-                field={customer.partner_unique_code}
-              />
-            </Col>
-            <Col sm={24} lg={8}>
-              <InfoItem
-                label={this.msg('customsCode')}
-                field={customer.customs_code}
-              />
-            </Col>
-            <Col sm={24} lg={8}>
-              <InfoItem
-                label={this.msg('contact')}
-                field={customer.contact}
-              />
-            </Col>
-            <Col sm={24} lg={8}>
-              <InfoItem
-                label={this.msg('phone')}
-                field={customer.phone}
-              />
-            </Col>
-            <Col sm={24} lg={8}>
-              <InfoItem
-                label={this.msg('email')}
-                field={customer.email}
-              />
-            </Col>
-          </Row>
-        </Card>
+      <DockPanel
+        label={this.msg('customer')}
+        title={customer.name}
+        size="large"
+        visible={visible}
+        onClose={this.handleClose}
+        onEdit={this.handleCustomerEdit}
+        extra={this.renderExtra()}
+      >
         <Card bodyStyle={{ padding: 0 }}>
-          <Tabs defaultActiveKey="team">
-            <TabPane tab={<span>{this.msg('serviceTeam')}</span>} key="team" >
+          <Tabs defaultActiveKey="general">
+            <TabPane tab={this.msg('general')} key="general" >
+              <GeneralPane customer={customer} />
+            </TabPane>
+            <TabPane tab={this.msg('serviceTeam')} key="team" >
               <ServiceTeamPane customer={customer} />
+            </TabPane>
+            <TabPane tab={this.msg('logs')} key="logs" >
+              <LogsPane />
             </TabPane>
           </Tabs>
         </Card>
