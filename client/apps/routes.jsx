@@ -67,7 +67,7 @@ import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
 import * as CMSManual from './cms/manual';
 import * as CMSPermit from './cms/permit';
 import * as CMSAnalytics from './cms/analytics';
-import * as CMSTaxes from './cms/taxes';
+import * as cmsDeclTax from './cms/taxes';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -340,7 +340,7 @@ export default(store) => {
               </Route>
             </Route>
             <Route path="taxes">
-              <IndexRoute component={CMSTaxes.List} />
+              <IndexRoute component={cmsDeclTax.List} />
             </Route>
             <Route path="analytics">
               <IndexRoute component={CMSAnalytics.List} />

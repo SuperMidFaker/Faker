@@ -62,7 +62,7 @@ const messages = defineMessages({
     defaultMessage: '更多应用',
   },
   taxes: {
-    id: 'cms.module.ciq.taxes',
+    id: 'cms.module.decl.taxes',
     defaultMessage: '税金管理',
   },
 });

@@ -17,15 +17,15 @@ const messages = defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.taxes.searchPlaceholder',
-    defaultMessage: '报关单号',
+    defaultMessage: '报关单号/提运单号/内部编号',
   },
   preEntrySeqNo: {
     id: 'cms.taxes.preEntrySeqNo',
     defaultMessage: '报关单号',
   },
-  delgNo: {
-    id: 'cms.taxes.delgNo',
-    defaultMessage: '委托编号',
+  blWbNo: {
+    id: 'cms.taxes.blWbNo',
+    defaultMessage: '提运单号',
   },
   trxnMode: {
     id: 'cms.taxes.trxnMode',
@@ -99,16 +99,16 @@ const messages = defineMessages({
     id: 'cms.taxes.actualDutyPaid',
     defaultMessage: '实际完税价格',
   },
-  importDutyTax: {
-    id: 'cms.taxes.importDutyTax',
-    defaultMessage: '进口关税',
+  actualDutyTax: {
+    id: 'cms.taxes.actualDutyTax',
+    defaultMessage: '实际关税',
   },
-  importVatTax: {
-    id: 'cms.taxes.importVatTax',
+  actualVatTax: {
+    id: 'cms.taxes.actualVatTax',
     defaultMessage: '进口增值税',
   },
-  importExciseTax: {
-    id: 'cms.taxes.importExciseTax',
+  actualExciseTax: {
+    id: 'cms.taxes.actualExciseTax',
     defaultMessage: '进口消费税',
   },
   deposit: {
@@ -118,10 +118,6 @@ const messages = defineMessages({
   delayedDeclarationFee: {
     id: 'cms.taxes.delayedDeclarationFee',
     defaultMessage: '滞报金',
-  },
-  exportDutyTax: {
-    id: 'cms.taxes.exportDutyTax',
-    defaultMessage: '出口关税',
   },
   specialDutyTax: {
     id: 'cms.taxes.specialDutyTax',
@@ -143,8 +139,8 @@ const messages = defineMessages({
     id: 'cms.taxes.exciseTaxInterest',
     defaultMessage: '消费税缓息',
   },
-  paidPartnerId: {
-    id: 'cms.taxes.paidPartnerId',
+  payerEntity: {
+    id: 'cms.taxes.payerEntity',
     defaultMessage: '缴款单位',
   },
   paidDate: {

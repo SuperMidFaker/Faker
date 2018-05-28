@@ -3,7 +3,6 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/taxes/', [
   'LOAD_TAXES', 'LOAD_TAXES_SUCCEED', 'LOAD_TAXES_FAIL',
-  'BATCH_DELETE_TAXES', 'BATCH_DELETE_TAXES_SUCCEED', 'BATCH_DELETE_TAXES_FAIL',
 ]);
 
 const initialState = {
@@ -34,24 +33,9 @@ export function loadTaxesList({ pageSize, current, filter }) {
         actionTypes.LOAD_TAXES_SUCCEED,
         actionTypes.LOAD_TAXES_FAIL,
       ],
-      endpoint: 'v1/cms/taxes/load',
+      endpoint: 'v1/cms/customs/decltax',
       method: 'get',
       params: { pageSize, current, filter },
-    },
-  };
-}
-
-export function batchDeleteTaxes(preEntrySeqNos) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.BATCH_DELETE_TAXES,
-        actionTypes.BATCH_DELETE_TAXES_SUCCEED,
-        actionTypes.BATCH_DELETE_TAXES_FAIL,
-      ],
-      endpoint: 'v1/cms/taxes/batch/delete',
-      method: 'post',
-      data: { preEntrySeqNos },
     },
   };
 }

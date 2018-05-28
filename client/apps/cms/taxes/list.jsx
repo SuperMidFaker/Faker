@@ -10,7 +10,7 @@ import ToolbarAction from 'client/components/ToolbarAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
-import { loadTaxesList, batchDeleteTaxes } from 'common/reducers/cmsTaxes';
+import { loadTaxesList } from 'common/reducers/cmsDeclTax';
 import { loadCountries, loadCurrencies } from 'common/reducers/cmsParams';
 import { Layout, Menu } from 'antd';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
@@ -20,7 +20,7 @@ const { Content } = Layout;
 @injectIntl
 @connect(
   state => ({
-    taxesList: state.cmsTaxes.taxesList,
+    taxesList: state.cmsDeclTax.taxesList,
     currencies: state.cmsParams.currencies.map(currency => ({
       value: currency.curr_code,
       text: currency.curr_name,
@@ -29,13 +29,12 @@ const { Content } = Layout;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    filter: state.cmsTaxes.listFilter,
+    filter: state.cmsDeclTax.listFilter,
   }),
   {
     loadTaxesList,
     loadCountries,
     loadCurrencies,
-    batchDeleteTaxes,
   }
 )
 @connectNav({
@@ -69,8 +68,8 @@ export default class TaxesList extends Component {
     dataIndex: 'pre_entry_seq_no',
     width: 190,
   }, {
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
+    title: this.msg('blWbNo'),
+    dataIndex: 'bl_wb_no',
     width: 190,
   }, {
     title: this.msg('trxnMode'),
@@ -145,16 +144,16 @@ export default class TaxesList extends Component {
     dataIndex: 'actual_duty_paid',
     width: 100,
   }, {
-    title: this.msg('importDutyTax'),
-    dataIndex: 'import_duty_tax',
+    title: this.msg('actualDutyTax'),
+    dataIndex: 'actual_duty_tax',
     width: 100,
   }, {
-    title: this.msg('importVatTax'),
-    dataIndex: 'import_vat_tax',
+    title: this.msg('actualVatTax'),
+    dataIndex: 'actual_vat_tax',
     width: 100,
   }, {
-    title: this.msg('importExciseTax'),
-    dataIndex: 'import_excise_tax',
+    title: this.msg('actualExciseTax'),
+    dataIndex: 'actual_excise_tax',
     width: 100,
   }, {
     title: this.msg('deposit'),
@@ -163,10 +162,6 @@ export default class TaxesList extends Component {
   }, {
     title: this.msg('delayedDeclarationFee'),
     dataIndex: 'delayed_declaration_fee',
-    width: 100,
-  }, {
-    title: this.msg('exportDutyTax'),
-    dataIndex: 'export_duty_tax',
     width: 100,
   }, {
     title: this.msg('specialDutyTax'),
@@ -189,8 +184,8 @@ export default class TaxesList extends Component {
     dataIndex: 'excise_tax_interest',
     width: 100,
   }, {
-    title: this.msg('paidPartnerId'),
-    dataIndex: 'paid_partner_id',
+    title: this.msg('payerEntity'),
+    dataIndex: 'payer_entity',
     width: 100,
   }, {
     title: this.msg('paidDate'),
@@ -254,20 +249,6 @@ export default class TaxesList extends Component {
     const filter = { ...this.props.filter, searchText: value };
     this.handleReload(1, filter);
   }
-  handleBatchDelete = () => {
-    const { selectedRowKeys } = this.state;
-    this.props.batchDeleteTaxes(selectedRowKeys).then((result) => {
-      if (!result.error) {
-        this.handleDeselectRows();
-        const { filter } = this.props;
-        this.props.loadTaxesList({
-          filter: JSON.stringify(filter),
-          pageSize: this.props.taxesList.pageSize,
-          current: 1,
-        });
-      }
-    });
-  }
   render() {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -280,9 +261,6 @@ export default class TaxesList extends Component {
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
       />
-    </span>);
-    const bulkActions = (<span>
-      <ToolbarAction danger icon="delete" label={this.gmsg('delete')} confirm={this.gmsg('deleteConfirm')} onConfirm={this.handleBatchDelete} />
     </span>);
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadTaxesList(params),
@@ -321,7 +299,6 @@ export default class TaxesList extends Component {
           <Content className="page-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}
-              bulkActions={bulkActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
               onDeselectRows={this.handleDeselectRows}
@@ -332,7 +309,7 @@ export default class TaxesList extends Component {
             <ImportDataPanel
               title={this.msg('batchImportTaxes')}
               visible={this.state.importPanelVisible}
-              endpoint={`${API_ROOTS.default}v1/cms/taxes/import`}
+              endpoint={`${API_ROOTS.default}v1/cms/customs/decltax/importcomparison`}
               formData={{}}
               onClose={() => { this.setState({ importPanelVisible: false }); }}
               onUploaded={this.taxesUploaded}

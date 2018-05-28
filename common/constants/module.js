@@ -259,6 +259,19 @@ const MODULE_CDM = {
       ],
     },
     {
+      id: 'declTax',
+      text: 'featClearanceDeclTax',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
       id: 'quote',
       text: 'featClearanceQuote',
       actions: [
