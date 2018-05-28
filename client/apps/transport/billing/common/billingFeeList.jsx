@@ -8,12 +8,10 @@ import { loadShipmtDetail } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling } from 'common/reducers/transportBilling';
 import TrimSpan from 'client/components/trimSpan';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import messages from '../message.i18n';
-import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ActualDate from '../../common/actualDate';
-import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -344,9 +342,9 @@ export default class BillingFeeList extends React.Component {
             </div>
           </div>
         </Content>
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
-        <DelegationDockPanel />
+        <ShipmentDock />
+        <FreightDock />
+        <DelegationDock />
       </div>
     );
   }

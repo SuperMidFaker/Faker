@@ -15,12 +15,9 @@ import { CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { showDock, loadInbounds } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Strip from 'client/components/Strip';
+import { ShipmentDock, DelegationDock, ReceivingDock, FreightDock } from 'client/components/Dock';
 import WhseSelect from '../../common/whseSelect';
 import messages from '../message.i18n';
-import ReceivingDockPanel from '../dock/receivingDockPanel';
-import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
-import DeliveryDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -325,10 +322,10 @@ export default class ReceivingInboundList extends React.Component {
             loading={loading}
           />
         </Content>
-        <ReceivingDockPanel />
-        <ShipmentDockPanel />
-        <DelegationDockPanel />
-        <DeliveryDockPanel />
+        <ReceivingDock />
+        <ShipmentDock />
+        <DelegationDock />
+        <FreightDock />
       </QueueAnim>
     );
   }

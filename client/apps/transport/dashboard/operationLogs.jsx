@@ -15,14 +15,12 @@ import { format } from 'client/common/i18n/helpers';
 import { createFilename } from 'client/util/dataTransform';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import AddressColumn from '../common/addressColumn';
 import messages from './message.i18n';
 import '../index.less';
-import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ActualDate from '../common/actualDate';
 import ExceptionsPopover from '../common/popover/exceptionsPopover';
-import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -241,9 +239,9 @@ export default class Dashboard extends React.Component {
             </div>
           </div>
         </Content>
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
-        <DelegationDockPanel />
+        <ShipmentDock />
+        <FreightDock />
+        <DelegationDock />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </div>

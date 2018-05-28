@@ -14,15 +14,13 @@ import { loadFees, changeFeesFilter, loadPartners, showAdvanceModal, showSpecial
 import { createFilename } from 'client/util/dataTransform';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBox from 'client/components/SearchBox';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import AddressColumn from '../../common/addressColumn';
 import ExceptionsPopover from '../../common/popover/exceptionsPopover';
-import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import ActualDate from '../../common/actualDate';
 import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../../tracking/land/modals/create-specialCharge';
-import DeliveryDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -552,9 +550,9 @@ export default class FeesList extends React.Component {
             onDeselectRows={this.handleSelectionClear}
           />
         </Content>
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
-        <DelegationDockPanel />
+        <ShipmentDock />
+        <FreightDock />
+        <DelegationDock />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </div>

@@ -10,7 +10,8 @@ import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadTable,
+import {
+  loadTable,
   doSend,
   doReturn,
   segmentCancelRequest,
@@ -20,27 +21,26 @@ import { loadTable,
   loadShipmtsGroupedSub,
   loadSegRq,
   removeGroupedSubShipmt,
-  changeDockStatus } from 'common/reducers/transportDispatch';
+  changeDockStatus,
+} from 'common/reducers/transportDispatch';
 import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_VEHICLE_CONNECT, TRANS_MODE_INDICATOR } from 'common/constants';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import SearchBox from 'client/components/SearchBox';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import messages from './message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
 import SegmentDock from './segmentDock';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
-import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import RevokeModal from '../common/modal/revokeModal';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 import MyShipmentsSelect from '../common/myShipmentsSelect';
 import ShipmentAdvanceModal from '../tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from '../tracking/land/modals/create-specialCharge';
 import CustomerSelect from '../common/customerSelect';
-import DeliveryDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 
 const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
@@ -1108,9 +1108,9 @@ export default class DispatchList extends React.Component {
           />
           {tb}
         </Content>
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
-        <DelegationDockPanel />
+        <ShipmentDock />
+        <FreightDock />
+        <DelegationDock />
         <DispatchDock />
         <SegmentDock />
         <RevokeModal reload={this.handleTableLoad} />

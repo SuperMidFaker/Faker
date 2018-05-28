@@ -27,16 +27,10 @@ import {
 } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelegationDock';
 import { loadPartnersByTypes } from 'common/reducers/partner';
-import DelegationDockPanel from '../common/dock/delegationDockPanel';
+import { ShipmentDock, DelegationDock, ReceivingDock, ShippingDock, FreightDock } from 'client/components/Dock';
 import ExchangeDocModal from './modals/exchangeDocModal';
 import QuarantineModal from './modals/quarantineModal';
 import { formatMsg } from './message.i18n';
-import DelgDispModal from '../common/dock/delgDispModal';
-import ShipmentDockPanel from '../../scof/shipments/docks/shipmentDockPanel';
-import DeliveryDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
-import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
-import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
-
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -736,13 +730,12 @@ export default class DelegationList extends Component {
           </Content>
           <ExchangeDocModal reload={this.handleDelgListLoad} />
           <QuarantineModal reload={this.handleDelgListLoad} />
-          <DelgDispModal />
         </Layout>
-        <DelegationDockPanel />
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
-        <ReceiveDockPanel />
-        <ShippingDockPanel />
+        <DelegationDock />
+        <ShipmentDock />
+        <FreightDock />
+        <ReceivingDock />
+        <ShippingDock />
       </Layout>
     );
   }

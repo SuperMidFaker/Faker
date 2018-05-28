@@ -22,8 +22,7 @@ import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TODO, CMS_DECL_TRACK, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_DECL_MOD_TYPE, INSPECT_STATUS } from 'common/constants';
-import ShipmentDockPanel from 'client/apps/scof/shipments/docks/shipmentDockPanel';
-import DeliveryDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
+import { ShipmentDock, DelegationDock, FreightDock } from 'client/components/Dock';
 import BatchSendModal from './modals/batchSendModal';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import InspectModal from './modals/inspectModal';
@@ -33,7 +32,7 @@ import DeclMsgPanel from './panel/declMsgPanel';
 import DeclMsgModal from './modals/declMsgModal';
 import DeclModModal from './modals/declModModal';
 import DeclStatusPopover from '../common/popover/declStatusPopover';
-import DelegationDockPanel from '../common/dock/delegationDockPanel';
+
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -733,9 +732,9 @@ export default class CustomsList extends Component {
           </Layout>
         </Layout>
         <DeclMsgPanel />
-        <DelegationDockPanel />
-        <ShipmentDockPanel />
-        <DeliveryDockPanel />
+        <DelegationDock />
+        <ShipmentDock />
+        <FreightDock />
         <DeclMsgModal />
       </Layout>
     );

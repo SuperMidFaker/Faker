@@ -14,10 +14,7 @@ import PageHeader from 'client/components/PageHeader';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import ReceivingDockPanel from '../../../receiving/dock/receivingDockPanel';
-import ShipmentDockPanel from '../../../../scof/shipments/docks/shipmentDockPanel';
-import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
-import DeliveryDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
+import { ShipmentDock, DelegationDock, ReceivingDock, FreightDock } from 'client/components/Dock';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -341,10 +338,10 @@ export default class SHFTZEntryList extends React.Component {
             rowKey="id"
             loading={this.props.loading}
           />
-          <ReceivingDockPanel />
-          <ShipmentDockPanel />
-          <DelegationDockPanel />
-          <DeliveryDockPanel />
+          <ReceivingDock />
+          <ShipmentDock />
+          <DelegationDock />
+          <FreightDock />
         </Content>
       </Layout>
     );

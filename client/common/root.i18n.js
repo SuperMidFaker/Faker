@@ -273,6 +273,42 @@ const messages = defineMessages({
     id: 'root.range.month',
     defaultMessage: '当月',
   },
+  masterInfo: {
+    id: 'root.tab.master.info',
+    defaultMessage: '主信息',
+  },
+  detailsInfo: {
+    id: 'root.tab.details.info',
+    defaultMessage: '详细信息',
+  },
+  flowInfo: {
+    id: 'root.tab.flow.info',
+    defaultMessage: '流程信息',
+  },
+  attachment: {
+    id: 'root.tab.attachment',
+    defaultMessage: '附件',
+  },
+  team: {
+    id: 'root.tab.team',
+    defaultMessage: '相关团队',
+  },
+  logs: {
+    id: 'root.tab.logs',
+    defaultMessage: '操作记录',
+  },
+  basicInfo: {
+    id: 'root.tab.master.basic.info',
+    defaultMessage: '基本信息',
+  },
+  orderInfo: {
+    id: 'root.tab.master.order.info',
+    defaultMessage: '订单信息',
+  },
+  sysInfo: {
+    id: 'root.tab.master.sys.info',
+    defaultMessage: '系统信息',
+  },
   CUS: {
     id: 'root.partnership.customer',
     defaultMessage: '客户',

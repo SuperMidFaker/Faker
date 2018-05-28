@@ -137,7 +137,7 @@ export default class FieldsForm extends Component {
   handleSave = () => {
     const { orderType } = this.props;
     if (!orderType.id) {
-      message.error('订单类型未配置');
+      message.error('货运类型未配置');
       return;
     }
     this.props.upsertOrderType({

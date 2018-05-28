@@ -24,14 +24,10 @@ import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import ExportDataPanel from 'client/components/ExportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
-import ShipmentDockPanel from './docks/shipmentDockPanel';
+import { ShipmentDock, DelegationDock, ReceivingDock, ShippingDock, FreightDock } from 'client/components/Dock';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
-import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
-import DeliveryDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
-import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
-import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 import CreatorSelect from './creatorSelect';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -555,11 +551,11 @@ export default class OrderList extends React.Component {
             />
           </Content>
         </Layout>
-        <ShipmentDockPanel reload={this.handleTableLoad} />
-        <DelegationDockPanel />
-        <DeliveryDockPanel />
-        <ReceiveDockPanel />
-        <ShippingDockPanel />
+        <ShipmentDock reload={this.handleTableLoad} />
+        <DelegationDock />
+        <FreightDock />
+        <ReceivingDock />
+        <ShippingDock />
         <ImportDataPanel
           title="订单导入"
           visible={importPanel.visible}

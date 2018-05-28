@@ -4,14 +4,17 @@ import { connect } from 'react-redux';
 import { Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, editBillBody,
+import {
+  saveBillHead, lockManifest, openMergeSplitModal, resetBill, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
-  showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead } from 'common/reducers/cmsManifest';
+  showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead,
+} from 'common/reducers/cmsManifest';
 import { loadDocuDatas, loadInvTemplates } from 'common/reducers/cmsInvoice';
 import { showPreviewer } from 'common/reducers/cmsDelegationDock';
 import { CMS_DECL_STATUS } from 'common/constants';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import { ShipmentDock, DelegationDock } from 'client/components/Dock';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
@@ -21,8 +24,6 @@ import SaveAsTemplateModal from './template/modal/saveAsTemplateModal';
 import { formatMsg } from '../message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
 import DeclTreePopover from '../popover/declTreePopover';
-import DelegationDockPanel from '../dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../scof/shipments/docks/shipmentDockPanel';
 
 
 const { Content } = Layout;
@@ -563,8 +564,8 @@ export default class ManifestEditor extends React.Component {
             </MagicCard>
           </Content>
         </Layout>
-        <DelegationDockPanel ietype={ietype} />
-        <ShipmentDockPanel />
+        <DelegationDock ietype={ietype} />
+        <ShipmentDock />
         <GenerateDeclModal />
         <SaveAsTemplateModal ietype={ietype} />
         <SendDeclsModal ietype={ietype} entries={billMeta.entries} reload={this.handleMetaLoad} />
