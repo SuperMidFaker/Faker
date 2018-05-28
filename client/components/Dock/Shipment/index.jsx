@@ -155,7 +155,7 @@ export default class ShipmentDock extends React.Component {
           <InfoItem label="客户单号" field={order.cust_order_no} />
         </Col>
         <Col span="4">
-          <InfoItem label="订单类型" addonBefore={transfer && <Icon type={transfer.icon} />} field={transfer && transfer.text} />
+          <InfoItem label="货运类型" addonBefore={transfer && <Icon type={transfer.icon} />} field={transfer && transfer.text} />
         </Col>
         <Col span="6">
           <InfoItem label="订单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />

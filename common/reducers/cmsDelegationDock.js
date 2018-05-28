@@ -18,7 +18,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 ]);
 
 const initialState = {
-  tabKey: 'master',
+  tabKey: 'masterInfo',
   basicPreviewLoading: false,
   ciqPanelLoading: false,
   customsPanelLoading: false,

@@ -134,7 +134,7 @@ export default class OrderParams extends Component {
             <Content className="layout-fixed-width">
               <Card bodyStyle={{ padding: 0 }}>
                 <Collapse accordion bordered={false} defaultActiveKey={['type']}>
-                  <Panel header="订单类型" key="type">
+                  <Panel header="货运类型" key="type">
                     <TypeForm />
                   </Panel>
                   <Panel header="扩展字段" key="fields" disabled={!modalOrderType.id}>
