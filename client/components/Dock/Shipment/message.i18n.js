@@ -9,6 +9,14 @@ const messages = defineMessages({
     id: 'component.dock.shipment',
     defaultMessage: '货运订单',
   },
+  commInvoices: {
+    id: 'component.dock.comm.invoices',
+    defaultMessage: '商业发票',
+  },
+  container: {
+    id: 'component.dock.container',
+    defaultMessage: '集装箱',
+  },
 });
 
 export default messages;

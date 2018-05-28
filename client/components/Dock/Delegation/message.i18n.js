@@ -20,21 +20,33 @@ const messages = defineMessages({
     id: 'component.dock.broker',
     defaultMessage: '报关行',
   },
-  revenue: {
-    id: 'component.dock.tabpanes.billing.revenue',
-    defaultMessage: '收入',
+  customsManifest: {
+    id: 'component.dock.customs.manifest',
+    defaultMessage: '报关清单',
   },
-  cost: {
-    id: 'component.dock.tabpanes.billing.cost',
-    defaultMessage: '成本',
+  customsDecl: {
+    id: 'component.dock.customs.decl',
+    defaultMessage: '报关单',
   },
-  revenueDetail: {
-    id: 'component.dock.tabpanes.billing.revenue.detail',
-    defaultMessage: '收入明细',
+  inspect: {
+    id: 'component.dock.inspect',
+    defaultMessage: '查验',
   },
-  costDetail: {
-    id: 'component.dock.tabpanes.billing.cost.detail',
-    defaultMessage: '成本明细',
+  taxes: {
+    id: 'component.dock.taxes',
+    defaultMessage: '税金',
+  },
+  expense: {
+    id: 'component.dock.expense',
+    defaultMessage: '费用',
+  },
+  receivable: {
+    id: 'component.dock.expense.receivable',
+    defaultMessage: '应收费用',
+  },
+  payable: {
+    id: 'component.dock.expense.payable',
+    defaultMessage: '应付费用',
   },
   serviceFee: {
     id: 'component.dock.tabpanes.service.fee',

@@ -6,8 +6,8 @@ import { Row, Col, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 import InfoItem from 'client/components/InfoItem';
 import { showCustomerPanel, showPartnerModal } from 'common/reducers/partner';
-import GeneralPane from './generalPane';
-import TeamPane from './teamPane';
+import MasterPane from './tabpanes/masterPane';
+import TeamPane from './tabpanes/teamPane';
 import LogsPane from '../common/logsPane';
 import { formatMsg } from './message.i18n';
 
@@ -75,9 +75,9 @@ export default class CustomerDock extends React.Component {
         onEdit={this.handleCustomerEdit}
         extra={this.renderExtra()}
       >
-        <Tabs defaultActiveKey="general">
-          <TabPane tab={this.msg('general')} key="general" >
-            <GeneralPane customer={customer} />
+        <Tabs defaultActiveKey="masterInfo">
+          <TabPane tab={this.msg('masterInfo')} key="masterInfo" >
+            <MasterPane customer={customer} />
           </TabPane>
           <TabPane tab={this.msg('serviceTeam')} key="team" >
             <TeamPane customer={customer} />

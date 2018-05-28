@@ -41,7 +41,7 @@ export default class CMSNodeCard extends React.Component {
   handlePreview = (No) => {
     if (No) {
       this.props.showPreviewer(No, 'shipment');
-      // this.props.hideDock();
+      this.props.hideDock();
     }
   }
   handleManifest = () => {

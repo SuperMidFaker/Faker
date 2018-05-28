@@ -14,7 +14,7 @@ import { format } from 'client/common/i18n/helpers';
 import ASNPane from './tabpane/asnPane';
 import FTZPane from './tabpane/ftzPane';
 import InboundPane from './tabpane/inboundPane';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { TabPane } = Tabs;
@@ -38,7 +38,7 @@ const { TabPane } = Tabs;
     closeAsn,
   }
 )
-export default class ReceivingDockPanel extends React.Component {
+export default class ReceivingDock extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -131,12 +131,15 @@ export default class ReceivingDockPanel extends React.Component {
     const { asn } = this.props;
     const { asnHead, asnBody } = this.state;
     const tabs = [
-      <TabPane tab={this.msg('tabASN')} key="asn">
+      <TabPane tab={this.msg('masterInfo')} key="masterInfo">
         <ASNPane asnHead={asnHead} asnBody={asnBody} />
       </TabPane>,
     ];
+    tabs.push(<TabPane tab={this.msg('asnDetails')} key="asnDetails">
+      <FTZPane asnNo={asn.asn_no} />
+    </TabPane>);
     if (asnHead.bonded) {
-      tabs.push(<TabPane tab={this.msg('tabFTZ')} key="ftz">
+      tabs.push(<TabPane tab={this.msg('ftzReg')} key="ftzReg">
         <FTZPane asnNo={asn.asn_no} />
       </TabPane>);
     }
@@ -146,7 +149,7 @@ export default class ReceivingDockPanel extends React.Component {
       </TabPane>);
     }
     return (
-      <Tabs defaultActiveKey="asn" onChange={this.handleTabChange}>
+      <Tabs defaultActiveKey="masterInfo" onChange={this.handleTabChange}>
         { tabs }
       </Tabs>
     );

@@ -11,7 +11,7 @@ import CMSNodeCard from './cards/cmsNodeCard';
 import TMSNodeCard from './cards/tmsNodeCard';
 import CWMInboundNodeCard from './cards/cwmInboundNodeCard';
 import CWMOutboundNodeCard from './cards/cwmOutboundNodeCard';
-import messages from '../../message.i18n';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 

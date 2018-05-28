@@ -65,6 +65,7 @@ export default class AttachmentPane extends React.Component {
     const columns = [{
       title: '名称',
       dataIndex: 'doc_name',
+      width: 300,
     }, {
       title: '创建人',
       dataIndex: 'created_by',

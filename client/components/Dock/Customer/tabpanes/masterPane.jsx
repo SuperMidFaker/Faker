@@ -1,10 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Collapse, Col, Row } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Panel } = Collapse;
 
@@ -15,10 +15,9 @@ const { Panel } = Collapse;
   }),
   { },
 )
-export default class GeneralPane extends React.Component {
+export default class CustomerMasterPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
 
   msg = formatMsg(this.props.intl)

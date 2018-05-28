@@ -4,16 +4,17 @@ import { connect } from 'react-redux';
 import { Col, Icon, Menu, Row, Tabs, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST } from 'common/constants';
+import { CMS_DELEGATION_STATUS } from 'common/constants';
 import { acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
 import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelegationDock';
 import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
-import ShipmentPane from './tabpanes/shipmentPane';
+import MasterPane from './tabpanes/masterPane';
+import CustomsDeclPane from './tabpanes/customsDeclPane';
 import DutyTaxPane from './tabpanes/dutyTaxPane';
-// import ExpensePane from './tabpanes/expensePane';
-import FilesPane from './tabpanes/filesPane';
+import ExpensePane from './tabpanes/expensePane';
+import AttachmentPane from '../common/attachmentPane';
 import LogsPane from '../common/logsPane';
 import { formatMsg } from './message.i18n';
 
@@ -90,35 +91,34 @@ export default class DelegationDock extends React.Component {
     });
   }
   renderTabs() {
-    const { previewer, tabKey } = this.props;
-    const { delgDispatch, delegation } = previewer;
-    const clearType = delegation.i_e_type === 0 ? 'import' : 'export';
     const tabs = [];
-    tabs.push(<TabPane tab={this.msg('general')} key="general"><ShipmentPane /></TabPane>);
-    tabs.push(<TabPane tab={this.msg('details')} key="details"><ShipmentPane /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('masterInfo')} key="masterInfo"><MasterPane onShipmentClick={this.goHomeDock} /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('customsManifest')} key="customsManifest"><MasterPane /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('customsDecl')} key="customsDecl"><CustomsDeclPane /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('inspect')} key="inspect"><DutyTaxPane /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('taxes')} key="taxes"><DutyTaxPane /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('expense')} key="expense"><ExpensePane /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('attachment')} key="attachment"><AttachmentPane /></TabPane>);
+    tabs.push(<TabPane tab={this.msg('logs')} key="logs"><LogsPane /></TabPane>);
     /*
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
       if (delgDispatch.recv_services.indexOf('ciq') !== -1) {
         tabs.push(<TabPane tab="报检" key="ciqDecl"><CiqDeclPane /></TabPane>);
       }
-      tabs.push(<TabPane tab="报关" key="customsDecl"><CustomsDeclPane /></TabPane>);
     }
-    */
-    if (delegation.decl_way_code !== 'IBND' && delegation.decl_way_code !== 'EBND' && clearType === 'import' &&
+    if (delegation.decl_way_code !== 'IBND'
+    && delegation.decl_way_code !== 'EBND' && clearType === 'import' &&
       ((delgDispatch.status === CMS_DELEGATION_STATUS.processing &&
          delegation.manifested === CMS_DELEGATION_MANIFEST.manifested) ||
       delgDispatch.status > CMS_DELEGATION_STATUS.processing)) {
       tabs.push(<TabPane tab="税金" key="taxes"><DutyTaxPane /></TabPane>);
     }
-    /*
     if (delgDispatch.status >= CMS_DELEGATION_STATUS.accepted) {
       tabs.push(<TabPane tab="费用" key="expenses"><ExpensePane /></TabPane>);
     }
     */
-    tabs.push(<TabPane tab={this.msg('attachment')} key="attachment"><FilesPane /></TabPane>);
-    tabs.push(<LogsPane />);
     return (
-      <Tabs defaultActiveKey="general" onChange={this.handleTabChange}>
+      <Tabs defaultActiveKey="masterInfo" onChange={this.handleTabChange}>
         {tabs}
       </Tabs>
     );

@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Spin, Card, Collapse, Table, Tag } from 'antd';
+import { Spin, Card, Collapse, Table } from 'antd';
 import { loadPaneExp } from 'common/reducers/cmsExpense';
 import { EXPENSE_CATEGORIES, CMS_EXPENSE_TYPES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Column } = Table;
 const { Panel } = Collapse;
-const { CheckableTag } = Tag;
 const SERVER_CATEGORY_MAP = {
   misc_expenses: 'customdecl',
   customs_expenses: 'customdecl',
@@ -181,41 +180,12 @@ export default class ExpensePane extends React.Component {
     } else {
       costFees = [];
     }
-    const checkedTags = EXPENSE_CATEGORIES.map((ec) => {
-      let checked = false;
-      if (ec.key === 'all') {
-        checked = checkedExpCates.length + checkedExpTypes.length + 1 === CMS_EXPENSE_TYPES.length + EXPENSE_CATEGORIES.length;
-      } else {
-        checked = checkedExpCates.indexOf(ec.key) !== -1;
-      }
-      const tagProps = {};
-      if (checked) {
-        tagProps.style = { backgroundColor: ec.color };
-      }
-      return (
-        <CheckableTag
-          key={ec.key}
-          checked={checked}
-          {...tagProps}
-          onChange={chked => this.handleCateTagChange(ec.key, chked)}
-        >{ec.text}
-        </CheckableTag>);
-    }).concat(CMS_EXPENSE_TYPES.map(et => (
-      <CheckableTag
-        key={et.key}
-        checked={checkedExpTypes.indexOf(et.key) !== -1}
-        onChange={chked => this.handleTypeTagChange(et.key, chked)}
-      >{et.text}
-      </CheckableTag>)));
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={expensesLoading}>
-          <div className="pane-header">
-            {checkedTags}
-          </div>
           <Card bodyStyle={{ padding: 0 }} >
-            <Collapse defaultActiveKey={['revenue', 'cost']}>
-              <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
+            <Collapse bordered={false} defaultActiveKey={['revenue', 'cost']}>
+              <Panel header={this.msg('receivable')} key="revenue" className="table-panel">
                 <Table
                   size="small"
                   columns={this.columnFields}
@@ -224,7 +194,7 @@ export default class ExpensePane extends React.Component {
                   pagination={false}
                 />
               </Panel>
-              <Panel header={this.msg('costDetail')} key="cost" className="table-panel">
+              <Panel header={this.msg('payable')} key="cost" className="table-panel">
                 <Table size="small" dataSource={costFees} rowKey="fee_name" pagination={false}>
                   <Column title={this.msg('feeName')} dataIndex="fee_name" render={this.renderCostFeeName} />
                   <Column title={this.msg('feeRemark')} dataIndex="remark" render={this.renderCostFeeColumn} />

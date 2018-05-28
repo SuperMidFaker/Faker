@@ -23,7 +23,7 @@ export default class Description extends PureComponent {
     return (
       <Col className={clsString} {...responsive[column]}>
         {term && <div className={`${prefixCls}-term`}>{term}</div>}
-        <div className={`${prefixCls}-detail`}>{children}</div>
+        <div className={`${prefixCls}-detail`}>{children || '--'}</div>
       </Col>
     );
   }

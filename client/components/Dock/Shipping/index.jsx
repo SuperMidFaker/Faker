@@ -14,10 +14,29 @@ import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpane/orderPane';
 import FTZPane from './tabpane/ftzPane';
 import OutboundPane from './tabpane/outboundPane';
-import messages from '../message.i18n';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { TabPane } = Tabs;
+
+function getStatus(status) {
+  switch (status) {
+    case CWM_SO_STATUS.PENDING.value: return CWM_SO_STATUS.PENDING.badge;
+    case CWM_SO_STATUS.OUTBOUND.value: return CWM_SO_STATUS.OUTBOUND.badge;
+    case CWM_SO_STATUS.PARTIAL.value: return CWM_SO_STATUS.PARTIAL.badge;
+    case CWM_SO_STATUS.COMPLETED.value: return CWM_SO_STATUS.COMPLETED.badge;
+    default: return 'default';
+  }
+}
+function getStatusMsg(status) {
+  switch (status) {
+    case CWM_SO_STATUS.PENDING.value: return CWM_SO_STATUS.PENDING.text;
+    case CWM_SO_STATUS.OUTBOUND.value: return CWM_SO_STATUS.OUTBOUND.text;
+    case CWM_SO_STATUS.PARTIAL.value: return CWM_SO_STATUS.PARTIAL.text;
+    case CWM_SO_STATUS.COMPLETED.value: return CWM_SO_STATUS.COMPLETED.text;
+    default: return '';
+  }
+}
 
 @injectIntl
 @connect(
@@ -42,11 +61,10 @@ const { TabPane } = Tabs;
     closeOutbound,
   }
 )
-export default class ShippingDockPanel extends React.Component {
+export default class ShippingDock extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    dock: PropTypes.object.isRequired,
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
     cancelOutbound: PropTypes.func.isRequired,
@@ -140,24 +158,7 @@ export default class ShippingDockPanel extends React.Component {
       }
     });
   }
-  renderStatus(status) {
-    switch (status) {
-      case CWM_SO_STATUS.PENDING.value: return CWM_SO_STATUS.PENDING.badge;
-      case CWM_SO_STATUS.OUTBOUND.value: return CWM_SO_STATUS.OUTBOUND.badge;
-      case CWM_SO_STATUS.PARTIAL.value: return CWM_SO_STATUS.PARTIAL.badge;
-      case CWM_SO_STATUS.COMPLETED.value: return CWM_SO_STATUS.COMPLETED.badge;
-      default: return 'default';
-    }
-  }
-  renderStatusMsg(status) {
-    switch (status) {
-      case CWM_SO_STATUS.PENDING.value: return CWM_SO_STATUS.PENDING.text;
-      case CWM_SO_STATUS.OUTBOUND.value: return CWM_SO_STATUS.OUTBOUND.text;
-      case CWM_SO_STATUS.PARTIAL.value: return CWM_SO_STATUS.PARTIAL.text;
-      case CWM_SO_STATUS.COMPLETED.value: return CWM_SO_STATUS.COMPLETED.text;
-      default: return '';
-    }
-  }
+
   renderTabs() {
     const { soHead, soBody } = this.state;
     const { order } = this.props;
@@ -237,8 +238,8 @@ export default class ShippingDockPanel extends React.Component {
         label={this.msg('shippingOrder')}
         title={this.renderTitle()}
         loading={loading}
-        status={this.renderStatus(soHead.status)}
-        statusText={this.renderStatusMsg(soHead.status)}
+        status={getStatus(soHead.status)}
+        statusText={getStatusMsg(soHead.status)}
         overlay={this.renderMenu()}
         extra={this.renderExtra()}
       >

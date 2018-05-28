@@ -8,8 +8,11 @@ import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER } from 'common/constants';
 import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
-import GeneralPane from './tabpanes/orderGeneralPane';
+import MasterPane from './tabpanes/masterPane';
+import DetailsPane from './tabpanes/detailsPane';
 import FlowPane from './tabpanes/flowPane';
+import InvoicesPane from './tabpanes/invoicesPane';
+import ContainersPane from './tabpanes/containersPane';
 import AttachmentPane from '../common/attachmentPane';
 import LogsPane from '../common/logsPane';
 import { formatMsg } from './message.i18n';
@@ -115,15 +118,21 @@ export default class ShipmentDock extends React.Component {
   }
   renderTabs() {
     return (
-      <Tabs defaultActiveKey="general" onChange={this.handleTabChange}>
-        <TabPane tab={this.msg('general')} key="general">
-          <GeneralPane />
+      <Tabs defaultActiveKey="masterInfo" onChange={this.handleTabChange}>
+        <TabPane tab={this.msg('masterInfo')} key="masterInfo">
+          <MasterPane />
         </TabPane>
-        <TabPane tab={this.msg('details')} key="details">
-          <GeneralPane />
+        <TabPane tab={this.msg('detailsInfo')} key="detailsInfo">
+          <DetailsPane />
         </TabPane>
-        <TabPane tab={this.msg('flow')} key="flow">
+        <TabPane tab={this.msg('flowInfo')} key="flowInfo">
           <FlowPane />
+        </TabPane>
+        <TabPane tab={this.msg('commInvoices')} key="commInvoices">
+          <InvoicesPane />
+        </TabPane>
+        <TabPane tab={this.msg('container')} key="container">
+          <ContainersPane />
         </TabPane>
         <TabPane tab={this.msg('attachment')} key="attachment">
           <AttachmentPane />
