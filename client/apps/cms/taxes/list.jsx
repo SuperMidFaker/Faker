@@ -196,7 +196,7 @@ export default class TaxesList extends Component {
       importPanelVisible: true,
     });
   }
-  taxesUploaded = () => {
+  handleTaxComparisonUpload = () => {
     this.handleReload();
   }
   handleSearch = (value) => {
@@ -266,7 +266,7 @@ export default class TaxesList extends Component {
               endpoint={`${API_ROOTS.default}v1/cms/customs/decltax/importcomparison`}
               formData={{}}
               onClose={() => { this.setState({ importPanelVisible: false }); }}
-              onUploaded={this.taxesUploaded}
+              onUploaded={this.handleTaxComparisonUpload}
               template={`${XLSX_CDN}/税金导入模板.xlsx`}
             />
           </Content>
