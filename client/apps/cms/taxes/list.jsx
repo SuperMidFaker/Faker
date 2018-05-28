@@ -11,7 +11,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import { loadTaxesList } from 'common/reducers/cmsDeclTax';
-import { loadCountries, loadCurrencies } from 'common/reducers/cmsParams';
+import { loadTrxnMode } from 'common/reducers/cmsParams';
 import { Layout, Menu } from 'antd';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -21,20 +21,12 @@ const { Content } = Layout;
 @connect(
   state => ({
     taxesList: state.cmsDeclTax.taxesList,
-    currencies: state.cmsParams.currencies.map(currency => ({
-      value: currency.curr_code,
-      text: currency.curr_name,
-    })),
-    countries: state.cmsParams.countries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
     filter: state.cmsDeclTax.listFilter,
+    trxnModes: state.cmsParams.trxnModes,
   }),
   {
     loadTaxesList,
-    loadCountries,
-    loadCurrencies,
+    loadTrxnMode,
   }
 )
 @connectNav({
@@ -58,8 +50,7 @@ export default class TaxesList extends Component {
       pageSize: this.props.taxesList.pageSize,
       current: this.props.taxesList.current,
     });
-    this.props.loadCountries();
-    this.props.loadCurrencies();
+    this.props.loadTrxnMode();
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -75,6 +66,15 @@ export default class TaxesList extends Component {
     title: this.msg('trxnMode'),
     dataIndex: 'trxn_mode',
     width: 100,
+    render: (o) => {
+      if (o) {
+        const trxn = this.props.trxnModes.find(tr => tr.trx_mode === o);
+        if (trxn) {
+          return trxn.trx_specl;
+        }
+      }
+      return '';
+    },
   }, {
     title: this.msg('shipFee'),
     dataIndex: 'ship_fee',
@@ -108,24 +108,12 @@ export default class TaxesList extends Component {
     dataIndex: 'duty_paid',
     width: 100,
   }, {
-    title: this.msg('dutyRate'),
-    dataIndex: 'duty_rate',
-    width: 100,
-  }, {
     title: this.msg('dutyTax'),
     dataIndex: 'duty_tax',
     width: 100,
   }, {
-    title: this.msg('gstRates'),
-    dataIndex: 'gst_rates',
-    width: 100,
-  }, {
     title: this.msg('exciseTax'),
     dataIndex: 'excise_tax',
-    width: 100,
-  }, {
-    title: this.msg('vatRates'),
-    dataIndex: 'vat_rates',
     width: 100,
   }, {
     title: this.msg('vatTax'),
@@ -134,10 +122,6 @@ export default class TaxesList extends Component {
   }, {
     title: this.msg('totalTax'),
     dataIndex: 'total_tax',
-    width: 100,
-  }, {
-    title: this.msg('gName'),
-    dataIndex: 'g_name',
     width: 100,
   }, {
     title: this.msg('actualDutyPaid'),
@@ -193,38 +177,8 @@ export default class TaxesList extends Component {
     width: 100,
     render: o => o && moment(o).format('YYYY-MM-DD'),
   }, {
-    title: this.msg('origCountry'),
-    dataIndex: 'orig_country',
-    width: 100,
-    render: (o) => {
-      if (o) {
-        const country = this.props.countries.find(cntry => cntry.value === o);
-        if (country) {
-          return country.text;
-        }
-      }
-      return '';
-    },
-  }, {
     title: this.msg('tradeTotal'),
     dataIndex: 'trade_total',
-    width: 100,
-  }, {
-    title: this.msg('currency'),
-    dataIndex: 'currency',
-    width: 100,
-    render: (o) => {
-      if (o) {
-        const currency = this.props.currencies.find(curr => curr.value === o);
-        if (currency) {
-          return currency.text;
-        }
-      }
-      return '';
-    },
-  }, {
-    title: this.msg('exchangeRate'),
-    dataIndex: 'exchange_rate',
     width: 100,
   }]
   handleDeselectRows = () => {
