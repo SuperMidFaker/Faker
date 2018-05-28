@@ -129,6 +129,15 @@ export default class Clearance extends React.Component {
         sublinks: billingSublinks,
       });
     }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'declTax' })) {
+      linkMenus.push({
+        single: true,
+        key: 'cms-taxes',
+        path: '/clearance/taxes',
+        icon: 'logixon icon-customs',
+        text: formatMsg(intl, 'taxes'),
+      });
+    }
     /*
     if (hasPermission(privileges, { module: 'clearance', feature: 'analytics' })) {
       linkMenus.push({

@@ -61,5 +61,9 @@ const messages = defineMessages({
     id: 'cms.module.group.more',
     defaultMessage: '更多应用',
   },
+  taxes: {
+    id: 'cms.module.decl.taxes',
+    defaultMessage: '税金管理',
+  },
 });
 export default messages;

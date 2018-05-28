@@ -41,6 +41,7 @@ import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
 import cmsParams from './cmsParams';
 import cmsPrefEvents from './cmsPrefEvents';
+import cmsDeclTax from './cmsDeclTax';
 import sofCustomers from './sofCustomers';
 import sofOrders from './sofOrders';
 import cwmReceive from './cwmReceive';
@@ -136,6 +137,7 @@ export default combineReducers({
   cmsAnalytics,
   cmsParams,
   cmsPrefEvents,
+  cmsDeclTax,
   scofFlow,
   sofOrderPref,
   sofTracking,
