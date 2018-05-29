@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Alert, Card, Table, Tooltip, Tag, Icon, Modal, Form, Input, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
+import Audio from 'browser-audio';
 import { showSubarPickChkModal, pickConfirm, loadPackedNoDetails } from 'common/reducers/cwmOutbound';
 import printPackListPdf from '../billsPrint/printPackingList';
 import { formatMsg } from '../../message.i18n';
@@ -38,6 +39,9 @@ export default class SuBarPickChkpackModal extends Component {
     alertMsg: null,
     dataSource: [],
     packedNo: null,
+  }
+  componentDidMount() {
+    this.warnAudio = Audio.create(`${__CDN__}/assets/img/error.mp3`);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -169,9 +173,19 @@ export default class SuBarPickChkpackModal extends Component {
           this.setState({
             alertMsg: '错误条码',
           });
+          if (this.warnAudio) {
+            this.warnAudio.play();
+          }
           this.emptySuInputElement();
           return;
         }
+      }
+      if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
+        this.setState({
+          alertMsg: `序列号${suScan.serial_no}已经扫描`,
+        });
+        this.emptySuInputElement();
+        return;
       }
       if (!this.state.serialDetailMap.has(suScan.serial_no)) {
         const dataSource = [{
@@ -180,16 +194,12 @@ export default class SuBarPickChkpackModal extends Component {
           error: true,
           errorMsg: '拣货序列号不存在',
         }].concat(this.state.dataSource);
+        if (this.warnAudio) {
+          this.warnAudio.play();
+        }
         this.setState({
           alertMsg: `拣货明细无此序列号:${suScan.serial_no}`,
           dataSource,
-        });
-        this.emptySuInputElement();
-        return;
-      }
-      if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
-        this.setState({
-          alertMsg: `序列号${suScan.serial_no}已经扫描`,
         });
         this.emptySuInputElement();
         return;
@@ -341,7 +351,7 @@ export default class SuBarPickChkpackModal extends Component {
             size="middle"
             columns={this.barColumns}
             dataSource={dataSource}
-            rowKey="id"
+            rowKey="seqno"
             pagination={{ showTotal: total => `共 ${total} 条`, showSizeChanger: true, defaultPageSize: 20 }}
             scroll={{
               x: this.barColumns.reduce((acc, cur) =>
