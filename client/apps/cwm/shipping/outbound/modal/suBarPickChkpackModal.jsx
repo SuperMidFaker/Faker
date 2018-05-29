@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Alert, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
+import { Alert, Card, Table, Tooltip, Tag, Icon, Modal, Form, Input, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { showSubarPickChkModal, pickConfirm, loadPackedNoDetails } from 'common/reducers/cwmOutbound';
 import printPackListPdf from '../billsPrint/printPackingList';
@@ -34,7 +34,7 @@ export default class SuBarPickChkpackModal extends Component {
     })).isRequired,
   }
   state = {
-    serialDetailMap: null,
+    serialDetailMap: new Map(),
     alertMsg: null,
     dataSource: [],
     packedNo: null,
@@ -74,20 +74,32 @@ export default class SuBarPickChkpackModal extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
-    this.handleSuCancel();
-    this.setState({
-      serialDetailMap: null,
-    });
+    this.handleSuCancel(true);
     this.props.showSubarPickChkModal({ visible: false });
   }
   handleDeleteDetail = (row) => {
-    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== row.serial_no);
+    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== row.serial_no)
+      .map((ds, idx) => ({ ...ds, seqno: idx + 1 }));
     this.setState({ dataSource });
   }
-  handleSuCancel = () => {
+  handleSuCancel = (close) => {
+    let serialDetailMap;
+    if (close) {
+      serialDetailMap = new Map();
+    } else {
+      serialDetailMap = new Map(this.state.serialDetailMap);
+      this.state.dataSource.forEach((ds) => {
+        if (serialDetailMap.has(ds.serial_no)) {
+          const details = serialDetailMap.get(ds.serial_no)
+            .map(sdet => ({ ...sdet, packed_no: this.state.packedNo }));
+          serialDetailMap.set(ds.serial_no, details);
+        }
+      });
+    }
     this.setState({
       dataSource: [],
       alertMsg: null,
+      serialDetailMap,
     });
     this.emptySuInputElement();
     if (window.localStorage) {
@@ -147,15 +159,11 @@ export default class SuBarPickChkpackModal extends Component {
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
-        if (suConf.part >= 0) {
-          const barcodePart = barcodeParts[suConf.part];
-          if (barcodePart) {
-            suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
-          } else {
-            suScan[suKey] = null;
-          }
+        const barcodePart = barcodeParts[suConf.part || 0];
+        if (barcodePart) {
+          suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
         } else {
-          suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+          suScan[suKey] = null;
         }
         if (!suScan[suKey]) {
           this.setState({
@@ -166,8 +174,15 @@ export default class SuBarPickChkpackModal extends Component {
         }
       }
       if (!this.state.serialDetailMap.has(suScan.serial_no)) {
+        const dataSource = [{
+          serial_no: suScan.serial_no,
+          seqno: this.state.dataSource.length + 1,
+          error: true,
+          errorMsg: '拣货序列号不存在',
+        }].concat(this.state.dataSource);
         this.setState({
           alertMsg: `拣货明细无此序列号:${suScan.serial_no}`,
+          dataSource,
         });
         this.emptySuInputElement();
         return;
@@ -230,12 +245,18 @@ export default class SuBarPickChkpackModal extends Component {
     dataIndex: 'seqno',
     width: 100,
   }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+    render: (serial, row) => {
+      if (row.error) {
+        return <Tooltip title={row.errorMsg}><Tag color="#f50">{serial}</Tag></Tooltip>;
+      }
+      return serial;
+    },
+  }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
     width: 300,
-  }, {
-    title: '序列号',
-    dataIndex: 'serial_no',
   }, {
     title: '货号',
     dataIndex: 'product_no',
@@ -258,11 +279,21 @@ export default class SuBarPickChkpackModal extends Component {
     const {
       alertMsg, dataSource, packedNo,
     } = this.state;
+    dataSource.sort((dsa, dsb) => {
+      if (dsa.error && !dsb.error) {
+        return -1;
+      } else if (!dsa.error && dsb.error) {
+        return 1;
+      }
+      return dsa.seqno - dsb.seqno;
+    });
+    const unsubmitable = dataSource.length === 0 || dataSource.filter(ds => ds.error).length > 0
+      || !packedNo;
     const title = (<div>
       <span>条码拣货集箱</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button disabled={dataSource.length === 0 || !packedNo} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
+        <Button disabled={unsubmitable} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
         <Button disabled={!packedNo} loading={saveLoading} type="primary" onClick={this.handlePackListPrint}>打印箱单</Button>
       </div>
     </div>);

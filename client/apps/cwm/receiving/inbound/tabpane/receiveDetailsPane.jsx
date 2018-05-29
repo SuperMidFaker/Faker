@@ -11,6 +11,7 @@ import SearchBox from 'client/components/SearchBox';
 import { createFilename } from 'client/util/dataTransform';
 import EditableCell from 'client/components/EditableCell';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import Summary from 'client/components/Summary';
 import { openReceiveModal, viewSuBarcodeScanModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL, SKU_REQUIRED_PROPS } from 'common/constants';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -183,7 +184,6 @@ export default class ReceiveDetailsPane extends React.Component {
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
-    width: 100,
     dataIndex: 'received_qty',
     width: 120,
     align: 'right',
@@ -303,11 +303,14 @@ export default class ReceiveDetailsPane extends React.Component {
     };
     let alertMsg;
     const unRecvablePrds = [];
+    let serialNos = [];
     inboundProducts.forEach((inbP) => {
       if (inbP.sku_incomplete && unRecvablePrds.indexOf(inbP.product_no) === -1) {
         unRecvablePrds.push(inbP.product_no);
       }
+      serialNos = serialNos.concat(inbP.serial_no);
     });
+    const serialNoCount = new Set(serialNos).size;
     if (unRecvablePrds.length > 0) {
       let prdnos = `${unRecvablePrds.join(',')}`;
       if (prdnos.length > 130) {
@@ -343,8 +346,12 @@ export default class ReceiveDetailsPane extends React.Component {
             </Button>}
           </DataPane.BulkActions>
           <DataPane.Actions>
+            <span className="welo-summary">
+              {serialNoCount > 0 ? <Summary.Item label="序列号总数">{serialNoCount}</Summary.Item> : null}
+            </span>
             {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
                 unRecvablePrds.length === 0 &&
+                inboundHead.status !== CWM_INBOUND_STATUS.COMPLETED.value &&
                 <Button onClick={this.handleSuBarcodeScanReceive}>
             条码收货确认
                 </Button>}

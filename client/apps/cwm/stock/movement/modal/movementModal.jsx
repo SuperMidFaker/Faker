@@ -4,8 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Card, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, message } from 'antd';
-import { closeMovementModal, searchOwnerStock, createMovement, setMovementsFilter } from 'common/reducers/cwmMovement';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
+import DataTable from 'client/components/DataTable';
+import { closeMovementModal, searchOwnerStock, createMovement, setMovementsFilter } from 'common/reducers/cwmMovement';
 import { CWM_MOVEMENT_TYPE } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
@@ -61,6 +62,22 @@ export default class MovementModal extends Component {
     title: '中文品名',
     dataIndex: 'name',
     width: 150,
+  }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+    width: 100,
+  }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 100,
+  }, {
+    title: '扩展属性1',
+    dataIndex: 'attrib_1_string',
+    width: 100,
+  }, {
+    title: '扩展属性2',
+    dataIndex: 'attrib_2_string',
+    width: 100,
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
@@ -171,8 +188,8 @@ export default class MovementModal extends Component {
       message.info('请选择货主');
       return;
     }
-    if (!filter.productNo && !filter.location) {
-      message.info('请填写货品或库位');
+    if (!filter.productNo && !filter.serialNo && !filter.location) {
+      message.info('请填写货品或序列号或库位');
       this.setState({ stocks: [] });
       return;
     }
@@ -193,6 +210,10 @@ export default class MovementModal extends Component {
   }
   handleProductChange = (e) => {
     const newFilter = { ...this.props.filter, productNo: e.target.value };
+    this.props.setMovementsFilter(newFilter);
+  }
+  handleSerialNoChange = (ev) => {
+    const newFilter = { ...this.props.filter, serialNo: ev.target.value };
     this.props.setMovementsFilter(newFilter);
   }
   handleLocationChange = (value) => {
@@ -316,6 +337,9 @@ export default class MovementModal extends Component {
       <FormItem label="货品">
         <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!owner.id} />
       </FormItem>
+      <FormItem label="序列号">
+        <Input onChange={this.handleSerialNoChange} placeholder="按序列号模糊匹配" disabled={!owner.id} />
+      </FormItem>
       <FormItem label="库位">
         <LocationSelect
           style={{ width: 160 }}
@@ -375,8 +399,9 @@ export default class MovementModal extends Component {
         </Card>
         <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
-            <Table
+            <DataTable
               size="middle"
+              noSetting
               columns={this.stocksColumns}
               dataSource={stocks}
               rowKey="id"

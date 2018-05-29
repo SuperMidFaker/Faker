@@ -118,25 +118,8 @@ export default class SFExpressModal extends Component {
     filter_result: '',
     remark: '',
   }
-  componentWillMount() {
-    this.props.readWaybillLogo();
-  }
   componentDidMount() {
-    let script;
-    if (!document.getElementById('pdfmake-min')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-min';
-      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-    if (!document.getElementById('pdfmake-vfsfont')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-vfsfont';
-      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
+    this.props.readWaybillLogo();
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible) {

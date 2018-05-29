@@ -140,7 +140,7 @@ export default class OutboundPickPrint extends Component {
           margin: [0, 0, 0, 8],
         },
         header: {
-          fontSize: 10,
+          fontSize: 9,
           margin: [0, 3, 0, 4],
         },
         table: {
@@ -150,7 +150,7 @@ export default class OutboundPickPrint extends Component {
           margin: [2, 2, 2, 2],
         },
         tableHeader: {
-          fontSize: 10,
+          fontSize: 9,
           bold: true,
           color: 'black',
           alignment: 'center',

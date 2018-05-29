@@ -139,7 +139,7 @@ export default class OrderDetailsPane extends React.Component {
     width: 120,
   }, {
     title: '操作',
-    width: 150,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (record.alloc_qty < record.order_qty) {

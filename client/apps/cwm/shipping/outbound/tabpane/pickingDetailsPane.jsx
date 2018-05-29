@@ -8,6 +8,7 @@ import RowAction from 'client/components/RowAction';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
+import Summary from 'client/components/Summary';
 import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, showSubarPickChkModal, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_SO_TYPES, CWM_OUTBOUND_STATUS, ALLOC_ERROR_MESSAGE_DESC } from 'common/constants';
 import PickingModal from '../modal/pickingModal';
@@ -144,7 +145,6 @@ export default class PickingDetailsPane extends React.Component {
     render: portion => (portion ? <Tag color="green">可分拨</Tag> : <Tag>否</Tag>),
   }, {
     title: '库别',
-    width: 100,
     dataIndex: 'virtual_whse',
     width: 100,
   }, {
@@ -350,6 +350,8 @@ export default class PickingDetailsPane extends React.Component {
       }
       return -(paScore - pbScore);
     });
+    const serialNoCount = new Set(pickDetails.filter(ibp => ibp.serial_no)
+      .map(ibp => ibp.serial_no)).size;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.handleSelectRowsChange,
@@ -407,8 +409,11 @@ export default class PickingDetailsPane extends React.Component {
             </Button>}
           </DataPane.BulkActions>
           <DataPane.Actions>
+            <span className="welo-summary">
+              {serialNoCount > 0 ? <Summary.Item label="序列号总数">{serialNoCount}</Summary.Item> : null}
+            </span>
             {outboundHead.shipping_mode === 'manual' && outboundHead.su_setting.enabled &&
-            <Button onClick={this.handleSuPickChk} loading={this.state.loading}>
+            <Button onClick={this.handleSuPickChk}>
             条码拣货装箱
             </Button>}
           </DataPane.Actions>

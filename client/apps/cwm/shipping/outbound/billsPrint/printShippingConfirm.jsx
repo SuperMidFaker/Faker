@@ -81,7 +81,8 @@ export default class PrintShippingConfirm extends Component {
       { text: '收货人', style: 'detailTable' },
     ]);
     for (let i = 0; i < pickDetails.length; i++) {
-      pdf.push([i + 1, pickDetails[i].product_no, '', pickDetails[i].picked_qty, pickDetails[i].location, '', '', '', '', '']);
+      const pd = pickDetails[i];
+      pdf.push([i + 1, pd.product_no, '', pd.picked_qty, pd.location, pd.packed_no || '', '', '', '', '']);
     }
     if (pickDetails.length !== 15) {
       pdf.push(['', '', '', '', '', '', '', '', '', '']);

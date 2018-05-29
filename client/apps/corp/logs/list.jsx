@@ -18,10 +18,10 @@ const { Option } = Select;
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
 const initialFilter = {
-  user: '',
-  behavior: '',
-  billno: '',
-  bizobject: '',
+  user: undefined,
+  behavior: undefined,
+  billno: null,
+  bizobject: undefined,
   daterange: null,
 };
 
@@ -174,7 +174,7 @@ export default class LogsList extends React.Component {
       </Select>
       <Input
         style={{ width: 200 }}
-        placeholder="业务编号"
+        placeholder="业务编号/报关单号/客户单号"
         value={searchFilter.billno}
         onChange={ev => this.handleFilterChange('billno', ev.target.value)}
       />

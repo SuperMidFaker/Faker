@@ -3,16 +3,18 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Icon } from 'antd';
+import { Button, Tag, Icon } from 'antd';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import { loadPackDetails } from 'common/reducers/cwmOutbound';
+import printTotalPackingListPdf from '../billsPrint/printTotalPackingList';
 import { formatMsg } from '../../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
     reload: state.cwmOutbound.outboundReload,
+    outboundHead: state.cwmOutbound.outboundFormHead,
     packDetails: state.cwmOutbound.packDetails,
   }),
   { loadPackDetails }
@@ -26,7 +28,7 @@ export default class PackingDetailsPane extends React.Component {
     searchValue: '',
     loading: false,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.handleLoad();
   }
   componentWillReceiveProps(nextProps) {
@@ -84,6 +86,12 @@ export default class PackingDetailsPane extends React.Component {
     dataIndex: 'chkpacked_date',
     render: o => o && moment(o).format('MM.DD HH:mm'),
   }]
+  handleTotalPackingListPrint = () => {
+    const { outboundHead, packDetails } = this.props;
+    const packedNos = Array.from(new Set(packDetails.filter(pd => pd.packed_no)
+      .map(pd => pd.packed_no)));
+    printTotalPackingListPdf(outboundHead, packedNos);
+  }
   render() {
     const { packDetails } = this.props;
     const dataSource = packDetails.filter((item) => {
@@ -110,6 +118,12 @@ export default class PackingDetailsPane extends React.Component {
       >
         <DataPane.Toolbar>
           <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
+          <DataPane.Actions>
+            {packDetails.length > 0 &&
+            <Button icon="printer" onClick={this.handleTotalPackingListPrint}>
+            打印总箱单
+            </Button>}
+          </DataPane.Actions>
         </DataPane.Toolbar>
       </DataPane>
     );
