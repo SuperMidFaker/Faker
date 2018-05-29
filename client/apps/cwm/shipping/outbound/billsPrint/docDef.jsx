@@ -29,24 +29,24 @@ function pdfBody(data) {
   let pdfcontent = [];
   const imgE = false;
   const titleBody = [{
-    image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false],
+    text: '', width: 72, alignment: 'center', border: [true, true, false, false],
   }];
   if (expressInfo.added_services && expressInfo.added_services.indexOf('COD') >= 0) {
     titleBody.push({
-      image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false],
+      text: '', width: 70, alignment: 'center', border: [false, true, false, false],
     });
   } else {
-    titleBody.push({ text: '', border: [false, true, false, false] });
+    titleBody.push({ text: '', width: 70, border: [false, true, false, false] });
   }
   if (imgE) {
     titleBody.push({
-      image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false],
+      text: '', width: 30, alignment: 'center', border: [false, true, false, false],
     });
   } else {
-    titleBody.push({ text: '', border: [false, true, false, false] });
+    titleBody.push({ text: '', width: 30, border: [false, true, false, false] });
   }
   titleBody.push({
-    image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false],
+    text: '', width: 78, alignment: 'center', border: [false, true, true, false],
   });
   const receiverAddr = `${expressInfo.receiver_contact} ${expressInfo.receiver_phone}\n${Location.renderConsignLocation(expressInfo, 'receiver', '')}${expressInfo.receiver_address}`;
   const senderAddr = `${expressInfo.sender_contact} ${expressInfo.sender_phone}\n${Location.renderConsignLocation(expressInfo, 'sender', '')}${expressInfo.sender_address}`;
@@ -56,6 +56,7 @@ function pdfBody(data) {
       table: {
         widths: ['25%', '35%', '15%', '25%'],
         body: [titleBody],
+        heights: [42],
       },
     },
     {
@@ -82,7 +83,8 @@ function pdfBody(data) {
       table: {
         widths: ['2%', '98%'],
         body: [
-          // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          // [{ text: '目的地', border: [true, false] },
+          // { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
           [{ text: '目的地', border: [true, false] }, { text: expressInfo.destcode, fontSize: 18, border: [true, false, true] }],
           ['收件人', {
             text: receiverAddr,
@@ -208,7 +210,7 @@ function pdfBody(data) {
 export function WaybillDef(data) {
   const docDefinition = {
     pageSize: { width: 400, height: 600 },
-    pageMargins: [5, 5],
+    pageMargins: [11, 3],
     content: [],
     styles: {
       table: {
@@ -298,7 +300,8 @@ function TrigeminyList(data) {
       table: {
         widths: ['3%', '75.5%', '21.5%'],
         body: [
-          // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          // [{ text: '目的地', border: [true, false] },
+          // { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
           [{ text: '目的地', fontSize: 9, border: [true, false] }, {
             colSpan: 2, text: expressInfo.destcode, fontSize: 18, border: [true, false, true],
           }, ''],
@@ -512,7 +515,8 @@ function podPdfBody(data) {
       table: {
         widths: ['2%', '98%'],
         body: [
-          // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          // [{ text: '目的地', border: [true, false] },
+          // { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
           [{ text: '目的地', border: [true, false] }, { text: expressInfo.origincode, fontSize: 16, border: [true, false, true] }],
           ['收件人', {
             text: senderAddr,

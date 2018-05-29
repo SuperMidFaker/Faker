@@ -410,7 +410,7 @@ export default class PickingDetailsPane extends React.Component {
           </DataPane.BulkActions>
           <DataPane.Actions>
             <span className="welo-summary">
-              {serialNoCount > 0 ? <Summary.Item label="序列号总数">{serialNoCount}</Summary.Item> : null}
+              <Summary.Item label="序列号总数">{serialNoCount}</Summary.Item>
             </span>
             {outboundHead.shipping_mode === 'manual' && outboundHead.su_setting.enabled &&
             <Button onClick={this.handleSuPickChk}>

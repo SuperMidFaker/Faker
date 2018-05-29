@@ -364,7 +364,7 @@ export default class StockTransitionList extends React.Component {
   toggleTableSetting = () => {
     this.setState({ showTableSetting: !this.state.showTableSetting });
   }
-  handleRowSelect = (selectedRows) => {
+  handleRowSelect = (selectedRows, ownerName) => {
     let enableBatchTransit = true;
     let i = 0;
     let batchTransitDetail = {};
@@ -379,8 +379,8 @@ export default class StockTransitionList extends React.Component {
     if (selectedRows.length > 0 && enableBatchTransit) {
       batchTransitDetail = {
         owner_partner_id: selectedRows[0].owner_partner_id,
-        owner_name: selectedRows[0].owner_name,
-        whse_code: selectedRows[0].whse_code,
+        owner_name: ownerName,
+        whse_code: this.props.defaultWhse.code,
       };
     }
     const selectedRowKeys = selectedRows.map(sr => sr.trace_id);
@@ -393,7 +393,7 @@ export default class StockTransitionList extends React.Component {
   }
   render() {
     const {
-      loading, listFilter, transitionStat, transitionlist,
+      loading, listFilter, transitionStat, transitionlist, totalReducedList,
     } = this.props;
     const { allSelectedRows } = this.state;
     const rowSelection = {
@@ -406,15 +406,17 @@ export default class StockTransitionList extends React.Component {
             stock_qty: sr.stock_qty,
             owner_partner_id: sr.owner_partner_id,
           })));
-        this.handleRowSelect(selectedRows);
+        this.handleRowSelect(selectedRows, selRows[0].owner_name);
       },
       hideDefaultSelections: true,
-      selections: [{
+    };
+    if (totalReducedList.length > 0) {
+      rowSelection.selections = [{
         key: 'selectall',
         text: '全部选择',
         onSelect: () => {
           if (this.props.totalReducedList.length > 0) {
-            this.handleRowSelect(this.props.totalReducedList);
+            this.handleRowSelect(this.props.totalReducedList, transitionlist.data[0].owner_name);
           }
         },
       }, {
@@ -423,8 +425,8 @@ export default class StockTransitionList extends React.Component {
         onSelect: () => {
           this.handleRowSelect([]);
         },
-      }],
-    };
+      }];
+    }
     const selTotalStockQty = allSelectedRows.reduce((res, bsf) => res + (bsf.stock_qty || 0), 0);
     const rowKey = 'trace_id'; // selectedRowKeys 有影响
     const dataSource = new DataTable.DataSource({

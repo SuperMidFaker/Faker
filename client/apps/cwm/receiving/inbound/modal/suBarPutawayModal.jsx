@@ -355,7 +355,7 @@ export default class SuBarPutawayModal extends Component {
             size="middle"
             columns={this.barColumns}
             dataSource={dataSource}
-            rowKey="trace_id"
+            rowKey="seqno"
             pagination={{ showTotal: total => `共 ${total} 条`, showSizeChanger: true, defaultPageSize: 20 }}
             scroll={{
               x: this.barColumns.reduce((acc, cur) =>
