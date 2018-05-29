@@ -116,10 +116,10 @@ export default class OutboundPickPrint extends Component {
       },
       {
         columns: [
-          { text: '计划:', fontSize: 11 },
-          { text: '收货:', fontSize: 11 },
-          { text: '上架:', fontSize: 11 },
-          { text: '归档:', fontSize: 11 },
+          { text: '计划/时间:', fontSize: 11 },
+          { text: '拣货/时间:', fontSize: 11 },
+          { text: '复核/时间:', fontSize: 11 },
+          { text: '归档/时间:', fontSize: 11 },
         ],
       },
     ];
