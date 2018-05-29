@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import { formatMsg } from '../../message.i18n';
 
 @injectIntl
 @connect(
@@ -17,8 +18,9 @@ import { intlShape, injectIntl } from 'react-intl';
 export default class PrintShippingList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    outboundNo: PropTypes.string.isRequired,
+    pickDetails: PropTypes.arrayOf(PropTypes.shape({ picked_qty: PropTypes.number.isRequired })),
   }
+  msg = formatMsg(this.props.intl)
   pdfHead = () => {
     const { outboundHead } = this.props;
     const header = [
@@ -39,7 +41,7 @@ export default class PrintShippingList extends Component {
     ]);
     for (let i = 0; i < pickDetails.length; i++) {
       const sp = pickDetails[i];
-      body.push([i + 1, sp.product_no, sp.name, sp.shipped_qty]);
+      body.push([i + 1, sp.product_no, sp.name, sp.picked_qty]);
     }
     const total = pickDetails.reduce((res, bsf) => ({
       shipped_qty: (res.shipped_qty || 0) + (bsf.shipped_qty || 0),

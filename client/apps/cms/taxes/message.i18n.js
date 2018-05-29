@@ -21,6 +21,10 @@ const messages = defineMessages({
   },
   preEntrySeqNo: {
     id: 'cms.taxes.preEntrySeqNo',
+    defaultMessage: '内部编号',
+  },
+  entryId: {
+    id: 'cms.taxes.entryId',
     defaultMessage: '报关单号',
   },
   blWbNo: {
