@@ -84,7 +84,7 @@ const messages = defineMessages({
     defaultMessage: '消费税',
   },
   vatRates: {
-    id: 'cms.taxes.exciseTax',
+    id: 'cms.taxes.vat.rates',
     defaultMessage: '增值税率',
   },
   vatTax: {

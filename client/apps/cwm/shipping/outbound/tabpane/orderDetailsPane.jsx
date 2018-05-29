@@ -9,6 +9,7 @@ import { CWM_OUTBOUND_STATUS, ALLOC_ERROR_MESSAGE_DESC } from 'common/constants'
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import RowAction from 'client/components/RowAction';
+import Summary from 'client/components/Summary';
 import { MdIcon } from 'client/components/FontIcon';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
@@ -337,6 +338,9 @@ export default class OrderDetailsPane extends React.Component {
       }
       return diff;
     });
+    const allocatedNum = dataSource.filter(ds => ds.alloc_qty > 0).length;
+    const serialNoNum = new Set(dataSource.filter(ds => ds.serial_no)
+      .map(ds => ds.serial_no)).size;
     let alertMsg;
     if (outboundHead.total_alloc_qty > 0 &&
       outboundHead.total_alloc_qty !== outboundHead.total_qty) {
@@ -380,7 +384,6 @@ export default class OrderDetailsPane extends React.Component {
     };
     return (
       <DataPane
-
         columns={this.columns}
         rowSelection={rowSelection}
         indentSize={0}
@@ -402,6 +405,10 @@ export default class OrderDetailsPane extends React.Component {
             </Button>)}
           </DataPane.BulkActions>
           <DataPane.Actions>
+            <span className="welo-summary">
+              <Summary.Item label="分配总数">{allocatedNum}</Summary.Item>
+              <Summary.Item label="序列号总数">{serialNoNum}</Summary.Item>
+            </span>
             {outboundHead.total_alloc_qty > 0 &&
               outboundHead.total_alloc_qty < outboundHead.total_qty &&
               <Button type="primary" onClick={this.handleExportUnAllocs}>导出未配货项</Button>

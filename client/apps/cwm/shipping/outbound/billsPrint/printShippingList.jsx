@@ -44,7 +44,7 @@ export default class PrintShippingList extends Component {
       body.push([i + 1, sp.product_no, sp.name, sp.picked_qty]);
     }
     const total = pickDetails.reduce((res, bsf) => ({
-      shipped_qty: (res.shipped_qty || 0) + (bsf.shipped_qty || 0),
+      shipped_qty: (res.shipped_qty || 0) + (bsf.picked_qty || 0),
     }), {
       shipped_qty: 0,
     });

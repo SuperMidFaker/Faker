@@ -347,7 +347,7 @@ export default class ReceiveDetailsPane extends React.Component {
           </DataPane.BulkActions>
           <DataPane.Actions>
             <span className="welo-summary">
-              {serialNoCount > 0 ? <Summary.Item label="序列号总数">{serialNoCount}</Summary.Item> : null}
+              <Summary.Item label="序列号总数">{serialNoCount}</Summary.Item>
             </span>
             {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
                 unRecvablePrds.length === 0 &&
