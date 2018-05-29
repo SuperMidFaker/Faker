@@ -61,6 +61,7 @@
   &-head {
     position: relative;
     overflow: hidden;
+    min-height: 48px;
     z-index: 2;
     padding: 0 16px;
     background: #fff;
@@ -84,10 +85,23 @@
       button, >span, {
         margin-right: 8px;
       }
+      &-logo {
+        margin-right: 8px;
+        margin-top: 3px;
+        >img {
+          width: 32px;
+          height: 32px;
+          border-radius: 4px;
+          display: block;
+        }
+      }
       &-label {
         font-size: 12px;
         line-height: 14px;
         color: rgba(0, 0, 0, 0.35);
+      }
+      &-text {
+        line-height: 28px;
       }
     }
     &-close {
@@ -115,7 +129,10 @@
     z-index: 1;
     background: #f7f7f7;
     &.with-header-extra {
-      top: 128px;
+      top: 124px;
+    }
+    > .ant-steps {
+      padding: 16px;
     }
     .ant-tabs-vertical.ant-tabs-left > .ant-tabs-content {
       padding-left: 16px;

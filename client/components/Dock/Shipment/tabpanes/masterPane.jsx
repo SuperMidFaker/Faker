@@ -41,10 +41,18 @@ export default class ShipmentGeneralPane extends React.Component {
           <Collapse bordered={false} defaultActiveKey={['basic']}>
             <Panel header={this.msg('basicInfo')} key="basic">
               <DescriptionList col={2}>
-                <Description term="客户"><a onClick={this.handleShowCusPanel}>{order.cust_order_no}</a></Description>
+                <Description term="客户"><a onClick={this.handleShowCusPanel}>{order.customer_name}</a></Description>
                 <Description term="客户单号">{order.cust_order_no}</Description>
                 <Description term="货物类型">{goods ? goods.text : ''}</Description>
                 <Description term="总件数" addonAfter={wrapType && wrapType.text}>{order.cust_shipmt_pieces}</Description>
+              </DescriptionList>
+            </Panel>
+            <Panel header={this.msg('extendedInfo')} key="extended">
+              <DescriptionList col={2}>
+                <Description term="扩展字段1">{order.ext_attr_1}</Description>
+                <Description term="扩展字段2">{order.ext_attr_2}</Description>
+                <Description term="扩展字段3">{order.ext_attr_3}</Description>
+                <Description term="扩展字段4">{order.ext_attr_4}</Description>
               </DescriptionList>
             </Panel>
             <Panel header={this.msg('sysInfo')} key="sysInfo">

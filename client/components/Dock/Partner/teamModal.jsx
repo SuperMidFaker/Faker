@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Transfer } from 'antd';
 import { hideServiceTeamModal, addServiceTeamMembers, loadServiceTeamMembers, loadTenantUsers } from 'common/reducers/sofCustomers';
-import { formatMsg } from '../message.i18n';
+import { formatMsg } from './message.i18n';
 
 @injectIntl
 @connect(

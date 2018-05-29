@@ -90,7 +90,7 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       thead: true,
     }, {
       field: 'cust_order_no',
-      label: '客户订单号',
+      label: '订单参考号',
       thead: true,
     }, {
       field: 'product_no',

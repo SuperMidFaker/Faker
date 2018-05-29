@@ -166,7 +166,7 @@ export default class ReceivingDock extends React.Component {
           <InfoItem label="货主" field={asnHead.owner_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="客户订单号" field={asnHead.cust_order_no} />
+          <InfoItem label="订单参考号" field={asnHead.cust_order_no} />
         </Col>
         <Col span="2">
           <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />
