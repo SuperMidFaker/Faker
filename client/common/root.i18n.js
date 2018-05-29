@@ -301,6 +301,10 @@ const messages = defineMessages({
     id: 'root.tab.master.basic.info',
     defaultMessage: '基本信息',
   },
+  extendedInfo: {
+    id: 'root.tab.master.extended.info',
+    defaultMessage: '扩展信息',
+  },
   orderInfo: {
     id: 'root.tab.master.order.info',
     defaultMessage: '订单信息',

@@ -17,10 +17,10 @@ export default class DockPanel extends PureComponent {
     prefixCls: PropTypes.string,
     visible: PropTypes.bool.isRequired,
     size: PropTypes.string,
+    logo: PropTypes.string,
     label: PropTypes.string,
     title: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     mode: PropTypes.string,
-    uppperLevel: PropTypes.node,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,
     overlay: PropTypes.node,
@@ -68,7 +68,7 @@ export default class DockPanel extends PureComponent {
   }
   render() {
     const {
-      prefixCls, size = '', className, visible, label, title, mode, uppperLevel, status, statusText,
+      prefixCls, size = '', className, visible, logo, label, title, mode, status, statusText,
       overlay, onEdit, extra, loading, alert, alertType, children,
     } = this.props;
     const sizeCls = ({
@@ -92,13 +92,14 @@ export default class DockPanel extends PureComponent {
         <div className={classes}>
           <Spin spinning={loading}>
             <div className={`${prefixCls}-head`}>
+
               <div className={`${prefixCls}-head-title`}>
                 {this.state.depth > 1 && <Button icon="left" onClick={this.handleBackward} />}
+                {logo && <div className={`${prefixCls}-head-title-logo`}><img src={logo} alt="logo" /></div>}
                 <Breadcrumb>
-                  {uppperLevel && <Breadcrumb.Item>{uppperLevel}</Breadcrumb.Item>}
                   <Breadcrumb.Item>
                     <div className={`${prefixCls}-head-title-label`}>{label}</div>
-                    <div>{title}</div>
+                    <div className={`${prefixCls}-head-title-text`}>{title}</div>
                   </Breadcrumb.Item>
                 </Breadcrumb>
                 {status ? <Badge status={status} text={statusText} /> : null}

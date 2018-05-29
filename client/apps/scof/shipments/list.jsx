@@ -394,7 +394,6 @@ export default class OrderList extends React.Component {
     const columns = [{
       title: '货运订单号/货主',
       width: 200,
-      fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {
       dataIndex: 'order_status',
@@ -609,7 +608,7 @@ export default class OrderList extends React.Component {
             </Select>
           </Form.Item>
           {importPanel.cust_order_no_input &&
-          <Form.Item label="客户订单号">
+          <Form.Item label="订单参考号">
             <Input value={importPanel.cust_order_no} onChange={this.handleImportCustNoChange} />
           </Form.Item>}
           <Form.Item>

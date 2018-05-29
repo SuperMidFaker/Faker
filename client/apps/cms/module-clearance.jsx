@@ -134,7 +134,7 @@ export default class Clearance extends React.Component {
         single: true,
         key: 'cms-taxes',
         path: '/clearance/taxes',
-        icon: 'logixon icon-customs',
+        icon: 'logixon icon-tax',
         text: formatMsg(intl, 'taxes'),
       });
     }

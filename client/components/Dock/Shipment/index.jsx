@@ -170,6 +170,7 @@ export default class ShipmentDock extends React.Component {
         size="large"
         visible={visible}
         onClose={this.props.hideDock}
+        logo="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png"
         label={this.msg('shipmentOrder')}
         title={order.shipmt_order_no}
         overlay={this.renderMenu()}

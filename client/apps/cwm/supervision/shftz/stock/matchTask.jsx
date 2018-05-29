@@ -91,7 +91,7 @@ export default class SHFTZStockMatchTask extends Component {
     width: 100,
     dataIndex: 'unit',
   }, {
-    title: '客户订单号',
+    title: '订单参考号',
     width: 120,
     dataIndex: 'cust_order_no',
   }, {
