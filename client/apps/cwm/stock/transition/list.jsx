@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Input, Button, Layout, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openTransitionModal, loadTransitions, loadTransitionStat, splitTransit, unfreezeTransit, openBatchTransitModal, showUploadTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
+import { openTransitionModal, loadTransitions, loadReducedTransitions, loadTransitionStat, splitTransit, unfreezeTransit, openBatchTransitModal, showUploadTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
@@ -41,6 +41,7 @@ const { Content } = Layout;
     loading: state.cwmTransition.loading,
     transitionlist: state.cwmTransition.list,
     transitionStat: state.cwmTransition.stat,
+    totalReducedList: state.cwmTransition.totalReducedList,
     listFilter: state.cwmTransition.listFilter,
     sortFilter: state.cwmTransition.sortFilter,
     reload: state.cwmTransition.reloadTransitions,
@@ -48,6 +49,7 @@ const { Content } = Layout;
   {
     openTransitionModal,
     loadTransitions,
+    loadReducedTransitions,
     loadTransitionStat,
     splitTransit,
     unfreezeTransit,
@@ -297,13 +299,15 @@ export default class StockTransitionList extends React.Component {
   }
   handleStockQuery = (currentPage, filter) => {
     const { sortFilter, listFilter, transitionlist: { pageSize, current } } = this.props;
+    const newFilter = JSON.stringify(filter || listFilter);
     this.props.loadTransitions({
-      filter: JSON.stringify(filter || listFilter),
+      filter: newFilter,
       sorter: JSON.stringify(sortFilter),
       pageSize,
       current: currentPage || current,
     });
-    this.props.loadTransitionStat(JSON.stringify(filter || listFilter));
+    this.props.loadReducedTransitions(newFilter);
+    this.props.loadTransitionStat(newFilter);
     this.handleDeselectRows();
   }
   handleBatchTransit = () => {
@@ -409,7 +413,9 @@ export default class StockTransitionList extends React.Component {
         key: 'selectall',
         text: '全部选择',
         onSelect: () => {
-          this.handleRowSelect(transitionlist.totalReducedList);
+          if (this.props.totalReducedList.length > 0) {
+            this.handleRowSelect(this.props.totalReducedList);
+          }
         },
       }, {
         key: 'unselectall',

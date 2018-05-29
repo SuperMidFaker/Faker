@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'CLOSE_BATCH_MOVE_MODAL', 'OPEN_BATCH_MOVE_MODAL',
   'CLOSE_BATCH_FREEZE_MODAL', 'OPEN_BATCH_FREEZE_MODAL',
   'LOAD_TRANSITIONS', 'LOAD_TRANSITIONS_SUCCEED', 'LOAD_TRANSITIONS_FAIL',
+  'LOAD_REDUTRANSITIONS', 'LOAD_REDUTRANSITIONS_SUCCEED', 'LOAD_REDUTRANSITIONS_FAIL',
   'LOAD_TRANSTAT', 'LOAD_TRANSTAT_SUCCEED', 'LOAD_TRANSTAT_FAIL',
   'SPLIT_TRANSIT', 'SPLIT_TRANSIT_SUCCEED', 'SPLIT_TRANSIT_FAIL',
   'MOVE_TRANSIT', 'MOVE_TRANSIT_SUCCEED', 'MOVE_TRANSIT_FAIL',
@@ -48,8 +49,8 @@ const initialState = {
     current: 1,
     pageSize: 20,
     data: [],
-    totalReducedList: [],
   },
+  totalReducedList: [],
   stat: {
     stock_qty: null,
     avail_qty: null,
@@ -157,6 +158,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_TRANSITIONS_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_REDUTRANSITIONS_SUCCEED:
+      return { ...state, totalReducedList: action.result.data };
     case actionTypes.LOAD_TRANSTAT_SUCCEED:
       return { ...state, stat: action.result.data };
     case actionTypes.LOAD_TTDETAIL:
@@ -255,6 +258,21 @@ export function loadTransitions(params) {
       endpoint: 'v1/cwm/stock/inbound/transitions',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadReducedTransitions(filter) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_REDUTRANSITIONS,
+        actionTypes.LOAD_REDUTRANSITIONS_SUCCEED,
+        actionTypes.LOAD_REDUTRANSITIONS_FAIL,
+      ],
+      endpoint: 'v1/cwm/stock/inbound/reduced/transitions',
+      method: 'get',
+      params: { filter },
     },
   };
 }
