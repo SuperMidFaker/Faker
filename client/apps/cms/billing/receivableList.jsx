@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, submitExpenses, unbillingByBatchupload } from 'common/reducers/cmsExpense';
@@ -44,6 +44,7 @@ function fetchData({ state, dispatch }) {
   })));
   promises.push(dispatch(loadPartners({
     role: PARTNER_ROLES.CUS,
+    businessType: PARTNER_BUSINESSE_TYPES.clearance,
   })));
   return Promise.all(promises);
 }

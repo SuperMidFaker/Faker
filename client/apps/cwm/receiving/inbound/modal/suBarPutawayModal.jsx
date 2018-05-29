@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Alert, Card, Table, Icon, Modal, Form, Input, Button, message } from 'antd';
+import { Alert, Card, Table, Tooltip, Tag, Icon, Modal, Form, Input, Button, message } from 'antd';
 import RowAction from 'client/components/RowAction';
 import { viewSuBarPutawayModal, batchPutaways } from 'common/reducers/cwmReceive';
 import { formatMsg } from '../../message.i18n';
@@ -33,7 +33,7 @@ export default class SuBarPutawayModal extends Component {
     })).isRequired,
   }
   state = {
-    serialDetailMap: null,
+    serialDetailMap: new Map(),
     alertMsg: null,
     dataSource: [],
     location: null,
@@ -80,7 +80,7 @@ export default class SuBarPutawayModal extends Component {
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.setState({
-      serialDetailMap: null,
+      serialDetailMap: new Map(),
       dataSource: [],
       location: null,
       alertMsg: null,
@@ -91,8 +91,31 @@ export default class SuBarPutawayModal extends Component {
     }
     this.props.viewSuBarPutawayModal({ visible: false });
   }
+  handleSubmitSave =() => {
+    const serialDetailMap = new Map(this.state.serialDetailMap);
+    this.state.dataSource.forEach((ds) => {
+      if (serialDetailMap.has(ds.serial_no)) {
+        const details = serialDetailMap.get(ds.serial_no).map(sdet => ({
+          ...sdet,
+          result: 1,
+        }));
+        serialDetailMap.set(ds.serial_no, details);
+      }
+    });
+    this.setState({
+      serialDetailMap,
+      dataSource: [],
+      location: null,
+      alertMsg: null,
+    });
+    this.emptySuInputElement();
+    if (window.localStorage) {
+      window.localStorage.removeItem('subarcode-putaway');
+    }
+  }
   handleDeleteDetail = (row) => {
-    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== row.serial_no);
+    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== row.serial_no)
+      .map((ds, idx) => ({ ...ds, seqno: idx + 1 }));
     this.setState({ dataSource });
   }
   handleSubmit = () => {
@@ -106,7 +129,7 @@ export default class SuBarPutawayModal extends Component {
     ).then((result) => {
       if (!result.error) {
         message.success('条码上架成功');
-        this.handleCancel();
+        this.handleSubmitSave();
       } else {
         if (result.error.message === 'location_not_found') {
           message.error(`库位${this.state.location}不存在`);
@@ -158,15 +181,11 @@ export default class SuBarPutawayModal extends Component {
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
-        if (suConf.part >= 0) {
-          const barcodePart = barcodeParts[suConf.part];
-          if (barcodePart) {
-            suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
-          } else {
-            suScan[suKey] = null;
-          }
+        const barcodePart = barcodeParts[suConf.part || 0];
+        if (barcodePart) {
+          suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
         } else {
-          suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+          suScan[suKey] = null;
         }
         if (!suScan[suKey]) {
           this.setState({
@@ -176,16 +195,23 @@ export default class SuBarPutawayModal extends Component {
           return;
         }
       }
-      if (!this.state.serialDetailMap.has(suScan.serial_no)) {
+      if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
         this.setState({
-          alertMsg: `收货明细无此序列号:${suScan.serial_no}`,
+          alertMsg: `序列号${suScan.serial_no}已经扫描`,
         });
         this.emptySuInputElement();
         return;
       }
-      if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
+      if (!this.state.serialDetailMap.has(suScan.serial_no)) {
+        const dataSource = [{
+          serial_no: suScan.serial_no,
+          seqno: this.state.dataSource.length + 1,
+          error: true,
+          errorMsg: '待上架列表无此序列号',
+        }].concat(this.state.dataSource);
         this.setState({
-          alertMsg: `序列号${suScan.serial_no}已经扫描`,
+          dataSource,
+          alertMsg: `收货明细无此序列号:${suScan.serial_no}`,
         });
         this.emptySuInputElement();
         return;
@@ -231,12 +257,18 @@ export default class SuBarPutawayModal extends Component {
     dataIndex: 'seqno',
     width: 100,
   }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+    render: (serial, row) => {
+      if (row.error) {
+        return <Tooltip title={row.errorMsg}><Tag color="#f50">{serial}</Tag></Tooltip>;
+      }
+      return serial;
+    },
+  }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
     width: 300,
-  }, {
-    title: '序列号',
-    dataIndex: 'serial_no',
   }, {
     title: '货号',
     dataIndex: 'product_no',
@@ -259,11 +291,21 @@ export default class SuBarPutawayModal extends Component {
     const {
       alertMsg, dataSource, location,
     } = this.state;
+    dataSource.sort((dsa, dsb) => {
+      if (dsa.error && !dsb.error) {
+        return -1;
+      } else if (!dsa.error && dsb.error) {
+        return 1;
+      }
+      return dsa.seqno - dsb.seqno;
+    });
+    const unsubmitable = dataSource.length === 0 || dataSource.filter(ds => ds.error).length > 0
+      || !location;
     const title = (<div>
       <span>条码扫描上架</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button disabled={dataSource.length === 0 || !location} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
+        <Button disabled={unsubmitable} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>
       </div>
     </div>);
     const formItemLayout = {

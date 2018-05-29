@@ -44,7 +44,8 @@ export default class SuBarcodeScanModal extends Component {
     })).isRequired,
   }
   state = {
-    inboundProductSeqMap: null,
+    inboundProductSeqMap: new Map(),
+    serialnoMap: new Map(),
     alertMsg: null,
     dataSource: [],
     scanRecv: NullSuScan,
@@ -53,6 +54,7 @@ export default class SuBarcodeScanModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
       const inboundProductSeqMap = new Map();
+      const serialnoMap = new Map();
       nextProps.inboundProducts.forEach((inbPrd) => {
         let productSeqMap;
         if (inboundProductSeqMap.has(inbPrd.product_no)) {
@@ -65,6 +67,9 @@ export default class SuBarcodeScanModal extends Component {
           received_qty: 0,
         });
         inboundProductSeqMap.set(inbPrd.product_no, productSeqMap);
+        inbPrd.serial_no.forEach((serial) => {
+          serialnoMap.set(serial, true);
+        });
       });
       const dataSource = [];
       if (window.localStorage) {
@@ -73,6 +78,7 @@ export default class SuBarcodeScanModal extends Component {
           const suDataSource = JSON.parse(subarDataSource);
           if (suDataSource && suDataSource.length > 0) {
             suDataSource.forEach((sds) => {
+              serialnoMap.set(sds.serial_no, true);
               if (inboundProductSeqMap.has(sds.product_no)) {
                 const productSeqMap = inboundProductSeqMap.get(sds.product_no);
                 const productSeqQty = productSeqMap.get(sds.asn_seq_no);
@@ -89,6 +95,7 @@ export default class SuBarcodeScanModal extends Component {
       }
       this.setState({
         inboundProductSeqMap,
+        serialnoMap,
         dataSource,
       });
       if (this.suInputRef) {
@@ -101,7 +108,8 @@ export default class SuBarcodeScanModal extends Component {
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.setState({
-      inboundProductSeqMap: null,
+      inboundProductSeqMap: new Map(),
+      serialnoMap: new Map(),
       dataSource: [],
       scanRecv: NullSuScan,
       alertMsg: null,
@@ -118,9 +126,12 @@ export default class SuBarcodeScanModal extends Component {
     const productSeqMap = inboundProductSeqMap.get(data.product_no);
     const seqQty = productSeqMap.get(data.asn_seq_no);
     seqQty.received_qty -= data.qty;
-    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== data.serial_no);
+    const dataSource = this.state.dataSource.filter(ds => ds.serial_no !== data.serial_no)
+      .map((ds, idx) => ({ ...ds, seqno: idx + 1 }));
     inboundProductSeqMap.set(data.product_no, productSeqMap);
-    this.setState({ dataSource, inboundProductSeqMap });
+    const { serialnoMap } = this.state;
+    serialnoMap.delete(data.serial_no);
+    this.setState({ dataSource, inboundProductSeqMap, serialnoMap });
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
@@ -226,10 +237,13 @@ export default class SuBarcodeScanModal extends Component {
       window.localStorage.setItem('subarcode-data', JSON.stringify(dataSource));
     }
     inboundProductSeqMap.set(suScan.product_no, productSeqMap);
+    const serialnoMap = new Map(this.state.serialnoMap);
+    serialnoMap.set(suScan.serial_no, true);
     this.setState({
       scanRecv: NullSuScan,
       dataSource,
       inboundProductSeqMap,
+      serialnoMap,
       alertMsg: remainQty > 0 ? `${suScan.product_no}收货数量大于订单数量` : null,
     });
     this.emptySuInputElement();
@@ -276,15 +290,11 @@ export default class SuBarcodeScanModal extends Component {
       for (let i = 0; i < suKeys.length; i++) {
         const suKey = suKeys[i];
         const suConf = suSetting[suKey];
-        if (suConf.part >= 0) {
-          const barcodePart = barcodeParts[suConf.part];
-          if (!barcodePart) {
-            suScan[suKey] = null;
-          } else {
-            suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
-          }
+        const barcodePart = barcodeParts[suConf.part || 0];
+        if (!barcodePart) {
+          suScan[suKey] = null;
         } else {
-          suScan[suKey] = barcode.slice(suConf.start, suConf.end);
+          suScan[suKey] = barcodePart.slice(suConf.start, barcodePart.length - suConf.end);
         }
         if (!suScan[suKey]) {
           this.setState({ scanRecv: NullSuScan });
@@ -312,7 +322,7 @@ export default class SuBarcodeScanModal extends Component {
         this.emptySuInputElement();
         return;
       }
-      if (this.state.dataSource.filter(ds => ds.serial_no === suScan.serial_no).length > 0) {
+      if (this.state.serialnoMap.has(suScan.serial_no)) {
         this.setState({
           scanRecv: NullSuScan,
           alertMsg: `序列号${suScan.serial_no}已经扫描`,

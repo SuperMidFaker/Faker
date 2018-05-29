@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Checkbox, DatePicker, Dropdown, Icon, Menu, Layout, Select, message, Form } from 'antd';
-import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES } from 'common/constants';
+import { UPLOAD_BATCH_OBJECT, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { loadPartners } from 'common/reducers/partner';
 import { loadCurrencies, loadAdvanceParties, showAdvModelModal, loadExpenses, confirmExpenses, rejectExpenses, unbillingByBatchupload } from 'common/reducers/cmsExpense';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
@@ -44,6 +44,7 @@ function fetchData({ state, dispatch }) {
   })));
   promises.push(dispatch(loadPartners({
     role: PARTNER_ROLES.VEN,
+    businessType: PARTNER_BUSINESSE_TYPES.clearance,
   })));
   return Promise.all(promises);
 }

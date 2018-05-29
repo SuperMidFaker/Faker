@@ -8,6 +8,7 @@ import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SearchBox from 'client/components/SearchBox';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import Summary from 'client/components/Summary';
 import { createFilename } from 'client/util/dataTransform';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways, viewSuBarPutawayModal } from 'common/reducers/cwmReceive';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -212,6 +213,8 @@ export default class PutawayDetailsPane extends React.Component {
       }
       return pa.result - pb.result;
     });
+    const serialNoCount = new Set(inboundPutaways.filter(ibp => ibp.serial_no)
+      .map(ibp => ibp.serial_no)).size; // 去重
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -273,11 +276,14 @@ export default class PutawayDetailsPane extends React.Component {
             <Button onClick={this.handleBatchPutAways} icon="check">
           批量上架确认
             </Button>
-            <Button loading={submitting} onClick={this.handleBatchUndoReceives}icon="rollback">
+            <Button loading={submitting} onClick={this.handleBatchUndoReceives} icon="rollback">
           批量取消收货
             </Button>
           </DataPane.BulkActions>
           <DataPane.Actions>
+            <span className="welo-summary">
+              {serialNoCount > 0 ? <Summary.Item label="序列号总数">{serialNoCount}</Summary.Item> : null}
+            </span>
             {inboundHead.rec_mode === 'manual' && inboundHead.su_setting.enabled &&
               dataSource.filter(ds => ds.serial_no && ds.result === 0).length > 0 &&
               <Button onClick={this.handleSuBarcodePutaway} loading={loading}>

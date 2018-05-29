@@ -90,14 +90,14 @@ export default class OrderForm extends Component {
     const selPartnerId = Number(value);
     const client = this.props.partners.find(cl => cl.id === selPartnerId) || {
       name: '',
-      tid: null,
+      partner_tenant_id: null,
       id: null,
       partner_code: null,
     };
     this.props.setClientForm(-1, {
       flow_id: null,
       customer_name: client.name,
-      customer_tenant_id: client.tid,
+      customer_tenant_id: client.partner_tenant_id,
       customer_partner_id: client.id,
       customer_partner_code: client.partner_code,
       subOrders: [],
@@ -107,12 +107,12 @@ export default class OrderForm extends Component {
     const selPartnerId = Number(value);
     const client = this.props.partners.find(cl => cl.id === selPartnerId) || {
       name: '',
-      tid: null,
-      selPartnerId: null,
+      partner_tenant_id: null,
+      id: null,
     };
     this.props.setClientForm(-1, {
       provider_name: client.name,
-      provider_tenant_id: client.tid,
+      provider_tenant_id: client.partner_tenant_id,
       provider_partner_id: client.id,
     });
   }

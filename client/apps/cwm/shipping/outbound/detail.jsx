@@ -74,8 +74,23 @@ export default class OutboundDetail extends Component {
     tabKey: 'orderDetails',
     expLoad: false,
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
+    let script;
+    if (!document.getElementById('pdfmake-min')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-min';
+      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    if (!document.getElementById('pdfmake-vfsfont')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-vfsfont';
+      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -350,28 +365,16 @@ export default class OutboundDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
-                  <OrderDetailsPane
-                    outboundNo={this.props.params.outboundNo}
-
-                  />
+                  <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
                 </TabPane>
                 <TabPane tab="拣货明细" key="pickingDetails">
-                  <PickingDetailsPane
-                    outboundNo={this.props.params.outboundNo}
-
-                  />
+                  <PickingDetailsPane outboundNo={this.props.params.outboundNo} />
                 </TabPane>
                 <TabPane tab="装箱明细" key="packingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
-                  <PackingDetailsPane
-                    outboundNo={this.props.params.outboundNo}
-
-                  />
+                  <PackingDetailsPane outboundNo={this.props.params.outboundNo} />
                 </TabPane>
                 <TabPane tab="发货明细" key="shippingDetails" disabled={outboundHead.so_type === CWM_SO_TYPES[3].value}>
-                  <ShippingDetailsPane
-                    outboundNo={this.props.params.outboundNo}
-
-                  />
+                  <ShippingDetailsPane outboundNo={this.props.params.outboundNo} />
                 </TabPane>
               </Tabs>
             </MagicCard>
