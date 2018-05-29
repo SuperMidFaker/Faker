@@ -6,13 +6,11 @@ import { Row, Col, Card, Table, Tag, Collapse, Badge, Dropdown, Menu, Icon } fro
 import { EXPENSE_CATEGORIES, TMS_EXPENSE_TYPES, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { showAdvanceModal, showSpecialChargeModal } from 'common/reducers/transportBilling';
 import { loadShipmtCharges } from 'common/reducers/shipment';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 // const Column = Table.Column;
-const Panel = Collapse.Panel;
-const CheckableTag = Tag.CheckableTag;
+const { Panel } = Collapse;
+const { CheckableTag } = Tag;
 const categoryKeys = EXPENSE_CATEGORIES.filter(ec => ec.key !== 'all').map(ec => ec.key);
 
 const typeKeys = TMS_EXPENSE_TYPES.map(ec => ec.key);
@@ -65,7 +63,7 @@ export default class ExpensePanel extends React.Component {
   // handleReload = () => {
   //   this.handleLoad(this.props);
   // }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   currency = (number) => {
     if (typeof number === 'string') return number;
     return number.toFixed(2);

@@ -8,6 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import { loadCarriers } from 'common/reducers/cwmWarehouse';
 import { updateSoHead } from 'common/reducers/cwmShippingOrder';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES, DELIVER_TYPES, COURIERS } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -30,6 +31,7 @@ export default class SOPane extends React.Component {
   componentWillMount() {
     this.props.loadCarriers(this.props.defaultWhse.code);
   }
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: '行号',
     dataIndex: 'so_seq_no',

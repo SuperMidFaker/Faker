@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Row, Col, Card, Table, Icon } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
-import { formatMsg } from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Panel } = Collapse;
 

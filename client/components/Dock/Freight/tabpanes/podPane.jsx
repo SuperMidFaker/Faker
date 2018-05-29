@@ -4,13 +4,10 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Card, Carousel } from 'antd';
 import { loadPod } from 'common/reducers/trackingLandPod';
-import { format } from 'client/common/i18n/helpers';
 import { SHIPMENT_POD_STATUS } from 'common/constants';
 import SubmitPODForm from './form/submitPodForm';
 import AuditPODForm from './form/auditPodForm';
-import messages from '../../message.i18n';
-
-const formatMsg = format(messages);
+import { formatMsg } from '../message.i18n';
 
 
 @injectIntl
@@ -42,7 +39,7 @@ export default class PodPanel extends React.Component {
       });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   renderPhotos() {
     const pod = this.state.pod;
     if (pod.photos && pod.photos !== '') {

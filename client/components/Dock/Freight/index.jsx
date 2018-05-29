@@ -4,13 +4,11 @@ import { connect } from 'react-redux';
 import { Col, Row, Tabs, Button, Modal, Tooltip, Menu, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from 'common/constants';
 import {
   hideDock, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm,
   getShipmtOrderNo, toggleRecalculateChargeModal, toggleShareShipmentModal,
 } from 'common/reducers/shipment';
-import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import ShareShipmentModal from 'client/apps/transport/common/modal/shareShipmentModal';
@@ -30,10 +28,9 @@ import TrackingPane from './tabpanes/trackingPane';
 import ExceptionPane from './tabpanes/exceptionPane';
 import PodPane from './tabpanes/podPane';
 import ExpensePane from './tabpanes/expensePane';
-import messages from '../message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
+const { TabPane } = Tabs;
 
 function getTrackStatusMsg(status, eff) {
   let msg = 'trackDraft';
@@ -171,7 +168,7 @@ export default class ShipmentDockPanel extends React.Component {
   componentWillUnmount() {
     this.props.hideDock();
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
 
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });

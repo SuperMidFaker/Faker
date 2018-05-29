@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Card, Table, Button, Tag } from 'antd';
 import { loadPickDetails, loadPackDetails, loadShipDetails } from 'common/reducers/cwmOutbound';
 import { } from 'common/constants';
+import { formatMsg } from '../message.i18n';
 // import InfoItem from 'client/components/InfoItem';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -32,6 +33,7 @@ export default class InboundPane extends React.Component {
       this.props.loadShipDetails(nextProps.outboundNo);
     }
   }
+  msg = formatMsg(this.props.intl)
   pickColumns = [{
     title: 'SKU',
     dataIndex: 'product_sku',
