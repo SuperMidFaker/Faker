@@ -7,18 +7,16 @@ import { Card, Icon, Tabs, Steps } from 'antd';
 import { Logixon } from 'client/components/FontIcon';
 import { showChangeActDateModal } from 'common/reducers/trackingLandStatus';
 import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS, TMS_SHIPMENT_STATUS_DESC } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import PickupDeliverForm from './form/pickupDeliverForm';
 import DamageForm from './form/damageForm';
 import RejectionForm from './form/rejectionForm';
 import ComplaintForm from './form/complaintForm';
 import ClaimForm from './form/claimForm';
 import TransitForm from './form/transitForm';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
-const Step = Steps.Step;
+const { TabPane } = Tabs;
+const { Step } = Steps;
 
 @injectIntl
 @connect(
@@ -127,7 +125,7 @@ export default class EventComposer extends React.Component {
     */
     this.setState({ activeKey });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleTabChange = (activeKey) => {
     this.setState({ activeKey });
   }

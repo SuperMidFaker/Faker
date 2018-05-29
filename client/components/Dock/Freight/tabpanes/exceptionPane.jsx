@@ -6,13 +6,10 @@ import { Button, Card, Alert } from 'antd';
 import moment from 'moment';
 import DataTable from 'client/components/DataTable';
 import { loadExceptions, showDealExcpModal } from 'common/reducers/trackingLandException';
-import { format } from 'client/common/i18n/helpers';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 import ResolveExceptionModal from 'client/apps/transport/tracking/land/modals/resolveExceptionModal';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
@@ -50,7 +47,7 @@ export default class ExceptionPane extends React.Component {
       });
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadExceptions(params),
     resolve: result => result.data,

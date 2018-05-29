@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadAsnInbounds } from 'common/reducers/cwmReceive';
 import InboundCard from '../card/inboundCard';
+import { formatMsg } from '../message.i18n';
 // import InfoItem from 'client/components/InfoItem';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -43,7 +44,7 @@ export default class InboundPane extends React.Component {
       });
     }
   }
-
+  msg = formatMsg(this.props.intl)
   render() {
     const { inbounds } = this.state;
     return (

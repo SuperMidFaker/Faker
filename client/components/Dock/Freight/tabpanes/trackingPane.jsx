@@ -4,18 +4,15 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Button, Card, Collapse, Checkbox, Dropdown, Icon, Popconfirm, Menu, Timeline } from 'antd';
-
 import { removeShipmtPoint } from 'common/reducers/shipment';
 import { SHIPMENT_LOG_CATEGORY, SHIPMENT_TRACK_STATUS } from 'common/constants';
-import { format } from 'client/common/i18n/helpers';
 import EventComposer from './eventComposer';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 const timeFormat = 'YYYY-MM-DD HH:mm';
-
 const MENUKEYS = ['all', 'operation', 'tracking', 'exception'];
+
 @injectIntl
 @connect(
   state => ({
@@ -33,7 +30,7 @@ export default class TrackingPane extends React.Component {
   state = {
     selectedKeys: [...MENUKEYS],
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleSelect = (item) => {
     let { selectedKeys } = this.state;
     const index = selectedKeys.indexOf(item);

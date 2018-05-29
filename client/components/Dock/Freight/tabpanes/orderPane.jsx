@@ -5,7 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Collapse, Col, Dropdown, Table, Steps, Card, Icon, Menu, Row, message, notification } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { format } from 'client/common/i18n/helpers';
 import { PRESET_TRANSMODES, SHIPMENT_TRACK_STATUS, COURIERS } from 'common/constants';
 
 import { showChangeShipmentModal, loadForm, computeSaleCharge, updateFee, loadShipmtCharges } from 'common/reducers/shipment';
@@ -15,12 +14,11 @@ import InfoItem from 'client/components/InfoItem';
 import ChangeShipment from 'client/apps/transport/common/modal/changeShipmentModal';
 import { getChargeAmountExpression } from 'client/apps/transport/common/charge';
 import * as Location from 'client/util/location';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 import './pane.less';
 
-const formatMsg = format(messages);
-const Step = Steps.Step;
-const Panel = Collapse.Panel;
+const { Step } = Steps;
+const { Panel } = Collapse;
 
 @injectIntl
 @connect(
@@ -96,7 +94,7 @@ export default class DetailPane extends React.Component {
       this.props.loadShipmtCharges(nextProps.dispatch.id, this.props.tenantId);
     }
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('goodsCode'),
     dataIndex: 'goods_no',

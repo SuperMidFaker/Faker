@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Card, Table } from 'antd';
 import { loadShftzRelease } from 'common/reducers/cwmShippingOrder';
 import { loadParams } from 'common/reducers/cwmShFtz';
+import { formatMsg } from '../message.i18n';
 // import InfoItem from 'client/components/InfoItem';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -58,6 +59,7 @@ export default class FTZPane extends React.Component {
       });
     }
   }
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
