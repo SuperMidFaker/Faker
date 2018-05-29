@@ -10,13 +10,11 @@ import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import { createFilename } from 'client/util/dataTransform';
-import { format } from 'client/common/i18n/helpers';
 import ASNPane from './tabpane/asnPane';
 import FTZPane from './tabpane/ftzPane';
 import InboundPane from './tabpane/inboundPane';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { TabPane } = Tabs;
 
 @injectIntl
@@ -67,7 +65,7 @@ export default class ReceivingDock extends React.Component {
   componentWillUnmount() {
     this.props.hideDock();
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleTabChange = (tabKey) => {
     this.props.changeDockTab(tabKey);
   }

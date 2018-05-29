@@ -8,15 +8,13 @@ import { CWM_SO_STATUS, CWM_OUTBOUND_STATUS } from 'common/constants';
 import { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, cancelOutbound, closeOutbound } from 'common/reducers/cwmShippingOrder';
 import { loadOrderDetail } from 'common/reducers/sofOrders';
 import { createFilename } from 'client/util/dataTransform';
-import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpane/orderPane';
 import FTZPane from './tabpane/ftzPane';
 import OutboundPane from './tabpane/outboundPane';
-import messages from './message.i18n';
+import { formatMsg } from './message.i18n';
 
-const formatMsg = format(messages);
 const { TabPane } = Tabs;
 
 function getStatus(status) {
@@ -93,7 +91,7 @@ export default class ShippingDock extends React.Component {
   componentWillUnmount() {
     this.props.hideDock();
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleTabChange = (tabKey) => {
     this.props.changeDockTab(tabKey);
   }

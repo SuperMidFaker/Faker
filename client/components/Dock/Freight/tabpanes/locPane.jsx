@@ -4,13 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Timeline, Icon, Popconfirm } from 'antd';
 import moment from 'moment';
-import { format } from 'client/common/i18n/helpers';
 import * as Location from 'client/util/location';
 import { removeShipmtPoint, loadShipmtPoints } from 'common/reducers/shipment';
-import messages from '../../message.i18n';
+import { formatMsg } from '../message.i18n';
 import './pane.less';
 
-const formatMsg = format(messages);
 
 @injectIntl
 @connect(
@@ -44,7 +42,7 @@ export default class TrackingPane extends React.Component {
       this.setState({ points: result.data.points });
     });
   }
-  msg = descriptor => formatMsg(this.props.intl, descriptor)
+  msg = formatMsg(this.props.intl)
   handleRemovePoint = (pointId, content) => {
     this.props.removeShipmtPoint(pointId, content, this.props.dispatch.id);
   }
