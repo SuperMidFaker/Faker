@@ -119,7 +119,7 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
-            <FormItem label="客户订单号">
+            <FormItem label="订单参考号">
               {getFieldDecorator('cust_order_no', {
                 initialValue: asnHead && asnHead.cust_order_no,
               })(<Input />)}

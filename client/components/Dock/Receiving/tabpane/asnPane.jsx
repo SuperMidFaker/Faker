@@ -60,7 +60,7 @@ export default class ASNPane extends React.Component {
                   <InfoItem label="ASN类型" field={asnHead.asn_type && CWM_ASN_TYPES.find(item => item.value === asnHead.asn_type).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="客户订单号" field={asnHead.cust_order_no} />
+                  <InfoItem label="订单参考号" field={asnHead.cust_order_no} />
                 </Col>
                 <Col span="8">
                   <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />

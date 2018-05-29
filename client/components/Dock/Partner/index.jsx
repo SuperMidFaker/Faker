@@ -21,7 +21,7 @@ const { TabPane } = Tabs;
   }),
   { showCustomerPanel, showPartnerModal },
 )
-export default class CustomerDock extends React.Component {
+export default class PartnerDock extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     customer: PropTypes.shape({ partner_code: PropTypes.string }).isRequired,

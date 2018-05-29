@@ -14,7 +14,7 @@ import { loadPartnerList, showPartnerModal, showCustomerPanel, changePartnerStat
 import { PARTNER_ROLES, BUSINESS_TYPES } from 'common/constants';
 import { createFilename } from 'client/util/dataTransform';
 import ImportDataPanel from 'client/components/ImportDataPanel';
-import { CustomerDock } from 'client/components/Dock';
+import { PartnerDock } from 'client/components/Dock';
 import PartnerModal from '../modal/partnerModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
@@ -254,7 +254,7 @@ export default class CustomerList extends React.Component {
           onUploaded={this.customersUploaded}
           template={`${XLSX_CDN}/客户导入模板.xlsx`}
         />
-        <CustomerDock />
+        <PartnerDock />
         <PartnerModal onOk={this.handleTableLoad} />
       </Layout>
     );
