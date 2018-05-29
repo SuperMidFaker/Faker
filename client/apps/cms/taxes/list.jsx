@@ -59,6 +59,10 @@ export default class TaxesList extends Component {
     dataIndex: 'pre_entry_seq_no',
     width: 190,
   }, {
+    title: this.msg('entryId'),
+    dataIndex: 'entry_id',
+    width: 190,
+  }, {
     title: this.msg('blWbNo'),
     dataIndex: 'bl_wb_no',
     width: 190,
