@@ -74,6 +74,10 @@ export default class LogsList extends React.Component {
     dataIndex: 'op_ref_billno',
     width: 200,
   }, {
+    title: '官方编号',
+    dataIndex: 'op_gov_billno',
+    width: 200,
+  }, {
     title: '客户单号',
     dataIndex: 'op_cust_order_no',
     width: 200,
@@ -173,7 +177,7 @@ export default class LogsList extends React.Component {
           })}
       </Select>
       <Input
-        style={{ width: 200 }}
+        style={{ width: 250 }}
         placeholder="业务编号/报关单号/客户单号"
         value={searchFilter.billno}
         onChange={ev => this.handleFilterChange('billno', ev.target.value)}

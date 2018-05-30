@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt,
+import {
+  loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt,
   loadBillBody, openAmountModel, refreshRelatedBodies,
   deleteSelectedBodies, resetBillBody, openRuleModel,
-  showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
+  showEditBodyModal, showDeclElementsModal, updateBillBody,
+} from 'common/reducers/cmsManifest';
 import { toggleDeclImportModal } from 'common/reducers/cmsManifestImport';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { loadModelAdaptors } from 'common/reducers/hubDataAdapter';
@@ -1064,7 +1066,6 @@ export default class ManifestBodyPane extends React.Component {
 
     return (
       <DataPane
-
         columns={columns}
         rowSelection={rowSelection}
         bordered

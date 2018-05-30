@@ -23,6 +23,10 @@ exports.SAAS_OPLOG_BEHAVIORS = {
     key: 'SEND',
     text: '发送',
   },
+  REVIEW: {
+    key: 'REVIEW',
+    text: '复核',
+  },
   RELEASE: {
     key: 'RELEASE',
     text: '释放',

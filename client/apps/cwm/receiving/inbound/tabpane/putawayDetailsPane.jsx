@@ -74,6 +74,10 @@ export default class PutawayDetailsPane extends React.Component {
     width: 180,
     render: o => o && <TraceIdPopover traceId={o} />,
   }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+    width: 100,
+  }, {
     title: '货品',
     dataIndex: 'product_sku',
     width: 220,

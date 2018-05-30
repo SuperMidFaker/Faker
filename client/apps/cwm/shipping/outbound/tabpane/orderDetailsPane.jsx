@@ -342,14 +342,15 @@ export default class OrderDetailsPane extends React.Component {
     const serialNoNum = new Set(dataSource.filter(ds => ds.serial_no)
       .map(ds => ds.serial_no)).size;
     let alertMsg;
+    let partialUnAllocProducts = [];
     if (outboundHead.total_alloc_qty > 0 &&
       outboundHead.total_alloc_qty !== outboundHead.total_qty) {
-      const unallocPrds = outboundProducts.filter(op =>
+      partialUnAllocProducts = outboundProducts.filter(op =>
         !op.alloc_qty || op.alloc_qty < op.order_qty);
-      if (unallocPrds.length > 0) {
-        const seqNos = unallocPrds.map(op => op.seq_no).join(',');
+      if (partialUnAllocProducts.length > 0) {
+        const seqNos = partialUnAllocProducts.map(op => op.seq_no).join(',');
         alertMsg = <span>未完成配货行号: {seqNos}</span>;
-        const noqtyPrds = unallocPrds.filter(uaprd => !uaprd.product_no);
+        const noqtyPrds = partialUnAllocProducts.filter(uaprd => !uaprd.product_no);
         let allocHintMsg = null;
         if (noqtyPrds.length > 0) { // 无货号数量时无法手工分配,分配错误提示
           allocHintMsg = `检查是否${outboundHead.alloc_rules.filter(aoc => aoc.eigen).map(aoc => aoc.eigen).concat('已获取海关入库监管ID').join('或')}`;
@@ -409,8 +410,7 @@ export default class OrderDetailsPane extends React.Component {
               <Summary.Item label="分配总数">{allocatedNum}</Summary.Item>
               <Summary.Item label="序列号总数">{serialNoNum}</Summary.Item>
             </span>
-            {outboundHead.total_alloc_qty > 0 &&
-              outboundHead.total_alloc_qty < outboundHead.total_qty &&
+            {partialUnAllocProducts.length > 0 &&
               <Button type="primary" onClick={this.handleExportUnAllocs}>导出未配货项</Button>
             }
             { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
