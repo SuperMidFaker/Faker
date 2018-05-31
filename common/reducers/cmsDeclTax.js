@@ -27,7 +27,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadTaxesList({ pageSize, current, filter = {} }) {
+export function loadTaxesList({ pageSize, current, filter }) {
   return {
     [CLIENT_API]: {
       types: [

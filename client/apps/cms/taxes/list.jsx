@@ -49,6 +49,7 @@ export default class TaxesList extends Component {
     this.props.loadTaxesList({
       pageSize: this.props.taxesList.pageSize,
       current: 1,
+      filter: {},
     });
     this.props.loadTrxnMode();
   }
