@@ -10,9 +10,12 @@ import { loadOrderDetail } from 'common/reducers/sofOrders';
 import { createFilename } from 'client/util/dataTransform';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
-import OrderPane from './tabpane/orderPane';
+import MasterPane from './tabpane/masterPane';
+import DetailsPane from './tabpane/detailsPane';
 import FTZPane from './tabpane/ftzPane';
-import OutboundPane from './tabpane/outboundPane';
+import PickingPane from './tabpane/pickingPane';
+import PackingPane from './tabpane/packingPane';
+import ShippingPane from './tabpane/shippingPane';
 import { formatMsg } from './message.i18n';
 
 const { TabPane } = Tabs;
@@ -161,8 +164,11 @@ export default class ShippingDock extends React.Component {
     const { soHead, soBody } = this.state;
     const { order } = this.props;
     const tabs = [];
-    tabs.push(<TabPane tab={this.msg('tabSO')} key="order">
-      <OrderPane soHead={soHead} soBody={soBody} reload={this.reload} />
+    tabs.push(<TabPane tab={this.msg('masterInfo')} key="masterInfo">
+      <MasterPane soHead={soHead} onShipmentClick={this.goHomeDock} />
+    </TabPane>);
+    tabs.push(<TabPane tab={this.msg('tabSODetails')} key="details">
+      <DetailsPane soBody={soBody} />
     </TabPane>);
     if (soHead.bonded) {
       tabs.push(<TabPane tab={this.msg('tabFTZ')} key="ftz">
@@ -170,8 +176,14 @@ export default class ShippingDock extends React.Component {
       </TabPane>);
     }
     if (soHead.status > CWM_SO_STATUS.PENDING.value) {
-      tabs.push(<TabPane tab={this.msg('tabOutbound')} key="outbound">
-        <OutboundPane outboundNo={order.outboundNo} />
+      tabs.push(<TabPane tab={this.msg('tabPicking')} key="picking">
+        <PickingPane outboundNo={order.outboundNo} />
+      </TabPane>);
+      tabs.push(<TabPane tab={this.msg('tabPacking')} key="packing">
+        <PackingPane outboundNo={order.outboundNo} />
+      </TabPane>);
+      tabs.push(<TabPane tab={this.msg('tabShipping')} key="shipping">
+        <ShippingPane outboundNo={order.outboundNo} />
       </TabPane>);
     }
     return (
@@ -200,13 +212,6 @@ export default class ShippingDock extends React.Component {
         </Col>
       </Row>);
   }
-  renderTitle = () => {
-    const { uuid, order } = this.props;
-    const button = uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
-    return (
-      <span>{button}<span>{order.so_no}</span></span>
-    );
-  }
   renderMenu() {
     const { outbounds } = this.state;
     const showClose = outbounds.some(item =>
@@ -226,7 +231,7 @@ export default class ShippingDock extends React.Component {
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
   render() {
-    const { visible, loading } = this.props;
+    const { visible, order, loading } = this.props;
     const { soHead } = this.state;
     return (
       <DockPanel
@@ -234,7 +239,7 @@ export default class ShippingDock extends React.Component {
         visible={visible}
         onClose={this.props.hideDock}
         label={this.msg('shippingOrder')}
-        title={this.renderTitle()}
+        title={order.so_no}
         loading={loading}
         status={getStatus(soHead.status)}
         statusText={getStatusMsg(soHead.status)}

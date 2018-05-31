@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Card, Table } from 'antd';
 import { loadShftzEntry } from 'common/reducers/cwmReceive';
 import { loadParams } from 'common/reducers/cwmShFtz';
+import DataTable from 'client/components/DataTable';
 import { formatMsg } from '../message.i18n';
 // import InfoItem from 'client/components/InfoItem';
 // import { MdIcon } from 'client/components/FontIcon';
 
-const { Panel } = Collapse;
 
 @injectIntl
 @connect(
@@ -128,15 +127,7 @@ export default class FTZPane extends React.Component {
   render() {
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }} >
-          <Collapse bordered={false} defaultActiveKey={['entryDetails']}>
-            <Panel header="备案明细" key="entryDetails" >
-              <div className="table-panel table-fixed-layout">
-                <Table size="middle" columns={this.columns} dataSource={this.state.data} scroll={{ x: 1470 }} />
-              </div>
-            </Panel>
-          </Collapse>
-        </Card>
+        <DataTable size="middle" columns={this.columns} dataSource={this.state.data} showToolbar={false} />
       </div>
     );
   }

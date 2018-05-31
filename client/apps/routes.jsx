@@ -98,7 +98,6 @@ import * as SOFDashboard from './scof/dashboard';
 import * as SOFShipments from './scof/shipments';
 import * as SOFInvoices from './scof/invoices';
 import * as SOFPurchaseOrders from './scof/purchaseorders';
-import * as SOFTracking from './scof/tracking';
 import * as SOFCustomers from './scof/partner/customers';
 import * as SOFSuppliers from './scof/partner/suppliers';
 import * as SOFVendors from './scof/partner/vendors';
@@ -496,12 +495,6 @@ export default(store) => {
               <IndexRoute component={SOFPurchaseOrders.List} />
               <Route path="create" component={SOFPurchaseOrders.Create} />
               <Route path="edit/:poNo" component={SOFPurchaseOrders.Edit} />
-            </Route>
-            <Route path="tracking">
-              <Route path="customize">
-                <IndexRoute component={SOFTracking.Customize} />
-              </Route>
-              <Route path=":trackingId" component={SOFTracking.Instance} />
             </Route>
             <Route path="customers" component={SOFCustomers.List} />
             <Route path="suppliers" component={SOFSuppliers.List} />

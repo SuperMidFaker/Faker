@@ -142,7 +142,6 @@ export default class ShipmentDetailsPane extends React.Component {
           columns={this.productColumns}
           dataSource={this.dataSource}
           rowKey="id"
-          scroll={{ x: 800 }}
           showToolbar={false}
         />
       </div>

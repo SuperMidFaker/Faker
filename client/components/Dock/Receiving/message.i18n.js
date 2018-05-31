@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: 'component.dock.asn.details',
     defaultMessage: 'ASN明细',
   },
+  tabFTZ: {
+    id: 'component.dock.asn.tab.ftz',
+    defaultMessage: '海关备案',
+  },
 });
 
 export default messages;
