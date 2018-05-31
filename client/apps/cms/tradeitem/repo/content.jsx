@@ -8,8 +8,11 @@ import { Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tag, To
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave,
-  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getMasterTradeItem, toggleExportModal } from 'common/reducers/cmsTradeitem';
+import {
+  loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave,
+  loadTradeParams, toggleHistoryItemsDecl, toggleItemDiffModal, getMasterTradeItem,
+  toggleExportModal,
+} from 'common/reducers/cmsTradeitem';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
@@ -117,7 +120,6 @@ export default class RepoContent extends Component {
   columns = [{
     dataIndex: 'mark',
     width: 40,
-    fixed: 'left',
     align: 'center',
     render: (o, record) => {
       if (record.decl_status === 1) {
@@ -134,10 +136,31 @@ export default class RepoContent extends Component {
         </Popover>);
     },
   }, {
+    title: this.msg('branchCount'),
+    dataIndex: 'branch_count',
+    width: 60,
+    align: 'center',
+    render: (branch, row) => {
+      if (branch > 0) {
+        return <Tooltip title="查看分支版本"><a onClick={() => this.handleViewBranch(row.cop_product_no)}>{branch}</a></Tooltip>;
+      }
+      return null;
+    },
+  }, {
+    title: this.msg('versionedCount'),
+    dataIndex: 'versioned_count',
+    width: 60,
+    align: 'center',
+    render: (versioned, row) => {
+      if (versioned > 0) {
+        return <Tooltip title="查看保留版本"><a onClick={() => this.handleViewVersions(row.cop_product_no)}>{versioned}</a></Tooltip>;
+      }
+      return null;
+    },
+  }, {
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
     width: 200,
-    fixed: 'left',
   }, {
     title: this.msg('itemType'),
     dataIndex: 'item_type',
@@ -147,28 +170,6 @@ export default class RepoContent extends Component {
     title: this.msg('enName'),
     dataIndex: 'en_name',
     width: 200,
-  }, {
-    title: <Icon type="exclamation-circle-o" />,
-    dataIndex: 'branch_count',
-    width: 40,
-    align: 'center',
-    render: (branch, row) => {
-      if (branch > 0) {
-        return <Tooltip title="查看分支版本"><a onClick={() => this.handleViewBranch(row.cop_product_no)}>{branch}</a></Tooltip>;
-      }
-      return null;
-    },
-  }, {
-    title: <Icon type="clock-circle-o" />,
-    dataIndex: 'versioned_count',
-    width: 40,
-    align: 'center',
-    render: (versioned, row) => {
-      if (versioned > 0) {
-        return <Tooltip title="查看保留版本"><a onClick={() => this.handleViewVersions(row.cop_product_no)}>{versioned}</a></Tooltip>;
-      }
-      return null;
-    },
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',

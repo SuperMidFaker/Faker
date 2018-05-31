@@ -93,8 +93,6 @@ export default class TradeItemAdd extends Component {
         <Content className="page-content">
           <MagicCard
             bodyStyle={{ padding: 0 }}
-
-
           >
             <Tabs defaultActiveKey="master">
               {tabs}

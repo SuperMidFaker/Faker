@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 // import { intlShape, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
-import FormPane from 'client/components/FormPane';
 import { splitTransit, moveTransit } from 'common/reducers/cwmTransition';
 import TransitForm from './transitAttribForm';
 
@@ -62,7 +61,7 @@ export default class TransitPane extends React.Component {
   render() {
     const { detail, form } = this.props;
     return (
-      <FormPane descendant>
+      <div>
         <TransitForm
           batched={false}
           detail={detail}
@@ -70,7 +69,7 @@ export default class TransitPane extends React.Component {
           onChange={this.handleValueChange}
         />
         <Button type="primary" onClick={this.handleTransit}>执行转移</Button>
-      </FormPane>
+      </div>
     );
   }
 }
