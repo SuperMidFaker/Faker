@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Alert, Card, Table, Tooltip, Tag, Icon, Modal, Form, Input, Button, message } from 'antd';
+import Audio from 'browser-audio';
 import RowAction from 'client/components/RowAction';
 import { viewSuBarPutawayModal, batchPutaways } from 'common/reducers/cwmReceive';
 import { formatMsg } from '../../message.i18n';
@@ -37,6 +38,9 @@ export default class SuBarPutawayModal extends Component {
     alertMsg: null,
     dataSource: [],
     location: null,
+  }
+  componentDidMount() {
+    this.warnAudio = Audio.create(`${__CDN__}/assets/img/error.mp3`);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -119,6 +123,15 @@ export default class SuBarPutawayModal extends Component {
     this.setState({ dataSource });
   }
   handleSubmit = () => {
+    const { dataSource, location } = this.state;
+    const unsubmitable = dataSource.length === 0 || dataSource.filter(ds => ds.error).length > 0
+      || !location;
+    if (unsubmitable) {
+      if (this.warnAudio) {
+        this.warnAudio.play();
+      }
+      return;
+    }
     const {
       username, inboundNo,
     } = this.props;
@@ -128,14 +141,17 @@ export default class SuBarPutawayModal extends Component {
       new Date(), username, inboundNo
     ).then((result) => {
       if (!result.error) {
-        message.success('条码上架成功');
+        message.success('条码上架成功', 5);
         this.handleSubmitSave();
       } else {
         if (result.error.message === 'location_not_found') {
-          message.error(`库位${this.state.location}不存在`);
+          this.setState({ alertMsg: `库位${location}不存在` });
           return;
         }
-        message.error('操作失败');
+        this.setState({ alertMsg: '条码拣货保存失败' });
+        if (this.warnAudio) {
+          this.warnAudio.play();
+        }
       }
     });
   }
@@ -164,6 +180,7 @@ export default class SuBarPutawayModal extends Component {
         return;
       } else if (barcode === suSetting.location_focus_key && this.locationInputRef) {
         this.emptySuInputElement();
+        this.setState({ location: null });
         this.locationInputRef.focus();
         return;
       }

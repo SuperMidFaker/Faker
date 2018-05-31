@@ -107,7 +107,7 @@ function pdfBody(data) {
           { text: '计费重量：', border: [false, false, false, false] },
           { text: '标准化包装费：', border: [false, false, false, false] },
           { text: '签单返还：', border: [false, false, true, false] }],
-        [{ text: `月结账号：${expressInfo.custid}`, border: [true, false, false, false] },
+        [{ text: '月结账号：', border: [true, false, false, false] },
           { text: '实际重量：', border: [false, false, false, false] },
           { text: '个性化包装费：', border: [false, false, false, false] },
           { text: '转寄协议客户', border: [false, false, true, false] }],
@@ -129,7 +129,7 @@ function pdfBody(data) {
       widths: ['2%', '58%', '20%', '20%'],
       body: [
         [{ rowSpan: 2, text: '托寄物' }, {
-          rowSpan: 2, colSpan: 2, text: expressInfo.product_name, alignment: 'center', fontSize: 12,
+          rowSpan: 2, colSpan: 2, text: `订单号: ${expressInfo.cust_order_no}   订单件数: ${expressInfo.product_qty}`, alignment: 'center', fontSize: 12,
         }, '',
         {
           text: '', fontSize: 10, alignment: 'center', border: [true, true, true, false],
@@ -179,7 +179,7 @@ function pdfBody(data) {
           { text: '计费重量：', border: [false, false, false, false] },
           { text: '标准化包装费：', border: [false, false, false, false] },
           { text: '签单返还：', border: [false, false, true, false] }],
-        [{ text: `月结账号：${expressInfo.custid}`, border: [true, false, false, false] },
+        [{ text: '月结账号：', border: [true, false, false, false] },
           { text: '实际重量：', border: [false, false, false, false] },
           { text: '个性化包装费：', border: [false, false, false, false] },
           { text: '转寄协议客户', border: [false, false, true, false] }],
@@ -326,7 +326,7 @@ function TrigeminyList(data) {
           {
             rowSpan: 4, text: '签名', fontSize: 7, border: [true, false, true],
           }],
-        [{ text: `月结账号：${expressInfo.custid}`, fontSize: 7, border: [true, false, false, false] },
+        [{ text: '月结账号：', fontSize: 7, border: [true, false, false, false] },
           { text: '费用合计：', fontSize: 7, border: [false, false, false, false] },
           { text: '', fontSize: 7, border: [false, false, false, false] },
           ''],

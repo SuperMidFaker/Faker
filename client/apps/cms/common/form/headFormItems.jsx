@@ -78,7 +78,7 @@ IEDate.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.shape({ i_e_date: PropTypes.date }).isRequired,
+  formData: PropTypes.shape({ i_e_date: PropTypes.instanceOf(Date) }).isRequired,
   formRequire: PropTypes.shape({}).isRequired,
 };
 
@@ -105,7 +105,7 @@ DeclDate.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   getFieldDecorator: PropTypes.func.isRequired,
-  formData: PropTypes.shape({ d_date: PropTypes.date }).isRequired,
+  formData: PropTypes.shape({ d_date: PropTypes.instanceOf(Date) }).isRequired,
   formRequire: PropTypes.shape({}).isRequired,
 };
 

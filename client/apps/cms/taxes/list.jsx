@@ -46,10 +46,7 @@ export default class TaxesList extends Component {
     importPanelVisible: false,
   }
   componentDidMount() {
-    this.props.loadTaxesList({
-      pageSize: this.props.taxesList.pageSize,
-      current: this.props.taxesList.current,
-    });
+    this.handleReload(1);
     this.props.loadTrxnMode();
   }
   msg = formatMsg(this.props.intl)
@@ -221,7 +218,7 @@ export default class TaxesList extends Component {
   }
   handleReload = (currentPage, filter) => {
     this.props.loadTaxesList({
-      filter: filter ? JSON.stringify(filter) : JSON.stringify(this.props.filter),
+      filter: filter || this.props.filter,
       pageSize: this.props.taxesList.pageSize,
       current: currentPage || this.props.taxesList.current,
     });
@@ -249,6 +246,7 @@ export default class TaxesList extends Component {
       <SearchBox
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
+        value={this.props.filter.searchText}
       />
     </span>);
     const dataSource = new DataTable.DataSource({
@@ -266,7 +264,7 @@ export default class TaxesList extends Component {
         const params = {
           pageSize: pagination.pageSize,
           current: pagination.current,
-          filters: { },
+          filter: this.props.filter,
         };
         return params;
       },

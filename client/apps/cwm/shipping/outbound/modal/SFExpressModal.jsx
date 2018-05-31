@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button, Table, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadOutboundHead, readWaybillLogo, orderExpress, toggleSFExpressModal, loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
+import { readWaybillLogo, orderExpress, toggleSFExpressModal, loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
 import Cascader from 'client/components/RegionCascader';
 import { WaybillDef, TrigeminyListDef } from '../billsPrint/docDef';
 import { formatMsg } from '../../message.i18n';
@@ -47,9 +47,9 @@ const ADDED_SERVICES = [
     waybill: state.cwmOutbound.waybill,
     visible: state.cwmOutbound.SFExpressModal.visible,
     config: state.cwmOutbound.SFExpressModal.config,
+    outboundHead: state.cwmOutbound.outboundFormHead,
   }),
   {
-    loadOutboundHead,
     readWaybillLogo,
     orderExpress,
     toggleSFExpressModal,
@@ -98,8 +98,8 @@ export default class SFExpressModal extends Component {
     sender_street: '',
     sender_region_code: null,
 
-    express_type: '1',
-    pay_method: '1',
+    express_type: '2',
+    pay_method: '3',
     insure_value: 0,
     weight: 0,
     custid: '',
@@ -132,7 +132,10 @@ export default class SFExpressModal extends Component {
       if (result.data) {
         this.setState({ ...result.data });
       } else {
-        this.setState({ ...this.props.config });
+        this.setState({
+          ...this.props.config,
+          product_qty: this.props.outboundHead.total_qty,
+        });
       }
     });
   }
@@ -148,6 +151,7 @@ export default class SFExpressModal extends Component {
     const expressType = EXPRESS_TYPES.find(item => item.value === this.state.express_type).text;
     const payMethod = PAY_METHODS.find(item => item.value === this.state.pay_method).text;
     const expressInfo = {
+      cust_order_no: this.props.outboundHead.cust_order_no,
       express_type: expressType,
       pay_method: payMethod,
       insure_value: Number(this.state.insure_value),

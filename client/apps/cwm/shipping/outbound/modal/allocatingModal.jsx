@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox, Popover } from 'antd';
+import { Card, DatePicker, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox, Popover } from 'antd';
+import DataTable from 'client/components/DataTable';
 import InfoItem from 'client/components/InfoItem';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
-import { CWM_SO_BONDED_REGTYPES, ALLOC_MATCH_FIELDS } from 'common/constants';
+import { CWM_DAMAGE_LEVEL, CWM_SO_BONDED_REGTYPES, ALLOC_MATCH_FIELDS } from 'common/constants';
 import QuantityInput from '../../../common/quantityInput';
 import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import AllocatedPopover from '../../../common/popover/allocatedPopover';
@@ -63,13 +64,6 @@ export default class AllocatingModal extends Component {
     filters: {
       location: '', startTime: '', endTime: '', searchType: 'external_lot_no',
     },
-  }
-  componentDidMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: (window.innerHeight - 460) / 2,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
@@ -262,6 +256,12 @@ export default class AllocatingModal extends Component {
       }
       return <UnfreezePopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
     },
+  }, {
+    title: '包装情况',
+    width: 100,
+    dataIndex: 'damage_level',
+    render: dl => CWM_DAMAGE_LEVEL[dl] &&
+    <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
     title: '',
     dataIndex: 'ALLOC_PLACEHOLDER',
@@ -619,6 +619,13 @@ export default class AllocatingModal extends Component {
       outboundProduct: newOutboundProduct,
     });
   }
+  handleAllocRuleValueChange = (allocField, value) => {
+    const outboundProduct = { ...this.state.outboundProduct };
+    if (value) {
+      outboundProduct[allocField] = value;
+      this.setState({ outboundProduct });
+    }
+  }
   render() {
     const {
       outboundHead, editable, outboundProducts, submitting, visible,
@@ -729,7 +736,12 @@ export default class AllocatingModal extends Component {
               if (!ar.eigen && outboundProduct[ar.key]) {
                 return (
                   <Col sm={12} md={8} lg={6} key={ar.key}>
-                    <InfoItem label={ALLOC_RULE_OPTIONS[ar.key]} field={outboundProduct[ar.key]} />
+                    <InfoItem
+                      label={ALLOC_RULE_OPTIONS[ar.key]}
+                      field={outboundProduct[ar.key]}
+                      editable
+                      onEdit={value => this.handleAllocRuleValueChange(ar.key, value)}
+                    />
                   </Col>);
               }
               return null;
@@ -741,15 +753,12 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
-            <Table
+            <DataTable
+              noSetting
+              showToolbar={false}
               size="middle"
               columns={filterInventoryColumns}
               dataSource={this.state.inventoryData}
-              scroll={{
- x: filterInventoryColumns.reduce((acc, cur) =>
-                acc + (cur.width ? cur.width : 240), 0),
-y: this.state.scrollY,
-}}
               loading={this.props.inventoryDataLoading}
               rowKey="trace_id"
             />
@@ -757,15 +766,12 @@ y: this.state.scrollY,
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
-            <Table
+            <DataTable
+              noSetting
+              showToolbar={false}
               size="middle"
               columns={filterAllocatedColumns}
               dataSource={this.state.allocatedData}
-              scroll={{
- x: filterAllocatedColumns.reduce((acc, cur) =>
-                acc + (cur.width ? cur.width : 240), 0),
-y: this.state.scrollY,
-}}
               loading={this.props.allocatedDataLoading}
               rowKey="id"
             />

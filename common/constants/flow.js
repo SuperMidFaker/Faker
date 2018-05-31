@@ -189,7 +189,8 @@ exports.SCOF_BIZ_OBJECT_KEY = {
   CMS_MANIFEST: { key: 'cmsManifest', defaultText: '清单' },
   CMS_CUSTOMS: { key: 'cmsCustomsDecl', defaultText: '报关单' },
   TMS_SHIPMENT: { key: 'tmsShipment', defaultText: '运单' },
-  CWM_RECEIVING: { key: 'cwmReceiving', defaultText: 'ASN' },
+  CWM_RECEIVING: { key: 'cwmReceiving', defaultText: '收货通知' },
+  CWM_MOVEMENT: { key: 'cwmMovement', defaultText: '移库单' },
   CWM_SHIPPING: { key: 'cwmShipping', defaultText: '出货订单' },
   // CWM_SO_NORMAL: 'cwmSoNormal',
 };

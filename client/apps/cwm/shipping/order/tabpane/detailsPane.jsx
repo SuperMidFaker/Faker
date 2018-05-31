@@ -136,7 +136,6 @@ export default class DetailsPane extends Component {
       dataIndex: 'unit',
       width: 100,
       align: 'center',
-      width: 100,
       render: (o) => {
         const unit = units.find(item => item.code === o);
         if (unit) return unit.name;

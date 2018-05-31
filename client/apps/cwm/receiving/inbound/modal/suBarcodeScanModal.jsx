@@ -135,6 +135,9 @@ export default class SuBarcodeScanModal extends Component {
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
+    if (dataSource.length === 0) {
+      return;
+    }
     const {
       loginId, inboundHead, username, inboundNo,
     } = this.props;

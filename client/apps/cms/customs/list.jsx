@@ -13,7 +13,7 @@ import Drawer from 'client/components/Drawer';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import {
-  loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal,
+  loadCustomsDecls, loadTableParams, setDeclReviewed, showSendDeclModal,
   toggleInspectModal, toggleDeclModModal, openDeclReleasedModal,
   showBatchSendModal, showDeclMsgDock,
 } from 'common/reducers/cmsCustomsDeclare';
@@ -58,7 +58,6 @@ const { RangePicker } = DatePicker;
     loadTableParams,
     loadPartnersByTypes,
     openEfModal,
-    deleteDecl,
     setDeclReviewed,
     showSendDeclModal,
     showPreviewer,
@@ -503,15 +502,6 @@ export default class CustomsList extends Component {
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
     this.handleTableLoad(1, filters);
-  }
-  handleDelete = (declId, delgNo, billNo) => {
-    this.props.deleteDecl(declId, delgNo, billNo).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.handleTableLoad();
-      }
-    });
   }
   handleReview = (row) => {
     this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.reviewed.value).then((result) => {
