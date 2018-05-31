@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Icon, Col, Row, Tabs, Button, Menu, Modal, message } from 'antd';
+import { Icon, Col, Row, Tabs, Menu, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
 import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid, getShipmtOrderNo, cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
@@ -10,7 +10,8 @@ import { loadOrderDetail } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import { createFilename } from 'client/util/dataTransform';
-import ASNPane from './tabpane/asnPane';
+import MasterPane from './tabpane/masterPane';
+import DetailsPane from './tabpane/detailsPane';
 import FTZPane from './tabpane/ftzPane';
 import InboundPane from './tabpane/inboundPane';
 import { formatMsg } from './message.i18n';
@@ -118,26 +119,19 @@ export default class ReceivingDock extends React.Component {
   handleExportExcel = () => {
     window.open(`${API_ROOTS.default}v1/cwm/receiving/exportAsnExcel/${createFilename('asn')}.xlsx?asnNo=${this.props.asn.asn_no}`);
   }
-  renderTitle = () => {
-    const { uuid, asn } = this.props;
-    const button = uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
-    return (
-      <span>{button}<span>{asn.asn_no}</span></span>
-    );
-  }
   renderTabs() {
     const { asn } = this.props;
     const { asnHead, asnBody } = this.state;
     const tabs = [
       <TabPane tab={this.msg('masterInfo')} key="masterInfo">
-        <ASNPane asnHead={asnHead} asnBody={asnBody} />
+        <MasterPane asnHead={asnHead} onShipmentClick={this.goHomeDock} />
       </TabPane>,
     ];
     tabs.push(<TabPane tab={this.msg('asnDetails')} key="asnDetails">
-      <FTZPane asnNo={asn.asn_no} />
+      <DetailsPane asnBody={asnBody} />
     </TabPane>);
     if (asnHead.bonded) {
-      tabs.push(<TabPane tab={this.msg('ftzReg')} key="ftzReg">
+      tabs.push(<TabPane tab={this.msg('tabFTZ')} key="ftzReg">
         <FTZPane asnNo={asn.asn_no} />
       </TabPane>);
     }
@@ -187,7 +181,7 @@ export default class ReceivingDock extends React.Component {
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
   render() {
-    const { visible } = this.props;
+    const { visible, asn } = this.props;
     const { asnHead } = this.state;
     let asnStatusBadage = 'default';
     let asnStatusMsg = '';
@@ -203,12 +197,11 @@ export default class ReceivingDock extends React.Component {
         visible={visible}
         onClose={this.props.hideDock}
         label={this.msg('receivingNotice')}
-        title={this.renderTitle()}
+        title={asn.asn_no}
         status={asnStatusBadage}
         statusText={asnStatusMsg}
         overlay={this.renderMenu()}
         extra={this.renderExtra()}
-        // alert={this.renderAlert()}
       >
         {this.renderTabs()}
       </DockPanel>
