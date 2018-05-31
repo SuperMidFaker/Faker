@@ -62,9 +62,9 @@ export default class TransitionModal extends React.Component {
         footer={null}
       >
         <Spin spinning={loading}>
-          <Form>
+          <Form className="form-layout-compact">
             <Row gutter={16}>
-              <Col span={12}>
+              <Col span={14}>
                 <Card bodyStyle={{ padding: 0 }}>
                   <Collapse bordered={false} defaultActiveKey={['1']} accordion>
                     <Panel header="属性调整" key="1">
@@ -79,7 +79,7 @@ export default class TransitionModal extends React.Component {
                   </Collapse>
                 </Card>
               </Col>
-              <Col span={12}>
+              <Col span={10}>
                 <LogsPane traceId={this.props.trace_id} />
               </Col>
             </Row>

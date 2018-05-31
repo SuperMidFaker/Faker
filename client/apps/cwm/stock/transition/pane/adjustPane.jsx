@@ -68,7 +68,7 @@ export default class AdjustPane extends React.Component {
     return (
       <FormPane descendant>
         <Row>
-          <Col span={8}>
+          <Col lg={{ span: 12 }} xl={{ span: 8 }}>
             <FormItem {...formItemLayout} label="增减数量">
               <InputNumber
                 min={-this.props.detail.avail_qty + 1}
@@ -78,12 +78,12 @@ export default class AdjustPane extends React.Component {
               />
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col lg={{ span: 12 }} xl={{ span: 8 }}>
             <FormItem {...formItemLayout} label="目标数量">
               <InputNumber min={1} value={finalQty} onChange={this.handleFinalQty} />
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col lg={{ span: 12 }} xl={{ span: 8 }}>
             <FormItem {...formItemLayout} label="调整原因">
               <Input value={reason} onChange={this.handleReasonChange} />
             </FormItem>

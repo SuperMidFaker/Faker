@@ -96,11 +96,11 @@ const messages = defineMessages({
   },
   addItem: {
     id: 'cms.classificagtion.tradeitem.add.item',
-    defaultMessage: '新增商品归类',
+    defaultMessage: '新增',
   },
   editItem: {
     id: 'cms.classificagtion.tradeitem.edit.item',
-    defaultMessage: '修改商品归类',
+    defaultMessage: '修改',
   },
   searchRepoPlaceholder: {
     id: 'cms.tradeitem.searchRepoPlaceholder',
@@ -120,7 +120,19 @@ const messages = defineMessages({
   },
   tabClassification: {
     id: 'cms.tradeitem.tab.classification',
+    defaultMessage: '物料信息',
+  },
+  itemProperties: {
+    id: 'cms.tradeitem.tab.item.properties',
+    defaultMessage: '物料属性',
+  },
+  itemClassification: {
+    id: 'cms.tradeitem.tab.item.classification',
     defaultMessage: '归类信息',
+  },
+  itemTaxes: {
+    id: 'cms.tradeitem.tab.item.taxes',
+    defaultMessage: '税则信息',
   },
   tabPermit: {
     id: 'cms.tradeitem.tab.permit',
@@ -205,6 +217,14 @@ const messages = defineMessages({
   gModel: {
     id: 'cms.tradeitem.col.gmodel',
     defaultMessage: '规范申报要素',
+  },
+  branchCount: {
+    id: 'cms.tradeitem.branch.count',
+    defaultMessage: '分支',
+  },
+  versionedCount: {
+    id: 'cms.tradeitem.versioned.count',
+    defaultMessage: '保留',
   },
   preHscode: {
     id: 'cms.tradeitem.col.prehscode',

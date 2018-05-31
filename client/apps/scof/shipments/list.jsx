@@ -24,7 +24,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import ExportDataPanel from 'client/components/ExportDataPanel';
 import UploadLogsPanel from 'client/components/UploadLogsPanel';
-import { ShipmentDock, DelegationDock, ReceivingDock, ShippingDock, FreightDock } from 'client/components/Dock';
+import { ShipmentDock, DelegationDock, ReceivingDock, ShippingDock, FreightDock, PartnerDock } from 'client/components/Dock';
 import OrderNoColumn from './columndef/orderNoColumn';
 import ShipmentColumn from './columndef/shipmentColumn';
 import ProgressColumn from './columndef/progressColumn';
@@ -555,6 +555,7 @@ export default class OrderList extends React.Component {
         <FreightDock />
         <ReceivingDock />
         <ShippingDock />
+        <PartnerDock />
         <ImportDataPanel
           title="订单导入"
           visible={importPanel.visible}

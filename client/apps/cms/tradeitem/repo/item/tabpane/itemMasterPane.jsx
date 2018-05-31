@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Button, Card, DatePicker, Form, Icon, Input, Select, Rate, Row, Col } from 'antd';
+import { Button, Card, Collapse, DatePicker, Form, Icon, Input, Select, Rate, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
 
@@ -14,6 +14,7 @@ import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import ApplyCertsModal from '../modal/applyCertsModal';
 import { formatMsg } from '../../../message.i18n';
 
+const { Panel } = Collapse;
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -212,96 +213,98 @@ export default class ItemMasterPane extends React.Component {
 
     return (
       <FormPane>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
-          <Row>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('copProductNo')}>
-                {getFieldDecorator('cop_product_no', {
+        <Card bodyStyle={{ padding: 0 }} >
+          <Collapse bordered={false} defaultActiveKey={['itemProperties', 'itemClassification', 'itemTaxes']}>
+            <Panel header={this.msg('itemProperties')} key="itemProperties">
+              <Row>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('copProductNo')}>
+                    {getFieldDecorator('cop_product_no', {
                   rules: [{ required: true, message: '商品货号必填' }],
                   initialValue: fieldInits.cop_product_no,
                 })(<Input disabled={action !== 'create'} onChange={this.handleCopNoChange} />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('enName')}>
-                {getFieldDecorator('en_name', {
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem {...formItemSpan2Layout} label={this.msg('enName')}>
+                    {getFieldDecorator('en_name', {
                   initialValue: fieldInits.en_name,
                 })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('itemType')}>
-                {getFieldDecorator('item_type', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('itemType')}>
+                    {getFieldDecorator('item_type', {
                   initialValue: fieldInits.item_type,
                 })(<Select onChange={this.handleItemTypeChange}>
                   {CMS_TRADE_ITEM_TYPE.map(it =>
                     <Option key={it.value}>{it.text}</Option>)}
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('processingMethod')}>
-                {getFieldDecorator('proc_method', {
-                  initialValue: fieldInits.proc_method,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('materialIngredient')}>
-                {getFieldDecorator('material_ingred', {
-                  initialValue: fieldInits.material_ingred,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('functionality')}>
-                {getFieldDecorator('functionality', {
-                  initialValue: fieldInits.functionality,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('usage')}>
-                {getFieldDecorator('usage', {
-                  initialValue: fieldInits.usage,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('copCode')}>
-                {getFieldDecorator('cop_code', {
-                  initialValue: fieldInits.cop_code,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('copBU')}>
-                {getFieldDecorator('cop_bu', {
-                  initialValue: fieldInits.cop_bu,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('copBrand')}>
-                {getFieldDecorator('cop_brand', {
-                  initialValue: fieldInits.cop_brand,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('copItemGroup')}>
-                {getFieldDecorator('cop_item_group', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('copItemGroup')}>
+                    {getFieldDecorator('cop_item_group', {
                   initialValue: fieldInits.cop_item_group,
                 })(<Input />)}
-              </FormItem>
-            </Col>
-          </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} >
-          <Row>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('hscode')}>
-                {getFieldDecorator('hscode', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('copCode')}>
+                    {getFieldDecorator('cop_code', {
+                  initialValue: fieldInits.cop_code,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('copBU')}>
+                    {getFieldDecorator('cop_bu', {
+                  initialValue: fieldInits.cop_bu,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('copBrand')}>
+                    {getFieldDecorator('cop_brand', {
+                  initialValue: fieldInits.cop_brand,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('processingMethod')}>
+                    {getFieldDecorator('proc_method', {
+                  initialValue: fieldInits.proc_method,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('materialIngredient')}>
+                    {getFieldDecorator('material_ingred', {
+                  initialValue: fieldInits.material_ingred,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('functionality')}>
+                    {getFieldDecorator('functionality', {
+                  initialValue: fieldInits.functionality,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('usage')}>
+                    {getFieldDecorator('usage', {
+                  initialValue: fieldInits.usage,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+              </Row>
+            </Panel>
+            <Panel header={this.msg('itemClassification')} key="itemClassification">
+              <Row>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('hscode')}>
+                    {getFieldDecorator('hscode', {
                   rules: [{ required: true, message: '商品编码必填' }],
                   initialValue: fieldInits.hscode,
                 })(<Select allowClear mode="combobox" optionFilterProp="search" onChange={this.handleHscodeChange} >
@@ -312,34 +315,34 @@ export default class ItemMasterPane extends React.Component {
                   >{data.hscode}
                   </Option>))}
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('gName')}>
-                {getFieldDecorator('g_name', {
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem {...formItemSpan2Layout} label={this.msg('gName')}>
+                    {getFieldDecorator('g_name', {
                   initialValue: fieldInits.g_name,
                   rules: [{ required: true, message: '中文品名必填' }],
                 })(<Input onChange={this.handleGNameChange} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('confidence')}>
-                {getFieldDecorator('confidence', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('confidence')}>
+                    {getFieldDecorator('confidence', {
                   initialValue: fieldInits.confidence,
                 })(<Rate allowHalf />)}
-              </FormItem>
-            </Col>
-            <Col span={24}>
-              <FormItem {...formItemSpan4Layout} label={this.msg('gModel')}>
-                {getFieldDecorator('g_model', {
+                  </FormItem>
+                </Col>
+                <Col span={24}>
+                  <FormItem {...formItemSpan4Layout} label={this.msg('gModel')}>
+                    {getFieldDecorator('g_model', {
                   initialValue: fieldInits.g_model,
                   rules: [{ required: true, message: '规格型号必填' }],
                 })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowDeclElementModal}><Icon type="ellipsis" /></Button>} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unit1')}>
-                {getFieldDecorator('unit_1', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('unit1')}>
+                    {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
                 })(<Select >
                   {
@@ -347,11 +350,11 @@ export default class ItemMasterPane extends React.Component {
                       <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unit2')}>
-                {getFieldDecorator('unit_2', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('unit2')}>
+                    {getFieldDecorator('unit_2', {
                   initialValue: fieldInits.unit_2,
                 })(<Select >
                   {
@@ -359,12 +362,11 @@ export default class ItemMasterPane extends React.Component {
                       <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
-              </FormItem>
-            </Col>
-
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('gUnit1')}>
-                {getFieldDecorator('g_unit_1', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('gUnit1')}>
+                    {getFieldDecorator('g_unit_1', {
                   initialValue: fieldInits.g_unit_1,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
@@ -372,11 +374,11 @@ export default class ItemMasterPane extends React.Component {
                     <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('gUnit2')}>
-                {getFieldDecorator('g_unit_2', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('gUnit2')}>
+                    {getFieldDecorator('g_unit_2', {
                   initialValue: fieldInits.g_unit_2,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
@@ -384,25 +386,25 @@ export default class ItemMasterPane extends React.Component {
                     <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unitNetWt')}>
-                {getFieldDecorator('unit_net_wt', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('unitNetWt')}>
+                    {getFieldDecorator('unit_net_wt', {
                   initialValue: fieldInits.unit_net_wt,
                 })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('fixedQty')}>
-                {getFieldDecorator('fixed_qty', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('fixedQty')}>
+                    {getFieldDecorator('fixed_qty', {
                   initialValue: fieldInits.fixed_qty,
                 })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('fixedUnit')}>
-                {getFieldDecorator('fixed_unit', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('fixedUnit')}>
+                    {getFieldDecorator('fixed_unit', {
                   initialValue: fieldInits.fixed_unit,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
@@ -410,11 +412,11 @@ export default class ItemMasterPane extends React.Component {
                   <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
               }
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('gUnit3')}>
-                {getFieldDecorator('g_unit_3', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('gUnit3')}>
+                    {getFieldDecorator('g_unit_3', {
                   initialValue: fieldInits.g_unit_3,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
@@ -422,18 +424,18 @@ export default class ItemMasterPane extends React.Component {
                     <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unitPrice')}>
-                {getFieldDecorator('unit_price', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('unitPrice')}>
+                    {getFieldDecorator('unit_price', {
                   initialValue: fieldInits.unit_price,
                 })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('currency')}>
-                {getFieldDecorator('currency', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('currency')}>
+                    {getFieldDecorator('currency', {
                   initialValue: fieldInits.currency,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
@@ -442,11 +444,11 @@ export default class ItemMasterPane extends React.Component {
                       {`${data.text}`}
                     </Option>))}
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('origCountry')}>
-                {getFieldDecorator('origin_country', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('origCountry')}>
+                    {getFieldDecorator('origin_country', {
                   initialValue: fieldInits.origin_country,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
@@ -455,68 +457,131 @@ export default class ItemMasterPane extends React.Component {
                       {`${data.text}`}
                     </Option>))}
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('specialNo')}>
-                {getFieldDecorator('specialMark', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('specialNo')}>
+                    {getFieldDecorator('specialMark', {
                   initialValue: fieldInits.specialMark,
                 })(<Select mode="multiple" style={{ width: '100%' }} >
                   { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>
                     {data.text}</Option>))}
                 </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('customsPermit')}>
-                {getFieldDecorator('customs_control', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('customsPermit')}>
+                    {getFieldDecorator('customs_control', {
                   initialValue: fieldInits.customs_control,
                 })(<Input disabled />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('ciqPermit')}>
-                {getFieldDecorator('inspection_quarantine', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('ciqPermit')}>
+                    {getFieldDecorator('inspection_quarantine', {
                   initialValue: fieldInits.inspection_quarantine,
                 })(<Input disabled />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemSpan2Layout} label={this.msg('applCertCode')}>
-                {getFieldDecorator('appl_cert_name', {
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem {...formItemSpan2Layout} label={this.msg('applCertCode')}>
+                    {getFieldDecorator('appl_cert_name', {
                   initialValue: fieldInits.appl_cert_name,
                 })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowApplyCertsModal}><Icon type="ellipsis" /></Button>} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} {...formItemLayout} label={this.msg('preClassifyNo')}>
-                {getFieldDecorator('pre_classify_no', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('preClassifyNo')}>
+                    {getFieldDecorator('pre_classify_no', {
                   initialValue: fieldInits.pre_classify_no,
                 })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('preClassifyStartDate')}>
-                {getFieldDecorator('pre_classify_start_date', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('preClassifyStartDate')}>
+                    {getFieldDecorator('pre_classify_start_date', {
                   initialValue: fieldInits.pre_classify_start_date,
                 })(<DatePicker style={{ width: '100%' }} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('preClassifyEndDate')}>
-                {getFieldDecorator('pre_classify_end_date', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('preClassifyEndDate')}>
+                    {getFieldDecorator('pre_classify_end_date', {
                   initialValue: fieldInits.pre_classify_end_date,
                 })(<DatePicker style={{ width: '100%' }} />)}
-              </FormItem>
-            </Col>
-            <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('remark')}>
-                {getFieldDecorator('remark', {
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('remark')}>
+                    {getFieldDecorator('remark', {
                   initialValue: fieldInits.remark,
                 })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} />)}
-              </FormItem>
-            </Col>
-          </Row>
+                  </FormItem>
+                </Col>
+              </Row>
+            </Panel>
+            <Panel header={this.msg('itemTaxes')} key="itemTaxes">
+              <Row>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('mfnRates')}>
+                    {getFieldDecorator('mfn_rates', {
+                  initialValue: fieldInits.mfn_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('generalRates')}>
+                    {getFieldDecorator('general_rates', {
+                  initialValue: fieldInits.general_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('provisionalRates')}>
+                    {getFieldDecorator('provisional_rates', {
+                  initialValue: fieldInits.provisional_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('vatRates')}>
+                    {getFieldDecorator('vat_rates', {
+                  initialValue: fieldInits.vat_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('gstRates')}>
+                    {getFieldDecorator('gst_rates', {
+                  initialValue: fieldInits.gst_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('exportRates')}>
+                    {getFieldDecorator('export_rates', {
+                  initialValue: fieldInits.export_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('exportRebateRates')}>
+                    {getFieldDecorator('export_rebate_rates', {
+                  initialValue: fieldInits.export_rebate_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+                <Col span={6}>
+                  <FormItem {...formItemLayout} label={this.msg('exportVatRates')}>
+                    {getFieldDecorator('export_vat_rates', {
+                  initialValue: fieldInits.export_vat_rates,
+                })(<Input />)}
+                  </FormItem>
+                </Col>
+              </Row>
+            </Panel>
+          </Collapse>
+
         </Card>
         <DeclElementsModal onOk={this.handleModalChange} />
         <ApplyCertsModal
