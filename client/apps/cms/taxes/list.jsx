@@ -54,7 +54,7 @@ export default class TaxesList extends Component {
   columns = [{
     title: this.msg('preEntrySeqNo'),
     dataIndex: 'pre_entry_seq_no',
-    width: 190,
+    width: 180,
   }, {
     title: this.msg('entryId'),
     dataIndex: 'entry_id',
@@ -76,6 +76,7 @@ export default class TaxesList extends Component {
       }
       return '';
     },
+  /*
   }, {
     title: this.msg('shipFee'),
     dataIndex: 'ship_fee',
@@ -100,74 +101,108 @@ export default class TaxesList extends Component {
     title: this.msg('insurMark'),
     dataIndex: 'insur_mark',
     width: 100,
+  */
   }, {
     title: this.msg('tradeTot'),
-    dataIndex: 'trade_tot',
+    dataIndex: 'trade_total',
     width: 100,
+    align: 'right',
   }, {
     title: this.msg('dutyPaid'),
     dataIndex: 'duty_paid',
-    width: 100,
+    width: 150,
+    align: 'right',
+    render: o => o && o.toFixed(0),
+  }, {
+    title: this.msg('actualDutyPaid'),
+    dataIndex: 'actual_duty_paid',
+    width: 150,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('dutyTax'),
     dataIndex: 'duty_tax',
-    width: 100,
+    width: 120,
+    align: 'right',
+    render: o => o && o.toFixed(2),
+  }, {
+    title: this.msg('actualDutyTax'),
+    dataIndex: 'actual_duty_tax',
+    width: 120,
+    align: 'right',
+    render: o => o && o.toFixed(2),
+  }, {
+    title: this.msg('vatTax'),
+    dataIndex: 'vat_tax',
+    width: 120,
+    align: 'right',
+    render: o => o && o.toFixed(2),
+  }, {
+    title: this.msg('actualVatTax'),
+    dataIndex: 'actual_vat_tax',
+    width: 120,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('exciseTax'),
     dataIndex: 'excise_tax',
     width: 100,
-  }, {
-    title: this.msg('vatTax'),
-    dataIndex: 'vat_tax',
-    width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
+  /*
   }, {
     title: this.msg('totalTax'),
     dataIndex: 'total_tax',
     width: 100,
-  }, {
-    title: this.msg('actualDutyPaid'),
-    dataIndex: 'actual_duty_paid',
-    width: 100,
-  }, {
-    title: this.msg('actualDutyTax'),
-    dataIndex: 'actual_duty_tax',
-    width: 100,
-  }, {
-    title: this.msg('actualVatTax'),
-    dataIndex: 'actual_vat_tax',
-    width: 100,
+  */
   }, {
     title: this.msg('actualExciseTax'),
     dataIndex: 'actual_excise_tax',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('deposit'),
     dataIndex: 'deposit',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('delayedDeclarationFee'),
     dataIndex: 'delayed_declaration_fee',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('specialDutyTax'),
     dataIndex: 'special_duty_tax',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('counterVailingDuty'),
     dataIndex: 'counter_vailing_duty',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('discardTax'),
     dataIndex: 'discard_tax',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('dutyTaxInterest'),
     dataIndex: 'duty_tax_interest',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('exciseTaxInterest'),
     dataIndex: 'excise_tax_interest',
     width: 100,
+    align: 'right',
+    render: o => o && o.toFixed(2),
   }, {
     title: this.msg('payerEntity'),
     dataIndex: 'payer_entity',
@@ -177,10 +212,6 @@ export default class TaxesList extends Component {
     dataIndex: 'paid_date',
     width: 100,
     render: o => o && moment(o).format('YYYY-MM-DD'),
-  }, {
-    title: this.msg('tradeTotal'),
-    dataIndex: 'trade_total',
-    width: 100,
   }]
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });

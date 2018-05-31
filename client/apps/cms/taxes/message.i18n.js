@@ -65,7 +65,7 @@ const messages = defineMessages({
   },
   dutyPaid: {
     id: 'cms.taxes.dutyPaid',
-    defaultMessage: '完税价格',
+    defaultMessage: '预估完税价格RMB',
   },
   dutyRate: {
     id: 'cms.taxes.dutyRate',
@@ -73,7 +73,7 @@ const messages = defineMessages({
   },
   dutyTax: {
     id: 'cms.taxes.dutyTax',
-    defaultMessage: '关税',
+    defaultMessage: '预估关税',
   },
   gstRates: {
     id: 'cms.taxes.gstRates',
@@ -81,7 +81,7 @@ const messages = defineMessages({
   },
   exciseTax: {
     id: 'cms.taxes.exciseTax',
-    defaultMessage: '消费税',
+    defaultMessage: '预估消费税',
   },
   vatRates: {
     id: 'cms.taxes.vat.rates',
@@ -89,7 +89,7 @@ const messages = defineMessages({
   },
   vatTax: {
     id: 'cms.taxes.vatTax',
-    defaultMessage: '增值税',
+    defaultMessage: '预估增值税',
   },
   totalTax: {
     id: 'cms.taxes.totalTax',
@@ -101,7 +101,7 @@ const messages = defineMessages({
   },
   actualDutyPaid: {
     id: 'cms.taxes.actualDutyPaid',
-    defaultMessage: '实际完税价格',
+    defaultMessage: '实际完税价格RMB',
   },
   actualDutyTax: {
     id: 'cms.taxes.actualDutyTax',
@@ -109,11 +109,11 @@ const messages = defineMessages({
   },
   actualVatTax: {
     id: 'cms.taxes.actualVatTax',
-    defaultMessage: '进口增值税',
+    defaultMessage: '实际增值税',
   },
   actualExciseTax: {
     id: 'cms.taxes.actualExciseTax',
-    defaultMessage: '进口消费税',
+    defaultMessage: '实际消费税',
   },
   deposit: {
     id: 'cms.taxes.deposit',
