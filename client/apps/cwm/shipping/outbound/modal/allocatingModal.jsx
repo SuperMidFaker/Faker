@@ -619,6 +619,13 @@ export default class AllocatingModal extends Component {
       outboundProduct: newOutboundProduct,
     });
   }
+  handleAllocRuleValueChange = (allocField, value) => {
+    const outboundProduct = { ...this.state.outboundProduct };
+    if (value) {
+      outboundProduct[allocField] = value;
+      this.setState({ outboundProduct });
+    }
+  }
   render() {
     const {
       outboundHead, editable, outboundProducts, submitting, visible,
@@ -729,7 +736,12 @@ export default class AllocatingModal extends Component {
               if (!ar.eigen && outboundProduct[ar.key]) {
                 return (
                   <Col sm={12} md={8} lg={6} key={ar.key}>
-                    <InfoItem label={ALLOC_RULE_OPTIONS[ar.key]} field={outboundProduct[ar.key]} />
+                    <InfoItem
+                      label={ALLOC_RULE_OPTIONS[ar.key]}
+                      field={outboundProduct[ar.key]}
+                      editable
+                      onEdit={value => this.handleAllocRuleValueChange(ar.key, value)}
+                    />
                   </Col>);
               }
               return null;

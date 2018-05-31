@@ -88,7 +88,8 @@ export default class EditableCell extends React.Component {
     const {
       type, placeholder, options, addonBefore, addonAfter,
     } = this.props;
-    const { value, region } = this.state;
+    const { region } = this.state;
+    const value = this.state.value || this.props.value;
     switch (type) {
       case 'textarea':
         return (<div className="editable-cell-outer">
@@ -158,7 +159,7 @@ export default class EditableCell extends React.Component {
     const {
       type, options, placeholder, addonBefore, addonAfter,
     } = this.props;
-    const { value } = this.state;
+    const value = this.state.value || this.props.value;
     if (type === 'select' && options) {
       const option = options.filter(opt => opt.key === value)[0];
       return (option ? <span>{addonBefore}{option.text}{addonAfter}</span> :

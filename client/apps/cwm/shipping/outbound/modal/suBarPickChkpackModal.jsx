@@ -111,18 +111,31 @@ export default class SuBarPickChkpackModal extends Component {
     }
   }
   handleSubmit = () => {
+    const { dataSource, packedNo } = this.state;
+    const unsubmitable = dataSource.length === 0 || dataSource.filter(ds => ds.error).length > 0
+      || !packedNo;
+    if (unsubmitable) {
+      if (this.warnAudio) {
+        this.warnAudio.play();
+      }
+      return;
+    }
     const { outboundNo } = this.props;
     const picklist = this.state.dataSource.map(ds => ({
       id: ds.id,
       picked_qty: ds.qty,
     }));
-    const { packedNo } = this.state;
     this.props.pickConfirm(outboundNo, picklist, null, new Date(), packedNo).then((result) => {
       if (!result.error) {
         message.success(`箱号${packedNo}条码拣货成功`);
         this.handleSuCancel();
       } else {
-        message.error('操作失败');
+        if (this.warnAudio) {
+          this.warnAudio.play();
+        }
+        this.setState({
+          alertMsg: '条码拣货保存失败',
+        });
       }
     });
   }

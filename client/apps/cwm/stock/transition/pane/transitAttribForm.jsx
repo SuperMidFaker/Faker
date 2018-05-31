@@ -31,6 +31,14 @@ export default class TransitAttribForm extends React.Component {
     target_location: null,
     // movement_no: null,
   }
+  componentDidMount() {
+    if (this.props.detail && this.props.detail.owner_partner_id) {
+      this.props.loadOwnerUndoneMovements(
+        this.props.detail.owner_partner_id,
+        this.props.detail.whse_code,
+      );
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const { detail } = this.props;
     if (nextProps.detail && nextProps.detail !== detail && nextProps.detail.owner_partner_id) {

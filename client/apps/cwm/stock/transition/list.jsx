@@ -403,21 +403,20 @@ export default class StockTransitionList extends React.Component {
           this.props.transitionlist.data.filter(trd => trd.trace_id === asr.trace_id).length === 0)
           .concat(selRows.map(sr => ({
             trace_id: sr.trace_id,
-            stock_qty: sr.stock_qty,
+            avail_qty: sr.avail_qty,
             owner_partner_id: sr.owner_partner_id,
           })));
-        this.handleRowSelect(selectedRows, selRows[0].owner_name);
+        this.handleRowSelect(selectedRows, selRows.length > 0 ? selRows[0].owner_name : null);
       },
       hideDefaultSelections: true,
+      getCheckboxProps: row => row.avail_qty > 0,
     };
     if (totalReducedList.length > 0) {
       rowSelection.selections = [{
         key: 'selectall',
         text: '全部选择',
         onSelect: () => {
-          if (this.props.totalReducedList.length > 0) {
-            this.handleRowSelect(this.props.totalReducedList, transitionlist.data[0].owner_name);
-          }
+          this.handleRowSelect(this.props.totalReducedList, transitionlist.data[0].owner_name);
         },
       }, {
         key: 'unselectall',
@@ -427,7 +426,7 @@ export default class StockTransitionList extends React.Component {
         },
       }];
     }
-    const selTotalStockQty = allSelectedRows.reduce((res, bsf) => res + (bsf.stock_qty || 0), 0);
+    const selTotalStockQty = allSelectedRows.reduce((res, bsf) => res + (bsf.avail_qty || 0), 0);
     const rowKey = 'trace_id'; // selectedRowKeys 有影响
     const dataSource = new DataTable.DataSource({
       fetcher: (params) => { this.props.loadTransitions(params); },

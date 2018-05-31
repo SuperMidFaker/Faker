@@ -93,6 +93,24 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '订单参考号',
       thead: true,
     }, {
+      field: 'created_date',
+      label: '订单创建日期',
+      thead: true,
+      datatype: 'date',
+    }, {
+      field: 'total_qty',
+      label: '订单数量',
+      thead: true,
+    }, {
+      field: 'express_no',
+      label: '快递单号',
+      thead: true,
+    }, {
+      field: 'express_date',
+      label: '快递单获取日期',
+      thead: true,
+      datatype: 'date',
+    }, {
       field: 'product_no',
       label: '商品货号',
       tbody: true,
