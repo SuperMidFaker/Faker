@@ -46,11 +46,7 @@ export default class TaxesList extends Component {
     importPanelVisible: false,
   }
   componentDidMount() {
-    this.props.loadTaxesList({
-      pageSize: this.props.taxesList.pageSize,
-      current: 1,
-      filter: {},
-    });
+    this.handleReload(1);
     this.props.loadTrxnMode();
   }
   msg = formatMsg(this.props.intl)
@@ -219,6 +215,7 @@ export default class TaxesList extends Component {
       <SearchBox
         placeholder={this.msg('searchPlaceholder')}
         onSearch={this.handleSearch}
+        value={this.props.filter.searchText}
       />
     </span>);
     const dataSource = new DataTable.DataSource({
