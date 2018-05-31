@@ -48,7 +48,7 @@ export default class TaxesList extends Component {
   componentDidMount() {
     this.props.loadTaxesList({
       pageSize: this.props.taxesList.pageSize,
-      current: this.props.taxesList.current,
+      current: 1,
     });
     this.props.loadTrxnMode();
   }
@@ -190,7 +190,7 @@ export default class TaxesList extends Component {
   }
   handleReload = (currentPage, filter) => {
     this.props.loadTaxesList({
-      filter: filter ? JSON.stringify(filter) : JSON.stringify(this.props.filter),
+      filter: filter || this.props.filter,
       pageSize: this.props.taxesList.pageSize,
       current: currentPage || this.props.taxesList.current,
     });
@@ -235,7 +235,7 @@ export default class TaxesList extends Component {
         const params = {
           pageSize: pagination.pageSize,
           current: pagination.current,
-          filters: { },
+          filter: this.props.filter,
         };
         return params;
       },

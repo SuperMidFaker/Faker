@@ -18,6 +18,8 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.LOAD_TAXES:
+      return { ...state, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_TAXES_SUCCEED:
       return { ...state, taxesList: { ...action.result.data } };
     default:
@@ -25,7 +27,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadTaxesList({ pageSize, current, filter }) {
+export function loadTaxesList({ pageSize, current, filter = {} }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -35,7 +37,7 @@ export function loadTaxesList({ pageSize, current, filter }) {
       ],
       endpoint: 'v1/cms/customs/decltax',
       method: 'get',
-      params: { pageSize, current, filter },
+      params: { pageSize, current, filter: JSON.stringify(filter) },
     },
   };
 }
