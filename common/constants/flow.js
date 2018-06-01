@@ -192,5 +192,6 @@ exports.SCOF_BIZ_OBJECT_KEY = {
   CWM_RECEIVING: { key: 'cwmReceiving', defaultText: '收货通知' },
   CWM_MOVEMENT: { key: 'cwmMovement', defaultText: '移库单' },
   CWM_SHIPPING: { key: 'cwmShipping', defaultText: '出货订单' },
+  SAAS_PARTNER: { key: 'saasPartner', defaultText: '客户' },
   // CWM_SO_NORMAL: 'cwmSoNormal',
 };

@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Checkbox, Modal, Form, Input, Select, Col, Button, message } from 'antd';
 import { getCompanyInfo } from 'common/reducers/common';
-import { loadCountries } from 'common/reducers/saasParams';
+import { loadParams } from 'common/reducers/saasParams';
 import { hidePartnerModal, checkPartner, addPartner, editPartner } from 'common/reducers/partner';
-import { PARTNER_ROLES, BUSINESS_TYPES } from 'common/constants';
+import { PARTNER_ROLES, BUSINESS_TYPES, SAAS_PARAM_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -25,7 +25,7 @@ const CheckboxGroup = Checkbox.Group;
     })),
   }),
   {
-    addPartner, editPartner, checkPartner, hidePartnerModal, getCompanyInfo, loadCountries,
+    addPartner, editPartner, checkPartner, hidePartnerModal, getCompanyInfo, loadParams,
   }
 )
 @Form.create()
@@ -46,7 +46,7 @@ export default class PartnerModal extends React.Component {
     companies: [],
   }
   componentDidMount() {
-    this.props.loadCountries();
+    this.props.loadParams([SAAS_PARAM_TYPE.COUNTRY]);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)

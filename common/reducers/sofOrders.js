@@ -38,7 +38,6 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'BATCH_START', 'BATCH_START_SUCCEED', 'BATCH_START_FAIL',
   'BATCH_DELETE', 'BATCH_DELETE_SUCCEED', 'BATCH_DELETE_FAIL',
   'TOGGLE_INVOICE_MODAL',
-  'LOAD_ORDER_LOGS', 'LOAD_ORDER_LOGS_SUCCEED', 'LOAD_ORDER_LOGS_FAIL',
 ]);
 
 const initialState = {
@@ -124,7 +123,6 @@ const initialState = {
       buyer: '', seller: '', category: '', status: 'unshipped',
     },
   },
-  orderLogs: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -247,8 +245,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, invoicesModal: { ...state.invoicesModal, visible: action.data.visible } };
     case actionTypes.LOAD_ORDER_INVOICES:
       return { ...state, orderInvoicesReload: false };
-    case actionTypes.LOAD_ORDER_LOGS_SUCCEED:
-      return { ...state, orderLogs: action.result.data };
     default:
       return state;
   }
@@ -807,21 +803,6 @@ export function batchDelete(orderNos, username) {
       endpoint: 'v1/sof/order/batch/delete',
       method: 'post',
       data: { orderNos, username },
-    },
-  };
-}
-
-export function loadOrderLogs(orderNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_ORDER_LOGS,
-        actionTypes.LOAD_ORDER_LOGS_SUCCEED,
-        actionTypes.LOAD_ORDER_LOGS_FAIL,
-      ],
-      endpoint: 'v1/sof/order/logs/load',
-      method: 'get',
-      params: { orderNo },
     },
   };
 }

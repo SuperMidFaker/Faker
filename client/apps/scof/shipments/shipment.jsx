@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Collapse, Form, Row, Col, Card, Input, Select, Steps, Tag, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODES } from 'common/constants';
+import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODES, SAAS_PARAM_TYPE } from 'common/constants';
 import { setClientForm } from 'common/reducers/sofOrders';
 import { loadPartnerFlowList, loadFlowGraph, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/sofCustomers';
-import { loadCountries } from 'common/reducers/saasParams';
+import { loadParams } from 'common/reducers/saasParams';
 import FormPane from 'client/components/FormPane';
 import UserAvatar from 'client/components/UserAvatar';
 import CMSDelegateForm from './forms/cmsDelegateForm';
@@ -51,7 +51,7 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
     loadFlowGraph,
     loadOperators,
     loadCwmBizParams,
-    loadCountries,
+    loadParams,
   }
 )
 export default class OrderForm extends Component {
@@ -68,7 +68,7 @@ export default class OrderForm extends Component {
   }
   componentDidMount() {
     this.handleOrderParamsLoad(this.props.formData);
-    this.props.loadCountries();
+    this.props.loadParams([SAAS_PARAM_TYPE.COUNTRY]);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.formData.customer_partner_id !== this.props.formData.customer_partner_id) {

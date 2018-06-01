@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Card, Collapse, Select } from 'antd';
+import { Card, Collapse } from 'antd';
 import { GOODSTYPES, WRAP_TYPE, TRANS_MODES, SAAS_PARAM_TYPE } from 'common/constants';
 import DescriptionList from 'client/components/DescriptionList';
 import { showCustomerPanel } from 'common/reducers/partner';
@@ -12,7 +12,6 @@ import { loadParams } from 'common/reducers/saasParams';
 import { formatMsg } from '../message.i18n';
 
 const { Panel } = Collapse;
-const { Option } = Select;
 const { Description } = DescriptionList;
 
 @injectIntl
@@ -59,31 +58,17 @@ export default class ShipmentGeneralPane extends React.Component {
         labelCountry = '启运国(地区)';
         labelIEPort = '进口口岸';
       }
+      const origDestCountry = this.props.countries.find(cntry =>
+        cntry.cntry_co === order.cust_shipmt_orig_dest_country);
+      const shipmtIEport = this.props.declPorts.find(custport =>
+        custport.code === order.cust_shipmt_i_e_port);
       origDestInfo = (
         <DescriptionList col={4}>
           <Description term={labelCountry}>
-            <Select
-              optionFilterProp="children"
-              value={order.cust_shipmt_orig_dest_country}
-              disabled
-            >
-              {this.props.countries.map(cntry => (
-                <Option key={cntry.cntry_co} value={cntry.cntry_co}>
-                  {cntry.cntry_co} | {cntry.cntry_name_cn}
-                </Option>))}
-            </Select>
+            {origDestCountry && `${order.cust_shipmt_orig_dest_country} | ${origDestCountry.cntry_name_cn}`}
           </Description>
           <Description term={labelIEPort}>
-            <Select
-              optionFilterProp="children"
-              value={order.cust_shipmt_i_e_port}
-              disabled
-            >
-              {this.props.declPorts.map(custport => (
-                <Option key={custport.code} value={custport.code}>
-                  {custport.code} | {custport.name}
-                </Option>))}
-            </Select>
+            {shipmtIEport && `${order.cust_shipmt_i_e_port} | ${shipmtIEport.name}`}
           </Description>
           <Description term="起运港">
             {order.cust_shipmt_dept_port}
@@ -93,58 +78,34 @@ export default class ShipmentGeneralPane extends React.Component {
           </Description>
         </DescriptionList>
       );
+      const shipmtFreight = this.props.currencies.find(curr =>
+        curr.curr_code === order.cust_shipmt_freight_currency);
+      const shipmtInsurFee = this.props.currencies.find(curr =>
+        curr.curr_code === order.cust_shipmt_insur_currency);
+      const shipmtMiscFee = this.props.currencies.find(curr =>
+        curr.curr_code === order.cust_shipmt_misc_currency);
       freightInfo = (
         <DescriptionList col={4}>
           <Description term="国际货运代理">
-            <Select
-              optionFilterProp="children"
-              value={order.cust_shipmt_forwarder}
-              disabled
-            >
-              {this.props.customsBrokers.map(cb =>
-            (<Option value={String(cb.partner_id)} key={String(cb.partner_id)}>
-              {cb.partner_code}|{cb.name}</Option>)) }
-            </Select>
+            {order.cust_shipmt_forwarder}
           </Description>
           <Description term="运费">
-            {order.cust_shipmt_freight} {this.props.currencies.find(curr =>
-            curr.curr_code === order.cust_shipmt_freight_currency) &&
-            this.props.currencies.find(curr =>
-            curr.curr_code === order.cust_shipmt_freight_currency).curr_name}
+            {shipmtFreight && `${order.cust_shipmt_freight} | ${shipmtFreight.curr_name}`}
           </Description>
           <Description term="保费">
-            {order.cust_shipmt_insur_fee} {this.props.currencies.find(curr =>
-            curr.curr_code === order.cust_shipmt_insur_currency) &&
-            this.props.currencies.find(curr =>
-            curr.curr_code === order.cust_shipmt_insur_currency).curr_name}
+            {shipmtInsurFee && `${order.cust_shipmt_insur_fee} | ${shipmtInsurFee.curr_name}`}
           </Description>
           <Description term="杂费">
-            {order.cust_shipmt_misc_fee} {this.props.currencies.find(curr =>
-            curr.curr_code === order.cust_shipmt_misc_currency) &&
-            this.props.currencies.find(curr =>
-            curr.curr_code === order.cust_shipmt_misc_currency).curr_name}
+            {shipmtMiscFee && `${order.cust_shipmt_misc_fee} | ${shipmtMiscFee.curr_name}`}
           </Description>
         </DescriptionList>
       );
+      const shipmtTransMode = TRANS_MODES.find(mode => mode.value === order.cust_shipmt_trans_mode);
       if (order.cust_shipmt_trans_mode === '2') {
         transferInfo = (
           <DescriptionList col={4}>
             <Description term="国际运输方式">
-              <Select
-                value={order.cust_shipmt_trans_mode}
-                optionFilterProp="children"
-                disabled
-              >
-                <Option value={TRANS_MODES[0].value}>
-                  <i className={TRANS_MODES[0].icon} /> {TRANS_MODES[0].text}
-                </Option>
-                <Option value={TRANS_MODES[1].value}>
-                  <i className={TRANS_MODES[1].icon} /> {TRANS_MODES[1].text}
-                </Option>
-                <Option value={TRANS_MODES[3].value}>
-                  <i className={TRANS_MODES[3].icon} /> {TRANS_MODES[3].text}
-                </Option>
-              </Select>
+              {shipmtTransMode && shipmtTransMode.text}
             </Description>
             <Description term="提单号*分提单号">
               {order.cust_shipmt_bill_lading}
@@ -161,21 +122,7 @@ export default class ShipmentGeneralPane extends React.Component {
         transferInfo = (
           <DescriptionList col={4}>
             <Description term="国际运输方式">
-              <Select
-                value={order.cust_shipmt_trans_mode}
-                optionFilterProp="children"
-                disabled
-              >
-                <Option value={TRANS_MODES[0].value}>
-                  <i className={TRANS_MODES[0].icon} /> {TRANS_MODES[0].text}
-                </Option>
-                <Option value={TRANS_MODES[1].value}>
-                  <i className={TRANS_MODES[1].icon} /> {TRANS_MODES[1].text}
-                </Option>
-                <Option value={TRANS_MODES[3].value}>
-                  <i className={TRANS_MODES[3].icon} /> {TRANS_MODES[3].text}
-                </Option>
-              </Select>
+              {shipmtTransMode && shipmtTransMode.text}
             </Description>
             <Description term="主运单号">
               {order.cust_shipmt_mawb}

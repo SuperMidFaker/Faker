@@ -11,7 +11,8 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import { loadTaxesList } from 'common/reducers/cmsDeclTax';
-import { loadTrxnMode } from 'common/reducers/saasParams';
+import { loadParams } from 'common/reducers/saasParams';
+import { SAAS_PARAM_TYPE } from 'common/constants';
 import { Layout, Menu } from 'antd';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -26,7 +27,7 @@ const { Content } = Layout;
   }),
   {
     loadTaxesList,
-    loadTrxnMode,
+    loadParams,
   }
 )
 @connectNav({
@@ -47,7 +48,7 @@ export default class TaxesList extends Component {
   }
   componentDidMount() {
     this.handleReload(1);
-    this.props.loadTrxnMode();
+    this.props.loadParams([SAAS_PARAM_TYPE.TRXN]);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)
@@ -68,11 +69,9 @@ export default class TaxesList extends Component {
     dataIndex: 'trxn_mode',
     width: 100,
     render: (o) => {
-      if (o) {
-        const trxn = this.props.trxnModes.find(tr => tr.trx_mode === o);
-        if (trxn) {
-          return trxn.trx_specl;
-        }
+      const trxn = this.props.trxnModes.find(tr => tr.trx_mode === o);
+      if (trxn) {
+        return trxn.trx_spec;
       }
       return '';
     },

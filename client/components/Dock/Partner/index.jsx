@@ -6,7 +6,7 @@ import { Row, Col, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 import InfoItem from 'client/components/InfoItem';
 import { showCustomerPanel, showPartnerModal } from 'common/reducers/partner';
-import { PARTNER_ROLES } from 'common/constants';
+import { PARTNER_ROLES, SCOF_BIZ_OBJECT_KEY } from 'common/constants';
 import MasterPane from './tabpanes/masterPane';
 import TeamPane from './tabpanes/teamPane';
 import LogsPane from '../common/logsPane';
@@ -102,7 +102,10 @@ export default class PartnerDock extends React.Component {
             <TeamPane customer={customer} />
           </TabPane>}
           <TabPane tab={this.msg('logs')} key="logs" >
-            <LogsPane />
+            <LogsPane
+              billNo={JSON.stringify(customer.id)}
+              bizObject={SCOF_BIZ_OBJECT_KEY.SAAS_PARTNER.key}
+            />
           </TabPane>
         </Tabs>
       </DockPanel>);

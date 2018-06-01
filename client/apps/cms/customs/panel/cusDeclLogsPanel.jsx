@@ -6,7 +6,9 @@ import { Timeline, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import UserAvatar from 'client/components/UserAvatar';
-import { hideDeclLog, loadDeclLogs } from 'common/reducers/cmsCustomsDeclare';
+import { hideDeclLog } from 'common/reducers/cmsCustomsDeclare';
+import { loadBizObjLogs } from 'common/reducers/operationLog';
+import { SCOF_BIZ_OBJECT_KEY } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 function LogItem(props) {
@@ -37,8 +39,9 @@ LogItem.propTypes = {
   state => ({
     visible: state.cmsCustomsDeclare.declLogPanel.visible,
     userMembers: state.account.userMembers,
+    bizObjLogs: state.operationLog.bizObjLogs,
   }),
-  { hideDeclLog, loadDeclLogs }
+  { hideDeclLog, loadBizObjLogs }
 )
 export default class CusDeclLogsPanel extends React.Component {
   static propTypes = {
@@ -46,18 +49,9 @@ export default class CusDeclLogsPanel extends React.Component {
     visible: PropTypes.bool.isRequired,
     preEntrySeqNo: PropTypes.string,
   }
-  state = {
-    logs: [],
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible && nextProps.visible) {
-      this.props.loadDeclLogs(nextProps.preEntrySeqNo).then((result) => {
-        if (!result.error) {
-          this.setState({
-            logs: result.data,
-          });
-        }
-      });
+      this.props.loadBizObjLogs(nextProps.preEntrySeqNo, SCOF_BIZ_OBJECT_KEY.CMS_CUSTOMS.key);
     }
   }
   getUser(loginId) {
@@ -67,8 +61,7 @@ export default class CusDeclLogsPanel extends React.Component {
 
   msg = formatMsg(this.props.intl)
   render() {
-    const { visible } = this.props;
-    const { logs } = this.state;
+    const { visible, bizObjLogs } = this.props;
     return (
       <DockPanel
         visible={visible}
@@ -78,7 +71,7 @@ export default class CusDeclLogsPanel extends React.Component {
         <div className="pane-content tab-pane">
           <Card bodyStyle={{ padding: 16, paddingTop: 32 }}>
             <Timeline>
-              {logs.map(log =>
+              {bizObjLogs.map(log =>
                 (<Timeline.Item>
                   <LogItem
                     timestamp={log.created_date}

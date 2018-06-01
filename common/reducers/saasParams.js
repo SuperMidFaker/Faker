@@ -2,11 +2,6 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/params/', [
-  'LOAD_CURRENCIES', 'LOAD_CURRENCIES_SUCCEED', 'LOAD_CURRENCIES_FAIL',
-  'LOAD_COUNTRIES', 'LOAD_COUNTRIES_SUCCEED', 'LOAD_COUNTRIES_FAIL',
-  'LOAD_TRXN_MODES', 'LOAD_TRXN_MODES_SUCCEED', 'LOAD_TRXN_MODES_FAIL',
-  'LOAD_TRANS_MODES', 'LOAD_TRANS_MODES_SUCCEED', 'LOAD_TRANS_MODES_FAIL',
-  'LOAD_UNITS', 'LOAD_UNITS_SUCCEED', 'LOAD_UNITS_FAIL',
   'LOAD_PARAMS', 'LOAD_PARAMS_SUCCEED', 'LOAD_PARAMS_FAIL',
 ]);
 
@@ -22,94 +17,21 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_CURRENCIES_SUCCEED:
-      return { ...state, currencies: action.result.data };
-    case actionTypes.LOAD_COUNTRIES_SUCCEED:
-      return { ...state, countries: action.result.data };
-    case actionTypes.LOAD_TRXN_MODES_SUCCEED:
-      return { ...state, trxnModes: action.result.data };
-    case actionTypes.LOAD_TRANS_MODES_SUCCEED:
-      return { ...state, transModes: action.result.data };
-    case actionTypes.LOAD_UNITS_SUCCEED:
-      return { ...state, units: action.result.data };
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return {
         ...state,
-        ...action.result.data,
+        currencies: action.result.data.currency ? action.result.data.currency : state.currencies,
+        countries: action.result.data.country ? action.result.data.country : state.countries,
+        trxnModes: action.result.data.trxns ? action.result.data.trxns : state.trxnModes,
+        transModes: action.result.data.trans ? action.result.data.trans : state.transModes,
+        units: action.result.data.unit ? action.result.data.unit : state.units,
+        declPorts: action.result.data.declPort ? action.result.data.declPort : state.declPorts,
+        customsBrokers: action.result.data.customsBrokers ?
+          action.result.data.customsBrokers : state.customsBrokers,
       };
     default:
       return state;
   }
-}
-
-export function loadCurrencies() {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_CURRENCIES,
-        actionTypes.LOAD_CURRENCIES_SUCCEED,
-        actionTypes.LOAD_CURRENCIES_FAIL,
-      ],
-      endpoint: 'v1/saas/params/currencies/load',
-      method: 'get',
-    },
-  };
-}
-
-export function loadCountries() {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_COUNTRIES,
-        actionTypes.LOAD_COUNTRIES_SUCCEED,
-        actionTypes.LOAD_COUNTRIES_FAIL,
-      ],
-      endpoint: 'v1/saas/params/countries/load',
-      method: 'get',
-    },
-  };
-}
-
-export function loadTrxnMode() {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_TRXN_MODES,
-        actionTypes.LOAD_TRXN_MODES_SUCCEED,
-        actionTypes.LOAD_TRXN_MODES_FAIL,
-      ],
-      endpoint: 'v1/saas/params/trxn/modes/load',
-      method: 'get',
-    },
-  };
-}
-
-export function loadTransModes() {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_TRANS_MODES,
-        actionTypes.LOAD_TRANS_MODES_SUCCEED,
-        actionTypes.LOAD_TRANS_MODES_FAIL,
-      ],
-      endpoint: 'v1/saas/params/trans/modes/load',
-      method: 'get',
-    },
-  };
-}
-
-export function loadUnits() {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_UNITS,
-        actionTypes.LOAD_UNITS_SUCCEED,
-        actionTypes.LOAD_UNITS_FAIL,
-      ],
-      endpoint: 'v1/saas/params/units/load',
-      method: 'get',
-    },
-  };
 }
 
 export function loadParams(types) {
@@ -122,7 +44,7 @@ export function loadParams(types) {
       ],
       endpoint: 'v1/saas/params/load',
       method: 'get',
-      params: { types: JSON.stringify(types) }
+      params: { types: JSON.stringify(types) },
     },
   };
 }

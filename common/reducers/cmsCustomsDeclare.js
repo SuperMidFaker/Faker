@@ -25,7 +25,6 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
   'VALIDATE_ENTRY_ID', 'VALIDATE_ENTRY_ID_SUCCEED', 'VALIDATE_ENTRY_ID_FAIL',
-  'LOAD_DECL_LOGS', 'LOAD_DECL_LOGS_SUCCEED', 'LOAD_DECL_LOGS_FAIL',
   'UPLOAD_DECL', 'UPLOAD_DECL_SUCCEED', 'UPLOAD_DECL_FAIL',
   'GET_DECL_TAX', 'GET_DECL_TAX_SUCCEED', 'GET_DECL_TAX_FAIL',
   'TOGGLE_INSPECT_MODAL', 'TOGGLE_DECL_MOD_MODAL',
@@ -533,21 +532,6 @@ export function showDeclLog() {
 export function hideDeclLog() {
   return {
     type: actionTypes.HIDE_DECL_LOG,
-  };
-}
-
-export function loadDeclLogs(preEntrySeqNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_DECL_LOGS,
-        actionTypes.LOAD_DECL_LOGS_SUCCEED,
-        actionTypes.LOAD_DECL_LOGS_FAIL,
-      ],
-      endpoint: 'v1/cms/decl/logs/load',
-      method: 'get',
-      params: { preEntrySeqNo },
-    },
   };
 }
 
