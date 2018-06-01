@@ -71,10 +71,10 @@ export default class OutboundPickPrint extends Component {
         md.name,
         md.from_location,
         md.to_location,
-        md.move_qty,
+        md.move_qty || '',
       ]);
     }
-    const total = movementDetails.reduce((prev, next) => prev + Number(next.move_qty), 0);
+    const total = movementDetails.reduce((prev, next) => prev + Number(next.move_qty || 0), 0);
     body.push(['总计', '', '', '', `${total}`]);
     return body;
   }
@@ -139,7 +139,7 @@ export default class OutboundPickPrint extends Component {
     docDefinition.content.push({
       style: 'table',
       table: {
-        widths: ['20%', '20%', '25%', '20%', '15%'],
+        widths: ['20%', '25%', '20%', '20%', '15%'],
         body: this.pdfDetails(),
       },
       layout: {
