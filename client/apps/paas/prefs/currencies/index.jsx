@@ -5,7 +5,8 @@ import { Button, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal } from 'common/reducers/bssExRateSettings';
-import { loadCurrencies } from 'common/reducers/cmsParams';
+import { loadParams } from 'common/reducers/saasParams';
+import { SAAS_PARAM_TYPE } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
@@ -22,10 +23,10 @@ const { Content } = Layout;
   state => ({
     visible: state.bssExRateSettings.visibleExRateModal,
     exRateList: state.bssExRateSettings.exRateList,
-    currencies: state.cmsParams.currencies,
+    currencies: state.saasParams.currencies,
   }),
   {
-    toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadCurrencies,
+    toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadParams,
   }
 )
 @connectNav({
@@ -41,7 +42,7 @@ export default class Currencies extends Component {
   }
   componentDidMount() {
     this.handleRateLoad();
-    this.props.loadCurrencies();
+    this.props.loadParams([SAAS_PARAM_TYPE.CURRENCY]);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)

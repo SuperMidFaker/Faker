@@ -14,12 +14,12 @@ import UserAvatar from 'client/components/UserAvatar';
 import ToolbarAction from 'client/components/ToolbarAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import ExportDataPanel from 'client/components/ExportDataPanel';
-import { loadParams } from 'common/reducers/cmsParams';
+import { loadParams } from 'common/reducers/saasParams';
 import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
 import { toggleExportPanel } from 'common/reducers/saasExport';
 import { loadPurchaseOrders, batchDeletePurchaseOrders } from 'common/reducers/sofPurchaseOrders';
 import { setUploadRecordsReload, togglePanelVisible } from 'common/reducers/uploadRecords';
-import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { LINE_FILE_ADAPTOR_MODELS, SAAS_PARAM_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
 const { Content } = Layout;
@@ -27,7 +27,8 @@ const { RangePicker } = DatePicker;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
-  promises.push(dispatch(loadParams()));
+  promises.push(dispatch(loadParams([SAAS_PARAM_TYPE.COUNTRY, SAAS_PARAM_TYPE.TRXN,
+    SAAS_PARAM_TYPE.TRANS, SAAS_PARAM_TYPE.UNIT])));
   promises.push(dispatch(loadPurchaseOrders({
     filter: JSON.stringify({
       ...state.sofPurchaseOrders.filter, searchText: '', partner: 'all', startDate: '', endDate: '',
@@ -45,24 +46,24 @@ function fetchData({ state, dispatch }) {
   state => ({
     filter: state.sofPurchaseOrders.filter,
     purchaseOrderList: state.sofPurchaseOrders.purchaseOrderList,
-    currencies: state.cmsParams.currencies,
+    currencies: state.saasParams.currencies,
     loading: state.sofInvoice.loading,
     uploadRecords: state.uploadRecords.uploadRecords,
     buyers: state.sofInvoice.buyers,
     sellers: state.sofInvoice.sellers,
-    countries: state.cmsParams.countries.map(tc => ({
+    countries: state.saasParams.countries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    trxnModes: state.cmsParams.trxnModes.map(trxn => ({
+    trxnModes: state.saasParams.trxnModes.map(trxn => ({
       value: trxn.trx_mode,
       text: trxn.trx_spec,
     })),
-    transModes: state.cmsParams.transModes.map(trans => ({
+    transModes: state.saasParams.transModes.map(trans => ({
       value: trans.trans_code,
       text: trans.trans_spec,
     })),
-    units: state.cmsParams.units.map(unit => ({
+    units: state.saasParams.units.map(unit => ({
       value: unit.unit_code,
       text: unit.unit_name,
     })),

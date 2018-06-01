@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, Card, Col, Row } from 'antd';
 import FormPane from 'client/components/FormPane';
-import { loadParams } from 'common/reducers/cmsParams';
+import { loadParams } from 'common/reducers/saasParams';
 import { loadInvoiceBuyerSellers } from 'common/reducers/sofInvoice';
+import { SAAS_PARAM_TYPE } from 'common/constants';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -18,23 +19,23 @@ const { Option } = Select;
     purchaseOrder: state.sofPurchaseOrders.purchaseOrder,
     buyers: state.sofInvoice.buyers,
     sellers: state.sofInvoice.sellers,
-    currencies: state.cmsParams.currencies.map(currency => ({
+    currencies: state.saasParams.currencies.map(currency => ({
       value: currency.curr_code,
       text: currency.curr_name,
     })),
-    countries: state.cmsParams.countries.map(tc => ({
+    countries: state.saasParams.countries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
-    trxnModes: state.cmsParams.trxnModes.map(trxn => ({
+    trxnModes: state.saasParams.trxnModes.map(trxn => ({
       value: trxn.trx_mode,
       text: trxn.trx_spec,
     })),
-    transModes: state.cmsParams.transModes.map(trans => ({
+    transModes: state.saasParams.transModes.map(trans => ({
       value: trans.trans_code,
       text: trans.trans_spec,
     })),
-    units: state.cmsParams.units.map(unit => ({
+    units: state.saasParams.units.map(unit => ({
       value: unit.unit_code,
       text: unit.unit_name,
     })),
@@ -51,7 +52,8 @@ export default class HeadCard extends Component {
   }
   componentDidMount() {
     this.props.loadInvoiceBuyerSellers();
-    this.props.loadParams();
+    this.props.loadParams([SAAS_PARAM_TYPE.CURRENCY, SAAS_PARAM_TYPE.COUNTRY,
+      SAAS_PARAM_TYPE.TRXN, SAAS_PARAM_TYPE.TRANS, SAAS_PARAM_TYPE.UNIT]);
   }
   msg = formatMsg(this.props.intl)
   gmsg = formatGlobalMsg(this.props.intl)

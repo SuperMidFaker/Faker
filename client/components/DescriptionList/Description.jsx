@@ -14,16 +14,17 @@ export default class Description extends PureComponent {
     term: PropTypes.string,
     column: PropTypes.number,
     className: PropTypes.string,
+    addonAfter: PropTypes.string,
   }
   render() {
     const {
-      prefixCls, className, term, children, column,
+      prefixCls, className, term, children, column, addonAfter,
     } = this.props;
     const clsString = classNames(prefixCls, className);
     return (
       <Col className={clsString} {...responsive[column]}>
         {term && <div className={`${prefixCls}-term`}>{term}</div>}
-        <div className={`${prefixCls}-detail`}>{children || '--'}</div>
+        <div className={`${prefixCls}-detail`}>{children || '--'}{addonAfter}</div>
       </Col>
     );
   }

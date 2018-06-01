@@ -10,10 +10,11 @@ import DataTable from 'client/components/DataTable';
 import RowAction from 'client/components/RowAction';
 import SearchBox from 'client/components/SearchBox';
 import ToolbarAction from 'client/components/ToolbarAction';
-import { loadPartnerList, showPartnerModal, changePartnerStatus, deletePartner } from 'common/reducers/partner';
+import { loadPartnerList, showPartnerModal, changePartnerStatus, deletePartner, showCustomerPanel } from 'common/reducers/partner';
 import { PARTNER_ROLES } from 'common/constants';
 import { createFilename } from 'client/util/dataTransform';
 import ImportDataPanel from 'client/components/ImportDataPanel';
+import { PartnerDock } from 'client/components/Dock';
 import PartnerModal from '../modal/partnerModal';
 import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
@@ -26,13 +27,13 @@ const { Content } = Layout;
     listFilter: state.partner.partnerFilter,
     loading: state.partner.loading,
     loaded: state.partner.loaded,
-    countries: state.cmsParams.countries.map(tc => ({
+    countries: state.saasParams.countries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
   }),
   {
-    loadPartnerList, changePartnerStatus, deletePartner, showPartnerModal,
+    loadPartnerList, changePartnerStatus, deletePartner, showPartnerModal, showCustomerPanel,
   }
 )
 @connectNav({
@@ -91,6 +92,7 @@ export default class SupplierList extends React.Component {
     title: this.msg('supplierName'),
     dataIndex: 'name',
     width: 300,
+    render: (o, record) => <a onClick={() => this.handleShowCusPanel(record)}>{o}</a>,
   }, {
     title: this.msg('displayName'),
     dataIndex: 'display_name',
@@ -170,6 +172,9 @@ export default class SupplierList extends React.Component {
   handleVendorAdd = () => {
     this.props.showPartnerModal('add', { role: PARTNER_ROLES.SUP });
   }
+  handleShowCusPanel = (customer) => {
+    this.props.showCustomerPanel({ visible: true, customer });
+  }
   handleVendorEdit = (vendor) => {
     this.props.showPartnerModal('edit', vendor);
   }
@@ -235,6 +240,7 @@ export default class SupplierList extends React.Component {
           onUploaded={this.suppliersUploaded}
           template={`${XLSX_CDN}/客户导入模板.xlsx`}
         />
+        <PartnerDock partnerType={PARTNER_ROLES.SUP} />
         <PartnerModal onOk={this.handleTableLoad} />
       </Layout>
     );

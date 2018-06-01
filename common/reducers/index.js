@@ -39,7 +39,7 @@ import cmsPreferences from './cmsPreferences';
 import cmsExpense from './cmsExpense';
 import cmsTradeitem from './cmsTradeitem';
 import cmsHsCode from './cmsHsCode';
-import cmsParams from './cmsParams';
+import saasParams from './saasParams';
 import cmsPrefEvents from './cmsPrefEvents';
 import cmsDeclTax from './cmsDeclTax';
 import sofCustomers from './sofCustomers';
@@ -135,7 +135,7 @@ export default combineReducers({
   cmsBrokers,
   cmsTradeManual,
   cmsAnalytics,
-  cmsParams,
+  saasParams,
   cmsPrefEvents,
   cmsDeclTax,
   scofFlow,

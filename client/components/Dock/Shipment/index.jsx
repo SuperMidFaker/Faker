@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Icon, Col, Menu, Modal, Row, Tabs, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER } from 'common/constants';
+import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER, SCOF_BIZ_OBJECT_KEY } from 'common/constants';
 import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/sofOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -138,7 +138,10 @@ export default class ShipmentDock extends React.Component {
           <AttachmentPane />
         </TabPane>
         <TabPane tab={this.msg('logs')} key="logs">
-          <LogsPane />
+          <LogsPane
+            billNo={this.props.order.shipmt_order_no}
+            bizObject={SCOF_BIZ_OBJECT_KEY.SOF_ORDER.key}
+          />
         </TabPane>
       </Tabs>
     );

@@ -18,7 +18,7 @@ const formItemLayout = {
 @connect(
   state => ({
     visible: state.bssExRateSettings.visibleExRateModal,
-    currencies: state.cmsParams.currencies,
+    currencies: state.saasParams.currencies,
   }),
   { toggleNewExRateModal, addExRate }
 )
