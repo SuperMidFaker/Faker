@@ -20,14 +20,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return {
         ...state,
-        currencies: action.result.data.currency ? action.result.data.currency : state.currencies,
-        countries: action.result.data.country ? action.result.data.country : state.countries,
-        trxnModes: action.result.data.trxns ? action.result.data.trxns : state.trxnModes,
-        transModes: action.result.data.trans ? action.result.data.trans : state.transModes,
-        units: action.result.data.unit ? action.result.data.unit : state.units,
-        declPorts: action.result.data.declPort ? action.result.data.declPort : state.declPorts,
-        customsBrokers: action.result.data.customsBrokers ?
-          action.result.data.customsBrokers : state.customsBrokers,
+        currencies: action.result.data.currency || state.currencies,
+        countries: action.result.data.country || state.countries,
+        trxnModes: action.result.data.trxns || state.trxnModes,
+        transModes: action.result.data.trans || state.transModes,
+        units: action.result.data.unit || state.units,
+        declPorts: action.result.data.declPort || state.declPorts,
+        customsBrokers: action.result.data.customsBrokers || state.customsBrokers,
       };
     default:
       return state;
