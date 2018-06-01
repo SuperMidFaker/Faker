@@ -122,6 +122,11 @@ export default class StockTransitionList extends React.Component {
     render: inbts => inbts && moment(inbts).format('YYYY.MM.DD HH:mm'),
     sorter: true,
   }, {
+    title: this.msg('stockingQty'),
+    width: 100,
+    dataIndex: 'stocking_qty',
+    className: 'text-emphasis',
+  }, {
     title: this.msg('totalQty'),
     width: 100,
     dataIndex: 'stock_qty',
@@ -182,7 +187,7 @@ export default class StockTransitionList extends React.Component {
     width: 110,
     fixed: 'right',
     render: (o, record) => {
-      if (record.avail_qty === 0 && record.frozen_qty > 0) {
+      if (record.stock_qty > 0 && record.avail_qty === 0 && record.frozen_qty > 0) {
         return (<RowAction
           popover={<span>
             <Input placeholder="解冻原因" onChange={this.handleUnfreezeReason} value={this.state.unfreezeReason} style={{ width: '70%' }} />

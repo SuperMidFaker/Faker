@@ -527,6 +527,8 @@ exports.SKU_REQUIRED_PROPS = [{
   value: 'cbm', label: '体积',
 }, {
   value: 'currency', label: '币制',
+}, {
+  value: 'hscode', label: '商品编码',
 }];
 
 exports.PICK_PRINT_FIELDS = [{

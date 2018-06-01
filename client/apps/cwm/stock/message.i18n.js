@@ -55,6 +55,10 @@ const messages = defineMessages({
     id: 'cwm.stock.inbound.date',
     defaultMessage: '入库日期',
   },
+  stockingQty: {
+    id: 'cwm.stock.stocking.qty',
+    defaultMessage: '入库中数量',
+  },
   totalQty: {
     id: 'cwm.stock.total.qty',
     defaultMessage: '库存数量',
