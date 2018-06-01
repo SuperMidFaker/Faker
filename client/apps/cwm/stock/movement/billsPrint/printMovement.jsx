@@ -7,13 +7,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
 
 @injectIntl
-@connect(
-  state => ({
-    movementHead: state.cwmMovement.movementHead,
-    movementDetails: state.cwmMovement.movementDetails,
-  }),
-  {}
-)
+@connect(state => ({
+  movementHead: state.cwmMovement.movementHead,
+  movementDetails: state.cwmMovement.movementDetails,
+}))
 export default class OutboundPickPrint extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
