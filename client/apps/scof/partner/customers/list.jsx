@@ -28,7 +28,7 @@ const { Option } = Select;
     listFilter: state.partner.partnerFilter,
     loading: state.partner.loading,
     loaded: state.partner.loaded,
-    countries: state.cmsParams.countries.map(tc => ({
+    countries: state.saasParams.countries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
@@ -254,7 +254,7 @@ export default class CustomerList extends React.Component {
           onUploaded={this.customersUploaded}
           template={`${XLSX_CDN}/客户导入模板.xlsx`}
         />
-        <PartnerDock />
+        <PartnerDock partnerType={PARTNER_ROLES.CUS} />
         <PartnerModal onOk={this.handleTableLoad} />
       </Layout>
     );

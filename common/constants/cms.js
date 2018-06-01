@@ -997,3 +997,19 @@ export const CMS_EVENTS = [
   { key: 'quality', text: '品质查验' },
   { key: 'customs', text: '海关查验' },
 ];
+
+export const SAAS_PARAM_TYPE = {
+  CURRENCY: 'currency',
+  UNIT: 'unit',
+  COUNTRY: 'country',
+  PARTNER: 'partner',
+  TRXN: 'trxn',
+  TRANS: 'trans',
+  BONDEDOUTTYPE: 'bondedOuttype',
+  BONDED: 'bonded',
+  SOTYPE: 'soType',
+  BONDEDINTYPE: 'bondedIntype',
+  PACKAGETYPE: 'packageType',
+  DECLPORT: 'declPort',
+  BROKERS: 'brokers',
+};

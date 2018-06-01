@@ -16,6 +16,8 @@ const initialState = {
   trxnModes: [],
   transModes: [],
   units: [],
+  declPorts: [],
+  customsBrokers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -33,11 +35,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PARAMS_SUCCEED:
       return {
         ...state,
-        currencies: action.result.data.currencies,
-        countries: action.result.data.countries,
-        trxnModes: action.result.data.trxnModes,
-        transModes: action.result.data.transModes,
-        units: action.result.data.units,
+        ...action.result.data,
       };
     default:
       return state;
@@ -52,7 +50,7 @@ export function loadCurrencies() {
         actionTypes.LOAD_CURRENCIES_SUCCEED,
         actionTypes.LOAD_CURRENCIES_FAIL,
       ],
-      endpoint: 'v1/cms/params/currencies/load',
+      endpoint: 'v1/saas/params/currencies/load',
       method: 'get',
     },
   };
@@ -66,7 +64,7 @@ export function loadCountries() {
         actionTypes.LOAD_COUNTRIES_SUCCEED,
         actionTypes.LOAD_COUNTRIES_FAIL,
       ],
-      endpoint: 'v1/cms/params/countries/load',
+      endpoint: 'v1/saas/params/countries/load',
       method: 'get',
     },
   };
@@ -80,7 +78,7 @@ export function loadTrxnMode() {
         actionTypes.LOAD_TRXN_MODES_SUCCEED,
         actionTypes.LOAD_TRXN_MODES_FAIL,
       ],
-      endpoint: 'v1/cms/params/trxn/modes/load',
+      endpoint: 'v1/saas/params/trxn/modes/load',
       method: 'get',
     },
   };
@@ -94,7 +92,7 @@ export function loadTransModes() {
         actionTypes.LOAD_TRANS_MODES_SUCCEED,
         actionTypes.LOAD_TRANS_MODES_FAIL,
       ],
-      endpoint: 'v1/cms/params/trans/modes/load',
+      endpoint: 'v1/saas/params/trans/modes/load',
       method: 'get',
     },
   };
@@ -108,13 +106,13 @@ export function loadUnits() {
         actionTypes.LOAD_UNITS_SUCCEED,
         actionTypes.LOAD_UNITS_FAIL,
       ],
-      endpoint: 'v1/cms/params/units/load',
+      endpoint: 'v1/saas/params/units/load',
       method: 'get',
     },
   };
 }
 
-export function loadParams() {
+export function loadParams(types) {
   return {
     [CLIENT_API]: {
       types: [
@@ -122,8 +120,9 @@ export function loadParams() {
         actionTypes.LOAD_PARAMS_SUCCEED,
         actionTypes.LOAD_PARAMS_FAIL,
       ],
-      endpoint: 'v1/cms/params/load',
+      endpoint: 'v1/saas/params/load',
       method: 'get',
+      params: { types: JSON.stringify(types) }
     },
   };
 }

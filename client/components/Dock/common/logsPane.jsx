@@ -5,6 +5,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Timeline } from 'antd';
 import UserAvatar from 'client/components/UserAvatar';
+import { loadOrderLogs } from 'common/reducers/sofOrders';
 import { formatMsg } from '../message.i18n';
 import './style.less';
 
@@ -35,24 +36,33 @@ LogItem.propTypes = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    order: state.sofOrders.dock.order,
+    orderLogs: state.sofOrders.orderLogs,
   }),
-  { },
+  { loadOrderLogs },
 )
 export default class LogsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
-
+  componentDidMount() {
+    this.props.loadOrderLogs(this.props.order.shipmt_order_no);
+  }
   msg = formatMsg(this.props.intl)
   render() {
-    // const { logs } = this.props;
+    const { orderLogs } = this.props;
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 16, paddingTop: 32 }}>
           <Timeline>
-            <Timeline.Item><LogItem timestamp="2018-05-28T02:37:11.000Z" loginId={308} content="新建" /></Timeline.Item>
-            <Timeline.Item><LogItem timestamp="2018-05-28T02:37:11.000Z" loginId={308} content="新建" /></Timeline.Item>
-            <Timeline.Item><LogItem timestamp="2018-05-28T02:37:11.000Z" loginId={308} content="新建" /></Timeline.Item>
+            {orderLogs.map(log =>
+              (<Timeline.Item>
+                <LogItem
+                  timestamp={log.created_date}
+                  loginId={log.login_id}
+                  content={log.op_content}
+                />
+              </Timeline.Item>))}
           </Timeline>
         </Card>
       </div>

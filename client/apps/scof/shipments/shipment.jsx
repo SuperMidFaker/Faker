@@ -7,7 +7,7 @@ import { GOODSTYPES, WRAP_TYPE, EXPEDITED_TYPES, SCOF_ORDER_TRANSFER, TRANS_MODE
 import { setClientForm } from 'common/reducers/sofOrders';
 import { loadPartnerFlowList, loadFlowGraph, loadCwmBizParams } from 'common/reducers/scofFlow';
 import { loadOperators } from 'common/reducers/sofCustomers';
-import { loadCountries } from 'common/reducers/cmsParams';
+import { loadCountries } from 'common/reducers/saasParams';
 import FormPane from 'client/components/FormPane';
 import UserAvatar from 'client/components/UserAvatar';
 import CMSDelegateForm from './forms/cmsDelegateForm';
@@ -43,7 +43,7 @@ TRANS_MODES.forEach((ot) => { SeletableKeyNameMap[`transmode-${ot.value}`] = ot.
     serviceTeam: state.sofCustomers.operators,
     orderTypes: state.sofOrderPref.requireOrderTypes,
     partners: state.partner.partners,
-    countries: state.cmsParams.countries,
+    countries: state.saasParams.countries,
   }),
   {
     setClientForm,
@@ -408,7 +408,6 @@ export default class OrderForm extends Component {
         });
       }
     }
-
     return (
       <div>
         <Card bodyStyle={{ padding: 0 }}>

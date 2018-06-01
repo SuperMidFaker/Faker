@@ -6,6 +6,7 @@ import { Row, Col, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 import InfoItem from 'client/components/InfoItem';
 import { showCustomerPanel, showPartnerModal } from 'common/reducers/partner';
+import { PARTNER_ROLES } from 'common/constants';
 import MasterPane from './tabpanes/masterPane';
 import TeamPane from './tabpanes/teamPane';
 import LogsPane from '../common/logsPane';
@@ -25,6 +26,7 @@ export default class PartnerDock extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     customer: PropTypes.shape({ partner_code: PropTypes.string }).isRequired,
+    partnerType: PropTypes.string.isRequired,
   }
   msg = formatMsg(this.props.intl)
   handleCustomerEdit = () => {
@@ -35,11 +37,19 @@ export default class PartnerDock extends React.Component {
   }
   renderExtra() {
     const { customer } = this.props;
+    let label = '';
+    if (this.props.partnerType === PARTNER_ROLES.CUS) {
+      label = this.msg('customerCode');
+    } else if (this.props.partnerType === PARTNER_ROLES.SUP) {
+      label = this.msg('supplierCode');
+    } else if (this.props.partnerType === PARTNER_ROLES.VEN) {
+      label = this.msg('vendorCode');
+    }
     return (
       <Row>
         <Col sm={24} lg={4}>
           <InfoItem
-            label={this.msg('customerCode')}
+            label={label}
             field={customer.partner_code}
           />
         </Col>
@@ -65,9 +75,17 @@ export default class PartnerDock extends React.Component {
   }
   render() {
     const { customer, visible } = this.props;
+    let label = '';
+    if (this.props.partnerType === PARTNER_ROLES.CUS) {
+      label = this.msg('customer');
+    } else if (this.props.partnerType === PARTNER_ROLES.SUP) {
+      label = this.msg('supplier');
+    } else if (this.props.partnerType === PARTNER_ROLES.VEN) {
+      label = this.msg('vendor');
+    }
     return (
       <DockPanel
-        label={this.msg('customer')}
+        label={label}
         title={customer.name}
         size="large"
         visible={visible}
@@ -77,11 +95,12 @@ export default class PartnerDock extends React.Component {
       >
         <Tabs defaultActiveKey="masterInfo">
           <TabPane tab={this.msg('masterInfo')} key="masterInfo" >
-            <MasterPane customer={customer} />
+            <MasterPane customer={customer} partnerType={this.props.partnerType} />
           </TabPane>
+          {this.props.partnerType === PARTNER_ROLES.CUS &&
           <TabPane tab={this.msg('serviceTeam')} key="team" >
             <TeamPane customer={customer} />
-          </TabPane>
+          </TabPane>}
           <TabPane tab={this.msg('logs')} key="logs" >
             <LogsPane />
           </TabPane>

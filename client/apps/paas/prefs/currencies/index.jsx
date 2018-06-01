@@ -5,7 +5,7 @@ import { Button, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal } from 'common/reducers/bssExRateSettings';
-import { loadCurrencies } from 'common/reducers/cmsParams';
+import { loadCurrencies } from 'common/reducers/saasParams';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
@@ -22,7 +22,7 @@ const { Content } = Layout;
   state => ({
     visible: state.bssExRateSettings.visibleExRateModal,
     exRateList: state.bssExRateSettings.exRateList,
-    currencies: state.cmsParams.currencies,
+    currencies: state.saasParams.currencies,
   }),
   {
     toggleNewExRateModal, loadExRates, deleteExRate, alterExRateVal, loadCurrencies,

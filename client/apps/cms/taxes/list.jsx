@@ -11,7 +11,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import DataTable from 'client/components/DataTable';
 import SearchBox from 'client/components/SearchBox';
 import { loadTaxesList } from 'common/reducers/cmsDeclTax';
-import { loadTrxnMode } from 'common/reducers/cmsParams';
+import { loadTrxnMode } from 'common/reducers/saasParams';
 import { Layout, Menu } from 'antd';
 import { formatMsg, formatGlobalMsg } from './message.i18n';
 
@@ -22,7 +22,7 @@ const { Content } = Layout;
   state => ({
     taxesList: state.cmsDeclTax.taxesList,
     filter: state.cmsDeclTax.listFilter,
-    trxnModes: state.cmsParams.trxnModes,
+    trxnModes: state.saasParams.trxnModes,
   }),
   {
     loadTaxesList,

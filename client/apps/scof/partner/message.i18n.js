@@ -35,6 +35,10 @@ const messages = defineMessages({
     id: 'sof.partner.customers.batch.import',
     defaultMessage: '批量导入客户',
   },
+  supplier: {
+    id: 'sof.partner.supplier',
+    defaultMessage: '供应商',
+  },
   supplierName: {
     id: 'sof.partner.supplier.name',
     defaultMessage: '供应商名称',
@@ -46,6 +50,10 @@ const messages = defineMessages({
   batchImportSuppliers: {
     id: 'sof.partner.supplier.batch.import',
     defaultMessage: '批量导入供应商',
+  },
+  vendor: {
+    id: 'sof.partner.vendor',
+    defaultMessage: '服务商',
   },
   vendorName: {
     id: 'sof.partner.vendors.name',
