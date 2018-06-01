@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropType from 'prop-types';
 import moment from 'moment';
 import { Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -16,10 +17,28 @@ import { formatMsg } from '../../message.i18n';
 export default class OutboundPickPrint extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    movementNo: PropType.string.isRequired,
+  }
+  componentDidMount() {
+    let script;
+    if (!document.getElementById('pdfmake-min')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-min';
+      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    if (!document.getElementById('pdfmake-vfsfont')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-vfsfont';
+      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }
   msg = formatMsg(this.props.intl);
   pdfHead = () => {
-    const { movementHead } = this.props;
+    const { movementHead, movementNo } = this.props;
     const headContent = [
       {
         columns: [
@@ -28,7 +47,7 @@ export default class OutboundPickPrint extends Component {
       },
       {
         columns: [
-          { text: `移库单号:  ${movementHead.movement_no || ''}`, style: 'header' },
+          { text: `移库单号:  ${movementNo || ''}`, style: 'header' },
           { text: `指令单号:  ${movementHead.transaction_no || ''}`, style: 'header' },
         ],
       },
@@ -120,7 +139,7 @@ export default class OutboundPickPrint extends Component {
     docDefinition.content.push({
       style: 'table',
       table: {
-        widths: ['15%', '25%', '25%', '20%', '15%'],
+        widths: ['20%', '20%', '25%', '20%', '15%'],
         body: this.pdfDetails(),
       },
       layout: {

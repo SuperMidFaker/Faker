@@ -57,23 +57,6 @@ export default class MovementDetail extends Component {
       }
     });
   }
-  componentDidMount() {
-    let script;
-    if (!document.getElementById('pdfmake-min')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-min';
-      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-    if (!document.getElementById('pdfmake-vfsfont')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-vfsfont';
-      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.props.loadMovementHead(this.props.params.movementNo);
@@ -95,18 +78,22 @@ export default class MovementDetail extends Component {
     const printMenu = (
       <Menu>
         <Menu.Item>
-          <PrintMovement />
+          <PrintMovement movementNo={this.props.params.movementNo} />
         </Menu.Item>
       </Menu>
     );
+    const breadcrumb = [
+      defaultWhse.name,
+      this.msg('movement'),
+      this.props.params.movementNo,
+    ];
+    if (movementHead.transaction_no) {
+      breadcrumb.push(movementHead.transaction_no);
+    }
     return (
       <Layout>
         <PageHeader
-          breadcrumb={[
-            defaultWhse.name,
-            this.msg('movement'),
-            this.props.params.movementNo,
-          ]}
+          breadcrumb={breadcrumb}
         >
           <PageHeader.Actions>
             <Dropdown overlay={printMenu}>
