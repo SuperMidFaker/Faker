@@ -17,7 +17,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import WhseSelect from '../../common/whseSelect';
 import MovementModal from './modal/movementModal';
-import { formatMsg } from '../message.i18n';
+import { formatMsg, formatGlobalMsg } from '../message.i18n';
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -62,24 +62,29 @@ export default class MovementList extends React.Component {
     }
   }
   msg = formatMsg(this.props.intl)
+  gmsg = formatGlobalMsg(this.props.intl)
   columns = [{
-    title: '移库单号',
+    title: this.msg('movementNo'),
     dataIndex: 'movement_no',
     width: 180,
   }, {
-    title: '原因',
+    title: this.msg('transactionNo'),
+    dataIndex: 'transaction_no',
+    width: 180,
+  }, {
+    title: this.msg('reason'),
     dataIndex: 'reason',
   }, {
-    title: '货主',
+    title: this.msg('ownerName'),
     width: 300,
     dataIndex: 'owner_name',
   }, {
-    title: '类型',
+    title: this.msg('moveType'),
     dataIndex: 'move_type',
     width: 100,
     render: o => o && CWM_MOVEMENT_TYPE[o - 1].text,
   }, {
-    title: '状态',
+    title: this.msg('status'),
     align: 'center',
     width: 200,
     render: (o, record) => {
@@ -89,42 +94,42 @@ export default class MovementList extends React.Component {
       return <Logixon type="circle" color="gray" />;
     },
   }, {
-    title: '操作模式',
+    title: this.msg('movingMode'),
     dataIndex: 'moving_mode',
     width: 80,
     align: 'center',
     render: (o) => {
       if (o === 'scan') {
-        return (<Tooltip title="扫码移动"><Icon type="scan" /></Tooltip>);
+        return (<Tooltip title={this.msg('scan')}><Icon type="scan" /></Tooltip>);
       } else if (o === 'manual') {
-        return (<Tooltip title="人工移动"><Icon type="solution" /></Tooltip>);
+        return (<Tooltip title={this.msg('manual')}><Icon type="solution" /></Tooltip>);
       }
       return <span />;
     },
   }, {
-    title: '创建时间',
+    title: this.gmsg('createdDate'),
     dataIndex: 'created_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
-    title: '移动时间',
+    title: this.msg('completedDate'),
     dataIndex: 'completed_date',
     width: 120,
     render: completeddate => completeddate && moment(completeddate).format('MM.DD HH:mm'),
   }, {
-    title: '操作',
+    title: this.gmsg('actions'),
     dataIndex: 'OPS_COL',
     className: 'table-col-ops',
     width: 150,
     fixed: 'right',
     render: (o, record) => {
       if (record.isdone) {
-        return (<RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />);
+        return (<RowAction onClick={this.handleMovementDetail} label={this.msg('movementDetails')} row={record} />);
       }
       return (<span>
-        <RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />
+        <RowAction onClick={this.handleMovementDetail} label={this.msg('movementDetails')} row={record} />
         <span className="ant-divider" />
-        <RowAction onClick={this.cancelMovement} label="取消移库" row={record} />
+        <RowAction onClick={this.cancelMovement} label={this.msg('cancelMovement')} row={record} />
       </span>);
     },
   }]
