@@ -78,15 +78,6 @@ export default class StockTransitionList extends React.Component {
     transitionSplitNum: 0,
     unfreezeReason: '',
     allSelectedRows: [],
-    /*
-    stat: {
-      stock_qty: 0,
-      avail_qty: 0,
-      alloc_qty: 0,
-      frozen_qty: 0,
-      bonded_qty: 0,
-      nonbonded_qty: 0,
-    }, */
     scrollOffset: 368,
   }
   componentDidMount() {
@@ -98,19 +89,6 @@ export default class StockTransitionList extends React.Component {
       this.handleStockQuery();
     }
   }
-  /*
-  getTotalData = (data) => {
-    const stockQty = data.reduce((prev, curr) => prev + curr.stock_qty, 0);
-    const availQty = data.reduce((prev, curr) => prev + curr.avail_qty, 0);
-    const allocQty = data.reduce((prev, curr) => prev + curr.alloc_qty, 0);
-    const frozenQty = data.reduce((prev, curr) => prev + curr.frozen_qty, 0);
-    const bondedQty = data.reduce((prev, curr) => prev + curr.bonded_qty, 0);
-    const nonbondedQty = data.reduce((prev, curr) => prev + curr.nonbonded_qty, 0);
-    return {
-      stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
-    };
-  }
-  */
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('owner'),
@@ -409,7 +387,7 @@ export default class StockTransitionList extends React.Component {
         this.handleRowSelect(selectedRows, selRows.length > 0 ? selRows[0].owner_name : null);
       },
       hideDefaultSelections: true,
-      getCheckboxProps: row => row.avail_qty > 0,
+      getCheckboxProps: row => ({ disabled: row.avail_qty === 0 }),
     };
     if (totalReducedList.length > 0) {
       rowSelection.selections = [{

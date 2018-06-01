@@ -65,7 +65,7 @@ const messages = defineMessages({
   },
   outboundPlaceholder: {
     id: 'cwm.shipping.outbound.search.placeholder',
-    defaultMessage: '搜索SO编号/出库单号',
+    defaultMessage: '搜索SO编号/客户单号',
   },
   outboundListSearchPlaceholder: {
     id: 'cwm.shipping.list.placeholder',

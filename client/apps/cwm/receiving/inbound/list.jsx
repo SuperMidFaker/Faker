@@ -299,7 +299,7 @@ export default class ReceivingInboundList extends React.Component {
       <RangePicker
         onChange={this.onDateChange}
         value={dateVal}
-        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        ranges={{ 今日: [moment(), moment()], 当月: [moment().startOf('month'), moment()] }}
       />
     </span>);
     return (

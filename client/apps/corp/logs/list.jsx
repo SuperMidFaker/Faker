@@ -24,6 +24,11 @@ const initialFilter = {
   bizobject: undefined,
   daterange: null,
 };
+const SAAS_OPLOG_BEHAVIOR_MAP = {};
+Object.keys(SAAS_OPLOG_BEHAVIORS).forEach((sobkey) => {
+  const sob = SAAS_OPLOG_BEHAVIORS[sobkey];
+  SAAS_OPLOG_BEHAVIOR_MAP[sob.key] = sob.text;
+});
 
 @connectFetch()()
 @injectIntl
@@ -68,7 +73,7 @@ export default class LogsList extends React.Component {
     title: '行为',
     dataIndex: 'op_behavior',
     width: 100,
-    render: behav => SAAS_OPLOG_BEHAVIORS[behav] && <Tag>{SAAS_OPLOG_BEHAVIORS[behav].text}</Tag>,
+    render: behav => SAAS_OPLOG_BEHAVIOR_MAP[behav] && <Tag>{SAAS_OPLOG_BEHAVIOR_MAP[behav]}</Tag>,
   }, {
     title: '业务编号',
     dataIndex: 'op_ref_billno',
@@ -84,6 +89,7 @@ export default class LogsList extends React.Component {
   }, {
     title: '内容',
     dataIndex: 'op_content',
+    width: 260,
   }, {
     title: '时间',
     dataIndex: 'created_date',

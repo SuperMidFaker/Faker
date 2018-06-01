@@ -66,7 +66,7 @@ import * as CMSTradeItemTask from './cms/tradeitem/task';
 import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
 import * as CMSManual from './cms/manual';
 import * as CMSPermit from './cms/permit';
-import * as CMSAnalytics from './cms/analytics';
+// import * as CMSAnalytics from './cms/analytics';
 import * as cmsDeclTax from './cms/taxes';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
@@ -341,10 +341,10 @@ export default(store) => {
             <Route path="taxes">
               <IndexRoute component={cmsDeclTax.List} />
             </Route>
-            <Route path="analytics">
+            {/* <Route path="analytics">
               <IndexRoute component={CMSAnalytics.List} />
               <Route path="report/:id" component={CMSAnalytics.Report} />
-            </Route>
+            </Route> */}
             <Route path="settings">
               <IndexRedirect to="/clearance/settings/preferences" />
               <Route path="preferences" component={CMSSettings.Preferences} />

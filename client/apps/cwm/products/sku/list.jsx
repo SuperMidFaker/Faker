@@ -67,7 +67,7 @@ export default class CWMSkuList extends React.Component {
     tableOwners: [],
     importPanelVisible: false,
   }
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.owner.id) {
       this.props.setCurrentOwner(this.props.owners[0] || {});
     }
@@ -112,18 +112,25 @@ export default class CWMSkuList extends React.Component {
     width: 180,
     dataIndex: 'product_no',
   }, {
+    title: this.msg('category'),
+    width: 120,
+    dataIndex: 'category',
+  }, {
     title: this.msg('hscode'),
-    width: 200,
+    width: 150,
     dataIndex: 'hscode',
   }, {
     title: this.msg('descCN'),
     dataIndex: 'desc_cn',
+    width: 120,
   }, {
     title: this.msg('skuPack'),
     dataIndex: 'sku_pack_unit_name',
+    width: 120,
   }, {
     title: this.msg('perSKUQty'),
     dataIndex: 'sku_pack_qty',
+    width: 120,
   }, {
     title: this.msg('lastModifiedDate'),
     dataIndex: 'last_updated_date',

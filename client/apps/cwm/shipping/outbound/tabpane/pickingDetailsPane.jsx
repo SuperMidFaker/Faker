@@ -335,11 +335,11 @@ export default class PickingDetailsPane extends React.Component {
   }
   render() {
     const { pickDetails, outboundHead, submitting } = this.props;
-    const { currentStep, batchPickedUnShipped } = this.state;
+    const { currentStep, batchPickedUnShipped, searchValue } = this.state;
     const dataSource = pickDetails.filter((item) => {
-      if (this.state.searchValue) {
-        const reg = new RegExp(this.state.searchValue);
-        return reg.test(item.product_no) || reg.test(item.product_sku);
+      if (searchValue) {
+        const reg = new RegExp(searchValue);
+        return reg.test(item.product_no) || reg.test(item.serial_no);
       }
       return true;
     }).sort((pa, pb) => {
@@ -383,7 +383,7 @@ export default class PickingDetailsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/序列号" onSearch={this.handleSearch} value={searchValue} />
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}

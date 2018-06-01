@@ -94,10 +94,11 @@ export default class PackingDetailsPane extends React.Component {
   }
   render() {
     const { packDetails } = this.props;
+    const { searchValue } = this.state;
     const dataSource = packDetails.filter((item) => {
-      if (this.state.searchValue) {
-        const reg = new RegExp(this.state.searchValue);
-        return reg.test(item.product_no) || reg.test(item.product_sku);
+      if (searchValue) {
+        const reg = new RegExp(searchValue);
+        return reg.test(item.product_no) || reg.test(item.serial_no);
       }
       return true;
     });
@@ -117,7 +118,7 @@ export default class PackingDetailsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/序列号" onSearch={this.handleSearch} value={searchValue} />
           <DataPane.Actions>
             {packDetails.length > 0 &&
             <Button icon="printer" onClick={this.handleTotalPackingListPrint}>

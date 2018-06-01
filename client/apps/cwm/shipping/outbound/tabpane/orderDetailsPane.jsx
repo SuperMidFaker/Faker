@@ -163,23 +163,22 @@ export default class OrderDetailsPane extends React.Component {
       [row.seq_no],
       this.props.loginId,
       this.props.loginName
-    )
-      .then((result) => {
-        if (!result.error) {
-          if (result.data.length > 0) {
-            const seqNos = result.data.join(',');
-            const args = {
-              message: `行号${seqNos}货品数量不足`,
-              duration: 0,
-            };
-            notification.open(args);
-          }
-        } else {
-          notification.error({
-            message: result.error.message,
-          });
+    ).then((result) => {
+      if (!result.error) {
+        if (result.data.length > 0) {
+          const seqNos = result.data.join(',');
+          const args = {
+            message: `行号${seqNos}货品数量不足`,
+            duration: 0,
+          };
+          notification.open(args);
         }
-      });
+      } else {
+        notification.error({
+          message: result.error.message,
+        });
+      }
+    });
   }
   handleBatchAutoAlloc = () => {
     this.props.batchAutoAlloc(
@@ -310,11 +309,11 @@ export default class OrderDetailsPane extends React.Component {
   }
   render() {
     const { outboundHead, outboundProducts, submitting } = this.props;
-    const { ButtonStatus } = this.state;
+    const { ButtonStatus, searchValue } = this.state;
     const dataSource = outboundProducts.filter((item) => {
-      if (this.state.searchValue) {
-        const reg = new RegExp(this.state.searchValue);
-        return reg.test(item.product_no) || reg.test(item.product_sku);
+      if (searchValue) {
+        const reg = new RegExp(searchValue);
+        return reg.test(item.product_no) || reg.test(item.serial_no);
       }
       return true;
     }).sort((pa, pb) => {
@@ -393,7 +392,7 @@ export default class OrderDetailsPane extends React.Component {
         loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <SearchBox placeholder="货号/SKU" onSearch={this.handleSearch} />
+          <SearchBox placeholder="货号/序列号" onSearch={this.handleSearch} value={searchValue} />
           <DataPane.BulkActions
             selectedRowKeys={this.state.selectedRowKeys}
             onDeselectRows={this.handleDeselectRows}

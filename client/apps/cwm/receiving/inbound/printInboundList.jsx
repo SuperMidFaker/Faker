@@ -13,7 +13,6 @@ import { formatMsg } from '../message.i18n';
   inboundHead: state.cwmReceive.inboundFormHead,
   inboundProducts: state.cwmReceive.inboundProducts,
 }))
-
 export default class Print extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -46,6 +45,7 @@ export default class Print extends Component {
       wrapType = wrapType.text;
     }
     const ftzEntNos = entryRegs.filter(er => er.ftz_ent_no).map(er => er.ftz_ent_no).join(',');
+    const weight = parseFloat(inboundHead.shipmt_weight) >= 0 ? `${inboundHead.shipmt_weight}KG` : '';
     const pdf = [];
     const header = [];
     header.push({
@@ -58,9 +58,9 @@ export default class Print extends Component {
       { text: inboundHead.owner_name, style: 'table' }, { text: '仓库', style: 'table' }, { text: defaultWhse.name, style: 'table' }]);
     pdf.push([{ text: '供货商', style: 'table' }, { text: inboundHead.supplier_name, style: 'table' }, { text: '提运单号', style: 'table' },
       { text: inboundHead.bl_wb_no, style: 'table' }, { text: '进区单号', style: 'table' }, { text: ftzEntNos, style: 'table' }]);
-    pdf.push([{ text: '包装大件数', style: 'table' }, { text: `${inboundHead.shipmt_pieces}${wrapType}`, style: 'table' },
+    pdf.push([{ text: '包装大件数', style: 'table' }, { text: `${inboundHead.shipmt_pieces || ''}${wrapType || ''}`, style: 'table' },
       { text: '总毛重', style: 'table' },
-      { text: inboundHead.shipmt_weight, style: 'table' }, { text: '总个数', style: 'table' }, { text: inboundHead.total_expect_qty, style: 'table' }]);
+      { text: weight, style: 'table' }, { text: '总个数', style: 'table' }, { text: inboundHead.total_expect_qty, style: 'table' }]);
     pdf.push([{ text: '备注', style: 'table' }, { text: '', colSpan: 5 }, {}, {}, {}, {}]);
     return pdf;
   }
