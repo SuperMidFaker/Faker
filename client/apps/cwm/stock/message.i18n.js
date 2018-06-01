@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
+import globalMessages from 'client/common/root.i18n';
 
 const messages = defineMessages({
   stock: {
@@ -198,6 +199,62 @@ const messages = defineMessages({
     id: 'cwm.stock.movement',
     defaultMessage: '库存移动',
   },
+  movementNo: {
+    id: 'cwm.stock.movement.no',
+    defaultMessage: '移库单号',
+  },
+  transactionNo: {
+    id: 'cwm.stock.movement.transactionNo',
+    defaultMessage: '指令单号',
+  },
+  reason: {
+    id: 'cwm.stock.movement.reason',
+    defaultMessage: '原因',
+  },
+  ownerName: {
+    id: 'cwm.stock.movement.ownerName',
+    defaultMessage: '货主',
+  },
+  moveType: {
+    id: 'cwm.stock.movement.moveType',
+    defaultMessage: '库存移动类型',
+  },
+  status: {
+    id: 'cwm.stock.movement.status',
+    defaultMessage: '状态',
+  },
+  done: {
+    id: 'cwm.stock.movement.done',
+    defaultMessage: '已完成',
+  },
+  undone: {
+    id: 'cwm.stock.movement.undone',
+    defaultMessage: '未完成',
+  },
+  movingMode: {
+    id: 'cwm.stock.movement.movingMode',
+    defaultMessage: '操作模式',
+  },
+  completedDate: {
+    id: 'cwm.stock.movement.completedDate',
+    defaultMessage: '移动时间',
+  },
+  movementDetails: {
+    id: 'cwm.stock.movement.movementDetails',
+    defaultMessage: '移库明细',
+  },
+  cancelMovement: {
+    id: 'cwm.stock.movement.cancelMovement',
+    defaultMessage: '取消移库',
+  },
+  scan: {
+    id: 'cwm.stock.movement.mode.scan',
+    defaultMessage: '扫码模式',
+  },
+  manual: {
+    id: 'cwm.stock.movement.mode.manual',
+    defaultMessage: '手动模式',
+  },
   createMovement: {
     id: 'cwm.stock.movement.create',
     defaultMessage: '创建库存移动单',
@@ -215,3 +272,4 @@ const messages = defineMessages({
 export default messages;
 
 export const formatMsg = formati18n(messages);
+export const formatGlobalMsg = formati18n(globalMessages);
